@@ -8,16 +8,15 @@
 
 #include <dxconfig.h>
 #include "defines.h"
+#include <vcclr.h>
 
+using namespace System::Windows::Forms;
 
 #ifndef _BaseApp_h
 #define _BaseApp_h
 
 #include "UIComponent.h"
 #include "Server.h"
-#include <vcclr.h>
-
-using namespace System::Windows::Forms;
 
 //
 // Class name definition:
@@ -40,7 +39,7 @@ class BaseApp : public UIComponent, public Server
     //
     // Private class data:
     //
-    static boolean ApplicationClassInitialized;	
+    static bool ApplicationClassInitialized;	
 
     int 	busyCursors; 	// Keeps track of setBusyCursor calls.
 
@@ -54,7 +53,7 @@ class BaseApp : public UIComponent, public Server
     //
     // Bubble help information
     //
-    boolean  show_bubbles;
+    bool  show_bubbles;
     //Widget   help_viewer;
 
   protected:
@@ -62,12 +61,14 @@ class BaseApp : public UIComponent, public Server
     // Protected member data:
     //
     char*        applicationClass;	// application class name
-	gcroot<System::Windows::Forms::ApplicationContext*> applicationContext; // Windows.Forms application context.
+
+	// Windows.Forms application context.
+	gcroot<System::Windows::Forms::ApplicationContext*> applicationContext;
 
     //
     // Initialize the window system.
     //
-    virtual boolean initializeWindowSystem(unsigned int *argcp, char **argv);
+    virtual bool initializeWindowSystem(unsigned int *argcp, char **argv);
 
     virtual void parseCommand(unsigned int* argcp, char** argv);
 
@@ -110,7 +111,7 @@ class BaseApp : public UIComponent, public Server
     //
     // test the file to ensure that's is a regular file, and writable.
     //
-    boolean isUsableDefaultsFile(const char* res_file, boolean create=FALSE);
+    bool isUsableDefaultsFile(const char* res_file, bool create=false);
 
   public:
     //
@@ -140,7 +141,7 @@ class BaseApp : public UIComponent, public Server
     // Initializes any Application specfic state.  This routine should 
     // be called by main() or subclasses only.
     //
-    virtual boolean initialize(unsigned int* argcp, char** argv);
+    virtual bool initialize(unsigned int* argcp, char** argv);
 
     //
     // Allow others to access our event processing mechanism
@@ -180,16 +181,16 @@ class BaseApp : public UIComponent, public Server
     // Sets/resets busy cursor for the application.
     // Calls to this routine can be 'stacked' so that the first call
     // sets the cursor and the last call resets the cursor.
-    // setBusyCursor(TRUE);         // Sets busy cursor
-    // setBusyCursor(TRUE);         // does not effect cursor
-    // setBusyCursor(TRUE);         // does not effect cursor
-    // setBusyCursor(FALSE);        // does not effect cursor
-    // setBusyCursor(TRUE);         // does not effect cursor
-    // setBusyCursor(FALSE);        // does not effect cursor
-    // setBusyCursor(FALSE);        // does not effect cursor
-    // setBusyCursor(FALSE);        // resets cursor
+    // setBusyCursor(true);         // Sets busy cursor
+    // setBusyCursor(true);         // does not effect cursor
+    // setBusyCursor(true);         // does not effect cursor
+    // setBusyCursor(false);        // does not effect cursor
+    // setBusyCursor(true);         // does not effect cursor
+    // setBusyCursor(false);        // does not effect cursor
+    // setBusyCursor(false);        // does not effect cursor
+    // setBusyCursor(false);        // resets cursor
     //
-    void setBusyCursor(boolean setting);
+    void setBusyCursor(bool setting);
 
     //
     // Shutdown application (without deleting it out from under itself.
@@ -250,15 +251,15 @@ class BaseApp : public UIComponent, public Server
 
     //
     // Start a tutorial on behalf of the application.
-    // Return TRUE if successful.  At this level in the class hierachy
-    // we don't know how to start a tutorial so we always return FALSE.
+    // Return true if successful.  At this level in the class hierachy
+    // we don't know how to start a tutorial so we always return false.
     //
-    virtual boolean startTutorial();
+    virtual bool startTutorial();
 
     //
     // Return a pixmap with the logo in it.
     //
-    //virtual Pixmap getLogoPixmap(boolean ){return XtUnspecifiedPixmap;};
+    //virtual Pixmap getLogoPixmap(bool ){return XtUnspecifiedPixmap;};
     virtual void cleanupLogo(){};
 
     //
@@ -275,15 +276,15 @@ class BaseApp : public UIComponent, public Server
     //
     // Control the display of bubble help
     //
-    virtual boolean bubbleHelpEnabled() { return this->show_bubbles; }
-    virtual void    enableBubbleHelp (boolean state = TRUE) 
+    virtual bool bubbleHelpEnabled() { return this->show_bubbles; }
+    virtual void    enableBubbleHelp (bool state = true) 
 	{ this->show_bubbles = state; }
     //virtual void    setHelpViewer (Widget viewer) { this->help_viewer = viewer; }
     //virtual Widget  getHelpViewer () { return this->help_viewer; }
 
     virtual void handleEvents();
 
-    virtual boolean getApplicationDefaultsFileName(char* res_file, boolean create=FALSE);
+    virtual bool getApplicationDefaultsFileName(char* res_file, bool create=false);
 
     //
     // Returns a pointer to the class name.

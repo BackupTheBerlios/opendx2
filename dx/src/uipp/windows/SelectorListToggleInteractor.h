@@ -50,7 +50,7 @@ class SelectorListToggleInteractor : public Interactor
     //Widget      toggleForm;
     List	toggleWidgets;
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   //  static String DefaultResources[];
 
@@ -64,7 +64,7 @@ class SelectorListToggleInteractor : public Interactor
 		//{ ASSERT(i>0); 
 		//  return (Widget)this->toggleWidgets.getElement(i); 
 		//}
-  //  boolean appendOptionWidget(Widget w) 
+  //  bool appendOptionWidget(Widget w) 
 		//{ return this->toggleWidgets.appendElement((const void*) w); }
 
     //
@@ -111,7 +111,7 @@ class SelectorListToggleInteractor : public Interactor
     // Make sure the attributes match the resources for the widgets. 
     //
     void handleInteractivePartStateChange(InteractorInstance *src_ii,
-						boolean major_change);
+						bool major_change);
 
     virtual void layoutInteractorHorizontally ();
     virtual void layoutInteractorVertically ();

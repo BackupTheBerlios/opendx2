@@ -12,7 +12,7 @@
 #include "ThrottleDialog.h"
 #include "ImageWindow.h"
 
-boolean ThrottleDialog::ClassInitialized = FALSE;
+bool ThrottleDialog::ClassInitialized = false;
 
 //String  ThrottleDialog::DefaultResources[] = {
 //	"*dialogTitle:			Throttle...",
@@ -40,7 +40,7 @@ ThrottleDialog::~ThrottleDialog()
 void ThrottleDialog::initialize()
 {
     if (!ThrottleDialog::ClassInitialized) {
-	ThrottleDialog::ClassInitialized = TRUE;
+	ThrottleDialog::ClassInitialized = true;
    //     this->setDefaultResources(image->getRootWidget(), 
 			//ThrottleDialog::DefaultResources);
     }

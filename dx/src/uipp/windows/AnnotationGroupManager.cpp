@@ -28,7 +28,7 @@ AnnotationGroupManager::AnnotationGroupManager(Network *net) :
 }
 
 
-boolean AnnotationGroupManager::printComment(FILE* f)
+bool AnnotationGroupManager::printComment(FILE* f)
 {
     int count = this->groups.getSize();
     int i;
@@ -36,32 +36,32 @@ boolean AnnotationGroupManager::printComment(FILE* f)
     for (i=1; i<=count; i++) {
 	const char *group_name = this->groups.getStringKey(i);
 	if (fprintf (f, "// annotation assignment: %s\n", group_name) <= 0)
-	    return FALSE;
+	    return false;
     }
 
-    return TRUE;
+    return true;
 
 }
 
-boolean AnnotationGroupManager::parseComment(const char *comment,
+bool AnnotationGroupManager::parseComment(const char *comment,
                                 const char *filename, int lineno,Network *net)
 {
     char name[128];
     char *cp = " annotation assignment:";
 
     if (!EqualSubstring(cp, comment,strlen(cp)))
-	return FALSE;
+	return false;
 
     int items_parsed =
 	sscanf (comment, " annotation assignment: %[^\n]", name);
     if (items_parsed != 1) {
 	WarningMessage ("Unrecognized page (file %s, line %d)", filename, lineno);
-	return FALSE;
+	return false;
     }
 
     if (!this->createGroup (name, net))
-	return FALSE;
+	return false;
 
-    return TRUE;
+    return true;
 }
 

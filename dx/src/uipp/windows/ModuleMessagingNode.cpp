@@ -16,11 +16,11 @@
 //
 // Determine if this node is of the given class.
 //
-boolean ModuleMessagingNode::isA(Symbol classname)
+bool ModuleMessagingNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassModuleMessagingNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->Node::isA(classname);
 }

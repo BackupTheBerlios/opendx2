@@ -46,7 +46,7 @@ UndoGrid::~UndoGrid()
 
 //
 //
-void UndoGrid::undo(boolean first_in_list) 
+void UndoGrid::undo(bool first_in_list) 
 {
     WorkSpaceInfo* wsi = this->workSpace->getInfo();
     wsi->setGridAlignment(this->info.getGridXAlignment(), this->info.getGridYAlignment());

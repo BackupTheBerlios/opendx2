@@ -25,21 +25,21 @@
 
 DXExecCtl::DXExecCtl()
 {
-    this->forceNetworkResend = TRUE;
-    this->forceParameterResend = TRUE;
-    this->execOnChange = FALSE;
+    this->forceNetworkResend = true;
+    this->forceParameterResend = true;
+    this->execOnChange = false;
     this->execOnChangeSuspensions = 0;
-    this->isCurrentlyExecuting       = FALSE;
-    this->vcrIsExecuting    = FALSE;
-    this->resumeExecOnChangeAfterExecution = FALSE;
-    this->endExecOnChangePending = FALSE;
+    this->isCurrentlyExecuting       = false;
+    this->vcrIsExecuting    = false;
+    this->resumeExecOnChangeAfterExecution = false;
+    this->endExecOnChangePending = false;
 }
 
 void
 DXExecCtl::forceFullResend()
 {
-    this->forceNetworkResend = TRUE;
-    this->forceParameterResend = TRUE;
+    this->forceNetworkResend = true;
+    this->forceParameterResend = true;
 
 #if WORKSPACE_PAGES
     GroupManager *pmgr = (GroupManager*)
@@ -52,14 +52,14 @@ DXExecCtl::forceFullResend()
 
     SequencerNode* sequencer = theDXApplication->network->sequencer;
     if(sequencer)
-	sequencer->transmitted = FALSE;
+	sequencer->transmitted = false;
 }
 
 void
 DXExecCtl::BGBeginMessage(void *clientData, int id, void *p)
 {
     DXExecCtl *ctl = (DXExecCtl *)clientData; 
-    ctl->beginSingleExecution(FALSE);
+    ctl->beginSingleExecution(false);
 }
 void
 DXExecCtl::BGEndMessage(void *clientData, int id, void *p)
@@ -89,8 +89,8 @@ DXExecCtl::HWEndMessage(void *clientData, int id, void *p)
 #ifdef SET_HW_BUSY_CURSOR
     if (ctl->hwExecuting <= 0 AND ctl->hwBusy)
     {
-	theDXApplication->setBusyCursor(FALSE);
-	ctl->hwBusy = FALSE;
+	theDXApplication->setBusyCursor(false);
+	ctl->hwBusy = false;
     }
 #endif
 
@@ -112,13 +112,13 @@ DXExecCtl::ExecComplete(void *clientData, int id, void *p)
     if (ctl->vcrIsExecuting AND !EqualString((char*)p, "stop"))
 	return;
 
-    ctl->endLastExecution(TRUE);
+    ctl->endLastExecution(true);
 
     if (ctl->vcrIsExecuting)
     {
     	if (sequencer)
 	    sequencer->setPlayDirection(SequencerNode::Directionless);
-	ctl->vcrIsExecuting = FALSE;
+	ctl->vcrIsExecuting = false;
     }
 
     if (!ctl->inExecOnChange() AND ctl->hwExecuting <= 0)
@@ -151,7 +151,7 @@ void DXExecCtl::newConnection()
     // highlighting handlers for HW rendering
     //
     this->hwExecuting = 0;
-    this->hwBusy      = FALSE;
+    this->hwBusy      = false;
     p->setHandler(DXPacketIF::INFORMATION,
 		  DXExecCtl::HWBeginMessage,
 		  (void *)this,
@@ -172,42 +172,42 @@ void DXExecCtl::newConnection()
 
     SequencerNode* sequencer = theDXApplication->network->sequencer;
     if (sequencer)
-	sequencer->transmitted = FALSE;
+	sequencer->transmitted = false;
 
     if (this->inExecOnChange())
     {
-	this->updateMacros(TRUE);
+	this->updateMacros(true);
 	this->resumeExecOnChange();
     }
-    this->execOnChange 		= FALSE;	// Avoid a resumeExecOnChange()
-    this->endLastExecution(FALSE);
+    this->execOnChange 		= false;	// Avoid a resumeExecOnChange()
+    this->endLastExecution(false);
 
-    this->forceNetworkResend 	= TRUE;
-    this->forceParameterResend 	= TRUE;
+    this->forceNetworkResend 	= true;
+    this->forceParameterResend 	= true;
     this->execOnChangeSuspensions = 0;	
-    this->isCurrentlyExecuting  = FALSE;
-    this->vcrIsExecuting    	= FALSE;
+    this->isCurrentlyExecuting  = false;
+    this->vcrIsExecuting    	= false;
 
 }
 
-void DXExecCtl::updateMacros(boolean force)
+void DXExecCtl::updateMacros(bool force)
 {
     DXPacketIF *p = theDXApplication->getPacketIF();
     if (p == NULL)
 	return;
-    boolean forcenet   = force  || this->forceNetworkResend;
-    boolean forceparam = force  || this->forceParameterResend;
+    bool forcenet   = force  || this->forceNetworkResend;
+    bool forceparam = force  || this->forceParameterResend;
 
-    boolean resume = FALSE;
+    bool resume = false;
 
     if (this->inExecOnChange() AND !this->isExecOnChangeSuspended())
     {
         this->suspendExecOnChange();
-        resume = TRUE;
+        resume = true;
     }
 
-    this->forceNetworkResend = FALSE;
-    this->forceParameterResend = FALSE;
+    this->forceNetworkResend = false;
+    this->forceParameterResend = false;
 
 #if WORKSPACE_PAGES
     ProcessGroupManager *pmgr = (ProcessGroupManager*)
@@ -224,7 +224,7 @@ void DXExecCtl::updateMacros(boolean force)
     Network *n;
     while((n = (Network*)ii.getNext()) != NULL)
     {
-	boolean dirty = n->isDirty();
+	bool dirty = n->isDirty();
 	if (forcenet || dirty)
 	    n->sendNetwork();
 	if (forceparam || dirty)
@@ -232,7 +232,7 @@ void DXExecCtl::updateMacros(boolean force)
     }
 
     n = theDXApplication->network;
-    boolean dirty = n->isDirty();
+    bool dirty = n->isDirty();
     if (forcenet || dirty)
 	n->sendNetwork();
     if (forceparam || dirty)
@@ -287,7 +287,7 @@ void DXExecCtl::vcrTransmit()
     p->send(DXPacketIF::FOREGROUND,
             vcr->isPalindromeMode() ? "palindrome on;\n" : "palindrome off;\n");
 
-    vcr->transmitted = TRUE;
+    vcr->transmitted = true;
 
 }
 
@@ -319,8 +319,8 @@ void DXExecCtl::vcrExecute(int action)
    	return;
     }
 
-    this->vcrIsExecuting = TRUE;
-    this->beginSingleExecution(TRUE); // May suspend ExecOnChange.
+    this->vcrIsExecuting = true;
+    this->beginSingleExecution(true); // May suspend ExecOnChange.
 
     p->send(DXPacketIF::FOREGROUND,
 	    action==VCR_FORWARD ? "forward;\n" : "backward;\n"); 
@@ -330,13 +330,13 @@ void DXExecCtl::vcrExecute(int action)
 
 }
 
-void DXExecCtl::vcrCommand(int action, boolean pressed)
+void DXExecCtl::vcrCommand(int action, bool pressed)
 {
     char  command[30];
     DXPacketIF *p = theDXApplication->getPacketIF();
     SequencerNode* sequencer = theDXApplication->network->sequencer;
     //Widget vcr = NULL;
-    boolean doEnd = FALSE;
+    bool doEnd = false;
 
     if (action == VCR_STOP) {
 	ASSERT(sequencer);
@@ -346,7 +346,7 @@ void DXExecCtl::vcrCommand(int action, boolean pressed)
     if (p == NULL)
     {
 //	this->endLastExecution(!this->vcrIsExecuting);
-	this->vcrIsExecuting = FALSE;
+	this->vcrIsExecuting = false;
         sequencer->setPlayDirection(SequencerNode::Directionless);
 
 	if (action == VCR_STOP)
@@ -368,7 +368,7 @@ void DXExecCtl::vcrCommand(int action, boolean pressed)
 	     sequencer->setPlayDirection(SequencerNode::Directionless);
 	     strcpy(command, "pause;\n");
 	     doEnd = this->vcrIsExecuting;
-    	     this->vcrIsExecuting = FALSE;
+    	     this->vcrIsExecuting = false;
 
 	     break;
 
@@ -382,7 +382,7 @@ void DXExecCtl::vcrCommand(int action, boolean pressed)
 
 	     strcpy(command, "pause;\n");
 	     doEnd = this->vcrIsExecuting;
-    	     this->vcrIsExecuting = FALSE;
+    	     this->vcrIsExecuting = false;
 	     sequencer->setPlayDirection(SequencerNode::Directionless);
 	     break;
 
@@ -390,14 +390,14 @@ void DXExecCtl::vcrCommand(int action, boolean pressed)
 
 	     strcpy(command, "stop;\n");
 	     doEnd = this->vcrIsExecuting;
-    	     this->vcrIsExecuting = FALSE;
+    	     this->vcrIsExecuting = false;
 	     sequencer->setPlayDirection(SequencerNode::Directionless);
 
 	     break;
 
 	default:
 	
-	     ASSERT(FALSE);
+	     ASSERT(false);
     }
 
     p->send(DXPacketIF::FOREGROUND,command);
@@ -447,7 +447,7 @@ void DXExecCtl::enableExecOnChange()
     // execOnChange doesn't get suspended.
     // 
     this->updateMacros();	
-    this->execOnChange = TRUE;
+    this->execOnChange = true;
 
     // 
     // Go into exec on change mode.
@@ -457,7 +457,7 @@ void DXExecCtl::enableExecOnChange()
     // 
     // Do what is usually necessary at the beginning of an execution. 
     // 
-    this->beginSingleExecution(FALSE);	// updateMacros done above
+    this->beginSingleExecution(false);	// updateMacros done above
 
     // 
     // Now cause the first execution. 
@@ -472,13 +472,13 @@ void DXExecCtl::enableExecOnChange()
 // graph execution.  If not current executing, then we go ahead and
 // go out of eoc mode, otherwise schedule the exit from eoc mode for
 // the end of the current graph execution (see endLastExecution()). 
-// We return TRUE if we were able to go out of eoc mode now, FALSE if
+// We return true if we were able to go out of eoc mode now, false if
 // we won't be going out until the end of the current execution.
 //
-boolean DXExecCtl::endExecOnChange()
+bool DXExecCtl::endExecOnChange()
 {
     if (!this->inExecOnChange())
-	return TRUE;
+	return true;
 
     //
     // If the exec is currently executing, then we will wait to go out
@@ -488,25 +488,25 @@ boolean DXExecCtl::endExecOnChange()
     // which we don't want to do. 
     //
     if (this->isCurrentlyExecuting) {
-	this->endExecOnChangePending = TRUE;
-	return FALSE;
+	this->endExecOnChangePending = true;
+	return false;
     } 
 
     if (this->vcrIsExecuting) {
-	this->vcrIsExecuting = FALSE;	// Only do one endLastExecution().
+	this->vcrIsExecuting = false;	// Only do one endLastExecution().
         this->vcrCommand(VCR_PAUSE, 0);
     }
 
-    this->endExecOnChangePending = FALSE;
+    this->endExecOnChangePending = false;
     this->execOnChangeSuspensions = 0; 
-    this->execOnChange = FALSE;
+    this->execOnChange = false;
     DXPacketIF *p = theDXApplication->getPacketIF();
     if (p)
 	p->send(DXPacketIF::INTERRUPT);
 
     theDXApplication->notifyClients(DXApplication::MsgExecuteDone);
 
-    return TRUE;
+    return true;
 
 }
 void DXExecCtl::suspendExecOnChange()
@@ -543,7 +543,7 @@ void DXExecCtl::resumeExecOnChange()
     if (!this->inExecOnChange())
 	return;
     if (this->isExecuting()) {
-	this->resumeExecOnChangeAfterExecution = TRUE;
+	this->resumeExecOnChangeAfterExecution = true;
         this->execOnChangeSuspensions = 1;
 	return;
     }
@@ -577,7 +577,7 @@ void DXExecCtl::executeOnce()
 	this->suspendExecOnChange();
 #endif
 
-    this->beginSingleExecution(TRUE);
+    this->beginSingleExecution(true);
 
     char s[100];
     strcpy(s, theDXApplication->network->getNameString());
@@ -589,8 +589,8 @@ void DXExecCtl::terminateExecution()
 {
 #ifdef SET_HW_BUSY_CURSOR
     if (this->hwExecuting > 0 AND NOT this->hwBusy) {
-	theDXApplication->setBusyCursor(TRUE);
-	this->hwBusy = TRUE;
+	theDXApplication->setBusyCursor(true);
+	this->hwBusy = true;
     }
 #endif
 
@@ -598,7 +598,7 @@ void DXExecCtl::terminateExecution()
 	return;
 
     if (this->vcrIsExecuting) {
-	this->vcrIsExecuting = FALSE;	// Only do one endLastExecution().
+	this->vcrIsExecuting = false;	// Only do one endLastExecution().
         this->vcrCommand(VCR_PAUSE, 0);
     }
 
@@ -619,9 +619,9 @@ void DXExecCtl::terminateExecution()
 	theDXApplication->executeOnChangeCmd->activate();
     }
 
-    this->execOnChange = FALSE;
+    this->execOnChange = false;
     // FIXME: should use the following but won't right before release...
-    this->isCurrentlyExecuting = FALSE;
+    this->isCurrentlyExecuting = false;
     if (msg)
         theDXApplication->notifyClients(msg);
 }
@@ -632,14 +632,14 @@ void DXExecCtl::updateMacro(Network *n)
     if (p == NULL)
 	return;
 
-    boolean resume = FALSE;
+    bool resume = false;
 
     if (n->isDirty())
     {
         if (this->inExecOnChange() AND !this->isExecOnChangeSuspended())
         {
             this->suspendExecOnChange();
-            resume = TRUE;
+            resume = true;
         }
 
 	n->sendNetwork();
@@ -651,10 +651,10 @@ void DXExecCtl::updateMacro(Network *n)
 }
 
 //
-// This function is called with a boolean that, in essence, indicates
+// This function is called with a bool that, in essence, indicates
 // whether the system is quiescent (updateable) or active (i.e. as a
 // result of the BG: begin message, and thus not updateable).
-void DXExecCtl::beginSingleExecution(boolean update)
+void DXExecCtl::beginSingleExecution(bool update)
 {
     theDXApplication->notifyClients(DXApplication::MsgExecute);
 
@@ -666,7 +666,7 @@ void DXExecCtl::beginSingleExecution(boolean update)
     if (update) 
 	this->updateMacros();
  
-    this->isCurrentlyExecuting = TRUE;
+    this->isCurrentlyExecuting = true;
     //
     // Set activation of execution dependent commands.
     //
@@ -674,16 +674,16 @@ void DXExecCtl::beginSingleExecution(boolean update)
 
 }
 
-void DXExecCtl::endLastExecution(boolean resume)
+void DXExecCtl::endLastExecution(bool resume)
 {
-    this->isCurrentlyExecuting = FALSE;
+    this->isCurrentlyExecuting = false;
     SequencerNode* sequencer = theDXApplication->network->sequencer;
     Symbol msg = 0;
 
     if (this->vcrIsExecuting)
     {
 	if (sequencer->isStepMode())
-	    this->vcrIsExecuting = FALSE;
+	    this->vcrIsExecuting = false;
     } 
 
     if ((resume || this->resumeExecOnChangeAfterExecution) AND 
@@ -699,12 +699,12 @@ void DXExecCtl::endLastExecution(boolean resume)
     // execution, then do it now.
     //
     if (this->endExecOnChangePending) {
-	this->endExecOnChangePending = FALSE;
+	this->endExecOnChangePending = false;
 	this->endExecOnChange();
 	msg = 0;
     }
 
-    this->resumeExecOnChangeAfterExecution = FALSE;
+    this->resumeExecOnChangeAfterExecution = false;
 
     //
     // Set activation of execution dependent commands.

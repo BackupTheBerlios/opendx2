@@ -20,7 +20,7 @@
 
 NoUndoImageCommand::NoUndoImageCommand(const char*   name,
 				       CommandScope* scope,
-				       boolean       active,
+				       bool       active,
 				       ImageWindow  *image,
 				       ImageCommandType comType):
     NoUndoCommand(name, scope, active)
@@ -30,10 +30,10 @@ NoUndoImageCommand::NoUndoImageCommand(const char*   name,
 }
 
 
-boolean NoUndoImageCommand::doIt(CommandInterface *ci)
+bool NoUndoImageCommand::doIt(CommandInterface *ci)
 {
     ImageWindow *image = this->image;
-    boolean  ret = TRUE;
+    bool  ret = true;
     ImageNode *in = (ImageNode*)image->node;
 
     ASSERT(image);

@@ -18,7 +18,7 @@
 // There general support for non-data-driven interactors.
 // To support non-data-driven interactor nodes as a sub-class of 
 // InteractorNode (which IS data-driven), we redefined isDataDriven()
-// to always return FALSE.  For efficiency reasons we also redefine
+// to always return false.  For efficiency reasons we also redefine
 // hasModuleMessageProtocol() expectingModuleMessage() to turn off
 // the messaging.  We also redefined handleNodeMsgInfo() and
 // handleInteractorMsgInfo() to fail when called. 
@@ -58,16 +58,16 @@ class NondrivenInteractorNode : public InteractorNode
     //
 
     //
-    // Return TRUE/FALSE, indicating whether or not we support a message
+    // Return true/false, indicating whether or not we support a message
     // protocol between the executive module that runs for this node and the UI.
     // All data-driven interactors have messaging protocol. 
     //
-    virtual boolean hasModuleMessageProtocol() { return FALSE; }
+    virtual bool hasModuleMessageProtocol() { return false; }
 
     //
-    // Return FALSE since non-data-driven interactors never get messages.
+    // Return false since non-data-driven interactors never get messages.
     //
-    virtual boolean expectingModuleMessage() { return FALSE; }
+    virtual bool expectingModuleMessage() { return false; }
 
     //
     // Define the mapping of inputs that shadow outputs.
@@ -102,14 +102,14 @@ class NondrivenInteractorNode : public InteractorNode
 
 
     //
-    // Always return FALSE;
+    // Always return false;
     //
-    virtual boolean isDataDriven();
+    virtual bool isDataDriven();
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

@@ -87,7 +87,7 @@ class SetAttrDialog : public Dialog
     //
     // Apply the changed attributes 
     //
-    virtual boolean okCallback(Dialog *clientData); 
+    virtual bool okCallback(Dialog *clientData); 
 
     //
     // Reject the changed attributes, generally this just returns 
@@ -102,7 +102,7 @@ class SetAttrDialog : public Dialog
     //
     // Store the attributes in the dialog into the given interactor instance.
     //
-    virtual boolean storeAttributes() = 0;
+    virtual bool storeAttributes() = 0;
 
     //
     // Update the displayed attributes. 

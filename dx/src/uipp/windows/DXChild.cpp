@@ -9,6 +9,9 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include <windows.h>
+#include <winsock.h>
+
 #include "DXStrings.h"
 #include "DXChild.h"
 
@@ -139,14 +142,14 @@ DXChild::HostIsLocal(const char *host)
     struct utsname Uts_Name;
 
     if (strcmp ("unix", host) == 0)
-        return TRUE;
+        return true;
 
     he = gethostbyname ((char*)host);
     if (he == NULL) {
         // If here, assume that the hostname is not in the dns; therefore,
         // the only machine we can connect to would be the localhost,
         // thus return true.
-        return TRUE;
+        return true;
     }
     strcpy(remoteHostname, he->h_name);
 
@@ -176,35 +179,35 @@ DXChild::HostIsLocal(const char *host)
     if(_stricmp(host, "localhost") == 0
             ||
             _stricmp(host, "localPC") == 0)
-        return TRUE;
+        return true;
 
 
     i = gethostname(localHostname, BUFSIZ - 1);
     if(strcmp(localHostname, host) == 0)
-        return TRUE;
+        return true;
 
     he = gethostbyname(host);
     if(he == NULL || he->h_name == NULL)
-        return TRUE; /* Host is Local   */
+        return true; /* Host is Local   */
 
 
     strcpy(remoteHostname, he->h_name);
     he = gethostbyname(localHostname);
     if(he == NULL || he->h_name == NULL)
-        return TRUE; /* Host is Local   */
+        return true; /* Host is Local   */
 
     strcpy(localhostHostname, he->h_name);
     if(strcmp(remoteHostname, localhostHostname) != 0)
-        i = FALSE;
+        i = false;
     else
-        i = TRUE;
+        i = true;
 
     return i;
 
 
 #endif
 
-    return TRUE;
+    return true;
 
 }
 /* This routine returns the pid of the forked child to communicate with (or
@@ -656,7 +659,7 @@ DXChild::ConnectTo(const char *host,
 
     sa.nLength = sizeof(SECURITY_ATTRIBUTES);	// structure size
     sa.lpSecurityDescriptor = NULL;		// default descriptor
-    sa.bInheritHandle = TRUE;			// inheritable
+    sa.bInheritHandle = true;			// inheritable
 
     bTest = CreatePipe( &(this->hpipeRead),	// reading handle
                         &(this->hpipeWrite),	// writing handle
@@ -668,7 +671,7 @@ DXChild::ConnectTo(const char *host,
                              GetCurrentProcess( ),
                              NULL,			// don't create new handle
                              0,
-                             FALSE,			// not inheritable
+                             false,			// not inheritable
                              DUPLICATE_SAME_ACCESS );
 
     sInfo.cb = sizeof(sInfo);
@@ -681,14 +684,14 @@ DXChild::ConnectTo(const char *host,
                              cmd,
                              NULL,
                              NULL,
-                             TRUE,
+                             true,
                              0,
                              Envs,
                              NULL,	// CurDir
                              &sInfo,	// Startup Info
                              &pInfo	// address of PROCESS_INFORMATION
                             );
-    if(rc == TRUE)  {
+    if(rc == true)  {
         CloseHandle(pInfo.hThread);	// discard new thread handle
         pid = pInfo.dwProcessId;
         rc = 0;
@@ -748,11 +751,11 @@ DXChild::MakeLine(char *string, char *newString)
 
 /* uipStartExecutive starts the dx script and returns information about the
  * resulting child.
- * Return Values if block is TRUE:
+ * Return Values if block is true:
  *	 0 -- Success
  *	-1 -- Failure
  *	 1 -- Retry OK (The server was busy).
- * Return Values if block is FALSE:
+ * Return Values if block is false:
  *	 0 -- Success
  *    Else -- Failure
  */
@@ -1022,7 +1025,7 @@ DXChild::DXChild(char *host,
     *this->outLine = '\0';
     *this->errLine = '\0';
     //this->deletion_wpid = NUL(XtWorkProcId);
-    this->input_handlers_stalled = FALSE;
+    this->input_handlers_stalled = false;
 
     this->server = DuplicateString(host);
 
@@ -1127,7 +1130,7 @@ DXChild::~DXChild()
 
 
 void
-DXChild::closeOutput(boolean closeConnection)
+DXChild::closeOutput(bool closeConnection)
 {
     if (this->out >= 0) {
         close (this->out);
@@ -1144,7 +1147,7 @@ DXChild::closeOutput(boolean closeConnection)
 }
 
 void
-DXChild::closeError(boolean closeConnection)
+DXChild::closeError(bool closeConnection)
 {
     if (this->err >= 0) {
         close (this->err);
@@ -1169,7 +1172,7 @@ DXChild::closeError(boolean closeConnection)
 //    DXChild* c = (DXChild*)clientData;
 //    ASSERT(c);
 //    delete c;
-//    return TRUE;
+//    return true;
 //}
 
 void
@@ -1194,7 +1197,7 @@ DXChild::unQueue()
 #endif
 
     }
-    this->queued = FALSE;
+    this->queued = false;
 }
 
 //
@@ -1291,7 +1294,7 @@ DXChild::waitForConnection()
         result = DosRead(this->out, rdbuffer, BUFSIZ,(PULONG) &sts);   // This will block until something to read...
         if (result != 0) {
             ErrorMessage("read() error: %s", strerror(errno));
-            this->closeOutput(FALSE);
+            this->closeOutput(false);
             result = -1;
         }
         //	#endif     // if OS2
@@ -1347,7 +1350,7 @@ DXChild::waitForConnection()
 #define USE_SUB_EVENT_LOOP 0
 #if USE_SUB_EVENT_LOOP
 
-    this->input_handlers_stalled = TRUE;
+    this->input_handlers_stalled = true;
     Display *d = theApplication->getDisplay();
     XtAppContext app = theApplication->getApplicationContext();
     struct timeval to;
@@ -1393,17 +1396,17 @@ DXChild::waitForConnection()
 #endif   //   USE_SUB_EVENT_LOOP
 
         if (status < 0) {
-            this->input_handlers_stalled = FALSE;
+            this->input_handlers_stalled = false;
             return result;
         }
         if (this->err >= 0 && FD_ISSET(this->err, &fds)) {
             sts = read(this->err, rdbuffer, BUFSIZ);
             if (sts < 0) {
                 ErrorMessage("read() error: %s", strerror(errno));
-                this->closeError(FALSE);
+                this->closeError(false);
                 result = -1;
             } else if (sts == 0) {
-                this->closeError(FALSE);
+                this->closeError(false);
                 result = -1;
             } else {
                 rdbuffer[sts] = '\0';
@@ -1416,7 +1419,7 @@ DXChild::waitForConnection()
                 }
                 if (strstr (rdbuffer, "Server appears to be in use")) {
                     result = 1;
-                    this->input_handlers_stalled = FALSE;
+                    this->input_handlers_stalled = false;
                     return result;
                 }
             }
@@ -1426,7 +1429,7 @@ DXChild::waitForConnection()
             XEvent event;
             // XmUpdateDisplay() is a higher level way of doing the same
             // thing, but it's a very expensive function - uses XSync().
-            boolean server_ready = FALSE;
+            bool server_ready = false;
             while ((!server_ready) && (XtAppPending(app) & XtIMXEvent)) {
                 XtAppNextEvent (app, &event);
                 switch (event.type) {
@@ -1455,12 +1458,12 @@ DXChild::waitForConnection()
                 status = select(width, (SELECT_ARG_TYPE *)&fds, NULL, NULL, &to);
                 if (status > 0) {
                     if (this->err >= 0 && FD_ISSET(this->err, &fds)) {
-                        server_ready = TRUE;
+                        server_ready = true;
                     } else if (this->out >= 0 && FD_ISSET(this->out, &fds)) {
-                        server_ready = TRUE;
+                        server_ready = true;
                     }
                 } else {
-                    server_ready = TRUE;
+                    server_ready = true;
                 }
             }
         }
@@ -1470,10 +1473,10 @@ DXChild::waitForConnection()
             sts = read(this->out, rdbuffer, BUFSIZ);
             if (sts < 0) {
                 ErrorMessage("read() error: %s", strerror(errno));
-                this->closeOutput(FALSE);
+                this->closeOutput(false);
                 result = -1;
             } else if (sts == 0) {
-                this->closeOutput(FALSE);
+                this->closeOutput(false);
                 result = -1;
             } else {
                 char *s;
@@ -1496,7 +1499,7 @@ DXChild::waitForConnection()
                         if (this->isQueued())
                             this->unQueue();
                         theDXApplication->connectToServer(port, this);
-                        this->input_handlers_stalled = FALSE;
+                        this->input_handlers_stalled = false;
                         return 0;
                     }
                     if (strstr(rdbuffer, "Execution has been queued")   ||
@@ -1527,7 +1530,7 @@ DXChild::waitForConnection()
     this->errorString = DuplicateString(rstring);
 
 
-    this->input_handlers_stalled = FALSE;
+    this->input_handlers_stalled = false;
     return (result);
 #endif			// !defined(DXD_LACKS_UTD)
 }

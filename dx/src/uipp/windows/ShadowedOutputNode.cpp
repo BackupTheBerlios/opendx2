@@ -78,14 +78,14 @@ int ShadowedOutputNode::getShadowingInput(int output_index)
 // FIXME: this really belongs in an OptionalExecuteNode class between
 //	DrivenNode and this class.
 //
-void ShadowedOutputNode::ioParameterStatusChanged(boolean input, int index,
+void ShadowedOutputNode::ioParameterStatusChanged(bool input, int index,
 				NodeParameterStatusChange status)
 {
 
     if (input && this->isInputViewable(index)) {
 	int icnt = this->getInputCount();
 	int connections, settabs,i  ;
-	boolean became_non_dd = FALSE;
+	bool became_non_dd = false;
 	if ((status & Node::ParameterValueChanged) &&
 	    (status != Node::ParameterSetValueChanged)) {
 	    
@@ -116,7 +116,7 @@ void ShadowedOutputNode::ioParameterStatusChanged(boolean input, int index,
 		    // 
 		    // Tool went from data-driven to non-data-driven.
 		    // 
-		    became_non_dd = TRUE;
+		    became_non_dd = true;
 		} else if ((settabs == 1) && !this->isInputDefaulting(index)) {
 		    // 
 		    // Tool went from non-data-driven to data-driven.
@@ -149,7 +149,7 @@ void ShadowedOutputNode::ioParameterStatusChanged(boolean input, int index,
 		}
 	    }	
 	    if ((connections == 0) && (settabs == 0)) 
-		became_non_dd = TRUE;
+		became_non_dd = true;
 	}
 #endif 
 	if (became_non_dd) {
@@ -184,7 +184,7 @@ Type ShadowedOutputNode::setOutputValue(
                                 int index,
                                 const char *value,
                                 Type t,
-                                boolean send)
+                                bool send)
 {
     Type type;
 
@@ -206,40 +206,40 @@ Type ShadowedOutputNode::setOutputValue(
 #if 1
     int shadow_input = this->getShadowingInput(index);
     if (shadow_input) {
-	type = this->DrivenNode::setOutputValue(index, value, t, FALSE);
+	type = this->DrivenNode::setOutputValue(index, value, t, false);
 	if (type != DXType::UndefinedType)  {
 	    value = this->getOutputValueString(index);
-	    this->setInputValue(shadow_input, value, type, FALSE);
+	    this->setInputValue(shadow_input, value, type, false);
 	    if (send)
-		this->sendValues(FALSE);
+		this->sendValues(false);
 	}
     } else  {
 	type = this->DrivenNode::setOutputValue(index, value, t, send);
     }
 
 #else
-    boolean send_shadow, driven = this->isDataDriven();
+    bool send_shadow, driven = this->isDataDriven();
     int shadow_input = this->getShadowingInput(index);
 
     if (driven && shadow_input)  {
-	type = this->DrivenNode::setOutputValue(index, value, t, FALSE);
+	type = this->DrivenNode::setOutputValue(index, value, t, false);
 	this->clearOutputDirty(index);
 	send_shadow = send;
     } else {
 	type = this->DrivenNode::setOutputValue(index, value, t, send);
-	send_shadow = FALSE;
+	send_shadow = false;
     }
 
     //
     // If the setOutputValue() above succeeded and this output has a 
     // shadowing input, then update it.  Only send the value if this 
-    // node is data-driven and the input send value was TRUE.
+    // node is data-driven and the input send value was true.
     //
     if ((type != DXType::UndefinedType) && shadow_input) {
 	const char *value = this->getOutputValueString(index);
 #if 0
 	if (!driven || !this->isOutputConnected(index))
-	    this->setInputSetValue(shadow_input, value, type, FALSE);
+	    this->setInputSetValue(shadow_input, value, type, false);
 #else
 	if (!send_shadow) {
 	    // We must always keep the executive up to date in case the
@@ -252,7 +252,7 @@ Type ShadowedOutputNode::setOutputValue(
 	    this->setInputDirty(shadow_input);
 #endif
 	} else
-	    this->setInputValue(shadow_input, value, type, TRUE);
+	    this->setInputValue(shadow_input, value, type, true);
     }
 #endif // 1
 
@@ -263,11 +263,11 @@ Type ShadowedOutputNode::setOutputValue(
 //
 // Determine if this node is of the given class.
 //
-boolean ShadowedOutputNode::isA(Symbol classname)
+bool ShadowedOutputNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassShadowedOutputNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->DrivenNode::isA(classname);
 }

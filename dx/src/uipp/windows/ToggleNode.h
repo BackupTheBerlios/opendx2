@@ -51,13 +51,13 @@ class ToggleNode : public InteractorNode
 
     //
     // Set the output and send it if requested.
-    // If setit is TRUE, then set the output to the first of the toggle values
+    // If setit is true, then set the output to the first of the toggle values
     // otherwise the 2nd of toggle values.
     // If how is 1, then send the value.
     // If how is 0,  then don't send the value.
     // If how is -1, then send the value quietly.
     //
-    boolean setTheToggle(boolean setit, int how);
+    bool setTheToggle(bool setit, int how);
 
     //
     // Set the two potential output values.  The 1st corresponds to the
@@ -66,14 +66,14 @@ class ToggleNode : public InteractorNode
     // If how is 0,  then don't send the values.
     // If how is -1, then send the values quietly.
     //
-    boolean changeToggleValues(const char *set, const char *reset, 
+    bool changeToggleValues(const char *set, const char *reset, 
 							int how);
   protected:
     //
     // Protected member data:
     //
     Type	outputType;
-    boolean	is_set;
+    bool	is_set;
 
     //
     // 
@@ -83,18 +83,18 @@ class ToggleNode : public InteractorNode
 
     //
     // Set the output to and send it.
-    // If setit is TRUE, then set the output to the first of the toggle values
+    // If setit is true, then set the output to the first of the toggle values
     // otherwise the 2nd of toggle values.
-    // If send is TRUE, then send it.
+    // If send is true, then send it.
     //
-    boolean setToggle(boolean setit, boolean send);
-    boolean setToggleQuietly(boolean setit);
+    bool setToggle(bool setit, bool send);
+    bool setToggleQuietly(bool setit);
 
     //
     // Get the values that are output for the set and reset states.
     // The returned string must be freed by the caller.
     //
-    char *getToggleValue(boolean setval);
+    char *getToggleValue(bool setval);
 
     //
     // Initialize the two potential output values.  The 1st corresponds to the
@@ -102,7 +102,7 @@ class ToggleNode : public InteractorNode
     // This (init) is called at creation, where as setToggleValues() is called
     // after initialization.
     //
-    boolean initToggleValues(const char *set, const char *reset);
+    bool initToggleValues(const char *set, const char *reset);
 
     //
     // Create a new interactor instance for this class.
@@ -114,16 +114,16 @@ class ToggleNode : public InteractorNode
     // the 'toggle: %d, set = %s, reset = %s' comment.
     // Only print/parse the ', set =....' part if includeValues is set.
     //
-    boolean printToggleComment(FILE *f, const char *indent, 
-					boolean includeValues);
-    boolean parseToggleComment(const char* comment, const char* filename, 
-					int lineno, boolean includeValues);
+    bool printToggleComment(FILE *f, const char *indent, 
+					bool includeValues);
+    bool parseToggleComment(const char* comment, const char* filename, 
+					int lineno, bool includeValues);
 
-    virtual boolean netPrintAuxComment(FILE *f);
-    virtual boolean netParseAuxComment(const char* comment,
+    virtual bool netPrintAuxComment(FILE *f);
+    virtual bool netParseAuxComment(const char* comment,
 					 const char* filename, int lineno);
-    virtual boolean cfgPrintInteractorComment(FILE *f);
-    virtual boolean cfgParseInteractorComment(const char* comment,
+    virtual bool cfgPrintInteractorComment(FILE *f);
+    virtual bool cfgParseInteractorComment(const char* comment,
 					const char* filename, int lineno);
 
 
@@ -153,18 +153,18 @@ class ToggleNode : public InteractorNode
     // inputs so that we can use them later when setting the attributes for the
     // Interactor.
     //
-    virtual boolean initialize();
+    virtual bool initialize();
 
 #if SYSTEM_MACROS // 3/13/95 - begin work for nodes to use system macros
-    virtual boolean     sendValues(boolean     ignoreDirty = TRUE);
-    virtual boolean     printValues(FILE *f, const char *prefix, PrintType dest);
+    virtual bool     sendValues(bool     ignoreDirty = true);
+    virtual bool     printValues(FILE *f, const char *prefix, PrintType dest);
 #endif
 
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Set the two potential output values.  The 1st corresponds to the
@@ -172,32 +172,32 @@ class ToggleNode : public InteractorNode
     // The output is changed (without being sent to the executive) to match 
     // the new set of set/reset values.
     //
-    boolean setToggleValues(const char *set, const char *reset);
+    bool setToggleValues(const char *set, const char *reset);
 
     //
     // Change the output value of the toggle.
     //
-    boolean set(boolean send = TRUE) 	{ return this->setToggle(TRUE, send); }
-    boolean reset(boolean send = TRUE) 	{ return this->setToggle(FALSE, send); }
+    bool set(bool send = true) 	{ return this->setToggle(true, send); }
+    bool reset(bool send = true) 	{ return this->setToggle(false, send); }
 
     //
     // Get the values that are output for the set and reset states.
     // The returned string must be freed by the caller.
     //
-    char *getSetValue() 	{ return this->getToggleValue(TRUE); }
-    char *getResetValue() 	{ return this->getToggleValue(FALSE); }
+    char *getSetValue() 	{ return this->getToggleValue(true); }
+    char *getResetValue() 	{ return this->getToggleValue(false); }
  
     //
     // Determine if the toggle is currently set.
     //
-    boolean isSet()	{ return this->is_set; }
+    bool isSet()	{ return this->is_set; }
 
-    boolean isSetAttributeVisuallyWriteable();
-    boolean isResetAttributeVisuallyWriteable();
+    bool isSetAttributeVisuallyWriteable();
+    bool isResetAttributeVisuallyWriteable();
 
     virtual const char* getJavaNodeName() { return "ToggleNode"; } 
-    virtual boolean printJavaType (FILE*, const char*, const char*);
-    virtual boolean printJavaValue(FILE*);
+    virtual bool printJavaType (FILE*, const char*, const char*);
+    virtual bool printJavaValue(FILE*);
 
 
     //

@@ -30,7 +30,7 @@
 #endif
 #include <sys/stat.h>
 
-boolean SaveImageDialog::ClassInitialized = FALSE;
+bool SaveImageDialog::ClassInitialized = false;
 
 //String SaveImageDialog::DefaultResources[] =
 //{
@@ -56,16 +56,16 @@ SaveImageDialog::SaveImageDialog(ImageNode *node,
     this->file = NUL(char*);
 
     this->saveCurrentCmd = new ImageFormatCommand ("saveCmd", commandScope,
-	TRUE, this, ImageFormatCommand::SaveCurrent);
+	true, this, ImageFormatCommand::SaveCurrent);
 
     this->saveContinuousCmd = new ImageFormatCommand ("saveCmd", commandScope,
-	FALSE, this, ImageFormatCommand::SaveContinuous);
+	false, this, ImageFormatCommand::SaveContinuous);
 
     this->fileSelectCmd = new ImageFormatCommand ("selectFile", commandScope,
-	FALSE, this, ImageFormatCommand::SelectFile);
+	false, this, ImageFormatCommand::SelectFile);
 
     if (!SaveImageDialog::ClassInitialized) {
-	SaveImageDialog::ClassInitialized = TRUE;
+	SaveImageDialog::ClassInitialized = true;
 	//this->installDefaultResources (theApplication->getRootWidget());
     }
 }
@@ -131,7 +131,7 @@ SaveImageDialog::~SaveImageDialog()
 //    NULL);
 //
 //    this->saveCurrentOption = new ToggleButtonInterface(body, "saveCurrentOption",
-//	this->saveCurrentCmd, FALSE);
+//	this->saveCurrentCmd, false);
 //    XtVaSetValues (this->saveCurrentOption->getRootWidget(),
 //	XmNleftAttachment,	XmATTACH_FORM,
 //	XmNleftOffset,		10,
@@ -140,7 +140,7 @@ SaveImageDialog::~SaveImageDialog()
 //	XmNtopOffset,		10,
 //    NULL);
 //    this->saveContinuousOption = new ToggleButtonInterface(body, "saveContinuousOption",
-//	this->saveContinuousCmd, FALSE);
+//	this->saveContinuousCmd, false);
 //    XtVaSetValues (this->saveContinuousOption->getRootWidget(),
 //	XmNrightAttachment,	XmATTACH_FORM,
 //	XmNrightOffset,		10,
@@ -156,17 +156,17 @@ void SaveImageDialog::restoreCallback()
 {
     this->sid_dirty = 0;
     if (!this->node->isRecordFileConnected()) 
-	this->node->unsetRecordFile (FALSE);
+	this->node->unsetRecordFile (false);
     if (!this->node->isRecordEnableConnected()) 
-	this->node->unsetRecordEnable(FALSE);
-    this->saveCurrentOption->setState(FALSE, TRUE);
-    this->saveContinuousOption->setState(FALSE, TRUE);
+	this->node->unsetRecordEnable(false);
+    this->saveCurrentOption->setState(false, true);
+    this->saveContinuousOption->setState(false, true);
     this->ImageFormatDialog::restoreCallback();
 }
 
-boolean SaveImageDialog::okCallback(Dialog *dialog)
+bool SaveImageDialog::okCallback(Dialog *dialog)
 {
-	boolean should_send = FALSE;
+	bool should_send = false;
 	this->ImageFormatDialog::okCallback(dialog);
 
 	const char *fname = this->getOutputFile();
@@ -178,7 +178,7 @@ boolean SaveImageDialog::okCallback(Dialog *dialog)
 	//
 	if ((!fname) || (!fname[0]) || (IsBlankString(fname))) {
 		WarningMessage ("A file name is required.");
-		return FALSE;
+		return false;
 	}
 
 	int response = QuestionDialogManager::OK;
@@ -244,7 +244,7 @@ boolean SaveImageDialog::okCallback(Dialog *dialog)
 	ASSERT(action);
 	switch (action) {
 	case CANCEL_SAVE:
-		return FALSE;
+		return false;
 		break;
 	case ERASE_THEN_PROCEED:
 		ASSERT ((full_filename) && (full_filename[0]));
@@ -256,8 +256,8 @@ boolean SaveImageDialog::okCallback(Dialog *dialog)
 
 	if (!this->node->isRecordFileConnected()) {
 		if (this->sid_dirty & SaveImageDialog::DirtyFilename) {
-			this->node->setRecordFile (fname, FALSE);
-			should_send = TRUE;
+			this->node->setRecordFile (fname, false);
+			should_send = true;
 		}
 	}
 	this->sid_dirty&= ~SaveImageDialog::DirtyFilename;
@@ -266,24 +266,24 @@ boolean SaveImageDialog::okCallback(Dialog *dialog)
 	if (!this->node->isRecordEnableConnected()) {
 		if (this->sid_dirty & SaveImageDialog::DirtyContinuous) {
 			if (this->saveContinuousOption->getState()) 
-				this->node->setRecordEnable(TRUE, FALSE);
+				this->node->setRecordEnable(true, false);
 			else 
-				this->node->setRecordEnable(FALSE, FALSE);
-			should_send = TRUE;
+				this->node->setRecordEnable(false, false);
+			should_send = true;
 		}
 	}
 	this->sid_dirty&= ~SaveImageDialog::DirtyContinuous;
 
 	if (this->saveCurrentOption->getState()) {
 		this->currentImage();
-		this->saveCurrentOption->setState (FALSE, TRUE);
+		this->saveCurrentOption->setState (false, true);
 	}
 	this->sid_dirty&= ~SaveImageDialog::DirtyCurrent;
 
 	if (should_send)
-		this->getNode()->sendValues(TRUE);
+		this->getNode()->sendValues(true);
 
-	return FALSE;
+	return false;
 }
 
 
@@ -299,15 +299,15 @@ void SaveImageDialog::setCommandActivation()
     //
     int recenab;
     this->node->getRecordEnable(recenab);
-    boolean enab = (boolean)recenab;
+    bool enab = (bool)recenab;
     if (this->node->isRecordEnableConnected()) {
 	this->saveContinuousCmd->deactivate();
-	this->saveContinuousOption->setState (enab, TRUE);
+	this->saveContinuousOption->setState (enab, true);
 	this->sid_dirty&= ~SaveImageDialog::DirtyContinuous;
     } else {
 	this->saveContinuousCmd->activate();
 	if ((this->sid_dirty & SaveImageDialog::DirtyContinuous) == 0) 
-	    this->saveContinuousOption->setState (enab, TRUE);
+	    this->saveContinuousOption->setState (enab, true);
     }
 
 
@@ -342,7 +342,7 @@ void SaveImageDialog::setCommandActivation()
 }
 
 
-void SaveImageDialog::setFilename(const char* filename, boolean skip_callbacks)
+void SaveImageDialog::setFilename(const char* filename, bool skip_callbacks)
 {
     if (this->file) delete this->file;
     this->file = DuplicateString(filename);
@@ -378,20 +378,20 @@ const char *SaveImageDialog::getOutputFile()
 	return NULL;
 }
 
-boolean SaveImageDialog::postFileSelectionDialog()
+bool SaveImageDialog::postFileSelectionDialog()
 {
  //   if (!this->fsb)
 	//this->fsb = new ImageFileDialog (this->getRootWidget(), this);
  //   this->fsb->post();
  //   XSync (XtDisplay(this->getRootWidget()), False);
  //   this->setCommandActivation();
-    return TRUE;
+    return true;
 }
 
-boolean SaveImageDialog::dirtyCurrent()
+bool SaveImageDialog::dirtyCurrent()
 {
     this->setCommandActivation();
-    return TRUE;
+    return true;
 }
 
 //extern "C" {

@@ -46,7 +46,7 @@ class ValueInteractor : public Interactor
     //
     // Private member data:
     // 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //friend void ValueInteractor_ValueChangeCB(Widget w, XtPointer clientData,
 				//	XtPointer callData);
@@ -110,7 +110,7 @@ class ValueInteractor : public Interactor
 
     virtual void handleInteractivePartStateChange(
 				InteractorInstance *src_ii,
-				boolean major_change);
+				bool major_change);
 
     //
     // Update the display values for an interactor; 

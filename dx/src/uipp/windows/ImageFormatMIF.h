@@ -28,13 +28,13 @@ class ImageFormatMIF : public PixelImageFormat
   private:
 
     //static String  DefaultResources[];
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
 
     virtual void	initialize();
 
-    virtual boolean		supportsPrinting() { return TRUE; }
+    virtual bool		supportsPrinting() { return true; }
 
   public:
 
@@ -55,13 +55,13 @@ class ImageFormatMIF : public PixelImageFormat
     virtual const char*		paramString() { return "miff"; }
     virtual const char*		menuString() { return "MIFF"; }
     virtual const char*		fileExtension() { return ".miff"; }
-    virtual boolean             supportsAppend() { return TRUE; }
+    virtual bool             supportsAppend() { return true; }
 
     //
     // Returns a pointer to the class name.
     //
     const char* getClassName() { return ClassImageFormatMIF; }
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 };
 
 

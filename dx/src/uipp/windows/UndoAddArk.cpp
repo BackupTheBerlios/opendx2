@@ -16,7 +16,7 @@
 
 char UndoAddArk::OperationName[] = "connection";
 
-UndoAddArk::UndoAddArk (EditorWindow* editor, Ark* arc, boolean adding) : 
+UndoAddArk::UndoAddArk (EditorWindow* editor, Ark* arc, bool adding) : 
     UndoableAction(editor)
 {
     this->adding = !adding;
@@ -33,7 +33,7 @@ UndoAddArk::UndoAddArk (EditorWindow* editor, Ark* arc, boolean adding) :
 // Write out the contents in the buffer and let a new network read
 // it back in.
 //
-void UndoAddArk::undo(boolean first_in_list) 
+void UndoAddArk::undo(bool first_in_list) 
 {
     Node* src = UndoNode::LookupNode 
 	(this->editor, this->source_name, this->source_instance);
@@ -52,28 +52,28 @@ void UndoAddArk::undo(boolean first_in_list)
 //
 // How can I tell if the contents of the buffer are usable?
 //
-boolean UndoAddArk::canUndo()
+bool UndoAddArk::canUndo()
 {
     Node* src = UndoNode::LookupNode 
 	(this->editor, this->source_name, this->source_instance);
-    if (!src) return FALSE;
+    if (!src) return false;
     Node* dst = UndoNode::LookupNode 
 	(this->editor, this->destination_name, this->destination_instance);
-    if (!dst) return FALSE;
+    if (!dst) return false;
 
 
     if (adding) {
-	if (src->getOutputCount() < this->output) return FALSE;
-	if (dst->getInputCount() < this->input) return FALSE;
-	if (!src->isOutputVisible(this->output)) return FALSE;
-	if (!dst->isInputVisible(this->input)) return FALSE;
-	if (dst->isInputConnected(this->input)) return FALSE;
+	if (src->getOutputCount() < this->output) return false;
+	if (dst->getInputCount() < this->input) return false;
+	if (!src->isOutputVisible(this->output)) return false;
+	if (!dst->isInputVisible(this->input)) return false;
+	if (dst->isInputConnected(this->input)) return false;
     } else {
-	if (!dst->isInputConnected(this->input)) return FALSE;
-	if (!this->lookupArk(src,dst)) return FALSE;
+	if (!dst->isInputConnected(this->input)) return false;
+	if (!this->lookupArk(src,dst)) return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 Ark* UndoAddArk::lookupArk(Node* src, Node* dst)

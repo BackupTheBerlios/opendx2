@@ -39,7 +39,7 @@ class DropSite : public Base
     //
     // Private member data:
     //
-    static boolean DropSiteClassInitialized;
+    static bool DropSiteClassInitialized;
 
     //friend void DropSite_HandleDrop(Widget, XtPointer, XtPointer);
     //friend void DropSite_TransferProc(Widget w, XtPointer client_data,
@@ -66,7 +66,7 @@ class DropSite : public Base
     //virtual void setDropWidget(unsigned char type = XmDROP_SITE_SIMPLE,
 	//Pixmap animation=(Pixmap)XmUNSPECIFIED_PIXMAP, 
 	//Pixmap anmiation_mask=(Pixmap)XmUNSPECIFIED_PIXMAP);
-    //virtual boolean transfer(char *, XtPointer, unsigned long, int, int);
+    //virtual bool transfer(char *, XtPointer, unsigned long, int, int);
 
     //
     // There was a Dictionary* up in private.  It's replaced with this call.
@@ -78,7 +78,7 @@ class DropSite : public Base
     // Instead of passing around a stored value for this, make the subclasses
     // implement a proc which decodes according to an enum and then invokes a member.
     //
-    //virtual boolean decodeDropType (int, char *, XtPointer, unsigned long, int, int) = 0;
+    //virtual bool decodeDropType (int, char *, XtPointer, unsigned long, int, int) = 0;
 
   public:
 
@@ -87,7 +87,7 @@ class DropSite : public Base
     //
     DropSite();
 
-    void addSupportedType (int, const char *typeName, boolean);
+    void addSupportedType (int, const char *typeName, bool);
  
     //
     // Destructor:

@@ -26,7 +26,7 @@
 #include "Dictionary.h"
 #include "DXPacketIF.h"
 
-boolean ProcessGroupAssignDialog::ClassInitialized = FALSE;
+bool ProcessGroupAssignDialog::ClassInitialized = false;
 
 //String  ProcessGroupAssignDialog::DefaultResources[] = {
 //	"*dialogTitle:			Execution Group Assignment...",
@@ -46,12 +46,12 @@ ProcessGroupAssignDialog::ProcessGroupAssignDialog( DXApplication *app)
 		: Dialog("processGroupAssignDialog")
 {
     this->app = app;
-    this->dirty = FALSE;
-    this->i_caused_it = FALSE;
+    this->dirty = false;
+    this->i_caused_it = false;
 
     if (NOT ProcessGroupAssignDialog::ClassInitialized)
     {
-        ProcessGroupAssignDialog::ClassInitialized = TRUE;
+        ProcessGroupAssignDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -297,7 +297,7 @@ void ProcessGroupAssignDialog::createDialog()
 //
 //    if(!dialog->i_caused_it)
 //	dialog->makeList(dialog->lastIndex);
-//    dialog->dirty = TRUE;
+//    dialog->dirty = true;
 //
 //    if(name)  XtFree(name);  //	AJ
 //
@@ -366,7 +366,7 @@ void ProcessGroupAssignDialog::createDialog()
 //
 //    int callIndex = cs->item_position;
 //
-//    dialog->i_caused_it = TRUE;
+//    dialog->i_caused_it = true;
 //    if(callIndex == dialog->lastIndex)
 //    {
 //        XmListDeselectAllItems(dialog->grouplist);
@@ -403,7 +403,7 @@ void ProcessGroupAssignDialog::createDialog()
 //	//XmListSelectPos( dialog->hostlist,  callIndex, False);
 //
 //    }
-//    dialog->i_caused_it = FALSE;
+//    dialog->i_caused_it = false;
 //}
 
 void ProcessGroupAssignDialog::makeList(int item)
@@ -490,7 +490,7 @@ void ProcessGroupAssignDialog::makeList(int item)
 //    delete hstrings;
 }
 
-boolean ProcessGroupAssignDialog::okCallback(Dialog* dialog)
+bool ProcessGroupAssignDialog::okCallback(Dialog* dialog)
 {
 #if WORKSPACE_PAGES
     ProcessGroupManager *pgm = theDXApplication->getProcessGroupManager();
@@ -499,7 +499,7 @@ boolean ProcessGroupAssignDialog::okCallback(Dialog* dialog)
 #endif
 
     if(NOT this->dirty)
-	return FALSE;
+	return false;
 	
 //    DXPacketIF *p = this->app->getPacketIF();   
 // Do we need this warning ?
@@ -509,9 +509,9 @@ boolean ProcessGroupAssignDialog::okCallback(Dialog* dialog)
     pgm->updateHosts();
     pgm->updateAssignment();
 
-    this->dirty = FALSE;
+    this->dirty = false;
 
-    return FALSE;
+    return false;
 }
 
 void ProcessGroupAssignDialog::manage()

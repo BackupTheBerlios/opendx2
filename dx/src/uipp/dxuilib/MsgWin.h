@@ -7,7 +7,7 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 
 
@@ -30,8 +30,8 @@
 // DialogCallback (*DCB), XtInputCallbackProc (*ICP), XtWorkProc (*WP)
 // functions for this and derived classes
 //
-extern "C" void MsgWin_SelectCB(Widget, XtPointer, XtPointer);
-extern "C" void MsgWin_FlushTimeoutTO(XtPointer closure, XtIntervalId*);
+//extern "C" void MsgWin_SelectCB(Widget, XtPointer, XtPointer);
+//extern "C" void MsgWin_FlushTimeoutTO(XtPointer closure, XtIntervalId*);
 
 class Dialog;
 class Command;
@@ -55,12 +55,12 @@ class MsgWin : public DXWindow
     // Private member data:
     //
     static boolean ClassInitialized;
-    friend void MsgWin_SelectCB(Widget, XtPointer, XtPointer);
+    //friend void MsgWin_SelectCB(Widget, XtPointer, XtPointer);
 
     void clearSelectableLines();
 
-    static void ShowEditor (XtPointer);
-    static void NoShowEditor (XtPointer);
+    //static void ShowEditor (XtPointer);
+    //static void NoShowEditor (XtPointer);
 
     //
     // If there is an editor opened on the net, or if there is a resource
@@ -83,7 +83,7 @@ class MsgWin : public DXWindow
     // Protected member data:
     //
     List selectableLines;
-    Widget list;
+//    Widget list;
     boolean firstMsg;
     boolean executing;
     boolean beenManaged;
@@ -97,8 +97,8 @@ class MsgWin : public DXWindow
     MWFileDialog *saveDialog;
     Dialog	*execCommandDialog;
 
-    Widget fileMenu;
-    Widget fileMenuPulldown;
+    //Widget fileMenu;
+    //Widget fileMenuPulldown;
     Command *clearCmd;
     Command *logCmd;
     Command *saveCmd;
@@ -108,16 +108,16 @@ class MsgWin : public DXWindow
     CommandInterface *saveOption;
     CommandInterface *closeOption;
 
-    Widget editMenu;
-    Widget commandsMenu;
-    Widget editMenuPulldown;
+    //Widget editMenu;
+    //Widget commandsMenu;
+    //Widget editMenuPulldown;
     Command *nextErrorCmd;
     Command *prevErrorCmd;
     CommandInterface *nextErrorOption; 
     CommandInterface *prevErrorOption;
 
-    Widget optionsMenu;
-    Widget optionsMenuPulldown;
+    //Widget optionsMenu;
+    //Widget optionsMenuPulldown;
     CommandInterface *infoOption; 
     CommandInterface *warningOption; 
     CommandInterface *errorOption; 
@@ -128,17 +128,17 @@ class MsgWin : public DXWindow
     Command *traceCmd;
     Command *memoryCmd;
 
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
     //
     // functions to set up menus and the window itself.
     //
-    virtual Widget createWorkArea(Widget parent);
-    virtual void createMenus(Widget parent);
-    virtual void createFileMenu(Widget parent);
-    virtual void createEditMenu(Widget parent);
-    virtual void createOptionsMenu(Widget parent);
-            void createCommandsMenu(Widget parent);
+    //virtual Widget createWorkArea(Widget parent);
+    //virtual void createMenus(Widget parent);
+    //virtual void createFileMenu(Widget parent);
+    //virtual void createEditMenu(Widget parent);
+    //virtual void createOptionsMenu(Widget parent);
+    //        void createCommandsMenu(Widget parent);
 
     //
     // functions to control the message window.  When the system
@@ -148,8 +148,8 @@ class MsgWin : public DXWindow
     // the messages up.  flushBuffer should remove the timeout if intervalId
     // isn't 0.
     virtual void flushBuffer();
-    friend void MsgWin_FlushTimeoutTO(XtPointer, XtIntervalId*);
-    XtIntervalId intervalId;
+    //friend void MsgWin_FlushTimeoutTO(XtPointer, XtIntervalId*);
+    //XtIntervalId intervalId;
     List batchedLines;
 
     //
@@ -162,7 +162,7 @@ class MsgWin : public DXWindow
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //

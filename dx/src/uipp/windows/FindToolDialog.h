@@ -56,7 +56,7 @@ class FindToolDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     List   *moduleList;
@@ -65,7 +65,7 @@ class FindToolDialog : public Dialog
     int    lastIndex;
     int    lastPos;
     int    maxInstance;
-    boolean complete;
+    bool complete;
     FindStack *redoStack, *undoStack;
 
     //Widget closebtn;
@@ -95,12 +95,12 @@ class FindToolDialog : public Dialog
     //friend void FindToolDialog_DefaultCB(Widget, XtPointer , XtPointer);
     //friend void FindToolDialog_TextVerifyCB(Widget, XtPointer , XtPointer);
 
-    int selectNode(char* name, int instance, boolean newNode = TRUE);
+    int selectNode(char* name, int instance, bool newNode = true);
     void createDialog(void);
 
-    void	restoreSens(boolean);
-    void	redoSens(boolean);
-    void	undoSens(boolean);
+    void	restoreSens(bool);
+    void	redoSens(bool);
+    void	undoSens(bool);
 
     //
     // Install the default resources for this class and then call the

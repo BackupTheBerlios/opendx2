@@ -24,15 +24,15 @@ class NotebookTab : public UIComponent
 {
     private:
 	static int CornerSize;
-	static boolean ClassInitialized;
+	static bool ClassInitialized;
 	//static XmFontList FontList;
 	//static XPoint LeftCorner[];
 	//static XPoint TopCorner[];
 	//static XPoint RightCorner[];
 
-	boolean dirty;
+	bool dirty;
 	//Pixmap dbl_buffer;
-	boolean armed;
+	bool armed;
 
 	//XtIntervalId repaint_timer;
 
@@ -40,19 +40,19 @@ class NotebookTab : public UIComponent
 	void multiClickTimer();
 
     protected:
-	boolean set;
+	bool set;
 	//XmString label;
 	char* label_str;
 
 	virtual void expose();
 	virtual void arm();
 	virtual void disarm();
-	virtual boolean isArmed() { return this->armed; }
+	virtual bool isArmed() { return this->armed; }
 	virtual void activate();
 	virtual void multiClick(){}
 	virtual void setLabel(const char* cp);
-	virtual boolean isDirty() { return this->dirty; }
-	virtual void setDirty(boolean d=TRUE, boolean repaint=TRUE);
+	virtual bool isDirty() { return this->dirty; }
+	virtual void setDirty(bool d=true, bool repaint=true);
 	virtual void repaint();
 	virtual const char* getFont() { return "small_bold"; }
 
@@ -70,8 +70,8 @@ class NotebookTab : public UIComponent
 
 	//virtual void createButton(Widget parent);
 
-	virtual void setState(boolean s=TRUE);
-	boolean getState() { return this->set; }
+	virtual void setState(bool s=true);
+	bool getState() { return this->set; }
 
 	const char* getLabel() { return this->label_str; }
 

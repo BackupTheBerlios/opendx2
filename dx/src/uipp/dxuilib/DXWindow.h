@@ -30,10 +30,10 @@
 
 #define ClassDXWindow "DXWindow"
 
-extern "C" void DXWindow_ConnectionMenuMapCB(Widget    widget,
-                              XtPointer clientData,
-                              XtPointer callData);
-extern "C" void DXWindow_FileHistoryMenuMapCB(Widget, XtPointer , XtPointer );
+//extern "C" void DXWindow_ConnectionMenuMapCB(Widget    widget,
+//                              XtPointer clientData,
+//                              XtPointer callData);
+//extern "C" void DXWindow_FileHistoryMenuMapCB(Widget, XtPointer , XtPointer );
 
 class Command;
 class CommandInterface;
@@ -48,10 +48,10 @@ class CascadeMenu;
 class DXWindow : public IBMMainWindow
 {
   private:
-    friend void DXWindow_ConnectionMenuMapCB(Widget    widget,
-                              XtPointer clientData,
-                              XtPointer callData);
-    friend void DXWindow_FileHistoryMenuMapCB(Widget, XtPointer , XtPointer );
+    //friend void DXWindow_ConnectionMenuMapCB(Widget    widget,
+    //                          XtPointer clientData,
+    //                          XtPointer callData);
+    //friend void DXWindow_FileHistoryMenuMapCB(Widget, XtPointer , XtPointer );
 
   protected:
     //
@@ -61,19 +61,19 @@ class DXWindow : public IBMMainWindow
     //
     // These resources are expected to be loaded by the derived classes.
     //
-    static String DefaultResources[];
+    //static String DefaultResources[];
 
-    Widget  anchorButton;	// optional first menu item
+    //Widget  anchorButton;	// optional first menu item
 
     boolean startup;		// Is this supposed to be opened at startup. 
     boolean anchor;		// is this an anchor window?
-    Pixmap  anchorPixmap;	// anchor pixmap
+    //Pixmap  anchorPixmap;	// anchor pixmap
  
     // 
     //  Execute option pulldown support
     // 
-    Widget              executeMenu;
-    Widget              executeMenuPulldown;
+    //Widget              executeMenu;
+    //Widget              executeMenuPulldown;
     CommandInterface*   executeOnceOption;
     CommandInterface*   executeOnChangeOption;
     CommandInterface*   endExecutionOption;
@@ -82,8 +82,8 @@ class DXWindow : public IBMMainWindow
     // 
     //  Connect option pulldown support
     // 
-    Widget              connectionMenu;
-    Widget              connectionMenuPulldown;
+    //Widget              connectionMenu;
+    //Widget              connectionMenuPulldown;
     CommandInterface*   startServerOption;
     CommandInterface*   disconnectFromServerOption;
     CommandInterface*   resetServerOption;
@@ -103,15 +103,15 @@ class DXWindow : public IBMMainWindow
     //
     // Override IBMMainWindow to put anchor up
     //
-    virtual void createMenuBar(Widget parent);
+    //virtual void createMenuBar(Widget parent);
     
     //
     // These two routines provide the basic methods for build the execute
     // and Help menu pulldowns, but can be overridden by the derived classes.
     //
-    virtual void createHelpMenu(Widget parent);
-    virtual void createExecuteMenu(Widget parent);
-    virtual void createConnectionMenu(Widget parent);
+    //virtual void createHelpMenu(Widget parent);
+    //virtual void createExecuteMenu(Widget parent);
+    //virtual void createConnectionMenu(Widget parent);
 
     //
     // Children should implement these virtual functions to hightlight their
@@ -144,7 +144,7 @@ class DXWindow : public IBMMainWindow
     // Add a toggle button interface that toggles the startup up state of this
     // window to the given parent widget.
     //
-    Widget addStartupToggleOption(Widget parent);
+    //Widget addStartupToggleOption(Widget parent);
 
     //
     // Change whether or not this window is an anchor window.
@@ -170,7 +170,7 @@ class DXWindow : public IBMMainWindow
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
     //
     // Allow subclasses to supply a string for the XmNgeometry resource
@@ -178,13 +178,13 @@ class DXWindow : public IBMMainWindow
     // createWidth, createHeight when making the new window.  If the string
     // is available then initialize() won't call setGeometry.
     //
-    virtual void getGeometryNameHierarchy(String*, int*, int);
-    virtual void getGeometryAlternateNames(String*, int*, int);
+    virtual void getGeometryNameHierarchy(char**, int*, int);
+    virtual void getGeometryAlternateNames(char**, int*, int);
 
     //
     // build a file history button and menu
     //
-    virtual void createFileHistoryMenu (Widget parent);
+    virtual void createFileHistoryMenu ();
     virtual void buildFileHistoryMenu();
     CascadeMenu* file_history_cascade;
     List file_history_buttons;

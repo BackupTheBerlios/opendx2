@@ -43,9 +43,9 @@ class DisplayNode : public DrivenNode
     static void HandleImageMessage(void *clientData, int id, void *line);
     PanelAccessManager *panelAccessManager;
 
-    boolean      printCommonComments(FILE *f, const char *indent = NULL);
+    bool      printCommonComments(FILE *f, const char *indent = NULL);
 
-    boolean      parseCommonComments(const char *comment, const char *file,
+    bool      parseCommonComments(const char *comment, const char *file,
 			 int lineno);
     //
     // read/written to the .cfg file and passed to the editor window
@@ -57,46 +57,46 @@ class DisplayNode : public DrivenNode
     //
     // Protected member data:
     //
-    boolean	userSpecifiedWhere;
+    bool	userSpecifiedWhere;
     ImageWindow *image;
     char	*title;
     int		depth;
     int		windowId;
-    boolean     lastImage;
+    bool     lastImage;
 
     virtual void handleImageMessage(int id, const char *line);
 
     void         prepareToSendValue(int index, Parameter *p);
     void         prepareToSendNode();
 
-    virtual boolean netPrintAuxComment(FILE *f);
-    virtual boolean netParseAuxComment(const char *comment,
+    virtual bool netPrintAuxComment(FILE *f);
+    virtual bool netParseAuxComment(const char *comment,
 			 const char *file,
 			 int lineno);
 
     virtual char        *inputValueString(int i, const char *prefix);
-    virtual boolean      printIOComment(FILE *f, boolean input, int index,
+    virtual bool      printIOComment(FILE *f, bool input, int index,
 				const char *indent = NULL, 
-				boolean valueOnly = FALSE);
+				bool valueOnly = false);
 
     //
     // Search through the networks list of image windows trying to find one
-    // that is not associated with a (display) node.  If canBeAnchor is TRUE
+    // that is not associated with a (display) node.  If canBeAnchor is true
     // then any ImageWindow will do and if available we return an anchor
     // window, otherwise the returned ImageWindow must not by an anchor window.
     // If one is not found in the current list, then create one if requested.
     //
     ImageWindow *getUnassociatedImageWindow(
-			boolean alloc_one = TRUE, boolean canBeAnchor = TRUE);
+			bool alloc_one = true, bool canBeAnchor = true);
 
-    virtual void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
+    virtual void switchNetwork(Network *from, Network *to, bool silently=false);
 
     //
     // Update any UI visuals that may be based on the state of this
     // node.   Among other times, this is called after receiving a message
     // from the executive.
     //
-    virtual void reflectStateChange(boolean unmanage);
+    virtual void reflectStateChange(bool unmanage);
 
     //
     // Parse the node specific info from an executive message.
@@ -115,7 +115,7 @@ class DisplayNode : public DrivenNode
     // Monitor the status of the WHERE param.  If the tab is connected, then
     // treat it as if the user had supplied a value.
     //
-    virtual void ioParameterStatusChanged(boolean input, int index,
+    virtual void ioParameterStatusChanged(bool input, int index,
 			NodeParameterStatusChange status);
 
   public:
@@ -129,13 +129,13 @@ class DisplayNode : public DrivenNode
     //
     ~DisplayNode();
 
-    virtual boolean cfgParseComment(const char* comment,
+    virtual bool cfgParseComment(const char* comment,
                                 const char* filename, int lineno);
-    virtual boolean cfgPrintNode(FILE *f, PrintType);
+    virtual bool cfgPrintNode(FILE *f, PrintType);
 
-    virtual boolean initialize();
+    virtual bool initialize();
 
-    virtual void setTitle(const char *title, boolean fromServer = FALSE);
+    virtual void setTitle(const char *title, bool fromServer = false);
     virtual const char *getTitle();
 
     void setDepth(int depth);
@@ -144,10 +144,10 @@ class DisplayNode : public DrivenNode
     virtual Type setInputValue(int index,
 		       const char *value,
 		       Type t = DXType::UndefinedType,
-		       boolean send = TRUE);
-    virtual boolean associateImage(ImageWindow *w);
-    void    notifyWhereChange(boolean send);
-    virtual void    openImageWindow(boolean manage = TRUE);
+		       bool send = true);
+    virtual bool associateImage(ImageWindow *w);
+    void    notifyWhereChange(bool send);
+    virtual void    openImageWindow(bool manage = true);
 
 #if WORKSPACE_PAGES
     virtual void setGroupName(GroupRecord *grec, Symbol);
@@ -157,8 +157,8 @@ class DisplayNode : public DrivenNode
     virtual void setDefaultCfgState();
 
 
-    void    setLastImage(boolean last);
-    boolean isLastImage();
+    void    setLastImage(bool last);
+    bool isLastImage();
 
 
     PanelAccessManager* getPanelManager()
@@ -166,21 +166,21 @@ class DisplayNode : public DrivenNode
 	return this->panelAccessManager;
     }
 
-    virtual boolean useSoftwareRendering(){return TRUE;};
+    virtual bool useSoftwareRendering(){return true;};
 
     virtual DXWindow *getDXWindow() {return (DXWindow *)(this->image);}
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
-    // Return TRUE if this node has state that will be saved in a .cfg file.
+    // Return true if this node has state that will be saved in a .cfg file.
     //
-    virtual boolean hasCfgState();
+    virtual bool hasCfgState();
 
-    virtual boolean needsFastSort() { return TRUE; }
+    virtual bool needsFastSort() { return true; }
 
     //
     // Returns a pointer to the class name.

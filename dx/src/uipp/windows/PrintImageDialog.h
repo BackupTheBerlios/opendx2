@@ -34,7 +34,7 @@ class PrintImageDialog : public ImageFormatDialog
 {
   private:
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     //Widget		command;
@@ -44,7 +44,7 @@ class PrintImageDialog : public ImageFormatDialog
 
     //virtual Widget createControls(Widget parent );
 
-    virtual boolean okCallback(Dialog *);
+    virtual bool okCallback(Dialog *);
     virtual void    restoreCallback();
 
     //
@@ -64,7 +64,7 @@ class PrintImageDialog : public ImageFormatDialog
 
     virtual void 		setCommandActivation();
     virtual const char *	getOutputFile();
-    virtual boolean		isPrinting() { return TRUE; }
+    virtual bool		isPrinting() { return true; }
 
     //
     // Constructor:

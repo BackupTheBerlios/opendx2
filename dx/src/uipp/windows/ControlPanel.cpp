@@ -54,11 +54,11 @@
 //
 #define SCRWF_MARGIN 5
 
-boolean ControlPanel::ClassInitialized = FALSE;
+bool ControlPanel::ClassInitialized = false;
 
 
 ControlPanel::ControlPanel(Network* network) : 
-			DXWindow("controlPanel", FALSE)
+			DXWindow("controlPanel", false)
 {
     ASSERT(network);
 
@@ -110,7 +110,7 @@ ControlPanel::ControlPanel(Network* network) :
 
     if (theDXApplication->appAllowsPanelAccess())
 	this->closeCmd =
-	    new CloseWindowCommand("close", this->commandScope, TRUE, this);
+	    new CloseWindowCommand("close", this->commandScope, true, this);
     else
 	this->closeCmd = NULL;
 
@@ -120,22 +120,22 @@ ControlPanel::ControlPanel(Network* network) :
 
 	this->addSelectedInteractorsCmd =
 	    new NoUndoPanelCommand("addSelectedInteractors", 
-				  this->commandScope, FALSE, 
+				  this->commandScope, false, 
 				  this, NoUndoPanelCommand::AddInteractors);
 
 	this->showSelectedInteractorsCmd =
 	    new NoUndoPanelCommand("showSelectedInteractors", 
-				  this->commandScope, FALSE, 
+				  this->commandScope, false, 
 				  this, NoUndoPanelCommand::ShowInteractors);
 
 	this->showSelectedStandInsCmd =
 	    new NoUndoPanelCommand("showSelectedStandIns", 
-				  this->commandScope, FALSE, 
+				  this->commandScope, false, 
 				  this, NoUndoPanelCommand::ShowStandIns);
 
 	this->deleteSelectedInteractorsCmd =
 	    new NoUndoPanelCommand("deleteInteractors", 
-				  this->commandScope, FALSE, 
+				  this->commandScope, false, 
 				  this, NoUndoPanelCommand::DeleteInteractors);
     } else {
 	this->showSelectedInteractorsCmd = NULL;
@@ -147,7 +147,7 @@ ControlPanel::ControlPanel(Network* network) :
     if (theDXApplication->appAllowsInteractorAttributeChange())  {
 	this->setSelectedInteractorAttributesCmd =
 	    new NoUndoPanelCommand("setInteractorAttributes", 
-				  this->commandScope, FALSE, 
+				  this->commandScope, false, 
 				  this, 
 				  NoUndoPanelCommand::SetInteractorAttributes);
     } else {
@@ -158,7 +158,7 @@ ControlPanel::ControlPanel(Network* network) :
 	theDXApplication->appAllowsEditorAccess())  
 	this->setPanelCommentCmd =
 	    new NoUndoPanelCommand("setPanelComment", 
-				  this->commandScope, TRUE, 
+				  this->commandScope, true, 
 				  this, 
 				  NoUndoPanelCommand::SetPanelComment);
     else
@@ -169,12 +169,12 @@ ControlPanel::ControlPanel(Network* network) :
 
 	this->setPanelNameCmd =
 	    new NoUndoPanelCommand("setPanelName", 
-				  this->commandScope, TRUE, 
+				  this->commandScope, true, 
 				  this, 
 				  NoUndoPanelCommand::SetPanelName);
 	this->setPanelAccessCmd =
 	    new NoUndoPanelCommand("setPanelAccess", 
-				  this->commandScope, TRUE, 
+				  this->commandScope, true, 
 				  this, 
 				  NoUndoPanelCommand::SetPanelAccess);
 
@@ -196,12 +196,12 @@ ControlPanel::ControlPanel(Network* network) :
 
 	this->setPanelGridCmd =
 	    new NoUndoPanelCommand("setPanelGrid", 
-				  this->commandScope, TRUE, 
+				  this->commandScope, true, 
 				  this, 
 				  NoUndoPanelCommand::SetPanelGrid);
 	this->hitDetectionCmd = 
 	    new NoUndoPanelCommand("hitDetection", 
-				  this->commandScope, TRUE, 
+				  this->commandScope, true, 
 				  this, 
 				  NoUndoPanelCommand::HitDetection);
     } else {
@@ -215,18 +215,18 @@ ControlPanel::ControlPanel(Network* network) :
     if (theDXApplication->appAllowsInteractorEdits()) {
 	this->verticalLayoutCmd =
 	    new NoUndoPanelCommand("verticalLayout", 
-				  this->commandScope, TRUE, 
+				  this->commandScope, true, 
 				  this, 
 				  NoUndoPanelCommand::SetVerticalLayout);
 
 	this->horizontalLayoutCmd =
 	    new NoUndoPanelCommand("horizontalLayout", 
-				  this->commandScope, TRUE, 
+				  this->commandScope, true, 
 				  this, 
 				  NoUndoPanelCommand::SetHorizontalLayout);
 	this->setSelectedInteractorLabelCmd =
 	    new NoUndoPanelCommand("setInteractorLabel", 
-				  this->commandScope, FALSE, 
+				  this->commandScope, false, 
 				  this, 
 				  NoUndoPanelCommand::SetInteractorLabel);
     } else {
@@ -237,7 +237,7 @@ ControlPanel::ControlPanel(Network* network) :
 
     this->helpOnPanelCmd =
 	new NoUndoPanelCommand("helpOnPanel", 
-				  this->commandScope, FALSE, 
+				  this->commandScope, false, 
 				  this, 
 				  NoUndoPanelCommand::HelpOnPanel);
 
@@ -254,7 +254,7 @@ ControlPanel::ControlPanel(Network* network) :
     this->addingNodes = NUL(List*);
 
     this->xpos = this->ypos = -1;
-    this->startup = TRUE;
+    this->startup = true;
     this->setNameDialog = NULL;
     this->setCommentDialog = NULL;
     this->helpOnPanelDialog = NULL;
@@ -266,12 +266,12 @@ ControlPanel::ControlPanel(Network* network) :
 //    this->setDimensionalityButton = NULL;
 //    this->addButton = NULL;
 
-    this->developerStyle = TRUE;
+    this->developerStyle = true;
     this->displayedStyle = NeverSet;
 //    this->develModeDiagWidth = this->develModeDiagHeight = 0;
-    this->develModeGridding = FALSE;
+    this->develModeGridding = false;
     this->lastObjectParsed = NUL(WorkSpaceComponent*);
-    // this->updated = TRUE;
+    // this->updated = true;
 
     //
     // Install the default resources for THIS class (not the derived classes)
@@ -279,15 +279,15 @@ ControlPanel::ControlPanel(Network* network) :
     if (NOT ControlPanel::ClassInitialized)
     {
 	ASSERT(theApplication);
-        ControlPanel::ClassInitialized = TRUE;
+        ControlPanel::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
     //
-    // Initially set hit detection to FALSE.  It's not saved in
+    // Initially set hit detection to false.  It's not saved in
     // the cfg file currently.
     //
-    this->hit_detection = FALSE;
+    this->hit_detection = false;
 
     this->java_variable = NUL(char*);
 }
@@ -641,8 +641,8 @@ void ControlPanel::manage()
  //   XtManageChild(this->getWorkSpaceWidget());
 
     //
-    // Things get created using developerStyle==TRUE.  Reason: don't want to
-    // know about XmForm attachments necessary for developerStyle==FALSE.
+    // Things get created using developerStyle==true.  Reason: don't want to
+    // know about XmForm attachments necessary for developerStyle==false.
     // Interactors and Decorators in the cfg file have x,y,width,height not
     // XmNattachPosition values, so keep that code separate.
     //
@@ -671,7 +671,7 @@ void ControlPanel::manage()
 #   endif
 
     if(this->network->getEditor())
-        this->network->getEditor()->notifyCPChange(FALSE);
+        this->network->getEditor()->notifyCPChange(false);
     theDXApplication->notifyPanelChanged();
 
 }
@@ -689,7 +689,7 @@ void ControlPanel::unmanage()
     this->DXWindow::unmanage();
 
     if(this->network->getEditor())
-        this->network->getEditor()->notifyCPChange(FALSE);
+        this->network->getEditor()->notifyCPChange(false);
     theDXApplication->notifyPanelChanged();
 }
 
@@ -741,7 +741,7 @@ void ControlPanel::unmanage()
 //    this->workSpace->initializeRootWidget();	
 //    Boolean overlap;
 //    XtVaGetValues(this->getWorkSpaceWidget(), XmNallowOverlap, &overlap, NULL);
-//    this->allowOverlap = (boolean)overlap;
+//    this->allowOverlap = (bool)overlap;
 //
 //    XtVaSetValues(this->scrolledWindow, XmNworkWindow, 
 //				this->workSpace->getRootWidget(), NULL);
@@ -866,7 +866,7 @@ void ControlPanel::unmanage()
 //		 xmCascadeButtonWidgetClass,
 //		 pulldown,
 //		 XmNsubMenuId, this->stylePulldown,
-//		 XmNsensitive, TRUE,
+//		 XmNsensitive, true,
 //		 NULL);
 //
 //	XtAddCallback(pulldown,
@@ -887,7 +887,7 @@ void ControlPanel::unmanage()
 //		 xmCascadeButtonWidgetClass,
 //		 pulldown,
 //		 XmNsubMenuId, dimensionalityPulldown,
-//		 XmNsensitive, TRUE,
+//		 XmNsensitive, true,
 //		 NULL);
 //
 //	for (i=1 ; i<=3 ; i++) {
@@ -1254,7 +1254,7 @@ void ControlPanel::unmanage()
 //{
 //    int dim;
 //    InteractorInstance *ii = NULL;
-//    boolean only_one_selected =  this->findTheSelectedInteractorInstance(&ii);
+//    bool only_one_selected =  this->findTheSelectedInteractorInstance(&ii);
 //    ASSERT(only_one_selected);
 //    InteractorNode *inode;
 //
@@ -1280,7 +1280,7 @@ void ControlPanel::unmanage()
 //    InteractorNode *inode = NULL;
 //    Widget    btn;
 //
-//    boolean only_one_selected =  cp->findTheSelectedInteractorInstance(&ii);
+//    bool only_one_selected =  cp->findTheSelectedInteractorInstance(&ii);
 //
 //
 //    if (ii) 
@@ -1353,7 +1353,7 @@ void ControlPanel::unmanage()
 //	Boolean sensitive;
 //	if (only_one_selected) {
 //	    ASSERT(inode);
-//	    boolean dyno_dim = inode->hasDynamicDimensionality();
+//	    bool dyno_dim = inode->hasDynamicDimensionality();
 //	    if (!dyno_dim) {
 //		sensitive = False;
 //	    } else {
@@ -1449,12 +1449,12 @@ void ControlPanel::unmanage()
 //
 // Print the information about the control panel in the .cfg file. 
 //
-boolean ControlPanel::cfgPrintPanel(FILE *f, PrintType dest)
+bool ControlPanel::cfgPrintPanel(FILE *f, PrintType dest)
 {
     ASSERT(f);
  
     if (fprintf(f,"//\n") < 0)
-	return FALSE;
+	return false;
 
     return this->cfgPrintPanelComment(f, dest)   && 
 	   this->cfgPrintTitleComment(f, dest)   && 
@@ -1466,13 +1466,13 @@ boolean ControlPanel::cfgPrintPanel(FILE *f, PrintType dest)
 //
 // Parse the comments in the .cfg file. 
 //
-boolean ControlPanel::cfgParseComment(const char* comment,
+bool ControlPanel::cfgParseComment(const char* comment,
                                 const char *filename, int lineno)
 {
-boolean retVal;
+bool retVal;
 
     ASSERT(comment);
-    retVal = FALSE;
+    retVal = false;
 
     /*
      * Try and parse known comments for a control panel. 
@@ -1513,23 +1513,23 @@ boolean retVal;
 //
 // Print the 'decorator' set of comments in the .cfg file.
 //
-boolean ControlPanel::cfgPrintDecoratorComment (FILE *f, PrintType dest)
+bool ControlPanel::cfgPrintDecoratorComment (FILE *f, PrintType dest)
 {
 Decorator *dec;
     ASSERT(f);
  
     if (fprintf(f,"//\n") < 0)
-	return FALSE;
+	return false;
 
     ListIterator it(this->componentList);
     while ( (dec = (Decorator *)it.getNext()) ) {
 	if (dest!=PrintCPBuffer) {
-	    if (!dec->printComment(f)) return FALSE;
+	    if (!dec->printComment(f)) return false;
 	} else if (dec->isSelected()) {
-	    if (!dec->printComment(f)) return FALSE;
+	    if (!dec->printComment(f)) return false;
 	}
     }
-    return TRUE;
+    return true;
 }
 
 //
@@ -1541,7 +1541,7 @@ Decorator *dec;
 // each DynamicResource must belong to a decorator or interactor and it will
 // always be the most recently parsed decorator or interactor.
 //
-boolean ControlPanel::cfgParseDecoratorComment (const char *comment,
+bool ControlPanel::cfgParseDecoratorComment (const char *comment,
                                 const char *filename, int lineno)
 {
 int items_parsed;
@@ -1553,18 +1553,18 @@ char stylename[128];
     if ((strncmp(" decorator",comment,10))&&
 	(strncmp(" annotation",comment,11))&&
 	(strncmp(" resource",comment,9)))
-	return FALSE;
+	return false;
 
     // The following is a special case for stateful resource comments.
     // Currently they are associated only with Decorators but that
     // will change.
     if (EqualSubstring(" resource",comment,9)) {
 	if (!this->lastObjectParsed)
-	    return FALSE;
+	    return false;
 	return this->lastObjectParsed->parseResourceComment (comment, filename, lineno);
     } else if (EqualSubstring(" annotation", comment, 11)) {
 	if (!this->lastObjectParsed)
-	    return FALSE;
+	    return false;
 	ASSERT (this->lastObjectParsed->isA(ClassLabelDecorator));
 	LabelDecorator* lab = (LabelDecorator*)this->lastObjectParsed;
 	return lab->parseComment (comment, filename, lineno);
@@ -1577,7 +1577,7 @@ char stylename[128];
     if ((items_parsed != 1) && (items_parsed != 2)) {
 	ErrorMessage("Unrecognized 'decorator' comment (file %s, line %d)",
 					    filename, lineno);
-	return FALSE;
+	return false;
     }
 
     DecoratorStyle *ds = NUL(DecoratorStyle*);
@@ -1586,14 +1586,14 @@ char stylename[128];
 	if (!ds) {
 	    ErrorMessage("Unrecognized 'decorator' type (file %s, line %d)",
 						filename, lineno);
-	    return FALSE;
+	    return false;
 	}
     } else {
 	Dictionary *dict = DecoratorStyle::GetDecoratorStyleDictionary(decoType);
 	if (!dict) {
 	    ErrorMessage("Unrecognized 'decorator' type (file %s, line %d)",
 						filename, lineno);
-	    return FALSE;
+	    return false;
 	}
 	DictionaryIterator di(*dict);
 	while ( (ds = (DecoratorStyle*)di.getNextDefinition()) ) {
@@ -1602,7 +1602,7 @@ char stylename[128];
 	if (!ds) {
 	    ErrorMessage("Unrecognized 'decorator' type (file %s, line %d)",
 						filename, lineno);
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -1622,13 +1622,13 @@ char stylename[128];
     this->addComponentToList ((void *)d);
     this->lastObjectParsed = d;
 
-    return TRUE;
+    return true;
 }
 
 //
 // Print the 'panel' comment in the .cfg file. 
 //
-boolean ControlPanel::cfgPrintPanelComment(FILE *f, PrintType ptype)
+bool ControlPanel::cfgPrintPanelComment(FILE *f, PrintType ptype)
 {
     int x,y, width, height;
     
@@ -1675,7 +1675,7 @@ boolean ControlPanel::cfgPrintPanelComment(FILE *f, PrintType ptype)
 //
 // Parse the 'panel' comment in the .cfg file. 
 //
-boolean ControlPanel::cfgParsePanelComment(const char* comment,
+bool ControlPanel::cfgParsePanelComment(const char* comment,
                                 const char *filename, int lineno)
 {
     int       items_parsed;
@@ -1691,7 +1691,7 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
     ASSERT(comment);
 
     if (strncmp(" panel",comment,6))
-	return FALSE;
+	return false;
 
     items_parsed =
 	sscanf(comment,
@@ -1739,13 +1739,13 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
 
 	    if (items_parsed == 5)
 	    {
-		startup = TRUE;
+		startup = true;
 	    }
 	    else
 	    {
 		ErrorMessage("Unrecognized 'panel' comment (file %s, line %d)",
 					    filename, lineno);
-		return FALSE;
+		return false;
 	    }
 	}
     }
@@ -1783,42 +1783,42 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
 
     this->xpos    = x;
     this->ypos    = y;
-    this->startup = (boolean)startup;
+    this->startup = (bool)startup;
 
-    return TRUE;
+    return true;
 }
 
 //
 // Print the 'comment' comment in the .cfg file. 
 //
-boolean ControlPanel::cfgPrintCommentComment(FILE *f, PrintType)
+bool ControlPanel::cfgPrintCommentComment(FILE *f, PrintType)
 {
     if (!this->comment)
-	return TRUE;
+	return true;
 
 
     if (fprintf(f,"// comment: ") < 0)
-	return FALSE;
+	return false;
 
     int i, len = STRLEN(this->comment);
     for (i=0 ; i<len ; i++) {
 	char c = this->comment[i];
 	if (putc(c, f) == EOF)
-	    return FALSE;
+	    return false;
 	if ((c == '\n') && (i+1 != len)) { 
 	    if (fprintf(f,"// comment: ") < 0)
-		return FALSE;	
+		return false;	
 	}
     }
     if (fprintf(f,"\n//\n") < 0)
-	return FALSE;	
+	return false;	
 
-    return TRUE;
+    return true;
 }
 //
 // Parse the comments in the .cfg file after the panel comment.
 //
-boolean ControlPanel::cfgParseCommentComment(const char *comment,
+bool ControlPanel::cfgParseCommentComment(const char *comment,
                                 const char *, int )
 {
    
@@ -1827,7 +1827,7 @@ boolean ControlPanel::cfgParseCommentComment(const char *comment,
     ASSERT(comment);
 
     if (strncmp(comment,keyword,keyword_size)) 
-	return FALSE;
+	return false;
 
 
     if (this->comment != NUL(char*))
@@ -1844,23 +1844,23 @@ boolean ControlPanel::cfgParseCommentComment(const char *comment,
 
     this->setPanelComment(c);
 
-    return TRUE;
+    return true;
 }
 
 //
 // Parse a control panel's 'title' comment.
 //
-boolean ControlPanel::cfgPrintTitleComment(FILE *f, PrintType)
+bool ControlPanel::cfgPrintTitleComment(FILE *f, PrintType)
 {
     if (this->title) 
         return fprintf(f, "// title: value = %s\n", this->title) >= 0;
     else 
-	return TRUE; 
+	return true; 
 }
 //
 // Parse a control panel's 'title' comment.
 //
-boolean ControlPanel::cfgParseTitleComment(const char *comment,
+bool ControlPanel::cfgParseTitleComment(const char *comment,
                                 const char *filename, int lineno)
 {
 
@@ -1869,7 +1869,7 @@ boolean ControlPanel::cfgParseTitleComment(const char *comment,
 
 
     if (strncmp(comment," title",6)) 
-	return FALSE;
+	return false;
 
     items_parsed = sscanf(comment, " title: value = %[^\n]", title);
 
@@ -1880,30 +1880,30 @@ boolean ControlPanel::cfgParseTitleComment(const char *comment,
     {
 	ErrorMessage("Bad 'title' panel comment (file %s, line %d)",
 				filename, lineno);
- 	return FALSE;
+ 	return false;
     } 
     this->setWindowTitle(title);
-    return TRUE;
+    return true;
 }
 
 //
 // Add/remove an instance of an interactor.
 //
-boolean ControlPanel::addInteractorInstance(InteractorInstance *ii)
+bool ControlPanel::addInteractorInstance(InteractorInstance *ii)
 { 
     if (!this->instanceList.appendElement((void*)ii))
-	return FALSE;
+	return false;
 
     ii->setPanel(this);
  
     this->setActivationOfEditingCommands();
 
-    return TRUE;
+    return true;
 }
 
-boolean ControlPanel::removeInteractorInstance(InteractorInstance *ii)
+bool ControlPanel::removeInteractorInstance(InteractorInstance *ii)
 { 
-    boolean r = this->instanceList.removeElement((void*)ii); 
+    bool r = this->instanceList.removeElement((void*)ii); 
 
     this->setActivationOfEditingCommands();
     return r;
@@ -1913,8 +1913,8 @@ const char* ControlPanel::getInteractorLabel()
 {
      InteractorInstance *ii;
      WorkSpaceComponent *dd;
-     boolean r = this->findTheSelectedInteractorInstance(&ii);
-     boolean l = this->findTheSelectedComponent(&dd);
+     bool r = this->findTheSelectedInteractorInstance(&ii);
+     bool l = this->findTheSelectedComponent(&dd);
 
      if ((r)&&(!l))
             return ii->getInteractorLabel();
@@ -2001,11 +2001,11 @@ void ControlPanel::setActivationOfEditingCommands()
 	if (this->showSelectedStandInsCmd)
 	    this->showSelectedStandInsCmd->deactivate();
 	//if (this->setLayoutButton)
-	//    XtSetSensitive(this->setLayoutButton, FALSE);
+	//    XtSetSensitive(this->setLayoutButton, false);
  //   } else if (nselected==0) {
 	//WorkSpaceComponent *wsc;
 	//if (wscselected == 1) {
-	//    boolean hasWindow = FALSE;
+	//    bool hasWindow = false;
 	//    this->findTheSelectedComponent(&wsc);
 	//    ASSERT(wsc);
 	//    if (wsc->isA(ClassDecorator)) {
@@ -2038,18 +2038,18 @@ void ControlPanel::setActivationOfEditingCommands()
 	// horizontal button and base the decision on the layout of things currently
 	// selected.
 	// 
-	boolean disableLayout = FALSE;
-	boolean layouts = TRUE, first = TRUE;
+	bool disableLayout = false;
+	bool layouts = true, first = true;
 	ListIterator it(this->componentList);
 	//while ((!disableLayout)&&(wsc = (WorkSpaceComponent *)it.getNext())) {
 	//    if (wsc->isSelected()) {
 	//	if (!wsc->acceptsLayoutChanges())
-	//	    disableLayout = TRUE;
+	//	    disableLayout = true;
 	//	else {
 	//	    if (first) {
 	//		layouts = wsc->verticallyLaidOut();
 	//	    } else if (layouts != wsc->verticallyLaidOut()) {
-	//		disableLayout = TRUE;
+	//		disableLayout = true;
 	//	    }
 	//	}
 	//    }
@@ -2113,20 +2113,20 @@ void ControlPanel::setActivationOfEditingCommands()
 	// horizontal button and base the decision on the layout of things currently
 	// selected.
 	// 
-	boolean disableLayout = FALSE;
-	boolean layouts = TRUE, first = TRUE;
+	bool disableLayout = false;
+	bool layouts = true, first = true;
 	ListIterator it(this->componentList);
 	WorkSpaceComponent *wsc;
 	while ((!disableLayout)&&(wsc = (WorkSpaceComponent *)it.getNext())) {
 	    if (wsc->isSelected()) {
 		if (!wsc->acceptsLayoutChanges())
-		    disableLayout = TRUE;
+		    disableLayout = true;
 		else {
 		    if (first) {
 			layouts = wsc->verticallyLaidOut();
-			first = FALSE;
+			first = false;
 		    } else if (layouts != wsc->verticallyLaidOut()) {
-			disableLayout = TRUE;
+			disableLayout = true;
 		    }
 		}
 	    }
@@ -2137,13 +2137,13 @@ void ControlPanel::setActivationOfEditingCommands()
 	    if (ii->isSelected()) {
 		Interactor *ntr = ii->getInteractor();
 		if (!ntr->acceptsLayoutChanges())
-		    disableLayout = TRUE;
+		    disableLayout = true;
 		else {
 		    if (first) {
 			layouts = ntr->verticallyLaidOut();
-			first = FALSE;
+			first = false;
 		    } else if (layouts != ntr->verticallyLaidOut()) {
-			disableLayout = TRUE;
+			disableLayout = true;
 		    }
 		}
 	    }
@@ -2192,7 +2192,7 @@ void ControlPanel::setActivationOfEditingCommands()
 // set **selected to 0 if no decorator is selected, set it to some
 // selected decorator is 1 or more decorators are selected.
 //
-boolean ControlPanel::findTheSelectedComponent(WorkSpaceComponent **selected)
+bool ControlPanel::findTheSelectedComponent(WorkSpaceComponent **selected)
 {
     ListIterator iterator(this->componentList);
     WorkSpaceComponent *d; 
@@ -2215,31 +2215,31 @@ boolean ControlPanel::findTheSelectedComponent(WorkSpaceComponent **selected)
 
 //
 // Find THE selected InteractorInstance.
-// Return TRUE if a single interactor is selected 
-// Return FALSE if none or more than one selected interactor were found 
+// Return true if a single interactor is selected 
+// Return false if none or more than one selected interactor were found 
 // Always set *selected to the first selected InteractorInstance that was
-// found.  If FALSE is return *selected may be set to NULL if no selected
+// found.  If false is return *selected may be set to NULL if no selected
 // InteractorInstances were found. 
 //
-boolean ControlPanel::findTheSelectedInteractorInstance(
+bool ControlPanel::findTheSelectedInteractorInstance(
 				InteractorInstance **selected)
 {
     ListIterator iterator(this->instanceList);
     InteractorInstance *ii; 
-    boolean found_multi;
+    bool found_multi;
 
     *selected = NULL;
     //
     // Look through the list of interactor instances for ones that are
     // currently selected. 
     //
-    found_multi = FALSE;
+    found_multi = false;
     while (!found_multi && (ii = (InteractorInstance*)iterator.getNext())) {
 	if (ii->isSelected()) {
 	    if (*selected == NULL)
 	        *selected = ii;
 	    else
-		found_multi = TRUE;
+		found_multi = true;
 	}
     }
     return !found_multi && (*selected != NULL);
@@ -2247,7 +2247,7 @@ boolean ControlPanel::findTheSelectedInteractorInstance(
 //
 // Change the layout of all selected interactors. 
 //
-void ControlPanel::setVerticalLayout(boolean vertical)
+void ControlPanel::setVerticalLayout(bool vertical)
 {
     ListIterator iterator(this->instanceList);
     InteractorInstance *ii;
@@ -2280,7 +2280,7 @@ void ControlPanel::doDefaultWorkSpaceAction()
 {
     InteractorInstance *iSelected;
     WorkSpaceComponent *dSelected;
-    boolean oneInteractor, oneComponent;
+    bool oneInteractor, oneComponent;
 
     if (theDXApplication->appAllowsInteractorAttributeChange()) {
 	oneInteractor = this->findTheSelectedInteractorInstance(&iSelected);
@@ -2306,8 +2306,8 @@ void ControlPanel::openSelectedSetAttrDialog()
 {
     InteractorInstance *selected;
     WorkSpaceComponent *dd;
-    boolean r = this->findTheSelectedInteractorInstance(&selected);
-    boolean l = this->findTheSelectedComponent(&dd);
+    bool r = this->findTheSelectedInteractorInstance(&selected);
+    bool l = this->findTheSelectedComponent(&dd);
 
     if (r&&l)
 	ErrorMessage("Only one selection allowed");
@@ -2390,12 +2390,12 @@ void ControlPanel::showSelectedStandIns()
     //
     ListIterator instanceIterator(this->instanceList);
     InteractorInstance *ii;
-    boolean first = TRUE;
+    bool first = true;
     while ( (ii = (InteractorInstance*) instanceIterator.getNext()) )  {
 	if (ii->isSelected())  {
 	    Node *n = ii->getNode();
 	    editor->selectNode(n,first);
-	    first = FALSE;
+	    first = false;
 	}
     }
 }
@@ -2415,7 +2415,7 @@ void ControlPanel::showSelectedInteractors()
     // Deselect all other interactors in this panel. 
     //
     while ( (ii = (InteractorInstance*) instanceIterator.getNext()) ) {
-	ii->setSelected(FALSE);
+	ii->setSelected(false);
     }
 
     //
@@ -2438,7 +2438,7 @@ void ControlPanel::showSelectedInteractors()
 	    // If the instance belongs to this control panel then highlight it.
 	    //
 	    if (ii->getControlPanel() == this)
-	        ii->setSelected(TRUE);	
+	        ii->setSelected(true);	
 	}
     } 
     delete selected;
@@ -2469,7 +2469,7 @@ void ControlPanel::mergePanels (ControlPanel *cp, int x, int y)
    InteractorInstance *ii;
    List toDelete;
    int firstx, firsty, newx, newy, offx, offy;
-   boolean first = TRUE;
+   bool first = true;
 
     while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
 
@@ -2482,11 +2482,11 @@ void ControlPanel::mergePanels (ControlPanel *cp, int x, int y)
  	if (ii->switchNets (this->network)) {
 	    this->addInteractorInstance(ii);
 	    // should ASSERT that the panel is on the screen ?
-	    ii->setSelected(FALSE);
+	    ii->setSelected(false);
 	    if (first) {
 		ii->getXYPosition (&firstx, &firsty);
 		newx = x; newy = y;
-		first = FALSE;
+		first = false;
 	    } else {
 		ii->getXYPosition (&offx, &offy);
 		newx = x + (offx - firstx); newy = y + (offy - firsty);
@@ -2521,7 +2521,7 @@ void ControlPanel::mergePanels (ControlPanel *cp, int x, int y)
 	if (first) {
 	    dd->getXYPosition (&firstx, &firsty);
 	    newx = x; newy = y;
-	    first = FALSE;
+	    first = false;
 	} else {
 	    dd->getXYPosition (&offx, &offy);
 	    newx = x + (offx - firstx); newy = y + (offy - firsty);
@@ -2599,7 +2599,7 @@ void ControlPanel::setSelectedInteractorLabel()
 void ControlPanel::setInteractorLabel(const char *label)
 {
     InteractorInstance *ii;
-    boolean r = this->findTheSelectedInteractorInstance(&ii);
+    bool r = this->findTheSelectedInteractorInstance(&ii);
     ASSERT(r);
     ii->setLocalLabel(label);
 
@@ -2614,7 +2614,7 @@ void ControlPanel::editPanelComment()
 {
      if (!this->setCommentDialog)
      	this->setCommentDialog = new SetPanelCommentDialog(
-					FALSE, this);
+					false, this);
      this->setCommentDialog->post();
 
 }
@@ -2665,7 +2665,7 @@ void ControlPanel::setPanelGrid()
 //
 // Set a particular panel style
 // To enter dialog style, you must tell the workspace widget and the objects living
-// inside it.  The workspace widget has a resource names XmNautoArrange(boolean).
+// inside it.  The workspace widget has a resource names XmNautoArrange(bool).
 // When changed to true it tells the workspace widget to act like an XmForm*.
 // Form attachments are calculated inside the widget automatically**, however if you
 // choose to make them yourself - either thru code or default resource settings or
@@ -2719,12 +2719,12 @@ void ControlPanel::setPanelGrid()
 //
 // -Martin 10/9/95 (dx 3.1)
 //
-void ControlPanel::setPanelStyle(boolean developerStyle)
+void ControlPanel::setPanelStyle(bool developerStyle)
 {
 //Widget ws = this->getWorkSpaceWidget();
 //Widget diag = this->getRootWidget();
 //ControlPanelWorkSpace *wsObj = this->getWorkSpace();
-//boolean isWsManaged;
+//bool isWsManaged;
 
     //ASSERT (XtIsShell(diag));
     //ASSERT(ws);
@@ -2752,7 +2752,7 @@ void ControlPanel::setPanelStyle(boolean developerStyle)
     Interactor *ntr;
     ListIterator iterator(this->instanceList);
     while ( (ii = (InteractorInstance*)iterator.getNext()) ) {
-	ii->setSelected(FALSE);
+	ii->setSelected(false);
 	ntr = ii->getInteractor();
 	ntr->setAppearance(this->developerStyle);
     }
@@ -2763,7 +2763,7 @@ void ControlPanel::setPanelStyle(boolean developerStyle)
     WorkSpaceComponent *d;
     iterator.setList(this->componentList);
     while ( (d = (WorkSpaceComponent*)iterator.getNext()) ) {
-	d->setSelected(FALSE);
+	d->setSelected(false);
 	d->setAppearance(this->developerStyle);
     }
 
@@ -2800,8 +2800,8 @@ void ControlPanel::setPanelStyle(boolean developerStyle)
 	//
 	if (this->workSpaceInfo.isGridActive()) 
 	{
-	    this->develModeGridding = TRUE;
-	    this->workSpaceInfo.setGridActive(FALSE);
+	    this->develModeGridding = true;
+	    this->workSpaceInfo.setGridActive(false);
 	    this->workSpace->installInfo(NULL);
 	}
 
@@ -2856,7 +2856,7 @@ void ControlPanel::setPanelStyle(boolean developerStyle)
 	//
 	//Dimension newW = maxR+diffW;
 	//Dimension newH = maxB+diffH;
-	//boolean needTickle = 
+	//bool needTickle = 
 	//    ((newW==this->develModeDiagWidth)&&(newH==this->develModeDiagHeight)); 
 	//if (needTickle) newW++;
 
@@ -2976,8 +2976,8 @@ void ControlPanel::setPanelStyle(boolean developerStyle)
 	//
 	if (this->develModeGridding) 
 	{
-	    this->develModeGridding = FALSE;
-	    this->workSpaceInfo.setGridActive(TRUE);
+	    this->develModeGridding = false;
+	    this->workSpaceInfo.setGridActive(true);
 	    this->workSpace->installInfo(NULL);
 	}
     }
@@ -3002,34 +3002,34 @@ void ControlPanel::setPanelStyle(boolean developerStyle)
 //ControlPanel *cp = (ControlPanel *)clientdata;
 //XmPushButtonCallbackStruct *pbcbs = (XmPushButtonCallbackStruct*)calldata;
 //XEvent *xev = pbcbs->event;
-//boolean mustAsk = TRUE;
-//boolean mustRevert = FALSE;
+//bool mustAsk = true;
+//bool mustRevert = false;
 //
-//    // The button can be pressed only when this->developerStyle == FALSE
+//    // The button can be pressed only when this->developerStyle == false
 //#if 00
 //    if (theDXApplication->inEditMode()) {
 //#else
 //    if (cp->allowDeveloperStyleChange()) {
 //#endif
 //	if ((xev->type == KeyPress) || (xev->type == KeyRelease)) {
-//	    mustAsk = FALSE;
-//	    mustRevert = FALSE;
+//	    mustAsk = false;
+//	    mustRevert = false;
 //	} else if ((xev->type == ButtonPress) || (xev->type == ButtonRelease)) {
 //	    XButtonEvent *xbe = (XButtonEvent*)xev;
 //	    if (xbe->state & ShiftMask) {
-//		mustRevert = TRUE;
-//		mustAsk = FALSE;
+//		mustRevert = true;
+//		mustAsk = false;
 //	    } else if (xbe->state & ControlMask) {
-//		mustRevert = FALSE;
-//		mustAsk = FALSE;
+//		mustRevert = false;
+//		mustAsk = false;
 //	    } else {
-//		mustRevert = FALSE;
-//		mustAsk = TRUE;
+//		mustRevert = false;
+//		mustAsk = true;
 //	    }
 //	}
 //
 //	if (mustRevert) {
-//	    cp->setPanelStyle(TRUE);
+//	    cp->setPanelStyle(true);
 //	} else if (mustAsk) {
 //	    char *message = 
 //	    "Revert to developer style?\n\n"
@@ -3056,7 +3056,7 @@ void ControlPanel::setPanelStyle(boolean developerStyle)
 //void ControlPanel::ToDevStyle (XtPointer clientdata)
 //{
 //ControlPanel *cp = (ControlPanel *)clientdata;
-//    cp->setPanelStyle (TRUE);
+//    cp->setPanelStyle (true);
 //}
 
 //void ControlPanel::Unmanage (XtPointer clientdata)
@@ -3110,7 +3110,7 @@ void ControlPanel::initiateInteractorPlacement()
 // it's used by a dnd operation, it must not change the cursor. harumph.
 // Be less restrictive about the contents of "selected" because we can't rely
 // on command activation in the vpe.
-boolean ControlPanel::dndPlacement(int x, int y)
+bool ControlPanel::dndPlacement(int x, int y)
 {
 Node *node;
 int prev_width, prev_height, placex, placey, max_right_edge, vert_cnt;
@@ -3119,32 +3119,32 @@ int prev_width, prev_height, placex, placey, max_right_edge, vert_cnt;
     ASSERT(editor);
     List *selected = editor->makeSelectedNodeList(ClassInteractorNode);
 
-    if (!selected) return FALSE;
+    if (!selected) return false;
     int selects = selected->getSize();
-    if (selects<=0) return FALSE;
+    if (selects<=0) return false;
 
 
     // get a count of selected interactor nodes.  Proceed only if the count
     // is nonzero.  This helps us do things the same as other placement routines
     // and share code.  If there is no selected interactor node then we should
-    // return FALSE in order to reject the drop.
+    // return false in order to reject the drop.
     ListIterator i(*selected);
     selects = 0;
     while ( (node = (Node*)i.getNext()) ) {
-	if (node->isA(ClassInteractorNode) == FALSE) continue;
+	if (node->isA(ClassInteractorNode) == false) continue;
 	selects++;
     }
-    if (selects==0) return FALSE;
+    if (selects==0) return false;
 
     // Deselect all other interactors and decorators.
     ListIterator it(this->instanceList);
     InteractorInstance *ii;
     while ( (ii = (InteractorInstance*)it.getNext()) ) 
-	ii->setSelected(FALSE);
+	ii->setSelected(false);
     it.setList(this->componentList);
     WorkSpaceComponent *wsc;
     while ( (wsc = (WorkSpaceComponent *)it.getNext()) )
-	wsc->setSelected(FALSE);
+	wsc->setSelected(false);
 
 
     i.setList(*selected);
@@ -3155,7 +3155,7 @@ int prev_width, prev_height, placex, placey, max_right_edge, vert_cnt;
 	// If it's not an InteractorNode then skip over it.
 	ASSERT(node);
 
-	if (node->isA(ClassInteractorNode) == FALSE) continue;
+	if (node->isA(ClassInteractorNode) == false) continue;
 
 	placey+= prev_height;
 	ii = this->createAndPlaceInteractor((InteractorNode*)node, placex, placey);
@@ -3180,7 +3180,7 @@ int prev_width, prev_height, placex, placey, max_right_edge, vert_cnt;
 	Symbol s = theSymbolManager->registerSymbol(ClassLabelDecorator);
 
 	while ( (dec = (Decorator*)i.getNext()) ) {
-	    if (dec->isA(s) == FALSE) continue;
+	    if (dec->isA(s) == false) continue;
 
 	    placey+= prev_height;
 	    LabelDecorator *lab = (LabelDecorator*)
@@ -3202,7 +3202,7 @@ int prev_width, prev_height, placex, placey, max_right_edge, vert_cnt;
 	delete selected;
     }
 
-    return TRUE;
+    return true;
 }
 
 Decorator *
@@ -3276,14 +3276,14 @@ void ControlPanel::concludeInteractorPlacement()
 //    ListIterator iterator(this->instanceList);
 //    InteractorInstance *ii;
 //    while ( (ii = (InteractorInstance*)iterator.getNext()) ) 
-//	    ii->setSelected(FALSE);
+//	    ii->setSelected(false);
 //    //
 //    // Deselect all other decorators.
 //    //
 //    iterator.setList(this->componentList);
 //    WorkSpaceComponent *wsc;
 //    while( (wsc = (WorkSpaceComponent *)iterator.getNext()) )
-//	wsc->setSelected(FALSE);
+//	wsc->setSelected(false);
 //    
 //
 //    //
@@ -3303,7 +3303,7 @@ void ControlPanel::concludeInteractorPlacement()
 //	    dec->setXYPosition (wscb->event->xbutton.x, wscb->event->xbutton.y);
 //	    this->addComponentToList ((void *)dec);
 //	    dec->manage(this->workSpace);
-//	    dec->setSelected(TRUE);
+//	    dec->setSelected(true);
 //	}
 //	this->addingDecoratorList.clear();
 //
@@ -3358,7 +3358,7 @@ InteractorInstance *ControlPanel::createAndPlaceInteractor(
 	//
 	ii = inode->addInstance(x, y, is,this);
 	ii->createInteractor();
-	ii->setSelected(TRUE);
+	ii->setSelected(true);
     }
     return ii;
 }
@@ -3397,7 +3397,7 @@ void ControlPanel::setPanelComment(const char *comment)
 
 void ControlPanel::setPanelName(const char *name)
 {
-    this->setWindowTitle(name, TRUE);
+    this->setWindowTitle(name, true);
 
     if(this->network->getEditor())
         this->network->getEditor()->notifyCPChange();
@@ -3407,9 +3407,9 @@ void ControlPanel::setPanelName(const char *name)
 //
 // Same as the super class, but also sets the icon name.
 //
-void ControlPanel::setWindowTitle(const char *name, boolean check_geometry)
+void ControlPanel::setWindowTitle(const char *name, bool check_geometry)
 {
-    boolean populated = (this->getComponentCount() > 0); 
+    bool populated = (this->getComponentCount() > 0); 
     this->DXWindow::setWindowTitle(name, (check_geometry && populated));
     this->DXWindow::setIconName(name);
     if (this->helpOnPanelDialog)
@@ -3422,18 +3422,18 @@ void ControlPanel::setWindowTitle(const char *name, boolean check_geometry)
 //
 // Change the dimensionality of the selected interactor.
 //
-boolean ControlPanel::changeInteractorDimensionality(int new_dim)
+bool ControlPanel::changeInteractorDimensionality(int new_dim)
 {
     InteractorNode *inode;
     InteractorInstance *ii;
 
     if (!this->findTheSelectedInteractorInstance(&ii))
-	return FALSE;
+	return false;
 
     inode = (InteractorNode*)ii->getNode();
 
     if (!inode->hasDynamicDimensionality())
-	return FALSE;
+	return false;
 
     return inode->changeDimensionality(new_dim); 
 
@@ -3454,7 +3454,7 @@ void ControlPanel::popdownCallback()
     if (!theDXApplication->appAllowsPanelAccess())
 	return;
 
-    this->network->closeControlPanel(this->getInstanceNumber(), FALSE);
+    this->network->closeControlPanel(this->getInstanceNumber(), false);
 }
 //
 // Virtual function called at the beginning of Command::execute().
@@ -3469,7 +3469,7 @@ void ControlPanel::beginCommandExecuting()
 //
 // De/Select all instances in the control panel.
 //
-void ControlPanel::selectAllInstances(boolean select)
+void ControlPanel::selectAllInstances(bool select)
 {
     ListIterator li(this->instanceList);
     InteractorInstance *ii;
@@ -3493,15 +3493,15 @@ void ControlPanel::setInstanceNumber(int instance)
     this->instanceNumber = instance;
 }
 
-boolean ControlPanel::nodeIsInInstanceList (Node *n)
+bool ControlPanel::nodeIsInInstanceList (Node *n)
 {
     ListIterator li(this->instanceList);
     InteractorInstance *ii;
 
     while ( (ii = (InteractorInstance*)li.getNext()) )
-	 if (n == ii->getNode()) return TRUE;
+	 if (n == ii->getNode()) return true;
 
-    return FALSE;
+    return false;
 }
 
 
@@ -3592,13 +3592,13 @@ ControlPanel *cp = (ControlPanel*)b;
 //
 // Do we allow the user to toggle between developer and dialog style
 //
-boolean ControlPanel::allowDeveloperStyleChange()
+bool ControlPanel::allowDeveloperStyleChange()
 {
     EditorWindow *e = this->getNetwork()->getEditor();
     if (e && e->isManaged())
-	return TRUE;
+	return true;
     else
-	return FALSE;
+	return false;
 }
 
 //
@@ -3648,12 +3648,12 @@ void ControlPanel::getMinSelectedXY(int *minx, int *miny)
     *miny = my;
 }
 
-boolean ControlPanel::printAsJava(FILE* aplf)
+bool ControlPanel::printAsJava(FILE* aplf)
 {
-    boolean success = TRUE;
+    bool success = true;
     const char* ns = this->getPanelNameString();
     int inst = this->getInstanceNumber();
-    if ((ns) && (ns[0]) && (EqualString(ns, "Control Panel") == FALSE))
+    if ((ns) && (ns[0]) && (EqualString(ns, "Control Panel") == false))
 	fprintf (aplf,
 	    "        ControlPanel %s = new ControlPanel(this.network, \"%s\", %d);\n",
 	    this->getJavaVariableName(), ns, inst
@@ -3666,7 +3666,7 @@ boolean ControlPanel::printAsJava(FILE* aplf)
     if (fprintf (aplf, 
 	"        this.network.addPanel(%s);\n\n",
 	this->getJavaVariableName()
-    ) <= 0) success = FALSE;
+    ) <= 0) success = false;
 
     int components  = (success?this->componentList.getSize():0);
     if (components > 0) {
@@ -3674,9 +3674,9 @@ boolean ControlPanel::printAsJava(FILE* aplf)
 	int i = 0;
 	it.setList(this->componentList);
 	Decorator* dec;
-	while ((success == TRUE) && (dec = (Decorator *)it.getNext())) {
-	    if (dec->printAsJava(aplf, this->getJavaVariableName(), i++) == FALSE) 
-		success = FALSE;
+	while ((success == true) && (dec = (Decorator *)it.getNext())) {
+	    if (dec->printAsJava(aplf, this->getJavaVariableName(), i++) == false) 
+		success = false;
 	}
     }
 
@@ -3693,7 +3693,7 @@ const char* ControlPanel::getJavaVariableName()
 }
 
 
-boolean ControlPanel::toggleHitDetection()
+bool ControlPanel::toggleHitDetection()
 {
     ToggleButtonInterface* tbi = (ToggleButtonInterface*)
 	this->hitDetectionOption;
@@ -3701,7 +3701,7 @@ boolean ControlPanel::toggleHitDetection()
     this->hit_detection = tbi->getState();
     wsinfo->setPreventOverlap(this->hit_detection);
     this->workSpace->installInfo(NULL);
-    return TRUE;
+    return true;
 }
 
 void ControlPanel::getGeometryAlternateNames(char** names, int* count, int max) 

@@ -9,7 +9,8 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
+//#include <windows.h>
+//#include <winsock.h>
 
 #ifndef _DXChild_h
 #define _DXChild_h
@@ -65,7 +66,7 @@ class DXChild : public Base
     char       *outLine;
     char       *errLine;
     //XtWorkProcId deletion_wpid;
-    boolean    input_handlers_stalled;
+    bool    input_handlers_stalled;
 
 	HANDLE	hpipeRead, hpipeWrite;
 #define DX_STATIC
@@ -134,8 +135,8 @@ class DXChild : public Base
     int 	getOutputFd() { return this->out; }
     int 	getErrorFd() { return this->err; }
 
-    void 	closeOutput(boolean closeConnection = TRUE);
-    void 	closeError(boolean closeConnection = TRUE);
+    void 	closeOutput(bool closeConnection = true);
+    void 	closeError(bool closeConnection = true);
     int  	waitForConnection();
 
     int         isQueued() { return this->queued; }

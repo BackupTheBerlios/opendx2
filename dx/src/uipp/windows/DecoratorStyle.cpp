@@ -29,31 +29,31 @@ void DecoratorStyle::BuildDictionary()
    theDecoratorStyleDictionary = new Dictionary;
  
    DecoratorStyle::AddSupportedStyle("Label", DecoratorStyle::LabelStyle,  
-			    "Label",  FALSE, LabelDecorator::AllocateDecorator);
+			    "Label",  false, LabelDecorator::AllocateDecorator);
    DecoratorStyle::AddSupportedStyle("Separator", DecoratorStyle::SeparatorStyle,  
-			    "Separator", FALSE, SeparatorDecorator::AllocateDecorator);
+			    "Separator", false, SeparatorDecorator::AllocateDecorator);
 
    // Warning: The name Annotate is used in EditorWindow.C so that he can pick
    // off just the vpe annotation dictionary and loop over it.  If you change the
    // name here, then change it there also or else put a loop there which checks
    // allowedInVPE().
    DecoratorStyle::AddSupportedStyle("Annotate", DecoratorStyle::LabelStyle,  
-			    "Label", TRUE, VPEAnnotator::AllocateDecorator);
+			    "Label", true, VPEAnnotator::AllocateDecorator);
    DecoratorStyle::AddSupportedStyle("Annotate", DecoratorStyle::PostItStyle,  
-			    "Marker", TRUE, VPEPostIt::AllocateDecorator);
+			    "Marker", true, VPEPostIt::AllocateDecorator);
 
    DecoratorStyle::SetDefaultStyle("Label", DecoratorStyle::LabelStyle);
    DecoratorStyle::SetDefaultStyle("Separator", DecoratorStyle::SeparatorStyle);
    DecoratorStyle::SetDefaultStyle("Annotate", DecoratorStyle::LabelStyle);
 }
 
-DecoratorStyle::DecoratorStyle(DecoratorStyleEnum s, const char *n, boolean useInVPE, 
+DecoratorStyle::DecoratorStyle(DecoratorStyleEnum s, const char *n, bool useInVPE, 
 			DecoratorAllocator ia, const char *key)
 {
     this->style = s;
     this->name = theSymbolManager->registerSymbol(n);
     this->allocateDecorator = ia;
-    this->isDefault = FALSE;
+    this->isDefault = false;
     this->key = DuplicateString(key);
     this->useInVPE = useInVPE;
 }
@@ -154,10 +154,10 @@ DecoratorStyle *DecoratorStyle::GetDecoratorStyle(const char* decorator,
 // Added supported style/name/decoratorbuild group to the list
 // of supported styles for the given named decorator (node name). 
 //
-boolean	DecoratorStyle::AddSupportedStyle(const char *decorator, 
+bool	DecoratorStyle::AddSupportedStyle(const char *decorator, 
 		DecoratorStyleEnum style,  
 		const char *stylename, 
-		boolean useInVPE,
+		bool useInVPE,
 		DecoratorAllocator ia)
 {
     Dictionary		*styledict;
@@ -177,13 +177,13 @@ boolean	DecoratorStyle::AddSupportedStyle(const char *decorator,
     
     is = new DecoratorStyle(style, stylename, useInVPE, ia, decorator);
 
-    boolean ret = styledict->addDefinition(stylename,(const void*)is); 
+    bool ret = styledict->addDefinition(stylename,(const void*)is); 
     ASSERT(ret);
     return ret;
 }
 	
 
-Decorator *DecoratorStyle::createDecorator(boolean developerStyle)
+Decorator *DecoratorStyle::createDecorator(bool developerStyle)
 { 
     ASSERT(this->allocateDecorator); 
     Decorator *decorator = this->allocateDecorator(developerStyle);

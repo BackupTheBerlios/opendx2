@@ -11,7 +11,7 @@
 
 #include "TextPopup.h"
 
-boolean TextPopup::ClassInitialized = FALSE;
+bool TextPopup::ClassInitialized = false;
 //String TextPopup::DefaultResources[] =
 //{
 //        ".popupButton.labelString: ...",
@@ -28,7 +28,7 @@ void TextPopup::initInstanceData()
     this->setTextCallback = NULL;
     this->changeTextCallback = NULL;
     this->callbackData = NULL;
-    this->callbacksEnabled = FALSE;
+    this->callbacksEnabled = false;
 
 }
 TextPopup::TextPopup() : UIComponent("textPopup")
@@ -45,7 +45,7 @@ TextPopup::~TextPopup()
 void TextPopup::initialize()
 {
     if (!TextPopup::ClassInitialized) {
-	TextPopup::ClassInitialized = TRUE;
+	TextPopup::ClassInitialized = true;
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          TextPopup::DefaultResources);
 
@@ -195,7 +195,7 @@ void TextPopup::createTextPopup(const char **items, int nitems,
 //
 // De/Install callbacks for the text widget. 
 //
-boolean TextPopup::enableCallbacks(boolean enable)
+bool TextPopup::enableCallbacks(bool enable)
 {
     if (this->callbacksEnabled == enable) return this->callbacksEnabled;
 
@@ -227,7 +227,7 @@ char *TextPopup::getText()
     //return XmTextGetString(this->textField);
 	return NULL;
 }
-void TextPopup::setText(const char *value, boolean doActivate)
+void TextPopup::setText(const char *value, bool doActivate)
 {
  //   XmTextSetString(this->textField, (char*)value);
  //   if (doActivate)
@@ -235,7 +235,7 @@ void TextPopup::setText(const char *value, boolean doActivate)
 }
 void TextPopup::itemSelectCallback(const char *value)
 {
-    this->setText(value, TRUE);
+    this->setText(value, true);
 }
 void TextPopup::activateTextCallback(const char *value, void *callData)
 {

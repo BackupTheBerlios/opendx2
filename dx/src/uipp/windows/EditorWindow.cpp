@@ -114,9 +114,9 @@ GetSetConversionDialog *EditorWindow::GetSetDialog = NULL;
 #define NET_ATOM "NET_CONTENTS"
 #define CFG_ATOM "CFG_CONTENTS"
 
-boolean EditorWindow::ClassInitialized = FALSE;
+bool EditorWindow::ClassInitialized = false;
 
-EditorWindow::EditorWindow(boolean  isAnchor, Network* network) : 
+EditorWindow::EditorWindow(bool  isAnchor, Network* network) : 
 			   DXWindow("editorWindow", isAnchor)
 {
     ASSERT(network);
@@ -126,7 +126,7 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     // for this network.
     //
     this->network = network;
-    this->initialNetwork = TRUE;
+    this->initialNetwork = true;
     this->lastSelectedTransmitter = NULL;
 
     ASSERT(this->network->editor == NUL(EditorWindow*));
@@ -136,13 +136,13 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     //
     // The panel is visible initially.
     //
-    this->panelVisible = TRUE;
+    this->panelVisible = true;
 
     //
-    // Initially set hit detection to FALSE.  It's not saved in 
+    // Initially set hit detection to false.  It's not saved in 
     // the net file currently.
     //
-    this->hit_detection = FALSE;
+    this->hit_detection = false;
 
     //
     // Set the origin flag
@@ -247,17 +247,17 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     // File menu commands
     //
     this->closeCmd =
-        new CloseWindowCommand("close",this->commandScope,TRUE,this);
+        new CloseWindowCommand("close",this->commandScope,true,this);
 
     this->printProgramCmd =
 	new NoUndoEditorCommand 
-	    ("printProgram", this->commandScope, FALSE, 
+	    ("printProgram", this->commandScope, false, 
 		this, NoUndoEditorCommand::PrintProgram, NoUndoEditorCommand::Ignore);
 
 #ifdef DXUI_DEVKIT
     this->saveAsCCodeCmd =
 	new NoUndoEditorCommand 
-	    ("saveAsCCode", this->commandScope, FALSE, 
+	    ("saveAsCCode", this->commandScope, false, 
 		this, NoUndoEditorCommand::SaveAsCCode, NoUndoEditorCommand::Ignore);
 #else
     this->saveAsCCodeCmd = NULL;
@@ -268,198 +268,198 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     //
     this->undoCmd = 
 	new NoUndoEditorCommand
-	    ("undo", this->commandScope, FALSE,
+	    ("undo", this->commandScope, false,
 	        this, NoUndoEditorCommand::Undo, NoUndoEditorCommand::Ignore);
     this->valuesCmd =
 	new NoUndoEditorCommand 
-	    ("values", this->commandScope, FALSE, 
+	    ("values", this->commandScope, false, 
 		this, NoUndoEditorCommand::ShowConfiguration,
 		NoUndoEditorCommand::Ignore);
 
     this->findToolCmd =
 	new NoUndoEditorCommand 
-	    ("findTool", this->commandScope, FALSE, 
+	    ("findTool", this->commandScope, false, 
 		this, NoUndoEditorCommand::OpenFindTool,
 		NoUndoEditorCommand::Ignore);
 
     this->addInputTabCmd =
 	new NoUndoEditorCommand 
-	    ("addInputTab", this->commandScope, FALSE, 
+	    ("addInputTab", this->commandScope, false, 
 		this, NoUndoEditorCommand::AddInputTab,
 		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
 
     this->removeInputTabCmd =
 	new NoUndoEditorCommand 
-	    ("removeInputTab", this->commandScope, FALSE, 
+	    ("removeInputTab", this->commandScope, false, 
 		this, NoUndoEditorCommand::RemoveInputTab,
 		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
     
     this->addOutputTabCmd =
 	new NoUndoEditorCommand 
-	    ("addOutputTab", this->commandScope, FALSE, 
+	    ("addOutputTab", this->commandScope, false, 
 		this, NoUndoEditorCommand::AddOutputTab,
 		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
 
     this->removeOutputTabCmd =
 	new NoUndoEditorCommand 
-	    ("removeOutputTab", this->commandScope, FALSE, 
+	    ("removeOutputTab", this->commandScope, false, 
 		this, NoUndoEditorCommand::RemoveOutputTab,
 		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
     
     this->hideAllTabsCmd =
 	new NoUndoEditorCommand 
-	    ("hideAllTabs", this->commandScope, FALSE, 
+	    ("hideAllTabs", this->commandScope, false, 
 		this, NoUndoEditorCommand::HideAllTabs);
 
     this->revealAllTabsCmd =
 	new NoUndoEditorCommand 
-	    ("revealAllTabs", this->commandScope, FALSE, 
+	    ("revealAllTabs", this->commandScope, false, 
 		this, NoUndoEditorCommand::RevealAllTabs);
 
 #ifndef FORGET_GETSET
     this->postGetSetCmd =
 	new NoUndoEditorCommand 
-	    ("postGetSet", this->commandScope, TRUE, 
+	    ("postGetSet", this->commandScope, true, 
 		this, NoUndoEditorCommand::PostGetSet,
 		NoUndoEditorCommand::Ignore);
     this->toLocalCmd = 
 	new NoUndoEditorCommand 
-	    ("setToLocal", this->commandScope, FALSE, 
+	    ("setToLocal", this->commandScope, false, 
 		this, NoUndoEditorCommand::SelectedToLocal);
     this->toGlobalCmd = 
 	new NoUndoEditorCommand 
-	    ("setToGlobal", this->commandScope, FALSE, 
+	    ("setToGlobal", this->commandScope, false, 
 		this, NoUndoEditorCommand::SelectedToGlobal);
 #endif
 
     this->deleteNodeCmd =
 	new DeleteNodeCommand
-	    ("deleteNode", this->commandScope, FALSE, this);
+	    ("deleteNode", this->commandScope, false, this);
 
     this->cutNodeCmd =
 	new NoUndoEditorCommand
-	    ("cutNode", this->commandScope, FALSE, 
+	    ("cutNode", this->commandScope, false, 
 		this, NoUndoEditorCommand::CutNode,
 		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
 
     this->copyNodeCmd =
 	new NoUndoEditorCommand
-	    ("copyNode", this->commandScope, FALSE, 
+	    ("copyNode", this->commandScope, false, 
 		this, NoUndoEditorCommand::CopyNode,
 		NoUndoEditorCommand::Ignore);
 
     this->pasteNodeCmd =
 	new NoUndoEditorCommand
-	    ("pasteNode", this->commandScope, TRUE, 
+	    ("pasteNode", this->commandScope, true, 
 		this, NoUndoEditorCommand::PasteNode);
 
     this->selectAllNodeCmd =
 	new NoUndoEditorCommand 
-	    ("selectAllNode", this->commandScope, FALSE, 
+	    ("selectAllNode", this->commandScope, false, 
 		this, NoUndoEditorCommand::SelectAll,
 		NoUndoEditorCommand::Ignore);
 
     this->selectConnectedNodeCmd =
 	new NoUndoEditorCommand 
-	    ("selectConnectedNode", this->commandScope, FALSE, 
+	    ("selectConnectedNode", this->commandScope, false, 
 		this, NoUndoEditorCommand::SelectConnected,
 		NoUndoEditorCommand::Ignore);
 
     this->selectUnconnectedNodeCmd =
 	new NoUndoEditorCommand 
-	    ("selectUnconectedNode", this->commandScope, FALSE, 
+	    ("selectUnconectedNode", this->commandScope, false, 
 		this, NoUndoEditorCommand::SelectUnconnected,
 		NoUndoEditorCommand::Ignore);
 
     this->selectUpwardNodeCmd =
 	new NoUndoEditorCommand 
-	    ("selectUpwardNode", this->commandScope, FALSE, 
+	    ("selectUpwardNode", this->commandScope, false, 
 		this, NoUndoEditorCommand::SelectUpward,
 		NoUndoEditorCommand::Ignore);
 
     this->selectDownwardNodeCmd =
 	new NoUndoEditorCommand 
-	    ("selectDownwardNode", this->commandScope, FALSE, 
+	    ("selectDownwardNode", this->commandScope, false, 
 		this, NoUndoEditorCommand::SelectDownward,
 		NoUndoEditorCommand::Ignore);
 
     this->deselectAllNodeCmd =
 	new NoUndoEditorCommand 
-	    ("deselectAllNode", this->commandScope, FALSE, 
+	    ("deselectAllNode", this->commandScope, false, 
 		this, NoUndoEditorCommand::DeselectAll,
 		NoUndoEditorCommand::Ignore);
 
     this->selectUnselectedNodeCmd =
 	new NoUndoEditorCommand 
-	    ("selectUnselectedNode", this->commandScope, FALSE, 
+	    ("selectUnselectedNode", this->commandScope, false, 
 		this, NoUndoEditorCommand::SelectUnselected,
 		NoUndoEditorCommand::Ignore);
 
     this->showExecutedCmd = 
 	new NoUndoEditorCommand
-	    ("showExecuted", this->commandScope, FALSE, 
+	    ("showExecuted", this->commandScope, false, 
 		this, NoUndoEditorCommand::ShowExecutedNodes,
 		NoUndoEditorCommand::Ignore);
 
 #ifndef FORGET_GETSET
     if (!EditorWindow::SelectedToGlobalCmd) {
 	EditorWindow::SelectedToGlobalCmd = new NoUndoEditorCommand 
-	    ("SelectedToGlobal", this->commandScope, FALSE, 
+	    ("SelectedToGlobal", this->commandScope, false, 
 		this, NoUndoEditorCommand::ToGlobal);
 
 	EditorWindow::SelectedToLocalCmd = new NoUndoEditorCommand 
-	    ("SelectedToLocal", this->commandScope, FALSE, 
+	    ("SelectedToLocal", this->commandScope, false, 
 		this, NoUndoEditorCommand::ToLocal);
     }
 #endif
 
     this->cacheAllOutputsCmd =
 	new NoUndoEditorCommand 
-	    ("cacheAllOutputsCmd", this->commandScope, TRUE, 
+	    ("cacheAllOutputsCmd", this->commandScope, true, 
 		this, NoUndoEditorCommand::SetOutputsFullyCached,
 		NoUndoEditorCommand::Ignore);
     this->cacheLastOutputsCmd =
 	new NoUndoEditorCommand 
-	    ("cacheLastOutputsCmd", this->commandScope, TRUE, 
+	    ("cacheLastOutputsCmd", this->commandScope, true, 
 		this, NoUndoEditorCommand::SetOutputsCacheOnce,
 		NoUndoEditorCommand::Ignore);
     this->cacheNoOutputsCmd =
 	new NoUndoEditorCommand 
-	    ("cacheNoOutputsCmd", this->commandScope, TRUE, 
+	    ("cacheNoOutputsCmd", this->commandScope, true, 
 		this, NoUndoEditorCommand::SetOutputsNotCached,
 		NoUndoEditorCommand::Ignore);
 
     this->optimizeCacheabilityCmd =
 	new NoUndoEditorCommand 
-	    ("optimizeCacheabilityCmd", this->commandScope, TRUE, 
+	    ("optimizeCacheabilityCmd", this->commandScope, true, 
 		this, NoUndoEditorCommand::OptimizeOutputCacheability,
 		NoUndoEditorCommand::Ignore);
 
     this->showCacheAllOutputsCmd =
 	new NoUndoEditorCommand 
-	    ("showCacheAllOutputsCmd", this->commandScope, TRUE, 
+	    ("showCacheAllOutputsCmd", this->commandScope, true, 
 		this, NoUndoEditorCommand::ShowOutputsFullyCached,
 		NoUndoEditorCommand::Ignore);
     this->showCacheLastOutputsCmd =
 	new NoUndoEditorCommand 
-	    ("showCacheLastOutputsCmd", this->commandScope, TRUE, 
+	    ("showCacheLastOutputsCmd", this->commandScope, true, 
 		this, NoUndoEditorCommand::ShowOutputsCacheOnce,
 		NoUndoEditorCommand::Ignore);
     this->showCacheNoOutputsCmd =
 	new NoUndoEditorCommand 
-	    ("showCacheNoOutputsCmd", this->commandScope, TRUE, 
+	    ("showCacheNoOutputsCmd", this->commandScope, true, 
 		this, NoUndoEditorCommand::ShowOutputsNotCached,
 		NoUndoEditorCommand::Ignore);
 
 
     this->editMacroNameCmd =
 	new NoUndoEditorCommand 
-	    ("editMacroName", this->commandScope, TRUE, 
+	    ("editMacroName", this->commandScope, true, 
 		this, NoUndoEditorCommand::EditMacroName);
 
     this->editCommentCmd =
 	new NoUndoEditorCommand 
-	    ("editComment", this->commandScope, TRUE, 
+	    ("editComment", this->commandScope, true, 
 		this, NoUndoEditorCommand::EditComment,
 		NoUndoEditorCommand::Ignore);
 
@@ -471,71 +471,71 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
 
     this->insertNetCmd =
 	new NoUndoEditorCommand 
-	    ("insertNet", this->commandScope, TRUE, 
+	    ("insertNet", this->commandScope, true, 
 		this, NoUndoEditorCommand::InsertNetwork);
 
     this->addAnnotationCmd =
 	new NoUndoEditorCommand 
-	    ("addAnnotation", this->commandScope, TRUE, 
+	    ("addAnnotation", this->commandScope, true, 
 		this, NoUndoEditorCommand::AddAnnotation);
 
     this->macroifyCmd =
 	new NoUndoEditorCommand 
-	    ("macroify", this->commandScope, FALSE, 
+	    ("macroify", this->commandScope, false, 
 		this, NoUndoEditorCommand::Macroify);
 
 #if WORKSPACE_PAGES
     this->pagifyCmd =
 	new NoUndoEditorCommand 
-	    ("pagify", this->commandScope, TRUE, 
+	    ("pagify", this->commandScope, true, 
 		this, NoUndoEditorCommand::Pagify);
 
     this->pagifySelectedCmd =
 	new NoUndoEditorCommand 
-	    ("pagifySelected", this->commandScope, FALSE, 
+	    ("pagifySelected", this->commandScope, false, 
 		this, NoUndoEditorCommand::PagifySelected);
 
     this->autoChopSelectedCmd =
 	new NoUndoEditorCommand 
-	    ("autoChopSelected", this->commandScope, FALSE, 
+	    ("autoChopSelected", this->commandScope, false, 
 		this, NoUndoEditorCommand::AutoChopSelected);
 
     this->autoFuseSelectedCmd =
 	new NoUndoEditorCommand 
-	    ("autoFuseSelected", this->commandScope, FALSE, 
+	    ("autoFuseSelected", this->commandScope, false, 
 		this, NoUndoEditorCommand::AutoFuseSelected);
 
     this->deletePageCmd =
 	new NoUndoEditorCommand 
-	    ("deletePage", this->commandScope, FALSE, 
+	    ("deletePage", this->commandScope, false, 
 		this, NoUndoEditorCommand::DeletePage);
 
     this->configurePageCmd =
 	new NoUndoEditorCommand 
-	    ("configurePage", this->commandScope, TRUE, 
+	    ("configurePage", this->commandScope, true, 
 		this, NoUndoEditorCommand::ConfigurePage,
 		NoUndoEditorCommand::Ignore);
 
     this->moveSelectedCmd =
 	new NoUndoEditorCommand 
-	    ("moveSelectedNodes", this->commandScope, TRUE, 
+	    ("moveSelectedNodes", this->commandScope, true, 
 		this, NoUndoEditorCommand::MoveSelected);
 #endif
 
-    if (this->network->isMacro() == FALSE) {
+    if (this->network->isMacro() == false) {
 
 	this->javifyNetCmd = new NoUndoEditorCommand
-	    ("javifyNetwork", this->commandScope, FALSE,
+	    ("javifyNetwork", this->commandScope, false,
 		this, NoUndoEditorCommand::JavifyNetwork);
 	this->unjavifyNetCmd = new NoUndoEditorCommand
-	    ("unJavifyNetwork", this->commandScope, TRUE,
+	    ("unJavifyNetwork", this->commandScope, true,
 		this, NoUndoEditorCommand::UnjavifyNetwork);
     } else {
 	this->javifyNetCmd = NUL(Command*);
 	this->unjavifyNetCmd = NUL(Command*);
     }
     this->reflowGraphCmd = 
-	new NoUndoEditorCommand ("reflowGraph", this->commandScope, FALSE,
+	new NoUndoEditorCommand ("reflowGraph", this->commandScope, false,
 		this, NoUndoEditorCommand::ReflowGraph,
 		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
 
@@ -544,31 +544,31 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     //
     this->openMacroCmd =
         new NoUndoEditorCommand("openMacroCommand", this->commandScope,
-                        FALSE,this, NoUndoEditorCommand::OpenSelectedMacros,
+                        false,this, NoUndoEditorCommand::OpenSelectedMacros,
 			NoUndoEditorCommand::Ignore);
 
     this->openColormapCmd =
         new NoUndoEditorCommand("openColormapCmd",
                         this->commandScope,
-                        FALSE,
+                        false,
                         this,
                         NoUndoEditorCommand::OpenSelectedColormaps,
 			NoUndoEditorCommand::Ignore);
     this->openImageCmd =
         new NoUndoEditorCommand("openImageCommand", this->commandScope,
-                        FALSE,this,
+                        false,this,
 			NoUndoEditorCommand::OpenSelectedImageWindows,
 			NoUndoEditorCommand::Ignore);
 
     this->newControlPanelCmd =
 	new NoUndoEditorCommand 
-	    ("newControlPanel", this->commandScope, TRUE, 
+	    ("newControlPanel", this->commandScope, true, 
 		this, NoUndoEditorCommand::NewControlPanel,
 		NoUndoEditorCommand::Ignore);
 
     this->openControlPanelCmd =
 	new NoUndoEditorCommand 
-	    ("openControlPanel", this->commandScope, FALSE, 
+	    ("openControlPanel", this->commandScope, false, 
 		this, NoUndoEditorCommand::OpenControlPanel,
 		NoUndoEditorCommand::Ignore);
 
@@ -577,29 +577,29 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     //
     this->toolPanelCmd =
 	new ToolPanelCommand
-	    ("toolPalettes", this->commandScope, TRUE, this);
+	    ("toolPalettes", this->commandScope, true, this);
 
     this->hitDetectionCmd =
 	new NoUndoEditorCommand
-	    ("hitDetector", this->commandScope, TRUE, 
+	    ("hitDetector", this->commandScope, true, 
 		this, NoUndoEditorCommand::HitDetection,
 		NoUndoEditorCommand::Ignore);
 
     this->setPanelAccessCmd =
 	new NoUndoEditorCommand 
-	    ("setAccess", this->commandScope, FALSE, 
+	    ("setAccess", this->commandScope, false, 
 		this, NoUndoEditorCommand::SetCPAccess,
 		NoUndoEditorCommand::Ignore);
 
     this->setPanelGroupCmd =
 	new NoUndoEditorCommand 
-	    ("setGroup", this->commandScope, FALSE, 
+	    ("setGroup", this->commandScope, false, 
 		this, NoUndoEditorCommand::SetPanelGroup,
 		NoUndoEditorCommand::Ignore);
 
     this->gridCmd =
 	new NoUndoEditorCommand 
-	    ("grid", this->commandScope, TRUE, 
+	    ("grid", this->commandScope, true, 
 		this, NoUndoEditorCommand::OpenGrid,
 		NoUndoEditorCommand::Ignore); 
 
@@ -619,7 +619,7 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     //
     this->executed_nodes = NUL(List*);
     this->executing_node = NUL(Node*);
-    this->transmitters_added = FALSE;
+    this->transmitters_added = false;
     this->errored_standins = NUL(List*);
 
     //
@@ -630,9 +630,9 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     //
     // Undo list management
     //
-    this->moving_many_standins = FALSE;
-    this->performing_undo = FALSE;
-    this->creating_new_network = FALSE;
+    this->moving_many_standins = false;
+    this->performing_undo = false;
+    this->creating_new_network = false;
 
     // work around for a motif bug
     //this->pgKeyHandler = NUL(XHandler*);
@@ -643,7 +643,7 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     if (NOT EditorWindow::ClassInitialized)
     {
 	ASSERT(theApplication);
-        EditorWindow::ClassInitialized = TRUE;
+        EditorWindow::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -985,16 +985,16 @@ void EditorWindow::setCommandActivation()
     //
     // command depends on whether selected nodes are pagifiable
     //
-    boolean mscmd_activate = FALSE;
+    bool mscmd_activate = false;
     if ((nselected) || (dselected)) {
 	Dialog* diag = this->pageSelector->getMoveNodesDialog();
 	if ((diag) && (diag->isManaged())) {
 	    if (this->pageSelector->getSize() > 1)
-		mscmd_activate = this->areSelectedNodesPagifiable(FALSE);
+		mscmd_activate = this->areSelectedNodesPagifiable(false);
 	    else
-		mscmd_activate = FALSE;
+		mscmd_activate = false;
 	} else {
-	    mscmd_activate = TRUE;
+	    mscmd_activate = true;
 	}
     }
     if (mscmd_activate)
@@ -1052,13 +1052,13 @@ void EditorWindow::setCommandActivation()
 	//
 	// Commands that can only work selected nodes, but depend on the Node.
 	//
-	boolean add_input  = FALSE, remove_input  = FALSE;
-	boolean add_output = FALSE, remove_output = FALSE;
-	boolean hide_all   = FALSE, reveal_all    = FALSE;
-	boolean cacheable = FALSE;
+	bool add_input  = false, remove_input  = false;
+	bool add_output = false, remove_output = false;
+	bool hide_all   = false, reveal_all    = false;
+	bool cacheable = false;
 #ifndef FORGET_GETSET
-	boolean only_gets_n_sets = TRUE;
-	boolean convertible = TRUE;
+	bool only_gets_n_sets = true;
+	bool convertible = true;
 #endif
 	Node *n;
 	ListIterator iterator;
@@ -1068,25 +1068,25 @@ void EditorWindow::setCommandActivation()
 #ifndef FORGET_GETSET
 		const char *cp = n->getNameString();
 		if (!n->isA(ClassGlobalLocalNode)) 
-		    convertible = only_gets_n_sets = FALSE;
+		    convertible = only_gets_n_sets = false;
 		else if ((!EqualString(cp, "Get")) && (!EqualString(cp, "Set")))
-		    only_gets_n_sets = FALSE;
+		    only_gets_n_sets = false;
 #endif
 
 		if (!add_input && n->isInputRepeatable())  
-		    add_input = TRUE;
+		    add_input = true;
 		if (!remove_input && n->hasRemoveableInput())
-		    remove_input = TRUE;
+		    remove_input = true;
 		if (!add_output && n->isOutputRepeatable()) 
-		    add_output = TRUE;
+		    add_output = true;
 		if (!remove_output && n->hasRemoveableOutput())
-		    remove_output = TRUE;
+		    remove_output = true;
 		if (!hide_all && 
 		    (n->hasHideableInput() || n->hasHideableOutput()))
-		    hide_all = TRUE;
+		    hide_all = true;
 		if (!reveal_all &&
 		    (n->hasExposableInput() || n->hasExposableOutput()))
-		    reveal_all = TRUE;
+		    reveal_all = true;
 		int count = n->getOutputCount();
 		for (int i=1 ; !cacheable && i<=count  ; i++)
 		    cacheable = n->isOutputCacheabilityWriteable(i);
@@ -1128,21 +1128,21 @@ void EditorWindow::setCommandActivation()
 	// And commands that depend on the class of node that is selected.
 	//
         List *l = this->makeSelectedNodeList(NULL);
-	boolean selected_macro = FALSE, selected_image = FALSE;
-	boolean selected_colormap = FALSE;
-	boolean selected_interactor = FALSE;
+	bool selected_macro = false, selected_image = false;
+	bool selected_colormap = false;
+	bool selected_interactor = false;
   	if (l) {
 	    ListIterator  iterator(*l);
 	    Node *n;
 	    while ( (n = (Node*)iterator.getNext()) ) {
 		if (!selected_colormap && n->isA(ClassColormapNode))
-		    selected_colormap = TRUE;
+		    selected_colormap = true;
 		if (!selected_macro && n->isA(ClassMacroNode))
-		    selected_macro = TRUE;
+		    selected_macro = true;
 		if (!selected_image && n->isA(ClassDisplayNode))
-		    selected_image = TRUE;
+		    selected_image = true;
 		if (!selected_interactor && n->isA(ClassInteractorNode))
-		    selected_interactor = TRUE;
+		    selected_interactor = true;
 	    }
 	    delete l;
 	}
@@ -1202,10 +1202,10 @@ void EditorWindow::setCommandActivation()
     // If there is at least 1 image node
     //
     if (this->javifyNetCmd) {
-	boolean activate = FALSE;
+	bool activate = false;
 	List* bns = this->network->makeClassifiedNodeList(ClassImageNode);
 	if ((bns) && (bns->getSize() > 0)) {
-	    activate = TRUE;
+	    activate = true;
 	}
 	if (bns) delete bns;
 	if (activate) {
@@ -1428,14 +1428,14 @@ void EditorWindow::handleNodeStatusChange(Node *n, NodeStatusChange status)
 //    this->createFileHistoryMenu(pulldown);
 //
 //    if ( (cmd = this->network->getSaveCommand()) ) {
-//    	if(this->network->isMacro() == FALSE) 
+//    	if(this->network->isMacro() == false) 
 //	    this->saveOption = new ButtonInterface(pulldown, "vpeSaveOption", cmd);
 //	else
 //	    this->saveOption = new ButtonInterface(pulldown, "vpeSaveMacroOption", cmd);
 //    }
 //
 //    if ( (cmd = this->network->getSaveAsCommand()) ) {
-//        if(this->network->isMacro() == FALSE)
+//        if(this->network->isMacro() == false)
 //	    this->saveAsOption = new ButtonInterface(pulldown, 
 //						"vpeSaveAsOption", cmd);
 //	else
@@ -1861,7 +1861,7 @@ void EditorWindow::handleNodeStatusChange(Node *n, NodeStatusChange status)
 //             xmCascadeButtonWidgetClass,
 //             pulldown,
 //             XmNsubMenuId, this->panelGroupPulldown,
-//	     XmNsensitive, TRUE,
+//	     XmNsensitive, true,
 //             NULL);
 //#endif
 //
@@ -2170,7 +2170,7 @@ void EditorWindow::newNode(Node *n, EditorWorkSpace *where)
 	    if (ews == page) 
 		n->newStandIn(page);
 	    else
-		page->setMembersInitialized(FALSE);
+		page->setMembersInitialized(false);
 	} else {
 	    int page_num = this->workSpace->getCurrentPage();
 	    EditorWorkSpace* page = this->workSpace;
@@ -2192,7 +2192,7 @@ void EditorWindow::newNode(Node *n, EditorWorkSpace *where)
 		arcs = (List *)n->getInputArks(i);
 		for (j = 1; (a = (Ark*) arcs->getElement(j)); j++) 
 		    this->notifyArk(a);
-		si->drawTab(i, FALSE);     
+		si->drawTab(i, false);     
 	    }
 	}
     } else {
@@ -2233,7 +2233,7 @@ void EditorWindow::manage()
     if (this->initialNetwork)
     {
 	this->newNetwork();
-	this->initialNetwork = FALSE;
+	this->initialNetwork = false;
     }
     Decorator *dec;
     ListIterator it;
@@ -2281,30 +2281,30 @@ void EditorWindow::showValues()
 }
 //
 // Implements the 'Add/Remove Input/Output Tab' commands.
-// If 'adding' is TRUE, we ADD either inputs or outputs, otherwise 
+// If 'adding' is true, we ADD either inputs or outputs, otherwise 
 // REMOVE.
 // If 'input' is true, we operate on the input parameters, otherwise 
 // the outputs.
 //
-boolean EditorWindow::editSelectedNodeTabs(boolean adding, boolean input)
+bool EditorWindow::editSelectedNodeTabs(bool adding, bool input)
 {
     List *l = this->makeSelectedNodeList();
     if (l == NULL || l->getSize() == 0) {
 	if (l) delete l;
-	return TRUE;
+	return true;
     }
 
     Node *node; 
-    boolean r = TRUE;
+    bool r = true;
     ListIterator li(*l);
 
-    boolean added_separator = FALSE;
+    bool added_separator = false;
     while ( (node = (Node*)li.getNext()) )
     {
 	if (!this->performing_undo) {
 	    if (!added_separator) {
 		this->undo_list.push (new UndoSeparator(this));
-		added_separator = TRUE;
+		added_separator = true;
 	    }
 	    this->undo_list.push (new UndoRepeatableTab(this, node, adding, input));
 	}
@@ -2336,12 +2336,12 @@ boolean EditorWindow::editSelectedNodeTabs(boolean adding, boolean input)
     return r;
 }
 
-boolean EditorWindow::setSelectedNodeTabVisibility(boolean v)
+bool EditorWindow::setSelectedNodeTabVisibility(bool v)
 {
     List *l = this->makeSelectedNodeList();
     if (l == NULL || l->getSize() == 0) {
 	if (l) delete l;
-	return TRUE;
+	return true;
     }
 
     ListIterator li(*l);
@@ -2351,7 +2351,7 @@ boolean EditorWindow::setSelectedNodeTabVisibility(boolean v)
 #else
     this->beginNetworkChange();
 #endif
-    boolean added_separator = FALSE;
+    bool added_separator = false;
     while( (node = (Node*)li.getNext()) )
     {
 	node->setAllInputsVisibility(v);
@@ -2364,19 +2364,19 @@ boolean EditorWindow::setSelectedNodeTabVisibility(boolean v)
     this->endNetworkChange();
 #endif
  
-    return TRUE;
+    return true;
 }
 
 //
 // Do node selection.
 //
-boolean EditorWindow::selectConnection(int dir, boolean connected)
+bool EditorWindow::selectConnection(int dir, bool connected)
 {
     List *l = this->makeSelectedNodeList();
 
     if (l == NULL || l->getSize() == 0) {
 	if (l) delete l;
-	return FALSE;
+	return false;
     }
 
     ListIterator li(*l);
@@ -2385,7 +2385,7 @@ boolean EditorWindow::selectConnection(int dir, boolean connected)
     List *nlist = &this->network->nodeList;
     int nsize = nlist->getSize();
     int i, pos;
-    boolean *mark = new boolean[nsize];
+    bool *mark = new bool[nsize];
 
     if (connected)
 	this->deselectAllNodes();
@@ -2396,7 +2396,7 @@ boolean EditorWindow::selectConnection(int dir, boolean connected)
 	  AND (pos = nlist->getPosition((const void*)snode)))
     {
       	for(i=0; i<nsize; i++)
-             mark[i] = FALSE;
+             mark[i] = false;
 
 	/*mnodes =*/ this->network->connectedNodes(mark, pos-1, dir);
 
@@ -2410,7 +2410,7 @@ boolean EditorWindow::selectConnection(int dir, boolean connected)
     delete mark;
     delete l;
 
-    return TRUE;
+    return true;
 
 }
 
@@ -2418,30 +2418,30 @@ boolean EditorWindow::selectConnection(int dir, boolean connected)
 //
 // Implements the 'Select Downward' command.
 //
-boolean EditorWindow::selectDownwardNodes()
+bool EditorWindow::selectDownwardNodes()
 {
-    return this->selectConnection(1, TRUE);
+    return this->selectConnection(1, true);
 }
 //
 // Implements the 'Select Upward' command.
 //
-boolean EditorWindow::selectUpwardNodes()
+bool EditorWindow::selectUpwardNodes()
 {
-    return this->selectConnection(-1, TRUE);
+    return this->selectConnection(-1, true);
 }
 //
 // Implements the 'Select Connected' command.
 //
-boolean EditorWindow::selectConnectedNodes()
+bool EditorWindow::selectConnectedNodes()
 {
-    return this->selectConnection(0, TRUE);
+    return this->selectConnection(0, true);
 }
 //
 // Implements the 'Selected Unconnected' command.
 //
-boolean EditorWindow::selectUnconnectedNodes()
+bool EditorWindow::selectUnconnectedNodes()
 {
-    return this->selectConnection(0, FALSE);
+    return this->selectConnection(0, false);
 }
 
 //
@@ -2542,7 +2542,7 @@ void EditorWindow::doSelectedNodesDefaultAction()
 		int i;
 		for (i=1; i<=count ; i++) {
 		    ControlPanel *cp = network->getPanelByIndex(i);
-		    cp->selectAllInstances(FALSE);
+		    cp->selectAllInstances(false);
 		}
 	    }
 	    break;
@@ -2557,7 +2557,7 @@ void EditorWindow::doSelectedNodesDefaultAction()
     //
     this->currentPanel = NULL;
 
-    theApplication->setBusyCursor(TRUE);
+    theApplication->setBusyCursor(true);
     FOR_EACH_NETWORK_NODE(this->network, node, iterator) {
         standIn = node->getStandIn();
 #if WORKSPACE_PAGES
@@ -2598,7 +2598,7 @@ void EditorWindow::doSelectedNodesDefaultAction()
     }
 
 
-    theApplication->setBusyCursor(FALSE);
+    theApplication->setBusyCursor(false);
 
 }
 
@@ -2706,7 +2706,7 @@ List *EditorWindow::makeModuleList()
 // has been added.
 //
 
-void EditorWindow::notifyArk(Ark *a, boolean added)
+void EditorWindow::notifyArk(Ark *a, bool added)
 {
     StandIn *standIn;
     Node    *n;
@@ -2733,10 +2733,10 @@ void EditorWindow::notifyArk(Ark *a, boolean added)
 //
 // Move the workSpace inside the scrolled window so that the given x,y
 // position is at the upper left corner of the scrolled window unless
-// centered is TRUE in which case x,y is the center of the scrolled
+// centered is true in which case x,y is the center of the scrolled
 // window.
 //
-void EditorWindow::moveWorkspaceWindow(int x, int y, boolean centered)
+void EditorWindow::moveWorkspaceWindow(int x, int y, bool centered)
 {
     ASSERT(!centered);// Not implemented yet.
 
@@ -3039,7 +3039,7 @@ GroupRecord* EditorWindow::getGroupOfWorkSpace (EditorWorkSpace* where)
 //
 // Add the current ToolSelector node to the workspace
 //
-void EditorWindow::addCurrentNode(int x, int y, EditorWorkSpace *where, boolean stitch)
+void EditorWindow::addCurrentNode(int x, int y, EditorWorkSpace *where, bool stitch)
 {
     NodeDefinition *nodeDef = this->toolSelector->getCurrentSelection();
 
@@ -3055,7 +3055,7 @@ void EditorWindow::addCurrentNode(int x, int y, EditorWorkSpace *where, boolean 
 	while ( (dec = (VPEAnnotator*)it.getNext()) ) {
 	    dec->setXYPosition(x,y);
 	    dec->manage(where);
-	    dec->setSelected(TRUE);
+	    dec->setSelected(true);
 	    this->network->addDecoratorToList((void*)dec);
 #if WORKSPACE_PAGES
 	    GroupRecord* grec = this->getGroupOfWorkSpace(where);
@@ -3101,10 +3101,10 @@ void EditorWindow::addCurrentNode(int x, int y, EditorWorkSpace *where, boolean 
 
 	this->pendingPaste->setTopLeftPos (x,y);
 	List *l = this->pendingPaste->getNonEmptyPanels();
-	this->pagifyNetNodes (this->pendingPaste, where, TRUE);
-	boolean tmp = this->creating_new_network;
-	this->creating_new_network = TRUE;
-	this->network->mergeNetworks (this->pendingPaste, l, TRUE, stitch);
+	this->pagifyNetNodes (this->pendingPaste, where, true);
+	bool tmp = this->creating_new_network;
+	this->creating_new_network = true;
+	this->network->mergeNetworks (this->pendingPaste, l, true, stitch);
 	this->creating_new_network = tmp;
 	if (l) delete l;
 	this->resetCursor();
@@ -3171,7 +3171,7 @@ void EditorWindow::addNode (NodeDefinition *nodeDef, int x, int y, EditorWorkSpa
     // Select the added node 
     StandIn *si = node->getStandIn();
     ASSERT(si);
-    si->setSelected(TRUE);
+    si->setSelected(true);
 
     if(this->findToolDialog AND this->findToolDialog->isManaged())
     	this->findToolDialog->changeList();
@@ -3297,7 +3297,7 @@ void EditorWindow::deleteNodes(List *toDelete)
     // page tabs after a run time error, check each deleted node to see if its
     // standin is showing an error.
     //
-    boolean errored_node_deleted = FALSE;
+    bool errored_node_deleted = false;
 
     //
     // Perform the deletion
@@ -3322,10 +3322,10 @@ void EditorWindow::deleteNodes(List *toDelete)
 
     if (errored_node_deleted) {
 	//
-	// resetErrorList with arg==FALSE means update colors but don't 
+	// resetErrorList with arg==false means update colors but don't 
 	// toss out the list.
 	//
-	this->resetErrorList(FALSE);
+	this->resetErrorList(false);
     }
 
     //
@@ -3368,7 +3368,7 @@ void EditorWindow::highlightNode(Node *n, int flag)
 	case EditorWindow::ERRORHIGHLIGHT :
 	 	//color = theDXApplication->getErrorNodeForeground();
 		if (!this->errored_standins) this->errored_standins = new List;
-		if ((si) && (this->errored_standins->isMember((void*)si) == FALSE))
+		if ((si) && (this->errored_standins->isMember((void*)si) == false))
 		    this->errored_standins->appendElement((void*)si);
 		break;
 
@@ -3388,7 +3388,7 @@ void EditorWindow::highlightNode(Node *n, int flag)
 
         default:
 
-	        ASSERT(FALSE);
+	        ASSERT(false);
     }
 
 #if WORKSPACE_PAGES
@@ -3417,7 +3417,7 @@ void EditorWindow::highlightNode(Node *n, int flag)
 	si = n->getStandIn();
 	if (si) {
 	    if (!this->errored_standins) this->errored_standins = new List;
-	    if (this->errored_standins->isMember((void*)si) == FALSE)
+	    if (this->errored_standins->isMember((void*)si) == false)
 		this->errored_standins->appendElement((void*)si);
 	}
     }
@@ -3426,10 +3426,10 @@ void EditorWindow::highlightNode(Node *n, int flag)
 	//si->setLabelColor(color);
 }
 
-boolean EditorWindow::selectDecorator (VPEAnnotator* dec, boolean select, boolean warp)
+bool EditorWindow::selectDecorator (VPEAnnotator* dec, bool select, bool warp)
 {
     if (dec->getNetwork()->getEditor() != this)
-	return FALSE;
+	return false;
     //
     // Select the proper page.
     //
@@ -3454,7 +3454,7 @@ boolean EditorWindow::selectDecorator (VPEAnnotator* dec, boolean select, boolea
 	// then make sure that the node's page is the current page.
 	// If it's not, then silently refuse to select the node.
 	//
-	boolean wrong_page = FALSE;
+	bool wrong_page = false;
 	EditorWorkSpace *page = NUL(EditorWorkSpace*);
 	if (group_name)
 	    page = (EditorWorkSpace*)this->pageSelector->findDefinition(group_name);
@@ -3463,23 +3463,23 @@ boolean EditorWindow::selectDecorator (VPEAnnotator* dec, boolean select, boolea
 	int page_no = this->workSpace->getCurrentPage();
 	EditorWorkSpace* current_ews = this->workSpace;
 	if (page_no) current_ews = (EditorWorkSpace*)this->workSpace->getElement(page_no);
-	if (page != current_ews) wrong_page = TRUE;
+	if (page != current_ews) wrong_page = true;
 
 	if (wrong_page) 
-	    return TRUE;
+	    return true;
     }
     dec->setSelected(select);
     if (select && warp)
 	this->moveWorkspaceWindow(dec);
-    return TRUE;
+    return true;
 }
 
-boolean EditorWindow::selectNode(Node *node, boolean select, boolean warp)
+bool EditorWindow::selectNode(Node *node, bool select, bool warp)
 {
     StandIn     *standIn;
     ASSERT(node);
     if (node->getNetwork()->getEditor() != this)
-	return FALSE;
+	return false;
 
     standIn = node->getStandIn();
 #if WORKSPACE_PAGES
@@ -3507,14 +3507,14 @@ boolean EditorWindow::selectNode(Node *node, boolean select, boolean warp)
 	}
 	ASSERT(standIn);
     } else if (!standIn) {
-	return TRUE;
+	return true;
     } else {
 	//
 	// If we're not going to bring the selected node into view,
 	// then make sure that the node's page is the current page.
 	// If it's not, then silently refuse to select the node.
 	//
-	boolean wrong_page = FALSE;
+	bool wrong_page = false;
 	EditorWorkSpace *page = NUL(EditorWorkSpace*);
 	if (group_name)
 	    page = (EditorWorkSpace*)this->pageSelector->findDefinition(group_name);
@@ -3523,28 +3523,28 @@ boolean EditorWindow::selectNode(Node *node, boolean select, boolean warp)
 	int page_no = this->workSpace->getCurrentPage();
 	EditorWorkSpace* current_ews = this->workSpace;
 	if (page_no) current_ews = (EditorWorkSpace*)this->workSpace->getElement(page_no);
-	if (page != current_ews) wrong_page = TRUE;
+	if (page != current_ews) wrong_page = true;
 
 	if (wrong_page) 
-	    return TRUE;
+	    return true;
     }
     ASSERT(standIn);
 #endif
     standIn->setSelected(select);
     if (select && warp)
 	this->moveWorkspaceWindow(standIn);
-    return TRUE;
+    return true;
     
 }
 
-boolean EditorWindow::selectNode(char* name, int instance, boolean select)
+bool EditorWindow::selectNode(char* name, int instance, bool select)
 {
     Node        *node;
 
     node = this->network->findNode(theSymbolManager->getSymbol(name),instance); 
     if (NOT node)
-	return (FALSE);
-    return this->selectNode(node, select, TRUE);
+	return (false);
+    return this->selectNode(node, select, true);
 }
 
 #define SELECT_ALL		0
@@ -3586,11 +3586,11 @@ void EditorWindow::selectNodes(int how)
 	StandIn *si = n->getStandIn();
 	if (!si) continue;
 	switch (how) {
-	    case SELECT_ALL:   si->setSelected(TRUE); break;
-	    case DESELECT_ALL: si->setSelected(FALSE); break;
+	    case SELECT_ALL:   si->setSelected(true); break;
+	    case DESELECT_ALL: si->setSelected(false); break;
 	    case SELECT_UNSELECTED: si->setSelected(!si->isSelected()); break;
 	    case SELECT_ALL_IN_PAGE: if (si->getWorkSpace() == page) 
-					si->setSelected(TRUE); break;
+					si->setSelected(true); break;
 	}
     }
 
@@ -3599,11 +3599,11 @@ void EditorWindow::selectNodes(int how)
     ListIterator iterator;
     FOR_EACH_NETWORK_DECORATOR (this->network, decor, iterator) {
 	switch (how) {
-	    case SELECT_ALL: 	decor->setSelected(TRUE); break;
-	    case DESELECT_ALL: 	decor->setSelected(FALSE); break;
+	    case SELECT_ALL: 	decor->setSelected(true); break;
+	    case DESELECT_ALL: 	decor->setSelected(false); break;
 	    case SELECT_UNSELECTED:	decor->setSelected(!decor->isSelected()); break;
 	    case SELECT_ALL_IN_PAGE: if (decor->getWorkSpace() == page) 
-					decor->setSelected(TRUE); break;
+					decor->setSelected(true); break;
 	}
     }
     this->deferrableCommandActivation->undeferAction();
@@ -3649,7 +3649,7 @@ void EditorWindow::postProcessGroupCreateDialog()
     Network *net = this->getNetwork();
     Node *n;
     ListIterator iter;
-    boolean hasloop = FALSE;
+    bool hasloop = false;
 
     FOR_EACH_NETWORK_NODE(net,n,iter) {
         NodeDefinition *nd = n->getDefinition();
@@ -3745,10 +3745,10 @@ void EditorWindow::selectGroup(const char* name, Symbol groupID)
         if(s && EqualString(name, s))
         {
             if (firstNode == NUL(Node*)) {
-            	this->selectNode(node, TRUE, TRUE);
+            	this->selectNode(node, true, true);
 		firstNode = node;
 	    } else
-            	this->selectNode(node, TRUE, FALSE);
+            	this->selectNode(node, true, false);
         }
     }
 
@@ -3760,9 +3760,9 @@ void EditorWindow::selectGroup(const char* name, Symbol groupID)
 	VPEAnnotator *vpea = (VPEAnnotator*)dec;
 	const char *group_name = vpea->getGroupName(groupID);
 	if ((group_name) && (EqualString(group_name, name))) {
-	    vpea->setSelected(TRUE);
+	    vpea->setSelected(true);
 	} else {
-	    vpea->setSelected(FALSE);
+	    vpea->setSelected(false);
 	}
     }
 
@@ -3793,7 +3793,7 @@ void EditorWindow::clearGroup(const char* name, Symbol groupID)
 // that members of that group belong to the new group.  If old_group doesn't
 // currently exist, then treat nodes as if they belong if they have no group name.
 //
-boolean 
+bool 
 EditorWindow::changeGroup (const char* old_group, const char* new_group, Symbol groupID)
 {
     GroupManager *gmgr = (GroupManager*)
@@ -3805,7 +3805,7 @@ EditorWindow::changeGroup (const char* old_group, const char* new_group, Symbol 
     // should have been tested for earlier.
     //
     GroupRecord* new_grec = gmgr->getGroup(new_group);
-    if (new_grec) return FALSE;
+    if (new_grec) return false;
 
     //
     // The call to GroupManager::createGroup()  will produce a call
@@ -3813,7 +3813,7 @@ EditorWindow::changeGroup (const char* old_group, const char* new_group, Symbol 
     // is already selected in the vpe, then that thing will be in the new group
     // as soon as we come back from createGroup.
     //
-    if (!gmgr->createGroup (new_group, this->network)) return FALSE;
+    if (!gmgr->createGroup (new_group, this->network)) return false;
     ASSERT (new_grec = gmgr->getGroup(new_group));
 
     Node* node;
@@ -3839,7 +3839,7 @@ EditorWindow::changeGroup (const char* old_group, const char* new_group, Symbol 
     if (old_grec) {
 	ASSERT(gmgr->removeGroup (old_group, this->network));
     }
-    return TRUE;
+    return true;
 }
 
 #else
@@ -3884,7 +3884,7 @@ void EditorWindow::selectProcessGroup(const char* name)
         if(s && EqualString(name, s))
         {
             if(firstNode)
-            	this->selectNode(node, TRUE, FALSE);
+            	this->selectNode(node, true, false);
 	    else
 		firstNode = node; 
         }
@@ -3893,7 +3893,7 @@ void EditorWindow::selectProcessGroup(const char* name)
     if(NOT firstNode)
         WarningMessage("Process group %s is empty.", name);
     else
-	this->selectNode(firstNode, TRUE, TRUE);
+	this->selectNode(firstNode, true, true);
 }
 
 void EditorWindow::clearProcessGroup(const char* name)
@@ -4013,12 +4013,12 @@ void EditorWindow::endNetworkChange()
 	    }
 	} else {
 	    int i,dsize = this->pageSelector->getSize();
-	    boolean found = FALSE;
+	    bool found = false;
 	    for (i=1; i<=dsize; i++) {
 		EditorWorkSpace* ews = (EditorWorkSpace*)
 		    this->pageSelector->getDefinition(i);
 		if (ews == this->workSpace) {
-		    found = TRUE;
+		    found = true;
 		    break;
 		}
 	    }
@@ -4087,21 +4087,21 @@ void EditorWindow::prepareForNewNetwork()
 	}
 	this->pageSelector->clear();
     }
-    this->workSpace->setMembersInitialized(FALSE);
+    this->workSpace->setMembersInitialized(false);
     this->workSpace->showRoot();
 #endif
 
     // reset the workspace
     // FIXME: shouldn't this be in completeNewNetwork()
-    this->moveWorkspaceWindow(0,0, FALSE);
+    this->moveWorkspaceWindow(0,0, false);
 
-    this->creating_new_network = TRUE;
+    this->creating_new_network = true;
 }
 void EditorWindow::completeNewNetwork()
 {
     this->endNetworkChange();
     this->clearUndoList();
-    this->creating_new_network = FALSE;
+    this->creating_new_network = false;
     theDXApplication->refreshErrorIndicators();
 
 }
@@ -4164,7 +4164,7 @@ void EditorWindow::beginCommandExecuting()
     this->workSpace->resetCursor();
 }
 
-void EditorWindow::notifyCPChange(boolean newList)
+void EditorWindow::notifyCPChange(bool newList)
 {
     if(this->panelGroupDialog)
     {
@@ -4234,33 +4234,33 @@ void EditorWindow::resetWindowTitle()
 //
 // Determine if there are any nodes of the give class that are selected.
 //
-boolean EditorWindow::anySelectedNodes(const char *classname)
+bool EditorWindow::anySelectedNodes(const char *classname)
 {
-    boolean r;
+    bool r;
     List *l = this->makeSelectedNodeList(classname);
     if (!l)
-	return FALSE;
+	return false;
 
     if (l->getSize() != 0)
-	r = TRUE;
+	r = true;
     else
-	r = FALSE;
+	r = false;
     delete l;
     return r;
 }
 
 //
-// Return TRUE if there are selected Macros nodes.
+// Return true if there are selected Macros nodes.
 //
-boolean EditorWindow::anySelectedMacros()
+bool EditorWindow::anySelectedMacros()
 {
     return this->anySelectedNodes(ClassMacroNode);
 }
-boolean EditorWindow::anySelectedDisplayNodes()
+bool EditorWindow::anySelectedDisplayNodes()
 {
     return this->anySelectedNodes(ClassDisplayNode);
 }
-boolean EditorWindow::anySelectedColormaps()
+bool EditorWindow::anySelectedColormaps()
 {
     return this->anySelectedNodes(ClassColormapNode);
 }
@@ -4289,7 +4289,7 @@ void EditorWindow::openSelectedImageWindows()
 
     DisplayNode *n;
     while( (n = (DisplayNode *)li.getNext()) )
-        n->openImageWindow(TRUE);
+        n->openImageWindow(true);
     delete l;
 }
 
@@ -4299,16 +4299,16 @@ void EditorWindow::openSelectedImageWindows()
 // and then as the StandIns and ArkStandIns to print themselves.  
 // If the scale allows and the label_parameters arg is set, then 
 // label the parameters and display the values. 
-// We return FALSE and issue and error message if an error occurs.
+// We return false and issue and error message if an error occurs.
 //
-boolean EditorWindow::printVisualProgramAsPS(const char *filename,
+bool EditorWindow::printVisualProgramAsPS(const char *filename,
 				float x_pagesize, float y_pagesize,
-				boolean label_parameters)
+				bool label_parameters)
 {
     FILE *fout = fopen(filename,"w");
     if (!fout) {
 	ErrorMessage("Can't open file %s for writing",filename);
-	return FALSE;
+	return false;
     }
 
     //
@@ -4341,22 +4341,22 @@ boolean EditorWindow::printVisualProgramAsPS(const char *filename,
 	    "Postscript output.  (See Edit/Page/Configure Page.)\n"
 	    "No output created."
 	);
-	return FALSE;
+	return false;
     }
 
-    boolean current_ews_changed = FALSE;
+    bool current_ews_changed = false;
     li.setList(*sorted_pages);
     while ( (ews = (EditorWorkSpace*)li.getNext()) ) {
 	if (ews->getPostscriptInclusion()) {
-	    if (ews->membersInitialized() == FALSE) {
+	    if (ews->membersInitialized() == false) {
 		this->workSpace->showWorkSpace(ews);
-		current_ews_changed = TRUE;
+		current_ews_changed = true;
 	    }
 	    if (!this->printVisualProgramAsPS(fout, filename, x_pagesize,y_pagesize,
 		label_parameters, ews, page_num, pages_to_print)) {
 		    fclose (fout);
 		    ErrorMessage("Error writing to file %s", filename);
-		    return FALSE;
+		    return false;
 		}
 	    page_num++;
 	}
@@ -4368,14 +4368,14 @@ boolean EditorWindow::printVisualProgramAsPS(const char *filename,
     if (current_ews_changed)
 	this->workSpace->showWorkSpace(current_ews);
 
-    return TRUE;
+    return true;
 }
 
-boolean EditorWindow::printVisualProgramAsPS(FILE* fout, const char* filename, 
-    float x_pagesize, float y_pagesize, boolean label_parameters, 
+bool EditorWindow::printVisualProgramAsPS(FILE* fout, const char* filename, 
+    float x_pagesize, float y_pagesize, bool label_parameters, 
     EditorWorkSpace* current_ews, int page_number, int of_howmany)
 {
-    boolean landscape = FALSE;
+    bool landscape = false;
     Node *n;
     float border_percent = .075;
     float printable_percent = 1.0 - 2*(border_percent);
@@ -4429,7 +4429,7 @@ boolean EditorWindow::printVisualProgramAsPS(FILE* fout, const char* filename,
     ysize = ymax - ymin;
 
     if (xsize > ysize)
-	landscape = TRUE;
+	landscape = true;
 
     /* Required for EPSF-3.0  */
     t = time(0);
@@ -4601,15 +4601,15 @@ boolean EditorWindow::printVisualProgramAsPS(FILE* fout, const char* filename,
 
     delete iterator;
     delete iter2;
-    return TRUE;
+    return true;
 
 error:
     delete iterator;
     delete iter2;
-    return FALSE;
+    return false;
 }
 
-boolean EditorWindow::macroifySelectedNodes(const char *name,
+bool EditorWindow::macroifySelectedNodes(const char *name,
 				    const char *cat,
 				    const char *desc,
 				    const char *fileName)
@@ -4621,7 +4621,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
     // Try and verify that the selected nodes are macrofiable. 
     //
     if (!this->areSelectedNodesMacrofiable())
-	return FALSE;
+	return false;
 
     //
     // Get the set of selected nodes.  If there are none, we're done.
@@ -4629,7 +4629,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
     List *l = this->makeSelectedNodeList();
     if (l == NULL || l->getSize() == 0) {
 	if (l) delete l;
-	return TRUE;
+	return true;
     }
 
     //
@@ -4663,11 +4663,11 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
     net->setCategory(cat? cat: "Macros");
     net->setDescription(desc? desc: "new macro");
 
-    if (!net->makeMacro(TRUE))
+    if (!net->makeMacro(true))
     {
 	delete net;
 	delete l;
-	return FALSE;
+	return false;
     }
 
     MacroDefinition *nd = net->getDefinition();
@@ -4786,9 +4786,9 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
     //
     // Switch the nodes to the newly created network.
     //
-    if (!net->mergeNetworks (this->network, NULL, FALSE)) {
+    if (!net->mergeNetworks (this->network, NULL, false)) {
 	delete l;
-	return FALSE;
+	return false;
     }
 
     //XmUpdateDisplay(this->getRootWidget());
@@ -4810,7 +4810,7 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
     if (!node)
     {
 	delete net;
-	return FALSE;
+	return false;
     }
     node->setVpePosition(bboxXmin, bboxYmin);
 
@@ -4832,14 +4832,14 @@ boolean EditorWindow::macroifySelectedNodes(const char *name,
     newOutputs.clear();
 
     if (fileName)
-	net->saveNetwork(fileName, TRUE);
+	net->saveNetwork(fileName, true);
 
 #ifndef FORGET_GETSET
     if ((EditorWindow::GetSetDialog) && (EditorWindow::GetSetDialog->isManaged()))
 	EditorWindow::GetSetDialog->update();
 #endif
 
-    return TRUE;
+    return true;
 }
 
 void EditorWindow::postInsertNetworkDialog()
@@ -4874,12 +4874,12 @@ void EditorWindow::selectNodesWithOutputCacheability(Cacheability c)
     ListIterator iterator;
     FOR_EACH_NETWORK_NODE(this->network, node, iterator) {
 	int i, cnt =  node->getOutputCount();
-	boolean select = FALSE;
+	bool select = false;
 	for (i=1 ; i<=cnt && !select ; i++)  {
 	    if (node->getOutputCacheability(i) == c)
-		select = TRUE;
+		select = true;
 	}
-	this->selectNode(node, select, FALSE);
+	this->selectNode(node, select, false);
     }
 
 }
@@ -4954,21 +4954,21 @@ void EditorWindow::postSaveAsCCodeDialog()
 //
 // This is a helper method for this->areSelectedNodesMacrofiable().
 // It recursively descends the connections from the given node to determine
-// if it connected to a selected node.  If ignoreDirectConnect is TRUE,
+// if it connected to a selected node.  If ignoreDirectConnect is true,
 // then we do not care about selected nodes that are directly connected
 // to selected nodes. 
-// Returns TRUE if there is a downstream selected node, otherwise FALSE.
+// Returns true if there is a downstream selected node, otherwise false.
 //
-boolean EditorWindow::isSelectedNodeDownstream(Node *srcNode,
-                                boolean ignoreDirectConnect)
+bool EditorWindow::isSelectedNodeDownstream(Node *srcNode,
+                                bool ignoreDirectConnect)
 {
     int         i, j;
     StandIn     *srcStandIn = srcNode->getStandIn();
 
     if (!srcStandIn)
-        return FALSE;
+        return false;
 
-    boolean     srcSelected = srcStandIn->isSelected();
+    bool     srcSelected = srcStandIn->isSelected();
 
     ASSERT(!srcSelected || ignoreDirectConnect);
 
@@ -4989,18 +4989,18 @@ boolean EditorWindow::isSelectedNodeDownstream(Node *srcNode,
                 StandIn *destStandIn = destNode->getStandIn();
 		if (!destStandIn)
 		    continue;
-		boolean destSelected = destStandIn->isSelected();
+		bool destSelected = destStandIn->isSelected();
 		if (srcSelected && !destSelected) {
-		    if (this->isSelectedNodeDownstream(destNode,FALSE))
-			return TRUE;
+		    if (this->isSelectedNodeDownstream(destNode,false))
+			return true;
 		} else if (srcSelected && destSelected) {
 		    if (!ignoreDirectConnect)
-			return TRUE;
+			return true;
 		} else if (!srcSelected && destSelected) {
-		    return TRUE;
+		    return true;
 		} else {    // !srcSelected && !destSelected
-		    if (this->isSelectedNodeDownstream(destNode,FALSE)) 
-			return TRUE;
+		    if (this->isSelectedNodeDownstream(destNode,false)) 
+			return true;
                 }
 		if (!destSelected)
 		    destNode->setMarked();
@@ -5008,7 +5008,7 @@ boolean EditorWindow::isSelectedNodeDownstream(Node *srcNode,
         }
     }
 
-    return FALSE;
+    return false;
 }
 //
 // Determine if the currently selected set of nodes is macrofiable.  In
@@ -5017,10 +5017,10 @@ boolean EditorWindow::isSelectedNodeDownstream(Node *srcNode,
 // we look at each selected node and determine if its immediate downstream
 // unselected nodes are connected (possibly through intermediate nodes)
 // to another of the selected nodes.
-// Returns TRUE if macrofiable, else returns FALSE and issues and error
+// Returns true if macrofiable, else returns false and issues and error
 // message.
 //
-boolean EditorWindow::areSelectedNodesMacrofiable()
+bool EditorWindow::areSelectedNodesMacrofiable()
 {
 
     int      i;
@@ -5029,11 +5029,11 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
     List     tmpNodeList;
     ListIterator iterator;
     Node        *n;
-    boolean	saw_tmtr = FALSE, saw_rcvr = FALSE;
+    bool	saw_tmtr = false, saw_rcvr = false;
     List 	*tmtrs = NULL, *rcvrs = NULL; 
    
     if (numNodes == 0)
-        return TRUE;
+        return true;
 
     iterator.setList(network->nodeList);
     for (i=0 ; (n = (Node*)iterator.getNext()) ; i++)
@@ -5044,34 +5044,34 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
 // CC: "EditorWindow.C", line 3510: sorry, not implemented: label in 
 //  	block with destructors (2048)
 //
-#define RETURN_FALSE    if (tmtrs) delete tmtrs;	\
+#define RETURN_false    if (tmtrs) delete tmtrs;	\
 			if (rcvrs) delete rcvrs;	\
-			return FALSE;
+			return false;
 
     iterator.setList(network->nodeList);
     while ( (n = (Node*)iterator.getNext()) ) {
         StandIn *si = n->getStandIn();
         if (si && si->isSelected()) {
-	    if (this->isSelectedNodeDownstream(n,TRUE)) {
+	    if (this->isSelectedNodeDownstream(n,true)) {
 		ErrorMessage(
 		"The currently selected tools can not be macrofied because the"
 		"\nresulting macro would have an output connected to an input."
 		"\nThis is due to the fact that a data path that leaves the "
 		"\nselected tools later reenters the selected tools.");
-		RETURN_FALSE;
+		RETURN_false;
 	    } else if (!n->isAllowedInMacro())  {
 		ErrorMessage("Tool %s is not allowed in a macro",
 		    n->getNameString());
-		RETURN_FALSE;
+		RETURN_false;
 	    } else if (n->isA(ClassMacroParameterNode)) {
 		ErrorMessage(
 		    "Tool %s is not allowed in an automatically created macro",
 		    n->getNameString());
-		RETURN_FALSE;
+		RETURN_false;
 	    } else if (n->isA(ClassTransmitterNode)) {
 		if (!saw_tmtr) {
 		    rcvrs = network->makeClassifiedNodeList(ClassReceiverNode);
-		    saw_tmtr = TRUE;
+		    saw_tmtr = true;
 		}
 		if (rcvrs) {
 		    ListIterator iter(*rcvrs);
@@ -5086,7 +5086,7 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
 			    "because the selected\nTransmitter %s has a "
 			    "corresponding Receiver that is not selected.\n",
 			    tlabel);
-			    RETURN_FALSE;
+			    RETURN_false;
 			}
 		    }
 		}
@@ -5094,7 +5094,7 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
 		if (!saw_rcvr) {
 		    tmtrs = 
 			network->makeClassifiedNodeList(ClassTransmitterNode);
-		    saw_rcvr = TRUE;
+		    saw_rcvr = true;
 		}
 		if (tmtrs) {
 		    ListIterator iter(*tmtrs);
@@ -5109,7 +5109,7 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
 			    "because the selected\nReceiver %s has a "
 			    "corresponding Transmitter that is not selected.\n",
 			    rlabel);
-			    RETURN_FALSE;
+			    RETURN_false;
 			}
 		    }
 		}
@@ -5119,7 +5119,7 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
 
     if (tmtrs) delete tmtrs;
     if (rcvrs) delete rcvrs;
-    return TRUE;
+    return true;
 
 }
 
@@ -5130,7 +5130,7 @@ boolean EditorWindow::areSelectedNodesMacrofiable()
 // Global
 //
 void
-EditorWindow::ConvertToGlobal(boolean global)
+EditorWindow::ConvertToGlobal(bool global)
 {
     EditorWindow* e = EditorWindow::GetSetDialog->getActiveEditor();
     ASSERT(e);
@@ -5138,7 +5138,7 @@ EditorWindow::ConvertToGlobal(boolean global)
 }
 
 void
-EditorWindow::convertToGlobal(boolean global)
+EditorWindow::convertToGlobal(bool global)
 {
     List *glnlist = this->makeSelectedNodeList();
 
@@ -5149,7 +5149,7 @@ EditorWindow::convertToGlobal(boolean global)
 
     while ( (gln = (GlobalLocalNode*)it.getNext()) ) {
 	ASSERT (((Node*)gln)->isA(ClassGlobalLocalNode));
-	// Both of the following return FALSE if the node has never been set
+	// Both of the following return false if the node has never been set
 	// Taken together, these 3 ASSERTS mean that everything in the list
 	// is either a Get or a Set.
 	//ASSERT (!gln->isGlobalNode());
@@ -5169,7 +5169,7 @@ EditorWindow::convertToGlobal(boolean global)
 void
 EditorWindow::ConvertToLocal()
 {
-    EditorWindow::ConvertToGlobal(FALSE);
+    EditorWindow::ConvertToGlobal(false);
 }
 
 #endif
@@ -5181,8 +5181,8 @@ EditorWindow::ConvertToLocal()
 //  Any arc of a selected node must go to a node which is also selected.
 //  The Edit/Select/Selected Connected command works well for selecting pagifiable nodes.
 //
-boolean
-EditorWindow::pagifySelectedNodes(boolean include_selected_nodes)
+bool
+EditorWindow::pagifySelectedNodes(bool include_selected_nodes)
 {
 char page_name[64];
 
@@ -5193,9 +5193,9 @@ char page_name[64];
     //
     List *l = NUL(List*);
     List *dl = NUL(List*);
-    boolean pagifiable = this->areSelectedNodesPagifiable(include_selected_nodes);
+    bool pagifiable = this->areSelectedNodesPagifiable(include_selected_nodes);
     if ((!pagifiable) && (include_selected_nodes)) {
-	return FALSE;
+	return false;
     } else if ((pagifiable) && (include_selected_nodes)) {
 	l = this->makeSelectedNodeList();
 	dl = this->makeSelectedDecoratorList();
@@ -5206,13 +5206,13 @@ char page_name[64];
     //
     // Find an unused name for a new page.
     //
-    boolean page_name_in_use = TRUE;
+    bool page_name_in_use = true;
     int next_page_no = 1;
     while (page_name_in_use) {
 	sprintf (page_name, "Untitled_%d", next_page_no++);
 	const void* def_found = this->pageSelector->findDefinition (page_name);
 	if (def_found == NUL(void*))
-	    page_name_in_use = FALSE;
+	    page_name_in_use = false;
     }
 
     //
@@ -5257,7 +5257,7 @@ char page_name[64];
 
     if (l) delete l;
     if (dl) delete dl;
-    return TRUE;
+    return true;
 }
 #endif
 
@@ -5268,7 +5268,7 @@ char page_name[64];
 // Delete the page and everything inside the page and the page group.
 // If the group_name passed in is NULL, then delete the current page.
 //
-boolean
+bool
 EditorWindow::deletePage(const char* to_delete)
 {
     //
@@ -5282,14 +5282,14 @@ EditorWindow::deletePage(const char* to_delete)
     EditorWorkSpace* current_ews = this->workSpace;
     if (page) current_ews = (EditorWorkSpace*)this->workSpace->getElement(page);
     if (ews == NUL(EditorWorkSpace*)) ews = current_ews;
-    boolean deleted_was_current = (ews == current_ews);
+    bool deleted_was_current = (ews == current_ews);
 
     //
     // Find all the guys whose group name is the same as the group name of
     // the workspace we're deleting.  Somewhat roundabout, but it works for
     // both situations... a) deleting a named page, b) deleting the current page.
     //
-    boolean first = TRUE;
+    bool first = true;
     const char *group_name = NUL(char*);
     Node *node;
     ListIterator iter;
@@ -5306,7 +5306,7 @@ EditorWindow::deletePage(const char* to_delete)
 	    nodeList.appendElement((void*)node);
 	    if (first) {
 		group_name = node->getGroupName(theSymbolManager->getSymbol(PAGE_GROUP));
-		first = FALSE;
+		first = false;
 	    }
 	}
     }
@@ -5345,7 +5345,7 @@ EditorWindow::deletePage(const char* to_delete)
 	this->pageSelector->removeDefinition ((const char*)group_name);
 	page_mgr->removeGroup(group_name, this->network);
     } else {
-	boolean found = FALSE;
+	bool found = false;
 	int i, pcnt = this->pageSelector->getSize();
 	for (i=1; i<=pcnt; i++) {
 	    EditorWorkSpace *def = (EditorWorkSpace*)
@@ -5353,7 +5353,7 @@ EditorWindow::deletePage(const char* to_delete)
 	    if (def == ews) {
 		group_name = this->pageSelector->getStringKey(i);
 		this->pageSelector->removeDefinition ((const char*)group_name);
-		found = TRUE;
+		found = true;
 		break;
 	    }
 	}
@@ -5379,13 +5379,13 @@ EditorWindow::deletePage(const char* to_delete)
     // Putting up page 0 might require adding "Untitled" to the pageSelector.
     //
     if (deleted_was_current) {
-	boolean found = FALSE;
+	bool found = false;
 	DictionaryIterator di(*this->pageSelector);
 	int member_count = 9999999;
 	EditorWorkSpace* contains_few_members = NUL(EditorWorkSpace*);
 	while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) {
 	    if (ews->membersInitialized()) {
-		found = TRUE;
+		found = true;
 		this->pageSelector->selectPage(ews);
 		break;
 	    } else {
@@ -5395,7 +5395,7 @@ EditorWindow::deletePage(const char* to_delete)
 		    contains_few_members = (EditorWorkSpace*)ews;
 		}
 		/*if (ews == this->workSpace)
-		  contains_root = TRUE;*/
+		  contains_root = true;*/
 	    }
 	}
 	if (!found) {
@@ -5413,7 +5413,7 @@ EditorWindow::deletePage(const char* to_delete)
 	}
     }
 
-    return TRUE;
+    return true;
 }
 #endif
 
@@ -5430,7 +5430,7 @@ EditorWindow::getNodesBBox(int *minx, int *miny, int *maxx, int *maxy, List *l, 
     ListIterator li;
     int width, height;
     EditorWorkSpace *selectedWorkSpace = NULL;
-    boolean first = TRUE;
+    bool first = true;
 
     if (l) {
 	li.setList(*l);
@@ -5440,7 +5440,7 @@ EditorWindow::getNodesBBox(int *minx, int *miny, int *maxx, int *maxy, List *l, 
 	    if (first) {
 		bboxXmin = x;
 		bboxYmin = y;
-		first = FALSE;
+		first = false;
 	    }
 	    StandIn *si = node->getStandIn();
 
@@ -5475,7 +5475,7 @@ EditorWindow::getNodesBBox(int *minx, int *miny, int *maxx, int *maxy, List *l, 
 	    if (first) {
 		bboxXmin = x;
 		bboxYmin = y;
-		first = FALSE;
+		first = false;
 	    }
 	    dec->getXYSize (&width, &height);
 
@@ -5507,7 +5507,7 @@ EditorWindow::getNodesBBox(int *minx, int *miny, int *maxx, int *maxy, List *l, 
 //
 void EditorWindow::destroyStandIns(List* selectedNodes)
 {
-boolean error_node = FALSE;
+bool error_node = false;
 int i;
 ListIterator li(*selectedNodes);
 Node *node;
@@ -5562,7 +5562,7 @@ Node *node;
     }
 
     if (error_node)
-	this->resetErrorList(FALSE);
+	this->resetErrorList(false);
 }
 
 void
@@ -5590,7 +5590,7 @@ int minx, miny, maxx, maxy;
 	//
 	node->setVpePosition (xoff + x - minx, yoff + y - miny);
     }
-    page->setMembersInitialized(FALSE);
+    page->setMembersInitialized(false);
 
 }
 #endif
@@ -5620,7 +5620,7 @@ int x,y;
 	//if ((page_w) && (page_wnd))
 	//    dec->manage(page);
 	//else
-	//    page->setMembersInitialized(FALSE);
+	//    page->setMembersInitialized(false);
     }
 }
 
@@ -5631,17 +5631,17 @@ int x,y;
 // This is where nodes might automatically be replaced with Transmitter/Reciever
 // pairs.  
 //
-boolean
-EditorWindow::areSelectedNodesPagifiable(boolean report)
+bool
+EditorWindow::areSelectedNodesPagifiable(bool report)
 {
-boolean retVal = TRUE;
+bool retVal = true;
 EditorWorkSpace *ws = NULL;
 
 
     List *l = this->makeSelectedNodeList();
     if ((!l) || (!l->getSize())) {
 	if (l) delete l;
-	return TRUE;
+	return true;
     }
 
     ListIterator snl(*l);
@@ -5666,7 +5666,7 @@ EditorWorkSpace *ws = NULL;
 			(source->isA(ClassTransmitterNode)) &&
 			(EqualString (dest->getLabelString(),source->getLabelString()))) {
 		    } else {
-			retVal = FALSE;
+			retVal = false;
 			if (report) {
 			    char msg[512];
 			    sprintf (msg, 
@@ -5682,7 +5682,7 @@ EditorWorkSpace *ws = NULL;
 		    if (!ws) {
 			ws = (EditorWorkSpace*)ssi->getWorkSpace();
 		    } else if (ws != ssi->getWorkSpace()) {
-			retVal = FALSE;
+			retVal = false;
 			if (report)
 			    ErrorMessage("Tool %s occupies a different page from %s.",
 				dest->getNameString(), source->getNameString());
@@ -5711,7 +5711,7 @@ EditorWorkSpace *ws = NULL;
 			(source->isA(ClassTransmitterNode)) &&
 			(EqualString (dest->getLabelString(),source->getLabelString()))) {
 		    } else {
-			retVal = FALSE;
+			retVal = false;
 			if (report) {
 			    char msg[512];
 			    sprintf (msg, 
@@ -5727,7 +5727,7 @@ EditorWorkSpace *ws = NULL;
 		    if (!ws) {
 			ws = (EditorWorkSpace*)dsi->getWorkSpace();
 		    } else if (ws != dsi->getWorkSpace()) {
-			retVal = FALSE;
+			retVal = false;
 			if (report)
 			    ErrorMessage("Tool %s occupies a different page from %s.",
 				source->getNameString(), dest->getNameString());
@@ -5747,7 +5747,7 @@ EditorWorkSpace *ws = NULL;
 //
 // Prepare for a new decorator, but don't managed it yet.
 //
-boolean EditorWindow::placeDecorator()
+bool EditorWindow::placeDecorator()
 {
     if (!this->addingDecorators)
 	this->addingDecorators = new List;
@@ -5755,7 +5755,7 @@ boolean EditorWindow::placeDecorator()
     DecoratorStyle *ds = 
 	DecoratorStyle::GetDecoratorStyle("Annotate", DecoratorStyle::DefaultStyle);
     ASSERT(ds);
-    Decorator *d = ds->createDecorator(TRUE);
+    Decorator *d = ds->createDecorator(true);
     ASSERT(d);
     d->setStyle (ds);
  
@@ -5774,7 +5774,7 @@ boolean EditorWindow::placeDecorator()
     //
     ASSERT(this->workSpace);
     this->workSpace->setCursor(UPPER_LEFT);
-    return TRUE;
+    return true;
 }
 
 //
@@ -5818,7 +5818,7 @@ void EditorWindow::setDecoratorStyle (List *decors, DecoratorStyle *ds)
 	oldlab->getXYPosition (&x, &y);
 	this->network->removeDecoratorFromList((void*)oldlab);
 
-	LabelDecorator *newlab = (LabelDecorator*)ds->createDecorator(TRUE);
+	LabelDecorator *newlab = (LabelDecorator*)ds->createDecorator(true);
 	ASSERT(newlab);
 	newlab->setStyle(ds);
 
@@ -5853,14 +5853,14 @@ void EditorWindow::setDecoratorStyle (List *decors, DecoratorStyle *ds)
 // would happen with drag-n-drop and store that chunk somewhere so that it
 // can be supplied to a requestor.
 //
-boolean EditorWindow::cutSelectedNodes()
+bool EditorWindow::cutSelectedNodes()
 {
-    if (this->copySelectedNodes(TRUE) == FALSE) {
-	return FALSE;
+    if (this->copySelectedNodes(true) == false) {
+	return false;
     }
     this->removeSelectedNodes();
     this->setUndoActivation();
-    return TRUE;
+    return true;
 }
 
 #ifdef DXD_OS_NON_UNIX
@@ -5869,7 +5869,7 @@ boolean EditorWindow::cutSelectedNodes()
 #define RD_FLAG "r"
 #endif
 
-boolean EditorWindow::copySelectedNodes(boolean delete_property)
+bool EditorWindow::copySelectedNodes(bool delete_property)
 {
 //char msg[128];
 //Display *d = XtDisplay(this->getRootWidget());
@@ -5881,7 +5881,7 @@ boolean EditorWindow::copySelectedNodes(boolean delete_property)
     int net_len, cfg_len;
     char* cfg_buffer;
     char* net_buffer = this->createNetFileFromSelection(net_len, &cfg_buffer, cfg_len);
-    if (!net_buffer) return FALSE;
+    if (!net_buffer) return false;
 
     //
     // Safeguard:  I don't know if this is necessary.  Maybe calling XtOwnSelection
@@ -5898,8 +5898,8 @@ boolean EditorWindow::copySelectedNodes(boolean delete_property)
 	//XtDisownSelection (w, file_atom, tstamp);
 
     unsigned char del_buf[16];
-    if (delete_property) strcpy ((char*)del_buf, "TRUE");
-    else strcpy ((char*)del_buf, "FALSE");
+    if (delete_property) strcpy ((char*)del_buf, "true");
+    else strcpy ((char*)del_buf, "false");
  //   XChangeProperty (d, root, delete_atom, XA_STRING, 8, PropModeReplace,
 	//del_buf, strlen((char*)del_buf));
 
@@ -5910,16 +5910,16 @@ boolean EditorWindow::copySelectedNodes(boolean delete_property)
     // I picked such an obscure widget because I suspect that if the widget is the
     // root of some UIComponent, the XmNuserData slot will already be in use.
     //
-//    boolean retVal;
+//    bool retVal;
  //   if (XtOwnSelection (w, file_atom, tstamp,
 	//(XtConvertSelectionProc)EditorWindow_ConvertSelectionCB,
 	//(XtLoseSelectionProc)EditorWindow_LoseSelectionCB,
 	//(XtSelectionDoneProc)EditorWindow_SelectionDoneCB)) {
 	//this->pasteNodeCmd->activate();
-	//retVal = TRUE;
+	//retVal = true;
  //   } else {
 	//this->pasteNodeCmd->deactivate();
-	//retVal = FALSE;
+	//retVal = false;
  //   }
 
     //
@@ -5968,7 +5968,7 @@ char msg[128];
     //
     const char *tmpdir = theDXApplication->getTmpDirectory();
     int tmpdirlen = STRLEN(tmpdir);
-    if (!tmpdirlen) return FALSE;
+    if (!tmpdirlen) return false;
     if (tmpdir[tmpdirlen-1] == '/') {
 	sprintf(netfilename, "%sdx%d.net", tmpdir, getpid());
 	sprintf(cfgfilename, "%sdx%d.cfg", tmpdir, getpid());
@@ -6061,11 +6061,11 @@ char msg[128];
 // Edit/Paste means request the saved chunk of .net/.cfg text and do an
 // insertNetwork operation.
 //
-boolean EditorWindow::pasteCopiedNodes()
+bool EditorWindow::pasteCopiedNodes()
 {
 //Display *d = XtDisplay(this->getRootWidget());
 //Atom file_atom = XmInternAtom (d, NET_ATOM, False);
-boolean proceed = true;
+bool proceed = true;
 
     //
     // command activation is handled clumsily for cut/copy/paste because
@@ -6073,7 +6073,7 @@ boolean proceed = true;
     //
     //if (file_atom) {
 	//Window win = XGetSelectionOwner (d, file_atom);
-	//if (win == None) proceed = FALSE;
+	//if (win == None) proceed = false;
  //   } else
 	//proceed = false;
 
@@ -6146,14 +6146,14 @@ Time tstamp = XtLastTimestampProcessed(d);
 	this->copiedNet = DuplicateString(text);
 
 	unsigned char del_buf[16];
-	strcpy ((char*)del_buf, "FALSE");
+	strcpy ((char*)del_buf, "false");
 	XChangeProperty (d, root, delete_atom, XA_STRING, 8, PropModeReplace,
 	    del_buf, strlen((char*)del_buf));
     }
 }
 #endif
 
-//boolean EditorWindow_ConvertSelectionCB(Widget w, Atom *selection, Atom *target, 
+//bool EditorWindow_ConvertSelectionCB(Widget w, Atom *selection, Atom *target, 
 //    Atom *type, XtPointer *value, unsigned long *length, int *format)
 //{ 
 //Display *d = XtDisplay(w);
@@ -6196,11 +6196,11 @@ Time tstamp = XtLastTimestampProcessed(d);
 //	    XChangeProperty (d, root, cfg_atom, XA_STRING, 8, PropModeReplace,
 //		(unsigned char*)editor->copiedCfg, strlen(editor->copiedCfg));
 //
-//	return TRUE;
+//	return true;
 //    } else {
 //	XtDisownSelection (w, *selection, XtLastTimestampProcessed(XtDisplay(w)));
 //	editor->pasteNodeCmd->deactivate();
-//	return FALSE;
+//	return false;
 //    }
 //}
 
@@ -6303,7 +6303,7 @@ Time tstamp = XtLastTimestampProcessed(d);
 //    }
 //
 //
-//    editor->setPendingPaste (net_file_name, NUL(char*), TRUE);
+//    editor->setPendingPaste (net_file_name, NUL(char*), true);
 //
 //    unlink (net_file_name);
 //
@@ -6311,7 +6311,7 @@ Time tstamp = XtLastTimestampProcessed(d);
 //    Atom delete_atom = XmInternAtom (d, "DELETE", False);
 //    status = XGetWindowProperty (d, root, delete_atom, 0, 4, False, XA_STRING,
 //	&actual_type, &actual_format, &n_items, &bytes_after, &del_buf);
-//    if ((status == Success) && (del_buf) && (!strcmp((char*)del_buf, "FALSE"))) {
+//    if ((status == Success) && (del_buf) && (!strcmp((char*)del_buf, "false"))) {
 //    } else {
 //	XDeleteProperty (d, root, file_atom);
 //	XDeleteProperty (d, root, cfg_atom);
@@ -6335,8 +6335,8 @@ Time tstamp = XtLastTimestampProcessed(d);
 //
 // Broken out of SelectionReadyCB so that it can be reused by UndoDeletion
 //
-boolean EditorWindow::setPendingPaste (const char* net_file_name,
-	const char* cfg_file_name, boolean ignoreUndefinedModules)
+bool EditorWindow::setPendingPaste (const char* net_file_name,
+	const char* cfg_file_name, bool ignoreUndefinedModules)
 {
     //
     // Prepare a new network
@@ -6351,17 +6351,17 @@ boolean EditorWindow::setPendingPaste (const char* net_file_name,
     }
 
     if (this->pendingPaste) delete this->pendingPaste;
-    this->pendingPaste = theDXApplication->newNetwork(TRUE);
+    this->pendingPaste = theDXApplication->newNetwork(true);
     ASSERT(this->pendingPaste);
-    if (!this->pendingPaste->readNetwork (net_file_name, NULL, TRUE)) {
+    if (!this->pendingPaste->readNetwork (net_file_name, NULL, true)) {
 	delete this->pendingPaste;
 	this->pendingPaste = NULL;
 	WarningMessage ("Paste failed");
 	unlink (net_file_name);
-	return FALSE;
+	return false;
     }
     this->toolSelector->deselectAllTools();
-    return TRUE;
+    return true;
 }
 
 //
@@ -6426,12 +6426,12 @@ TransmitterNode *EditorWindow::getMostRecentTransmitterNode()
 // found add the Transmitter to the list.  Then add all corresponding
 // Receivers to the list also.
 //
-boolean EditorWindow::showExecutedNodes()
+bool EditorWindow::showExecutedNodes()
 {
     this->deselectAllNodes();
 
-    if (!this->executed_nodes) return FALSE;
-    if (!this->executed_nodes->getSize()) return FALSE;
+    if (!this->executed_nodes) return false;
+    if (!this->executed_nodes->getSize()) return false;
 
     ListIterator it;
     Node* n;
@@ -6466,18 +6466,18 @@ boolean EditorWindow::showExecutedNodes()
 
 
 	ListIterator it(modless);
-	boolean found_some = FALSE;
-	while ((found_some == FALSE) && (sym = (Symbol)(long)it.getNext())) {
+	bool found_some = false;
+	while ((found_some == false) && (sym = (Symbol)(long)it.getNext())) {
 	    const char* cp = theSymbolManager->getSymbolString(sym);
 	    ASSERT ((cp) && (cp[0]));
 	    List* nodes = this->network->makeClassifiedNodeList(cp);
 	    if ((nodes) && (nodes->getSize()))
-		found_some = TRUE;
+		found_some = true;
 	    if (nodes) 
 		delete nodes;
 	}
-	if (found_some == FALSE)
-	    this->transmitters_added = TRUE;
+	if (found_some == false)
+	    this->transmitters_added = true;
     }
 
     //
@@ -6488,15 +6488,15 @@ boolean EditorWindow::showExecutedNodes()
     // FIXME: would someone please rewrite this loop in the form of a recursive
     // subroutine call. 
     //
-    boolean change_made = TRUE;
+    bool change_made = true;
     List appendables;
     List recent1;
     List recent2;
-    boolean first_time = TRUE;
+    bool first_time = true;
     while ((!this->transmitters_added) && (change_made)) {
 	int i, j;
 
-	change_made = FALSE;
+	change_made = false;
 
 	//
 	// First time thru the loop look at every executed node.  On subsequent 
@@ -6515,19 +6515,19 @@ boolean EditorWindow::showExecutedNodes()
 		    for (j = 1; (a = (Ark*)arcs->getElement(j)); ++j) {
 			int paramInd;
 			Node *srcNode = a->getSourceNode(paramInd);
-			boolean moduleless_node = FALSE;
+			bool moduleless_node = false;
 
 			ListIterator mit(modless);
 			while ( (sym = (Symbol)(long)mit.getNext()) ) {
 			    if (srcNode->isA(sym)) {
 				if (sym == interactor_sym) {
 				    InteractorNode* in = (InteractorNode*)srcNode;
-				    if (in->isDataDriven() == FALSE) {
-					moduleless_node = TRUE;
+				    if (in->isDataDriven() == false) {
+					moduleless_node = true;
 					break;
 				    }
 				} else {
-				    moduleless_node = TRUE;
+				    moduleless_node = true;
 				    break;
 				}
 			    }
@@ -6537,7 +6537,7 @@ boolean EditorWindow::showExecutedNodes()
 			    if (!appendables.isMember((void*)srcNode)) {
 				appendables.appendElement((void*)srcNode);
 				recent2.appendElement((void*)srcNode);
-				change_made = TRUE;
+				change_made = true;
 			    }
 			}
 		    }
@@ -6549,18 +6549,18 @@ boolean EditorWindow::showExecutedNodes()
 	while ( (n = (Node*)it.getNext()) ) 
 	    recent1.appendElement((void*)n);
 	recent2.clear();
-	first_time = FALSE;
+	first_time = false;
     }
     it.setList(appendables);
     while ( (n = (Node*)it.getNext()) )
 	this->executed_nodes->appendElement((void*)n);
-    this->transmitters_added = TRUE;
+    this->transmitters_added = true;
 
     it.setList(*this->executed_nodes);
     while ( (n = (Node*)it.getNext()) ) 
-	this->selectNode(n, TRUE, FALSE);
+	this->selectNode(n, true, false);
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -6585,7 +6585,7 @@ void EditorWindow::newDecorator (Decorator* dec, EditorWorkSpace* where)
 	if (ews == page)
 	    vpea->manage(page);
 	else
-	    page->setMembersInitialized(FALSE);
+	    page->setMembersInitialized(false);
     } else {
 	EditorWorkSpace* current_page = where;
 	if (!current_page) {
@@ -6601,7 +6601,7 @@ void EditorWindow::newDecorator (Decorator* dec, EditorWorkSpace* where)
 	//if (current_page->getRootWidget())
 	//    vpea->manage(current_page);
 	//else
-	//    current_page->setMembersInitialized(FALSE);
+	//    current_page->setMembersInitialized(false);
     }
 #else
     if ((where) && (where->getRootWidget()))
@@ -6621,11 +6621,11 @@ void EditorWindow::resetExecutionList()
 {
     if (this->executed_nodes) this->executed_nodes->clear();
     this->showExecutedCmd->deactivate();
-    this->transmitters_added = FALSE;
+    this->transmitters_added = false;
 }
 
 #if WORKSPACE_PAGES
-void EditorWindow::resetErrorList(boolean reset_all)
+void EditorWindow::resetErrorList(bool reset_all)
 {
     if (reset_all) {
 	if (this->errored_standins) delete this->errored_standins;
@@ -6654,7 +6654,7 @@ void EditorWindow::resetErrorList(boolean reset_all)
     DictionaryIterator di(*this->pageSelector);
     EditorWorkSpace* ews;
     while ( (ews = (EditorWorkSpace*)di.getNextDefinition()) ) 
-	if (yellow_tabs.isMember((void*)ews) == FALSE)
+	if (yellow_tabs.isMember((void*)ews) == false)
 	    this->pageSelector->highlightTab (ews, EditorWindow::REMOVEHIGHLIGHT);
 }
 #endif
@@ -6726,8 +6726,8 @@ void EditorWindow::populatePage(EditorWorkSpace* ews)
     // check to see if the nodes have standins.  This tells us if we need to
     // do work to populate the page.
     //
-    boolean standins_created = FALSE;
-    if (ews->membersInitialized() == FALSE) {
+    bool standins_created = false;
+    if (ews->membersInitialized() == false) {
 	FOR_EACH_NETWORK_NODE (this->network, node, it) {
 	    const char* cp = node->getGroupName(psym);
 	    if (((cp == NUL(char*)) && (page_name == NUL(char*))) || 
@@ -6737,7 +6737,7 @@ void EditorWindow::populatePage(EditorWorkSpace* ews)
 		    if (!standins_created)
 			ews->beginManyPlacements();
 		    node->newStandIn(ews);
-		    standins_created = TRUE;
+		    standins_created = true;
 		    if (node == this->executing_node) 
 			this->highlightNode(node, EditorWindow::EXECUTEHIGHLIGHT);
 		} else {
@@ -6768,8 +6768,8 @@ void EditorWindow::populatePage(EditorWorkSpace* ews)
     }
 
     if (standins_created) {
-	boolean old_value = this->creating_new_network;
-	this->creating_new_network = TRUE;
+	bool old_value = this->creating_new_network;
+	this->creating_new_network = true;
 	FOR_EACH_NETWORK_NODE (this->network, node, it) {
 	    const char* cp = node->getGroupName(psym);
 	    if (((cp == NUL(char*)) && (page_name == NUL(char*))) || 
@@ -6790,7 +6790,7 @@ void EditorWindow::populatePage(EditorWorkSpace* ews)
 			if (a->getArkStandIn() == NUL(ArkStandIn*))
 			    this->notifyArk(a);
 		    }
-		    si->drawTab(i, FALSE); 
+		    si->drawTab(i, false); 
 		}
 	    }
 	}
@@ -6813,8 +6813,8 @@ void EditorWindow::populatePage(EditorWorkSpace* ews)
 // it go ahead will put the nodes in the currently selected page.  That's good behavior
 // in the case of Edit/Paste but bad behavior when dropping onto a page tab.
 //
-boolean EditorWindow::pagifyNetNodes 
-(Network* tmpnet, EditorWorkSpace* ews, boolean try_current_page)
+bool EditorWindow::pagifyNetNodes 
+(Network* tmpnet, EditorWorkSpace* ews, bool try_current_page)
 {
     Symbol groupID = theSymbolManager->getSymbol(PAGE_GROUP);
 
@@ -6831,7 +6831,7 @@ boolean EditorWindow::pagifyNetNodes
     if (grec) {
 	group_name = grec->getName();
     }
-    if ((!group_name) && (!try_current_page)) return FALSE;
+    if ((!group_name) && (!try_current_page)) return false;
 
 
     //
@@ -6847,7 +6847,7 @@ boolean EditorWindow::pagifyNetNodes
     if (group_name) {
 	page_mgr->createGroup (group_name, tmpnet);
 	new_grec = page_mgr->getGroup(group_name);
-	if (!new_grec) return FALSE;
+	if (!new_grec) return false;
     }
 
 
@@ -6861,17 +6861,17 @@ boolean EditorWindow::pagifyNetNodes
 	VPEAnnotator* vpea = (VPEAnnotator*)dec;
 	vpea->setGroupName(new_grec, groupID);
     }
-    return TRUE;
+    return true;
 }
 
-boolean EditorWindow::pagifySelectedNodes(EditorWorkSpace* ews)
+bool EditorWindow::pagifySelectedNodes(EditorWorkSpace* ews)
 {
     Symbol groupID = theSymbolManager->getSymbol(PAGE_GROUP);
 
     GroupRecord* grec = this->getGroupOfWorkSpace(ews);
     const char* group_name = NUL(char*);
     if (grec) group_name = grec->getName();
-    if (!group_name) return FALSE;
+    if (!group_name) return false;
 
     List* selno = this->makeSelectedNodeList();
     List* seldec = this->makeSelectedDecoratorList();
@@ -6907,35 +6907,35 @@ boolean EditorWindow::pagifySelectedNodes(EditorWorkSpace* ews)
     if (seldec) delete seldec;
 
     this->setCommandActivation();
-    return TRUE;
+    return true;
 }
 
-boolean EditorWindow::configurePage()
+bool EditorWindow::configurePage()
 {
     this->pageSelector->postPageNameDialog();
-    return TRUE;
+    return true;
 }
-boolean EditorWindow::postMoveSelectedDialog()
+bool EditorWindow::postMoveSelectedDialog()
 {
     this->pageSelector->postMoveNodesDialog();
     this->setCommandActivation();
-    return TRUE;
+    return true;
 }
 
 //
 // Break any arc which connects a selected node to an unselected node.
 // Replace the arc with transmitter/receiver combination.
 //
-boolean EditorWindow::autoChopSelectedNodes()
+bool EditorWindow::autoChopSelectedNodes()
 {
     List* sellist = this->makeSelectedNodeList();
     if ((sellist == NUL(List*)) || (sellist->getSize() == 0))
-	return TRUE;
+	return true;
 
     Network* net = this->getNetwork();
     Dictionary tmits;
     Dictionary rcvrs;
-    boolean status = net->chopArks(sellist, &tmits, &rcvrs);
+    bool status = net->chopArks(sellist, &tmits, &rcvrs);
 
     DictionaryIterator di(rcvrs);
     Node* n;
@@ -6947,7 +6947,7 @@ boolean EditorWindow::autoChopSelectedNodes()
 	    Ark* a;
 	    for (j = 1; (a = (Ark*) arcs->getElement(j)) ; j++) 
 		this->notifyArk(a);
-	    si->drawTab(1, FALSE);     
+	    si->drawTab(1, false);     
 	}
     }
     delete sellist;
@@ -6958,7 +6958,7 @@ boolean EditorWindow::autoChopSelectedNodes()
     return status;
 }
 
-boolean EditorWindow::autoFuseSelectedNodes()
+bool EditorWindow::autoFuseSelectedNodes()
 {
 ListIterator it;
 Node* n;
@@ -6967,7 +6967,7 @@ int dummy;
 
     List* sellist = this->makeSelectedNodeList();
     if ((sellist == NUL(List*)) || (sellist->getSize() == 0))
-	return TRUE;
+	return true;
 
     Network* net = this->getNetwork();
 
@@ -6985,7 +6985,7 @@ int dummy;
     if (rcvrs.getSize() == 0) {
 	it.setList(*sellist);
 	while ( (n = (Node*)it.getNext()) ) {
-	    if (n->isA(ClassTransmitterNode) == FALSE) continue;
+	    if (n->isA(ClassTransmitterNode) == false) continue;
 	    List* orig = (List*)n->getOutputArks(1);
 	    if ((!orig) || (orig->getSize() == 0)) continue;
 	    ListIterator ai(*orig);
@@ -7010,7 +7010,7 @@ int dummy;
 	int icnt = n->getInputCount();
 	int i;
 	List toadd;
-	boolean unusable_receiver = FALSE;
+	bool unusable_receiver = false;
 	for (i=1; i<=icnt; i++) {
 	    List* orig = (List*)n->getInputArks(i);
 	    if ((!orig) || (orig->getSize() == 0)) continue;
@@ -7025,11 +7025,11 @@ int dummy;
 		} else {
 		    ListIterator oi(*oa);
 		    Ark* a;
-		    boolean included = TRUE;
+		    bool included = true;
 		    while ( (a = (Ark*)oi.getNext()) ) {
 			Node* dest = a->getDestinationNode(dummy);
-			if (sellist->isMember((void*)dest) == FALSE) {
-			    included = FALSE;
+			if (sellist->isMember((void*)dest) == false) {
+			    included = false;
 			    break;
 			}
 		    }
@@ -7041,11 +7041,11 @@ int dummy;
 	    }
 	    if (unusable_receiver) break;
 	}
-	if (unusable_receiver == FALSE) {
+	if (unusable_receiver == false) {
 	    ListIterator ta(toadd);
 	    Node* add;
 	    while ( (add = (Node*)ta.getNext()) ) {
-		if (rcvrs.isMember(add) == FALSE)
+		if (rcvrs.isMember(add) == false)
 		    rcvrs.appendElement((void*)add);
 	    }
 	}
@@ -7055,14 +7055,14 @@ int dummy;
     // Network::replaceInputArks() operates stritly on 
     // the basis of the Receviers it encounters
     //
-    boolean status = net->replaceInputArks(&rcvrs, NUL(List*));
+    bool status = net->replaceInputArks(&rcvrs, NUL(List*));
 
     delete sellist;
 
     return status;
 }
 
-boolean EditorWindow::toggleHitDetection()
+bool EditorWindow::toggleHitDetection()
 {
     WorkSpaceInfo *wsinfo = this->workSpace->getInfo();
     ToggleButtonInterface* tbi = (ToggleButtonInterface*)
@@ -7070,14 +7070,14 @@ boolean EditorWindow::toggleHitDetection()
     this->hit_detection = tbi->getState();
     wsinfo->setPreventOverlap(this->hit_detection);
     this->workSpace->installInfo(NULL);
-    return TRUE;
+    return true;
 }
 
 char* EditorWindow::SequenceNet[] = {
 #include "sequence.h"
 };
 
-boolean EditorWindow::unjavifyNetwork()
+bool EditorWindow::unjavifyNetwork()
 {
     List* rlist = this->network->makeClassifiedNodeList(ClassReceiverNode);
     if (rlist) {
@@ -7122,13 +7122,13 @@ boolean EditorWindow::unjavifyNetwork()
 	rlist = NUL(List*);
     }
 
-    return TRUE;
+    return true;
 }
 
 //
 // Add the special java page.  Then merge in a network.
 //
-boolean EditorWindow::javifyNetwork()
+bool EditorWindow::javifyNetwork()
 {
     //
     // We must be able to create an instance of the WebOptions macro
@@ -7148,7 +7148,7 @@ boolean EditorWindow::javifyNetwork()
 	jxmacros=(char*)malloc(strlen(uiroot)+strlen(macros)+2);
 	strcpy(jxmacros,uiroot);
 	strcat(jxmacros,macros);
-	MacroDefinition::LoadMacroDirectories(jxmacros,TRUE,NULL,FALSE);
+	MacroDefinition::LoadMacroDirectories(jxmacros,true,NULL,false);
 	free(jxmacros);
     	wopt_nd = (NodeDefinition*) theNodeDefinitionDictionary->findDefinition("WebOptions");
     }
@@ -7158,7 +7158,7 @@ boolean EditorWindow::javifyNetwork()
 	    "Load the macros from /usr/local/dx/java/server/dxmacros.\n"
 	    "Otherwise, this visual program will not function properly\n"
 	    "under control of DXServer.\n");
-	return FALSE;
+	return false;
     }
 
 
@@ -7187,17 +7187,17 @@ boolean EditorWindow::javifyNetwork()
 	//
 	// Merging in the temporary network puts the nodes into java seqno page.
 	//
-	boolean non_java_net = TRUE;
+	bool non_java_net = true;
 	Network* tmpnet = theDXApplication->newNetwork(non_java_net);
 	ASSERT(tmpnet);
-	boolean status = tmpnet->readNetwork(uniq_file, NULL, TRUE);
+	bool status = tmpnet->readNetwork(uniq_file, NULL, true);
 	unlink (uniq_file);
 	fclose(holder);
 	unlink(holder_file);
 	delete holder_file;
-	if (status == FALSE) {
+	if (status == false) {
 	    delete tmpnet;
-	    return FALSE;
+	    return false;
 	}
 
 	//
@@ -7218,7 +7218,7 @@ boolean EditorWindow::javifyNetwork()
 	this->workSpace->showWorkSpace(page);
 	gmgr_sym = page_mgr->getManagerSymbol();
 
-	this->network->mergeNetworks(tmpnet, NUL(List*), TRUE);
+	this->network->mergeNetworks(tmpnet, NUL(List*), true);
 	delete tmpnet;
     }
 
@@ -7238,8 +7238,8 @@ boolean EditorWindow::javifyNetwork()
 	while ( (bn = (ImageNode*)it.getNext()) ) {
 	    Node* rcvr = NUL(Node*);
 	    Node* wopt = NUL(Node*);
-	    boolean adding_rcvr = TRUE;
-	    if (bn->isJavified() == FALSE) {
+	    bool adding_rcvr = true;
+	    if (bn->isJavified() == false) {
 		bn->getVpePosition(&x,&y);
 
 		List* rlist = this->network->makeClassifiedNodeList(ClassReceiverNode);
@@ -7248,16 +7248,16 @@ boolean EditorWindow::javifyNetwork()
 		    ListIterator it(*rlist);
 		    Node* n;
 		    while ( (n = (Node*)it.getNext()) ) {
-			boolean same_page = FALSE;
+			bool same_page = false;
 			if (EqualString(JAVA_SEQUENCE, n->getLabelString())) {
 			    const char* page_name = n->getGroupName(gmgr_sym);
 			    if (EqualString(page_name, current_page_name)) {
-				same_page = TRUE;
+				same_page = true;
 				rcvr = (ReceiverNode*)n;
 			    }
 			}
 			if (same_page) {
-			    adding_rcvr = FALSE;
+			    adding_rcvr = false;
 			    break;
 			}
 		    }
@@ -7299,17 +7299,17 @@ boolean EditorWindow::javifyNetwork()
 	delete imgs;
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean EditorWindow::reflowEntireGraph()
+bool EditorWindow::reflowEntireGraph()
 {
     WorkSpace *current_ws = this->workSpace;
     int page = this->workSpace->getCurrentPage();
     if (page) current_ws = this->workSpace->getElement(page);
     if (!this->layout_controller)
 	this->layout_controller = new GraphLayout(this);
-    boolean retval = this->layout_controller->entireGraph(
+    bool retval = this->layout_controller->entireGraph(
 	    current_ws, this->network->nodeList, this->network->decoratorList);
 
     // This will cause the ui to prompt the user to save.  In the past we
@@ -7325,13 +7325,13 @@ boolean EditorWindow::reflowEntireGraph()
 // location (which is still the old location) and save it so that it can
 // be undone.
 //
-void EditorWindow::saveLocationForUndo (UIComponent* uic, boolean mouse, boolean same_event)
+void EditorWindow::saveLocationForUndo (UIComponent* uic, bool mouse, bool same_event)
 {
-    boolean separator_pushed = same_event||this->moving_many_standins;
+    bool separator_pushed = same_event||this->moving_many_standins;
     if (this->performing_undo) return ;
 
-    boolean found_it = FALSE;
-    if ((TRUE)||(mouse)||(this->moving_many_standins)) {
+    bool found_it = false;
+    if ((true)||(mouse)||(this->moving_many_standins)) {
 	ASSERT(uic);
 	ListIterator iterator;
 	Node* n;
@@ -7350,14 +7350,14 @@ void EditorWindow::saveLocationForUndo (UIComponent* uic, boolean mouse, boolean
 
 		if (!separator_pushed) {
 		    this->undo_list.push(new UndoSeparator(this));
-		    separator_pushed = TRUE;
+		    separator_pushed = true;
 		}
 
 		this->undo_list.push ( new UndoStandInMove (
 			this, si, n->getNameString(), n->getInstanceNumber()
 		    )
 		);
-		found_it = TRUE;
+		found_it = true;
 		break;
 	    }
 	}
@@ -7367,11 +7367,11 @@ void EditorWindow::saveLocationForUndo (UIComponent* uic, boolean mouse, boolean
 
 		if (!separator_pushed) {
 		    this->undo_list.push(new UndoSeparator(this));
-		    separator_pushed = TRUE;
+		    separator_pushed = true;
 		}
 
 		this->undo_list.push (new UndoDecoratorMove (this, (VPEAnnotator*)dec));
-		found_it = TRUE;
+		found_it = true;
 		break;
 	    }
 	}
@@ -7399,20 +7399,20 @@ void EditorWindow::clearUndoList()
 
 void EditorWindow::beginMultipleCanvasMovements()
 {
-    this->moving_many_standins = TRUE;
+    this->moving_many_standins = true;
     this->undo_list.push(new UndoSeparator(this));
 }
 
-boolean EditorWindow::undo()
+bool EditorWindow::undo()
 {
-    boolean many_placements = TRUE;//(this->undo_list.getSize() >= 2);
+    bool many_placements = true;//(this->undo_list.getSize() >= 2);
     WorkSpace *current_ws = this->workSpace;
     if (many_placements) {
 	int page = this->workSpace->getCurrentPage();
 	if (page) current_ws = this->workSpace->getElement(page);
 	current_ws->beginManyPlacements();
     }
-    this->performing_undo = TRUE;
+    this->performing_undo = true;
     UndoableAction* undoable;
 
     Stack short_stack;
@@ -7444,10 +7444,10 @@ boolean EditorWindow::undo()
 	}
     }
 
-    boolean first_in_list = TRUE;
+    bool first_in_list = true;
     while (undoable = (UndoableAction*)short_stack.pop()) {
 	undoable->undo(first_in_list);
-	first_in_list = FALSE;
+	first_in_list = false;
     }
 
     iter.setList(undo_candidates);
@@ -7455,14 +7455,14 @@ boolean EditorWindow::undo()
 	undoable->postpare();
     }
 
-    this->performing_undo = FALSE;
+    this->performing_undo = false;
     if (many_placements) {
 	current_ws->endManyPlacements();
     }
 
     this->setUndoActivation();
 
-    return TRUE;
+    return true;
 }
 
 void EditorWindow::setUndoActivation()
@@ -7518,7 +7518,7 @@ void EditorWindow::setUndoActivation()
     //XmStringFree(xmstr);
 }
 
-//boolean EditorWindow::KeyHandler(XEvent *event, void *clientData)
+//bool EditorWindow::KeyHandler(XEvent *event, void *clientData)
 //{
 //    EditorWindow *ew = (EditorWindow*)clientData;
 //    return ew->keyHandler(event);
@@ -7528,16 +7528,16 @@ void EditorWindow::setUndoActivation()
 //#define XK_MISCELLANY
 //#endif
 //#include <X11/keysym.h>
-//boolean EditorWindow::keyHandler(XEvent* event)
+//bool EditorWindow::keyHandler(XEvent* event)
 //{
-//    if (event->type != KeyPress) return TRUE;
+//    if (event->type != KeyPress) return true;
 //
 //    KeySym lookedup = XLookupKeysym(((XKeyEvent*)event), 0);
 //    if ((lookedup!=XK_End) && (lookedup!=XK_Page_Up) && (lookedup!=XK_Page_Down)) 
-//	return TRUE;
+//	return true;
 //
 //    Widget ww = XtWindowToWidget(XtDisplay(this->getRootWidget()), event->xany.window);
-//    boolean is_descendant = FALSE;
+//    bool is_descendant = false;
 //    //
 //    // Choice of window is significant.  By using workArea, we're grabbing any
 //    // event that is in the vpe or tool selector.  I thought it would be OK
@@ -7550,12 +7550,12 @@ void EditorWindow::setUndoActivation()
 //    Window win = XtWindow(this->workArea);
 //    while ((ww) && (!XtIsShell(ww))) {
 //	if (XtWindow(ww) == win) {
-//	    is_descendant = TRUE;
+//	    is_descendant = true;
 //	    break;
 //	}
 //	ww = XtParent(ww);
 //    }
-//    if (!is_descendant) return TRUE;
+//    if (!is_descendant) return true;
 //
 //    XmScrolledWindowWidget scrollWindow;
 //    int xsize,xdelta,xpdelta,x;
@@ -7583,8 +7583,8 @@ void EditorWindow::setUndoActivation()
 //	//y = max-(ysize+1);
 //	y+=2*ypdelta;
 //    }
-//    this->moveWorkspaceWindow(x,y,FALSE);
-//    return FALSE;
+//    this->moveWorkspaceWindow(x,y,false);
+//    return false;
 //}
 
 void  EditorWindow::saveAllLocationsForUndo (UndoableAction* gridding)

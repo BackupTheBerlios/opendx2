@@ -20,7 +20,7 @@
 
 NoUndoNetworkCommand::NoUndoNetworkCommand(const char*   name,
 				       CommandScope* scope,
-				       boolean       active,
+				       bool       active,
 				       Network	*net,
 				       NetworkCommandType comType ) :
 	NoUndoCommand(name, scope, active)
@@ -30,7 +30,7 @@ NoUndoNetworkCommand::NoUndoNetworkCommand(const char*   name,
 }
 
 
-boolean NoUndoNetworkCommand::doIt(CommandInterface *ci)
+bool NoUndoNetworkCommand::doIt(CommandInterface *ci)
 {
     Network *net = this->network;
 
@@ -60,7 +60,7 @@ boolean NoUndoNetworkCommand::doIt(CommandInterface *ci)
 	    ASSERT(0);
     }
 
-    return TRUE;
+    return true;
 }
 
 
@@ -70,7 +70,7 @@ boolean NoUndoNetworkCommand::doIt(CommandInterface *ci)
 //
 void NoUndoNetworkCommand::activate()
 {
-    boolean doit;
+    bool doit;
 
     switch (this->commandType) {
 	case NoUndoNetworkCommand::SaveNetwork:
@@ -78,7 +78,7 @@ void NoUndoNetworkCommand::activate()
 	    doit = theDXApplication->appAllowsSavingNetFile(this->network);
 	    break;
 	default:
-	    doit = TRUE;
+	    doit = true;
 	    break;
     }
     if (doit)

@@ -40,7 +40,7 @@ class PrintProgramDialog : public Dialog
 {
    private:
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     static void ConfirmationCancel(void *data);
     static void ConfirmationOk(void *data);
 
@@ -71,7 +71,7 @@ class PrintProgramDialog : public Dialog
     //Widget	fileSelectButton;
 
     virtual void createDialog( );
-    virtual boolean okCallback(Dialog *d);
+    virtual bool okCallback(Dialog *d);
 
     //
     // Set the sensitivity of the widgets based on the toFileToggle
@@ -84,7 +84,7 @@ class PrintProgramDialog : public Dialog
     //
     void postFileSelector();
 
-    boolean printProgram(); 
+    bool printProgram(); 
 
     //
     // Install the default resources for this class and then call the
@@ -118,16 +118,16 @@ class PrintProgramDialog : public Dialog
     void setFileName(const char *filename);
 
     //
-    // Return TRUE if the toFileToggle is set indicating that we
+    // Return true if the toFileToggle is set indicating that we
     // should print to a file instead of the printer.
     //
-    boolean isPrintingToFile();
+    bool isPrintingToFile();
 
     //
-    // Return TRUE if the labelParamsToggle is set indicating that we
+    // Return true if the labelParamsToggle is set indicating that we
     // should include parameter labels.
     //
-    boolean isLabelingParams();
+    bool isLabelingParams();
 
     //
     // Returns a pointer to the class name.

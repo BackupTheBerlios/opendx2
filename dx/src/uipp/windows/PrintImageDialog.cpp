@@ -24,7 +24,7 @@
 #endif
 #include <sys/stat.h>
 
-boolean PrintImageDialog::ClassInitialized = FALSE;
+bool PrintImageDialog::ClassInitialized = false;
 
 #define DEFAULT_COMMAND "lpr -P"
 
@@ -46,7 +46,7 @@ PrintImageDialog::PrintImageDialog(ImageNode *node,
     //this->command = NUL(Widget);
 
     if (!PrintImageDialog::ClassInitialized) {
-	PrintImageDialog::ClassInitialized = TRUE;
+	PrintImageDialog::ClassInitialized = true;
 	//this->installDefaultResources (theApplication->getRootWidget());
     }
 }
@@ -97,11 +97,11 @@ PrintImageDialog::~PrintImageDialog()
 //}
 
 
-boolean PrintImageDialog::okCallback(Dialog *dialog)
+bool PrintImageDialog::okCallback(Dialog *dialog)
 {
     this->ImageFormatDialog::okCallback (dialog);
     this->currentImage();
-    return FALSE;
+    return false;
 }
 
 

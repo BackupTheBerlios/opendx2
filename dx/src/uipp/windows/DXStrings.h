@@ -36,15 +36,15 @@ const char *strrstr(const char *s1, const char *s2);
 #endif
 
 //
-// Compares two strings and returns TRUE if they are equal, FALSE otherwise.
+// Compares two strings and returns true if they are equal, false otherwise.
 //
 #define EqualString(first, second) \
 	(!STRCMP((first), (second)))
 
 
 //
-// Compares two substrings; returns TRUE if first n characters are equal,
-//  FALSE otherwise.
+// Compares two substrings; returns true if first n characters are equal,
+//  false otherwise.
 //
 #define EqualSubstring(first, second, n)	\
 	 (!STRNCMP((first), (second), (n)))
@@ -81,10 +81,10 @@ extern
 char* DuplicateString(const char* string);
 
 //
-// Returns TRUE if the entire string consists of blanks/tabs; FALSE, otherwise.
+// Returns true if the entire string consists of blanks/tabs; false, otherwise.
 //
 extern
-boolean IsBlankString(const char* string);
+bool IsBlankString(const char* string);
 
 extern
 char* GetDirname(const char*);
@@ -139,6 +139,6 @@ char *UniqueFilename(const char *filename);
 char* StripWhiteSpace(const char* string);
 void Dos2UnixPath(char *path);
 void Unix2DosPath(char* path);
-boolean unRename(const char *SrcFile, const char *DestFile);
+bool unRename(const char *SrcFile, const char *DestFile);
 
 #endif /* _DXStrings.h */

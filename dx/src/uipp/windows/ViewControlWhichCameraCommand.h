@@ -45,7 +45,7 @@ class ViewControlWhichCameraCommand : public NoUndoCommand
     // Protected member data:
     //
 
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
 
   public:
@@ -54,7 +54,7 @@ class ViewControlWhichCameraCommand : public NoUndoCommand
     //
     ViewControlWhichCameraCommand(const char   *name,
 		   CommandScope      *scope,
-		   boolean            active,
+		   bool            active,
 		   ViewControlDialog *w);
 
     //

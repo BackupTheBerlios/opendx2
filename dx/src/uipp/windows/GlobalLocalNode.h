@@ -54,7 +54,7 @@ class GlobalLocalNode : public Node
     //
     // Private member data:
     //
-    boolean isGlobal;
+    bool isGlobal;
     Symbol  myNodeNameSymbol;
 
     void clearMyNodeName();
@@ -70,8 +70,8 @@ class GlobalLocalNode : public Node
     void setAsGlobalNode();
     void markForResend();
 
-    boolean isLocalNode(); 
-    boolean isGlobalNode();
+    bool isLocalNode(); 
+    bool isGlobalNode();
 
   public:
     //
@@ -98,7 +98,7 @@ class GlobalLocalNode : public Node
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

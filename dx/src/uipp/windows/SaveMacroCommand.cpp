@@ -20,7 +20,7 @@
 
 SaveMacroCommand::SaveMacroCommand(const char*   name,
                  		CommandScope* scope,
-                 		boolean       active,
+                 		bool       active,
 				MacroDefinition *md)
 		: NoUndoCommand(name, scope, active)
 {
@@ -53,7 +53,7 @@ void SaveMacroCommand::DiscardMacro(void *clientData)
     	delete smc->md;
 }
 
-boolean SaveMacroCommand::doIt(CommandInterface *ci)
+bool SaveMacroCommand::doIt(CommandInterface *ci)
 {
     char message[1024];
     sprintf(message, "Do you want to save macro %s as file: %s?", 
@@ -70,7 +70,7 @@ boolean SaveMacroCommand::doIt(CommandInterface *ci)
         "Yes",
         "No");
 
-    return (TRUE);
+    return (true);
 }
 
 void SaveMacroCommand::setNext(Command *next)

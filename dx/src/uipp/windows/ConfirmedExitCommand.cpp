@@ -20,7 +20,7 @@
 
 ConfirmedExitCommand::ConfirmedExitCommand(const char*   name,
                          CommandScope* scope,
-                         boolean       active,
+                         bool       active,
 			 DXApplication *app) :
     OptionalPreActionCommand(name, scope, active,
                              "Save Confirmation",
@@ -59,17 +59,17 @@ void   ConfirmedExitCommand::doPreAction()
     }
 }
 
-boolean ConfirmedExitCommand::doIt(CommandInterface *ci)
+bool ConfirmedExitCommand::doIt(CommandInterface *ci)
 {
    this->application->quitCmd->execute(ci);
 
-   return TRUE;
+   return true;
 }
 
 //
-// Return TRUE if any macro is modified.
+// Return true if any macro is modified.
 //
-boolean ConfirmedExitCommand::needsConfirmation()
+bool ConfirmedExitCommand::needsConfirmation()
 {
     DXApplication *app = this->application;
     ListIterator  li(app->macroList);
@@ -77,8 +77,8 @@ boolean ConfirmedExitCommand::needsConfirmation()
 
     while ( (net = (Network*)li.getNext()) )
     	if (net->isMacro() AND net->saveToFileRequired())
-	    return TRUE;
+	    return true;
      
-    return FALSE;
+    return false;
 }
 

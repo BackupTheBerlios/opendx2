@@ -49,7 +49,7 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
     //
     // Private member data:
     //
-    static boolean EditorWorkSpaceClassInitialized;
+    static bool EditorWorkSpaceClassInitialized;
     //static String  DefaultResources[];
 
     // 1 per class... Holds the data types thid drop site can swallow.
@@ -70,18 +70,18 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
 
 
     //
-    // Initialized to FALSE.  Set to TRUE, when the page has been filled with 
-    // standins/decorators.  Reset to FALSE if any node is added to the group
+    // Initialized to false.  Set to true, when the page has been filled with 
+    // standins/decorators.  Reset to false if any node is added to the group
     // represented in this page.
     //
-    boolean members_initialized;
+    bool members_initialized;
 
     //
-    // Initialized to TRUE.  The user can turn it off.  Then editor won't have
+    // Initialized to true.  The user can turn it off.  Then editor won't have
     // to open the page in order to produce postscript output.  The user's mechanism
     // for turning this off is thru the PageSelector dialog.
     //
-    boolean included_in_ps;
+    bool included_in_ps;
 
   protected:
 
@@ -101,7 +101,7 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
 
     int             origin;         /* originating location         */
 
-    boolean         (*notify)();    /* network change notification  */
+    bool         (*notify)();    /* network change notification  */
                                         /*  callback                    */
     //XtPointer       client_data;    /* client data for the callback */
 
@@ -112,7 +112,7 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
     //Cursor          cursor[MAX_CURSORS];
     //                                /* workspace cursors            */
 
-    boolean         first;          /* first line drawing?          */
+    bool         first;          /* first line drawing?          */
 
     int             start_x;        /* line drawing coordinates     */
     int             start_y;
@@ -148,10 +148,10 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
     // provides a place to invoke this->setDropWidget().  This could be
     // done elsewhere.
     //
-    //virtual void setRootWidget(Widget root, boolean standardDestroy = TRUE);
-    boolean mergeNetElements (Network *tmpnet, List *tmppanels, int x, int y);
-    //boolean compoundTextTransfer (char *, XtPointer, unsigned long, int, int);
-    //boolean decodeDropType (int, char *, XtPointer, unsigned long, int, int);
+    //virtual void setRootWidget(Widget root, bool standardDestroy = true);
+    bool mergeNetElements (Network *tmpnet, List *tmppanels, int x, int y);
+    //bool compoundTextTransfer (char *, XtPointer, unsigned long, int, int);
+    //bool decodeDropType (int, char *, XtPointer, unsigned long, int, int);
 
     virtual Dictionary *getDropDictionary(){ return EditorWorkSpace::DropTypeDictionary; }
 
@@ -172,8 +172,8 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
     //
     int scrollx;
     int scrolly;
-    boolean recorded_positions;
-    boolean record_positions;
+    bool recorded_positions;
+    bool record_positions;
 
     //
     // Track changes in the positions of things in the canvas so
@@ -190,7 +190,7 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
     // switching pages.
     //
     void setRecordedScrollPos (int x, int y) {
-	this->recorded_positions = TRUE;
+	this->recorded_positions = true;
 	this->scrollx = x;
 	this->scrolly = y;
     }
@@ -198,35 +198,35 @@ class EditorWorkSpace : public WorkSpace, public DXDropSite
 	*x = this->scrollx;
 	*y = this->scrolly;
     }
-    boolean hasScrollBarPositions() { 
+    bool hasScrollBarPositions() { 
 	return (this->recorded_positions && this->record_positions); 
     }
-    void unsetRecordedScrollPos () { this->recorded_positions = FALSE; }
-    void useRecordedPositions(boolean use_them) {
+    void unsetRecordedScrollPos () { this->recorded_positions = false; }
+    void useRecordedPositions(bool use_them) {
 	this->unsetRecordedScrollPos();
 	this->record_positions = use_them;
     }
-    boolean getUsesRecordedPositions() { return this->record_positions; }
+    bool getUsesRecordedPositions() { return this->record_positions; }
     void restorePosition();
 
     //
     // One time class initializations. 
     //
-    void initializeRootWidget(boolean fromFirstIntanceOfADerivedClass = FALSE);
+    void initializeRootWidget(bool fromFirstIntanceOfADerivedClass = false);
  
     //
     // Get the bounding box of the children which are selected
     //
     virtual void getSelectedBoundingBox (int *minx, int *miny, int *maxx, int *maxy);
 
-    boolean membersInitialized() { return this->members_initialized; }
-    void setMembersInitialized(boolean init=TRUE) { this->members_initialized = init; }
+    bool membersInitialized() { return this->members_initialized; }
+    void setMembersInitialized(bool init=true) { this->members_initialized = init; }
 
     virtual void manage();
     virtual void unmanage();
 
-    void setPostscriptInclusion(boolean incl=TRUE) { this->included_in_ps = incl; }
-    boolean getPostscriptInclusion() { return this->included_in_ps; }
+    void setPostscriptInclusion(bool incl=true) { this->included_in_ps = incl; }
+    bool getPostscriptInclusion() { return this->included_in_ps; }
 
     //
     // Returns a pointer to the class name.

@@ -86,15 +86,15 @@ JavaNet::JavaNet()
 
     this->saveWebPageCmd = 
 	new NoUndoJavaNetCommand("saveWebPageCommand", this->commandScope,
-	    FALSE, this, NoUndoJavaNetCommand::SaveWebPage);
+	    false, this, NoUndoJavaNetCommand::SaveWebPage);
 
     this->saveAppletCmd = 
 	new NoUndoJavaNetCommand("saveAppletCommand", this->commandScope,
-	    FALSE, this, NoUndoJavaNetCommand::SaveApplet);
+	    false, this, NoUndoJavaNetCommand::SaveApplet);
 
     this->saveBeanCmd = 
 	new NoUndoJavaNetCommand("saveBeanCommand", this->commandScope,
-	    TRUE, this, NoUndoJavaNetCommand::SaveBean);
+	    true, this, NoUndoJavaNetCommand::SaveBean);
 
 }
 
@@ -115,9 +115,9 @@ JavaNet::~JavaNet()
 }
 
 
-boolean JavaNet::saveNetwork(const char* name, boolean force)
+bool JavaNet::saveNetwork(const char* name, bool force)
 {
-    boolean status = this->Network::saveNetwork(name, force);
+    bool status = this->Network::saveNetwork(name, force);
     if ((status) && (this->isJavified())) {
 	this->saveWebPageCmd->activate();
 	this->saveAppletCmd->activate();
@@ -126,12 +126,12 @@ boolean JavaNet::saveNetwork(const char* name, boolean force)
     return status;
 }
 
-boolean JavaNet::setOutputName(const char* bn)
+bool JavaNet::setOutputName(const char* bn)
 {
     // Strip off any leading directory names so that we 
     // write into the current working directory.
     //
-    if ((!bn) || (!bn[0])) return FALSE;
+    if ((!bn) || (!bn[0])) return false;
     this->base_name = GetFileBaseName(bn, ".net");
     char* dirn = GetDirname(this->getFileName());
     char* pathn = GetFullFilePath(dirn);
@@ -167,7 +167,7 @@ boolean JavaNet::setOutputName(const char* bn)
 
     delete pathn;
 
-    return TRUE;
+    return true;
 }
 
 List* JavaNet::MakeUnsupportedToolList(JavaNet* net)
@@ -185,10 +185,10 @@ List* JavaNet::MakeUnsupportedToolList(JavaNet* net)
     return unsup_list;
 }
 
-boolean JavaNet::requires(const char* format)
+bool JavaNet::requires(const char* format)
 {
-    List* img = this->makeClassifiedNodeList(ClassImageNode, FALSE);
-    if (img == NUL(List*)) return FALSE;
+    List* img = this->makeClassifiedNodeList(ClassImageNode, false);
+    if (img == NUL(List*)) return false;
     char tbuf[32];
     if (format[0] == '\"')
 	strcpy (tbuf, format);
@@ -196,10 +196,10 @@ boolean JavaNet::requires(const char* format)
 	sprintf (tbuf, "\"%s\"", format);
     ListIterator it(*img);
     ImageNode* in;
-    boolean needs = FALSE;
-    while ((needs == FALSE) && (in = (ImageNode*)it.getNext())) {
+    bool needs = false;
+    while ((needs == false) && (in = (ImageNode*)it.getNext())) {
 	const char* fmt = in->getWebOptionsFormat();
-	if (EqualString(fmt, tbuf)) needs = TRUE;
+	if (EqualString(fmt, tbuf)) needs = true;
     }
     delete img;
     return needs;
@@ -208,14 +208,14 @@ boolean JavaNet::requires(const char* format)
 //
 //
 //
-boolean JavaNet::saveWebPage()
+bool JavaNet::saveWebPage()
 {
 ListIterator it;
 
-    if (this->isNetworkSavable() == FALSE)
-	return FALSE;
+    if (this->isNetworkSavable() == false)
+	return false;
 
-    ASSERT (this->isMacro() == FALSE);
+    ASSERT (this->isMacro() == false);
 
     this->setOutputName(this->getFileName());
 
@@ -262,21 +262,21 @@ ListIterator it;
     // in the browser must poll for new images.  Enabling this code
     // requires that polling be added in ui++/java/dx/client
     //
-    boolean contains_asyncs = FALSE;
-    if (contains_asyncs == FALSE) {
+    bool contains_asyncs = false;
+    if (contains_asyncs == false) {
 	ListIterator it;
 	Node* node;
 	FOR_EACH_NETWORK_NODE (this, node, it) {
 	    node->clearMarked();
 	    NodeDefinition* nd = node->getDefinition();
-	    if ((contains_asyncs==FALSE) && (nd->isMDFFlagASYNCHRONOUS()) &&
+	    if ((contains_asyncs==false) && (nd->isMDFFlagASYNCHRONOUS()) &&
 		((nd->isOutboard()) || (nd->isDynamicallyLoaded())))
-		contains_asyncs = TRUE;
+		contains_asyncs = true;
 	}
     }
 #endif
 
-    List* framenodes = this->makeClassifiedNodeList(ClassImageNode, FALSE);
+    List* framenodes = this->makeClassifiedNodeList(ClassImageNode, false);
     int framecnt = (framenodes?framenodes->getSize():0);
     ASSERT (framecnt);
 
@@ -287,7 +287,7 @@ ListIterator it;
     this->html_f = fopen (this->html_file, "w");
     if (!this->html_f) {
 	ErrorMessage ("Unable to open %s for writing.", this->html_file);
-	return FALSE;
+	return false;
     }
 
     //
@@ -351,10 +351,10 @@ ListIterator it;
 	    this->base_name, this->base_name, applet_width, applet_height, 
 	    theDXApplication->getUserHtmlDir(), this->base_name,
 	    this->base_name, this->base_name, version_string) <= 0)
-	return FALSE;
+	return false;
 
     int i;
-    boolean wrl_commented = FALSE;
+    bool wrl_commented = false;
     for (i=1; i<=framecnt; i++) {
 	ImageNode* n = (ImageNode*)framenodes->getElement(i);
 	int width, height;
@@ -387,7 +387,7 @@ ListIterator it;
 		    n->getNameString(), n->getInstanceNumber(), this->base_name,
 		    n->getNameString(), n->getInstanceNumber()
 		);
-		wrl_commented = TRUE;
+		wrl_commented = true;
 	    }
 	    fprintf (this->html_f, 
 		"<embed\n"
@@ -426,7 +426,7 @@ ListIterator it;
 		n->getInstanceNumber());
 	    fprintf (this->html_f, "        end sub\n");
 	    fprintf (this->html_f, "    -->\n");
-	    if (fprintf (this->html_f, "</script>\n") < 0) return FALSE;
+	    if (fprintf (this->html_f, "</script>\n") < 0) return false;
 	} else {
 	    fprintf (this->html_f, 
 		"<applet\n"
@@ -506,7 +506,7 @@ ListIterator it;
     this->make_f = fopen (this->make_file, "w");
     if (this->make_f == NUL(FILE*)) {
 	ErrorMessage ("Unable to open %s for writing.", this->make_file);
-	return FALSE;
+	return false;
     }
 
     const char* uiroot = NULL;
@@ -662,11 +662,11 @@ ListIterator it;
     if (framenodes)
 	delete framenodes;
 
-    if (this->netToApplet() == FALSE)
-	return FALSE;
+    if (this->netToApplet() == false)
+	return false;
 
     DXExecCtl *dxc = theDXApplication->getExecCtl();
-    if (!dxc) return FALSE;
+    if (!dxc) return false;
     theDXApplication->resetServer();
 
 
@@ -688,7 +688,7 @@ ListIterator it;
 		sprintf (fname, "%s%d", this->base_name, f); 
 	    else
 		sprintf (fname, "%s/%s%d", pathn, this->base_name, f); 
-	    bn->enableJava(fname, TRUE);
+	    bn->enableJava(fname, true);
 	}
 	delete fname;
 	if (pathn) delete pathn;
@@ -698,10 +698,10 @@ ListIterator it;
 
 	it.setList(*imgnodes);
 	while ( (bn = (ImageNode*)it.getNext()) ) 
-	    bn->disableJava(TRUE);
+	    bn->disableJava(true);
 	delete imgnodes;
     }
-    return TRUE;
+    return true;
 }
 
 
@@ -720,7 +720,7 @@ const char* JavaNet::getHtmlHeader()
 }
 
 
-boolean JavaNet::netToApplet()
+bool JavaNet::netToApplet()
 {
 #ifdef BETA_VERSION
     char* ateb = "Beta";
@@ -731,7 +731,7 @@ boolean JavaNet::netToApplet()
     this->applet_f = fopen(this->applet_file, "w");
     if (!this->applet_f) {
 	ErrorMessage ("Unable to open %s for writing.", this->applet_file);
-	return FALSE;
+	return false;
     }
 
     time_t t = time((time_t*)NULL);
@@ -779,10 +779,10 @@ boolean JavaNet::netToApplet()
 	ControlPanel* cp;
 	it.setList(*cps);
 	while ( (cp = (ControlPanel*)it.getNext()) ) {
-	    if (cp->printAsJava(this->applet_f) == FALSE) {
+	    if (cp->printAsJava(this->applet_f) == false) {
 		fclose(this->applet_f);
 		this->applet_f = NUL(FILE*);
-		return FALSE;
+		return false;
 	    }
 	}
 	delete cps;
@@ -794,10 +794,10 @@ boolean JavaNet::netToApplet()
     //
     Node* n;
     FOR_EACH_NETWORK_NODE(this, n, it) {
-	if (n->printAsJava(this->applet_f) == FALSE) {
+	if (n->printAsJava(this->applet_f) == false) {
 	    fclose (this->applet_f);
 	    this->applet_f = NUL(FILE*);
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -805,15 +805,15 @@ boolean JavaNet::netToApplet()
     fprintf (this->applet_f, "}\n");
     fclose (this->applet_f);
     this->applet_f = NUL(FILE*);
-    return TRUE;
+    return true;
 }
 
 
-boolean JavaNet::printMacroReferences(FILE *f, boolean inline_define,
+bool JavaNet::printMacroReferences(FILE *f, bool inline_define,
     PacketIFCallback ec, void *ecd)
 {
-    if (this->Network::printMacroReferences (f, inline_define, ec, ecd) == FALSE)
-	return FALSE;
+    if (this->Network::printMacroReferences (f, inline_define, ec, ecd) == false)
+	return false;
 
     if (this->isJavified()) {
 	if (fprintf (f, 
@@ -823,39 +823,39 @@ boolean JavaNet::printMacroReferences(FILE *f, boolean inline_define,
 	    "include \"gifmac.net\";\n"
 	    "include \"vrmlmac.net\";\n"
 	    "include \"dxmac.net\";\n"
-	    ) < 0) return FALSE;
+	    ) < 0) return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 //
 // Does the net contain at least 1 WebOptions and at least 1 ImageNode
 //
-boolean JavaNet::isJavified()
+bool JavaNet::isJavified()
 {
-    if (this->isMacro()) return FALSE;
+    if (this->isMacro()) return false;
     List* wo = this->makeNamedNodeList("WebOptions");
-    if (wo == NUL(List*)) return FALSE;
+    if (wo == NUL(List*)) return false;
     int wsize = wo->getSize();
     delete wo;
-    if (wsize <= 0) return FALSE;
+    if (wsize <= 0) return false;
 
-    List* img = this->makeClassifiedNodeList(ClassImageNode, FALSE);
-    if (img == NUL(List*)) return FALSE;
+    List* img = this->makeClassifiedNodeList(ClassImageNode, false);
+    if (img == NUL(List*)) return false;
     ListIterator it(*img);
-    boolean all_javified = TRUE;
+    bool all_javified = true;
     ImageNode* in;
     while ((all_javified) && (in = (ImageNode*)it.getNext())) {
-	if (in->isJavified() == FALSE)
-	    all_javified = FALSE;
+	if (in->isJavified() == false)
+	    all_javified = false;
     }
 
     delete img;
     return all_javified;
 }
 
-void JavaNet::changeExistanceWork(Node *n, boolean adding)
+void JavaNet::changeExistanceWork(Node *n, bool adding)
 {
     this->Network::changeExistanceWork(n,adding);
     this->saveWebPageCmd->deactivate();
@@ -863,12 +863,12 @@ void JavaNet::changeExistanceWork(Node *n, boolean adding)
 }
 
 
-boolean JavaNet::saveApplet()
+bool JavaNet::saveApplet()
 {
-    if (this->isJavified() == FALSE) 
-	return FALSE;
-    if (this->isNetworkSavable() == FALSE)
-	return FALSE;
+    if (this->isJavified() == false) 
+	return false;
+    if (this->isNetworkSavable() == false)
+	return false;
     if (this->applet_file == NUL(char*)) 
 	this->setOutputName(this->getFileName());
     ASSERT (this->applet_file);
@@ -876,7 +876,7 @@ boolean JavaNet::saveApplet()
     return this->netToApplet();
 }
 
-boolean JavaNet::saveBean()
+bool JavaNet::saveBean()
 {
 Node* n;
 ListIterator it;
@@ -886,12 +886,12 @@ ListIterator it;
     char* ateb = "";
 #endif
 
-    if (this->nodeList.getSize() <= 0) return FALSE;
+    if (this->nodeList.getSize() <= 0) return false;
 
     this->setOutputName(this->getFileName());
     this->bean_f = fopen(this->bean_file, "w");
     if (!this->bean_f) {
-	return FALSE;
+	return false;
     }
 
     fprintf (this->bean_f, "//\n");
@@ -924,10 +924,10 @@ ListIterator it;
     // Print each Node's bean initialization inside the constructor
     //
     FOR_EACH_NETWORK_NODE(this, n, it) {
-	if (n->printAsBeanInitCall(this->bean_f) == FALSE) {
+	if (n->printAsBeanInitCall(this->bean_f) == false) {
 	    fclose (this->bean_f);
 	    this->bean_f = NUL(FILE*);
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -942,19 +942,19 @@ ListIterator it;
     // Print each Node's bean initialization inside the constructor
     //
     FOR_EACH_NETWORK_NODE(this, n, it) {
-	if (n->printAsBeanInitCall(this->bean_f) == FALSE) {
+	if (n->printAsBeanInitCall(this->bean_f) == false) {
 	    fclose (this->bean_f);
 	    this->bean_f = NUL(FILE*);
-	    return FALSE;
+	    return false;
 	}
     }
     fprintf (this->bean_f, "    }\n\n");
 
     FOR_EACH_NETWORK_NODE(this, n, it) {
-	if (n->printAsBean(this->bean_f) == FALSE) {
+	if (n->printAsBean(this->bean_f) == false) {
 	    fclose (this->bean_f);
 	    this->bean_f = NUL(FILE*);
-	    return FALSE;
+	    return false;
 	}
     }
     fprintf (this->bean_f, "\n\n");
@@ -1000,7 +1000,7 @@ ListIterator it;
 
     fclose (this->bean_f);
     this->bean_f = NUL(FILE*);
-    return TRUE;
+    return true;
 }
 
 Command* JavaNet::getSaveBeanCommand()

@@ -80,19 +80,19 @@ extern "C" char *re_comp(char *s);
 extern "C" int re_exec(char *);
 #endif
 
-MacroDefinition::MacroDefinition(boolean system) : 
+MacroDefinition::MacroDefinition(bool system) : 
     NodeDefinition()
 {
     this->systemMacro = system;
     this->fileName = NULL;
     this->body = NULL;
-    this->initialRead = FALSE;
-    this->updatingServer = FALSE;
+    this->initialRead = false;
+    this->updatingServer = false;
     this->category = 0;
     if (!system)
 	this->saveCmd = new SaveMacroCommand("saveMacroCommand",
                                          theDXApplication->getCommandScope(),
-                                         TRUE,
+                                         true,
                                          this);
 }
 MacroDefinition::~MacroDefinition()
@@ -152,37 +152,37 @@ void MacroDefinition::dereference(MacroNode *n)
 //    }
 }
 
-boolean MacroDefinition::printNetworkBody(FILE *f, PrintType ptype)
+bool MacroDefinition::printNetworkBody(FILE *f, PrintType ptype)
 {
     if (!this->loadNetworkBody())
-	return FALSE;
+	return false;
     return this->body->printNetwork(f,ptype);
 }
-boolean MacroDefinition::loadNetworkBody()
+bool MacroDefinition::loadNetworkBody()
 {
     if (this->body == NULL)
     {
 	this->body = theDXApplication->newNetwork();
 	this->body->setDefinition(this);
-	this->initialRead = TRUE;
-	boolean r = this->body->readNetwork(this->fileName);
-	this->initialRead = FALSE;
+	this->initialRead = true;
+	bool r = this->body->readNetwork(this->fileName);
+	this->initialRead = false;
         if (!r) {
             this->body->setDefinition(NULL);
             Network *n = this->body;
             this->body = NULL;
             delete n;
-	    return FALSE;
+	    return false;
         } else {
             theDXApplication->macroList.appendElement(this->body);
         }
     }
-    return TRUE;
+    return true;
 }
-boolean MacroDefinition::updateServer()
+bool MacroDefinition::updateServer()
 {
     if (!this->loadNetworkBody())
-	return FALSE;
+	return false;
 
     if (this->body && !this->updatingServer) {
 	//
@@ -190,14 +190,14 @@ boolean MacroDefinition::updateServer()
 	// Network::sendValues(), MacroNode::sendValues() and 
  	// this->updateServer() that we try and avoid here.   
 	//
-	this->updatingServer = TRUE;
-	theDXApplication->getExecCtl()->updateMacros(FALSE);
-	this->updatingServer = FALSE;
+	this->updatingServer = true;
+	theDXApplication->getExecCtl()->updateMacros(false);
+	this->updatingServer = false;
     }
     return (this->body != NULL);
 }
 
-boolean MacroDefinition::setNodeDefinitions(MacroDefinition *newDef)
+bool MacroDefinition::setNodeDefinitions(MacroDefinition *newDef)
 {
     ListIterator li(this->referencingNodes);
     MacroNode *n;
@@ -210,7 +210,7 @@ boolean MacroDefinition::setNodeDefinitions(MacroDefinition *newDef)
 	    newDef->reference(n);
     }
 
-    return TRUE;
+    return true;
 }
 
 void MacroDefinition::setFileName(const char *n)
@@ -221,18 +221,18 @@ void MacroDefinition::setFileName(const char *n)
     this->fileName = fileName;
 }
 
-boolean MacroDefinition::LoadMacroFile(FILE *f,
+bool MacroDefinition::LoadMacroFile(FILE *f,
 				       const char *fileName,
-				       boolean replace,
-				       boolean *wasMacro,
-					boolean asSystemMacro)
+				       bool replace,
+				       bool *wasMacro,
+					bool asSystemMacro)
 {
 
     if (theDXApplication->inDebugMode())
 	printf("read macro from %s\n", fileName);
 
     char *p, line[1000];
-    boolean inMDF = FALSE;
+    bool inMDF = false;
     int lineNo = 0;
     MacroDefinition *md = NULL;
     NodeDefinition *nd = NULL;
@@ -259,11 +259,11 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
 	lineNo++;
 	if (EQUAL_STRING_SECOND_LEN(line, "// Begin MDF"))
 	{
-	    inMDF = TRUE;
+	    inMDF = true;
 	}
 	else if (inMDF && EQUAL_STRING_SECOND_LEN(line, "// End MDF"))
 	{
-	    inMDF = FALSE;
+	    inMDF = false;
 	    break;
 	}
 	else if (!inMDF && EQUAL_STRING_SECOND_LEN(line, "// MODULE"))
@@ -271,13 +271,13 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
 	    if (theDXApplication->inDebugMode())
 		printf("Macro rejected\n");
 	    if (wasMacro)
-		*wasMacro = FALSE;
+		*wasMacro = false;
 	    goto error;
 	}
 	else if (inMDF && EQUAL_STRING_SECOND_LEN(line, "// MODULE"))
 	{
 	    if (wasMacro)
-		*wasMacro = TRUE;
+		*wasMacro = true;
 
 	    char name[1000];
 	    int items_parsed = sscanf(line, "// MODULE %[^\n]", name);
@@ -397,14 +397,14 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
 	    if (items_parsed == 4) {
 		if (strstr(descr,DUMMY_DESCRIPTION_STRING) ||
 		    strstr(descr,OLD_DUMMY_DESCRIPTION_STRING))
-		    pd->setDummy(TRUE);
+		    pd->setDummy(true);
 		else
 		    pd->setDescription(descr);
 	    }
 	    switch (visattr) {
-	  	case 0:	pd->setDefaultVisibility(FALSE); break;
-	  	case 1:	pd->setDefaultVisibility(TRUE); break;
-	  	case 2:	pd->setViewability(FALSE); break;
+	  	case 0:	pd->setDefaultVisibility(false); break;
+	  	case 1:	pd->setDefaultVisibility(true); break;
+	  	case 2:	pd->setViewability(false); break;
 	    }
 	    pd->markAsInput();
 	    if (!ParseMDFTypes(pd, types, lineNo))
@@ -484,14 +484,14 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
 	    if (items_parsed == 3) {
 		if (strstr(descr,DUMMY_DESCRIPTION_STRING) ||
 		    strstr(descr,OLD_DUMMY_DESCRIPTION_STRING))
-		    pd->setDummy(TRUE);
+		    pd->setDummy(true);
 		else
 		    pd->setDescription(descr);
 	    }
 	    switch (visattr) {
-	  	case 0:	pd->setDefaultVisibility(FALSE); break;
-	  	case 1:	pd->setDefaultVisibility(TRUE); break;
-	  	case 2:	pd->setViewability(FALSE); break;
+	  	case 0:	pd->setDefaultVisibility(false); break;
+	  	case 1:	pd->setDefaultVisibility(true); break;
+	  	case 2:	pd->setViewability(false); break;
 	    }
 	    pd->markAsOutput();
 	    if (!ParseMDFTypes(pd, types, lineNo))
@@ -551,32 +551,32 @@ boolean MacroDefinition::LoadMacroFile(FILE *f,
     if (theDXApplication->inDebugMode())
 	printf("Macro %s accepted\n", md->getNameString());
 
-    return TRUE;
+    return true;
 
 error:
     if (md)
 	delete md;
-    return FALSE;
+    return false;
 }
 
 //
 // Load all .net files in the given directory that are macros.
-// If replace is TRUE, then replace any current definitions with the
+// If replace is true, then replace any current definitions with the
 // new one, otherwise ignore the .net file.
 // If errmsg is not NULL and an error occurs then, no error messages are 
 // posted, and instead a string buffer is allocated to hold the error 
 // message that would have been posted and returned.  The returned 
 // string must be freed by the caller.
 //
-boolean MacroDefinition::LoadMacroDirectories(const char *path, 
-					boolean replace, char **errmsg,
-					boolean asSystemMacro)
+bool MacroDefinition::LoadMacroDirectories(const char *path, 
+					bool replace, char **errmsg,
+					bool asSystemMacro)
 {
-   boolean wasEncoded;
-   boolean return_code = TRUE;
+   bool wasEncoded;
+   bool return_code = true;
 
     if (path == NULL)
-	return TRUE;
+	return true;
 
 #ifndef DXD_NON_UNIX_ENV_SEPARATOR
 #define SEP_CHAR ':'
@@ -643,7 +643,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	    } else {
 		ErrorMessage(errtxt, nsptr, strerror(errno));
 	    }
-	    return_code = FALSE;
+	    return_code = false;
 	}
 	else
 	{
@@ -655,7 +655,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	    struct dirent *entry;
 	    while ( (entry = readdir(d)) )
 	    {
-	        boolean exists = regexec(&net_file, entry->d_name, 0, NULL, 0);
+	        bool exists = regexec(&net_file, entry->d_name, 0, NULL, 0);
 		if (exists == 0)
 
 #elif defined(HAVE_REGCOMP) && defined(HAVE_REGEXP_H)
@@ -666,7 +666,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	    struct dirent *entry;
 	    while (entry = readdir(d))
 	    {
-		boolean exists = regexec((regexp *)net_file, entry->d_name);
+		bool exists = regexec((regexp *)net_file, entry->d_name);
 		if (exists)
 
 #elif defined(HAVE_REGCMP)
@@ -677,7 +677,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	    struct dirent *entry;
 	    while (entry = readdir(d))
 	    {
-		boolean exists = regex(net_file, entry->d_name) != NULL;
+		bool exists = regex(net_file, entry->d_name) != NULL;
 		if (exists)
 
 #elif defined(HAVE_RE_COMP)
@@ -688,7 +688,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 	    struct dirent *entry;
 	    while (entry = readdir(d))
 	    {
-		boolean exists = re_exec(entry->d_name) > 0;
+		bool exists = re_exec(entry->d_name) > 0;
 		if (exists)
 
 #elif defined(HAVE__FINDFIRST)
@@ -742,7 +742,7 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 			} else {
 			    ErrorMessage(errtxt, path, strerror(errno));
 	    		}
-			return_code = FALSE;
+			return_code = false;
 		    }
 		    else
 		    {
@@ -791,12 +791,12 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 // message that would have been posted and returned.  The returned 
 // string must be freed by the caller.
 //
-boolean MacroDefinition::LoadMacro(const char *fileName, char **errmsg,
-					boolean asSystemMacro)
+bool MacroDefinition::LoadMacro(const char *fileName, char **errmsg,
+					bool asSystemMacro)
 {
     char *netFile = Network::FilenameToNetname(fileName);
-    boolean return_code = TRUE;
-    boolean wasEncoded;
+    bool return_code = true;
+    bool wasEncoded;
 
     if (errmsg)	
 	*errmsg = NULL;
@@ -805,10 +805,10 @@ boolean MacroDefinition::LoadMacro(const char *fileName, char **errmsg,
 
  
     if (f == NULL) {
-	return_code = FALSE;
+	return_code = false;
     } else {
-	boolean wasMacro;
-	MacroDefinition::LoadMacroFile(f, netFile, TRUE, 
+	bool wasMacro;
+	MacroDefinition::LoadMacroFile(f, netFile, true, 
 						&wasMacro, asSystemMacro);
 	Network::CloseNetworkFILE(f, wasEncoded);
 	if (!wasMacro) {
@@ -819,7 +819,7 @@ boolean MacroDefinition::LoadMacro(const char *fileName, char **errmsg,
 	    } else {
 		ErrorMessage(errtxt, netFile);
 	    }
-	    return_code = FALSE;
+	    return_code = false;
 	}
     }
     delete netFile;
@@ -841,30 +841,30 @@ void MacroDefinition::openMacro()
     }
 }
 
-boolean MacroDefinition::removeIODef(List *l, ParameterDefinition *pd)
+bool MacroDefinition::removeIODef(List *l, ParameterDefinition *pd)
 {
-    boolean result = l->removeElement((void*)pd);
+    bool result = l->removeElement((void*)pd);
     if (!this->initialRead)
 	this->setNodeDefinitions(this);
     return result;
 }
-boolean MacroDefinition::addIODef(List *l, ParameterDefinition *pd)
+bool MacroDefinition::addIODef(List *l, ParameterDefinition *pd)
 {
-    boolean result = TRUE;
+    bool result = true;
     if (!this->initialRead) {
         result = this->NodeDefinition::addIODef(l, pd) &&
 		 this->setNodeDefinitions(this);
     }
     return result;
 }
-boolean MacroDefinition::replaceIODef(List *l,
+bool MacroDefinition::replaceIODef(List *l,
 				      ParameterDefinition *newPd,
 				      ParameterDefinition *pd)
 {
     int position = l->getPosition((void*)pd);
     if (position == 0)
-	return FALSE;
-    boolean result = l->removeElement((void*)pd);
+	return false;
+    bool result = l->removeElement((void*)pd);
     if (result)
     {
 	result = l->insertElement((void*)newPd, position);
@@ -927,12 +927,12 @@ int MacroDefinition::getFirstAvailableIOPosition(List *l)
    ParameterDefinition *pd;
    ListIterator iterator(*l);
    int n = 0;
-   boolean found_dummy = FALSE;
+   bool found_dummy = false;
 
    while ((pd = (ParameterDefinition*)iterator.getNext())) {
 	n++;
 	if (pd->isDummy()) {
-	   found_dummy = TRUE;
+	   found_dummy = true;
 	   break; 
 	}
    }
@@ -943,11 +943,11 @@ int MacroDefinition::getFirstAvailableIOPosition(List *l)
    return n;
 }
 
-boolean MacroDefinition::setNetwork(Network *net)
+bool MacroDefinition::setNetwork(Network *net)
 {
     this->body = net;
-    this->initialRead = FALSE;
+    this->initialRead = false;
 
-    return TRUE;
+    return true;
 }
 

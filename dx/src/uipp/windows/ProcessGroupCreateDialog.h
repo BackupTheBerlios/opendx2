@@ -46,7 +46,7 @@ class ProcessGroupCreateDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     EditorWindow  *editor;
@@ -61,7 +61,7 @@ class ProcessGroupCreateDialog : public Dialog
 
     void   makeList(int item);
     void   addCallbacks();
-    void   setButtonsSensitive(boolean setting);
+    void   setButtonsSensitive(bool setting);
  
   protected:
     //

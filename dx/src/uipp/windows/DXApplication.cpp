@@ -6,11 +6,14 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
+
 #include <dxconfig.h>
 #include "defines.h"
 
-// putenv should come from stdlib.h
-// extern "C" int putenv(char*);
+#include <windows.h>
+
+ //putenv should come from stdlib.h
+ //extern "C" int putenv(char*);
 
 #if defined(HAVE_IOSTREAM)
 #include <iostream>
@@ -119,6 +122,9 @@
 #include "ResourceManager.h"
 #include "XmlPreferences.h"
 
+#include "../../../VisualDX/dxui/Editor.h"
+
+
 //#ifdef HAS_CLIPNOTIFY_EXTENSION
 //#include "../widgets/clipnotify.h"
 //#endif
@@ -162,7 +168,7 @@ DXApplication* theDXApplication = NUL(DXApplication*);
 //extern "C" void InstallShutdownTimer(Widget w, 
 //				XtPointer clientData, XtPointer calldata);
 
-boolean    DXApplication::DXApplicationClassInitialized = FALSE;
+bool    DXApplication::DXApplicationClassInitialized = false;
 DXResource DXApplication::resource;
 
 Symbol DXApplication::MsgExecute = 0;
@@ -211,7 +217,7 @@ DXApplication::DXApplication(char* className): IBMApplication(className)
     this->anchor = NULL;
     this->appLicenseType = UndeterminedLicense;
     this->funcLicenseType = UndeterminedLicense;
-    this->serverDisconnectScheduled = FALSE;
+    this->serverDisconnectScheduled = false;
     this->network = NULL;
     //
     // Create the local command scope.
@@ -237,138 +243,138 @@ DXApplication::DXApplication(char* className): IBMApplication(className)
 	new ConfirmedQuitCommand
 	     ("quit",
 	     this->commandScope,
-	     TRUE,
+	     true,
 	     this);
 
     this->exitCmd =
         new ConfirmedExitCommand
              ("exit",
              this->commandScope,
-             TRUE,
+             true,
              this);
 
     this->openFileCmd =
 	new OpenCommand("open",
 			this->commandScope,
-			TRUE,
+			true,
 			this);
 
     this->messageWindowCmd = 
 	new NoUndoDXAppCommand("messageWindowCmd",
 			this->commandScope,
-			TRUE,
+			true,
 			this, 
 			NoUndoDXAppCommand::OpenMessageWindow);
 
     this->openSequencerCmd = 
 	new NoUndoDXAppCommand("openSequencerCmd",
 			this->commandScope,
-			FALSE,
+			false,
 			this, 
 			NoUndoDXAppCommand::OpenSequencer);
 
     this->openAllColormapCmd = 
 	new NoUndoDXAppCommand("openAllColormapCmd",
 			this->commandScope,
-			FALSE,
+			false,
 			this, 
 			NoUndoDXAppCommand::OpenAllColormaps);
 
     this->loadMacroCmd =
 	new NoUndoDXAppCommand("Load Macro Command",
 			this->commandScope,
-			TRUE,
+			true,
 			this, 
 			NoUndoDXAppCommand::LoadMacro);
 
     this->executeOnceCmd =
 	new NoUndoDXAppCommand("Execute Once",
 			this->commandScope,
-			FALSE,
+			false,
 			this, 
 			NoUndoDXAppCommand::ExecuteOnce);
 
     this->executeOnChangeCmd =
 	new NoUndoDXAppCommand("Execute On Change",
 			this->commandScope,
-			FALSE,
+			false,
 			this, 
 			NoUndoDXAppCommand::ExecuteOnChange);
 
     this->endExecutionCmd =
 	new NoUndoDXAppCommand("End Execution",
 			this->commandScope,
-			FALSE,
+			false,
 			this, 
 			NoUndoDXAppCommand::EndExecution);
 
     this->connectedToServerCmd =
-	new NoOpCommand("Connected To Server", this->commandScope, TRUE);
+	new NoOpCommand("Connected To Server", this->commandScope, true);
 
     this->disconnectedFromServerCmd =
-	new NoOpCommand("Disconnected From Server", this->commandScope, TRUE);
+	new NoOpCommand("Disconnected From Server", this->commandScope, true);
 
     this->executingCmd =
-	new NoOpCommand("executingCmd", this->commandScope, TRUE);
+	new NoOpCommand("executingCmd", this->commandScope, true);
     this->notExecutingCmd =
-	new NoOpCommand("notExecutingCmd", this->commandScope, TRUE);
+	new NoOpCommand("notExecutingCmd", this->commandScope, true);
 
     this->connectToServerCmd = 
 	new NoUndoDXAppCommand("Start Server",
 			this->commandScope,
-			TRUE,
+			true,
 			this, 
 			NoUndoDXAppCommand::StartServer);
 
     this->resetServerCmd = 
 	new NoUndoDXAppCommand("Reset Server",
 			this->commandScope,
-			FALSE,
+			false,
 			this, 
 			NoUndoDXAppCommand::ResetServer);
 
     this->disconnectFromServerCmd = 
 	new DisconnectFromServerCommand("Disconnect From Server...",
 			this->commandScope,
-			FALSE);
+			false);
 
 #if USE_REMAP	// 6/14/93
     this->toggleRemapInteractorsCmd = 
 	new NoUndoDXAppCommand("Remap Interactor Outputs...",
 			this->commandScope,
-			TRUE,
+			true,
 			this, 
 			NoUndoDXAppCommand::RemapInteractorOutputs);
 #endif
     this->loadMDFCmd = 
 	new NoUndoDXAppCommand("Load MDF...",
 			this->commandScope,
-			TRUE,
+			true,
 			this, 
 			NoUndoDXAppCommand::LoadUserMDF);
 
     this->toggleInfoEnable = 
 	new NoUndoDXAppCommand("Enable Information",
 			this->commandScope,
-			TRUE,
+			true,
 			this, 
 			NoUndoDXAppCommand::ToggleInfoEnable);
     this->toggleWarningEnable = 
 	new NoUndoDXAppCommand("Enable Warnings",
 			this->commandScope,
-			TRUE,
+			true,
 			this, 
 			NoUndoDXAppCommand::ToggleWarningEnable);
     this->toggleErrorEnable = 
 	new NoUndoDXAppCommand("Enable Errors",
 			this->commandScope,
-			TRUE,
+			true,
 			this, 
 			NoUndoDXAppCommand::ToggleErrorEnable);
     this->assignProcessGroupCmd = 
 	new NoUndoDXAppCommand("assignProcessGroup",
 			this->commandScope,
-			TRUE,
+			true,
 			this, 
 			NoUndoDXAppCommand::AssignProcessGroup);
 
@@ -416,7 +422,7 @@ DXApplication::DXApplication(char* className): IBMApplication(className)
     //
     theNDAllocatorDictionary = new NDAllocatorDictionary;
 
-    this->readFirstNetwork = FALSE;
+    this->readFirstNetwork = false;
 
 #if !defined(WORKSPACE_PAGES)
     this->PGManager = new ProcessGroupManager(this);
@@ -567,7 +573,7 @@ DXApplication::~DXApplication()
     //
     // Set the flag to terminate the event processing loop.
     //
-    this->runApplication = FALSE;
+    this->runApplication = false;
 
     theDXApplication = NULL;
 }
@@ -594,7 +600,7 @@ void DXApplication::loadMDF()
 	strcat(s, this->resource.executiveModule);
     }
     Dictionary newdefs;
-    if (!LoadMDFFile(s,"executive",&newdefs, FALSE)) 
+    if (!LoadMDFFile(s,"executive",&newdefs, false)) 
         return;
 
     //
@@ -605,7 +611,7 @@ void DXApplication::loadMDF()
     while ( (nd = (NodeDefinition*)di.getNextDefinition()) ) {
         Symbol s = nd->getNameSymbol();
         theNodeDefinitionDictionary->addDefinition(s,(const void*)nd);
-        nd->setUserTool(FALSE);
+        nd->setUserTool(false);
     }
 
 }
@@ -635,7 +641,7 @@ void DXApplication::loadIDF()
     }
 
     Dictionary newdefs;
-    if (!LoadMDFFile(s,"user interface",&newdefs, FALSE)) 
+    if (!LoadMDFFile(s,"user interface",&newdefs, false)) 
         return;
 
     //
@@ -646,7 +652,7 @@ void DXApplication::loadIDF()
     while ( (nd = (NodeDefinition*)di.getNextDefinition()) ) {
         Symbol s = nd->getNameSymbol();
         theNodeDefinitionDictionary->addDefinition(s,(const void*)nd);
-        nd->setUserTool(FALSE);
+        nd->setUserTool(false);
     }
 
 }
@@ -661,7 +667,7 @@ void DXApplication::loadIDF()
 // in the temporary dictionary into the ToolSelector(s).
 //
 void DXApplication::loadUDF(const char *fileName, Dictionary *dict, 
-				boolean uiLoadedOnly)
+				bool uiLoadedOnly)
 {
     Dictionary local_dict;
     if (!dict)
@@ -865,13 +871,13 @@ void DXApplication::getResources()
 	// TODO: need to take care of the color prefs yet.
 }
 
-boolean DXApplication::initialize(unsigned int* argcp,
+bool DXApplication::initialize(unsigned int* argcp,
 			       char**        argv)
 {
-//boolean wasSetBusy = FALSE;
+//bool wasSetBusy = false;
 
     if (!this->IBMApplication::initializeWindowSystem(argcp,argv))
-	return FALSE;
+	return false;
 
     //
     // Color preallocation - necessary only because of the logo
@@ -891,7 +897,7 @@ boolean DXApplication::initialize(unsigned int* argcp,
 
 	ResourceManager::BuildTheResourceManager();
     if (!this->IBMApplication::initialize(argcp,argv))
-		return FALSE;
+		return false;
 
 //#ifdef DIAGNOSTICS
 //    /*
@@ -922,7 +928,7 @@ boolean DXApplication::initialize(unsigned int* argcp,
 	    theSymbolManager->registerSymbol("ServerDisconnected");
 	DXApplication::MsgPanelChanged = 
 	    theSymbolManager->registerSymbol("PanelChanged");
-	DXApplication::DXApplicationClassInitialized = TRUE;
+	DXApplication::DXApplicationClassInitialized = true;
     }
 
     //
@@ -1134,19 +1140,17 @@ boolean DXApplication::initialize(unsigned int* argcp,
 		DXApplication::resource.autoLayoutNodeSpacing);
     }
 
-    if (this->resource.echoVersion)
-    {
-	printf(
-#ifdef BETA_VERSION
-	"%s User Interface, version %02d.%02d.%04d Beta (%s, %s)\n",
-#else
-	"%s User Interface, version %02d.%02d.%04d (%s, %s)\n",
-#endif
-	    theApplication->getFormalName(),
-	    DX_MAJOR_VERSION, DX_MINOR_VERSION, DX_MICRO_VERSION,
-	    __TIME__, __DATE__);
-	exit (0);
-    }
+	if (this->resource.echoVersion)
+	{
+		char buf[512];
+		sprintf(buf, "%s User Interface, \nversion %02d.%02d.%04d (%s, %s)", 	    
+			theApplication->getFormalName(),
+			DX_MAJOR_VERSION, DX_MINOR_VERSION, DX_MICRO_VERSION,
+			__TIME__, __DATE__);
+
+		MessageBox(NULL, buf, "Version", MB_OK | MB_ICONINFORMATION);
+		exit (0);
+	}
 
     //
     // If the DXApplication does not allow DX help, then turn off middle
@@ -1169,7 +1173,7 @@ boolean DXApplication::initialize(unsigned int* argcp,
 	    GraphLayout::SetHeightPerLevel (DXApplication::resource.autoLayoutHeight);
 	if (errmsg) {
 	    fprintf (stderr, errmsg);
-	    return FALSE;
+	    return false;
 	}
     }
     if (DXApplication::resource.autoLayoutGroupSpacing > 0) {
@@ -1177,7 +1181,7 @@ boolean DXApplication::initialize(unsigned int* argcp,
 	    GraphLayout::SetGroupSpacing (DXApplication::resource.autoLayoutGroupSpacing);
 	if (errmsg) {
 	    fprintf (stderr, errmsg);
-	    return FALSE;
+	    return false;
 	}
     }
     if (DXApplication::resource.autoLayoutNodeSpacing > 0) {
@@ -1185,7 +1189,7 @@ boolean DXApplication::initialize(unsigned int* argcp,
 	    GraphLayout::SetNodeSpacing (DXApplication::resource.autoLayoutNodeSpacing);
 	if (errmsg) {
 	    fprintf (stderr, errmsg);
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -1195,7 +1199,7 @@ boolean DXApplication::initialize(unsigned int* argcp,
     //
     if (this->inEditMode() && !this->appAllowsEditorAccess()) {
 	fprintf(stderr,"-edit and -noEditorAccess options are incompatible.\n");
-	return FALSE;
+	return false;
     }
 
     
@@ -1208,7 +1212,7 @@ boolean DXApplication::initialize(unsigned int* argcp,
                  "the \"DXNETPATH\" environment variable, \n"
 		 "the -netPath command line option, or\n"
 		 "the *netPath resource.\n");
-	return FALSE;
+	return false;
     } 
     
     //
@@ -1356,24 +1360,13 @@ boolean DXApplication::initialize(unsigned int* argcp,
     this->loadMDF();
     this->loadIDF();
     if (this->resource.userModules)
-	this->loadUDF(this->resource.userModules, NULL, FALSE);
+	this->loadUDF(this->resource.userModules, NULL, false);
 
 
     // 
     // Decorator Styles
     //
     BuildtheDecoratorStyleDictionary();
-
-#if 0
-#if 00 && SYSTEM_MACROS // Net yet, dawood 11/17/94
-    //
-    // load the set of system macros from $DXROOT/ui/.
-    //
-    char path[1024];
-    sprintf(path,"%s/ui",this->getUIRoot());
-    MacroDefinition::LoadMacroDirectories(path, FALSE, NULL, TRUE);
-#endif
-#endif
 
     //
     // load the initial set of user macros.
@@ -1388,7 +1381,7 @@ boolean DXApplication::initialize(unsigned int* argcp,
         if (this->inImageMode())
 	    this->anchor = this->newImageWindow(this->network);
 	else if (this->inMenuBarMode())
-	    this->anchor = new DXAnchorWindow ("dxAnchor", TRUE, TRUE);
+	    this->anchor = new DXAnchorWindow ("dxAnchor", true, true);
 	else {
 	    fprintf(stderr,"Unrecognized anchor mode\n");
 	    ASSERT(0);
@@ -1402,24 +1395,28 @@ boolean DXApplication::initialize(unsigned int* argcp,
 	    this->anchor->initialize();
 	else {
 	    this->anchor->manage();
-	    //this->setBusyCursor(TRUE);
-	    //wasSetBusy = TRUE;
+	    //this->setBusyCursor(true);
+	    //wasSetBusy = true;
 	}
     }
     else
     {
-	this->anchor = this->newNetworkEditor(this->network);
-	if (!this->anchor)
-	    return FALSE;    // Expect newNetworkEditor() to issue message.
+		//Working Here DT
+	// Set the Application Main Form
+		this->applicationContext->set_MainForm(new dxui::Editor);
+
+		//this->anchor = this->newNetworkEditor(this->network);
+	//if (!this->anchor)
+	//    return false;    // Expect newNetworkEditor() to issue message.
 
 	//
 	// The editor must always be managed before reading .nets
 	// (we could do it with some work, but doesn't seem useful especially
 	// since we don't want error messages coming up behind the VPE).
 	//
-	this->anchor->manage();
-	//this->setBusyCursor(TRUE);
-	//wasSetBusy = TRUE;
+	//this->anchor->manage();
+	//this->setBusyCursor(true);
+	//wasSetBusy = true;
     }
 
 
@@ -1457,8 +1454,8 @@ boolean DXApplication::initialize(unsigned int* argcp,
 	//XtRealizeWidget(this->anchor->getRootWidget());
  //   else if (!this->anchor->isManaged()) {
 	//this->anchor->manage();
-	////this->setBusyCursor(TRUE);
-	//wasSetBusy = TRUE;
+	////this->setBusyCursor(true);
+	//wasSetBusy = true;
  //   }
 
     //
@@ -1467,43 +1464,43 @@ boolean DXApplication::initialize(unsigned int* argcp,
     if (!DXApplication::resource.noAnchorAtStartup)
 	this->postCopyrightNotice();
 
-#ifdef HAS_CLIPNOTIFY_EXTENSION
-    //
-    // If applicable, see if this is an IBM POWER Visualization Server 
-    // Video Controler
-    //
-    int majorCode;
-    int errorCode;
-    if (this->hasClipnotifyExtension =
-	XQueryExtension
-	    (this->display,
-	     CLIPNOTIFY_PROTOCOL_NAME,
-	     &majorCode,
-	     &this->clipnotifyEventCode,
-	     &errorCode))
-    {
-	XSetWindowAttributes        attributes;
-	Window win =
-	    XCreateWindow
-		(this->display,
-		 RootWindow(this->display, 0),
-		 0,  0,
-		 10, 10,
-		 2,  8,
-		 CopyFromParent,
-		 CopyFromParent,
-		 NULL,
-		 &attributes);
-	XClipNotifyAddWin(this->display, win);
-    }
-#endif
+//#ifdef HAS_CLIPNOTIFY_EXTENSION
+//    //
+//    // If applicable, see if this is an IBM POWER Visualization Server 
+//    // Video Controler
+//    //
+//    int majorCode;
+//    int errorCode;
+//    if (this->hasClipnotifyExtension =
+//	XQueryExtension
+//	    (this->display,
+//	     CLIPNOTIFY_PROTOCOL_NAME,
+//	     &majorCode,
+//	     &this->clipnotifyEventCode,
+//	     &errorCode))
+//    {
+//	XSetWindowAttributes        attributes;
+//	Window win =
+//	    XCreateWindow
+//		(this->display,
+//		 RootWindow(this->display, 0),
+//		 0,  0,
+//		 10, 10,
+//		 2,  8,
+//		 CopyFromParent,
+//		 CopyFromParent,
+//		 NULL,
+//		 &attributes);
+//	XClipNotifyAddWin(this->display, win);
+//    }
+//#endif
 
     //
     // Refresh the screen.
     //
     //XmUpdateDisplay(this->getRootWidget());
 
-
+#ifdef NOT_WORKING_ON_YET
 #ifndef	DXD_WIN
     //
     // Connect to exec first 
@@ -1552,7 +1549,7 @@ boolean DXApplication::initialize(unsigned int* argcp,
  
     ASSERT(this->appLicenseType != Unlicensed);
 
-    //if (wasSetBusy) this->setBusyCursor(FALSE);
+    //if (wasSetBusy) this->setBusyCursor(false);
 
 #ifdef	DXD_WIN
     //
@@ -1564,8 +1561,8 @@ boolean DXApplication::initialize(unsigned int* argcp,
 	this->completeConnection(c);
     }
 #endif
-
-    return TRUE;
+#endif //NOT_WORKING_ON_YET
+    return true;
 }
 
 #if NEED_TO_WATCH_EVENTS
@@ -1579,44 +1576,51 @@ printEvent (Widget w, XtPointer, String actname, XEvent *xev, String *, Cardinal
 
 void DXApplication::handleEvents()
 {
-//    XEvent event;    
-//    
-//#if NEED_TO_WATCH_EVENTS
-//    XtAppAddActionHook (this->applicationContext, (XtActionHookProc)printEvent, NULL);
-//#endif
+	//    XEvent event;    
+	//    
+	//#if NEED_TO_WATCH_EVENTS
+	//    XtAppAddActionHook (this->applicationContext, (XtActionHookProc)printEvent, NULL);
+	//#endif
 
-    //
-    // Process events while the application is running.
-    //
-    this->runApplication = TRUE;
-    while (this->runApplication)
-    {
-	//XtAppNextEvent(this->applicationContext, &event);
 	//
-	// We check runApplication here because shutdownApplication()
-	// delivers a bogus event to kick us out of XtAppNextEvent()
-	// when a socket has been closed during a select().
- 	// All done for DXLExit().
+	// Process events while the application is running.
 	//
-	//if (this->runApplication && XHandler::ProcessEvent(&event))
-	//{
-	//    this->handleEvent(&event); 
-	//}	// Done handling an event
 
-	this->destroyDumpedObjects();
-
-	if (this->serverDisconnectScheduled) {
-	    this->serverDisconnectScheduled = FALSE;
-	    this->disconnectFromServer();
+	if(this->applicationContext->MainForm) {
+		System::Threading::Thread::CurrentThread->ApartmentState = System::Threading::ApartmentState::STA;
+		Application::Run(this->applicationContext);
 	}
 
-	//
-	// If the user asked the UI to terminate after the first
-	// execution (if any) then do so.
-	//
-	if (this->resource.exitAfter && !this->getExecCtl()->isExecuting())
-	    this->shutdownApplication();
-    }
+	this->runApplication = false;
+
+	while (this->runApplication)
+	{
+		//XtAppNextEvent(this->applicationContext, &event);
+		//
+		// We check runApplication here because shutdownApplication()
+		// delivers a bogus event to kick us out of XtAppNextEvent()
+		// when a socket has been closed during a select().
+		// All done for DXLExit().
+		//
+		//if (this->runApplication && XHandler::ProcessEvent(&event))
+		//{
+		//    this->handleEvent(&event); 
+		//}	// Done handling an event
+
+		this->destroyDumpedObjects();
+
+		if (this->serverDisconnectScheduled) {
+			this->serverDisconnectScheduled = false;
+			this->disconnectFromServer();
+		}
+
+		//
+		// If the user asked the UI to terminate after the first
+		// execution (if any) then do so.
+		//
+		if (this->resource.exitAfter && !this->getExecCtl()->isExecuting())
+			this->shutdownApplication();
+	}
 }
 
 //void
@@ -1762,11 +1766,11 @@ DXChild *DXApplication::startServer()
 	}
 
     sprintf(cmd, "dx %s", args);
-	DXChild *c = new DXChild(this->serverInfo.server, cmd, FALSE);
+	DXChild *c = new DXChild(this->serverInfo.server, cmd, false);
 	if (c->failed()) {
 	    delete c;
 	    sprintf(cmd,"%s/bin/dx %s",this->getUIRoot(),args);
-	    c = new DXChild(this->serverInfo.server, cmd, FALSE);
+	    c = new DXChild(this->serverInfo.server, cmd, false);
 	    // If it still fails, let the connectToServer()  catch it. 
  	}
 	
@@ -1987,7 +1991,7 @@ void DXApplication::packetIFCancel(DXPacketIF *p)
 int DXApplication::connectToServer(int port, DXChild *c)
 {
     char *server;
-    int   wasQueued = FALSE;
+    int   wasQueued = false;
     char s[1000];
 
     if (c)
@@ -2015,7 +2019,7 @@ int DXApplication::connectToServer(int port, DXChild *c)
 	ErrorMessage(s);
 
 	delete p;
-	return FALSE;
+	return false;
     }
 
     //
@@ -2045,7 +2049,7 @@ int DXApplication::connectToServer(int port, DXChild *c)
 				       DXApplication::QueuedPacketCancel,
 				       NULL);
     }
-    return (TRUE);
+    return (true);
 }
 
 void DXApplication::closeConnection(DXChild *c)
@@ -2063,7 +2067,7 @@ void DXApplication::closeConnection(DXChild *c)
     }
 }
 
-boolean DXApplication::disconnectFromServer()
+bool DXApplication::disconnectFromServer()
 {
 
     if (this->serverInfo.packet != NULL)
@@ -2079,18 +2083,18 @@ boolean DXApplication::disconnectFromServer()
     //
     // Make sure we don't disconnect on the next connection.
     //
-    this->serverDisconnectScheduled = FALSE;
+    this->serverDisconnectScheduled = false;
 
-    return TRUE;
+    return true;
 }
 
 
-boolean DXApplication::openFile(const char *netfile, const char *cfgfile,
-				boolean resetTheServer)
+bool DXApplication::openFile(const char *netfile, const char *cfgfile,
+				bool resetTheServer)
 {
     Network *network = this->network;
-    boolean execOnChange = this->getExecCtl()->inExecOnChange();
-    boolean result;
+    bool execOnChange = this->getExecCtl()->inExecOnChange();
+    bool result;
 
     if (execOnChange)
 	this->getExecCtl()->suspendExecOnChange();
@@ -2114,11 +2118,11 @@ boolean DXApplication::openFile(const char *netfile, const char *cfgfile,
 	this->appendReferencedFile(netfile);
     }
 
-    this->readFirstNetwork = TRUE;
+    this->readFirstNetwork = true;
     return result;
 }
 
-boolean DXApplication::saveFile(const char *netfile, boolean force)
+bool DXApplication::saveFile(const char *netfile, bool force)
 {
     const char *name = netfile;
     Network *network = this->network;
@@ -2129,7 +2133,7 @@ boolean DXApplication::saveFile(const char *netfile, boolean force)
     if (! name)
     {
 	ErrorMessage("unable to save file");
-	return FALSE;
+	return false;
     }
 
     return  network->saveNetwork(name, force);
@@ -2150,17 +2154,17 @@ void DXApplication::DebugEchoCallback(void *clientData, char *echoString)
 }
 
 
-boolean DXApplication::postStartServerDialog()
+bool DXApplication::postStartServerDialog()
 {
     if (this->startServerDialog == NULL)
 	this->startServerDialog = new StartServerDialog();
     this->markNetworksDirty();
     this->startServerDialog->post();
-    return TRUE;
+    return true;
 }
 //
 // This should be moved to "DXExecCtl"
-boolean DXApplication::resetServer()
+bool DXApplication::resetServer()
 {
     char message[1024];
 
@@ -2191,7 +2195,7 @@ boolean DXApplication::resetServer()
     }
 
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -2336,14 +2340,14 @@ MsgWin *DXApplication::newMsgWin()
 }
 ImageWindow *DXApplication::newImageWindow(Network *n)
 {
-    boolean is_anchor;
+    bool is_anchor;
 
     ASSERT(n);
 
     if (this->anchor == NULL)
-	is_anchor = TRUE;
+	is_anchor = true;
     else
-	is_anchor = FALSE;
+	is_anchor = false;
 
     return new ImageWindow(is_anchor, n);
 }
@@ -2353,7 +2357,7 @@ ControlPanel *DXApplication::newControlPanel(Network *n)
     return new ControlPanel(n);
 }
 
-Network *DXApplication::newNetwork(boolean nonJava)
+Network *DXApplication::newNetwork(bool nonJava)
 {
     Network* n;
     if (nonJava)
@@ -2387,11 +2391,11 @@ EditorWindow *DXApplication::newNetworkEditor(Network *n)
 	goto error;		
     }
 
-    boolean is_anchor;
+    bool is_anchor;
     if (this->anchor == NULL)
-	is_anchor = TRUE;
+	is_anchor = true;
     else
-	is_anchor = FALSE;
+	is_anchor = false;
 
     return new EditorWindow(is_anchor, n);
 
@@ -2419,7 +2423,7 @@ void DXApplication::connectToApplication(const char *host, const int port)
 			DXApplication::DebugEchoCallback,(void*)NULL);
 }
 
-void DXApplication::disconnectFromApplication(boolean terminate)
+void DXApplication::disconnectFromApplication(bool terminate)
 {
     if (this->applicationPacket) {
 	this->dumpObject(this->applicationPacket);
@@ -2434,29 +2438,29 @@ void DXApplication::disconnectFromApplication(boolean terminate)
 //
 // Message control functions.
 //
-boolean	DXApplication::isInfoEnabled()
+bool	DXApplication::isInfoEnabled()
 {
     return this->resource.infoEnabled;
 }
-boolean	DXApplication::isWarningEnabled()
+bool	DXApplication::isWarningEnabled()
 {
     return this->resource.warningEnabled;
 }
-boolean	DXApplication::isErrorEnabled()
+bool	DXApplication::isErrorEnabled()
 {
     return this->resource.errorEnabled;
 }
-boolean	DXApplication::doesInfoOpenMessage(boolean fromModule)
+bool	DXApplication::doesInfoOpenMessage(bool fromModule)
 {
     return (this->resource.infoOpensMessage ||
     	    (fromModule && this->resource.moduleInfoOpensMessage)) &&
 	   this->isInfoEnabled();
 }
-boolean	DXApplication::doesWarningOpenMessage()
+bool	DXApplication::doesWarningOpenMessage()
 {
     return this->resource.warningOpensMessage && this->isWarningEnabled();
 }
-boolean	DXApplication::doesErrorOpenMessage()
+bool	DXApplication::doesErrorOpenMessage()
 {
     return this->resource.errorOpensMessage && this->isErrorEnabled();
 }
@@ -2477,15 +2481,15 @@ int DXApplication::doesErrorOpenVpe(Network *net)
 
     return DXApplication::MustOpenVpe;
 }
-void	DXApplication::enableInfo(boolean enable)
+void	DXApplication::enableInfo(bool enable)
 {
     this->resource.infoEnabled = enable;
 }
-void	DXApplication::enableWarning(boolean enable)
+void	DXApplication::enableWarning(bool enable)
 {
     this->resource.warningEnabled = enable;
 }
-void	DXApplication::enableError(boolean enable)
+void	DXApplication::enableError(bool enable)
 {
     this->resource.errorEnabled = enable;
 }
@@ -2539,7 +2543,7 @@ void DXApplication::postProcessGroupAssignDialog()
 void DXApplication::sendNewMDFToServer(Dictionary *newdefs, Dictionary *current)
 {
     char *buf = NULL;
-    boolean sent_stuff = FALSE;
+    bool sent_stuff = false;
     DXPacketIF *pif = this->getPacketIF();
 
     if (!pif)
@@ -2551,11 +2555,11 @@ void DXApplication::sendNewMDFToServer(Dictionary *newdefs, Dictionary *current)
     while ( (nd = (NodeDefinition*)di.getNextDefinition()) ) {
 	char *mdf;
 	int  buflen = 0;
-	boolean outboard = nd->isOutboard();
-  	boolean dynamic = nd->isDynamicallyLoaded();
+	bool outboard = nd->isOutboard();
+  	bool dynamic = nd->isDynamicallyLoaded();
 	// The following requires that the exec sees the -mdf options that
 	// the UI sees.  
-        boolean send = (outboard || dynamic) && nd->isUILoadedOnly(); 
+        bool send = (outboard || dynamic) && nd->isUILoadedOnly(); 
 	//
 	// See if a definition already existed and if the outboardness or 
 	// the dynamicity changes (e.g. outboard -> inboard) we must resend
@@ -2611,7 +2615,7 @@ void DXApplication::sendNewMDFToServer(Dictionary *newdefs, Dictionary *current)
 	    strcat(p,"\");\n");
 	    pif->send(DXPacketIF::FOREGROUND, buf); 
 	    delete mdf;
-	    sent_stuff = TRUE;
+	    sent_stuff = true;
     	}
     }
 
@@ -2630,7 +2634,7 @@ void DXApplication::sendNewMDFToServer(Dictionary *newdefs, Dictionary *current)
 	char sbuf[1024];
 	sprintf(sbuf,"Executive(\"package\",\"%s\");\n",file);
 	pif->send(DXPacketIF::FOREGROUND, sbuf); 
-        sent_stuff = TRUE;
+        sent_stuff = true;
     }
 
     if (sent_stuff) {
@@ -2663,121 +2667,121 @@ void DXApplication::sendNewMDFToServer(Dictionary *newdefs, Dictionary *current)
 //  Level 3 - "A"
 // 
 //
-boolean DXApplication::isRestrictionLevel(int level)
+bool DXApplication::isRestrictionLevel(int level)
 {
     const char *rlev = this->resource.restrictionLevel;
 
     ASSERT(level > 0);
 
     if (!rlev)
-	return FALSE;
+	return false;
 
     switch (level) {
-	case 3: if (EqualString("minimum",rlev)) return TRUE; 
-	case 2: if (EqualString("intermediate",rlev)) return TRUE; 
-	case 1: if (EqualString("maximum",rlev)) return TRUE; 
+	case 3: if (EqualString("minimum",rlev)) return true; 
+	case 2: if (EqualString("intermediate",rlev)) return true; 
+	case 1: if (EqualString("maximum",rlev)) return true; 
 	default:
-	    return FALSE;
+	    return false;
     }
-    return FALSE;
+    return false;
 
 }
-boolean DXApplication::appAllowsDXHelp() 
+bool DXApplication::appAllowsDXHelp() 
 { 
     return !this->resource.noDXHelp  && !this->getOEMApplicationName();
 } 
-boolean DXApplication::appAllowsPanelEdit() 
+bool DXApplication::appAllowsPanelEdit() 
 { 
     return !this->isRestrictionLevel(SOMEWHAT_RESTRICTED) 	&& 
 	   !this->resource.noPanelEdit;
 } 
-boolean DXApplication::appAllowsRWConfig()
+bool DXApplication::appAllowsRWConfig()
 { 
     return !this->isRestrictionLevel(FULLY_RESTRICTED) 	 && 
 	   !this->resource.noRWConfig;
 }
-boolean DXApplication::appAllowsPanelAccess()
+bool DXApplication::appAllowsPanelAccess()
 { 
     return !this->isRestrictionLevel(FULLY_RESTRICTED) 	 &&
 	   !this->resource.noPanelAccess; 
 } 
-boolean DXApplication::appAllowsOpenAllPanels()
+bool DXApplication::appAllowsOpenAllPanels()
 { 
     return !this->isRestrictionLevel(SOMEWHAT_RESTRICTED) 	 &&
 	   !this->resource.noOpenAllPanels; 
 } 
-boolean DXApplication::appAllowsPanelOptions()
+bool DXApplication::appAllowsPanelOptions()
 { 
     return !this->isRestrictionLevel(SOMEWHAT_RESTRICTED) 	&& 
 	   !this->resource.noPanelOptions; 
 }
 
-boolean DXApplication::appAllowsInteractorSelection()
+bool DXApplication::appAllowsInteractorSelection()
 { 
     return this->appAllowsPanelEdit() ||
 	   this->appAllowsInteractorAttributeChange() ||
 	   this->appAllowsInteractorEdits();
 }
-boolean DXApplication::appAllowsInteractorMovement()
+bool DXApplication::appAllowsInteractorMovement()
 { 
     return this->appAllowsPanelEdit() 				&& 
     	   !this->isRestrictionLevel(MINIMALLY_RESTRICTED) 	&& 
     	   !this->resource.noInteractorMovement;
 }
-boolean DXApplication::appAllowsInteractorAttributeChange()
+bool DXApplication::appAllowsInteractorAttributeChange()
 { 
     return !this->isRestrictionLevel(SOMEWHAT_RESTRICTED) 	&& 
 	   this->appAllowsPanelEdit()  				&&
 	   !this->resource.noInteractorAttributes; 
 }
-boolean DXApplication::appAllowsInteractorEdits()
+bool DXApplication::appAllowsInteractorEdits()
 { 
     return !this->isRestrictionLevel(MINIMALLY_RESTRICTED) 	&&
     	   this->appAllowsPanelEdit() 				&&
 	   !this->resource.noInteractorEdits; 
 }
 
-boolean DXApplication::appLimitsNetFileSelection()
+bool DXApplication::appLimitsNetFileSelection()
 { 
     return this->resource.limitedNetFileSelection; 
 }
-boolean DXApplication::appAllowsImageRWNetFile()
+bool DXApplication::appAllowsImageRWNetFile()
 { 
     return !this->isRestrictionLevel(SOMEWHAT_RESTRICTED) 	&& 
      	   !this->resource.noImageRWNetFile; 
 }
-boolean DXApplication::appAllowsSavingNetFile(Network *n)
+bool DXApplication::appAllowsSavingNetFile(Network *n)
 {
     return this->appAllowsSavingCfgFile() &&
 	   (!n || !n->wasNetFileEncoded());
 }
-boolean DXApplication::appAllowsSavingCfgFile()
+bool DXApplication::appAllowsSavingCfgFile()
 {
      return (this->appLicenseType != TimedLicense) &&
 	    (this->inEditMode() || this->appAllowsImageRWNetFile());
 }
-boolean DXApplication::appAllowsImageLoad()
+bool DXApplication::appAllowsImageLoad()
 { 
     return !this->isRestrictionLevel(SOMEWHAT_RESTRICTED) 	&& 
            !this->resource.noImageLoad; 
 }
-boolean DXApplication::appAllowsImagePrinting()
+bool DXApplication::appAllowsImagePrinting()
 { 
     return !this->resource.noImagePrinting;
 }
-boolean DXApplication::appAllowsImageSaving()
+bool DXApplication::appAllowsImageSaving()
 { 
     return !this->isRestrictionLevel(FULLY_RESTRICTED) 	 &&
     	   !this->resource.noImageSaving;
 }
-boolean DXApplication::appLimitsImageOptions()
+bool DXApplication::appLimitsImageOptions()
 { 
     return this->isRestrictionLevel(MINIMALLY_RESTRICTED)  	||	
            this->resource.limitImageOptions; 
 }
 
 
-boolean DXApplication::appAllowsEditorAccess()
+bool DXApplication::appAllowsEditorAccess()
 { 
     LicenseTypeEnum func = this->getFunctionalLicenseEnum();
 
@@ -2793,64 +2797,64 @@ boolean DXApplication::appAllowsEditorAccess()
 	   (func != RunTimeLicense); 
 }
 
-boolean DXApplication::appAllowsPGroupAssignmentChange()
+bool DXApplication::appAllowsPGroupAssignmentChange()
 { 
     return !this->isRestrictionLevel(MINIMALLY_RESTRICTED) 	&&
 	    !this->resource.noPGroupAssignment; 
 }
-boolean DXApplication::appAllowsMessageInfoOption()
+bool DXApplication::appAllowsMessageInfoOption()
 {
     return  !this->resource.noMessageInfoOption; 
 }
-boolean DXApplication::appAllowsMessageWarningOption()
+bool DXApplication::appAllowsMessageWarningOption()
 {
     return  !this->resource.noMessageWarningOption; 
 }
-boolean DXApplication::appAllowsScriptCommands()
+bool DXApplication::appAllowsScriptCommands()
 { 
     return !this->isRestrictionLevel(MINIMALLY_RESTRICTED) 	&&
 	   !this->resource.noScriptCommands; 
 }
-boolean DXApplication::appAllowsCMapSetName()
+bool DXApplication::appAllowsCMapSetName()
 { 
     return !this->isRestrictionLevel(MINIMALLY_RESTRICTED) 	&& 
            !this->resource.noCMapSetNameOption; 
 }
-boolean DXApplication::appAllowsCMapOpenMap()
+bool DXApplication::appAllowsCMapOpenMap()
 { 
     return !this->isRestrictionLevel(FULLY_RESTRICTED) 	&& 
     	   !this->resource.noCMapOpenMap; 
 }
-boolean DXApplication::appAllowsCMapSaveMap()
+bool DXApplication::appAllowsCMapSaveMap()
 { 
     return !this->isRestrictionLevel(FULLY_RESTRICTED) 	&& 
            !this->resource.noCMapSaveMap; 
 }
-boolean DXApplication::appSuppressesStartupWindows()
+bool DXApplication::appSuppressesStartupWindows()
 { 
     return this->resource.suppressStartupWindows;
 }
-boolean DXApplication::appAllowsExitOptions()
+bool DXApplication::appAllowsExitOptions()
 { 
     return !this->resource.noExitOptions;
 }
-boolean DXApplication::appAllowsExecuteMenus()
+bool DXApplication::appAllowsExecuteMenus()
 { 
     return !this->resource.noExecuteMenus;
 }
-boolean DXApplication::appAllowsConnectionMenus()
+bool DXApplication::appAllowsConnectionMenus()
 { 
     return !this->resource.noConnectionMenus;
 }
-boolean DXApplication::appAllowsWindowsMenus()
+bool DXApplication::appAllowsWindowsMenus()
 { 
     return !this->resource.noWindowsMenus;
 }
-boolean DXApplication::appAllowsImageMenus()
+bool DXApplication::appAllowsImageMenus()
 { 
     return !this->resource.noImageMenus;
 }
-boolean DXApplication::appAllowsConfirmedQuit()
+bool DXApplication::appAllowsConfirmedQuit()
 { 
     return !this->resource.noConfirmedQuit;
 }
@@ -2858,30 +2862,30 @@ boolean DXApplication::appAllowsConfirmedQuit()
 //
 // See if there is an OEM license code (see oemApplicationName and
 // oemLicenseCode resources) and if so see if it is valid.
-// If so return TRUE and set *func, otherwise return FALSE and leave
+// If so return true and set *func, otherwise return false and leave
 // *func untouched.
 //
-boolean DXApplication::verifyOEMLicenseCode(LicenseTypeEnum *func)
+bool DXApplication::verifyOEMLicenseCode(LicenseTypeEnum *func)
 {
     char cryptbuf[1024];
-    boolean r;
+    bool r;
 
     ASSERT(func);
 
     if (!this->resource.oemLicenseCode || !this->getOEMApplicationName()) 
-	return FALSE;
+	return false;
 
     ScrambleAndEncrypt(this->resource.oemApplicationName,"DEV",cryptbuf);
     if (EqualString(cryptbuf,this->resource.oemLicenseCode)) {
 	*func = DeveloperLicense;
-        r = TRUE;
+        r = true;
     } else {
         ScrambleAndEncrypt(this->resource.oemApplicationName,"RT",cryptbuf);
 	if (EqualString(cryptbuf,this->resource.oemLicenseCode)) {
 	    *func = RunTimeLicense;
-	    r = TRUE;
+	    r = true;
 	} else 
-	    r = FALSE;
+	    r = false;
     }
 
     return r;
@@ -2998,12 +3002,12 @@ void DXApplication::notifyPanelChanged()
 // Tell the exec to get a license or not based on the type of license
 // that we have. 
 //
-boolean DXApplication::verifyServerLicense()
+bool DXApplication::verifyServerLicense()
 {
 #if defined(DXD_LICENSED_VERSION)
     DXPacketIF *pif = this->getPacketIF();
     if (!pif)
-	return FALSE;
+	return false;
 
     pif->setHandler(DXPacketIF::INFORMATION,
 		  DXApplication::LicenseMessage,
@@ -3017,15 +3021,15 @@ boolean DXApplication::verifyServerLicense()
     // Wait until we get the AUTHORIZED or UNAUTHORIZED message.
     //
     void *licensed;
-    boolean r;
+    bool r;
     if (pif->receiveContinuous(&licensed))
-	r = (boolean)licensed;
+	r = (bool)licensed;
     else
-	r = FALSE;
+	r = false;
 
     return r;
 #else
-    return TRUE;
+    return true;
 #endif
 
 }
@@ -3047,14 +3051,14 @@ void DXApplication::LicenseMessage(void *, int, void *ptr)
 	p += STRLEN(lic_token);
 	SkipWhiteSpace(p);
 	if (strstr(p,"AUTHORIZED")) {
-	    boolean licensed;
+	    bool licensed;
 	    if (EqualString(p,"UNAUTHORIZED")) {
-		licensed = FALSE;
+		licensed = false;
 		theDXApplication->scheduleServerDisconnect();
 		InfoMessage("A license for the server is not available.  "
 			     "Server disconnected.");
 	    } else {
-		licensed = TRUE;
+		licensed = true;
 	    }
 		
 	    if (pif) // Force ::verifyServerLicense() to return;
@@ -3086,7 +3090,7 @@ void DXApplication::LicenseMessage(void *, int, void *ptr)
 
 void DXApplication::scheduleServerDisconnect()
 {
-    this->serverDisconnectScheduled = TRUE;
+    this->serverDisconnectScheduled = true;
 }
 
 //
@@ -3147,7 +3151,7 @@ void DXApplication::determineUILicense(LicenseTypeEnum *app,
     this->appLicenseType = *app; 
     this->funcLicenseType = *func;
 }
-boolean DXApplication::isFunctionalLicenseForced()
+bool DXApplication::isFunctionalLicenseForced()
 { 
     return this->resource.forceFunctionalLicense != NULL;
 }
@@ -3230,7 +3234,7 @@ static char *format_seconds(int seconds)
 //{
 //    char buffer[1024];	
 //    int seconds = (int)(long) clientData;
-//    boolean can_save = theDXApplication->appAllowsSavingNetFile();
+//    bool can_save = theDXApplication->appAllowsSavingNetFile();
 //
 //    if (seconds > MIN_INTERVAL ) {
 //	seconds = (int)(seconds/2.0);
@@ -3258,7 +3262,7 @@ static char *format_seconds(int seconds)
 //    } else if (can_save) {
 //	ListIterator li;
 //	int i;
-//	boolean save_files = FALSE;
+//	bool save_files = false;
 //	Network *n;
 //#ifdef DXD_OS_NON_UNIX
 //	// FIXME: suits should use ENV variables to fine tmp path
@@ -3282,13 +3286,13 @@ static char *format_seconds(int seconds)
 //	// 
 //	if (theDXApplication->network->saveToFileRequired() &&
 //		theDXApplication->network->getNodeCount() > 0)
-//		save_files = TRUE;
+//		save_files = true;
 //
 //	if (!save_files) {
 //	    li.setList(theDXApplication->macroList);
 //	    while ( (n = (Network*)li.getNext()) )
 //		if (n->saveToFileRequired() || (n->getNodeCount() > 0))
-//		    save_files = TRUE;
+//		    save_files = true;
 //	}
 //	
 //	// 
@@ -3297,12 +3301,12 @@ static char *format_seconds(int seconds)
 //	if (save_files) {
 //	    char msg[4096];
 //	    char buf[1024];
-//	    boolean write_error = TRUE;
+//	    bool write_error = true;
 //	    strcpy(msg,"The following files have been written...\n\n");
 //	    for (i=0 ; write_error && dirs[i] ; i++) {	
 //		int cnt;
 //		li.setList(theDXApplication->macroList);
-//		for (n=theDXApplication->network, cnt=0, write_error = FALSE;
+//		for (n=theDXApplication->network, cnt=0, write_error = false;
 //		     	n && !write_error ;
 //		     	n = (Network*)li.getNext())
 //		{
@@ -3318,9 +3322,9 @@ static char *format_seconds(int seconds)
 //			sprintf(buf,"%s/%s",dirs[i],basename);
 //			strcat(msg,"\t");
 //			strcat(msg,buf);
-//			if (!n->saveNetwork(buf, TRUE)) {
+//			if (!n->saveNetwork(buf, true)) {
 //			    strcat(msg," (error while writing)");
-//			    write_error = TRUE;
+//			    write_error = true;
 //			}
 //			strcat(msg,"\n");
 //			delete basename;
@@ -3443,20 +3447,20 @@ static char *format_seconds(int seconds)
 //    return 1;
 //}
 
-boolean DXApplication::printComment(FILE *f)
+bool DXApplication::printComment(FILE *f)
 {
     if ((this->messageWindow && this->messageWindow->isManaged()) ||
         (this->helpWindow    && this->helpWindow->isManaged())) { 
 	if (this->messageWindow->isManaged()) {
 	    if ((fprintf(f,"// Message Window:\n") < 0) ||
 	        !this->messageWindow->printComment(f))
-		return FALSE;
+		return false;
 	}
     }
 
-    return TRUE;
+    return true;
 }
-boolean DXApplication::parseComment(const char *comment, 
+bool DXApplication::parseComment(const char *comment, 
 				const char *filename, int lineno)
 {
     if (strstr(comment,"Message Window:")) {
@@ -3465,32 +3469,32 @@ boolean DXApplication::parseComment(const char *comment,
 	this->messageWindow->useDefaultCommentState();
     }  else if (this->messageWindow) {
 	if (!this->messageWindow->parseComment(comment,filename,lineno)) 
-	    return FALSE;
+	    return false;
     } else {
-	return FALSE;
+	return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 //
-// Return TRUE if the DXWindows are supposed to use the window placement
+// Return true if the DXWindows are supposed to use the window placement
 // information saved in the .net or .cfg files.
 //
-boolean DXApplication::applyWindowPlacements()
+bool DXApplication::applyWindowPlacements()
 {
     return !this->resource.noWindowPlacement;
 }
 
-boolean DXApplication::inEditMode()
+bool DXApplication::inEditMode()
 {
     return EqualString(this->resource.anchorMode,EDIT_ANCHOR_MODE);
 }
-boolean DXApplication::inImageMode()
+bool DXApplication::inImageMode()
 {
     return EqualString(this->resource.anchorMode,IMAGE_ANCHOR_MODE);
 }
-boolean DXApplication::inMenuBarMode()
+bool DXApplication::inMenuBarMode()
 {
     return EqualString(this->resource.anchorMode,MENUBAR_ANCHOR_MODE);
 }
@@ -3498,7 +3502,7 @@ const char *DXApplication::getDataViewerImportFile()
 {
     return this->resource.viewDataFile; 
 }
-boolean DXApplication::inDataViewerMode()
+bool DXApplication::inDataViewerMode()
 {
     return this->getDataViewerImportFile() != NULL;
 }
@@ -3509,7 +3513,7 @@ void DXApplication::shutdownApplication()
     //Widget widg = this->getRootWidget();
     //Window w = XtWindow(widg);
 
-    this->runApplication = FALSE;
+    this->runApplication = false;
 
     //event.type = KeyPress;
 
@@ -3517,13 +3521,15 @@ void DXApplication::shutdownApplication()
 
     if ((this->inEditMode()) && (this->appAllowsSavingNetFile()))
 	theResourceManager->saveResources();
+
+	//FIXME:: will probably need to write out the savePrefs here for XML.
 }
 
 //
 // Does this application force the .net files that are read in to be
 // encrypted.
 //
-boolean DXApplication::appForcesNetFileEncryption()
+bool DXApplication::appForcesNetFileEncryption()
 {
     return this->resource.forceNetFileEncryption;
 }
@@ -3536,7 +3542,7 @@ boolean DXApplication::appForcesNetFileEncryption()
 void DXApplication::emergencySave (char *msg)
 {
 int i;
-boolean write_error = TRUE;
+bool write_error = true;
 
 #ifdef DXD_OS_NON_UNIX
 #ifdef DXD_WIN
@@ -3560,7 +3566,7 @@ boolean write_error = TRUE;
 #endif
 
 char *introMsg = "The following files have been written...\n\n";
-boolean introMsgUsed = false;
+bool introMsgUsed = false;
 char buf[1024];
 
     ASSERT(msg);
@@ -3569,7 +3575,7 @@ char buf[1024];
     for (i=0 ; write_error && dirs[i] ; i++) {
 	int cnt;
 	ListIterator li(theDXApplication->macroList);
-	write_error = FALSE;
+	write_error = false;
 	cnt = 0;
 	Network *n = theDXApplication->network;
 	while ((n) && (!write_error)) {
@@ -3593,9 +3599,9 @@ char buf[1024];
 		}
 		strcat(msg,"\t");
 		strcat(msg,buf);
-		if (!n->saveNetwork(buf, TRUE)) {
+		if (!n->saveNetwork(buf, true)) {
 		    strcat(msg," (error while writing)");
-		    write_error = TRUE;
+		    write_error = true;
 		}
 		strcat(msg,"\n");
 		delete basename;
@@ -3620,7 +3626,7 @@ DXApplication_HandleCoreDump(int dummy)
 #endif
 {
     if (!theDXApplication) exit(1);
-    boolean can_save = theDXApplication->appAllowsSavingNetFile();
+    bool can_save = theDXApplication->appAllowsSavingNetFile();
 
     fprintf (stderr, "\n%s has experienced an internal error and will terminate.\n\n",
 	theApplication->getInformalName());
@@ -3754,7 +3760,7 @@ static int cum_yday[11]; // { 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334
     char *compile_date = __DATE__;
     char *compile_time = __TIME__;
     char date_mask[512];
-    boolean abort_the_run = FALSE;
+    bool abort_the_run = false;
 
     //
     // just in case
@@ -3839,7 +3845,7 @@ static int cum_yday[11]; // { 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334
     int seconds = 0;
     int days;
     if (!comp_time)
-	abort_the_run = TRUE;
+	abort_the_run = true;
     else {
 
 
@@ -3859,7 +3865,7 @@ static int cum_yday[11]; // { 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334
 	seconds = minutes * 60 + comp_time->tm_sec - (int)comp_time->tm_gmtoff;
 #endif
 	if ((today - seconds) > BETA_SECONDS) {
-	    abort_the_run = TRUE;
+	    abort_the_run = true;
 	}
 #ifdef DEBUG
 	int diff_seconds = today-seconds;
@@ -3921,7 +3927,7 @@ ProcessGroupManager *DXApplication::getProcessGroupManager()
 // Conditionally show the nodes' instance numbers in the vpe.  If the setting
 // has changed then visit the standins and reshow the standin labels.
 //
-void DXApplication::showInstanceNumbers(boolean on_or_off)
+void DXApplication::showInstanceNumbers(bool on_or_off)
 {
     if (on_or_off == this->resource.showInstanceNumbers) return ;
     this->resource.showInstanceNumbers = on_or_off;

@@ -47,7 +47,7 @@ class ColormapWaveDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     ColormapEditor* editor;
 

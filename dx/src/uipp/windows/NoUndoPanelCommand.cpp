@@ -15,7 +15,7 @@
 
 NoUndoPanelCommand::NoUndoPanelCommand(const char*   name,
 				       CommandScope* scope,
-				       boolean       active,
+				       bool       active,
 				       ControlPanel  *cp,
 				       PanelCommandType comType ) :
 	NoUndoCommand(name, scope, active)
@@ -25,7 +25,7 @@ NoUndoPanelCommand::NoUndoPanelCommand(const char*   name,
 }
 
 
-boolean NoUndoPanelCommand::doIt(CommandInterface *ci)
+bool NoUndoPanelCommand::doIt(CommandInterface *ci)
 {
     ControlPanel *cp = this->controlPanel;
 
@@ -51,10 +51,10 @@ boolean NoUndoPanelCommand::doIt(CommandInterface *ci)
 	    cp->setSelectedInteractorLabel();
 	    break;
 	case NoUndoPanelCommand::SetHorizontalLayout:
-	    cp->setVerticalLayout(FALSE);
+	    cp->setVerticalLayout(false);
 	    break;
 	case NoUndoPanelCommand::SetVerticalLayout:
-	    cp->setVerticalLayout(TRUE);
+	    cp->setVerticalLayout(true);
 	    break;
 	case NoUndoPanelCommand::SetPanelComment:
 	    cp->editPanelComment();
@@ -69,7 +69,7 @@ boolean NoUndoPanelCommand::doIt(CommandInterface *ci)
 	    cp->setPanelGrid();
 	    break;
 	case NoUndoPanelCommand::TogglePanelStyle:
-	    cp->setPanelStyle(FALSE);
+	    cp->setPanelStyle(false);
 	    break;
 #if 0
 	case NoUndoPanelCommand::TogglePanelStartup:
@@ -94,7 +94,7 @@ boolean NoUndoPanelCommand::doIt(CommandInterface *ci)
 	    ASSERT(0);
     }
 
-    return TRUE;
+    return true;
 }
 
 

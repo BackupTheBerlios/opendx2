@@ -28,13 +28,13 @@ class ImageFormatGIF : public PixelImageFormat
   private:
 
     //static String  DefaultResources[];
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
 
     virtual void	initialize();
 
-    virtual boolean		supportsPrinting() { return TRUE; }
+    virtual bool		supportsPrinting() { return true; }
 
   public:
 
@@ -55,14 +55,14 @@ class ImageFormatGIF : public PixelImageFormat
     virtual const char*		paramString() { return "gif"; }
     virtual const char*		menuString() { return "GIF"; }
     virtual const char*		fileExtension() { return ".gif"; }
-    virtual boolean		supportsDelayedColors() { return FALSE; }
-    virtual boolean		requiresDelayedColors() { return TRUE; }
+    virtual bool		supportsDelayedColors() { return false; }
+    virtual bool		requiresDelayedColors() { return true; }
 
     //
     // Returns a pointer to the class name.
     //
     const char* getClassName() { return ClassImageFormatGIF; }
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 };
 
 

@@ -59,7 +59,7 @@ class DrivenNode : public ModuleMessagingNode
     // Private member data:
     //
     int 	visualNotificationDeferrals;
-    boolean 	visualsNeedNotification;
+    bool 	visualsNeedNotification;
 
     //
     // Set the label used for the data driven node.  Generally
@@ -76,7 +76,7 @@ class DrivenNode : public ModuleMessagingNode
     // This is set when the execModuleMessageHandler() starts accepting
     // a long message.
     //
-    boolean handlingLongMessage;
+    bool handlingLongMessage;
 
     //
     // Called when a message is received from the executive after
@@ -103,24 +103,24 @@ class DrivenNode : public ModuleMessagingNode
     // node.   Among other times, this is called after receiving a message
     // from the executive.
     //
-    virtual void reflectStateChange(boolean unmanage) = 0;
+    virtual void reflectStateChange(bool unmanage) = 0;
 
     //
-    // Return TRUE/FALSE, indicating whether or not we expect to receive
+    // Return true/false, indicating whether or not we expect to receive
     // a message from the UI when our module executes in the executive.
     // By default, a module only executes in the executive for data-driven
     // nodes and so we don't expect messages unless the node 
     // is data-driven.
     //
-    virtual boolean expectingModuleMessage();
+    virtual bool expectingModuleMessage();
 
     //
     // Set the message id parameter for a data-driven node.  
     // We assume that the id parameter is always parameter the value
     // returned by getMessageIdParamNumber().
-    // Returns TRUE/FALSE.  If FALSE, an error message is given.
+    // Returns true/false.  If false, an error message is given.
     //
-    boolean setMessageIdParameter(int id_index = 0);
+    bool setMessageIdParameter(int id_index = 0);
 
     //
     // Get the index of the parameter that has a message id token.
@@ -132,7 +132,7 @@ class DrivenNode : public ModuleMessagingNode
     // Notify anybody that needs to know that a parameter has changed its 
     // arcs or values.
     //
-    virtual void ioParameterStatusChanged(boolean input, int index, 
+    virtual void ioParameterStatusChanged(bool input, int index, 
 			NodeParameterStatusChange status);
 
     //
@@ -147,12 +147,12 @@ class DrivenNode : public ModuleMessagingNode
 
     //
     // Initialize/set the value of an attribute parameter.
-    // If forceSync is TRUE (default = FALSE), then force the primary
+    // If forceSync is true (default = false), then force the primary
     // parameters of the AttributeParameter to be updated regardless of
     // whether or not the types match.
-    boolean setInputAttributeParameter(int index, const char *val, 
-						boolean forceSync = FALSE);
-    boolean initInputAttributeParameter(int index, const char *val);
+    bool setInputAttributeParameter(int index, const char *val, 
+						bool forceSync = false);
+    bool initInputAttributeParameter(int index, const char *val);
     const char *getInputAttributeParameterValue(int index);
     //
     // Determine if the give attribute/paramater is visually writeable (i.e.
@@ -160,7 +160,7 @@ class DrivenNode : public ModuleMessagingNode
     // It may be ok to make this public, but erring on the side of caution
     // for now.
     //
-    virtual boolean isAttributeVisuallyWriteable(int input_index);
+    virtual bool isAttributeVisuallyWriteable(int input_index);
 
     //
     //  Sync all the attribute values with the actual parameter values.
@@ -182,18 +182,18 @@ class DrivenNode : public ModuleMessagingNode
     //
     // Check all input parameters to see if any are connected.
     // If connected, then we consider the ModuleMessagingNode to be data-driven
-    // (at this level of the the class hierarchy) and return TRUE,
-    // otherwise FALSE.
+    // (at this level of the the class hierarchy) and return true,
+    // otherwise false.
     //
-    virtual boolean isDataDriven();
+    virtual bool isDataDriven();
 
     //
     // Notify all UI visuals that the attributes have changed.
-    // If 'unmanage' is TRUE, then it is recommended that the visual
+    // If 'unmanage' is true, then it is recommended that the visual
     // be unmanage making the changes.  This calls this->reflectStateChange()
     // when undefered.
     //
-    void notifyVisualsOfStateChange(boolean unmanage = FALSE);
+    void notifyVisualsOfStateChange(bool unmanage = false);
 
     //
     // in addition to superclass' work, change the node name parameter.
@@ -203,10 +203,10 @@ class DrivenNode : public ModuleMessagingNode
     //
     // Provide methods to delay notifyVisualsOfStateChange().
     //
-    boolean isVisualNotificationDeferred()   
+    bool isVisualNotificationDeferred()   
 			{ return this->visualNotificationDeferrals != 0;}
     void deferVisualNotification()   {this->visualNotificationDeferrals++;}
-    void undeferVisualNotification(boolean unmanage = FALSE)
+    void undeferVisualNotification(bool unmanage = false)
                         {  ASSERT(this->visualNotificationDeferrals > 0);
                            if ((--this->visualNotificationDeferrals == 0) &&
                                this->visualsNeedNotification)
@@ -216,9 +216,9 @@ class DrivenNode : public ModuleMessagingNode
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
-    virtual boolean hasJavaRepresentation() { return TRUE; }
+    virtual bool hasJavaRepresentation() { return true; }
     virtual const char* getJavaNodeName() { return "DrivenNode"; }
 
     //

@@ -45,7 +45,7 @@ class SelectorInteractor : public Interactor
     // which is private.  It should just be made protected.  
     // SelectorInteractor::setAppearance needs to check its value.
     //
-    boolean visinit;
+    bool visinit;
 
   protected:
     //
@@ -61,7 +61,7 @@ class SelectorInteractor : public Interactor
     //Widget	pulldown;
     List	optionWidgets;
 
-    static boolean SelectorInteractorClassInitialized;
+    static bool SelectorInteractorClassInitialized;
 
     //static String DefaultResources[];
 
@@ -75,7 +75,7 @@ class SelectorInteractor : public Interactor
 		//{ ASSERT(i>0); 
 		//  return (Widget)this->optionWidgets.getElement(i); 
 		//}
-  //  boolean appendOptionWidget(Widget w) 
+  //  bool appendOptionWidget(Widget w) 
 		//{ return this->optionWidgets.appendElement((const void*) w); }
 
     //
@@ -129,7 +129,7 @@ class SelectorInteractor : public Interactor
     // Make sure the attributes match the resources for the widgets. 
     //
     void handleInteractivePartStateChange(InteractorInstance *src_ii,
-						boolean major_change);
+						bool major_change);
 
     //
     // One time initialize for the class.
@@ -144,7 +144,7 @@ class SelectorInteractor : public Interactor
     // That breaks switching dialog/user style.  So when setAppearance happens,
     // we'll recreate the menu so that we also get the proper color.
     //
-    virtual void setAppearance (boolean developerStyle);
+    virtual void setAppearance (bool developerStyle);
 
     //
     // Returns a pointer to the class name.

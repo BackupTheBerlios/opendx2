@@ -28,7 +28,7 @@
 #endif
 #include <sys/stat.h>
 
-boolean ImageFormatDialog::ClassInitialized = FALSE;
+bool ImageFormatDialog::ClassInitialized = false;
 
 extern void BuildTheImageFormatDictionary();
 extern Dictionary* theImageFormatDictionary;
@@ -58,7 +58,7 @@ extern Dictionary* theImageFormatDictionary;
 
 ImageFormatDialog::ImageFormatDialog (char *name,ImageNode *node, 
     CommandScope* commandScope) : 
-	Dialog(name), NoOpCommand(name, theDXApplication->getCommandScope(), TRUE)
+	Dialog(name), NoOpCommand(name, theDXApplication->getCommandScope(), true)
 {
 
     this->choice 	= NUL(ImageFormat*);
@@ -68,19 +68,19 @@ ImageFormatDialog::ImageFormatDialog (char *name,ImageNode *node,
     this->dirty 	= 0;
     this->busyCursors	= 0;
     this->commandScope 	= commandScope;
-    this->resetting	= FALSE;
+    this->resetting	= false;
 
     this->rerenderOption = NUL(ToggleButtonInterface*);
     this->rerenderCmd = new ImageFormatCommand ("rerenderCmd", this->commandScope,
-	TRUE, this, ImageFormatCommand::AllowRerender);
+	true, this, ImageFormatCommand::AllowRerender);
 
     this->delayedOption = NUL(ToggleButtonInterface*);
     this->delayedCmd = new ImageFormatCommand ("delayedCmd", this->commandScope,
-	TRUE, this, ImageFormatCommand::DelayedColors);
+	true, this, ImageFormatCommand::DelayedColors);
 
     if (!ImageFormatDialog::ClassInitialized) {
 	BuildTheImageFormatDictionary();
-	ImageFormatDialog::ClassInitialized = TRUE;
+	ImageFormatDialog::ClassInitialized = true;
     }
     ImageFormatAllocator ifa;
     int size = theImageFormatDictionary->getSize();
@@ -143,7 +143,7 @@ ImageFormatDialog::~ImageFormatDialog()
     delete this->image_formats;
 }
 
-boolean ImageFormatDialog::getDelayedColors()
+bool ImageFormatDialog::getDelayedColors()
 {
     return this->delayedOption->getState();
 }
@@ -169,7 +169,7 @@ void ImageFormatDialog::createDialog()
 //    NULL);
 //
 //    this->rerenderOption = new ToggleButtonInterface (topDiagForm, "rerenderOption",
-//	this->rerenderCmd, FALSE);
+//	this->rerenderCmd, false);
 //    XtVaSetValues (this->rerenderOption->getRootWidget(),
 //	XmNleftAttachment,	XmATTACH_FORM,
 //	XmNleftOffset,		2,
@@ -183,7 +183,7 @@ void ImageFormatDialog::createDialog()
 //    // D E L A Y E D      C O L O R S             D E L A Y E D      C O L O R S  
 //    //
 //    this->delayedOption = new ToggleButtonInterface (topDiagForm, "delayedOption",
-//	this->delayedCmd, FALSE);
+//	this->delayedCmd, false);
 //    XtVaSetValues (this->delayedOption->getRootWidget(),
 //	XmNleftAttachment,	XmATTACH_FORM,
 //	XmNleftOffset,		2,
@@ -262,7 +262,7 @@ void ImageFormatDialog::createDialog()
 //	Widget but = XtVaCreateManagedWidget (imgfmt->menuString(),
 //	    xmPushButtonWidgetClass,	this->format_pd,
 //	    XmNuserData,	imgfmt,
-//	    XmNsensitive, 	(this->isPrinting()?imgfmt->supportsPrinting():TRUE),
+//	    XmNsensitive, 	(this->isPrinting()?imgfmt->supportsPrinting():true),
 //	NULL);
 //	if (imgfmt == this->choice) {
 //	    XtVaSetValues (this->format_om, XmNmenuHistory, but, NULL);
@@ -391,7 +391,7 @@ void ImageFormatDialog::createDialog()
 //    return form_diag;
 }
 
-boolean ImageFormatDialog::okCallback(Dialog *)
+bool ImageFormatDialog::okCallback(Dialog *)
 {
     //
     // We send param values to the node for every apply/ok operation, but perhaps
@@ -401,33 +401,33 @@ boolean ImageFormatDialog::okCallback(Dialog *)
     // unless they're stuck into the node.
     //
     if (this->choice->useLocalResolution())
-	this->node->setRecordResolution (this->choice->getRecordResolution(), FALSE);
-    else if ((this->isRerenderAllowed() == FALSE) && 
+	this->node->setRecordResolution (this->choice->getRecordResolution(), false);
+    else if ((this->isRerenderAllowed() == false) && 
 	     (this->dirty & ImageFormatDialog::DirtyRerender) &&
-	     (this->node->isRecordResolutionConnected() == FALSE))
-	this->node->unsetRecordResolution(FALSE);
+	     (this->node->isRecordResolutionConnected() == false))
+	this->node->unsetRecordResolution(false);
 
     if (this->choice->useLocalAspect())
-	this->node->setRecordAspect (this->choice->getRecordAspect(), FALSE);
-    else if ((this->isRerenderAllowed() == FALSE) && 
+	this->node->setRecordAspect (this->choice->getRecordAspect(), false);
+    else if ((this->isRerenderAllowed() == false) && 
 	     (this->dirty & ImageFormatDialog::DirtyRerender)&&
-	     (this->node->isRecordAspectConnected() == FALSE))
-	this->node->unsetRecordAspect(FALSE);
+	     (this->node->isRecordAspectConnected() == false))
+	this->node->unsetRecordAspect(false);
 
     if (this->choice->useLocalFormat())
-	this->node->setRecordFormat (this->choice->getRecordFormat(), FALSE);
+	this->node->setRecordFormat (this->choice->getRecordFormat(), false);
 
     this->dirty = 0;
     this->choice->applyValues();
 
     //
-    // return FALSE so that superclass doesn't unmanage me.
+    // return false so that superclass doesn't unmanage me.
     //
-    return FALSE;
+    return false;
 }
 
 
-boolean ImageFormatDialog::isMetric()
+bool ImageFormatDialog::isMetric()
 {
     return theDXApplication->isMetricUnits();
 }
@@ -442,7 +442,7 @@ void ImageFormatDialog::manage()
  //   if (!XtIsRealized(this->getRootWidget()))
 	//XtRealizeWidget(this->getRootWidget());
     
-    if (this->isManaged() == FALSE) {
+    if (this->isManaged() == false) {
 	//XtVaGetValues(this->getRootWidget(), XmNwidth, &dialogWidth, NULL);
 
 	//Position x;
@@ -526,7 +526,7 @@ void ImageFormatDialog::currentImage()
     // off, then call the dxfSaveCurrentImage macro in such a way that it will
     // use the new ReadImageWindow() module instead of calling Render().
     //
-    if ((this->node->hardwareMode()) && (this->rerenderOption->getState() == FALSE)) {
+    if ((this->node->hardwareMode()) && (this->rerenderOption->getState() == false)) {
 	const char* where_param = this->node->getInputValueString(WHERE);
 	this->makeExecOutputImage (where_param, 
 	    this->choice->getRecordFormat(), string_to_use);
@@ -541,7 +541,7 @@ void ImageFormatDialog::currentImage()
         execCtl->resumeExecOnChange();
 }
 
-boolean ImageFormatDialog::makeExecOutputImage(const char* where, 
+bool ImageFormatDialog::makeExecOutputImage(const char* where, 
     const char* format, const char *file)
 {
     char buf[1024];
@@ -549,7 +549,7 @@ boolean ImageFormatDialog::makeExecOutputImage(const char* where,
     DXPacketIF *p = theDXApplication->getPacketIF();
     if (!p) {
 	WarningMessage("No connection to server");
-	return FALSE;
+	return false;
     }
 
     //
@@ -560,13 +560,13 @@ boolean ImageFormatDialog::makeExecOutputImage(const char* where,
 	    file, format, where);
     p->send(DXPacketIF::FOREGROUND, buf, 
 		ImageFormatDialog::ImageOutputCompletePH, (void*)this);
-    theDXApplication->setBusyCursor(TRUE);
-    this->setBusyCursor(TRUE);
+    theDXApplication->setBusyCursor(true);
+    this->setBusyCursor(true);
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageFormatDialog::makeExecOutputImage(const char *pickId,
+bool ImageFormatDialog::makeExecOutputImage(const char *pickId,
 			int width, float aspect, 
 			const char *format, const char *file)
 {
@@ -575,7 +575,7 @@ boolean ImageFormatDialog::makeExecOutputImage(const char *pickId,
     DXPacketIF *p = theDXApplication->getPacketIF();
     if (!p) {
 	WarningMessage("No connection to server");
-	return FALSE;
+	return false;
     }
 
     //
@@ -586,17 +586,17 @@ boolean ImageFormatDialog::makeExecOutputImage(const char *pickId,
 	    pickId, width, aspect, file, format);
     p->send(DXPacketIF::FOREGROUND, buf, 
 		ImageFormatDialog::ImageOutputCompletePH, (void*)this);
-    theDXApplication->setBusyCursor(TRUE);
-    this->setBusyCursor(TRUE);
+    theDXApplication->setBusyCursor(true);
+    this->setBusyCursor(true);
 
-    return TRUE;
+    return true;
 }
 
 void ImageFormatDialog::ImageOutputCompletePH(void *clientData, int , void *)
 {
     ImageFormatDialog* ifd = (ImageFormatDialog*)clientData;
-    theDXApplication->setBusyCursor(FALSE); 
-    ifd->setBusyCursor(FALSE);
+    theDXApplication->setBusyCursor(false); 
+    ifd->setBusyCursor(false);
 }
 
 
@@ -613,9 +613,9 @@ void ImageFormatDialog::setCommandActivation()
     //
     // Record format (just the first chunk of the string)
     //
-    boolean setFormat = FALSE;
+    bool setFormat = false;
     if (this->node->isRecordFormatConnected()) {
-	setFormat = TRUE;
+	setFormat = true;
 	//XtSetSensitive (this->format_om, False);
 	//XtSetSensitive (this->gamma_number, False);
 	this->dirty&= ~ImageFormatDialog::DirtyGamma;
@@ -624,15 +624,15 @@ void ImageFormatDialog::setCommandActivation()
 	//XtSetSensitive (this->format_om, True);
 	//XtSetSensitive (this->gamma_number, True);
 	if ((this->dirty & ImageFormatDialog::DirtyFormat) == 0)
-	    setFormat = TRUE;
+	    setFormat = true;
     }
 
     //
     // If record resolution is set and is different from resolution,
     // then force the allow-rerender toggle button
     //
-    boolean recresset = this->node->isRecordResolutionSet();
-    boolean recaspset = this->node->isRecordAspectSet();
+    bool recresset = this->node->isRecordResolutionSet();
+    bool recaspset = this->node->isRecordAspectSet();
     if (recresset || recaspset) {
 	int recx,recy;
 	double recaspect;
@@ -646,11 +646,11 @@ void ImageFormatDialog::setCommandActivation()
 
 	if ((recx != x) || (recaspect != aspect)) {
 	    if ((this->dirty & DirtyRerender) == 0)
-		this->rerenderOption->setState (TRUE, TRUE);
+		this->rerenderOption->setState (true, true);
 	}
     }
-    boolean rescon = this->node->isRecordResolutionConnected();
-    boolean aspcon = this->node->isRecordAspectConnected();
+    bool rescon = this->node->isRecordResolutionConnected();
+    bool aspcon = this->node->isRecordAspectConnected();
     if (rescon && aspcon) {
 	this->rerenderCmd->deactivate();
     }
@@ -691,16 +691,16 @@ void ImageFormatDialog::setCommandActivation()
     }
 
     if (this->choice->supportsDelayedColors()) {
-	if (this->node->isRecordFormatConnected() == FALSE) 
+	if (this->node->isRecordFormatConnected() == false) 
 	    this->delayedCmd->activate();
 	else
 	    this->delayedCmd->deactivate();
     } else {
 	this->delayedCmd->deactivate();
 	if (this->choice->requiresDelayedColors())
-	    this->delayedOption->setState(TRUE, TRUE);
+	    this->delayedOption->setState(true, true);
 	else
-	    this->delayedOption->setState(FALSE, TRUE);
+	    this->delayedOption->setState(false, true);
     }
 
     ASSERT(this->choice);
@@ -709,8 +709,8 @@ void ImageFormatDialog::setCommandActivation()
 
 void ImageFormatDialog::parseRecordFormat(const char* value)
 {
-    if (this->dirtyGamma() == FALSE) {
-	boolean refreshed = FALSE;
+    if (this->dirtyGamma() == false) {
+	bool refreshed = false;
 	char *matchstr = "gamma=";
 	const char *cp = strstr (value, matchstr);
 	if (cp) {
@@ -720,14 +720,14 @@ void ImageFormatDialog::parseRecordFormat(const char* value)
 	    if (items_parsed == 1) {
 		this->setGamma(gamma);
 		this->dirty|= ImageFormatDialog::DirtyGamma;
-		refreshed = TRUE;
+		refreshed = true;
 	    } 
 	}
 	if (!refreshed) this->setGamma(DEFAULT_GAMMA);
     }
 
     if ((this->dirty & ImageFormatDialog::DirtyDelayed) == 0) {
-	boolean refreshed = FALSE;
+	bool refreshed = false;
 	char *matchstr = "delayed=";
 	const char *cp = strstr (value, matchstr);
 	if (cp) {
@@ -736,13 +736,13 @@ void ImageFormatDialog::parseRecordFormat(const char* value)
 	    int items_parsed = sscanf (cp, "%d", &delayed);
 	    if (items_parsed == 1) {
 		if (delayed == 1) {
-		    this->delayedOption->setState (TRUE, TRUE);
-		    refreshed = TRUE;
+		    this->delayedOption->setState (true, true);
+		    refreshed = true;
 		}
 	    }
 	}
 	if ((!refreshed) && (this->delayedOption->getState())) 
-	    this->delayedOption->setState(FALSE, TRUE);
+	    this->delayedOption->setState(false, true);
     }
 }
 
@@ -779,7 +779,7 @@ ImageFormat* old_choice = this->choice;
     //
     if (this->choice) {
 	//XtVaSetValues (this->choice->getRootWidget(),
-	//    XmNmappedWhenManaged, 	FALSE,
+	//    XmNmappedWhenManaged, 	false,
 	//NULL);
     }
     this->choice = selected;
@@ -789,7 +789,7 @@ ImageFormat* old_choice = this->choice;
     //
     ASSERT(selected);
  //   XtVaSetValues (selected->getRootWidget(),
-	//XmNmappedWhenManaged,	TRUE,
+	//XmNmappedWhenManaged,	true,
  //   NULL);
 
     //
@@ -817,22 +817,22 @@ ImageFormat* old_choice = this->choice;
     else {
 	this->delayedCmd->deactivate();
 	if (this->choice->requiresDelayedColors())
-	    this->delayedOption->setState(TRUE, TRUE);
+	    this->delayedOption->setState(true, true);
 	else
-	    this->delayedOption->setState(FALSE, TRUE);
+	    this->delayedOption->setState(false, true);
     }
 }
 
-boolean ImageFormatDialog::allowRerender()
+bool ImageFormatDialog::allowRerender()
 {
     this->dirty|= ImageFormatDialog::DirtyRerender;
     this->setCommandActivation();
-    return TRUE;
+    return true;
 }
 
-boolean ImageFormatDialog::isRerenderAllowed()
+bool ImageFormatDialog::isRerenderAllowed()
 {
-    if (!this->rerenderOption) return FALSE;
+    if (!this->rerenderOption) return false;
     return this->rerenderOption->getState();
 }
 
@@ -880,18 +880,18 @@ void ImageFormatDialog::restoreCallback()
     ImageFormat* imgfmt = this->choice;
     this->dirty = ImageFormatDialog::DirtyFormat;
     this->choice->restore();
-    this->resetting = TRUE;
-    this->rerenderOption->setState(FALSE, TRUE);
+    this->resetting = true;
+    this->rerenderOption->setState(false, true);
     if (!this->node->isRecordResolutionConnected())
-	this->node->unsetRecordResolution (FALSE);
+	this->node->unsetRecordResolution (false);
     if (!this->node->isRecordAspectConnected())
-	this->node->unsetRecordAspect (FALSE);
+	this->node->unsetRecordAspect (false);
     if (!this->node->isRecordFormatConnected())
-	this->node->unsetRecordFormat (FALSE);
-    this->resetting = FALSE;
+	this->node->unsetRecordFormat (false);
+    this->resetting = false;
     this->setCommandActivation();
     this->setChoice(imgfmt);
-    if (this->node->isRecordFormatConnected() == FALSE) {
+    if (this->node->isRecordFormatConnected() == false) {
 	this->setGamma(DEFAULT_GAMMA);
 	//
 	// It seems strange to be touching this value here.  In the beginning of
@@ -903,17 +903,17 @@ void ImageFormatDialog::restoreCallback()
 	// for this choice would have been set elsewhere.
 	//
 	if (this->choice->supportsDelayedColors()) 
-	    this->delayedOption->setState(FALSE);
+	    this->delayedOption->setState(false);
     }
 }
 
-void ImageFormatDialog::setBusyCursor(boolean busy)
+void ImageFormatDialog::setBusyCursor(bool busy)
 {
  //   Widget root = this->getRootWidget();
 
  //   if (busy) this->busyCursors++;
  //   else this->busyCursors--;
- //   boolean on = (boolean)this->busyCursors;
+ //   bool on = (bool)this->busyCursors;
  //   if (on) {
 	//XDefineCursor (XtDisplay(root), XtWindow(root),
 	//    ImageFormatDialog::WatchCursor);
@@ -923,10 +923,10 @@ void ImageFormatDialog::setBusyCursor(boolean busy)
  //   }
 }
 
-boolean ImageFormatDialog::delayedColors()
+bool ImageFormatDialog::delayedColors()
 {
     this->dirty|= ImageFormatDialog::DirtyDelayed;
-    return TRUE;
+    return true;
 }
 
 //extern "C" {

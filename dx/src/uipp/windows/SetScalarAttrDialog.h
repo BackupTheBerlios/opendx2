@@ -45,12 +45,12 @@ class ScalarInstance;
 
 struct _ScalarAttr {
 	double minimum, maximum;
-	boolean usingGlobalIncrement;
+	bool usingGlobalIncrement;
 	double globalIncrementValue;  
 	double localIncrementValue;  
 	int	decimals;
-	boolean minSensitive, maxSensitive;
-	boolean globalIncrementSensitive, decimalsSensitive;
+	bool minSensitive, maxSensitive;
+	bool globalIncrementSensitive, decimalsSensitive;
 }; 
 
 
@@ -63,7 +63,7 @@ class SetScalarAttrDialog : public SetAttrDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //friend void SetScalarAttrDialog_NumberCB(Widget	 widget,
 		  //       XtPointer clientData,
@@ -97,9 +97,9 @@ class SetScalarAttrDialog : public SetAttrDialog
  
     int    numComponents;		// This is saved for convenience.
 
-    boolean usingGlobalContinuous;
-    boolean globalContinuousValue;
-    boolean localContinuousValue;
+    bool usingGlobalContinuous;
+    bool globalContinuousValue;
+    bool localContinuousValue;
 
     //Widget maxLabel, maxNumber;
     //Widget minLabel, minNumber;
@@ -117,15 +117,15 @@ class SetScalarAttrDialog : public SetAttrDialog
     //
     virtual void createAttributesPart();
 
-    virtual boolean okCallback(Dialog *clientData); 
+    virtual bool okCallback(Dialog *clientData); 
 
     //
     // Indicate whether to update all attributes when a dialog attribute
-    // is changed.  At this level we return FALSE, but provide this 
+    // is changed.  At this level we return false, but provide this 
     // to allow others (i.e. SetVectorAttrDialog) to indicate that
     // all values are to be updated.
     //
-    boolean updateAllAttributes();
+    bool updateAllAttributes();
 
     //
     // Copy all the values from the given components dialog saved attributes
@@ -135,11 +135,11 @@ class SetScalarAttrDialog : public SetAttrDialog
 
     //
     // Indicate whether to update all attributes when a dialog attribute
-    // is changed.  At this level we return FALSE, but provide this
+    // is changed.  At this level we return false, but provide this
     // to allow others (i.e. SetVectorAttrDialog) to indicate that
     // all values are to be updated.
     //
-    virtual boolean isAllAttributesMode();
+    virtual bool isAllAttributesMode();
 
     //
     // Desensitize the data-driven attributes in the dialog.
@@ -191,7 +191,7 @@ class SetScalarAttrDialog : public SetAttrDialog
     void updateDisplayedComponentAttributes(int component);
 
     virtual void loadAttributes();
-    virtual boolean storeAttributes();
+    virtual bool storeAttributes();
     virtual void updateDisplayedAttributes();
 
     //

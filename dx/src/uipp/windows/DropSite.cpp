@@ -29,7 +29,7 @@ extern "C" int gethostname(char *address, int address_len);
 #include <winsock.h>
 #endif
 
-boolean DropSite::DropSiteClassInitialized = FALSE;
+bool DropSite::DropSiteClassInitialized = false;
 
 //static XContext dropcontext = 0;
 int DropSite::drop_x = 0;
@@ -61,7 +61,7 @@ DropSite::DropSite ()
 // object.  The preferred type will be used in the event that there are several
 // possible matching transfer types between sender and receiver.
 void DropSite::addSupportedType 
-	(int tag, const char *typeName, boolean preferred)
+	(int tag, const char *typeName, bool preferred)
 {
     ASSERT (typeName);
     ASSERT (typeName[0]);
@@ -185,13 +185,13 @@ typedef struct {
 //    // matches excludes our favorite type - any match.
 //    DictionaryIterator di(*ds->getDropDictionary());
 //    TransferStyle *ts;
-//    favoriteIsFound = FALSE;
+//    favoriteIsFound = false;
 //    TransferStyle *matchFound = NUL(TransferStyle*);
 //    while ((ts=(TransferStyle*)di.getNextDefinition())) {
 //	for (i=0; i<num_exports; i++) {
 //	    if (exportTargets[i] == ts->getAtom()) {
 //		if (ts->isPreferred()) {
-//		    favoriteIsFound = TRUE;
+//		    favoriteIsFound = true;
 //		} 
 //		matchFound = ts;
 //	    }
@@ -278,9 +278,9 @@ typedef struct {
 //	&actual_type, &actual_format, &nitems, &remain, (unsigned char **)&src_host);
 //	
 //    if ((src_host) && (!strcmp(src_host, hostname)) && (*process_id == getpid())) {
-//	strcpy (tbuf, "FALSE");
+//	strcpy (tbuf, "false");
 //    } else {
-//	strcpy (tbuf, "TRUE");
+//	strcpy (tbuf, "true");
 //    }
 //
 //    if (src_host) XFree(src_host);
@@ -294,9 +294,9 @@ typedef struct {
 //// that do nothing but reject drops (StandIns).  They don't need to create
 //// a tranfer func.
 ////
-//boolean DropSite::transfer(char *, XtPointer, unsigned long, int, int)
+//bool DropSite::transfer(char *, XtPointer, unsigned long, int, int)
 //{
-//    return FALSE;
+//    return false;
 //}
 //
 //#ifdef Comment

@@ -54,12 +54,12 @@ class ScalarInstance : public InteractorInstance  {
     // List of local attributes 1 for each component
     // 
     List	localAttributes;	
-    boolean	localContinuous;
-    boolean	usingLocalContinuous;
+    bool	localContinuous;
+    bool	usingLocalContinuous;
 
   protected:
 
-  //  boolean appendLocalAttributes(LocalAttributes *la)
+  //  bool appendLocalAttributes(LocalAttributes *la)
   //	    { return this->localAttributes.appendElement((void*)la); }
 
     LocalAttributes *getLocalAttributes(int component)
@@ -71,29 +71,29 @@ class ScalarInstance : public InteractorInstance  {
 	      return la; 
 	    }
 
-    void useLocalContinuous() 	{ usingLocalContinuous = TRUE; } 
-    void useLocalContinuous(boolean val ) 
+    void useLocalContinuous() 	{ usingLocalContinuous = true; } 
+    void useLocalContinuous(bool val ) 
 				{ 
-				  this->usingLocalContinuous = TRUE; 
+				  this->usingLocalContinuous = true; 
 		  		  this->localContinuous = val; 
 				}
-    boolean getLocalContinuous()
+    bool getLocalContinuous()
 	    { return this->localContinuous; }
-    void    setLocalContinuous(boolean continuous)
+    void    setLocalContinuous(bool continuous)
 	    { this->localContinuous = continuous; }
  	
-    void setGlobalContinuous(boolean continuous)	
+    void setGlobalContinuous(bool continuous)	
 	    { ASSERT(node);
 	      ((ScalarNode*)this->node)->setContinuous(continuous);
 	    }
     void useGlobalContinuous() 
-				{ this->usingLocalContinuous = FALSE; } 
-    void useGlobalContinuous(boolean val) 
+				{ this->usingLocalContinuous = false; } 
+    void useGlobalContinuous(bool val) 
 				{ 
-				  this->usingLocalContinuous = FALSE; 
+				  this->usingLocalContinuous = false; 
 				  this->setGlobalContinuous(val);
 				}
-    boolean getGlobalContinuous()
+    bool getGlobalContinuous()
 	    { ASSERT(node);
 	      return ((ScalarNode*)this->node)->isContinuous();
 	    }
@@ -188,7 +188,7 @@ class ScalarInstance : public InteractorInstance  {
     //
     // Change the dimensionality of a Vector interactor.
     //
-    boolean handleNewDimensionality();
+    bool handleNewDimensionality();
 
     //
     // Create the default  set attributes dialog box for this class of
@@ -201,22 +201,22 @@ class ScalarInstance : public InteractorInstance  {
     // with the given output is) complies with any attributes.
     // This is called by InteractorInstance::setOutputValue() which is
     // intern intended to be called by the Interactors.
-    // If verification fails (returns FALSE), then a reason is expected to
+    // If verification fails (returns false), then a reason is expected to
     // placed in *reason.  This string must be freed by the caller.
-    // At this level we always return TRUE (assuming that there are no
+    // At this level we always return true (assuming that there are no
     // attributes) and set *reason to NULL.
     //
     // This class verifies the dimensionality of vectors and the range 
     // of the component values.
     //
-    virtual boolean verifyValueAgainstAttributes(int output, const char *val,
+    virtual bool verifyValueAgainstAttributes(int output, const char *val,
 							Type t,
                                                         char **reason);
     //
     // Perform the functions of ScalarInstance::verifyValueAgainstAttributes()
     // on a single Vector, Scalar or Integer (VSI) string value.
     //
-    boolean verifyVSIAgainstAttributes(const char *val,
+    bool verifyVSIAgainstAttributes(const char *val,
                                         Type t, char **reason);
 
     virtual const char* javaName() { return "step"; }
@@ -231,18 +231,18 @@ class ScalarInstance : public InteractorInstance  {
 	  return ((ScalarNode*)this->node)->getComponentCount();
 	}
 
-    boolean isIntegerTypeComponent()	
+    bool isIntegerTypeComponent()	
 	{ ASSERT(node); 
 	  return ((ScalarNode*)this->node)->isIntegerTypeComponent(); 
 	}
 
-    boolean isVectorType()	
+    bool isVectorType()	
 	{ ASSERT(node); 
 	  return ((ScalarNode*)this->node)->isVectorType(); 
 	}
 
-    boolean usingGlobalContinuous()	{ return !usingLocalContinuous ; } 
-    boolean isContinuous()	
+    bool usingGlobalContinuous()	{ return !usingLocalContinuous ; } 
+    bool isContinuous()	
 		{ ASSERT(node); 
 		  return (usingLocalContinuous ? localContinuous :
 			((ScalarNode*)this->node)->isContinuous());
@@ -252,7 +252,7 @@ class ScalarInstance : public InteractorInstance  {
     // Get information about the difference between successive values shown 
     // in this interactor.
     //
-    boolean isLocalDelta(int component)
+    bool isLocalDelta(int component)
 		{ LocalAttributes *la = this->getLocalAttributes(component);
 		  return la->isLocalDelta();
 		}
@@ -266,7 +266,7 @@ class ScalarInstance : public InteractorInstance  {
     //
     // Get information about the minimum value shown in this interactor.
     //
-    boolean isLocalMinimum(int /* component */) { return FALSE; }
+    bool isLocalMinimum(int /* component */) { return false; }
 
     double getMinimum(int component)	 
 			{ return this->getGlobalMinimum(component); }
@@ -275,7 +275,7 @@ class ScalarInstance : public InteractorInstance  {
     //
     // Get information about the maximum value shown in this interactor.
     //
-    boolean isLocalMaximum(int /* component */) { return FALSE; }
+    bool isLocalMaximum(int /* component */) { return false; }
 
     double getMaximum(int component)	 
 			{ return this->getGlobalMaximum(component); }
@@ -284,7 +284,7 @@ class ScalarInstance : public InteractorInstance  {
     // Get information about the number of decimal points shown in the
     // interactor.
     //
-    boolean isLocalDecimals(int /* component */) { return FALSE; }
+    bool isLocalDecimals(int /* component */) { return false; }
 
     int getDecimals(int component)	
 		{ return this->getGlobalDecimals(component); }
@@ -303,9 +303,9 @@ class ScalarInstance : public InteractorInstance  {
     //
     char *buildValueFromComponents();
 
-    virtual boolean printAsJava(FILE*);
+    virtual bool printAsJava(FILE*);
 
-    virtual boolean hasSetAttrDialog();
+    virtual bool hasSetAttrDialog();
 
     const char *getClassName() { return ClassScalarInstance; }
 	

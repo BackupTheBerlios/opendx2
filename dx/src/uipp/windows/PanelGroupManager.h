@@ -72,9 +72,9 @@ class PanelGroupManager : public Base
 
     //
     // Create an empty group of control panels with the given name.
-    // If name is already active, then return FALSE.
+    // If name is already active, then return false.
     //
-    boolean 	createPanelGroup(const char *name);
+    bool 	createPanelGroup(const char *name);
 
     //
     // Add the panel indicated by panelInstance to the given named panel group.
@@ -82,14 +82,14 @@ class PanelGroupManager : public Base
     // in the group. The panelInstance, should be a member of the network 
     // with which this PanelGroupManager is associated.
     //
-    boolean 	addGroupMember(const char *name,  int panelInstance);
+    bool 	addGroupMember(const char *name,  int panelInstance);
 
     //
     // Removes the given panelInstance from the named panel group.
-    // Return FALSE if either the group does not exist or the instance
+    // Return false if either the group does not exist or the instance
     // is not a member of the given group.
     //
-    boolean 	removeGroupMember(const char *name, int panelInstance); 
+    bool 	removeGroupMember(const char *name, int panelInstance); 
 
     //
     // Removes the named panel group from this managers list of named groups.
@@ -100,9 +100,9 @@ class PanelGroupManager : public Base
     // Get a panel group by name.  If l is not NULL, then return in a l, a
     // list of ControlPanel instance numbers each of which is a member of the 
     // group.
-    // Returns FALSE if the named group does not exist in this panel manager.
+    // Returns false if the named group does not exist in this panel manager.
     //
-    boolean	getPanelGroup(const char *name, List *l);
+    bool	getPanelGroup(const char *name, List *l);
 
     //
     // Get a panel group by 1 based index.  If l is not NULL, then return in 
@@ -116,9 +116,9 @@ class PanelGroupManager : public Base
     //
     // Parse/Print the network's group comment.
     //
-    boolean cfgParseComment(const char *comment, 
+    bool cfgParseComment(const char *comment, 
 					const char *filename, int lineno);
-    boolean cfgPrintComment(FILE *f);
+    bool cfgPrintComment(FILE *f);
 
 
     Network* getNetwork()

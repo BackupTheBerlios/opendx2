@@ -61,12 +61,12 @@ class ParameterDefinition : public Definition
     const char**	typeStrings;	// If !NULL, contains type names
     const char		*description;
     char		*default_value;	
-    boolean		viewable;	// Is this parameter viewable (in a cdb)
-    boolean		required;
-    boolean		default_visibility;
-    boolean		descriptive_default;
-    boolean		is_input;	// Does this define an input or output 
-    boolean		dummy;          // Is this a dummy parameter
+    bool		viewable;	// Is this parameter viewable (in a cdb)
+    bool		required;
+    bool		default_visibility;
+    bool		descriptive_default;
+    bool		is_input;	// Does this define an input or output 
+    bool		dummy;          // Is this a dummy parameter
     char 		**valueOptions;
 
     //
@@ -83,14 +83,14 @@ class ParameterDefinition : public Definition
     // Initially used for outputs only.
     //
     Cacheability	defaultCacheability;
-    boolean	 	writeableCacheability;
+    bool	 	writeableCacheability;
 
 #if 1	// FIXME
 	friend class NodeDefinition;
 #else
-	friend boolean NodeDefinition::addInput(Symbol Name, 
+	friend bool NodeDefinition::addInput(Symbol Name, 
 					ParameterDefinition *pd);
-	friend boolean NodeDefinition::addOutput(Symbol Name, 
+	friend bool NodeDefinition::addOutput(Symbol Name, 
 					ParameterDefinition *pd);
 #endif
     void buildTypeStrings(void);
@@ -116,19 +116,19 @@ class ParameterDefinition : public Definition
     // parameter definition.  The given type is then owned by the 
     // ParameterDefinition and will be deleted when it is deleted.
     //
-    boolean	addType(DXType *t);	
+    bool	addType(DXType *t);	
 
     //
     // Remove (and free) the type in the list that matches t 
     //
-    boolean	removeType(DXType *t);
+    bool	removeType(DXType *t);
 
     //
     // Manipulate the default visibility of the tab for this parameter 
     //
-    void 	setDefaultVisibility(boolean v = TRUE) 
+    void 	setDefaultVisibility(bool v = true) 
 					{ this->default_visibility = v; }
-    boolean	getDefaultVisibility() { return default_visibility; }
+    bool	getDefaultVisibility() { return default_visibility; }
 
     //
     // S/Get the 1 based index of the output to which this input can be
@@ -145,11 +145,11 @@ class ParameterDefinition : public Definition
     //
     // Manipulate the viewability of the tab for this parameter 
     //
-    void 	setViewability(boolean v) { this->viewable = v; 
+    void 	setViewability(bool v) { this->viewable = v; 
 					    if (!v) 
-					       this->default_visibility = FALSE;
+					       this->default_visibility = false;
 					  }
-    boolean	isViewable() 	{ return this->viewable; }
+    bool	isViewable() 	{ return this->viewable; }
 
     //
     // Retrieves a NULL terminated array of pointers to strings.
@@ -168,10 +168,10 @@ class ParameterDefinition : public Definition
     //
     // Manipulate the type of I/O this parameter definition represents. 
     //
-    void	markAsInput()	{ is_input = TRUE; }
-    void	markAsOutput()	{ is_input = FALSE; }
-    boolean	isInput()	{ return is_input; }
-    boolean	isOutput()	{ return !is_input; }
+    void	markAsInput()	{ is_input = true; }
+    void	markAsOutput()	{ is_input = false; }
+    bool	isInput()	{ return is_input; }
+    bool	isOutput()	{ return !is_input; }
     
     //
     // Change the Description of this parameter ;
@@ -184,15 +184,15 @@ class ParameterDefinition : public Definition
     //
     // Change need for this parameter 
     //
-    boolean 	isRequired() { return required; }
-    void 	setRequired() { required = TRUE; }
-    void 	setNotRequired() { required = FALSE; }
+    bool 	isRequired() { return required; }
+    void 	setRequired() { required = true; }
+    void 	setNotRequired() { required = false; }
 
     //
     // Set/Get the default value, which must be of a type found in the type list. 
     //
-    boolean     isDefaultValue() { return descriptive_default == FALSE; }
-    boolean	setDefaultValue(const char *value); 
+    bool     isDefaultValue() { return descriptive_default == false; }
+    bool	setDefaultValue(const char *value); 
     const char  *getDefaultValue()  { return default_value; }
 
     //
@@ -204,12 +204,12 @@ class ParameterDefinition : public Definition
     //
     // Set the default value, which must be of a type found in the type list. 
     //
-    boolean	isDefaultDescriptive()   { return descriptive_default; }
+    bool	isDefaultDescriptive()   { return descriptive_default; }
     void	setDescriptiveValue(const char *d);
 
-    void    setWriteableCacheability(boolean v)
+    void    setWriteableCacheability(bool v)
                 	{ this->writeableCacheability = v; }
-    boolean hasWriteableCacheability()
+    bool hasWriteableCacheability()
                 	{ return this->writeableCacheability; }
     void        setDefaultCacheability(Cacheability c)
                         { this->defaultCacheability = c; }
@@ -226,8 +226,8 @@ class ParameterDefinition : public Definition
     //
     // Manage the dummy status of this parameter (typically a macro parameter)
     //
-    void  setDummy(boolean b);
-    boolean isDummy();
+    void  setDummy(bool b);
+    bool isDummy();
 
     //
     // Make a brand new copy of this and return it.
@@ -238,7 +238,7 @@ class ParameterDefinition : public Definition
     //
     // Add the given value to the list of suggested values for this parameter
     //
-    boolean addValueOption(const char *value);
+    bool addValueOption(const char *value);
 
     //
     // Get the selectable values for this parameter.

@@ -63,7 +63,7 @@ class DisplayDefinition : public DrivenDefinition
     //
     static NodeDefinition *AllocateDefinition();
 
-    virtual boolean isAllowedInMacro() { return TRUE; }
+    virtual bool isAllowedInMacro() { return true; }
 
     //
     // Returns a pointer to the class name.

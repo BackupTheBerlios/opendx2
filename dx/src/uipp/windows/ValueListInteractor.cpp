@@ -19,7 +19,7 @@
 #include "ListIterator.h"
 #include "ErrorDialogManager.h"
 
-boolean ValueListInteractor::ClassInitialized = FALSE;
+bool ValueListInteractor::ClassInitialized = false;
 
 #define EMPTY_LIST_DISPLAY  "NULL" // Displayed in interactor as empty list
 #define EMPTY_LIST_VALUE    "NULL" // Value set in parameter as empty list
@@ -75,7 +75,7 @@ void ValueListInteractor::initialize()
         //                          ListEditor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          Interactor::DefaultResources);
-        ValueListInteractor::ClassInitialized = TRUE;
+        ValueListInteractor::ClassInitialized = true;
     }
 }
 
@@ -117,7 +117,7 @@ void ValueListInteractor::completeInteractivePart()
 int width, height;
 InteractorInstance *ii = this->interactorInstance;
 
-    //this->passEvents(this->listForm, TRUE);
+    //this->passEvents(this->listForm, true);
     this->ValueInteractor::completeInteractivePart();
     ii->getXYSize (&width, &height);
     if (!width && !height) {
@@ -158,7 +158,7 @@ void ValueListInteractor::updateDisplayedInteractorValue()
 //
 void ValueListInteractor::handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change)
+					bool major_change)
 {
     this->updateDisplayedInteractorValue();
 }
@@ -236,18 +236,18 @@ char *ValueListInteractor::verifyValueEditorText()
     //
     ListIterator i(typeList);
     char *s = this->getDisplayedText(); 
-    boolean matched = FALSE;
+    bool matched = false;
     while ( (itemType = (Type)i.getNext()) ) {
 	if (!DXValue::IsValidValue(s,itemType)) {
 	    char *news;
 	    if ( (news = DXValue::CoerceValue(s,itemType)) ) {
 		if (s) delete s;
 		s = news;
-	    	matched = TRUE;
+	    	matched = true;
 		break;
 	    } 
 	} else {
-	    matched = TRUE;
+	    matched = true;
 	    break;
 	}
     }
@@ -287,11 +287,11 @@ char *ValueListInteractor::getValueEditorValue()
 //
 // Read the displayed values and set the output from them.
 //
-boolean ValueListInteractor::updateOutputFromDisplay()
+bool ValueListInteractor::updateOutputFromDisplay()
 {
     InteractorNode *node = (InteractorNode*)this->interactorInstance->getNode();
     char *s = NULL; 
-    boolean r = TRUE;
+    bool r = true;
 
     //
     // get the current list value. 
@@ -315,10 +315,10 @@ boolean ValueListInteractor::updateOutputFromDisplay()
  
     if (!s) {
 	if (node->setOutputValue(1,EMPTY_LIST_VALUE) == DXType::UndefinedType)
-	    r = FALSE;
+	    r = false;
     } else {
 	if (node->setOutputValue(1,s) == DXType::UndefinedType)
-	    r = FALSE;
+	    r = false;
     }
     if (s) delete s;
     return r;

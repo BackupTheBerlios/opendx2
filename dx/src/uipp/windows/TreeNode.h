@@ -27,28 +27,28 @@ namespace dxui {
 		TreeNode* parent;
 		TreeNode(Symbol s, TreeNode* parent) {
 			this->definition = s;
-			this->expanded = FALSE;
+			this->expanded = false;
 			this->parent = parent;
 		}
 
-		boolean expanded;
+		bool expanded;
 
 	public:
 		virtual ~TreeNode() { }
 
-		virtual boolean hasChildren()=0;
+		virtual bool hasChildren()=0;
 		virtual List* getChildren()=0;
-		virtual boolean isExpanded() { return this->expanded; }
+		virtual bool isExpanded() { return this->expanded; }
 		virtual const char* getString() {
 			return theSymbolManager->getSymbolString(this->definition);
 		}
-		virtual boolean isRoot()=0;
-		virtual boolean isLeaf()=0;
+		virtual bool isRoot()=0;
+		virtual bool isLeaf()=0;
 		virtual Symbol getDefinition() { return this->definition; }
-		virtual void setExpanded(boolean e=TRUE) {
+		virtual void setExpanded(bool e=true) {
 			this->expanded = e;
 		}
-		virtual boolean isSorted() { return FALSE; }
+		virtual bool isSorted() { return false; }
 
 		TreeNode* getParent() { return this->parent; }
 
@@ -68,10 +68,10 @@ class LeafNode : public dxui::TreeNode {
     public:
 	LeafNode(Symbol s, TreeNode* parent) : TreeNode(s, parent) {
 	}
-	boolean isRoot() { return FALSE; }
-	boolean isLeaf() { return TRUE; }
+	bool isRoot() { return false; }
+	bool isLeaf() { return true; }
 	List* getChildren() { return NUL(List*); }
-	boolean hasChildren() { return FALSE ; }
+	bool hasChildren() { return false ; }
 };
 
 class CategoryNode: public dxui::TreeNode {
@@ -87,9 +87,9 @@ class CategoryNode: public dxui::TreeNode {
 		delete node;
 	    }
 	}
-	boolean isRoot() { return FALSE; }
-	boolean isLeaf() { return FALSE; }
-	boolean hasChildren() { return TRUE; }
+	bool isRoot() { return false; }
+	bool isLeaf() { return false; }
+	bool hasChildren() { return true; }
 	void addChild(TreeNode* t) { this->kids.appendElement(t); }
 	List* getChildren() { return &this->kids; }
 };
@@ -99,9 +99,9 @@ class RootNode: public CategoryNode {
     protected:
     public:
 	RootNode() : CategoryNode((Symbol)0, (TreeNode*)0) { }
-	boolean isRoot() { return TRUE; }
+	bool isRoot() { return true; }
 	const char* getString() { return ""; }
-	boolean isExpanded() { return TRUE; }
+	bool isExpanded() { return true; }
 };
 
 #endif // _TreeNode_h

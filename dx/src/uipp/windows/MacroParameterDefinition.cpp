@@ -36,7 +36,7 @@ void MacroParameterDefinition::finishDefinition()
 
     ListIterator iterator(this->outputDefs);
     while ( (pd = (ParameterDefinition*)iterator.getNext()) ) {
-        pd->setWriteableCacheability(FALSE);
+        pd->setWriteableCacheability(false);
         pd->setDefaultCacheability(OutputFullyCached);
     }
 

@@ -53,7 +53,7 @@ class TextPopup : public UIComponent
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //friend void TextPopup_ItemSelectCB(Widget widget,
 			 //  XtPointer clientData,
@@ -72,7 +72,7 @@ class TextPopup : public UIComponent
     ChangeTextCallback 	changeTextCallback;
     void		*callbackData;
 
-    boolean             callbacksEnabled;
+    bool             callbacksEnabled;
 
     void initInstanceData();
 
@@ -131,8 +131,8 @@ class TextPopup : public UIComponent
     //
     // De/Install callbacks for the text widget. 
     //
-    boolean  enableCallbacks(boolean enable = TRUE);
-    boolean  disableCallbacks() { return this->enableCallbacks(FALSE); }
+    bool  enableCallbacks(bool enable = true);
+    bool  disableCallbacks() { return this->enableCallbacks(false); }
 
     //
     // Get the current text in the text box.  The return string must
@@ -142,7 +142,7 @@ class TextPopup : public UIComponent
     //
     // Set the current text in the text box. 
     //
-    void setText(const char *value, boolean doActivate = FALSE);
+    void setText(const char *value, bool doActivate = false);
 
     //
     // Returns a pointer to the class name.

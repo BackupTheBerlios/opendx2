@@ -11,7 +11,7 @@
 
 #include "ImageFormatMIF.h"
 
-boolean ImageFormatMIF::ClassInitialized = FALSE;
+bool ImageFormatMIF::ClassInitialized = false;
 
 //String ImageFormatMIF::DefaultResources[] = {
 //    NUL(char*)
@@ -38,15 +38,15 @@ void ImageFormatMIF::initialize()
 	//    PixelImageFormat::DefaultResources);
 	//this->setDefaultResources (theApplication->getRootWidget(),
 	//    ImageFormatMIF::DefaultResources);
-	ImageFormatMIF::ClassInitialized = TRUE;
+	ImageFormatMIF::ClassInitialized = true;
     }
 }
 
-boolean ImageFormatMIF::isA(Symbol classname)
+bool ImageFormatMIF::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassImageFormatMIF);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ImageFormat::isA(classname);
 }

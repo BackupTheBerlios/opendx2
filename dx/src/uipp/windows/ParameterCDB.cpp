@@ -21,7 +21,7 @@
 #include "lex.h"
 #include "ParseMDF.h"
 
-boolean ParameterCDB::ClassInitialized = FALSE;
+bool ParameterCDB::ClassInitialized = false;
 
 //String ParameterCDB::DefaultResources[] =
 //{
@@ -55,11 +55,11 @@ ParameterCDB::AllocateConfigurationDialog(
     return new ParameterCDB(node);
 }
 
-//boolean ParameterCDB::applyCallback(Dialog *)
+//bool ParameterCDB::applyCallback(Dialog *)
 //{
 //    if (!this->applyValues()) {
 //        this->saveInitialValues();
-//	return FALSE;
+//	return false;
 //    }
 //    this->saveInitialValues();
 //    return this->ConfigurationDialog::applyCallback(this);
@@ -75,7 +75,7 @@ ParameterCDB::AllocateConfigurationDialog(
 //{
 //    MacroParameterNode *n = (MacroParameterNode *)this->node;
 //    ParameterDefinition *pd = n->getParameterDefinition();
-//    boolean input = pd->isInput();
+//    bool input = pd->isInput();
 //
 //    Widget form = XtVaCreateManagedWidget(
 //	"paramSection",
@@ -342,7 +342,7 @@ ParameterCDB::ParameterCDB(Node *node):
     if (NOT ParameterCDB::ClassInitialized)
     {
 	ASSERT(theApplication);
-        ParameterCDB::ClassInitialized = TRUE;
+        ParameterCDB::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
@@ -350,9 +350,9 @@ ParameterCDB::ParameterCDB(Node *node):
     this->initialName = NULL;
     this->initialValue = NULL;
     this->initialDescription = NULL;
-    this->initialRequired = FALSE;
-    this->initialDescriptive = FALSE;
-    this->initialHidden = FALSE;
+    this->initialRequired = false;
+    this->initialDescriptive = false;
+    this->initialHidden = false;
     this->initialOptionValues = NULL;
 }
 
@@ -562,9 +562,9 @@ void ParameterCDB::restoreInitialValues()
 	pd->setNotRequired();
 
     if (this->initialHidden)
-	pd->setDefaultVisibility(FALSE);
+	pd->setDefaultVisibility(false);
     else
-	pd->setDefaultVisibility(TRUE);
+	pd->setDefaultVisibility(true);
 
     if (pd->isInput())
 	this->changeInput(1);
@@ -578,7 +578,7 @@ void ParameterCDB::restoreInitialValues()
     }
 }
 
-boolean ParameterCDB::applyValues()
+bool ParameterCDB::applyValues()
 {
  //   MacroParameterNode *n = (MacroParameterNode *)this->node;
  //   ParameterDefinition *pd = n->getParameterDefinition();
@@ -594,7 +594,7 @@ boolean ParameterCDB::applyValues()
  //   char *name = XmTextGetString(this->name);
  //   char *options = NULL;
  //   if (pd->isInput()) options = XmTextGetString(this->optionValues);
- //   boolean return_val = TRUE;
+ //   bool return_val = true;
 
  //   //
  //   // Move the index after reading all the CDB values, because this resets 
@@ -606,7 +606,7 @@ boolean ParameterCDB::applyValues()
 	//if(descr) XtFree(descr);     //	AJ
 	//if(value)  XtFree(value);     //	AJ
 	//if(options) XtFree(options);
-	//return FALSE;
+	//return false;
  //   }
 
  //   int   start = 0;
@@ -620,7 +620,7 @@ boolean ParameterCDB::applyValues()
 	//if(value)  XtFree(value);     //	AJ
 	//if(options) XtFree(options);
 
-	//return FALSE;
+	//return false;
  //   }
  //   else
  //   {
@@ -693,12 +693,12 @@ boolean ParameterCDB::applyValues()
 	//    if (conflict) {
 	//	ErrorMessage(
 	//	    "A %s with name \"%s\" already exists.", conflict, begin);
-	//	return_val = FALSE;
+	//	return_val = false;
 	//    } else if (name_clash) {
 	//	ErrorMessage(
 	//	"Parameter name `%s' is the same name used by parameter #%d.\n",
 	//	    begin,name_clash);
-	//	return_val = FALSE;
+	//	return_val = false;
 	//    } else {
 	//	pd->setName(begin);
 	//	n->getNetwork()->setDirty();
@@ -710,7 +710,7 @@ boolean ParameterCDB::applyValues()
 	//	"Invalid parameter name `%s'.  It must start with a letter"
 	//	" and contain only letters, numbers, and underscores",
 	//	name);
-	//    return_val = FALSE;
+	//    return_val = false;
 	//}
  //   }
 
@@ -787,7 +787,7 @@ boolean ParameterCDB::applyValues()
 	//		ErrorMessage("`%s' is not a valid value "
 	//			     "for parameter %s.",
 	//		    value? value: "NULL", pd->getNameString());
-	//    		return_val = FALSE;
+	//    		return_val = false;
 	//	    }
 	//	}
 	//	n->getNetwork()->setDirty();
@@ -813,13 +813,13 @@ boolean ParameterCDB::applyValues()
 	//int i=0;
 	//if (ParseMDFOptions (pdef, options)) {
 	//    const char *const *ostrings = pdef->getValueOptions();
-	//    boolean can_coerce = TRUE;
+	//    bool can_coerce = true;
 	//    if (ostrings && ostrings[0]) {
 	//	List *types = pdef->getTypes();
 	//	while (ostrings[i]) {
 	//	    const char* option = ostrings[i];
 
-	//	    boolean coerced = FALSE;
+	//	    bool coerced = false;
 
 	//	    ListIterator iter;
 	//	    DXType *dxtype;
@@ -827,7 +827,7 @@ boolean ParameterCDB::applyValues()
 	//		char* s = DXValue::CoerceValue (option, dxtype->getType());
 	//		if (s) {
 	//		    delete s;
-	//		    coerced = TRUE;
+	//		    coerced = true;
 	//		    break;
 	//		}
 	//	    }
@@ -840,27 +840,27 @@ boolean ParameterCDB::applyValues()
 	//	ErrorMessage(
 	//	    "'%s' is not a valid value for Option values.",
 	//	     ostrings[i]);
-	//	return_val = FALSE;
+	//	return_val = false;
 	//    }
 	//} else {
 	//    ErrorMessage(
 	//	"'%s' is not a valid value for Option values.",
 	//	 options);
-	//    return_val = FALSE;
+	//    return_val = false;
 	//}
  //   }
 
 
  //   char *p = descr;
- //   boolean error = FALSE;
+ //   bool error = false;
  //   for (; *p; ++p)
 	//if (*p == '\'')
 	//{
 	//    ErrorMessage(
 	//	"Description %s must not contain the \"'\" character.",
 	//	 descr);
-	//    error = TRUE;
-	//    return_val = FALSE;
+	//    error = true;
+	//    return_val = false;
 	//    break;
 	//}
 

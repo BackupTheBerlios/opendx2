@@ -47,7 +47,7 @@ class SelectorListInstance : public SelectionInstance {
 	
     ~SelectorListInstance()  {}
 
-    virtual boolean printAsJava(FILE* );
+    virtual bool printAsJava(FILE* );
 
     const char *getClassName() 
 		{ return ClassSelectorListInstance; }

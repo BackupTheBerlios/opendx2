@@ -47,7 +47,7 @@ class ScalarListNode : public ScalarNode
     // Adjusts the dimensionality of all outputs for
     // this->changeDimensionality().
     //
-    virtual boolean adjustOutputDimensions(int old_dim, int new_dim);
+    virtual bool adjustOutputDimensions(int old_dim, int new_dim);
 
     //
     // Get a ScalarListInstance instead of an ScalarInstance.
@@ -100,7 +100,7 @@ class ScalarListNode : public ScalarNode
     // Constructor:
     //
     ScalarListNode(NodeDefinition *nd, Network *net, int instnc, 
-					boolean isvector, int dimensions); 
+					bool isvector, int dimensions); 
 
     //
     // Destructor:
@@ -110,12 +110,12 @@ class ScalarListNode : public ScalarNode
     //
     // Called once for each instance 
     //
-    virtual boolean initialize();
+    virtual bool initialize();
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

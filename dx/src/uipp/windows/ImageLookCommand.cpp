@@ -18,7 +18,7 @@
 
 ImageLookCommand::ImageLookCommand(const char   *name,
 						 CommandScope *scope,
-						 boolean       active,
+						 bool       active,
 						 ImageWindow  *w,
 						 LookDirection dir):
     NoUndoCommand(name, scope, active)
@@ -27,7 +27,7 @@ ImageLookCommand::ImageLookCommand(const char   *name,
     this->direction = dir;
 }
 
-boolean ImageLookCommand::doIt(CommandInterface *ci)
+bool ImageLookCommand::doIt(CommandInterface *ci)
 {
     return this->imageWindow->setLook(this->direction);
 }

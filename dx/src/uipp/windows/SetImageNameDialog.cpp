@@ -19,7 +19,7 @@
 #include "Network.h"
 #include "ErrorDialogManager.h"
 
-boolean SetImageNameDialog::ClassInitialized = FALSE;
+bool SetImageNameDialog::ClassInitialized = false;
 //String SetImageNameDialog::DefaultResources[] =
 //{
 //    "*dialogTitle:               	Change Image Name...", 
@@ -35,7 +35,7 @@ SetImageNameDialog::SetImageNameDialog(ImageWindow *iw) :
 
     if (NOT SetImageNameDialog::ClassInitialized)
     {
-        SetImageNameDialog::ClassInitialized = TRUE;
+        SetImageNameDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -64,13 +64,13 @@ const char *SetImageNameDialog::getText()
 // Permit empty strings.  This should set the title param so that it's defaulting
 // and do resetWindowTitle on the ImageWindow.
 //
-boolean SetImageNameDialog::saveText(const char *s)
+bool SetImageNameDialog::saveText(const char *s)
 {
 #if 0
     if (IsBlankString(s)) {
 	ModalErrorMessage(this->getRootWidget(),
 		"The name string cannot be blank.");
-        return FALSE;
+        return false;
     } else {
 #endif
 	ImageWindow *iw = this->imageWindow;
@@ -80,6 +80,6 @@ boolean SetImageNameDialog::saveText(const char *s)
 #if 0
     }
 #endif
-    return TRUE;
+    return true;
 }
 

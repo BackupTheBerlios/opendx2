@@ -16,7 +16,7 @@
 
 DeferrableAction::DeferrableAction(DeferrableActionFunction daf, void *data)
 {
-    this->required  = FALSE;
+    this->required  = false;
     this->deferrals = 0;
     this->actionFunction = daf;
     this->staticData = data;
@@ -43,7 +43,7 @@ void DeferrableAction::undeferAction()
 {  
     ASSERT(this->deferrals > 0);
     if ((--this->deferrals == 0) && this->required) {
-	this->required = FALSE;
+	this->required = false;
 	this->actionFunction(this->staticData, NULL);
     }
 }

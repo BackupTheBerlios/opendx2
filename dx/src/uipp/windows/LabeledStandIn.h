@@ -32,7 +32,7 @@
 class LabeledStandIn : public StandIn
 {
   private:
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //
     // Private member data:

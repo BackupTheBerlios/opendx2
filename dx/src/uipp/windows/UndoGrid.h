@@ -29,9 +29,9 @@ class UndoGrid : public UndoableAction
     public:
 	virtual const char* getLabel() { return UndoGrid::OperationName; }
 	virtual ~UndoGrid();
-	virtual boolean canUndo() { return TRUE; }
+	virtual bool canUndo() { return true; }
 	UndoGrid (EditorWindow *editor, EditorWorkSpace* workSpace);
-	virtual void undo(boolean first_in_list=TRUE);
+	virtual void undo(bool first_in_list=true);
 	virtual const char* getClassName() { return UndoGridClassName; }
 };
 

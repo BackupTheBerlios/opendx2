@@ -34,7 +34,7 @@ class MWFileDialog : public dxui::FileDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
     //
@@ -44,7 +44,7 @@ class MWFileDialog : public dxui::FileDialog
     virtual void okFileWork(const char *string);
     virtual void cancelCallback(Dialog *d);
 
-    boolean log;
+    bool log;
     //static String  DefaultResources[];
 
     //
@@ -69,7 +69,7 @@ class MWFileDialog : public dxui::FileDialog
     //
     // True means that this will make a log request next, false means a save
     //
-    void postAs(boolean log);
+    void postAs(bool log);
 
     //
     // Returns a pointer to the class name.

@@ -14,7 +14,7 @@
 #include "ColormapNode.h"
 #include "WarningDialogManager.h"
 
-boolean ColormapAddCtlDialog::ClassInitialized = FALSE;
+bool ColormapAddCtlDialog::ClassInitialized = false;
 
 //String ColormapAddCtlDialog::DefaultResources[] = {
 //	"*dialogTitle:			Add Control Points",
@@ -33,7 +33,7 @@ ColormapAddCtlDialog::ColormapAddCtlDialog(
 
     if (NOT ColormapAddCtlDialog::ClassInitialized)
     {
-        ColormapAddCtlDialog::ClassInitialized = TRUE;
+        ColormapAddCtlDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

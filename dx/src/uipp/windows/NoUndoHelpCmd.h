@@ -40,7 +40,7 @@ class NoUndoHelpCmd : public NoUndoCommand
     HelpWin	*helpWin;
     HelpCmdType 	 commandType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -48,7 +48,7 @@ class NoUndoHelpCmd : public NoUndoCommand
     //
     NoUndoHelpCmd(const char*   name,
                 CommandScope  *scope,
-                boolean       active,
+                bool       active,
 		HelpWin      *helpWin,
 		HelpCmdType     comType);
 

@@ -63,7 +63,7 @@ class ResetNode : public ToggleNode
     //
     int handleInteractorMsgInfo(const char *line);
 
-    virtual boolean expectingModuleMessage();
+    virtual bool expectingModuleMessage();
 
     //
     // Reset output lvalues contain the '[oneshot:value]' attribute if the
@@ -98,12 +98,12 @@ class ResetNode : public ToggleNode
     // inputs so that we can use them later when setting the attributes for the
     // Interactor.
     //
-    virtual boolean initialize();
+    virtual bool initialize();
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     virtual const char* getJavaNodeName() { return "ResetNode"; }
 

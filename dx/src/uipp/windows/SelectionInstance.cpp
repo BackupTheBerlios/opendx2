@@ -17,7 +17,7 @@
 #include "SelectionAttrDialog.h"
 
 
-boolean SelectionInstance::appendOptionPair(const char *value, const char *name)
+bool SelectionInstance::appendOptionPair(const char *value, const char *name)
 {
     SelectionNode *n = (SelectionNode*)this->getNode();
     return n->appendOptionPair(value,name);
@@ -38,19 +38,19 @@ char *SelectionInstance::getOptionValueString(int optind)
     return n->getOptionValueString(optind);
 }
 
-char *SelectionInstance::getOptionNameString(int optind, boolean keep_quotes)
+char *SelectionInstance::getOptionNameString(int optind, bool keep_quotes)
 {
     SelectionNode *n = (SelectionNode*)this->getNode();
     return n->getOptionNameString(optind, keep_quotes);
 }
 
 //
-// Return TRUE/FALSE indicating if this class of interactor instance has
+// Return true/false indicating if this class of interactor instance has
 // a set attributes dialog (i.e. this->newSetAttrDialog returns non-NULL).
 //
-boolean SelectionInstance::hasSetAttrDialog()
+bool SelectionInstance::hasSetAttrDialog()
 {
-    return TRUE;
+    return true;
 }
 
 //

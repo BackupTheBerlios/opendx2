@@ -14,7 +14,7 @@
 #include "ErrorDialogManager.h"
 
 
-boolean OpenColormapDialog::ClassInitialized = FALSE;
+bool OpenColormapDialog::ClassInitialized = false;
 
 //String OpenColormapDialog::DefaultResources[] =
 //{
@@ -27,7 +27,7 @@ boolean OpenColormapDialog::ClassInitialized = FALSE;
 
 void OpenColormapDialog::okFileWork(const char *string)
 {
-    boolean r;
+    bool r;
     if (this->opening)
 	r = this->editor->cmOpenFile((char*)string);
     else
@@ -49,7 +49,7 @@ OpenColormapDialog::OpenColormapDialog(
  
     if (NOT OpenColormapDialog::ClassInitialized)
     {
-        OpenColormapDialog::ClassInitialized = TRUE;
+        OpenColormapDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
@@ -64,7 +64,7 @@ OpenColormapDialog::OpenColormapDialog(
 //    this->FileDialog::installDefaultResources( baseWidget);
 //}
 
-void OpenColormapDialog::setMode(boolean opening)
+void OpenColormapDialog::setMode(bool opening)
 {
     this->opening = opening;
 }

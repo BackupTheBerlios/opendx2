@@ -20,13 +20,13 @@ VPEPage::VPEPage (const char* name, WorkSpaceInfo *info,
 {
 }
 
-boolean VPEPage::isA(Symbol classname)
+bool VPEPage::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassVPEPage);
     return (s == classname);
 }
 
-boolean VPEPage::isA(const char* classname)
+bool VPEPage::isA(const char* classname)
 {
     Symbol s = theSymbolManager->registerSymbol(classname);
     return this->isA(s);

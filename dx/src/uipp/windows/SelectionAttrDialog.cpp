@@ -26,7 +26,7 @@
 #define VALUE_LABEL_SSCANF_FORMAT   "%[^=]= %s"
 
 
-boolean SelectionAttrDialog::ClassInitialized = FALSE;
+bool SelectionAttrDialog::ClassInitialized = false;
 
 //String  SelectionAttrDialog::DefaultResources[] =
 //{
@@ -61,7 +61,7 @@ SelectionAttrDialog::SelectionAttrDialog(
 
     if (NOT SelectionAttrDialog::ClassInitialized)
     {
-        SelectionAttrDialog::ClassInitialized = TRUE;
+        SelectionAttrDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -108,7 +108,7 @@ void SelectionAttrDialog::setAttributeSensitivity()
     SelectionInstance *si = (SelectionInstance*)this->interactorInstance;
     SelectionNode *snode = (SelectionNode*)si->getNode();
 
-    //Boolean s = (snode->isDataDriven() == FALSE ? True : False);
+    //Boolean s = (snode->isDataDriven() == false ? True : False);
 
     //XtSetSensitive(this->labelText, s);
     //XtSetSensitive(this->valueText, s);
@@ -153,7 +153,7 @@ char *SelectionAttrDialog::getValueEditorValue()
     SelectionInstance *si;
     SelectionNode *snode;
     int cnt;
-    boolean accept_any;
+    bool accept_any;
 
     /*
      * Get the current label text.
@@ -200,19 +200,19 @@ char *SelectionAttrDialog::getValueEditorValue()
     cnt = this->getListItemCount();
     if ((cnt == 0) || ((cnt == 1) && this->getSelectedItemIndex())) {
 	// Accept any value
-	accept_any = TRUE;
+	accept_any = true;
 	this->valueType = DXType::UndefinedType;
     } else
-	accept_any = FALSE;
+	accept_any = false;
     saved_value = DuplicateString(snode->getOutputValueString(1));
-    if ((type = snode->setOutputValue(1,value, this->valueType, FALSE)) != 
+    if ((type = snode->setOutputValue(1,value, this->valueType, false)) != 
 		DXType::UndefinedType)
     {
 	//
 	// If the output value is a list type, the items are restricted to
 	// the types of items that can be in the list.
 	//
-	boolean wasList = type & DXType::ListType ? TRUE : FALSE;
+	bool wasList = type & DXType::ListType ? true : false;
 	type = type & ~DXType::ListType; 
 	//
 	// Reset the currently allowed value type
@@ -245,7 +245,7 @@ char *SelectionAttrDialog::getValueEditorValue()
 	// For, vectors and tensors, verify that the rank and shape are 
 	// the same.
 	//
-	boolean dim_match = TRUE;
+	bool dim_match = true;
 	if (!accept_any && 
 	    (type == DXType::VectorType || type == DXType::TensorType)) {
 	    DXTensor first, proposed;
@@ -257,12 +257,12 @@ char *SelectionAttrDialog::getValueEditorValue()
 	    if (dim_match) {
 		proposed.setValue(value);
 		if (proposed.getDimensions() != first.getDimensions())
-		    dim_match = FALSE;
+		    dim_match = false;
 		int i;
 		for (i=1 ; dim_match && (i<=proposed.getDimensions()) ; i++) {
 		    if (proposed.getDimensionSize(i) != 
 						first.getDimensionSize(i))
-		    dim_match = FALSE;
+		    dim_match = false;
 		} 
 	    }
 	}	
@@ -290,7 +290,7 @@ char *SelectionAttrDialog::getValueEditorValue()
 			"'%s' is not the same dimension as current value(s).", 
 			value);
 	}
-        snode->setOutputValue(1,saved_value,DXType::UndefinedType,FALSE);
+        snode->setOutputValue(1,saved_value,DXType::UndefinedType,false);
     }
     else 
     {
@@ -314,7 +314,7 @@ error:
 // Read the current attribute settings from the dialog and set them in  
 // the given InteractorInstance indicated with this->interactorInstance 
 //
-boolean SelectionAttrDialog::storeAttributes()
+bool SelectionAttrDialog::storeAttributes()
 {
     int 	i, count;
     char  	*text, value[1024], label[1024];
@@ -350,12 +350,12 @@ boolean SelectionAttrDialog::storeAttributes()
     }
 
     SelectionNode *snode = (SelectionNode*)si->getNode();
-    snode->installNewOptions(vallist, strlist, TRUE);
+    snode->installNewOptions(vallist, strlist, true);
 
     delete vallist;
     delete strlist;
 
-    return TRUE;
+    return true;
 }
 //
 // Display the options stored in the node. 

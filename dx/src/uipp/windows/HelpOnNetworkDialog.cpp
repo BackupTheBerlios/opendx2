@@ -11,7 +11,7 @@
 
 #include "HelpOnNetworkDialog.h"
 
-boolean HelpOnNetworkDialog::ClassInitialized = FALSE;
+bool HelpOnNetworkDialog::ClassInitialized = false;
 
 //String HelpOnNetworkDialog::DefaultResources[] =
 //{
@@ -21,11 +21,11 @@ boolean HelpOnNetworkDialog::ClassInitialized = FALSE;
 
 HelpOnNetworkDialog::HelpOnNetworkDialog(Network *n) : 
 				SetNetworkCommentDialog("helpOnNetworkDialog",
-				TRUE,n)
+				true,n)
 {
     if (NOT HelpOnNetworkDialog::ClassInitialized)
     {
-        HelpOnNetworkDialog::ClassInitialized = TRUE;
+        HelpOnNetworkDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

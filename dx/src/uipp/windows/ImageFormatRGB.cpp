@@ -21,7 +21,7 @@
 #endif
 
 
-boolean ImageFormatRGB::ClassInitialized = FALSE;
+bool ImageFormatRGB::ClassInitialized = false;
 
 //String ImageFormatRGB::DefaultResources[] = {
 //    NUL(char*)
@@ -48,7 +48,7 @@ void ImageFormatRGB::initialize()
 	//    PixelImageFormat::DefaultResources);
 	//this->setDefaultResources (theApplication->getRootWidget(),
 	//    ImageFormatRGB::DefaultResources);
-	ImageFormatRGB::ClassInitialized = TRUE;
+	ImageFormatRGB::ClassInitialized = true;
     }
 }
 
@@ -67,11 +67,11 @@ void ImageFormatRGB::eraseOutputFile(const char *fname)
     delete srcfile;
 }
 
-boolean ImageFormatRGB::isA(Symbol classname)
+bool ImageFormatRGB::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassImageFormatRGB);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ImageFormat::isA(classname);
 }

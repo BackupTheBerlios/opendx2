@@ -73,13 +73,13 @@ class SIAllocatorDictionary :
     // Record a function to be used to do allocation for the 'Instance'
     // associated with the given name.
     //
-    boolean addAllocator(const char *name, SIAllocator alloc)
+    bool addAllocator(const char *name, SIAllocator alloc)
         {  ASSERT(this); return this->addDefinition(name,(const void*)alloc); }
 
     //
     // Push (intall) a default Allocator onto the stack.
     //
-    boolean pushDefaultAllocator(SIAllocator nda)
+    bool pushDefaultAllocator(SIAllocator nda)
         { ASSERT(this); return this->pushDefaultDefinition((const void*)nda); }
 
     //

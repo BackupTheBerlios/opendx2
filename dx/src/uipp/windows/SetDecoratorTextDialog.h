@@ -48,7 +48,7 @@ class SetDecoratorTextDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     //
@@ -58,7 +58,7 @@ class SetDecoratorTextDialog : public Dialog
     int dirty;
 
     int min_width;
-    boolean negotiated;
+    bool negotiated;
 
     //Widget justifyOM;
     //Widget colorOM;
@@ -76,7 +76,7 @@ class SetDecoratorTextDialog : public Dialog
     //
     // For justification
     //
-    //boolean measureLines(XmString, char*);
+    //bool measureLines(XmString, char*);
     char*   kern(char* src, char* font);
     int     line_count;
     int*    kern_lengths;
@@ -108,9 +108,9 @@ class SetDecoratorTextDialog : public Dialog
     //friend void SetDecoratorTextDialog_ArrowMotionEH 
 	   // (Widget , XtPointer , XEvent *, Boolean *);
 
-    virtual boolean okCallback (Dialog * );
-    virtual boolean restoreCallback (Dialog * );
-    virtual boolean reformatCallback (SetDecoratorTextDialog * );
+    virtual bool okCallback (Dialog * );
+    virtual bool restoreCallback (Dialog * );
+    virtual bool reformatCallback (SetDecoratorTextDialog * );
 
     void createDialog ();
 
@@ -125,7 +125,7 @@ class SetDecoratorTextDialog : public Dialog
     // Constructor:
     // There are 2 constructors because this class can be instantiated directly
     // as well as subclassed.
-    SetDecoratorTextDialog(boolean , LabelDecorator *, const char* );
+    SetDecoratorTextDialog(bool , LabelDecorator *, const char* );
 
     //
     // The subclass might want to justify text differently
@@ -137,7 +137,7 @@ class SetDecoratorTextDialog : public Dialog
     //
     // Constructor:
     //
-    SetDecoratorTextDialog(boolean readonly, LabelDecorator *dec);
+    SetDecoratorTextDialog(bool readonly, LabelDecorator *dec);
 
     //
     // Destructor:

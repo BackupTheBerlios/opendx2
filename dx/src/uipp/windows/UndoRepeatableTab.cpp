@@ -15,7 +15,7 @@
 char UndoRepeatableTab::OperationName[] = "repeats";
 
 UndoRepeatableTab::UndoRepeatableTab 
-    (EditorWindow* editor, Node* n, boolean adding, boolean input) : UndoNode(editor, n)
+    (EditorWindow* editor, Node* n, bool adding, bool input) : UndoNode(editor, n)
 {
     this->adding = !adding;
     this->input = input;
@@ -23,7 +23,7 @@ UndoRepeatableTab::UndoRepeatableTab
 
 //
 //
-void UndoRepeatableTab::undo(boolean first_in_list) 
+void UndoRepeatableTab::undo(bool first_in_list) 
 {
     Node* n = this->lookupNode();
     if (!n) return ;
@@ -44,22 +44,22 @@ void UndoRepeatableTab::undo(boolean first_in_list)
 
 //
 //
-boolean UndoRepeatableTab::canUndo()
+bool UndoRepeatableTab::canUndo()
 {
     Node* n = this->lookupNode();
-    if (!n) return FALSE;
+    if (!n) return false;
     if (this->adding) {
 	if (this->input) {
-	    if (!n->isInputRepeatable()) return FALSE;
+	    if (!n->isInputRepeatable()) return false;
 	} else {
-	    if (!n->isOutputRepeatable()) return FALSE;
+	    if (!n->isOutputRepeatable()) return false;
 	}
     } else {
 	if (this->input) {
-	    if (!n->hasRemoveableInput()) return FALSE;
+	    if (!n->hasRemoveableInput()) return false;
 	} else {
-	    if (!n->hasRemoveableOutput()) return FALSE;
+	    if (!n->hasRemoveableOutput()) return false;
 	}
     }
-    return TRUE;
+    return true;
 }

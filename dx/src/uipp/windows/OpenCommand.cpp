@@ -17,7 +17,7 @@
 
 OpenCommand::OpenCommand(const char*   name,
                          CommandScope* scope,
-                         boolean       active,
+                         bool       active,
 			 DXApplication *app) :
     OptionalPreActionCommand(name, scope, active,
                              "Save Confirmation",
@@ -46,13 +46,13 @@ void   OpenCommand::doPreAction()
 
 }
 
-boolean OpenCommand::doIt(CommandInterface *ci)
+bool OpenCommand::doIt(CommandInterface *ci)
 {
    this->application->postOpenNetworkDialog();
-   return TRUE;
+   return true;
 }
 
-boolean OpenCommand::needsConfirmation()
+bool OpenCommand::needsConfirmation()
 {
     return this->application->network->saveToFileRequired();
 }

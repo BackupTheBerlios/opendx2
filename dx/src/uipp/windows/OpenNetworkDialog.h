@@ -33,7 +33,7 @@ class TextEditDialog;
 //				
 class OpenNetworkDialog : public dxui::FileDialog
 {
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
 

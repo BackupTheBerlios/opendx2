@@ -18,7 +18,7 @@
 #include "ListIterator.h"
 #include "ErrorDialogManager.h"
 
-boolean ComputeCDB::ClassInitialized = FALSE;
+bool ComputeCDB::ClassInitialized = false;
 
 //String ComputeCDB::DefaultResources[] =
 //{
@@ -42,13 +42,13 @@ ComputeCDB::AllocateConfigurationDialog(
     return new ComputeCDB(node);
 }
 
-boolean ComputeCDB::applyCallback(Dialog *)
+bool ComputeCDB::applyCallback(Dialog *)
 {
  //   ListIterator li(this->inputList);
  //   int i;
  //   CDBInput *input;
  //   ComputeNode     *n = (ComputeNode*)this->node;
- //   boolean anySet = FALSE;
+ //   bool anySet = false;
 
  //   char *expressionString = XmTextGetString(this->expression);
 
@@ -59,8 +59,8 @@ boolean ComputeCDB::applyCallback(Dialog *)
 	//    char *valueString = XmTextGetString(input->nameWidget);
 	//    if (!EqualString(valueString, n->getName(i)))
 	//    {
-	//	n->setName(valueString, i, FALSE);
-	//	anySet = TRUE;
+	//	n->setName(valueString, i, false);
+	//	anySet = true;
 	//    }
 	//    input->setInitialValue(valueString);
 	//    XtFree(valueString);
@@ -69,9 +69,9 @@ boolean ComputeCDB::applyCallback(Dialog *)
 
  //   if (!EqualString(n->getExpression(), expressionString)) {
 	//n->setExpression(expressionString);
-	//this->expression_modified = FALSE;
+	//this->expression_modified = false;
  //   } else if (anySet)
-	//n->sendValues(FALSE);
+	//n->sendValues(false);
  //   if (this->initialExpression)
 	//delete this->initialExpression;
  //   this->initialExpression = DuplicateString(expressionString);
@@ -84,7 +84,7 @@ boolean ComputeCDB::applyCallback(Dialog *)
  //   this->initialNotation = DuplicateString(s);
  //   XtFree(s);
 
- //   return TRUE;
+ //   return true;
 	return false;
 }
 
@@ -94,7 +94,7 @@ void ComputeCDB::restoreCallback(Dialog *)
  //   int i;
  //   CDBInput *input;
  //   ComputeNode     *n = (ComputeNode*)this->node;
- //   boolean anySet = FALSE;
+ //   bool anySet = false;
 
  //   char *expressionString = XmTextGetString(this->expression);
 
@@ -106,8 +106,8 @@ void ComputeCDB::restoreCallback(Dialog *)
 	//    if (!EqualString(valueString, input->initialValue))
 	//    {
 	//	XmTextSetString(input->nameWidget, input->initialValue);
-	//	n->setName(input->initialValue, i, FALSE);
-	//	anySet = TRUE;
+	//	n->setName(input->initialValue, i, false);
+	//	anySet = true;
 	//    }
 	//    XtFree(valueString);
 	//}
@@ -117,10 +117,10 @@ void ComputeCDB::restoreCallback(Dialog *)
  //   {
 	//this->setExpression(valueString);
 	//n->setExpression(valueString);
-	//this->expression_modified = FALSE;
+	//this->expression_modified = false;
  //   }
  //   else if (anySet)
-	//n->sendValues(FALSE);
+	//n->sendValues(false);
  //   XtFree(expressionString);
 }
 
@@ -129,7 +129,7 @@ void ComputeCDB::restoreCallback(Dialog *)
 //{
 //    ComputeCDB *dialog = (ComputeCDB *)clientData;
 //    ASSERT(dialog);
-//    dialog->expression_modified = TRUE;
+//    dialog->expression_modified = true;
 //}
 //
 //extern "C" void ComputeCDB_ExpressionChangedCB(Widget widget,
@@ -146,11 +146,11 @@ void ComputeCDB::restoreCallback(Dialog *)
 //    {
 //	CDBInput *input = (CDBInput *)dialog->inputList.getElement(i);
 //	char *s = XmTextGetString(input->nameWidget);
-//	n->setName(s, i, FALSE);
+//	n->setName(s, i, false);
 //	XtFree(s);
 //    }
 //
-//    n->setExpression(expressionString, TRUE);
+//    n->setExpression(expressionString, true);
 //    XtFree(expressionString);
 //}
 //extern "C" void ComputeCDB_NameChangedCB(Widget widget,
@@ -254,17 +254,17 @@ ComputeCDB::ComputeCDB(
     if (NOT ComputeCDB::ClassInitialized)
     {
 	ASSERT(theApplication);
-        ComputeCDB::ClassInitialized = TRUE;
+        ComputeCDB::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
     this->initialExpression = NULL;
-    this->expression_modified = FALSE;
+    this->expression_modified = false;
 }
 
 #if 00 // Not needed because there are any classes derived from this class 
 ComputeCDB::ComputeCDB(char *name,
 		       Node *node) :
-    ConfigurationDialog(name, node, TRUE)
+    ConfigurationDialog(name, node, true)
 {
     this->initialExpression = NULL;
 }
@@ -525,10 +525,10 @@ void ComputeCDB::deleteInput(int i)
 	//NULL);
 }
 
-boolean ComputeCDB::widgetChanged(int i, boolean send)
+bool ComputeCDB::widgetChanged(int i, bool send)
 {
     if (i < 2)
-	return TRUE;
+	return true;
     //CDBInput *input = (CDBInput*)this->inputList.getElement(i - 1);
     //const char *s = XmTextGetString(input->nameWidget);
     //ComputeNode *n = (ComputeNode*)this->node;
@@ -537,9 +537,9 @@ boolean ComputeCDB::widgetChanged(int i, boolean send)
 
     //XtFree((char *)s);
 
-    return TRUE;
+    return true;
 }
 
-void   ComputeCDB::remanageInputs(boolean)
+void   ComputeCDB::remanageInputs(bool)
 {
 }

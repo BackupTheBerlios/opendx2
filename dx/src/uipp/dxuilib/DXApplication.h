@@ -7,12 +7,10 @@
 /***********************************************************************/
 
 #include <dxconfig.h>
-#include "../base/defines.h"
+#include "defines.h"
 
 #ifndef _DXApplication_h
 #define _DXApplication_h
-
-#include <Xm/Xm.h>
 
 #include "IBMApplication.h"
 #include "List.h"
@@ -32,7 +30,7 @@ class ControlPanel;
 //
 #define ClassDXApplication	"DXApplication"
 
-extern "C" int DXApplication_DXAfterFunction(Display *display);
+//extern "C" int DXApplication_DXAfterFunction(Display *display);
 
 extern "C" void
 #if defined(ALTERNATE_CXX_SIGNAL) 
@@ -46,162 +44,162 @@ typedef struct
     //
     // options and resources:
     //
-    String	server;
-    String	executive;
-    String	workingDirectory;
+    char*	server;
+    char*	executive;
+    char*	workingDirectory;
 
-    String	program;
-    String	cfgfile;
-    String	userModules;
-    String	macros;
-    String      errorPath;
+    char*	program;
+    char*	cfgfile;
+    char*	userModules;
+    char*	macros;
+    char*      errorPath;
 
-    String	executiveModule;
-    String	uiModule;
+    char*	executiveModule;
+    char*	uiModule;
 
-    Boolean	noWindowPlacement;
+    boolean	noWindowPlacement;
 
     int		port;
     int		memorySize;
 
-    Boolean	echoVersion;
-    String	anchorMode;
-    Boolean	noAnchorAtStartup;
-    Boolean	noConfirmedQuit;
-    Boolean	debugMode;
-    Boolean	showInstanceNumbers;
-    Boolean	runUIOnly;
-    Boolean	runLocally;
-    Boolean	showHelpMessage;
-    Boolean	executeProgram;
-    Boolean	executeOnChange;
-    Boolean	suppressStartupWindows;
-    Boolean	isMetric;
-    Boolean	exitAfter;
-    Boolean	noExitOptions;
-    Boolean	noExecuteMenus;
-    Boolean	noConnectionMenus;
-    Boolean	noWindowsMenus;
+    boolean	echoVersion;
+    char*	anchorMode;
+    boolean	noAnchorAtStartup;
+    boolean	noConfirmedQuit;
+    boolean	debugMode;
+    boolean	showInstanceNumbers;
+    boolean	runUIOnly;
+    boolean	runLocally;
+    boolean	showHelpMessage;
+    boolean	executeProgram;
+    boolean	executeOnChange;
+    boolean	suppressStartupWindows;
+    boolean	isMetric;
+    boolean	exitAfter;
+    boolean	noExitOptions;
+    boolean	noExecuteMenus;
+    boolean	noConnectionMenus;
+    boolean	noWindowsMenus;
 
     //
     // Image window image saving/printing control
     //
-    String	printImageFormat;
-    String	printImagePageSize;	// wxh in inches or cm (see isMetric)
+    char*	printImageFormat;
+    char*	printImagePageSize;	// wxh in inches or cm (see isMetric)
     int		printImageResolution;	// Dots per inch or cm (see isMetric)
-    String	printImageSize;		// "8" or "8x" or "x10" or "8x10"
-    String	printImageCommand;
+    char*	printImageSize;		// "8" or "8x" or "x10" or "8x10"
+    char*	printImageCommand;
 
-    String	saveImageFormat;	
-    String	saveImagePageSize;	// wxh in inches or cm (see isMetric)
+    char*	saveImageFormat;	
+    char*	saveImagePageSize;	// wxh in inches or cm (see isMetric)
     int		saveImageResolution;	// Dots per inch or cm (see isMetric)
-    String	saveImageSize;		// "8", "8x", "x10" or "8x10" cm or "
+    char*	saveImageSize;		// "8", "8x", "x10" or "8x10" cm or "
  
     //
     // Message Window control
     //
-    Boolean	infoEnabled;
-    Boolean	warningEnabled;
-    Boolean	errorEnabled;
-    Boolean	moduleInfoOpensMessage;
-    Boolean	infoOpensMessage;
-    Boolean	warningOpensMessage;
-    Boolean	errorOpensMessage;
+    boolean	infoEnabled;
+    boolean	warningEnabled;
+    boolean	errorEnabled;
+    boolean	moduleInfoOpensMessage;
+    boolean	infoOpensMessage;
+    boolean	warningOpensMessage;
+    boolean	errorOpensMessage;
 
     //
     // Configurability level 
     //
-    String	restrictionLevel;
-    Boolean	useWindowSpecs;
-    Boolean	noRWConfig;
+    char*	restrictionLevel;
+    boolean	useWindowSpecs;
+    boolean	noRWConfig;
 
     //
     // Panel configurability 
     //
-    Boolean	noOpenAllPanels;
-    Boolean	noPanelEdit;
-    Boolean	noPanelAccess;
-    Boolean	noPanelOptions;
+    boolean	noOpenAllPanels;
+    boolean	noPanelEdit;
+    boolean	noPanelAccess;
+    boolean	noPanelOptions;
 
     //
     // Interactor/panel  configurability 
     //
-    Boolean	noInteractorEdits;
-    Boolean	noInteractorAttributes;
-    Boolean	noInteractorMovement;
+    boolean	noInteractorEdits;
+    boolean	noInteractorAttributes;
+    boolean	noInteractorMovement;
 
     //
     // Image/Editor window configurability 
     //
-    Boolean	noImageMenus;
-    Boolean	noImageRWNetFile;
-    Boolean	limitedNetFileSelection;
-    String	netPath;
-    Boolean	noImageLoad;
-    Boolean	noEditorAccess;
-    Boolean	limitImageOptions;
-    Boolean	noImageSaving;
-    Boolean	noImagePrinting;
-    Boolean     notifySaveNet;
-    Boolean     noNetworkExecute;
+    boolean	noImageMenus;
+    boolean	noImageRWNetFile;
+    boolean	limitedNetFileSelection;
+    char*	netPath;
+    boolean	noImageLoad;
+    boolean	noEditorAccess;
+    boolean	limitImageOptions;
+    boolean	noImageSaving;
+    boolean	noImagePrinting;
+    boolean     notifySaveNet;
+    boolean     noNetworkExecute;
 
     //
     // Message window  configurability
     //
-    Boolean	noScriptCommands;
-    Boolean	noMessageInfoOption;
-    Boolean	noMessageWarningOption;
-    Boolean	noEditorOnError;
+    boolean	noScriptCommands;
+    boolean	noMessageInfoOption;
+    boolean	noMessageWarningOption;
+    boolean	noEditorOnError;
 
     //
     // ColormapEditor window configurability
     //
-    Boolean	noCMapSetNameOption;
-    Boolean	noCMapOpenMap;
-    Boolean	noCMapSaveMap;
+    boolean	noCMapSetNameOption;
+    boolean	noCMapOpenMap;
+    boolean	noCMapSaveMap;
 
 
     //
     // Process group defining and host assignments. 
     //
-    Boolean	noPGroupAssignment;
+    boolean	noPGroupAssignment;
 
     //
     // Global configurability 
     //
-    Boolean	noDXHelp;
+    boolean	noDXHelp;
 
-    String      cryptKey;       // Key used to decrypt the .net and .cfg files
-    Boolean     forceNetFileEncryption; // Do we force encryption 
-    String      forceFunctionalLicense; // If non-null, 
+    char*      cryptKey;       // Key used to decrypt the .net and .cfg files
+    boolean     forceNetFileEncryption; // Do we force encryption 
+    char*      forceFunctionalLicense; // If non-null, 
 					// force the given license type 
-    Pixel	errorNodeForeground;
-    Pixel	executionHighlightForeground;
-    Pixel	backgroundExecutionForeground;
-    Pixel	foreground;
-    Pixel	background;
-    Pixel       insensitiveColor;
-    Pixel       accentColor;
-    Pixel       standInBackground; // This one is shared.
+    //Pixel	errorNodeForeground;
+    //Pixel	executionHighlightForeground;
+    //Pixel	backgroundExecutionForeground;
+    //Pixel	foreground;
+    //Pixel	background;
+    //Pixel       insensitiveColor;
+    //Pixel       accentColor;
+    //Pixel       standInBackground; // This one is shared.
 
     int		applicationPort;
-    String	applicationHost;
+    char*	applicationHost;
 
-    String	oemApplicationName;	// Allow alternate app name if verified 
-    String 	oemApplicationNameCode;	// Crypted app name for verification
-    String 	oemLicenseCode;		// Used to not require a license 
+    char*	oemApplicationName;	// Allow alternate app name if verified 
+    char* 	oemApplicationNameCode;	// Crypted app name for verification
+    char* 	oemLicenseCode;		// Used to not require a license 
 
-    String	viewDataFile;		// Data file to use in viewer mode. 
+    char*	viewDataFile;		// Data file to use in viewer mode. 
 
-    Boolean 	autoScrollVPEInitVal;	// set to FALSE by default, provides an
+    boolean 	autoScrollVPEInitVal;	// set to FALSE by default, provides an
 					// initial value to EditorWorkSpace for
 					// repositioning scrollbars during page changes.
-    String	cosmoDir;		// On behalf of java generation
-    String	jdkDir;
-    String	htmlDir;
-    String	dxJarFile;
-    String	userHtmlDir;
-    String	serverDir;
+    char*	cosmoDir;		// On behalf of java generation
+    char*	jdkDir;
+    char*	htmlDir;
+    char*	dxJarFile;
+    char*	userHtmlDir;
+    char*	serverDir;
 
     //
     // Automatic graph layout
@@ -311,7 +309,7 @@ class DXApplication : public IBMApplication
     //
     // Called if DIAGNOSTICS is defined
     //
-    friend int DXApplication_DXAfterFunction(Display *display);
+    //friend int DXApplication_DXAfterFunction(Display *display);
 
     //
     // Have we read the first network yet.
@@ -352,7 +350,7 @@ class DXApplication : public IBMApplication
     //
     static DXResource resource;	// resources and options
 
-    static String ListValuedSettings[];
+    static char* ListValuedSettings[];
 
     //
     // Protected member data:
@@ -383,7 +381,7 @@ class DXApplication : public IBMApplication
     //   This routine should be called by main() only.
     //
     virtual void handleEvents();
-    virtual void handleEvent(XEvent *xev);
+    //virtual void handleEvent(XEvent *xev);
 
     //
     // If we're using an anchor window with its own copyright then be satisfied
@@ -459,7 +457,7 @@ class DXApplication : public IBMApplication
     // same super class method to get the default resources from the
     // super classes.
     //
-    virtual void installDefaultResources(Widget baseWidget);
+    //virtual void installDefaultResources(Widget baseWidget);
 
   public:
     //
@@ -602,36 +600,36 @@ class DXApplication : public IBMApplication
     //
     // Pre-allocate required ui colors
     //
-    //const String *DXAllocateColors(XtResource*, int);
+    //const char* *DXAllocateColors(XtResource*, int);
 
-    Pixel getAccentColor()
-    {
-	return this->resource.accentColor;
-    }
-    Pixel getStandInBackground()
-    {
-	return this->resource.standInBackground;
-    }
-    Pixel getErrorNodeForeground()
-    {
-	return this->resource.errorNodeForeground;
-    }
-    Pixel getExecutionHighlightForeground()
-    {
-	return this->resource.executionHighlightForeground;
-    }
-    Pixel getBackgroundExecutionForeground()
-    {
-	return this->resource.backgroundExecutionForeground;
-    }
-    Pixel getForeground()
-    {
-	return this->resource.foreground;
-    }
-    Pixel getInsensitiveColor()
-    {
-        return this->resource.insensitiveColor;
-    }
+ //   Pixel getAccentColor()
+ //   {
+	//return this->resource.accentColor;
+ //   }
+ //   Pixel getStandInBackground()
+ //   {
+	//return this->resource.standInBackground;
+ //   }
+ //   Pixel getErrorNodeForeground()
+ //   {
+	//return this->resource.errorNodeForeground;
+ //   }
+ //   Pixel getExecutionHighlightForeground()
+ //   {
+	//return this->resource.executionHighlightForeground;
+ //   }
+ //   Pixel getBackgroundExecutionForeground()
+ //   {
+	//return this->resource.backgroundExecutionForeground;
+ //   }
+ //   Pixel getForeground()
+ //   {
+	//return this->resource.foreground;
+ //   }
+ //   Pixel getInsensitiveColor()
+ //   {
+ //       return this->resource.insensitiveColor;
+ //   }
     boolean inDebugMode() { return this->resource.debugMode; }
 
     //
@@ -667,14 +665,14 @@ class DXApplication : public IBMApplication
     // Get the default image printing/saving options specified through
     // command line options or resources.
     //
-    String      getPrintImageFormat();
-    String      getPrintImageSize();
-    String      getPrintImagePageSize();
+    char*      getPrintImageFormat();
+    char*      getPrintImageSize();
+    char*      getPrintImagePageSize();
     int         getPrintImageResolution();
-    String      getPrintImageCommand();
-    String      getSaveImageFormat();
-    String      getSaveImageSize();
-    String      getSaveImagePageSize();
+    char*      getPrintImageCommand();
+    char*      getSaveImageFormat();
+    char*      getSaveImageSize();
+    char*      getSaveImagePageSize();
     int         getSaveImageResolution();
 
     //

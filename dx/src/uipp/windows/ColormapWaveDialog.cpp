@@ -14,7 +14,7 @@
 #include "ColormapNode.h"
 
 
-boolean ColormapWaveDialog::ClassInitialized = FALSE;
+bool ColormapWaveDialog::ClassInitialized = false;
 
 //String ColormapWaveDialog::DefaultResources[] = {
 //	"*dialogTitle:			Generate Wave Forms",
@@ -36,7 +36,7 @@ ColormapWaveDialog::ColormapWaveDialog(
 
     if (NOT ColormapWaveDialog::ClassInitialized)
     {
-        ColormapWaveDialog::ClassInitialized = TRUE;
+        ColormapWaveDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

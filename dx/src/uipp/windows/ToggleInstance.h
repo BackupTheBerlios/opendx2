@@ -40,7 +40,7 @@ class ToggleInstance : public InteractorInstance  {
     //
     virtual SetAttrDialog *newSetAttrDialog();
 
-    virtual boolean defaultVertical() { return FALSE; }
+    virtual bool defaultVertical() { return false; }
 
     virtual const char* javaName() { return "toggle"; }
 
@@ -49,11 +49,11 @@ class ToggleInstance : public InteractorInstance  {
 
     ~ToggleInstance();
 
-    virtual boolean hasSetAttrDialog();
+    virtual bool hasSetAttrDialog();
 
-    virtual void setVerticalLayout(boolean val = TRUE);
+    virtual void setVerticalLayout(bool val = true);
 
-    virtual boolean printAsJava (FILE* );
+    virtual bool printAsJava (FILE* );
 
     const char *getClassName() { return ClassToggleInstance; }
 	

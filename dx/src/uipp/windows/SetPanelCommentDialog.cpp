@@ -13,7 +13,7 @@
 #include "SetPanelCommentDialog.h"
 #include "ControlPanel.h"
 
-boolean SetPanelCommentDialog::ClassInitialized = FALSE;
+bool SetPanelCommentDialog::ClassInitialized = false;
 
 //String SetPanelCommentDialog::DefaultResources[] =
 //{
@@ -24,7 +24,7 @@ boolean SetPanelCommentDialog::ClassInitialized = FALSE;
 
 SetPanelCommentDialog::SetPanelCommentDialog(
 				const char *name,
-				boolean readonly, ControlPanel *cp) : 
+				bool readonly, ControlPanel *cp) : 
 				TextEditDialog(name, readonly)
 {
     // Any initializations here, need to go in the other constructor also.
@@ -32,7 +32,7 @@ SetPanelCommentDialog::SetPanelCommentDialog(
 }
 
 SetPanelCommentDialog::SetPanelCommentDialog(
-				boolean readonly, ControlPanel *cp) : 
+				bool readonly, ControlPanel *cp) : 
 				TextEditDialog("setPanelComment",
 				readonly)
 {
@@ -41,7 +41,7 @@ SetPanelCommentDialog::SetPanelCommentDialog(
 
     if (NOT SetPanelCommentDialog::ClassInitialized)
     {
-        SetPanelCommentDialog::ClassInitialized = TRUE;
+        SetPanelCommentDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -82,9 +82,9 @@ const char *SetPanelCommentDialog::getText()
 //
 // Save the given text. 
 //
-boolean SetPanelCommentDialog::saveText(const char *s)
+bool SetPanelCommentDialog::saveText(const char *s)
 {
     this->controlPanel->setPanelComment(s);
-    return TRUE;
+    return true;
 }
 

@@ -47,7 +47,7 @@ ToggleNode::ToggleNode(NodeDefinition *nd,
                         InteractorNode(nd, net, instance)
 {
     this->outputType = DXType::UndefinedType;
-    this->is_set = FALSE;
+    this->is_set = false;
 }
 ToggleNode::~ToggleNode()
 {
@@ -58,7 +58,7 @@ ToggleNode::~ToggleNode()
 // so that we can use them later when setting the attributes for the
 // Interactor.
 //
-boolean ToggleNode::initialize()
+bool ToggleNode::initialize()
 {
 
     if (this->getInputCount() != EXPECTED_SELECTOR_INPUTS) {
@@ -66,7 +66,7 @@ boolean ToggleNode::initialize()
            "Expected %d inputs for %s interactor, please check the mdf file.\n",
                         EXPECTED_SELECTOR_INPUTS,
                         this->getNameString());
-        return FALSE;
+        return false;
     }
 
     //
@@ -76,7 +76,7 @@ boolean ToggleNode::initialize()
         ErrorMessage(
         "Error setting default attributes for %s interactor, check ui.mdf\n",
                 this->getNameString());
-        return FALSE;
+        return false;
     }
 
     //
@@ -92,7 +92,7 @@ boolean ToggleNode::initialize()
     //
     this->setMessageIdParameter();
 
-    return TRUE;
+    return true;
 }
 //
 // Create a new interactor instance for this class.
@@ -101,25 +101,25 @@ InteractorInstance *ToggleNode::newInteractorInstance()
 {
     return new ToggleInstance(this);
 }
-boolean ToggleNode::setToggle(boolean setit, boolean send)
+bool ToggleNode::setToggle(bool setit, bool send)
 {
    return this->setTheToggle(setit,(send ? SEND_NOW : NO_SEND));
 }
-boolean ToggleNode::setToggleQuietly(boolean setit)
+bool ToggleNode::setToggleQuietly(bool setit)
 {
    return this->setTheToggle(setit,SEND_QUIET);
 }
 //
 // Set the output and send it if requested.
-// If setit is TRUE, then set the output to the first of the toggle values
+// If setit is true, then set the output to the first of the toggle values
 // otherwise the 2nd of toggle values.
 // If how is 1, then send the value.
 // If how is 0,  then don't send the value.
 // If how is -1, then send the value quietly.
 //
-boolean ToggleNode::setTheToggle(boolean setit, int how)
+bool ToggleNode::setTheToggle(bool setit, int how)
 {
-    boolean r;
+    bool r;
     char *val;
 
     if (setit)
@@ -141,12 +141,12 @@ boolean ToggleNode::setTheToggle(boolean setit, int how)
     //
     this->is_set = setit;
     r = this->setInputValue(ISSET_PARAM_NUM, setit?"1":"0",
-			DXType::UndefinedType, FALSE) &&
-         this->setOutputValue(1,val,DXType::UndefinedType, FALSE);
+			DXType::UndefinedType, false) &&
+         this->setOutputValue(1,val,DXType::UndefinedType, false);
     ASSERT(r);
 
     if (how == SEND_NOW)
-	this->sendValues(FALSE);
+	this->sendValues(false);
     else if (how == SEND_QUIET)
 	this->sendValuesQuietly();
 
@@ -163,29 +163,29 @@ boolean ToggleNode::setTheToggle(boolean setit, int how)
 // If how is 0,  then don't send the values.
 // If how is -1, then send the values quietly.
 //
-boolean ToggleNode::changeToggleValues(const char *set, 
+bool ToggleNode::changeToggleValues(const char *set, 
 				const char *reset, int how)
 {
-    boolean was_set, r = TRUE; 
+    bool was_set, r = true; 
 
     was_set = this->isSet();
 
     if (set) {
-	r = this->setInputSetValue(SET_PARAM_NUM, set, DXType::UndefinedType, FALSE);
+	r = this->setInputSetValue(SET_PARAM_NUM, set, DXType::UndefinedType, false);
     }
     if (r && reset) {
-	r = this->setInputSetValue(RESET_PARAM_NUM, reset, DXType::UndefinedType, FALSE);
+	r = this->setInputSetValue(RESET_PARAM_NUM, reset, DXType::UndefinedType, false);
     }
 
     if (r) { 
 	if (set && was_set) 
-	    this->set(FALSE);		
+	    this->set(false);		
 	else if (reset && !was_set) 
-	    this->reset(FALSE);		
+	    this->reset(false);		
 
 
 	if (how == SEND_NOW)
-	    this->sendValues(FALSE);
+	    this->sendValues(false);
 	else if (how == SEND_QUIET)
 	    this->sendValuesQuietly();
     }
@@ -199,7 +199,7 @@ boolean ToggleNode::changeToggleValues(const char *set,
 // This (init) is called at creation, where as setToggleValues() is called
 // after initialization.
 //
-boolean ToggleNode::initToggleValues(const char *set, const char *reset)
+bool ToggleNode::initToggleValues(const char *set, const char *reset)
 {
     ASSERT(0);// we should get rid of this method
     return this->changeToggleValues(set,reset,NO_SEND);
@@ -208,7 +208,7 @@ boolean ToggleNode::initToggleValues(const char *set, const char *reset)
 // Set the two potential output values.  The 1st corresponds to the
 // set (toggle down) state and the second to the reset state (toggle up).
 //
-boolean ToggleNode::setToggleValues(const char *set, const char *reset)
+bool ToggleNode::setToggleValues(const char *set, const char *reset)
 {
     return this->changeToggleValues(set,reset,NO_SEND);
 }
@@ -217,7 +217,7 @@ boolean ToggleNode::setToggleValues(const char *set, const char *reset)
 // Get the values that are output for the set and reset states.
 // The returned string must be freed by the caller.
 //
-char *ToggleNode::getToggleValue(boolean setval)
+char *ToggleNode::getToggleValue(bool setval)
 {
     int pindex;
 
@@ -271,11 +271,11 @@ int  ToggleNode::handleInteractorMsgInfo(const char *line)
 //
 // Determine if this node is of the given class.
 //
-boolean ToggleNode::isA(Symbol classname)
+bool ToggleNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassToggleNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->InteractorNode::isA(classname);
 }
@@ -283,64 +283,64 @@ boolean ToggleNode::isA(Symbol classname)
 // Print the standard .cfg comment and 
 // and the 'toggle: %d, set = %s, reset = %s' comment.
 //
-boolean ToggleNode::cfgPrintInteractorComment(FILE *f)
+bool ToggleNode::cfgPrintInteractorComment(FILE *f)
 {
      return this->InteractorNode::cfgPrintInteractorComment(f) &&
-	   this->printToggleComment(f,"", TRUE);
+	   this->printToggleComment(f,"", true);
 }
 //
 // Parse the standard .cfg comment and 
 // and the 'toggle: %d, set = %s, reset = %s' comment.
 //
-boolean ToggleNode::cfgParseInteractorComment(const char* comment,
+bool ToggleNode::cfgParseInteractorComment(const char* comment,
                 const char* filename, int lineno)
 {
     return this->InteractorNode::cfgParseInteractorComment(
 			comment,filename,lineno) ||
-	   this->parseToggleComment(comment, filename,lineno, TRUE);
+	   this->parseToggleComment(comment, filename,lineno, true);
 }
 //
 // Print the standard .net comment and 
 // and the 'toggle: %d, set = %s, reset = %s' comment.
 //
-boolean ToggleNode::netPrintAuxComment(FILE *f)
+bool ToggleNode::netPrintAuxComment(FILE *f)
 {
     return this->InteractorNode::netPrintAuxComment(f) &&
-	   this->printToggleComment(f,"    ", FALSE);
+	   this->printToggleComment(f,"    ", false);
 }
 //
 // Parse the standard comment and 
 // and the 'toggle: %d, set = %s, reset = %s' comment.
 //
-boolean ToggleNode::netParseAuxComment(const char* comment,
+bool ToggleNode::netParseAuxComment(const char* comment,
                 const char* filename, int lineno)
 {
     return this->InteractorNode::netParseAuxComment(comment,filename,lineno) ||
-	   this->parseToggleComment(comment, filename,lineno, FALSE);
+	   this->parseToggleComment(comment, filename,lineno, false);
 }
 //
 // Print the 'toggle: %d, set = %s, reset = %s' comment.
 //
-boolean ToggleNode::printToggleComment(FILE *f, const char *indent,
-						boolean includeValues)
+bool ToggleNode::printToggleComment(FILE *f, const char *indent,
+						bool includeValues)
 {
-    boolean r = TRUE;
+    bool r = true;
 
     if (fprintf(f,"%s// toggle : %d", indent, this->isSet() ? 1 : 0) <= 0)
-	return FALSE;
+	return false;
 
     if (includeValues) {
 	char *setval = this->getSetValue();
 	char *resetval = this->getResetValue();
 	ASSERT(setval && resetval && indent);
 	if (fprintf(f,", set = %s, reset = %s", setval, resetval) <= 0)
-	    r = FALSE; 
+	    r = false; 
 	delete setval;
 	delete resetval;
     } 
 
     if (r && (fprintf(f,"\n") <= 0)) 
-	r = FALSE;
+	r = false;
 
     return r;
 
@@ -348,15 +348,15 @@ boolean ToggleNode::printToggleComment(FILE *f, const char *indent,
 //
 // Parse the 'toggle: %d, set = %s, reset = %s' comment.
 //
-boolean ToggleNode::parseToggleComment(const char* comment,
+bool ToggleNode::parseToggleComment(const char* comment,
                 			const char* filename, int lineno,
-					boolean includeValues)
+					bool includeValues)
 {
     int items, set;
     char *setstr, *resetstr, *p, *dup = NULL; 
 
     if (strncmp(comment," toggle",7))
-	return FALSE;
+	return false;
 
     items = sscanf(comment," toggle : %d",&set);
     if (items != 1)
@@ -402,18 +402,18 @@ else {
     // Set but don't send since we are in the middle of reading the net.
     //
     if (set == 1)
-	this->set(FALSE);	
+	this->set(false);	
     else
-	this->reset(FALSE);	
+	this->reset(false);	
 
     if (dup) delete dup;
-    return TRUE;
+    return true;
 
 parse_error:
     if (dup) delete dup;
     ErrorMessage("Can't parse 'toggle : ' comment, file %s, line %d",
 				filename, lineno);
-    return FALSE;
+    return false;
 	
 }
 
@@ -424,11 +424,11 @@ int ToggleNode::getShadowingInput(int output_index)
     else
 	return 0;
 }
-boolean ToggleNode::isSetAttributeVisuallyWriteable()
+bool ToggleNode::isSetAttributeVisuallyWriteable()
 {
     return this->isInputDefaulting(SET_PARAM_NUM);
 }
-boolean ToggleNode::isResetAttributeVisuallyWriteable()
+bool ToggleNode::isResetAttributeVisuallyWriteable()
 {
     return this->isInputDefaulting(RESET_PARAM_NUM);
 }
@@ -438,7 +438,7 @@ char *ToggleNode::netNodeString(const char *prefix)
 {
     return Node::netNodeString(prefix);
 }
-boolean ToggleNode::sendValues(boolean ignoreDirty)
+bool ToggleNode::sendValues(bool ignoreDirty)
 {
     const char *macname = this->getExecModuleNameString();
     
@@ -452,7 +452,7 @@ boolean ToggleNode::sendValues(boolean ignoreDirty)
     return InteractorNode::sendValues(ignoreDirty);
 }
 
-boolean ToggleNode::printValues(FILE *f, const char *prefix, PrintType dest)
+bool ToggleNode::printValues(FILE *f, const char *prefix, PrintType dest)
 {
     
     const char *macname = this->getExecModuleNameString();
@@ -482,7 +482,7 @@ char *ToggleNode::netBeginningOfMacroNodeString(const char *prefix)
 
 
 
-boolean ToggleNode::printJavaValue (FILE* jf)
+bool ToggleNode::printJavaValue (FILE* jf)
 {
     const char* indent = "        ";
     const char* var_name = this->getJavaVariable();
@@ -519,12 +519,12 @@ boolean ToggleNode::printJavaValue (FILE* jf)
 
     if (this->isSet())
 	if (fprintf (jf, "%s%s.selectOption(1);\n", indent, var_name) <= 0)
-	    return FALSE;
+	    return false;
 
-    return TRUE;
+    return true;
 }
 
-boolean ToggleNode::printJavaType(FILE* jf, const char* indent, const char* var)
+bool ToggleNode::printJavaType(FILE* jf, const char* indent, const char* var)
 {
     Parameter *p = this->getOutputParameter(1);
     if (p->hasValue()) {
@@ -540,6 +540,6 @@ boolean ToggleNode::printJavaType(FILE* jf, const char* indent, const char* var)
 	fprintf (jf, "%s// The output has no value saved in the net\n", indent);
 	fprintf (jf, "%s%s.setOutputType(BinaryInstance.STRING);\n", indent,var);
     }
-    return TRUE;
+    return true;
 }
 

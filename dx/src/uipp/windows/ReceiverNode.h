@@ -44,7 +44,7 @@ class ReceiverNode : public UniqueNameNode
     //
     virtual char *netNodeString(const char *prefix);
 
-    virtual boolean initialize();
+    virtual bool initialize();
 
   public:
     //
@@ -57,12 +57,12 @@ class ReceiverNode : public UniqueNameNode
     //
     ~ReceiverNode();
 
-    boolean setLabelString(const char *label);
+    bool setLabelString(const char *label);
 
     //
     // Is this receiver connected to a Transmitter.
     //
-    boolean isTransmitterConnected();
+    bool isTransmitterConnected();
 
     //
     // Get the node that is connected to the Transmitter that this Receiver
@@ -75,19 +75,19 @@ class ReceiverNode : public UniqueNameNode
     // Switch the node from one net to another.  Look for a tranmitter to
     // connect to.
     //
-    void switchNetwork(Network *from, Network *to, boolean silently);
+    void switchNetwork(Network *from, Network *to, bool silently);
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Check for name conflicts.  Usually you disallow 2 nodes with the same
     // labelString, but it certain cases it's desirable.  Capture that logic
     // locally.
     //
-    virtual boolean namesConflict (const char* his_label, const char* my_label, 
+    virtual bool namesConflict (const char* his_label, const char* my_label, 
 	const char* his_classname);
 
     //

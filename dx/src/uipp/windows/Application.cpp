@@ -40,7 +40,7 @@ using namespace System::Windows::Forms;
 BaseApp* theApplication = NUL(BaseApp*);
 
 
-boolean BaseApp::ApplicationClassInitialized = FALSE;
+bool BaseApp::ApplicationClassInitialized = false;
 //Cursor  Application::BusyCursor                  = NUL(Cursor);
 
 
@@ -100,7 +100,7 @@ BaseApp::BaseApp(char* className): UIComponent(className)
 	BaseApp::MsgUnmanageByTitle= 
 	    theSymbolManager->registerSymbol("UnmanageByTitle");
 
-	BaseApp::ApplicationClassInitialized = TRUE;
+	BaseApp::ApplicationClassInitialized = true;
     }
 
     //
@@ -116,7 +116,7 @@ BaseApp::BaseApp(char* className): UIComponent(className)
 //    this->applicationContext = NUL(XtAppContext);
 
     this->applicationClass   = DuplicateString(className);
-    this->show_bubbles 	     = FALSE;
+    this->show_bubbles 	     = false;
 //    this->help_viewer	     = NUL(Widget);
 }
 
@@ -137,7 +137,7 @@ BaseApp::~BaseApp()
 //    //this->setDefaultResources(baseWidget, Application::DefaultResources);
 //}
 
-boolean BaseApp::initializeWindowSystem(unsigned int *argcp, char **argv) 
+bool BaseApp::initializeWindowSystem(unsigned int *argcp, char **argv) 
 {
     //
     // Install error and warning handlers.
@@ -147,7 +147,7 @@ boolean BaseApp::initializeWindowSystem(unsigned int *argcp, char **argv)
 
 	applicationContext = new System::Windows::Forms::ApplicationContext();
 
-    return TRUE;
+    return true;
 }
 
 void BaseApp::parseCommand(unsigned int* argcp, char** argv)
@@ -160,7 +160,7 @@ void BaseApp::parseCommand(unsigned int* argcp, char** argv)
 	strcpy(newargv[0], argv[0]); //Executable name
 
 	// Open the defaults file first.
-	if (this->getApplicationDefaultsFileName(res_file, FALSE)) {
+	if (this->getApplicationDefaultsFileName(res_file, false)) {
 		if(!theXmlPreferences->readPrefs(res_file)) {
 			printf("Preference File Corrupted. Please delete and restart!\n");
 			exit(1);
@@ -171,9 +171,9 @@ void BaseApp::parseCommand(unsigned int* argcp, char** argv)
 	// What have we got for command line parsing? 
 	// Parse command line and call setValue on XmlPreferences.
 
-#define NOARGTRUE(a,b) else if(strcmp(argv[i], a)==0) \
+#define NOARGtrue(a,b) else if(strcmp(argv[i], a)==0) \
 	theXmlPreferences->setPref(b, XmlPreferences::PrefType::TypeBool, "true")
-#define NOARGFALSE(a,b) else if(strcmp(argv[i], a)==0) \
+#define NOARGfalse(a,b) else if(strcmp(argv[i], a)==0) \
 	theXmlPreferences->setPref(b, XmlPreferences::PrefType::TypeBool, "false")
 #define NOARGSTR(a,b,c) else if(strcmp(argv[i], a)==0) \
 	theXmlPreferences->setPref(b, XmlPreferences::PrefType::TypeString, c)
@@ -189,62 +189,62 @@ void BaseApp::parseCommand(unsigned int* argcp, char** argv)
 	unsigned int i = 1;
 	while(i < *argcp) {
 		if(0) {}
-		NOARGTRUE("-wizard", "wizard");
+		NOARGtrue("-wizard", "wizard");
 		NOARGSTR("-edit", "anchorMode", "EDIT");
-		NOARGTRUE("-execute", "executeProgram");
-		NOARGTRUE("-execute_on_change", "executeOnChange");
-		NOARGTRUE("-help", "printHelpMessage");
+		NOARGtrue("-execute", "executeProgram");
+		NOARGtrue("-execute_on_change", "executeOnChange");
+		NOARGtrue("-help", "printHelpMessage");
 		NOARGSTR("-image", "anchorMode", "IMAGE");
 		NOARGSTR("-kiosk", "anchorMode", "MENUBAR");
 		NOARGSTR("-menubar", "anchorMode", "MENUBAR");
-		NOARGTRUE("-noAnchorAtStartup", "noAnchorAtStartup");
-		NOARGTRUE("-noConfirmedQuit", "noConfirmedQuit");
-		NOARGTRUE("-local", "runLocally");
-		NOARGTRUE("-metric", "metric");
-		NOARGTRUE("-suppress", "suppressStartupWindows");
-		NOARGTRUE("-uidebug", "debugMode");
-		NOARGTRUE("-showInstanceNumbers", "showInstanceNumbers");
-		NOARGTRUE("-uionly", "runUIOnly");
-		NOARGTRUE("-version", "DXVersion");
+		NOARGtrue("-noAnchorAtStartup", "noAnchorAtStartup");
+		NOARGtrue("-noConfirmedQuit", "noConfirmedQuit");
+		NOARGtrue("-local", "runLocally");
+		NOARGtrue("-metric", "metric");
+		NOARGtrue("-suppress", "suppressStartupWindows");
+		NOARGtrue("-uidebug", "debugMode");
+		NOARGtrue("-showInstanceNumbers", "showInstanceNumbers");
+		NOARGtrue("-uionly", "runUIOnly");
+		NOARGtrue("-version", "DXVersion");
 		//Backdoor Switches
-		NOARGTRUE("-noDXHelp", "noDXHelp");
-		NOARGTRUE("-noEditorAccess", "noEditorAccess");
-		NOARGTRUE("-notifySaveNet", "notifySaveNet");
-		NOARGTRUE("-noNetworkExecute", "noNetworkExecute");
-		NOARGTRUE("-noImageRWNetFile", "noImageRWNetFile");
-		NOARGTRUE("-noImageLoad", "noImageLoad");
-		NOARGTRUE("-limitImageOptions", "limitImageOptions");
-		NOARGTRUE("-limitedNetFileSelection", "limitedNetFileSelection");
-		NOARGTRUE("-noNetFileSelection", "noNetFileSelection");
-		NOARGTRUE("-noImageSaving", "noImageSaving");
-		NOARGTRUE("-noImagePrinting", "noImagePrinting");
-		NOARGTRUE("-noInteractorEdits", "noInteractorEdits");
-		NOARGTRUE("-noInteractorAttributes", "noInteractorAttributes");
-		NOARGTRUE("-noInteractorMovement", "noInteractorMovement");
-		NOARGTRUE("-noOpenAllPanels", "noOpenAllPanels");
-		NOARGTRUE("-noPanelAccess", "noPanelAccess");
-		NOARGTRUE("-noPanelOptions", "noPanelOptions");
-		NOARGTRUE("-noPanelEdit", "noPanelEdit");
-		NOARGTRUE("-noRWConfig", "noRWConfig");
-		NOARGTRUE("-noScriptCommands", "noScriptCommands");
-		NOARGTRUE("-noMessageInfoOption", "noMessageInfoOption");
-		NOARGTRUE("-noMessageWarningOption", "noMessageWarningOption");
-		NOARGTRUE("-noEditorOnError", "noEditorOnError");
-		NOARGTRUE("-noCMapSetNameOption", "noCMapSetNameOption");
-		NOARGTRUE("-noCMapSaveMap", "noCMapSaveMap");
-		NOARGTRUE("-noWindowPlacement", "noWindowPlacement");
-		NOARGTRUE("-noCMapOpenMap", "noCMapOpenMap");
-		NOARGTRUE("-noPGroupAssignment", "noPGroupAssignment");
-		NOARGTRUE("-warning", "warningEnabled");
-		NOARGTRUE("-info", "infoEnabled");
-		NOARGTRUE("-error", "errorEnabled");
-		NOARGTRUE("-exitAfter", "exitAfter");
-		NOARGTRUE("-noExecuteMenus", "noExecuteMenus"); 
-		NOARGTRUE("-noConnectionMenus", "noConnectionMenus");
-		NOARGTRUE("-noWindowsMenus", "noWindowsMenus");
-		NOARGTRUE("-noExitOptions", "noExitOptions");
-		NOARGTRUE("-noImageMenus", "noImageMenus");
-		NOARGFALSE("-noAutoScrollVPE", "noAutoScrollVPE"); 
+		NOARGtrue("-noDXHelp", "noDXHelp");
+		NOARGtrue("-noEditorAccess", "noEditorAccess");
+		NOARGtrue("-notifySaveNet", "notifySaveNet");
+		NOARGtrue("-noNetworkExecute", "noNetworkExecute");
+		NOARGtrue("-noImageRWNetFile", "noImageRWNetFile");
+		NOARGtrue("-noImageLoad", "noImageLoad");
+		NOARGtrue("-limitImageOptions", "limitImageOptions");
+		NOARGtrue("-limitedNetFileSelection", "limitedNetFileSelection");
+		NOARGtrue("-noNetFileSelection", "noNetFileSelection");
+		NOARGtrue("-noImageSaving", "noImageSaving");
+		NOARGtrue("-noImagePrinting", "noImagePrinting");
+		NOARGtrue("-noInteractorEdits", "noInteractorEdits");
+		NOARGtrue("-noInteractorAttributes", "noInteractorAttributes");
+		NOARGtrue("-noInteractorMovement", "noInteractorMovement");
+		NOARGtrue("-noOpenAllPanels", "noOpenAllPanels");
+		NOARGtrue("-noPanelAccess", "noPanelAccess");
+		NOARGtrue("-noPanelOptions", "noPanelOptions");
+		NOARGtrue("-noPanelEdit", "noPanelEdit");
+		NOARGtrue("-noRWConfig", "noRWConfig");
+		NOARGtrue("-noScriptCommands", "noScriptCommands");
+		NOARGtrue("-noMessageInfoOption", "noMessageInfoOption");
+		NOARGtrue("-noMessageWarningOption", "noMessageWarningOption");
+		NOARGtrue("-noEditorOnError", "noEditorOnError");
+		NOARGtrue("-noCMapSetNameOption", "noCMapSetNameOption");
+		NOARGtrue("-noCMapSaveMap", "noCMapSaveMap");
+		NOARGtrue("-noWindowPlacement", "noWindowPlacement");
+		NOARGtrue("-noCMapOpenMap", "noCMapOpenMap");
+		NOARGtrue("-noPGroupAssignment", "noPGroupAssignment");
+		NOARGtrue("-warning", "warningEnabled");
+		NOARGtrue("-info", "infoEnabled");
+		NOARGtrue("-error", "errorEnabled");
+		NOARGtrue("-exitAfter", "exitAfter");
+		NOARGtrue("-noExecuteMenus", "noExecuteMenus"); 
+		NOARGtrue("-noConnectionMenus", "noConnectionMenus");
+		NOARGtrue("-noWindowsMenus", "noWindowsMenus");
+		NOARGtrue("-noExitOptions", "noExitOptions");
+		NOARGtrue("-noImageMenus", "noImageMenus");
+		NOARGfalse("-noAutoScrollVPE", "noAutoScrollVPE"); 
 
 		// Regular Args
 		ARGSTR("-uiroot", "UIRoot")
@@ -446,7 +446,7 @@ void BaseApp::parseCommand(unsigned int* argcp, char** argv)
     //
 }
 
-boolean BaseApp::initialize(unsigned int* argcp, char** argv)
+bool BaseApp::initialize(unsigned int* argcp, char** argv)
 {
 	//
 	// Initialize the preferences file
@@ -457,7 +457,7 @@ boolean BaseApp::initialize(unsigned int* argcp, char** argv)
     // Initialize the window system if not done already.
     //
 	if (!this->initializeWindowSystem(argcp, argv))
-		return FALSE;
+		return false;
 	
     //
     // Since the instance name of this object was set in the UIComponent
@@ -480,7 +480,7 @@ boolean BaseApp::initialize(unsigned int* argcp, char** argv)
     //
     this->notifyClients(BaseApp::MsgCreate);
 
-    return TRUE;
+    return true;
 }
 
 
@@ -549,16 +549,16 @@ void BaseApp::unmanage()
 //
 // Calls to this routine can be 'stacked' so that the first call
 // sets the cursor and the last call resets the cursor.
-// setBusyCursor(TRUE);		// Sets busy cursor
-// setBusyCursor(TRUE);		// does not effect cursor
-// setBusyCursor(TRUE);		// does not effect cursor
-// setBusyCursor(FALSE);	// does not effect cursor
-// setBusyCursor(TRUE);		// does not effect cursor
-// setBusyCursor(FALSE);	// does not effect cursor
-// setBusyCursor(FALSE);	// does not effect cursor
-// setBusyCursor(FALSE);	// resets cursor
+// setBusyCursor(true);		// Sets busy cursor
+// setBusyCursor(true);		// does not effect cursor
+// setBusyCursor(true);		// does not effect cursor
+// setBusyCursor(false);	// does not effect cursor
+// setBusyCursor(true);		// does not effect cursor
+// setBusyCursor(false);	// does not effect cursor
+// setBusyCursor(false);	// does not effect cursor
+// setBusyCursor(false);	// resets cursor
 //
-void BaseApp::setBusyCursor(boolean setting)
+void BaseApp::setBusyCursor(bool setting)
 {
 	ASSERT(this->busyCursors >= 0);
 
@@ -727,12 +727,12 @@ const char *BaseApp::getHTMLDirFileName()
 //}
 //
 // Start a tutorial on behalf of the application.
-// Return TRUE if successful.  At this level in the class hierachy
-// we don't know how to start a tutorial so we always return FALSE.
+// Return true if successful.  At this level in the class hierachy
+// we don't know how to start a tutorial so we always return false.
 //
-boolean BaseApp::startTutorial()
+bool BaseApp::startTutorial()
 {
-    return FALSE;
+    return false;
 }
 //
 // A virtual method that allows other applications to handle ASSERT
@@ -748,7 +748,7 @@ void BaseApp::abortApplication()
 // this is normally something like $HOME/DX.  There is a virtual version
 // of this method in IBMApplication that uses UIRoot on the pc.
 //
-boolean BaseApp::getApplicationDefaultsFileName(char* res_file, boolean create)
+bool BaseApp::getApplicationDefaultsFileName(char* res_file, bool create)
 {
     const char* class_name = this->getApplicationClass();
     char* home = (char*)getenv("HOME");
@@ -765,7 +765,7 @@ boolean BaseApp::getApplicationDefaultsFileName(char* res_file, boolean create)
     return this->isUsableDefaultsFile(res_file, create);
 }
 
-boolean BaseApp::isUsableDefaultsFile(const char* res_file, boolean create)
+bool BaseApp::isUsableDefaultsFile(const char* res_file, bool create)
 {
 #if !defined(DXD_OS_NON_UNIX)
     int ru = S_IRUSR;
@@ -781,43 +781,43 @@ boolean BaseApp::isUsableDefaultsFile(const char* res_file, boolean create)
     int reg = _S_IFREG;
 #endif
     //
-    // If the file isn't writable, then return FALSE so we
+    // If the file isn't writable, then return false so we
     // won't try using it to store settings.
     //
-    boolean writable=TRUE;
-    boolean erase_the_file=FALSE;
+    bool writable=true;
+    bool erase_the_file=false;
     struct STATSTRUCT statb;
     if (STATFUNC(res_file, &statb)!=-1) {
 	//if (S_ISREG(statb.st_mode)) {
 	if (statb.st_mode & reg) {
 	    if ((statb.st_mode & wu) == 0) {
-		writable = FALSE;
+		writable = false;
 	    } else if ((statb.st_size==0) && (!create)) {
 		// file is usable.  If we don't need the file
 		// and the file size is 1, then erase it.  This
 		// deals with the mistake I made in creating the
 		// file in situations where it wouldn't ever be used.
-		erase_the_file = TRUE;
+		erase_the_file = true;
 	    }
 	} else {
-	    writable = FALSE;
+	    writable = false;
 	}
     } else if ((errno==ENOENT)&&(create)) {
 	int fd = creat(res_file, ru | wu | rg | ro); //S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 	if (fd >= 0) {
 	    close(fd);
 	} else {
-	    writable = FALSE;
+	    writable = false;
 	    //perror(res_file);
 	}
     } else {
 	//perror(res_file);
-	writable = FALSE;
+	writable = false;
     }
 
     if ((writable) && (erase_the_file)) {
 	unlink(res_file);
-	writable = FALSE;
+	writable = false;
     }
 
     return writable;

@@ -17,15 +17,15 @@
 
 ImageRedoCommand::ImageRedoCommand(const char   *name,
 						 CommandScope *scope,
-						 boolean       active,
+						 bool       active,
 						 ImageWindow  *w):
     NoUndoCommand(name, scope, active)
 {
     this->imageWindow = w;
 }
 
-boolean ImageRedoCommand::doIt(CommandInterface *ci)
+bool ImageRedoCommand::doIt(CommandInterface *ci)
 {
     this->imageWindow->redoCamera();
-    return TRUE;
+    return true;
 }

@@ -22,8 +22,8 @@
 #include <stdio.h>
 
 
-boolean HelpWin::ClassInitialized = FALSE;
-boolean HelpWin::UseWebBrowser = FALSE;
+bool HelpWin::ClassInitialized = false;
+bool HelpWin::UseWebBrowser = false;
 //String  HelpWin::DefaultResources[] = {
 //    ".title:				Help",
 //    ".iconName:				Help",
@@ -82,11 +82,11 @@ boolean HelpWin::UseWebBrowser = FALSE;
 //
 // Constructors:
 //
-HelpWin::HelpWin() : MainWindow("helpWindow", FALSE)
+HelpWin::HelpWin() : MainWindow("helpWindow", false)
 {
 
    char *webApp = getenv("DX_WEB_BROWSER");
-   if(webApp) UseWebBrowser = TRUE;
+   if(webApp) UseWebBrowser = true;
 
    if(!UseWebBrowser) {
 	this->init();
@@ -97,13 +97,13 @@ HelpWin::HelpWin() : MainWindow("helpWindow", FALSE)
     	if (NOT HelpWin::ClassInitialized)
     	{
 	    ASSERT(theApplication);
-            HelpWin::ClassInitialized = TRUE;
+            HelpWin::ClassInitialized = true;
 //	    this->installDefaultResources(theApplication->getRootWidget());
     	}
     }
 }
 
-HelpWin::HelpWin(const char *name, boolean hasMenuBar) :
+HelpWin::HelpWin(const char *name, bool hasMenuBar) :
 		    MainWindow(name, hasMenuBar)
 {
    this->init();
@@ -116,7 +116,7 @@ void HelpWin::init()
 {
 //    this->fileMenu = NULL;
 //    this->historyPopup = NULL;
-    this->closeCmd = new NoUndoHelpCmd("close", this->commandScope, TRUE, 
+    this->closeCmd = new NoUndoHelpCmd("close", this->commandScope, true, 
 	this, NoUndoHelpCmd::Close);
 }
 //
@@ -379,8 +379,8 @@ void HelpWin::initialize()
 //    userdata->colorstack = NULL;
 //    userdata->linkType = NOOP;
 //    userdata->menushell = menuShell;
-//    userdata->getposition = FALSE;
-//    userdata->mapped = TRUE;
+//    userdata->getposition = false;
+//    userdata->mapped = true;
 //
 //    /*
 //     * Save away the client data.
@@ -409,7 +409,7 @@ void HelpWin::loadTopicFile(const char *topic, const char *file)
 	    // Can't run standard help without initializing it as so. 
              fprintf(stderr, "Error: Unable to launch web browser, defaulting back to standard help.\n");
 
-		UseWebBrowser=FALSE;
+		UseWebBrowser=false;
 
 		this->init();
 
@@ -419,7 +419,7 @@ void HelpWin::loadTopicFile(const char *topic, const char *file)
     	if (NOT HelpWin::ClassInitialized)
     	{
 	    ASSERT(theApplication);
-            HelpWin::ClassInitialized = TRUE;
+            HelpWin::ClassInitialized = true;
 	    //this->installDefaultResources(theApplication->getRootWidget());
     	}
     	topicToFileMap.clear();

@@ -73,7 +73,7 @@ int ExecuteCommand(char *cmd,int nCmdShow)
     if (processStarted == 0)
         return -1;
     WaitForInputIdle(pi.hProcess, INFINITE);
-    //   AttachThreadInput( pi.dwThreadId, GetCurrentThreadId(), TRUE);
+    //   AttachThreadInput( pi.dwThreadId, GetCurrentThreadId(), true);
     //   EnumWindows ( EnumWindowsProc, (LPARAM) pi.dwProcessId );
     result = 0;
     CloseHandle(pi.hProcess);

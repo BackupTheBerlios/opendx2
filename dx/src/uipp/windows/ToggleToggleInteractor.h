@@ -34,7 +34,7 @@ class ToggleToggleInteractor : public ToggleInteractor
     //
     // Private member data:
     //
-    static boolean ToggleToggleInteractorClassInitialized;
+    static bool ToggleToggleInteractorClassInitialized;
 
   protected:
     //

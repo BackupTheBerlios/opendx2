@@ -11,7 +11,7 @@
 
 #include "TransferStyle.h"
 
-TransferStyle::TransferStyle (int tag, const char *name, boolean preferred)
+TransferStyle::TransferStyle (int tag, const char *name, bool preferred)
 {
     ASSERT(name);
     this->preferred = preferred;

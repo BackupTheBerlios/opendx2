@@ -17,16 +17,16 @@
 
 ImagePerspectiveCommand::ImagePerspectiveCommand(const char   *name,
 				   CommandScope *scope,
-				   boolean       active,
+				   bool       active,
 				   ImageWindow  *w,
-				   boolean       enable):
+				   bool       enable):
     NoUndoCommand(name, scope, active)
 {
     this->imageWindow = w;
     this->enablePerspective = enable;
 }
 
-boolean
+bool
 ImagePerspectiveCommand::doIt(CommandInterface *ci)
 {
     return this->imageWindow->enablePerspective(this->enablePerspective);

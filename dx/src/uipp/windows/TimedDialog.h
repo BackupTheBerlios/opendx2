@@ -33,7 +33,7 @@
 class TimedDialog : public Dialog
 {
   private:
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //friend void TimedDialog_TimeoutTO(XtPointer clientData, XtIntervalId*);
 
@@ -45,7 +45,7 @@ class TimedDialog : public Dialog
     //   Cleans up timeout.  Must be called by derived class's okCallback,
     //   if there is one.
     //
-    virtual boolean okCallback(Dialog *clientData);
+    virtual bool okCallback(Dialog *clientData);
 
     virtual void cleanUp(){};
 

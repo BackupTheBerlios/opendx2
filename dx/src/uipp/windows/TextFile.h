@@ -50,7 +50,7 @@ class TextFile : public UIComponent
     // Private member data:
     //
     //static String DefaultResources[];
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //friend void TextFile_ActivateTextCB(Widget widget,
 			 //  XtPointer clientData,
@@ -126,8 +126,8 @@ class TextFile : public UIComponent
     //
     // De/Install callbacks for the text widget. 
     //
-    void enableCallbacks(boolean enable = TRUE);
-    void disableCallbacks() { this->enableCallbacks(FALSE); }
+    void enableCallbacks(bool enable = true);
+    void disableCallbacks() { this->enableCallbacks(false); }
 
     //
     //	To be called by the TextFileFileDialog when a file is selected
@@ -149,7 +149,7 @@ class TextFile : public UIComponent
     //
     // Set the current text in the text box. 
     //
-    void setText(const char *value, boolean doActivate = FALSE);
+    void setText(const char *value, bool doActivate = false);
 
     //
     // Returns a pointer to the class name.

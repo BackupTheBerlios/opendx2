@@ -19,7 +19,7 @@
 #include "ScalarInstance.h"
 #include "ErrorDialogManager.h"
 
-boolean DialInteractor::DialInteractorClassInitialized = FALSE;
+bool DialInteractor::DialInteractorClassInitialized = false;
 
 //String DialInteractor::DefaultResources[] =  {
 //    ".AllowResizing:            True",
@@ -63,12 +63,12 @@ void DialInteractor::initialize()
         //                          DialInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          Interactor::DefaultResources);
-        DialInteractor::DialInteractorClassInitialized = TRUE;
+        DialInteractor::DialInteractorClassInitialized = true;
     }
 }
 
 
-//static Widget CreateDialComponent(Widget,  boolean, double, double,
+//static Widget CreateDialComponent(Widget,  bool, double, double,
 //				     double, double, int,   XtCallbackProc,   
 //				     int, void *) ;
 //
@@ -90,7 +90,7 @@ Interactor *DialInteractor::AllocateInteractor(const char *name,
 void DialInteractor::completeInteractivePart()
 {
  //   if (this->componentForm)
-	//this->passEvents(this->componentForm, TRUE);
+	//this->passEvents(this->componentForm, true);
 }
 //
 // Build a dial and a number for the given instance.
@@ -159,7 +159,7 @@ void DialInteractor::completeInteractivePart()
 // Build a dial component with the given attributes.
 //
 //static Widget CreateDialComponent(Widget  parent, 
-//				     boolean isInteger,
+//				     bool isInteger,
 //				     double  min,
 //				     double  max,
 //				     double  value,
@@ -199,7 +199,7 @@ void DialInteractor::completeInteractivePart()
 //}
 //
 //Widget createNumberComponent(Widget  parent,
-//			     boolean isInteger,
+//			     bool isInteger,
 //                             double  min,
 //                             double  max,
 //                             double  value,
@@ -286,10 +286,10 @@ void DialInteractor::completeInteractivePart()
 //    ASSERT(callData);
 //    ASSERT(si);
 //    
-//    boolean send;
+//    bool send;
 //    if(widget == this->numberWidget) {
 //    	value = ((XmDoubleCallbackStruct*)callData)->value;
-//   	send = TRUE;
+//   	send = true;
 //    } else {
 //	XmDialCallbackStruct *dcb = (XmDialCallbackStruct*)callData;
 //    	value = dcb->position;
@@ -301,7 +301,7 @@ void DialInteractor::completeInteractivePart()
 //        ScalarNode *node       = (ScalarNode*)si->getNode(); 
 //	si->setComponentValue(component, value);
 //	char *s = si->buildValueFromComponents();
-//	node->setOutputValue(1,s,DXType::UndefinedType, TRUE);
+//	node->setOutputValue(1,s,DXType::UndefinedType, true);
 //	delete s;
 //
 //    }
@@ -355,7 +355,7 @@ void DialInteractor::updateDialValue()
 //
 void DialInteractor::handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change)
+					bool major_change)
 {
  //   Arg		   wargs[8];
  //   int		   i,components,n;

@@ -42,11 +42,11 @@
 # undef abs
 #endif
 
-boolean ColormapEditor::ClassInitialized = FALSE;
+bool ColormapEditor::ClassInitialized = false;
 
 
 ColormapEditor::ColormapEditor(ColormapNode*    cmnode) :
-			DXWindow("colormapEditor", FALSE)
+			DXWindow("colormapEditor", false)
 {
 
     //
@@ -95,13 +95,13 @@ ColormapEditor::ColormapEditor(ColormapNode*    cmnode) :
     this->op_selected = 0;
     this->selected_area = 0;
 
-    this->constrain_vert = FALSE;
-    this->constrain_hor = FALSE;
+    this->constrain_vert = false;
+    this->constrain_hor = false;
     this->background_style = STRIPES;
     this->draw_mode = CME_GRID;
 
-    this->doingActivateCallback = FALSE;
-    this->neverManaged = TRUE;
+    this->doingActivateCallback = false;
+    this->neverManaged = true;
 
     //
     // Intialize state.
@@ -119,141 +119,141 @@ ColormapEditor::ColormapEditor(ColormapNode*    cmnode) :
     //
     this->closeCmd = new CloseWindowCommand("closeWindow",
 					this->commandScope,
-					TRUE,
+					true,
 					this);
 
     this->nBinsCmd = new ColormapEditCommand("nBins",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::NBins);
 
     this->addCtlCmd = new ColormapEditCommand("addControlPoint",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::AddControl);
 
     this->undoCmd = new ColormapEditCommand("undo",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::Undo);
 
     this->copyCmd = new ColormapEditCommand("copy",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::Copy);
 
     this->pasteCmd = new ColormapEditCommand("paste",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::Paste);
 
     this->waveformCmd = new ColormapEditCommand("waveform",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::Waveform);
 
     this->delSelectedCmd = new ColormapEditCommand("deleteSelectedPoint",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::DeleteSelected);
 
     this->selectAllCmd = new ColormapEditCommand("selectAll",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::SelectAll);
 
     this->setBkgdCmd = new ColormapEditCommand("setBackground",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::SetBackground);
 
     this->ticksCmd = new ColormapEditCommand("ticks",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::Ticks);
 
     this->histogramCmd = new ColormapEditCommand("histogram",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::Histogram);
 
     this->logHistogramCmd = new ColormapEditCommand("logHistogram",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::LogHistogram);
 
     this->consVCmd = new ColormapEditCommand("constrainVertical",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::ConstrainV);
 
     this->consHCmd = new ColormapEditCommand("constrainHorizonal",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::ConstrainH);
 
     this->newCmd = new ColormapEditCommand("new",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::New);
 
     this->resetAllCmd = new ColormapEditCommand("resetALL",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::ResetAll);
 
     this->resetHSVCmd = new ColormapEditCommand("resetHSV",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::ResetHSV);
 
     this->resetOpacityCmd = new ColormapEditCommand("resetOpacity",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::ResetOpacity);
 
     this->resetMinMaxCmd = new ColormapEditCommand("resetMinMax",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::ResetMinMax);
 
     this->resetMinCmd = new ColormapEditCommand("resetMin",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::ResetMin);
 
     this->resetMaxCmd = new ColormapEditCommand("resetMax",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
 					ColormapEditCommand::ResetMax);
 
     if (theDXApplication->appAllowsCMapOpenMap())
 	this->openFileCmd = new ColormapFileCommand("openFile",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
-					TRUE);
+					true);
     else
 	this->openFileCmd = NULL;
  
@@ -261,28 +261,28 @@ ColormapEditor::ColormapEditor(ColormapNode*    cmnode) :
     if (theDXApplication->appAllowsCMapSaveMap())
 	this->saveFileCmd = new ColormapFileCommand("saveFile",
 					this->commandScope,
-					TRUE,
+					true,
 					this,
-					FALSE);
+					false);
     else
 	this->saveFileCmd = NULL; 
 
 
     this->displayCPOffCmd = new ColormapEditCommand("displayCPOff", 
 					this->commandScope,
-					TRUE, 
+					true, 
 					this, 
 					ColormapEditCommand::DisplayCPOff);
 
     this->displayCPAllCmd = new ColormapEditCommand("displayCPAll", 
 					this->commandScope,
-					TRUE, 
+					true, 
 					this, 
 					ColormapEditCommand::DisplayCPAll);
 
     this->displayCPSelectedCmd = new ColormapEditCommand("displayCPSelected", 
 					this->commandScope,
-					TRUE, 
+					true, 
 					this, 
 					ColormapEditCommand::DisplayCPSelected);
 
@@ -290,7 +290,7 @@ ColormapEditor::ColormapEditor(ColormapNode*    cmnode) :
     if (theDXApplication->appAllowsCMapSetName())
 	this->setColormapNameCmd = new ColormapEditCommand("setColormapName", 
 					this->commandScope,
-					TRUE, 
+					true, 
 					this, 
 					ColormapEditCommand::SetColormapName);
     else
@@ -303,7 +303,7 @@ ColormapEditor::ColormapEditor(ColormapNode*    cmnode) :
     if (NOT ColormapEditor::ClassInitialized)
     {
 	ASSERT(theApplication);
-        ColormapEditor::ClassInitialized = TRUE;
+        ColormapEditor::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -440,7 +440,7 @@ void ColormapEditor::manage()
 
     this->handleStateChange();
 
-    this->neverManaged = FALSE;
+    this->neverManaged = false;
 }
 
 void ColormapEditor::setDrawMode()
@@ -468,11 +468,11 @@ void ColormapEditor::setDrawMode()
 	//else
 	{
 	    if(this->ticksOption)
-		((ToggleButtonInterface *)(this->ticksOption))->setState(TRUE);
+		((ToggleButtonInterface *)(this->ticksOption))->setState(true);
 	    if(this->histogramOption)
-		((ToggleButtonInterface *)(this->histogramOption))->setState(FALSE);
+		((ToggleButtonInterface *)(this->histogramOption))->setState(false);
 	    if(this->logHistogramOption)
-		((ToggleButtonInterface *)(this->logHistogramOption))->setState(FALSE);
+		((ToggleButtonInterface *)(this->logHistogramOption))->setState(false);
 	    this->ticksCmd->deactivate();
 	    this->histogramCmd->deactivate();
 	    this->logHistogramCmd->deactivate();
@@ -502,11 +502,11 @@ void ColormapEditor::setDrawMode()
 	//else
 	{
 	    if(this->ticksOption)
-		((ToggleButtonInterface *)(this->ticksOption))->setState(TRUE);
+		((ToggleButtonInterface *)(this->ticksOption))->setState(true);
 	    if(this->histogramOption)
-		((ToggleButtonInterface *)(this->histogramOption))->setState(FALSE);
+		((ToggleButtonInterface *)(this->histogramOption))->setState(false);
 	    if(this->logHistogramOption)
-		((ToggleButtonInterface *)(this->logHistogramOption))->setState(FALSE);
+		((ToggleButtonInterface *)(this->logHistogramOption))->setState(false);
 	    this->ticksCmd->deactivate();
 	    this->histogramCmd->deactivate();
 	    this->logHistogramCmd->deactivate();
@@ -623,7 +623,7 @@ void ColormapEditor::handleStateChange()
 //    ColormapNode* colormap = this->colormapNode;
 //    Widget range_widget;
 //
-//    this->doingActivateCallback = TRUE;
+//    this->doingActivateCallback = true;
 //
 //
 //    if(this->waveformDialog)
@@ -688,7 +688,7 @@ void ColormapEditor::handleStateChange()
 //	    	scnt, data->sat_values, data->sat_values + scnt,
 //	    	vcnt, data->val_values, data->val_values + vcnt,
 //	    	opcnt, data->op_values, data->op_values + opcnt,
-//		TRUE);	
+//		true);	
 //
 //  
 //	//
@@ -700,7 +700,7 @@ void ColormapEditor::handleStateChange()
 //
 //    }
 //
-//    this->doingActivateCallback = FALSE;
+//    this->doingActivateCallback = false;
 //
 //}
 //
@@ -793,17 +793,17 @@ void ColormapEditor::handleStateChange()
 //       new ButtonInterface(pulldown, "cmeNewOption",this->newCmd);
 //
 //
-//    boolean buttons = FALSE;
+//    bool buttons = false;
 //    if (this->openFileCmd) {
 //	this->openOption =
 //	   new ButtonInterface(pulldown, "cmeOpenOption",this->openFileCmd);
-//	buttons = TRUE;
+//	buttons = true;
 //    }
 //
 //    if (this->saveFileCmd) {
 //	this->saveAsOption =
 //	    new ButtonInterface(pulldown, "cmeSaveAsOption", this->saveFileCmd);
-//	buttons = TRUE;
+//	buttons = true;
 //    }
 //
 //    if (buttons)
@@ -956,20 +956,20 @@ void ColormapEditor::handleStateChange()
 //             xmCascadeButtonWidgetClass,
 //             pulldown,
 //             XmNsubMenuId, this->drawModePulldown,
-//             XmNsensitive, TRUE,
+//             XmNsensitive, true,
 //             NULL);
 //
 //    this->ticksOption = 
 //	new ToggleButtonInterface(this->drawModePulldown,
-//	    "cmeTicksOption", this->ticksCmd, TRUE);
+//	    "cmeTicksOption", this->ticksCmd, true);
 //
 //    this->histogramOption = 
 //	new ToggleButtonInterface(this->drawModePulldown,
-//	    "cmeHistogramOption", this->histogramCmd, FALSE);
+//	    "cmeHistogramOption", this->histogramCmd, false);
 //
 //    this->logHistogramOption = 
 //	new ToggleButtonInterface(this->drawModePulldown,
-//	    "cmeLogHistogramOption", this->logHistogramCmd, FALSE);
+//	    "cmeLogHistogramOption", this->logHistogramCmd, false);
 //
 //    this->nBinsOption =
 //	new ButtonInterface(pulldown, "cmeNBinsOption", this->nBinsCmd);
@@ -989,20 +989,20 @@ void ColormapEditor::handleStateChange()
 //             xmCascadeButtonWidgetClass,
 //             pulldown,
 //             XmNsubMenuId, this->displayCPPulldown,
-//             XmNsensitive, TRUE,
+//             XmNsensitive, true,
 //             NULL);
 //
 //    this->displayCPOffOption = 
 //	new ToggleButtonInterface(this->displayCPPulldown,
-//	    "displayCPOffOption", this->displayCPOffCmd, FALSE);
+//	    "displayCPOffOption", this->displayCPOffCmd, false);
 //
 //    this->displayCPAllOption = 
 //	new ToggleButtonInterface(this->displayCPPulldown,
-//	    "displayCPAllOption", this->displayCPAllCmd, TRUE);
+//	    "displayCPAllOption", this->displayCPAllCmd, true);
 //
 //    this->displayCPSelectedOption = 
 //	new ToggleButtonInterface(this->displayCPPulldown,
-//	    "displayCPSelectedOption", this->displayCPSelectedCmd, FALSE);
+//	    "displayCPSelectedOption", this->displayCPSelectedCmd, false);
 //
 //    if (this->setColormapNameCmd)  {
 //	XtVaCreateManagedWidget
@@ -1076,17 +1076,17 @@ void ColormapEditor::openWaveformDialog()
     this->waveformDialog->post();
 }
 
-boolean ColormapEditor::cmOpenFile(const char* string)
+bool ColormapEditor::cmOpenFile(const char* string)
 {
     return this->colormapNode->cmOpenFile(string);
 }
-boolean ColormapEditor::cmSaveFile(const char* string)
+bool ColormapEditor::cmSaveFile(const char* string)
 {
    return this->colormapNode->cmSaveFile(string);
 }
 
 
-void ColormapEditor::postOpenColormapDialog(boolean opening)
+void ColormapEditor::postOpenColormapDialog(bool opening)
 {
     if (this->openColormapDialog == NULL) {
         this->openColormapDialog = new OpenColormapDialog(this,
@@ -1098,7 +1098,7 @@ void ColormapEditor::postOpenColormapDialog(boolean opening)
 //
 // Same as the super class, but also sets the icon name.
 //
-void ColormapEditor::setWindowTitle(const char *name, boolean check_geometry)
+void ColormapEditor::setWindowTitle(const char *name, bool check_geometry)
 {
     this->DXWindow::setWindowTitle(name, check_geometry);
     this->DXWindow::setIconName(name);
@@ -1124,10 +1124,10 @@ void ColormapEditor::editColormapName()
 void ColormapEditor::adjustSensitivities()
 {
     ColormapNode *node = this->colormapNode;
-    boolean has_hsv = node->hasDefaultHSVMap();
-    boolean has_op = node->hasDefaultOpacityMap();
-    boolean has_min = node->hasDefaultMin();
-    boolean has_max = node->hasDefaultMax();
+    bool has_hsv = node->hasDefaultHSVMap();
+    bool has_op = node->hasDefaultOpacityMap();
+    bool has_min = node->hasDefaultMin();
+    bool has_max = node->hasDefaultMax();
     
     if (has_hsv)
 	this->resetHSVCmd->activate();

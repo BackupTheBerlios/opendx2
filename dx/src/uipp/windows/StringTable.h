@@ -54,10 +54,10 @@ class StringTable : public Base
 
     //
     // Adds a string entry into the table, if it is not already a member.
-    // Returns TRUE if successful, FALSE otherwise.  In either case, the
+    // Returns true if successful, false otherwise.  In either case, the
     // unique id of the string is returned.
     //
-    boolean addString(const char* string, long& id);
+    bool addString(const char* string, long& id);
 
     //
     // Searches for the specified string in the table.

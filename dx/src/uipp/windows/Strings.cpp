@@ -84,20 +84,20 @@ char* DuplicateString(const char* string)
 }
 
 
-boolean IsBlankString(const char* string)
+bool IsBlankString(const char* string)
 {
     int i;
 
     //
-    // If the string is NULL, then return TRUE...
+    // If the string is NULL, then return true...
     //
     if (string == NUL(char*))
     {
-	return TRUE;
+	return true;
     }
 
     //
-    // Otherwise, return TRUE if the string is a NULL string or
+    // Otherwise, return true if the string is a NULL string or
     // if the string consists solely of blanks/tabs.
     //
     for (i = 0; string[i] == ' ' OR string[i] == '\t'; i++)
@@ -332,7 +332,7 @@ char* FilterDottedPath(const char* oldPath)
     DOS2UNIXPATH(path);
 
     i = j = 0;
-    while(TRUE)
+    while(true)
     {
         if (path[j] == '.')
         {
@@ -655,20 +655,20 @@ void Unix2DosPath(char *path)
         path[i]='\\';
 }
 
-boolean unRename(const char *SrcFile, const char *DestFile)
+bool unRename(const char *SrcFile, const char *DestFile)
 {
     FILE *fpSrc, *fpDest;
 
     if(!SrcFile || !DestFile)
-	return FALSE;
+	return false;
 
     fpSrc = fopen(SrcFile, "rb");
-    if (fpSrc == NULL) return FALSE;
+    if (fpSrc == NULL) return false;
 
     fpDest = fopen(DestFile, "wb");
     if (fpDest == NULL) {
 	fclose(fpSrc);
-	return FALSE;
+	return false;
     }
 
     while(!feof(fpSrc)) {
@@ -678,7 +678,7 @@ boolean unRename(const char *SrcFile, const char *DestFile)
     fclose(fpDest);
     unlink(SrcFile);
 
-    return TRUE;
+    return true;
 
 
 }

@@ -23,14 +23,14 @@
 
 ControlPanelGroupDialog* theCPGroupDialog = NULL; 
 
-boolean ControlPanelGroupDialog::ClassInitialized = FALSE;
+bool ControlPanelGroupDialog::ClassInitialized = false;
 
 ControlPanelGroupDialog::ControlPanelGroupDialog()
                                 : Dialog("panelGroupDialog")
 {
     if (NOT ControlPanelGroupDialog::ClassInitialized)
     {
-        ControlPanelGroupDialog::ClassInitialized = TRUE;
+        ControlPanelGroupDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -315,7 +315,7 @@ void ControlPanelGroupDialog::makeGroupList(int item)
 void ControlPanelGroupDialog::makeToggles()
 {
  //    int i;
- //    Boolean set = FALSE, state = FALSE;
+ //    Boolean set = false, state = false;
  //    Widget widget, lastwidget = NULL; // NULL stops scary cc warnings
  //    ControlPanel *cp;
  //    List    glist;
@@ -357,7 +357,7 @@ void ControlPanelGroupDialog::makeToggles()
 	//if(set)
 	//     state = glist.isMember((void*)cp->getInstanceNumber());
 	//else
-	//     state = FALSE;
+	//     state = false;
 
  //       pname = (char*)cp->getPanelNameString();
  //       if(IsBlankString(pname))
@@ -433,7 +433,7 @@ void ControlPanelGroupDialog::setToggles()
      //Widget   	widget;
      //List	plist;
      //int	i, size = this->toggleList[0].getSize(); 
-     //boolean	state=false, set = this->lastIndex;
+     //bool	state=false, set = this->lastIndex;
      //ControlPanel *cp;
 
      //if(set)

@@ -48,8 +48,8 @@ class CDBParameter : public Base
     //Widget  typeWidget;
     //Widget  connectedToWidget;
 
-    boolean initialIsHidden;
-    boolean lineIsHidden;
+    bool initialIsHidden;
+    bool lineIsHidden;
 
     //
     // Constructor:
@@ -60,8 +60,8 @@ class CDBParameter : public Base
 	//this->hideWidget = NULL;
 	//this->typeWidget = NULL;
 	//this->connectedToWidget = NULL;
-	this->initialIsHidden = FALSE;
-	this->lineIsHidden = FALSE;
+	this->initialIsHidden = false;
+	this->lineIsHidden = false;
     }
 
     //

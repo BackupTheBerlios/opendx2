@@ -34,7 +34,7 @@ class SetNetworkCommentDialog : public TextEditDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
     //
@@ -51,13 +51,13 @@ class SetNetworkCommentDialog : public TextEditDialog
     //
     // Save the text in the text window 
     //
-    virtual boolean saveText(const char *);
+    virtual bool saveText(const char *);
 
     //
     // Constructor (for derived classes):
     //
     SetNetworkCommentDialog(const char *name,
-			boolean readonly, Network *n);
+			bool readonly, Network *n);
 
     //
     // Install the default resources for this class and then call the
@@ -71,7 +71,7 @@ class SetNetworkCommentDialog : public TextEditDialog
     //
     // Constructor (for instances of THIS class):
     //
-    SetNetworkCommentDialog(boolean readonly, Network *n);
+    SetNetworkCommentDialog(bool readonly, Network *n);
 
     //
     // Destructor:

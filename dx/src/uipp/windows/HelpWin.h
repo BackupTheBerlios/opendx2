@@ -47,8 +47,8 @@ class HelpWin : public MainWindow
     //
     // Private member data:
     //
-    static boolean UseWebBrowser;
-    static boolean ClassInitialized;
+    static bool UseWebBrowser;
+    static bool ClassInitialized;
     //friend void HelpWin_SelectCB(Widget, XtPointer, XtPointer);
 
     //
@@ -80,7 +80,7 @@ class HelpWin : public MainWindow
     //
     // Constructor for derived classes:
     //
-    HelpWin(const char *name, boolean hasMenuBar);
+    HelpWin(const char *name, bool hasMenuBar);
 
     //
     // Install the default resources for this class and then call the

@@ -51,7 +51,7 @@ class ViewControlDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //friend void ViewControlDialog_ScaleCB(Widget	 widget,
 		  //      XtPointer clientData,
@@ -67,7 +67,7 @@ class ViewControlDialog : public Dialog
 			 //     XtPointer callData);
 
     // Is the form going to expand due to the mode change?
-    boolean isExpanding();
+    bool isExpanding();
 
   protected:
     //
@@ -117,7 +117,7 @@ class ViewControlDialog : public Dialog
 
 
 
-    boolean cursorFormManaged;
+    bool cursorFormManaged;
     //Widget cursorForm;
     //Widget probeSeparator;
     //Widget probeLabel;
@@ -126,14 +126,14 @@ class ViewControlDialog : public Dialog
     //Widget constraintLabel;
     //Widget constraintOptionMenu;
 
-    boolean roamFormManaged;
+    bool roamFormManaged;
 
-    boolean pickFormManaged;
+    bool pickFormManaged;
     //Widget pickForm;
     //Widget pickPulldown;
     //Widget pickOptionMenu;
 
-    boolean cameraFormManaged;
+    bool cameraFormManaged;
     //Widget cameraForm;
     //Widget cameraWhichOptionMenu;
     ButtonInterface	*cameraTo;
@@ -146,7 +146,7 @@ class ViewControlDialog : public Dialog
     //Widget cameraWindowWidthNumber;
     //Widget cameraWindowHeightNumber;
 
-    boolean navigateFormManaged;
+    bool navigateFormManaged;
     //Widget navigateForm;
     //Widget motionScale;
     //Widget pivotScale;
@@ -223,8 +223,8 @@ class ViewControlDialog : public Dialog
 
     virtual void newCamera(double *from, double *to, double *up,
 	int image_width, int image_height, double width,
-	boolean perspective, double viewAngle);
-    void setSensitivity(boolean s);
+	bool perspective, double viewAngle);
+    void setSensitivity(bool s);
 
     void setWhichCameraVector();
     //
@@ -234,8 +234,8 @@ class ViewControlDialog : public Dialog
     void setCurrentProbeByInstance(int i);
     void setCurrentPickByInstance(int i);
 
-    void sensitizeProbeOptionMenu(boolean sensitize);
-    void sensitizePickOptionMenu(boolean sensitize);
+    void sensitizeProbeOptionMenu(bool sensitize);
+    void sensitizePickOptionMenu(bool sensitize);
 
 
     const char* getClassName()

@@ -21,7 +21,7 @@
 #endif
 
 
-boolean ImageFormatREX::ClassInitialized = FALSE;
+bool ImageFormatREX::ClassInitialized = false;
 
 //String ImageFormatREX::DefaultResources[] = {
 //    NUL(char*)
@@ -48,7 +48,7 @@ void ImageFormatREX::initialize()
 	//    PixelImageFormat::DefaultResources);
 	//this->setDefaultResources (theApplication->getRootWidget(),
 	//    ImageFormatREX::DefaultResources);
-	ImageFormatREX::ClassInitialized = TRUE;
+	ImageFormatREX::ClassInitialized = true;
     }
 }
 
@@ -72,11 +72,11 @@ void ImageFormatREX::eraseOutputFile(const char *fname)
     delete srcfile;
 }
 
-boolean ImageFormatREX::isA(Symbol classname)
+bool ImageFormatREX::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassImageFormatREX);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ImageFormat::isA(classname);
 }

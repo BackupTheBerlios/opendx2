@@ -56,7 +56,7 @@ class ColormapEditor : public DXWindow
     //
     // Private class data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
     //friend void ColormapEditor_ActiveCB(Widget, XtPointer, XtPointer);
     //friend void ColormapEditor_EditMenuMapCB(Widget, XtPointer, XtPointer);
@@ -76,11 +76,11 @@ class ColormapEditor : public DXWindow
     int op_selected;
     int selected_area;
 
-    boolean doingActivateCallback;
-    boolean neverManaged;
+    bool doingActivateCallback;
+    bool neverManaged;
 
-    boolean constrain_vert;
-    boolean constrain_hor;
+    bool constrain_vert;
+    bool constrain_hor;
     int background_style;
     int draw_mode;
 
@@ -91,7 +91,7 @@ class ColormapEditor : public DXWindow
 
     ColormapNode	*colormapNode;		// node associated.
     //Widget		colormapEditor; 
-    boolean		needResetOnManage;
+    bool		needResetOnManage;
 
     //
     // commands:
@@ -276,15 +276,15 @@ class ColormapEditor : public DXWindow
     virtual void manage();
 
     void mapRaise();
-    void postOpenColormapDialog(boolean opening);
+    void postOpenColormapDialog(bool opening);
     ColormapNode *getColormapNode() { return this->colormapNode; }
     //Widget getEditor() { return this->colormapEditor; }
 
     //
     // Save and open a color map file.
     //
-    boolean cmOpenFile(const char* filename);
-    boolean cmSaveFile(const char* filename);
+    bool cmOpenFile(const char* filename);
+    bool cmSaveFile(const char* filename);
 
     //
     // Handle any state change that is associated with either the editor or
@@ -302,7 +302,7 @@ class ColormapEditor : public DXWindow
     //
     // Same as the super class, but also sets the icon name.
     //
-    virtual void setWindowTitle(const char *name, boolean check_geometry=FALSE);
+    virtual void setWindowTitle(const char *name, bool check_geometry=false);
 
     //
     // Returns a pointer to the class name.

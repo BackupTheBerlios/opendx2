@@ -20,7 +20,7 @@
 #include "ListIterator.h"
 #include "ErrorDialogManager.h"
 
-boolean SelectorListToggleInteractor::ClassInitialized = FALSE;
+bool SelectorListToggleInteractor::ClassInitialized = false;
 
 //String SelectorListToggleInteractor::DefaultResources[] =  {
 //	"*XmToggleButton.shadowThickness:	0",
@@ -60,7 +60,7 @@ void SelectorListToggleInteractor::initialize()
 			     // SelectorListToggleInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
 			     // Interactor::DefaultResources);
-        SelectorListToggleInteractor::ClassInitialized = TRUE;
+        SelectorListToggleInteractor::ClassInitialized = true;
     }
 }
 
@@ -282,7 +282,7 @@ void SelectorListToggleInteractor::updateDisplayedInteractorValue()
 //
 void SelectorListToggleInteractor::handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change)
+					bool major_change)
 {
     if (major_change)
 	this->unmanage();

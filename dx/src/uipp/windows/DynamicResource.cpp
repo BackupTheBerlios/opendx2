@@ -35,10 +35,10 @@ DynamicResource::DynamicResource(const char *resourceName)
 	strcpy (this->resourceName, resourceName);
     } else
 	this->resourceName = NUL(char*);
-    this->valid_resource = FALSE;
+    this->valid_resource = false;
 
     this->stringRepresentation = NUL(char *);
-    this->storedData = FALSE;
+    this->storedData = false;
 //    this->setting.default_addr = 0;
 
 //    this->root = NUL(Widget);
@@ -73,7 +73,7 @@ int i;
 //void DynamicResource::initialize()
 //{
 //    if (!DynamicResource::DynamicResourceClassInitialized) {
-//	DynamicResource::DynamicResourceClassInitialized = TRUE;
+//	DynamicResource::DynamicResourceClassInitialized = true;
 //    }
 //}
 
@@ -81,48 +81,48 @@ int i;
 // The root widget is changeable.  Whenever it is set, run thru the list of
 // names, verifying that a widget has a resource and then setting the resource.
 //
-//boolean DynamicResource::setRootWidget(Widget root)
+//bool DynamicResource::setRootWidget(Widget root)
 //{
 //int i;
 //
 //    if (!root) {
 //	this->root = NUL(Widget);
-//	return TRUE;
+//	return true;
 //    }
 //
 //    if (!this->valid_resource) {
 //	Widget dest;
-//	boolean no_mistakes = TRUE;
-//	boolean any_found = FALSE;
+//	bool no_mistakes = true;
+//	bool any_found = false;
 //	for (i=0; ((i<this->nameCnt) && (no_mistakes)); i++) {
 //	    if (!(dest = XtNameToWidget (root, this->widgetNames[i]))) 
-//		no_mistakes = FALSE;
+//		no_mistakes = false;
 //	    else
 //	    	no_mistakes = DynamicResource::VerifyPresence 
 //		    (this->resourceName, dest, &this->setting);
 //
-//	    if (no_mistakes) any_found = TRUE;
+//	    if (no_mistakes) any_found = true;
 //	}
-//	if ((any_found) && (no_mistakes)) this->valid_resource = TRUE;
+//	if ((any_found) && (no_mistakes)) this->valid_resource = true;
 //    }
 //    
-//    if (this->root == root) return TRUE;
+//    if (this->root == root) return true;
 //    this->root = root;
 //
-//    // It's not bad for valid_resource to be FALSE here.  It just means that we
+//    // It's not bad for valid_resource to be false here.  It just means that we
 //    // haven't built up the widgetName list enough to have found the resource.
 //    if (!this->valid_resource) {
-//	return FALSE;
+//	return false;
 //    }
 //
-//    boolean applyOK=TRUE;
+//    bool applyOK=true;
 //    for (i=0; ((i<this->nameCnt)&&(applyOK)); i++) 
 //	applyOK = DynamicResource::applySetting (this->widgetNames[i]); 
 //
 //    if (!applyOK) {
-//	return FALSE;
+//	return false;
 //    }
-//    return TRUE;
+//    return true;
 //}
 
 //
@@ -131,13 +131,13 @@ int i;
 // include most things.  For settings consisting of multiple bytes use 
 // ::setDataDirectly.  It doesn't use a converter.
 //
-boolean DynamicResource::setData (const char *value)
+bool DynamicResource::setData (const char *value)
 {
 int i;
 
-    if (!this->valid_resource) return FALSE;
+    if (!this->valid_resource) return false;
 
-    this->storedData = FALSE;
+    this->storedData = false;
 
     if (this->stringRepresentation) delete this->stringRepresentation;
     this->stringRepresentation = new char[1+strlen(value)];
@@ -149,22 +149,22 @@ int i;
 
     //this->setting.default_addr = (XtPointer)this->stringRepresentation;
 
-    //if (!this->root) return TRUE;
+    //if (!this->root) return true;
 
-    boolean applyOK = TRUE;
+    bool applyOK = true;
  //   for (i=0; ((i<this->nameCnt)&&(applyOK)); i++) 
 	//applyOK = DynamicResource::applySetting (this->widgetNames[i]);
 
     return applyOK;
 }
 
-boolean DynamicResource::setData ()
+bool DynamicResource::setData ()
 {
 int i;
-    if (!this->valid_resource) return FALSE;
-    if (!this->storedData) return FALSE;
+    if (!this->valid_resource) return false;
+    if (!this->storedData) return false;
 
-    boolean applyOK=TRUE;
+    bool applyOK=true;
  //   for (i=0; ((i<this->nameCnt)&&(applyOK)); i++) 
 	//applyOK = DynamicResource::applySetting (this->widgetNames[i]);
 
@@ -176,9 +176,9 @@ int i;
 // resource if you had already created the pixmap yourself or for setting the
 // text inside a text widget.
 //
-boolean DynamicResource::setDataDirectly (void *value)
+bool DynamicResource::setDataDirectly (void *value)
 {
-    this->storedData = TRUE;
+    this->storedData = true;
     this->stringRepresentation = NUL(char*);
     //this->setting.default_addr = (XtPointer)value;
     return this->setData();
@@ -189,21 +189,21 @@ boolean DynamicResource::setDataDirectly (void *value)
 // this->setting.resource_name is in the set of resources held by the 
 // widget of interest?  The name used will be ...XtName(XtParent(dest)).XtName(dest)
 //
-// If allIntermediates is set to TRUE, then automatically include all widgets
+// If allIntermediates is set to true, then automatically include all widgets
 // which are both children of root and ancestors of dest.  This facilitates
 // setting colors resources in objects made of several widgets.
 //
-//boolean DynamicResource::addWidgetToNameList (Widget dest, boolean allAncestors)
+//bool DynamicResource::addWidgetToNameList (Widget dest, bool allAncestors)
 //{
-//boolean applyOK=TRUE;
+//bool applyOK=true;
 //
-//    if (this->inWidgetList (dest)) return TRUE;
+//    if (this->inWidgetList (dest)) return true;
 //
 //    ASSERT(this->resourceName && this->resourceName[0]);
 //    if (!this->valid_resource)  {
 //	this->valid_resource = 
 //	    DynamicResource::VerifyPresence (this->resourceName, dest, &this->setting);
-//	if (!this->valid_resource) return FALSE;
+//	if (!this->valid_resource) return false;
 //    }
 //
 //    ASSERT(this->root);
@@ -228,27 +228,27 @@ boolean DynamicResource::setDataDirectly (void *value)
 // Add dest and all decendants thereof.
 // ...used for making a setting once and have it trickle down automatically.
 //
-//boolean DynamicResource::addWidgetsToNameList (Widget dest, boolean )
+//bool DynamicResource::addWidgetsToNameList (Widget dest, bool )
 //{
 //Widget menu, *kids;
 //int i, nkids;
-//boolean applyOK=TRUE;
+//bool applyOK=true;
 //
-//    if (!this->addWidgetToNameList (dest, FALSE)) return FALSE;
+//    if (!this->addWidgetToNameList (dest, false)) return false;
 //
 //    if ((XtIsSubclass (dest, xmCascadeButtonWidgetClass))||
 //        (XtIsSubclass (dest, xmCascadeButtonGadgetClass))) {
 //        menu = 0;
 //        XtVaGetValues (dest, XmNsubMenuId, &menu, NULL);
-//        if (!menu) return TRUE;
-//	applyOK = this->addWidgetsToNameList (menu, FALSE);
+//        if (!menu) return true;
+//	applyOK = this->addWidgetsToNameList (menu, false);
 //    }
 //    if (!XtIsComposite (dest)) return applyOK;
 //
 //    XtVaGetValues (dest, XmNchildren, &kids, XmNnumChildren, &nkids, NULL);
 //    for (i=0; ((i<nkids)&&(applyOK)); i++) {
 //        if (XtIsShell (kids[i])) continue ;
-//        applyOK = this->addWidgetsToNameList (kids[i], FALSE);
+//        applyOK = this->addWidgetsToNameList (kids[i], false);
 //    }
 //    return applyOK;
 //}
@@ -269,18 +269,18 @@ DynamicResource::getData()
 // Form the name w would get if it were added, then check the list of names
 // to see if that string is present.
 //
-//boolean
+//bool
 //DynamicResource::inWidgetList (Widget w)
 //{
 //int i;
 //
-//    if (!this->valid_resource) return FALSE;
+//    if (!this->valid_resource) return false;
 //
 //    char *wname = DynamicResource::QualifiedWidgetName (this->root, w);
 //    for (i=0; i<this->nameCnt; i++) {
-//	if (!strcmp(this->widgetNames[i], wname)) return TRUE;
+//	if (!strcmp(this->widgetNames[i], wname)) return true;
 //    }
-//    return FALSE;
+//    return false;
 //}
 
 // P R I N T   A N D   P A R S E      P R I N T   A N D   P A R S E      
@@ -292,24 +292,24 @@ DynamicResource::getData()
 // %s.%s:%s\n, with widget name, resource name, and resource value
 // There is 1 resource spec per line.  
 //
-boolean
+bool
 DynamicResource::printComment (FILE *f)
 {
 int i;
 
-    //if ((!this->valid_resource) && (this->root != NUL(Widget))) return TRUE;
-    if (!this->stringRepresentation) return TRUE;
+    //if ((!this->valid_resource) && (this->root != NUL(Widget))) return true;
+    if (!this->stringRepresentation) return true;
 
  //   for (i=0; i<this->nameCnt; i++) {
 	//if (fprintf (f, "    // resource %s.%s:%s\n", this->widgetNames[i],
 	//	this->resourceName, this->stringRepresentation) < 0)
-	//    return FALSE;
+	//    return false;
  //   }
 
-    return TRUE;
+    return true;
 }
 
-boolean
+bool
 DynamicResource::parseComment (const char *comment, 
 				const char * /* file */, int /* line */)
 {
@@ -322,7 +322,7 @@ int i;
     if (sscanf (comment, " resource %[^:]:%[^\n]", full_resource, resource_value) != 2) {
 	delete full_resource;
 	delete resource_value;
-        return FALSE;
+        return false;
     }
 
     // break full_resource into widget name and resource name by pulling the
@@ -354,14 +354,14 @@ int i;
 	//DynamicResource::GrowNameList (this->widgetNames, &this->nameCnt, widgetName);
 
     //this->setting.default_addr = this->stringRepresentation = resource_value;
-    this->storedData = FALSE;
-    this->valid_resource = FALSE;
+    this->storedData = false;
+    this->valid_resource = false;
 
     delete widgetName;
     delete rname;
     delete full_resource;
 
-    return TRUE;
+    return true;
 }
 
 // S T A T I C   U T I L S    S T A T I C   U T I L S    S T A T I C   U T I L S    
@@ -420,7 +420,7 @@ int i;
 //
 // Convert a name to a Widget, then insert the resource spec.
 //
-boolean DynamicResource::applySetting (const char *name)
+bool DynamicResource::applySetting (const char *name)
 {
 //XrmValue toinout, from;
 //unsigned char 	uchar_space;
@@ -474,22 +474,22 @@ boolean DynamicResource::applySetting (const char *name)
 //		this->setting.default_addr = (XtPointer)*((long *)         toinout.addr);
 //	    } 
 //
-//	    this->storedData = TRUE;
+//	    this->storedData = true;
 //	} else {
 //	    if (this->stringRepresentation) delete this->stringRepresentation;
 //	    this->setting.default_addr = 0;
 //	    this->stringRepresentation = NULL;
-//	    return FALSE;
+//	    return false;
 //	}
 //    } 
 //    XtVaSetValues (w, this->setting.resource_name, this->setting.default_addr, NULL);
-//    return TRUE;
+//    return true;
 	return false;
 }
 
 
 //
-// TRUE if resourceName names a resource held by Widget w.  The XtResource from that
+// true if resourceName names a resource held by Widget w.  The XtResource from that
 // widget is copied into *setting.  (Assumes XmNlabelString means the same thing
 // for anyone who has one.  I believe that's safe.)
 //
@@ -499,7 +499,7 @@ boolean DynamicResource::applySetting (const char *name)
 // will never happen.
 // This code should be able to handle any type which editres can.
 //
-//boolean
+//bool
 //DynamicResource::VerifyPresence (const char *resourceName, Widget w, XtResource *setting)
 //{
 //XtResourceList reslist;
@@ -507,7 +507,7 @@ boolean DynamicResource::applySetting (const char *name)
 //
 //    // Not an error because we want to go thru the constructor OK even
 //    // if the resource name is not yet know.  This is because of printing, parsing.
-//    if ((!resourceName) || (!resourceName[0])) return FALSE;
+//    if ((!resourceName) || (!resourceName[0])) return false;
 //
 //    XtGetResourceList (XtClass(w), &reslist, &rescnt);
 //
@@ -515,7 +515,7 @@ boolean DynamicResource::applySetting (const char *name)
 //	if (!strcmp(resourceName, reslist[i].resource_name)) {
 //	    DynamicResource::CopyResource (&reslist[i], setting);
 //	    XtFree((char *)reslist);
-//	    return TRUE;
+//	    return true;
 //	}
 //    }
 //    if (reslist) XtFree((char *)reslist);
@@ -524,12 +524,12 @@ boolean DynamicResource::applySetting (const char *name)
 //        if (!strcmp(resourceName, reslist[i].resource_name)) {
 //	    DynamicResource::CopyResource (&reslist[i], setting);
 //	    XtFree((char *)reslist);
-//	    return TRUE;
+//	    return true;
 //        }
 //    }
 //    if (reslist) XtFree((char *)reslist);
 //
-//    return FALSE;
+//    return false;
 //}
 
 

@@ -24,7 +24,7 @@
 
 #include "DictionaryIterator.h"
 
-boolean MoveNodesDialog::ClassInitialized = FALSE;
+bool MoveNodesDialog::ClassInitialized = false;
 
 //String MoveNodesDialog::DefaultResources[] =
 //{
@@ -50,17 +50,17 @@ MoveNodesDialog::MoveNodesDialog(PageSelector* psel):
     this->selector = psel;
     this->selector_menu = NUL(TextSelector*);
     this->page_name = NUL(char*);
-    this->stop_updates = FALSE;
+    this->stop_updates = false;
     this->apply_cmd = NUL(Command*);
     this->ok_option = NUL(ButtonInterface*);
     this->apply_option = NUL(ButtonInterface*);
     this->scope = new CommandScope;
-    if (MoveNodesDialog::ClassInitialized == FALSE) {
-        MoveNodesDialog::ClassInitialized = TRUE;
+    if (MoveNodesDialog::ClassInitialized == false) {
+        MoveNodesDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
-    this->apply_cmd = new MoveNodesCommand("move", this->scope, TRUE, this);
+    this->apply_cmd = new MoveNodesCommand("move", this->scope, true, this);
 }
 
 //
@@ -207,12 +207,12 @@ void MoveNodesDialog::manage()
 }
 
 
-boolean MoveNodesDialog::okCallback(Dialog *)
+bool MoveNodesDialog::okCallback(Dialog *)
 {
     return this->applyCallback(this);
 }
 
-boolean MoveNodesDialog::applyCallback(Dialog *)
+bool MoveNodesDialog::applyCallback(Dialog *)
 {
 
     char name[64];
@@ -221,13 +221,13 @@ boolean MoveNodesDialog::applyCallback(Dialog *)
     // If attempting to move to the current page, then just quit
     //
     if (EqualString(name, this->page_name))
-	return TRUE;
+	return true;
 
-    this->stop_updates = TRUE;
+    this->stop_updates = true;
     //
     // Set the new name
     //
-    boolean retVal = TRUE;
+    bool retVal = true;
     EditorWorkSpace* ews = NUL(EditorWorkSpace*);
     if ((name) && (retVal))
 	ews = (EditorWorkSpace*)this->selector->findDefinition(name);
@@ -238,20 +238,20 @@ boolean MoveNodesDialog::applyCallback(Dialog *)
 	else
 	    sprintf (msg, "Page doesn't exist.");
 	ErrorMessage (msg);
-	retVal = FALSE;
+	retVal = false;
     }
     EditorWindow* editor = this->selector->getEditor();
-    if ((retVal) && (editor->areSelectedNodesPagifiable(TRUE) == FALSE))
-	retVal = FALSE;
+    if ((retVal) && (editor->areSelectedNodesPagifiable(true) == false))
+	retVal = false;
 
-    if ((retVal) && (editor->pagifySelectedNodes(ews) == FALSE)) {
+    if ((retVal) && (editor->pagifySelectedNodes(ews) == false)) {
 	char msg[128];
 	sprintf (msg, "Unable to move selected items to %s", name);
 	ErrorMessage (msg);
-	retVal = FALSE;
+	retVal = false;
     }
 
-    this->stop_updates = FALSE;
+    this->stop_updates = false;
     if (retVal) 
 	this->update();
     return retVal;
@@ -268,14 +268,14 @@ boolean MoveNodesDialog::applyCallback(Dialog *)
 
 
 MoveNodesCommand::MoveNodesCommand(const char *name, CommandScope *scope, 
-    boolean active, MoveNodesDialog *mnd): NoUndoCommand(name, scope, active)
+    bool active, MoveNodesDialog *mnd): NoUndoCommand(name, scope, active)
 {
     this->moveNodes = mnd;
 }
 
-boolean MoveNodesCommand::doIt(CommandInterface *ci)
+bool MoveNodesCommand::doIt(CommandInterface *ci)
 {
     this->moveNodes->applyCallback(this->moveNodes);
-    return TRUE;
+    return true;
 }
 

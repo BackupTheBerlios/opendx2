@@ -24,7 +24,7 @@
 //
 #define ClassCmdEntry	"CmdEntry"
 
-typedef boolean (*CmdEntryFunction)(const char *, int , void *);
+typedef bool (*CmdEntryFunction)(const char *, int , void *);
 
 
 //
@@ -69,7 +69,7 @@ class CmdEntry : public Base
     //
     // Function to handle a character string (a command) with this CmdEntry
     //
-    boolean parse(const char *, int packetId = -1);
+    bool parse(const char *, int packetId = -1);
 
     //
     //

@@ -21,7 +21,7 @@
 #endif
 
 
-boolean ImageFormatYUV::ClassInitialized = FALSE;
+bool ImageFormatYUV::ClassInitialized = false;
 
 //String ImageFormatYUV::DefaultResources[] = {
 //    NUL(char*)
@@ -48,7 +48,7 @@ void ImageFormatYUV::initialize()
 	//    PixelImageFormat::DefaultResources);
 	//this->setDefaultResources (theApplication->getRootWidget(),
 	//    ImageFormatYUV::DefaultResources);
-	ImageFormatYUV::ClassInitialized = TRUE;
+	ImageFormatYUV::ClassInitialized = true;
     }
 }
 
@@ -68,11 +68,11 @@ void ImageFormatYUV::eraseOutputFile(const char *fname)
     delete srcfile;
 }
 
-boolean ImageFormatYUV::isA(Symbol classname)
+bool ImageFormatYUV::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassImageFormatYUV);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ImageFormat::isA(classname);
 }

@@ -43,7 +43,7 @@ class SelectionInstance : public InteractorInstance {
   protected:
 
 
-    boolean appendOptionPair(const char *value, const char *name);
+    bool appendOptionPair(const char *value, const char *name);
 
     //
     // Create the default  set attributes dialog box for this class of
@@ -60,9 +60,9 @@ class SelectionInstance : public InteractorInstance {
     int 	getSelectedOptionIndex();
     const char	*getValueOptionsAttribute();
     char	*getOptionValueString(int optind);
-    char	*getOptionNameString(int optind, boolean keep_quotes = FALSE);
+    char	*getOptionNameString(int optind, bool keep_quotes = false);
 
-    virtual boolean hasSetAttrDialog();
+    virtual bool hasSetAttrDialog();
 
     const char *getClassName() 
 		{ return ClassSelectionInstance; }

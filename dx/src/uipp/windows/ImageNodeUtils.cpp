@@ -127,21 +127,21 @@ char* ImageNode::GifMacroTxt[] = {
 #define WED_ORBIT_DELTA		8
 
 
-void ImageNode::setRecordEnable(int use, boolean send)
+void ImageNode::setRecordEnable(int use, bool send)
 {
     char s[32];
     sprintf(s, "%d", use);
     this->setInputValue(RECENABLE, s, DXType::FlagType, send);
 }
 
-void ImageNode::setRecordResolution(int x, boolean send)
+void ImageNode::setRecordResolution(int x, bool send)
 {
     char s[100];
     sprintf(s, "%d", x);
     this->setInputValue(RECRESOLUTION, s, DXType::IntegerType, send);
 }
 
-void ImageNode::setRecordAspect(double aspect, boolean send)
+void ImageNode::setRecordAspect(double aspect, bool send)
 {
     char s[100];
     sprintf(s, "%f", aspect);
@@ -205,7 +205,7 @@ void ImageNode::getRecordAspect(double &a)
 }
 
 
-void ImageNode::setRecordFile(const char *file, boolean send)
+void ImageNode::setRecordFile(const char *file, bool send)
 {
     if (EqualString(file, this->getInputDefaultValueString(RECFILE)))
 	this->useDefaultInputValue(RECFILE, send);
@@ -213,7 +213,7 @@ void ImageNode::setRecordFile(const char *file, boolean send)
 	this->setInputValue(RECFILE, file, DXType::StringType, send);
 }
 
-void ImageNode::setRecordFormat(const char *format, boolean send)
+void ImageNode::setRecordFormat(const char *format, bool send)
 {
     if (EqualString(format, this->getInputDefaultValueString(RECFORMAT)))
 	this->useDefaultInputValue(RECFORMAT, send);
@@ -300,37 +300,37 @@ void ImageNode::getBackgroundColor(const char *&color)
 // F L A G S   F L A G S   F L A G S   F L A G S   F L A G S   F L A G S   
 // F L A G S   F L A G S   F L A G S   F L A G S   F L A G S   F L A G S   
 //
-boolean ImageNode::isSetAutoAxesFrame ()
+bool ImageNode::isSetAutoAxesFrame ()
 { return this->isSetAutoAxesFlag (AAFRAME); }
 
-boolean ImageNode::isSetAutoAxesGrid ()
+bool ImageNode::isSetAutoAxesGrid ()
 { return this->isSetAutoAxesFlag (AAGRID); }
 
-boolean ImageNode::isSetAutoAxesAdjust ()
+bool ImageNode::isSetAutoAxesAdjust ()
 { return this->isSetAutoAxesFlag (AAADJUST); }
 
-void ImageNode::setAutoAxesFrame (boolean state, boolean send)
+void ImageNode::setAutoAxesFrame (bool state, bool send)
 { this->setAutoAxesFlag (AAFRAME, state, send); }
 
-void ImageNode::setAutoAxesGrid (boolean state, boolean send)
+void ImageNode::setAutoAxesGrid (bool state, bool send)
 { this->setAutoAxesFlag (AAGRID, state, send); }
 
-void ImageNode::setAutoAxesAdjust (boolean state, boolean send)
+void ImageNode::setAutoAxesAdjust (bool state, bool send)
 { this->setAutoAxesFlag (AAADJUST, state, send); }
 
-boolean ImageNode::isSetAutoAxesFlag(int index)
+bool ImageNode::isSetAutoAxesFlag(int index)
 {
     const char* v = this->getInputValueString(index);
-    if (!v) return FALSE;
-    if (EqualString(v,"NULL")) return FALSE;
+    if (!v) return false;
+    if (EqualString(v,"NULL")) return false;
 
     int val = 0;
-    if (!sscanf(v,"%d",&val)) return FALSE;
-    if (!val) return FALSE;
-    return TRUE;
+    if (!sscanf(v,"%d",&val)) return false;
+    if (!val) return false;
+    return true;
 }
 
-void ImageNode::setAutoAxesFlag (int index, boolean state, boolean send)
+void ImageNode::setAutoAxesFlag (int index, bool state, bool send)
 {
     if (state) this->setInputValue(index, "1", DXType::FlagType, send);
     else this->setInputValue(index, "0", DXType::FlagType, send);
@@ -340,53 +340,53 @@ void ImageNode::setAutoAxesFlag (int index, boolean state, boolean send)
 // C U R S O R   C U R S O R   C U R S O R   C U R S O R   C U R S O R   
 // C U R S O R   C U R S O R   C U R S O R   C U R S O R   C U R S O R   
 //
-boolean ImageNode::isAutoAxesCursorSet()
+bool ImageNode::isAutoAxesCursorSet()
 {
    return !EqualString(this->getInputValueString(AACURSOR),"NULL");
 }
 
-void ImageNode::unsetAutoAxesLabels(boolean send)
+void ImageNode::unsetAutoAxesLabels(bool send)
 {
     this->useDefaultInputValue (AALABELS, send);
 }
 
-void ImageNode::unsetAutoAxesLabelScale(boolean send)
+void ImageNode::unsetAutoAxesLabelScale(bool send)
 {
     this->useDefaultInputValue (AALABELSCALE, send);
 }
 
-void ImageNode::unsetAutoAxesFont(boolean send)
+void ImageNode::unsetAutoAxesFont(bool send)
 {
     this->useDefaultInputValue (AAFONT, send);
 }
 
-void ImageNode::unsetAutoAxesCursor(boolean send)
+void ImageNode::unsetAutoAxesCursor(bool send)
 {
 //    this->setInputValue(AACURSOR,"NULL", DXType::VectorType, send);
     this->useDefaultInputValue (AACURSOR, send);
 }
 
-void ImageNode::unsetAutoAxesEnable(boolean send)
+void ImageNode::unsetAutoAxesEnable(bool send)
 {
     this->useDefaultInputValue (AAENABLE, send);
 }
 
-void ImageNode::unsetAutoAxesFrame(boolean send)
+void ImageNode::unsetAutoAxesFrame(bool send)
 {
     this->useDefaultInputValue (AAFRAME, send);
 }
 
-void ImageNode::unsetAutoAxesGrid(boolean send)
+void ImageNode::unsetAutoAxesGrid(bool send)
 {
     this->useDefaultInputValue (AAGRID, send);
 }
 
-void ImageNode::unsetAutoAxesAdjust(boolean send)
+void ImageNode::unsetAutoAxesAdjust(bool send)
 {
     this->useDefaultInputValue (AAADJUST, send);
 }
 
-void ImageNode::setAutoAxesCursor (double x, double y, double z, boolean send)
+void ImageNode::setAutoAxesCursor (double x, double y, double z, bool send)
 {
     char buf[512];
     sprintf (buf, "[ %f %f %f ]", x,y,z);
@@ -424,23 +424,23 @@ void ImageNode::getAutoAxesCursor (double *x, double *y, double *z)
 // C O R N E R S  C O R N E R S  C O R N E R S  C O R N E R S  C O R N E R S
 // C O R N E R S  C O R N E R S  C O R N E R S  C O R N E R S  C O R N E R S
 //
-void ImageNode::disableAutoAxesCorners(boolean send)
+void ImageNode::disableAutoAxesCorners(bool send)
 {
    this->useDefaultInputValue(AACORNERS,send);
 }
 
-boolean ImageNode::isAutoAxesCornersSet()
+bool ImageNode::isAutoAxesCornersSet()
 {
    return !EqualString(this->getInputValueString(AACORNERS),"NULL");
 }
 
-void ImageNode::unsetAutoAxesCorners(boolean send)
+void ImageNode::unsetAutoAxesCorners(bool send)
 {
 //    this->setInputValue(AACORNERS,"NULL", DXType::VectorListType, send);
     this->useDefaultInputValue (AACORNERS, send);
 }
 
-void ImageNode::setAutoAxesCorners(double dval[], boolean send)
+void ImageNode::setAutoAxesCorners(double dval[], bool send)
 {
     char buf[1024];   
     sprintf (buf, "{[ %f %f %f ] [ %f %f %f ]}", 
@@ -499,28 +499,28 @@ void ImageNode::getAutoAxesCorners(double dval[])
 // S T R I N G L I S T   S T R I N G L I S T   S T R I N G L I S T   
 // S T R I N G L I S T   S T R I N G L I S T   S T R I N G L I S T   
 //
-boolean ImageNode::isAutoAxesLabelsSet ()
+bool ImageNode::isAutoAxesLabelsSet ()
 { return this->isAutoAxesStringListSet (AALABELS); }
 
 int ImageNode::getAutoAxesLabels (char *sval[])
 { return this->getAutoAxesStringList (AALABELS, sval); }
 
-boolean ImageNode::isAutoAxesAnnotationSet()
+bool ImageNode::isAutoAxesAnnotationSet()
 { return this->isAutoAxesStringListSet (AAANNOTATION); }
 
 int ImageNode::getAutoAxesAnnotation (char *sval[])
 { return this->getAutoAxesStringList (AAANNOTATION, sval); }
 
-boolean ImageNode::isAutoAxesColorsSet ()
+bool ImageNode::isAutoAxesColorsSet ()
 { return this->isAutoAxesStringListSet (AACOLORS); }
 
-boolean ImageNode::isAutoAxesXTickLabelsSet ()
+bool ImageNode::isAutoAxesXTickLabelsSet ()
 { return this->isAutoAxesStringListSet (AA_XTICK_LABELS); }
 
-boolean ImageNode::isAutoAxesYTickLabelsSet ()
+bool ImageNode::isAutoAxesYTickLabelsSet ()
 { return this->isAutoAxesStringListSet (AA_YTICK_LABELS); }
 
-boolean ImageNode::isAutoAxesZTickLabelsSet ()
+bool ImageNode::isAutoAxesZTickLabelsSet ()
 { return this->isAutoAxesStringListSet (AA_ZTICK_LABELS); }
 
 int ImageNode::getAutoAxesColors (char *colors[])
@@ -535,40 +535,40 @@ int ImageNode::getAutoAxesYTickLabels (char *labels[])
 int ImageNode::getAutoAxesZTickLabels (char *labels[])
 { return this->getAutoAxesStringList (AA_ZTICK_LABELS, labels); }
 
-void ImageNode::setAutoAxesLabels (char *value, boolean send)
+void ImageNode::setAutoAxesLabels (char *value, bool send)
 { this->setAutoAxesStringList (AALABELS, value, send); }
 
-void ImageNode::setAutoAxesAnnotation (char *value, boolean send)
+void ImageNode::setAutoAxesAnnotation (char *value, bool send)
 { this->setAutoAxesStringList (AAANNOTATION, value, send); }
 
-void ImageNode::setAutoAxesColors (char *colors, boolean send)
+void ImageNode::setAutoAxesColors (char *colors, bool send)
 { this->setAutoAxesStringList (AACOLORS, colors, send); }
 
-void ImageNode::setAutoAxesXTickLabels (char *labels, boolean send)
+void ImageNode::setAutoAxesXTickLabels (char *labels, bool send)
 { this->setAutoAxesStringList (AA_XTICK_LABELS, labels, send); }
 
-void ImageNode::setAutoAxesYTickLabels (char *labels, boolean send)
+void ImageNode::setAutoAxesYTickLabels (char *labels, bool send)
 { this->setAutoAxesStringList (AA_YTICK_LABELS, labels, send); }
 
-void ImageNode::setAutoAxesZTickLabels (char *labels, boolean send)
+void ImageNode::setAutoAxesZTickLabels (char *labels, bool send)
 { this->setAutoAxesStringList (AA_ZTICK_LABELS, labels, send); }
 
-void ImageNode::unsetAutoAxesAnnotation (boolean send)
+void ImageNode::unsetAutoAxesAnnotation (bool send)
 { this->unsetAutoAxesStringList (AAANNOTATION, send); }
 
-void ImageNode::unsetAutoAxesColors (boolean send)
+void ImageNode::unsetAutoAxesColors (bool send)
 { this->unsetAutoAxesStringList (AACOLORS, send); }
 
-void ImageNode::unsetAutoAxesXTickLabels (boolean send)
+void ImageNode::unsetAutoAxesXTickLabels (bool send)
 { this->unsetAutoAxesStringList (AA_XTICK_LABELS, send); }
 
-void ImageNode::unsetAutoAxesYTickLabels (boolean send)
+void ImageNode::unsetAutoAxesYTickLabels (bool send)
 { this->unsetAutoAxesStringList (AA_YTICK_LABELS, send); }
 
-void ImageNode::unsetAutoAxesZTickLabels (boolean send)
+void ImageNode::unsetAutoAxesZTickLabels (bool send)
 { this->unsetAutoAxesStringList (AA_ZTICK_LABELS, send); }
 
-boolean ImageNode::isAutoAxesStringListSet(int index)
+bool ImageNode::isAutoAxesStringListSet(int index)
 {
     const char *v = this->getInputValueString(index);
     return !EqualString(v,"NULL");
@@ -614,12 +614,12 @@ int ImageNode::getAutoAxesStringList (int index, char *sval[])
 }
 
 
-void ImageNode::setAutoAxesStringList (int index, char *value, boolean send)
+void ImageNode::setAutoAxesStringList (int index, char *value, bool send)
 {
     this->setInputValue(index, value, DXType::StringListType, send);
 }
 
-void ImageNode::unsetAutoAxesStringList(int index, boolean send)
+void ImageNode::unsetAutoAxesStringList(int index, bool send)
 {
 //    this->setInputValue(index,"NULL", DXType::StringListType, send);
     this->useDefaultInputValue (index, send);
@@ -629,22 +629,22 @@ void ImageNode::unsetAutoAxesStringList(int index, boolean send)
 // T I C K S   T I C K S   T I C K S   T I C K S   T I C K S   T I C K S   
 // T I C K S   T I C K S   T I C K S   T I C K S   T I C K S   T I C K S   
 //
-boolean ImageNode::isAutoAxesTicksSet()
+bool ImageNode::isAutoAxesTicksSet()
 {
    return !EqualString(this->getInputValueString(AATICKS),"NULL");
 }
 
-boolean ImageNode::isAutoAxesXTickLocsSet()
+bool ImageNode::isAutoAxesXTickLocsSet()
 {
    return !EqualString(this->getInputValueString(AA_XTICK_LOCS),"NULL");
 }
 
-boolean ImageNode::isAutoAxesYTickLocsSet()
+bool ImageNode::isAutoAxesYTickLocsSet()
 {
    return !EqualString(this->getInputValueString(AA_YTICK_LOCS),"NULL");
 }
 
-boolean ImageNode::isAutoAxesZTickLocsSet()
+bool ImageNode::isAutoAxesZTickLocsSet()
 {
    return !EqualString(this->getInputValueString(AA_ZTICK_LOCS),"NULL");
 }
@@ -822,25 +822,25 @@ void ImageNode::getAutoAxesZTickLocs (double **t, int *size)
 }
 
 
-void ImageNode::setAutoAxesTicks (int t1, int t2, int t3, boolean send)
+void ImageNode::setAutoAxesTicks (int t1, int t2, int t3, bool send)
 {
 char buf[128];
     sprintf (buf, "{ %d %d %d }", t1, t2, t3);
     this->setInputValue(AATICKS,buf, DXType::IntegerListType, send);
 }
 
-void ImageNode::setAutoAxesTicks (int t, boolean send)
+void ImageNode::setAutoAxesTicks (int t, bool send)
 {
 char buf[32];
     sprintf (buf, "%d", t);
     this->setInputValue(AATICKS,buf, DXType::IntegerType, send);
 }
 
-void ImageNode::setAutoAxesXTickLocs (double *t, int size, boolean send)
+void ImageNode::setAutoAxesXTickLocs (double *t, int size, bool send)
 {
     this->setAutoAxesTickLocs (AA_XTICK_LOCS, t, size, send);
 }
-void ImageNode::setAutoAxesTickLocs (int param, double *t, int size, boolean send)
+void ImageNode::setAutoAxesTickLocs (int param, double *t, int size, bool send)
 {
     if (!size)
 	this->setInputValue(param, "NULL", DXType::ScalarListType, send);
@@ -867,57 +867,57 @@ void ImageNode::setAutoAxesTickLocs (int param, double *t, int size, boolean sen
     }
 }
 
-void ImageNode::setAutoAxesYTickLocs (double *t, int size, boolean send)
+void ImageNode::setAutoAxesYTickLocs (double *t, int size, bool send)
 {
     this->setAutoAxesTickLocs (AA_YTICK_LOCS, t, size, send);
 }
 
-void ImageNode::setAutoAxesZTickLocs (double *t, int size, boolean send)
+void ImageNode::setAutoAxesZTickLocs (double *t, int size, bool send)
 {
     this->setAutoAxesTickLocs (AA_ZTICK_LOCS, t, size, send);
 }
 
-void ImageNode::unsetAutoAxesTicks (boolean send)
+void ImageNode::unsetAutoAxesTicks (bool send)
 {
     this->useDefaultInputValue (AATICKS, send);
 }
 
-void ImageNode::unsetAutoAxesXTickLocs (boolean send)
+void ImageNode::unsetAutoAxesXTickLocs (bool send)
 {
     this->useDefaultInputValue (AA_XTICK_LOCS, send);
 }
 
-void ImageNode::unsetAutoAxesYTickLocs (boolean send)
+void ImageNode::unsetAutoAxesYTickLocs (bool send)
 {
     this->useDefaultInputValue (AA_YTICK_LOCS, send);
 }
 
-void ImageNode::unsetAutoAxesZTickLocs (boolean send)
+void ImageNode::unsetAutoAxesZTickLocs (bool send)
 {
     this->useDefaultInputValue (AA_ZTICK_LOCS, send);
 }
 
-void ImageNode::unsetRecordResolution (boolean send)
+void ImageNode::unsetRecordResolution (bool send)
 {
     this->useDefaultInputValue (RECRESOLUTION, send);
 }
 
-void ImageNode::unsetRecordAspect (boolean send)
+void ImageNode::unsetRecordAspect (bool send)
 {
     this->useDefaultInputValue (RECASPECT, send);
 }
 
-void ImageNode::unsetRecordFormat (boolean send)
+void ImageNode::unsetRecordFormat (bool send)
 {
     this->useDefaultInputValue (RECFORMAT, send);
 }
 
-void ImageNode::unsetRecordFile (boolean send)
+void ImageNode::unsetRecordFile (bool send)
 {
     this->useDefaultInputValue (RECFILE, send);
 }
 
-void ImageNode::unsetRecordEnable (boolean send)
+void ImageNode::unsetRecordEnable (bool send)
 {
     this->useDefaultInputValue (RECENABLE, send);
 }
@@ -926,26 +926,26 @@ void ImageNode::unsetRecordEnable (boolean send)
 // S T R I N G   S T R I N G   S T R I N G   S T R I N G   S T R I N G   
 // S T R I N G   S T R I N G   S T R I N G   S T R I N G   S T R I N G   
 //
-boolean ImageNode::isAutoAxesFontSet ()
+bool ImageNode::isAutoAxesFontSet ()
 { return this->isAutoAxesStringSet (AAFONT); }
 
 int ImageNode::getAutoAxesFont (char *sval)
 { return this->getAutoAxesString (AAFONT, sval); }
 
-void ImageNode::setAutoAxesFont (char *value, boolean send)
+void ImageNode::setAutoAxesFont (char *value, bool send)
 { this->setAutoAxesString (AAFONT, value, send); }
 
-boolean ImageNode::isAutoAxesStringSet(int index)
+bool ImageNode::isAutoAxesStringSet(int index)
 {
    return !EqualString(this->getInputValueString(index),"NULL");
 }
 
-void ImageNode::setAutoAxesString (int index, char *value, boolean send)
+void ImageNode::setAutoAxesString (int index, char *value, bool send)
 {
     this->setInputValue(index, value, DXType::StringType, send);
 }
 
-void ImageNode::unsetAutoAxesString (int index, boolean send)
+void ImageNode::unsetAutoAxesString (int index, bool send)
 {
     this->setInputValue(index, "NULL", DXType::StringType, send);
 }
@@ -967,7 +967,7 @@ const char *v = this->getInputValueString(index);
 int ImageNode::getAutoAxesEnable()
 { return this->getAutoAxesInteger (AAENABLE); }
 
-void ImageNode::setAutoAxesEnable(int d, boolean send)
+void ImageNode::setAutoAxesEnable(int d, bool send)
 { this->setAutoAxesInteger (AAENABLE, d, send); }
 
 int ImageNode::getAutoAxesInteger(int index)
@@ -981,7 +981,7 @@ int ImageNode::getAutoAxesInteger(int index)
     return val;
 }
 
-void ImageNode::setAutoAxesInteger (int index, int d, boolean send)
+void ImageNode::setAutoAxesInteger (int index, int d, bool send)
 {
 char buf[64];
     sprintf (buf, "%d", d);
@@ -994,41 +994,41 @@ char buf[64];
 // D O U B L E   D O U B L E   D O U B L E   D O U B L E   D O U B L E   
 // D O U B L E   D O U B L E   D O U B L E   D O U B L E   D O U B L E   
 //
-boolean ImageNode::isAutoAxesLabelScaleSet()
+bool ImageNode::isAutoAxesLabelScaleSet()
 { return this->isAutoAxesDoubleSet (AALABELSCALE); }
 
 double ImageNode::getAutoAxesLabelScale ()
 { return this->getAutoAxesDouble (AALABELSCALE); }
 
-void ImageNode::setAutoAxesLabelScale (double d, boolean send)
+void ImageNode::setAutoAxesLabelScale (double d, bool send)
 { this->setAutoAxesDouble (AALABELSCALE, d, send); }
 
-boolean ImageNode::isAutoAxesDoubleSet(int index)
+bool ImageNode::isAutoAxesDoubleSet(int index)
 {
    return !EqualString(this->getInputValueString(index),"NULL");
 }
 
-boolean ImageNode::isRenderModeSet()
+bool ImageNode::isRenderModeSet()
 {
     return !this->isInputDefaulting(RENDER_MODE);
 }
 
-boolean ImageNode::isButtonUpApproxSet()
+bool ImageNode::isButtonUpApproxSet()
 {
     return !this->isInputDefaulting(BUTTON_UP_APPROX);
 }
 
-boolean ImageNode::isButtonDownApproxSet()
+bool ImageNode::isButtonDownApproxSet()
 {
     return !this->isInputDefaulting(BUTTON_DOWN_APPROX);
 }
 
-boolean ImageNode::isButtonUpDensitySet()
+bool ImageNode::isButtonUpDensitySet()
 {
     return !this->isInputDefaulting(BUTTON_UP_DENSITY);
 }
 
-boolean ImageNode::isButtonDownDensitySet()
+bool ImageNode::isButtonDownDensitySet()
 {
     return !this->isInputDefaulting(BUTTON_DOWN_DENSITY);
 }
@@ -1044,7 +1044,7 @@ double ImageNode::getAutoAxesDouble(int index)
     return val;
 }
 
-void ImageNode::setAutoAxesDouble (int index, double d, boolean send)
+void ImageNode::setAutoAxesDouble (int index, double d, bool send)
 {
 char buf[64];
     sprintf (buf, "%f", d);
@@ -1054,128 +1054,128 @@ char buf[64];
 
 
 
-boolean ImageNode::isAutoAxesEnableConnected ()
+bool ImageNode::isAutoAxesEnableConnected ()
 {
     return this->isInputConnected(AAENABLE);
 }
-boolean ImageNode::isAutoAxesCornersConnected ()
+bool ImageNode::isAutoAxesCornersConnected ()
 {
     return this->isInputConnected(AACORNERS);
 }
-boolean ImageNode::isAutoAxesCursorConnected ()
+bool ImageNode::isAutoAxesCursorConnected ()
 {
     return this->isInputConnected(AACURSOR);
 }
-boolean ImageNode::isAutoAxesFrameConnected ()
+bool ImageNode::isAutoAxesFrameConnected ()
 {
     return this->isInputConnected(AAFRAME);
 }
-boolean ImageNode::isAutoAxesGridConnected ()
+bool ImageNode::isAutoAxesGridConnected ()
 {
     return this->isInputConnected(AAGRID);
 }
-boolean ImageNode::isAutoAxesAdjustConnected ()
+bool ImageNode::isAutoAxesAdjustConnected ()
 {
     return this->isInputConnected(AAADJUST);
 }
-boolean ImageNode::isAutoAxesAnnotationConnected ()
+bool ImageNode::isAutoAxesAnnotationConnected ()
 {
     return this->isInputConnected(AAANNOTATION);
 }
-boolean ImageNode::isAutoAxesLabelsConnected ()
+bool ImageNode::isAutoAxesLabelsConnected ()
 {
     return this->isInputConnected(AALABELS);
 }
-boolean ImageNode::isAutoAxesColorsConnected ()
+bool ImageNode::isAutoAxesColorsConnected ()
 {
     return this->isInputConnected(AACOLORS);
 }
-boolean ImageNode::isAutoAxesFontConnected ()
+bool ImageNode::isAutoAxesFontConnected ()
 {
     return this->isInputConnected(AAFONT);
 }
-boolean ImageNode::isAutoAxesTicksConnected ()
+bool ImageNode::isAutoAxesTicksConnected ()
 {
     return this->isInputConnected(AATICKS);
 }
-boolean ImageNode::isAutoAxesXTickLocsConnected ()
+bool ImageNode::isAutoAxesXTickLocsConnected ()
 {
     return this->isInputConnected(AA_XTICK_LOCS);
 }
-boolean ImageNode::isAutoAxesYTickLocsConnected ()
+bool ImageNode::isAutoAxesYTickLocsConnected ()
 {
     return this->isInputConnected(AA_YTICK_LOCS);
 }
-boolean ImageNode::isAutoAxesZTickLocsConnected ()
+bool ImageNode::isAutoAxesZTickLocsConnected ()
 {
     return this->isInputConnected(AA_ZTICK_LOCS);
 }
-boolean ImageNode::isAutoAxesXTickLabelsConnected ()
+bool ImageNode::isAutoAxesXTickLabelsConnected ()
 {
     return this->isInputConnected(AA_XTICK_LABELS);
 }
-boolean ImageNode::isAutoAxesYTickLabelsConnected ()
+bool ImageNode::isAutoAxesYTickLabelsConnected ()
 {
     return this->isInputConnected(AA_YTICK_LABELS);
 }
-boolean ImageNode::isAutoAxesZTickLabelsConnected ()
+bool ImageNode::isAutoAxesZTickLabelsConnected ()
 {
     return this->isInputConnected(AA_ZTICK_LABELS);
 }
-boolean ImageNode::isAutoAxesLabelScaleConnected ()
+bool ImageNode::isAutoAxesLabelScaleConnected ()
 {
     return this->isInputConnected(AALABELSCALE);
 }
-boolean ImageNode::isBGColorConnected()
+bool ImageNode::isBGColorConnected()
 {
     return this->isInputConnected(BACKGROUND);
 }
-boolean ImageNode::isThrottleConnected()
+bool ImageNode::isThrottleConnected()
 {
     return this->isInputConnected(THROTTLE);
 }
-boolean ImageNode::isRecordEnableConnected()
+bool ImageNode::isRecordEnableConnected()
 {
     return this->isInputConnected(RECENABLE);
 }
-boolean ImageNode::isRecordFileConnected()
+bool ImageNode::isRecordFileConnected()
 {
     return this->isInputConnected(RECFILE);
 }
-boolean ImageNode::isRecordFormatConnected()
+bool ImageNode::isRecordFormatConnected()
 {
     return this->isInputConnected(RECFORMAT);
 }
-boolean ImageNode::isRecordResolutionConnected()
+bool ImageNode::isRecordResolutionConnected()
 {
     return this->isInputConnected(RECRESOLUTION);
 }
-boolean ImageNode::isRecordAspectConnected()
+bool ImageNode::isRecordAspectConnected()
 {
     return this->isInputConnected(RECASPECT);
 }
-boolean ImageNode::isInteractionModeConnected()
+bool ImageNode::isInteractionModeConnected()
 {
     return this->isInputConnected(INTERACTIONMODE);
 }
 
-boolean ImageNode::isRenderModeConnected()
+bool ImageNode::isRenderModeConnected()
 {
     return this->isInputConnected(RENDER_MODE);
 }
-boolean ImageNode::isButtonUpApproxConnected()
+bool ImageNode::isButtonUpApproxConnected()
 {
     return this->isInputConnected(BUTTON_UP_APPROX);
 }
-boolean ImageNode::isButtonDownApproxConnected()
+bool ImageNode::isButtonDownApproxConnected()
 {
     return this->isInputConnected(BUTTON_DOWN_APPROX);
 }
-boolean ImageNode::isButtonUpDensityConnected()
+bool ImageNode::isButtonUpDensityConnected()
 {
     return this->isInputConnected(BUTTON_UP_DENSITY);
 }
-boolean ImageNode::isButtonDownDensityConnected()
+bool ImageNode::isButtonDownDensityConnected()
 {
     return this->isInputConnected(BUTTON_DOWN_DENSITY);
 }
@@ -1185,71 +1185,71 @@ boolean ImageNode::isButtonDownDensityConnected()
  * These tell us whether the view control dialog and image name dialog
  * should be disabled - tab down but not connected.
  */
-boolean ImageNode::isViewControlInputSet()
+bool ImageNode::isViewControlInputSet()
 {
     return this->isInputDefaulting(INTERACTIONMODE);
 }
 
-boolean ImageNode::isImageNameInputSet()
+bool ImageNode::isImageNameInputSet()
 {
     return this->isInputDefaulting(IMAGENAME);
 }
 
-boolean ImageNode::isRecordEnableSet()
+bool ImageNode::isRecordEnableSet()
 {
     return !this->isInputDefaulting(RECENABLE);
 }
 
-boolean ImageNode::isRecordFileSet()
+bool ImageNode::isRecordFileSet()
 {
     return !this->isInputDefaulting(RECFILE);
 }
 
-boolean ImageNode::isRecordFormatSet()
+bool ImageNode::isRecordFormatSet()
 {
     return !this->isInputDefaulting(RECFORMAT);
 }
 
-boolean ImageNode::isRecordResolutionSet()
+bool ImageNode::isRecordResolutionSet()
 {
     return !this->isInputDefaulting(RECRESOLUTION);
 }
 
-boolean ImageNode::isRecordAspectSet()
+bool ImageNode::isRecordAspectSet()
 {
     return !this->isInputDefaulting(RECASPECT);
 }
 
-boolean ImageNode::isRecFileInputSet()
+bool ImageNode::isRecFileInputSet()
 {
 #if 0
     return this->isInputDefaulting(RECENABLE) ||
 	   this->isInputDefaulting(RECFILE)   ||
 	   this->isInputDefaulting(RECFORMAT);
 #else
-    return TRUE;
+    return true;
 #endif
 
 }
 
 
 
-boolean ImageNode::SendString(void* callbackData, PacketIFCallback cb, FILE* f, char* s, boolean viasocket) 
+bool ImageNode::SendString(void* callbackData, PacketIFCallback cb, FILE* f, char* s, bool viasocket) 
 { 
     char *_s = s;
     if (!viasocket) {
 	if (fputs(_s, f) < 0)
-	    return FALSE;
+	    return false;
 	if (cb)
 	    (*cb)(callbackData, _s);
     } else {
 	DXPacketIF* pif = theDXApplication->getPacketIF();
 	pif->sendBytes(_s);
     }
-    return TRUE;
+    return true;
 }
 
-void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, char* mac[], boolean viasocket)
+void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, char* mac[], bool viasocket)
 {
     int i = 0;
 #   define FMBUFSIZE 90
@@ -1282,12 +1282,12 @@ void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, char* mac[
     }
 }
 
-boolean ImageNode::sendMacro(DXPacketIF *pif)
+bool ImageNode::sendMacro(DXPacketIF *pif)
 {
     void *cbdata;
     PacketIFCallback cb = pif->getEchoCallback(&cbdata);
     FILE* f = pif->getFILE();
-    boolean viasocket = TRUE;
+    bool viasocket = true;
 
     if (this->getNetwork()->isJavified()) {
 	pif->sendMacroStart();
@@ -1304,17 +1304,17 @@ boolean ImageNode::sendMacro(DXPacketIF *pif)
     }
 
     pif->sendMacroStart();
-    boolean sts = this->printMacro(pif->getFILE(), cb, cbdata, TRUE);
+    bool sts = this->printMacro(pif->getFILE(), cb, cbdata, true);
     pif->sendMacroEnd();
 
     return sts;
 }
 
 
-boolean ImageNode::printMacro(FILE *f,
+bool ImageNode::printMacro(FILE *f,
 			      PacketIFCallback cb,
                                void *cbdata,
-                               boolean viasocket)
+                               bool viasocket)
 
 {
 
@@ -1843,7 +1843,7 @@ boolean ImageNode::printMacro(FILE *f,
 	SendString(cbd, cb, f, "}\n", viasocket);
     }
 
-    return TRUE;
+    return true;
 
 }
 

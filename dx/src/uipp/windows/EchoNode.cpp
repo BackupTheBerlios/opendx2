@@ -37,7 +37,7 @@ void EchoNode::execModuleMessageHandler(int id, const char *line)
 
     if (p) {
         MsgWin *mw = theDXApplication->getMessageWindow();
-	if (theDXApplication->doesInfoOpenMessage(TRUE))
+	if (theDXApplication->doesInfoOpenMessage(true))
 	    mw->infoOpen();
 	mw->addInformation(p);
     }
@@ -46,7 +46,7 @@ void EchoNode::execModuleMessageHandler(int id, const char *line)
 //
 // Returns a string that is used to register
 // this->ExecModuleMessageHandler() when this->hasModuleMessageProtocol()
-// return TRUE.  This version, returns an id that is unique to this
+// return true.  This version, returns an id that is unique to this
 // instance of this node.
 //
 const char *EchoNode::getModuleMessageIdString()
@@ -60,11 +60,11 @@ const char *EchoNode::getModuleMessageIdString()
 //
 // Determine if this node is of the given class.
 //
-boolean EchoNode::isA(Symbol classname)
+bool EchoNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassEchoNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ModuleMessagingNode::isA(classname);
 }

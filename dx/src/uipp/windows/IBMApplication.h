@@ -73,7 +73,7 @@ class IBMApplication : public BaseApp
     //
     // Initialize the window system.
     //
-    virtual boolean initializeWindowSystem(unsigned int *argcp, char **argv);
+    virtual bool initializeWindowSystem(unsigned int *argcp, char **argv);
 
     //
     // Protected member data:
@@ -84,7 +84,7 @@ class IBMApplication : public BaseApp
 
     HelpWin		*helpWindow;
 
-    boolean initialize(unsigned int* argcp, char** argv);
+    bool initialize(unsigned int* argcp, char** argv);
 
     //
     // Load application specific action routines
@@ -135,11 +135,10 @@ class IBMApplication : public BaseApp
     Command		*genericHelpCmd;
     Command		*helpTutorialCmd;
 
-    const char *getUIRoot()
-    {
-//	return this->resource.UIRoot;
-		return "Fixme:";
-    }
+	const char *getUIRoot()
+	{
+		return this->resource.UIRoot;
+	}
 
     //
     // Displays any help required.
@@ -149,7 +148,7 @@ class IBMApplication : public BaseApp
     //
     // Start the tutorial on behalf of the application.
     //
-    virtual boolean startTutorial();
+    virtual bool startTutorial();
 
     //
     // Get the command string that will start the tutorial.
@@ -159,7 +158,7 @@ class IBMApplication : public BaseApp
     //
     // Get the Logo pixmap
     //
-    //virtual Pixmap getLogoPixmap(boolean create_if_necessary=FALSE);
+    //virtual Pixmap getLogoPixmap(bool create_if_necessary=false);
     virtual void cleanupLogo();
 
     //
@@ -193,11 +192,11 @@ class IBMApplication : public BaseApp
     //
     // W I Z A R D S     W I Z A R D S     W I Z A R D S
     // W I Z A R D S     W I Z A R D S     W I Z A R D S
-    // inWizardMode() is virtual because GAR wants to default to TRUE instead of
-    // FALSE.  The command line arg has the ability only to turn on the value.
+    // inWizardMode() is virtual because GAR wants to default to true instead of
+    // false.  The command line arg has the ability only to turn on the value.
     //
-    virtual 	boolean inWizardMode() { return this->resource.wizard; }
-    boolean 	isWizardWindow(const char* wiz_name);
+    virtual 	bool inWizardMode() { return this->resource.wizard; }
+    bool 	isWizardWindow(const char* wiz_name);
     void 	appendNoWizardName(const char* nowiz_name);
 
     //
@@ -205,7 +204,7 @@ class IBMApplication : public BaseApp
     // DX.width: 300x500 into $HOME/DX
     //
     void printResource (const char* resource, const char* value);
-    virtual boolean getApplicationDefaultsFileName(char* res_file, boolean create=FALSE);
+    virtual bool getApplicationDefaultsFileName(char* res_file, bool create=false);
 
     //
     // Returns a pointer to the class name.
@@ -216,7 +215,7 @@ class IBMApplication : public BaseApp
     }
 
     //	Get Temp. directory
-    const char *getTmpDirectory(boolean bList = FALSE);
+    const char *getTmpDirectory(bool bList = false);
 };
 
 extern IBMApplication *theIBMApplication;

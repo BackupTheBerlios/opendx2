@@ -22,7 +22,7 @@ class ResourceManager : public Base
 	Dictionary resources;
 	List multi_valued;
 	char* tmp;
-	boolean write_protection_complaint;
+	bool write_protection_complaint;
     protected:
 	ResourceManager();
 	void saveListResource(Symbol key);

@@ -16,9 +16,9 @@
 
 ColormapFileCommand::ColormapFileCommand(const char*   name,
                          CommandScope*   scope,
-                         boolean         active,
+                         bool         active,
                          ColormapEditor* editor,
-			 boolean	opening) 
+			 bool	opening) 
  			:NoUndoCommand(name,scope,active)	
 {
     this->editor = editor;
@@ -31,9 +31,9 @@ ColormapFileCommand::~ColormapFileCommand()
 }
 
 
-boolean ColormapFileCommand::doIt(CommandInterface *ci)
+bool ColormapFileCommand::doIt(CommandInterface *ci)
 {
    editor->postOpenColormapDialog(this->opening);
-   return TRUE;
+   return true;
 }
 

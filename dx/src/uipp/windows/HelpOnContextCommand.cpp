@@ -13,13 +13,13 @@
 #include "MainWindow.h"
 
 
-boolean HelpOnContextCommand::HelpOnContextCommandClassInitialized = FALSE;
+bool HelpOnContextCommand::HelpOnContextCommandClassInitialized = false;
 //Cursor  HelpOnContextCommand::HelpCursor = NUL(Cursor);
 
 
 HelpOnContextCommand::HelpOnContextCommand(const char*   name,
 					   CommandScope* scope,
-					   boolean       active,
+					   bool       active,
 					   MainWindow*   window) :
 	NoUndoCommand(name, scope, active)
 {
@@ -31,14 +31,14 @@ HelpOnContextCommand::HelpOnContextCommand(const char*   name,
 	//HelpOnContextCommand::HelpCursor =
 	//    XCreateFontCursor(theApplication->getDisplay(), XC_question_arrow);
 
-	//HelpOnContextCommand::HelpOnContextCommandClassInitialized = TRUE;
+	//HelpOnContextCommand::HelpOnContextCommandClassInitialized = true;
  //   }
 
  //   this->window = window;
 }
 
 
-boolean HelpOnContextCommand::doIt(CommandInterface *ci)
+bool HelpOnContextCommand::doIt(CommandInterface *ci)
 {
 //    Widget                       widget;
 //    MainWindowHelpCallbackStruct callData;
@@ -70,7 +70,7 @@ boolean HelpOnContextCommand::doIt(CommandInterface *ci)
 //	}
 //    }
 //
-    return TRUE;
+    return true;
 }
 
 

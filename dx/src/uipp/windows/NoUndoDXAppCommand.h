@@ -40,7 +40,7 @@ class NoUndoDXAppCommand : public NoUndoCommand
     DXApplication     *application;
     DXAppCommandType commandType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -48,7 +48,7 @@ class NoUndoDXAppCommand : public NoUndoCommand
     //
     NoUndoDXAppCommand(const char*   name,
                    CommandScope  *scope,
-                   boolean       active,
+                   bool       active,
 		   DXApplication *application,
 		   DXAppCommandType comType);
 

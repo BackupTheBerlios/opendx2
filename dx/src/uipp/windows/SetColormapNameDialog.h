@@ -37,7 +37,7 @@ class SetColormapNameDialog : public SetNameDialog
     // Private member data:
     //
     ColormapNode 	*colormapNode;
-    static boolean 	ClassInitialized;
+    static bool 	ClassInitialized;
 
   protected:
     //
@@ -47,7 +47,7 @@ class SetColormapNameDialog : public SetNameDialog
     //static String DefaultResources[];
 
     virtual const char *getText();
-    virtual boolean saveText(const char *s);
+    virtual bool saveText(const char *s);
 
     //
     // Install the default resources for this class and then call the

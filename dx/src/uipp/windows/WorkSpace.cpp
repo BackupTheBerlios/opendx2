@@ -60,16 +60,16 @@ WorkSpace::~WorkSpace()
 void WorkSpace::manage()
 {
  //    if (!this->getRootWidget())
-	//this->initializeRootWidget(FALSE);
+	//this->initializeRootWidget(false);
 
      this->UIComponent::manage();
 }
 
-void WorkSpace::initializeRootWidget(boolean fromFirstIntanceOfADerivedClass)
+void WorkSpace::initializeRootWidget(bool fromFirstIntanceOfADerivedClass)
 {
     //int              w, h, n;
     //Arg              warg[20];
-    //boolean	     prevent_overlap;
+    //bool	     prevent_overlap;
 
     //if (fromFirstIntanceOfADerivedClass) {
     //    ASSERT(theApplication);
@@ -300,7 +300,7 @@ void WorkSpace::installInfo(WorkSpaceInfo *new_info)
 {
     int n, w,h;
     //Arg warg[20];
-    boolean prevent_overlap;
+    bool prevent_overlap;
 
     if (new_info) {
 	this->info->disassociateWorkSpace();
@@ -357,8 +357,8 @@ void WorkSpace::endManyPlacements()
     //ASSERT(this->getRootWidget());
     this->activeManyPlacements--;
     //if (this->activeManyPlacements == 0) {
-	//boolean overlap = this->wasAllowOverlap;
-	//boolean drawing = this->wasLineDrawingEnabled;
+	//bool overlap = this->wasAllowOverlap;
+	//bool drawing = this->wasLineDrawingEnabled;
 	//if (this->getRootWidget())
 	//    XtVaSetValues(this->getRootWidget(),
 	//	XmNlineDrawingEnabled, drawing,
@@ -369,11 +369,11 @@ void WorkSpace::endManyPlacements()
 
 void WorkSpace::setPlacementCount(int count)
 {
-    boolean active = (count==0);
-    boolean was_active = (this->activeManyPlacements==0);
+    bool active = (count==0);
+    bool was_active = (this->activeManyPlacements==0);
  //   if (active != was_active) {
-	//boolean overlap = (active?this->wasAllowOverlap:true);
-	//boolean drawing = (active?this->wasLineDrawingEnabled:false);
+	//bool overlap = (active?this->wasAllowOverlap:true);
+	//bool drawing = (active?this->wasLineDrawingEnabled:false);
 	//if (this->getRootWidget())
 	//    XtVaSetValues(this->getRootWidget(),
 	//	XmNlineDrawingEnabled, drawing,
@@ -454,7 +454,7 @@ void WorkSpace::resize()
 //
 void WorkSpace::saveWorkSpaceParams(WorkSpace *ws)
 {
-    boolean overlap, drawing, manhattan;
+    bool overlap, drawing, manhattan;
 
     if (ws) {
 	this->wasAllowOverlap = ws->wasAllowOverlap;
@@ -480,7 +480,7 @@ void WorkSpace::saveWorkSpaceParams(WorkSpace *ws)
     }
 }
 
-boolean WorkSpace::isEmpty (int x, int y, int width, int height)
+bool WorkSpace::isEmpty (int x, int y, int width, int height)
 {
     //return XmWorkspaceRectangleEmpty (this->getRootWidget(), x,y,width,height);
 	return false;

@@ -35,14 +35,14 @@ NodeDefinition::NodeDefinition()
     this-> nodeInstanceNumbers = 0; 
     this->description = NUL(char*); 
     this->input_repeats = this->output_repeats = 0; 
-    this->writeableCacheability = TRUE;
+    this->writeableCacheability = true;
     this->defaultCacheability = ModuleFullyCached;
     this->mdf_flags = 0;
     this->loadFile = NULL;
     this->outboardHost = NULL;
     this->outboardCommand = NULL;
-    this->userTool = TRUE;
-    this->uiLoadedOnly = FALSE;	
+    this->userTool = true;
+    this->uiLoadedOnly = false;	
 }
 NodeDefinition::~NodeDefinition()
 {
@@ -172,9 +172,9 @@ Node *NodeDefinition::createNewNode(Network *net, int inst)
 }
 
 
-boolean NodeDefinition::isDerivedFromMacro()
+bool NodeDefinition::isDerivedFromMacro()
 {
-    return FALSE;
+    return false;
 }
 //
 // Called once per new class (actually called on every new instance, but
@@ -248,8 +248,8 @@ void NodeDefinition::ResetInstanceNumbers(Dictionary *dict)
 char *NodeDefinition::getMDFString()
 {
     char *header  = this->getMDFHeaderString();
-    char *inputs  = this->getMDFParametersString(TRUE);
-    char *outputs = this->getMDFParametersString(FALSE);
+    char *inputs  = this->getMDFParametersString(true);
+    char *outputs = this->getMDFParametersString(false);
 
     ASSERT(header);
 
@@ -336,7 +336,7 @@ char *NodeDefinition::getMDFHeaderString()
 // Get the list of INPUT/OUTPUT lines in the MDF and the REPEAT if any
 // The returned string must be delete by the caller.
 //
-char *NodeDefinition::getMDFParametersString(boolean inputs)
+char *NodeDefinition::getMDFParametersString(bool inputs)
 {
 #define CHUNK 256
     char *params = NULL; 
@@ -385,84 +385,84 @@ char *NodeDefinition::getMDFParametersString(boolean inputs)
 #define MDF_REACH		0x80
 #define MDF_LOOP		0x100
 
-void NodeDefinition::setMDFFlag(boolean val, long flag)
+void NodeDefinition::setMDFFlag(bool val, long flag)
 {   
     if (val)
         this->mdf_flags |=  flag;
     else
         this->mdf_flags &=  ~flag;
 }
-void NodeDefinition::setMDFFlagERR_CONT(boolean val)
+void NodeDefinition::setMDFFlagERR_CONT(bool val)
 {
     this->setMDFFlag(val, MDF_ERR_CONT);
 }
-boolean NodeDefinition::isMDFFlagERR_CONT()
+bool NodeDefinition::isMDFFlagERR_CONT()
 {
-    return (this->mdf_flags & MDF_ERR_CONT) ? TRUE : FALSE ;
+    return (this->mdf_flags & MDF_ERR_CONT) ? true : false ;
 }
-void NodeDefinition::setMDFFlagSWITCH(boolean val )
+void NodeDefinition::setMDFFlagSWITCH(bool val )
 {
     this->setMDFFlag(val, MDF_SWITCH);
 }
-boolean NodeDefinition::isMDFFlagSWITCH()
+bool NodeDefinition::isMDFFlagSWITCH()
 {
-    return (this->mdf_flags & MDF_SWITCH) ? TRUE : FALSE ;
+    return (this->mdf_flags & MDF_SWITCH) ? true : false ;
 }
-void NodeDefinition::setMDFFlagPIN(boolean val )
+void NodeDefinition::setMDFFlagPIN(bool val )
 {
     this->setMDFFlag(val, MDF_PIN);
 }
-boolean NodeDefinition::isMDFFlagPIN()
+bool NodeDefinition::isMDFFlagPIN()
 {
-    return (this->mdf_flags & MDF_PIN) ? TRUE : FALSE ;
+    return (this->mdf_flags & MDF_PIN) ? true : false ;
 }
-void NodeDefinition::setMDFFlagLOOP(boolean val )
+void NodeDefinition::setMDFFlagLOOP(bool val )
 {
     this->setMDFFlag(val, MDF_LOOP);
 }
-boolean NodeDefinition::isMDFFlagLOOP()
+bool NodeDefinition::isMDFFlagLOOP()
 {
-    return (this->mdf_flags & MDF_LOOP) ? TRUE : FALSE ;
+    return (this->mdf_flags & MDF_LOOP) ? true : false ;
 }
-void NodeDefinition::setMDFFlagSIDE_EFFECT(boolean val )
+void NodeDefinition::setMDFFlagSIDE_EFFECT(bool val )
 {
     this->setMDFFlag(val, MDF_SIDE_EFFECT);
 }
-boolean NodeDefinition::isMDFFlagSIDE_EFFECT()
+bool NodeDefinition::isMDFFlagSIDE_EFFECT()
 {
-    return (this->mdf_flags & MDF_SIDE_EFFECT) ? TRUE : FALSE ;
+    return (this->mdf_flags & MDF_SIDE_EFFECT) ? true : false ;
 }
-void NodeDefinition::setMDFFlagPERSISTENT(boolean val )
+void NodeDefinition::setMDFFlagPERSISTENT(bool val )
 {
     this->setMDFFlag(val, MDF_PERSISTENT);
 }
-boolean NodeDefinition::isMDFFlagPERSISTENT()
+bool NodeDefinition::isMDFFlagPERSISTENT()
 {
-    return (this->mdf_flags & MDF_PERSISTENT) ? TRUE : FALSE ;
+    return (this->mdf_flags & MDF_PERSISTENT) ? true : false ;
 }
-void NodeDefinition::setMDFFlagASYNCHRONOUS(boolean val )
+void NodeDefinition::setMDFFlagASYNCHRONOUS(bool val )
 {
     this->setMDFFlag(val, MDF_ASYNCHRONOUS);
 }
-boolean NodeDefinition::isMDFFlagASYNCHRONOUS()
+bool NodeDefinition::isMDFFlagASYNCHRONOUS()
 {
-    return (this->mdf_flags & MDF_ASYNCHRONOUS) ? TRUE : FALSE ;
+    return (this->mdf_flags & MDF_ASYNCHRONOUS) ? true : false ;
 }
-void NodeDefinition::setMDFFlagREROUTABLE(boolean val )
+void NodeDefinition::setMDFFlagREROUTABLE(bool val )
 {
     this->setMDFFlag(val, MDF_REROUTABLE);
 }
-boolean NodeDefinition::isMDFFlagREROUTABLE()
+bool NodeDefinition::isMDFFlagREROUTABLE()
 {
-    return (this->mdf_flags & MDF_REROUTABLE) ? TRUE : FALSE ;
+    return (this->mdf_flags & MDF_REROUTABLE) ? true : false ;
 }
-void NodeDefinition::setMDFFlagREACH(boolean val )
+void NodeDefinition::setMDFFlagREACH(bool val )
 {
     this->setMDFFlag(val, MDF_REACH);
 }
-boolean NodeDefinition::isMDFFlagREACH()
+bool NodeDefinition::isMDFFlagREACH()
 {
-    return (this->mdf_flags & MDF_REACH) ? TRUE : FALSE ;
+    return (this->mdf_flags & MDF_REACH) ? true : false ;
 }
 void NodeDefinition::setDefaultOutboardHost(const char *host)
 {
@@ -470,7 +470,7 @@ void NodeDefinition::setDefaultOutboardHost(const char *host)
 	delete[] this->outboardHost;
    this->outboardHost = DuplicateString(host);
 }
-boolean NodeDefinition::isOutboard()
+bool NodeDefinition::isOutboard()
 {
    return (this->outboardCommand != NULL);
 }
@@ -486,7 +486,7 @@ void NodeDefinition::setOutboardCommand(const char *command)
 
    this->outboardCommand = DuplicateString(command);
 }
-boolean NodeDefinition::isDynamicallyLoaded()
+bool NodeDefinition::isDynamicallyLoaded()
 {
    return (this->loadFile != NULL);
 }
@@ -521,19 +521,19 @@ void NodeDefinition::setDescription(const char *d)
 // 
 // Add a selectable value for the n'th input.
 //
-boolean NodeDefinition::addInputValueOption(int n, const char *value)
+bool NodeDefinition::addInputValueOption(int n, const char *value)
 {
     
     ParameterDefinition *pd = this->getInputDefinition(n);
     if (pd) 
 	return pd->addValueOption(value);
-    return FALSE;
+    return false;
 }
 void NodeDefinition::setUILoadedOnly()
 {
-    this->uiLoadedOnly = TRUE;
+    this->uiLoadedOnly = true;
 }
-boolean NodeDefinition::isUILoadedOnly()
+bool NodeDefinition::isUILoadedOnly()
 {
     return this->uiLoadedOnly;
 }

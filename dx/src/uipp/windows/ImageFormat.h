@@ -54,9 +54,9 @@ class ImageFormat : public UIComponent
 
     virtual void		initialize(){};
 
-    boolean isMetric();
+    bool isMetric();
 
-    void			setTextSensitive (boolean );
+    void			setTextSensitive (bool );
 
     //
     // Constructor:
@@ -75,16 +75,16 @@ class ImageFormat : public UIComponent
     virtual const char* 	paramString() = 0;
     virtual const char* 	menuString() = 0;
     virtual const char* 	fileExtension() = 0;
-    virtual boolean		supportsAppend() { return FALSE; }
-    virtual boolean		supportsPrinting() = 0;
-    virtual boolean		useLocalResolution() = 0;
-    virtual boolean		useLocalAspect() = 0;
-    virtual boolean		useLocalFormat();
+    virtual bool		supportsAppend() { return false; }
+    virtual bool		supportsPrinting() = 0;
+    virtual bool		useLocalResolution() = 0;
+    virtual bool		useLocalAspect() = 0;
+    virtual bool		useLocalFormat();
     virtual void		changeUnits(){};
     virtual void		applyValues(){};
     virtual void		restore(){};
-    virtual boolean		supportsDelayedColors() { return FALSE; }
-    virtual boolean		requiresDelayedColors() { return FALSE; }
+    virtual bool		supportsDelayedColors() { return false; }
+    virtual bool		requiresDelayedColors() { return false; }
     virtual void		eraseOutputFile(const char *fname);
 
     virtual const char*		getRecordFormat();
@@ -98,7 +98,7 @@ class ImageFormat : public UIComponent
     //Widget			getMenuButton() { return this->menuButton;}
 
     const char* getClassName() { return ClassImageFormat; }
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 };
 
 

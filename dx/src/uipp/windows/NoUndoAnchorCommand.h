@@ -38,7 +38,7 @@ class NoUndoAnchorCommand : public NoUndoCommand
     DXAnchorWindow *anchorWindow;
     AnchorCommandType commandType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -46,7 +46,7 @@ class NoUndoAnchorCommand : public NoUndoCommand
     //
     NoUndoAnchorCommand(const char*   name,
                    CommandScope  *scope,
-                   boolean       active,
+                   bool       active,
 		   DXAnchorWindow  *fw,
 		   AnchorCommandType comType);
 

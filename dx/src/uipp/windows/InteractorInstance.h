@@ -54,8 +54,8 @@ class InteractorInstance : public Base {
     int			width, height;
     InteractorStyle	*style;
     InteractorNode	*node;
-    boolean		selected;
-    boolean		verticalLayout;
+    bool		selected;
+    bool		verticalLayout;
 
     //
     // The dialog for setting attributes of the interactor.
@@ -73,16 +73,16 @@ class InteractorInstance : public Base {
     // Make sure the given output's current value complies with any attributes.
     // This is called by InteractorInstance::setOutputValue() which is
     // intern intended to be called by the Interactors.
-    // If verification fails (returns FALSE), then a reason is expected to
+    // If verification fails (returns false), then a reason is expected to
     // placed in *reason.  This string must be freed by the caller.
-    // At this level we always return TRUE (assuming that there are no
+    // At this level we always return true (assuming that there are no
     // attributes) and set *reason to NULL.
     //
-    virtual boolean verifyValueAgainstAttributes(int output, 
+    virtual bool verifyValueAgainstAttributes(int output, 
 					 	const char *val,
 						Type t,
 						char **reason);
-    virtual boolean defaultVertical() { return TRUE; }
+    virtual bool defaultVertical() { return true; }
 
     static int CountLines(const char*);
     static const char* FetchLine(const char*, int);
@@ -105,14 +105,14 @@ class InteractorInstance : public Base {
     void 	setStyle(InteractorStyle *is) 
 				{ this->style = is; }
  
-    boolean 	isSelected()  { return this->selected ; }
+    bool 	isSelected()  { return this->selected ; }
 
-    void 	setSelected(boolean select);
+    void 	setSelected(bool select);
 
-    void 	setSelected() { this->setSelected(TRUE); } 
-    void 	clrSelected() { this->setSelected(FALSE); } 
-    virtual void setVerticalLayout(boolean val = TRUE); 
-    boolean	isVerticalLayout()  { return this->verticalLayout; }
+    void 	setSelected() { this->setSelected(true); } 
+    void 	clrSelected() { this->setSelected(false); } 
+    virtual void setVerticalLayout(bool val = true); 
+    bool	isVerticalLayout()  { return this->verticalLayout; }
 
     //
     // Ask the InteractorStyle to build an Interactor for this instance.
@@ -124,11 +124,11 @@ class InteractorInstance : public Base {
     void 		getXYPosition(int *x, int *y);	
 
     //
-    // If the interactor for this instance exists, then return TRUE
+    // If the interactor for this instance exists, then return true
     // and the width and height in *x and *y respectively.
-    // If the interactor does not exists return FALSE and set *x and *y to 0.
+    // If the interactor does not exists return false and set *x and *y to 0.
     //
-    boolean getXYSize(int *x, int *y);
+    bool getXYSize(int *x, int *y);
 
 
     InteractorStyle 	*getStyle() { return this->style; }
@@ -155,20 +155,20 @@ class InteractorInstance : public Base {
     //
     void		handleInteractorStateChange(
 				InteractorInstance *src_ii, 
-				boolean unmanage = FALSE);
+				bool unmanage = false);
 
-    boolean isDataDriven() { InteractorNode *n = 
+    bool isDataDriven() { InteractorNode *n = 
 					(InteractorNode*)this->getNode();
 			     return n->isDataDriven();
 			   } 
 
 
     //
-    // Return TRUE/FALSE indicating if this class of interactor instance has
+    // Return true/false indicating if this class of interactor instance has
     // a set attributes dialog (i.e. this->newSetAttrDialog returns non-NULL).
-    // At this level in the class hierarchy, we return FALSE.
+    // At this level in the class hierarchy, we return false.
     //
-    virtual boolean hasSetAttrDialog();
+    virtual bool hasSetAttrDialog();
 
     //
     // Open the set attributes dialog for this Interactor.
@@ -187,8 +187,8 @@ class InteractorInstance : public Base {
     // the reason (as passed back by verifyValueAgainstAttributes()) for
     // failure.  This string is expected to be freed by the caller.
     //
-    boolean setAndVerifyOutput(int index, const char *val, 
-					Type type, boolean send,
+    bool setAndVerifyOutput(int index, const char *val, 
+					Type type, bool send,
 					char **reason);
 
     //
@@ -197,9 +197,9 @@ class InteractorInstance : public Base {
     // change the pointers so that this instance no long belongs to a temp net
     // but to the real network (passwd in in newnet). Return True on success.
     //
-    boolean switchNets (Network *newnet);
+    bool switchNets (Network *newnet);
 
-    virtual boolean printAsJava(FILE* );
+    virtual bool printAsJava(FILE* );
     virtual const char* getJavaVariable();
 
     const char *getClassName() 

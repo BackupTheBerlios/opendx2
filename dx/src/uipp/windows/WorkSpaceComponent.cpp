@@ -18,7 +18,7 @@
 #include "DynamicResource.h"
 #include "Network.h" // for setFileDirty
 
-boolean WorkSpaceComponent::WorkSpaceComponentClassInitialized = FALSE;
+bool WorkSpaceComponent::WorkSpaceComponentClassInitialized = false;
 
 #if KEEP_USING_TRANSLATIONS
 static XtTranslations wwTranslations = 0;
@@ -52,13 +52,13 @@ long WorkSpaceComponent::NextInstanceNumber = 1;
 //};
 
 
-WorkSpaceComponent::WorkSpaceComponent(const char *name, boolean developerStyle) : 
+WorkSpaceComponent::WorkSpaceComponent(const char *name, bool developerStyle) : 
 	UIComponent(name)
 {
     this->developerStyle = developerStyle;
-    this->selected = FALSE;
+    this->selected = false;
 //    this->customPart = 0;
-    this->visualsInited = FALSE;
+    this->visualsInited = false;
     this->userAssignedWidth = this->userAssignedHeight = 0;
     this->currentLayout = WorkSpaceComponent::NotSet;
     this->setResourceList = NUL(List*);
@@ -66,7 +66,7 @@ WorkSpaceComponent::WorkSpaceComponent(const char *name, boolean developerStyle)
 
 //    if (NOT WorkSpaceComponent::WorkSpaceComponentClassInitialized)
 //    {
-//        WorkSpaceComponent::WorkSpaceComponentClassInitialized = TRUE;
+//        WorkSpaceComponent::WorkSpaceComponentClassInitialized = true;
 //#if KEEP_USING_TRANSLATIONS
 //	wwTranslations = XtParseTranslationTable (wwTable);
 //#endif
@@ -89,10 +89,10 @@ WorkSpaceComponent::~WorkSpaceComponent()
  
 //
 // Pass button and motion events through to the parent of w.
-// The boolean arg is here only because the subclass version of 
+// The bool arg is here only because the subclass version of 
 // passEvents needs to have one.
 //
-//void WorkSpaceComponent::passEvents(Widget w, boolean )
+//void WorkSpaceComponent::passEvents(Widget w, bool )
 //{
 //    ASSERT(WorkSpaceComponent::WorkSpaceComponentClassInitialized);
 //#if KEEP_USING_TRANSLATIONS
@@ -124,7 +124,7 @@ WorkSpaceComponent::~WorkSpaceComponent()
 //
 // Indicate that the interactor is selected. 
 //
-void WorkSpaceComponent::setSelected(boolean state)
+void WorkSpaceComponent::setSelected(bool state)
 {
 //Widget root = this->getRootWidget();
 //
@@ -153,7 +153,7 @@ char *WorkSpaceComponent::FilterLabelString(const char *label)
 // Make the interactor "blend into" its environment by turning of
 // shadowThickness and setting colors to match those of the parent.
 //
-void WorkSpaceComponent::setAppearance(boolean developerStyle)
+void WorkSpaceComponent::setAppearance(bool developerStyle)
 {
 //static struct {
 //   Pixel fg,bg,ts,bs,arm;
@@ -167,7 +167,7 @@ void WorkSpaceComponent::setAppearance(boolean developerStyle)
 //Widget root;
 //
 //    if ((this->visualsInited) && (this->developerStyle == developerStyle)) return ;
-//    this->visualsInited = TRUE;
+//    this->visualsInited = true;
 //    this->developerStyle = developerStyle;
 //    root = this->getRootWidget();
 //    if (!root) return ;
@@ -321,7 +321,7 @@ void WorkSpaceComponent::setAppearance(boolean developerStyle)
 //
 // Determine if this Component is a node of the given class
 //
-boolean WorkSpaceComponent::isA(const char *classname)
+bool WorkSpaceComponent::isA(const char *classname)
 {
     Symbol s = theSymbolManager->registerSymbol(classname);
     return this->isA(s);
@@ -329,7 +329,7 @@ boolean WorkSpaceComponent::isA(const char *classname)
 //
 // Determine if this Component is of the given class.
 //
-boolean WorkSpaceComponent::isA(Symbol classname)
+bool WorkSpaceComponent::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassWorkSpaceComponent);
     return (s == classname);
@@ -426,7 +426,7 @@ int cw, ch;
 }
 
 void
-WorkSpaceComponent::setVerticalLayout (boolean vertical)
+WorkSpaceComponent::setVerticalLayout (bool vertical)
 {
     if (!this->acceptsLayoutChanges()) return ;
     ASSERT (
@@ -446,10 +446,10 @@ WorkSpaceComponent::setVerticalLayout (boolean vertical)
     this->getNetwork()->setFileDirty();
 }
 
-boolean
+bool
 WorkSpaceComponent::verticallyLaidOut()
 {
-    if (this->currentLayout & WorkSpaceComponent::NotSet) return FALSE;
+    if (this->currentLayout & WorkSpaceComponent::NotSet) return false;
 
     return (this->currentLayout & WorkSpaceComponent::Vertical);
 }
@@ -504,21 +504,21 @@ DynamicResource *dr;
 //    return (const char *)dr->getStringRepresentation();
 //}
 
-//boolean
+//bool
 //WorkSpaceComponent::isResourceSet (const char *res)
 //{
 //ListIterator it;
 //DynamicResource *dr;
 //
-//    if (!this->setResourceList) return FALSE;
+//    if (!this->setResourceList) return false;
 //
 //    it.setList (*this->setResourceList);
 //    while ( (dr = (DynamicResource *)it.getNext()) ) {
 //        if (!strcmp (dr->getResourceName(), res)) {
-//	    return TRUE;
+//	    return true;
 //        }
 //    }
-//    return FALSE;
+//    return false;
 //}
 //
 //
@@ -569,7 +569,7 @@ void WorkSpaceComponent::setXYPosition (int x, int y)
 // Store the this pointer in the widget's XmNuserData so that we
 // can retrieve the Object in a callback in EditorWorkSpace.C
 // 
-//void WorkSpaceComponent::setRootWidget(Widget root, boolean standardDestroy)
+//void WorkSpaceComponent::setRootWidget(Widget root, bool standardDestroy)
 //{
 //    this->UIComponent::setRootWidget(root, standardDestroy);
 //    this->setLocalData(this);

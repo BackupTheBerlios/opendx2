@@ -71,16 +71,16 @@
 //
 ScalarNode::ScalarNode(NodeDefinition *nd, 
 			Network *net, int instance, 
-			boolean isVector,
+			bool isVector,
 			int dimensions) :
                         InteractorNode(nd, net, instance)
 {
     ASSERT(dimensions > 0);
-    this->isContinuousUpdate = FALSE;
+    this->isContinuousUpdate = false;
     this->vectorType = isVector;
     this->numComponents = dimensions;
     this->rangeCheckDeferrals = 0;
-    this->needsRangeCheck = FALSE;
+    this->needsRangeCheck = false;
 
     if (!this->verifyInputCount())
 	return;
@@ -94,10 +94,10 @@ ScalarNode::ScalarNode(NodeDefinition *nd,
     AttributeParameter *ap = (AttributeParameter*)
 			this->getInputParameter(INCR_PARAM_NUM);
     ASSERT(ap);
-    ap->setSyncOnTypeMatch(FALSE);
+    ap->setSyncOnTypeMatch(false);
 }
 
-boolean ScalarNode::hasDynamicDimensionality(boolean ignoreDataDriven)
+bool ScalarNode::hasDynamicDimensionality(bool ignoreDataDriven)
 {
     return this->isVectorType() && 
 	   (ignoreDataDriven || !this->isDataDriven());
@@ -105,7 +105,7 @@ boolean ScalarNode::hasDynamicDimensionality(boolean ignoreDataDriven)
 //
 // Change the dimensionality of a Vector interactor. 
 //
-boolean ScalarNode::doDimensionalityChange(int new_dim)
+bool ScalarNode::doDimensionalityChange(int new_dim)
 {
     ScalarInstance *si;
     int old_dim = this->getComponentCount();
@@ -113,7 +113,7 @@ boolean ScalarNode::doDimensionalityChange(int new_dim)
     ASSERT(this->isVectorType());
 
     if (new_dim == old_dim)
-	return TRUE;
+	return true;
 
     this->numComponents = new_dim; 
     //
@@ -142,28 +142,28 @@ boolean ScalarNode::doDimensionalityChange(int new_dim)
     iterator.setList(this->instanceList);
     while ( (si = (ScalarInstance*)iterator.getNext()) )  {
 	if (!si->handleNewDimensionality())
-	    return FALSE;	
+	    return false;	
     }
-    return TRUE;
+    return true;
   
 }
-boolean ScalarNode::adjustOutputDimensions(int old_dim, int new_dim)
+bool ScalarNode::adjustOutputDimensions(int old_dim, int new_dim)
 {
     const char *oldval = this->getOutputValueString(1);
     char *newval = DXValue::AdjustVectorDimensions(oldval, 
 			new_dim, DEFAULT_VALUE, this->isIntegerTypeComponent());
     if (!newval)
-	return FALSE;
+	return false;
 
-    this->setOutputValue(1,newval,DXType::VectorType,TRUE);
+    this->setOutputValue(1,newval,DXType::VectorType,true);
     delete newval;
-    return TRUE;
+    return true;
 }
 
-boolean ScalarNode::adjustAttributeDimensions(int old_dim, int new_dim)
+bool ScalarNode::adjustAttributeDimensions(int old_dim, int new_dim)
 {
 
-    boolean is_int = this->isIntegerTypeComponent();
+    bool is_int = this->isIntegerTypeComponent();
     const char *v;
     char *newval;
 
@@ -200,20 +200,20 @@ boolean ScalarNode::adjustAttributeDimensions(int old_dim, int new_dim)
     else
 	decimals = DEFAULT_SCALAR_DECIMALS;
     v = this->getInputAttributeParameterValue(DECIMALS_PARAM_NUM);		
-    newval = DXValue::AdjustVectorDimensions(v, new_dim, decimals, TRUE);
+    newval = DXValue::AdjustVectorDimensions(v, new_dim, decimals, true);
     this->setDecimalsAttribute(newval);						
     delete newval;
 
-    return TRUE;
+    return true;
 }
 //
 // Set the interactor's default attributes.
 //
-boolean ScalarNode::setDefaultAttributes()
+bool ScalarNode::setDefaultAttributes()
 {
     const char *id;
     const char *min=NULL, *max=NULL, *incr=NULL, *decimals=NULL;
-    boolean r;
+    bool r;
  
 // FIXME: these strings should be build from DEFAULT_*_STR
     switch (this->numComponents) {
@@ -248,7 +248,7 @@ boolean ScalarNode::setDefaultAttributes()
 
     id = this->getModuleMessageIdString();
 
-    if ((this->setInputValue(ID_PARAM_NUM,id, DXType::UndefinedType,FALSE) 
+    if ((this->setInputValue(ID_PARAM_NUM,id, DXType::UndefinedType,false) 
 				== DXType::UndefinedType) 
 	||
 	!this->initMinimumAttribute(min)
@@ -259,9 +259,9 @@ boolean ScalarNode::setDefaultAttributes()
 	||
     	!this->initDecimalsAttribute(decimals)
 	) {
-         r = FALSE;
+         r = false;
     } else
-	r = TRUE;
+	r = true;
 
     return r;
 }
@@ -269,16 +269,16 @@ boolean ScalarNode::setDefaultAttributes()
 //
 // Make sure the number of inputs is the number expected. 
 //
-boolean ScalarNode::verifyInputCount()
+bool ScalarNode::verifyInputCount()
 {
     if (this->getInputCount() != EXPECTED_SCALAR_INPUTS) {
         ErrorMessage( 
 	   "Expected %d inputs for %s interactor, please check the mdf file.\n",
 			EXPECTED_SCALAR_INPUTS,
 			this->getNameString());
-	return FALSE;
+	return false;
     }
-    return TRUE; 
+    return true; 
 }
 //
 // Called after allocation is complete.
@@ -286,11 +286,11 @@ boolean ScalarNode::verifyInputCount()
 // so that we can use them later when setting the attributes for the
 // Interactor. 
 //
-boolean ScalarNode::initialize()
+bool ScalarNode::initialize()
 {
 
     if (!this->verifyInputCount())
-	return FALSE;
+	return false;
 
 // FIXME: these strings should be build from DEFAULT_*_STR
     const char *value;
@@ -302,18 +302,18 @@ boolean ScalarNode::initialize()
 		break;
 	case 2: value = "[ 0 0 ]"; break;
 	case 3: value = "[ 0 0 0 ]"; break;
-	default: return FALSE;
+	default: return false;
     }
 
     if (!this->setDefaultAttributes() 
 	||
-	(this->setOutputValue(1,value, DXType::UndefinedType,FALSE) == 
+	(this->setOutputValue(1,value, DXType::UndefinedType,false) == 
 				DXType::UndefinedType)
  	){	
         ErrorMessage(
       "Error setting default attributes for %s interactor, check ui.mdf\n",
 		this->getNameString());
-        return FALSE;
+        return false;
     }
     //
     // Make the shadows defaulting (even though we have a current output)
@@ -324,7 +324,7 @@ boolean ScalarNode::initialize()
     //
     this->setShadowingInputsDefaulting();
 
-    return TRUE;
+    return true;
 }
 
 
@@ -374,16 +374,16 @@ int ScalarNode::handleInteractorMsgInfo(const char *line)
     // back by the module conflicts with the other value stored in the ui. 
     //
     if (!this->isInputDefaulting(DATA_PARAM_NUM))  {
-	boolean min_dflting = this->isInputDefaulting(MIN_PARAM_NUM);
-	boolean max_dflting = this->isInputDefaulting(MAX_PARAM_NUM);
+	bool min_dflting = this->isInputDefaulting(MIN_PARAM_NUM);
+	bool max_dflting = this->isInputDefaulting(MAX_PARAM_NUM);
 	if ((min_dflting && !max_dflting) || (!min_dflting &&  max_dflting)) {
 	    int i, comps = this->getComponentCount();
-	    boolean issue_warning = FALSE;	
+	    bool issue_warning = false;	
 	    for (i=1 ; i<=comps  ; i++) {
 		double minval = this->getComponentMinimum(i);
 		double maxval = this->getComponentMaximum(i);
 		if (minval > maxval) {
-	    	    issue_warning = TRUE;	
+	    	    issue_warning = true;	
 		    if (min_dflting)
 		        this->setComponentMinimum(i,maxval);
 		    else
@@ -620,7 +620,7 @@ int ScalarNode::handleVectorMsgInfo(const char *line)
     return values;
 }
 
-boolean ScalarNode::cfgParseComment(const char *comment,
+bool ScalarNode::cfgParseComment(const char *comment,
                                 const char *filename, int lineno)
 {
     //
@@ -642,7 +642,7 @@ boolean ScalarNode::cfgParseComment(const char *comment,
 // We override the parent's method so that we can print num_components
 // correctly.
 //
-boolean ScalarNode::cfgPrintInteractorComment(FILE *f)
+bool ScalarNode::cfgPrintInteractorComment(FILE *f)
 {
     return fprintf(f,
                 "// interactor %s[%d]: num_components = %d, value = %s\n",
@@ -656,7 +656,7 @@ boolean ScalarNode::cfgPrintInteractorComment(FILE *f)
 // Print auxiliary info for this interactor, which includes all global 
 // information about each component.
 //
-boolean ScalarNode::cfgPrintInteractorAuxInfo(FILE *f)
+bool ScalarNode::cfgPrintInteractorAuxInfo(FILE *f)
 {
     int i, ncomp = this->getComponentCount();
 
@@ -670,16 +670,16 @@ boolean ScalarNode::cfgPrintInteractorAuxInfo(FILE *f)
 		this->getComponentDelta(i),
 		this->getComponentDecimals(i),
                 this->isContinuous()) < 0)
-		return FALSE;
+		return false;
     }
-    return TRUE;
+    return true;
 }
 
 //
 // Print auxiliary info for the interactor instance,  which include all local
 // information about each component.
 //
-boolean ScalarNode::cfgPrintInstanceAuxInfo(FILE *f, 
+bool ScalarNode::cfgPrintInstanceAuxInfo(FILE *f, 
 					InteractorInstance *ii)
 {
     int i, ncomp = this->getComponentCount();
@@ -689,7 +689,7 @@ boolean ScalarNode::cfgPrintInstanceAuxInfo(FILE *f,
             "// local continuous: value = %d, mode = %s\n",
 		(si->getLocalContinuous() ? 1 : 0),
 		(si->usingGlobalContinuous() ? "global" : "local") ) < 0)
-	return FALSE;
+	return false;
 
     for (i=1 ; i<=ncomp ; i++ ) {
         if (fprintf(f,
@@ -697,9 +697,9 @@ boolean ScalarNode::cfgPrintInstanceAuxInfo(FILE *f,
 		i-1,	// File uses 0 based indexing
 		si->getLocalDelta(i),
 		(si->isLocalDelta(i) ? "local" : "global") ) < 0)
-	    return FALSE;
+	    return false;
     }
-    return TRUE;
+    return true;
 
 }
 //
@@ -707,11 +707,11 @@ boolean ScalarNode::cfgPrintInstanceAuxInfo(FILE *f,
 // instance we build the list of local attributes (one LocalAttributes 
 // for each component). 
 //
-boolean ScalarNode::cfgParseInstanceComment(const char *comment,
+bool ScalarNode::cfgParseInstanceComment(const char *comment,
                                 const char *filename, int lineno)
 {
     if (!this->InteractorNode::cfgParseInstanceComment(comment,filename,lineno))
-	return FALSE;
+	return false;
 
 #if 0
     int i, instance, components;
@@ -738,10 +738,10 @@ boolean ScalarNode::cfgParseInstanceComment(const char *comment,
     } 
 #endif
     
-    return TRUE;
+    return true;
 
 }
-boolean ScalarNode::cfgParseComponentComment(const char *comment,
+bool ScalarNode::cfgParseComponentComment(const char *comment,
                                 const char *filename, int lineno)
 {
     int      items_parsed;
@@ -753,7 +753,7 @@ boolean ScalarNode::cfgParseComponentComment(const char *comment,
     int      continuous;
 
     if (strncmp(comment," component",10))
-        return FALSE;
+        return false;
 
     items_parsed = sscanf
                 (comment,
@@ -769,7 +769,7 @@ boolean ScalarNode::cfgParseComponentComment(const char *comment,
     {
         ErrorMessage("Bad 'component' comment (file %s, line %d)",
                                         filename,lineno);
-        return FALSE;
+        return false;
     }
 
     component_num++;	// 1 based indexing.
@@ -808,7 +808,7 @@ boolean ScalarNode::cfgParseComponentComment(const char *comment,
     if (component_num == this->getComponentCount())
 	this->undeferRangeChecking();
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -823,7 +823,7 @@ InteractorInstance *ScalarNode::newInteractorInstance()
 //
 // G/Set the 'minimum' attribute for the given component 
 //
-boolean ScalarNode::setAllComponentRanges(double *min, double *max)
+bool ScalarNode::setAllComponentRanges(double *min, double *max)
 {
     this->deferRangeChecking();
 
@@ -836,21 +836,21 @@ boolean ScalarNode::setAllComponentRanges(double *min, double *max)
     }
 
     this->undeferRangeChecking();
-    return TRUE;
+    return true;
 }
-boolean ScalarNode::initMinimumAttribute(const char *val)
+bool ScalarNode::initMinimumAttribute(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						MIN_PARAM_NUM);
     return p->initAttributeValue(val);
 }
-boolean ScalarNode::setMinimumAttribute(const char *val)
+bool ScalarNode::setMinimumAttribute(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						MIN_PARAM_NUM);
     return p->setAttributeValue(val);
 }
-boolean ScalarNode::setComponentMinimum(int component, double min)
+bool ScalarNode::setComponentMinimum(int component, double min)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						MIN_PARAM_NUM);
@@ -858,12 +858,12 @@ boolean ScalarNode::setComponentMinimum(int component, double min)
     double oldmin = p->getAttributeComponentValue(component);
 
     if (!p->setAttributeComponentValue(component, min)) 
-	return FALSE;
+	return false;
 
     if (min > oldmin)
 	this->rangeCheckComponentValue(component, 
 			    min, this->getComponentMaximum(component));
-    return TRUE;
+    return true;
 
 }
 double ScalarNode::getComponentMinimum(int component)
@@ -879,19 +879,19 @@ double ScalarNode::getComponentMinimum(int component)
 //
 // G/Set the 'maximum' attribute for the given component 
 //
-boolean ScalarNode::initMaximumAttribute(const char *val)
+bool ScalarNode::initMaximumAttribute(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						MAX_PARAM_NUM);
     return p->initAttributeValue(val);
 }
-boolean ScalarNode::setMaximumAttribute(const char *val)
+bool ScalarNode::setMaximumAttribute(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						MAX_PARAM_NUM);
     return p->setAttributeValue(val);
 }
-boolean ScalarNode::setComponentMaximum(int component, double max)
+bool ScalarNode::setComponentMaximum(int component, double max)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 							MAX_PARAM_NUM);
@@ -899,12 +899,12 @@ boolean ScalarNode::setComponentMaximum(int component, double max)
     double oldmax = p->getAttributeComponentValue(component);
 
     if (!p->setAttributeComponentValue(component, max))
-	return FALSE;
+	return false;
 
     if (max < oldmax)
 	this->rangeCheckComponentValue(component, 
 			this->getComponentMinimum(component), max);
-    return TRUE;
+    return true;
 }
 double ScalarNode::getComponentMaximum(int component)
 {
@@ -919,19 +919,19 @@ double ScalarNode::getComponentMaximum(int component)
 //
 // G/Set the 'delta' attribute for the given component
 //
-boolean ScalarNode::initDeltaAttribute(const char *val)
+bool ScalarNode::initDeltaAttribute(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						INCR_PARAM_NUM);
     return p->initAttributeValue(val);
 }
-boolean ScalarNode::setDeltaAttribute(const char *val)
+bool ScalarNode::setDeltaAttribute(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						INCR_PARAM_NUM);
     return p->setAttributeValue(val);
 }
-boolean ScalarNode::setComponentDelta(int component, double delta)
+bool ScalarNode::setComponentDelta(int component, double delta)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						INCR_PARAM_NUM);
@@ -949,19 +949,19 @@ double ScalarNode::getComponentDelta(int component)
 //
 // G/Set the 'decimal places' attribute for the given component 
 //
-boolean ScalarNode::initDecimalsAttribute(const char *val)
+bool ScalarNode::initDecimalsAttribute(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						DECIMALS_PARAM_NUM);
     return p->initAttributeValue(val);
 }
-boolean ScalarNode::setDecimalsAttribute(const char *val)
+bool ScalarNode::setDecimalsAttribute(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						DECIMALS_PARAM_NUM);
     return p->setAttributeValue(val);
 }
-boolean ScalarNode::setComponentDecimals(int component, int decimals)
+bool ScalarNode::setComponentDecimals(int component, int decimals)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
 						DECIMALS_PARAM_NUM);
@@ -979,14 +979,14 @@ int ScalarNode::getComponentDecimals(int component)
     } else
         return (int) p->getAttributeComponentValue(component);
 }
-boolean ScalarNode::setComponentValue(int component, double value)
+bool ScalarNode::setComponentValue(int component, double value)
 {
     Parameter *out = this->getOutputParameter(1);
     if (!out->setComponentValue(component, value))
-	return FALSE;
+	return false;
     const char *v = this->getOutputValueString(1);
     // This forces update of the shadowing input.
-    return this->setOutputValue(1,v,DXType::UndefinedType,FALSE);
+    return this->setOutputValue(1,v,DXType::UndefinedType,false);
 }
 double ScalarNode::getComponentValue(int component)
 {
@@ -1002,10 +1002,10 @@ double ScalarNode::getComponentValue(int component)
 void ScalarNode::rangeCheckComponentValue(int component, double min, double max)
 {
     if (!this->isRangeCheckingDeferred()) {
-        this->needsRangeCheck = FALSE;
+        this->needsRangeCheck = false;
         this->doRangeCheckComponentValue(component, min,max);
     } else {
-        this->needsRangeCheck = TRUE;
+        this->needsRangeCheck = true;
     }
 }
 
@@ -1043,7 +1043,7 @@ void ScalarNode::doRangeCheckComponentValue(int component,
 			  output_type, 
 		 	  mins,maxs,&newval)) {
 	    ASSERT(newval);
-	    this->setOutputValue(1,newval,output_type,TRUE);
+	    this->setOutputValue(1,newval,output_type,true);
 	    delete newval;
    	}
 	delete[] mins;
@@ -1068,16 +1068,16 @@ void ScalarNode::doRangeCheckComponentValue(int component,
 // Determine if the given component is an integer type.
 // We ignore component and assume all components have the same type.
 //
-boolean ScalarNode::isIntegerTypeComponent()
+bool ScalarNode::isIntegerTypeComponent()
 {
     // FIXME: is there a better way to do this.
     if (!strncmp("Integer",this->getNameString(),7))
-	return TRUE;
+	return true;
     else
-	return FALSE;
+	return false;
 }
 
-boolean ScalarNode::cfgParseLocalIncrementComment(
+bool ScalarNode::cfgParseLocalIncrementComment(
 		const char *comment, const char *filename, int lineno)
 
 {
@@ -1089,7 +1089,7 @@ boolean ScalarNode::cfgParseLocalIncrementComment(
     ASSERT(comment);
 
     if (strncmp(comment," local increment",16))
-        return FALSE;
+        return false;
 
 #if 0
     is_int = uiuEqualString(_interactor_name, "Integer");
@@ -1107,7 +1107,7 @@ boolean ScalarNode::cfgParseLocalIncrementComment(
 	ErrorMessage(
   "'local increment' comment references undefined component (file %s, line %d)",
 				filename, lineno);
-	return FALSE;
+	return false;
     }
 	
 
@@ -1116,7 +1116,7 @@ boolean ScalarNode::cfgParseLocalIncrementComment(
 #if 1
 	ErrorMessage("Bad 'local increment' comment (file %s, line %d)",
 				filename, lineno);
-	return FALSE;
+	return false;
     }
 #else
 	uiuModelessErrorMessageDialog
@@ -1125,7 +1125,7 @@ boolean ScalarNode::cfgParseLocalIncrementComment(
 	     "local increment",
 	     _parse_file,
 	     yylineno);
-	_error_occurred = TRUE;
+	_error_occurred = true;
 	return;
     }
 	
@@ -1134,7 +1134,7 @@ boolean ScalarNode::cfgParseLocalIncrementComment(
 	uiuModelessErrorMessageDialog
 	    (_parse_widget,
 	     "#10011", "local increment", "interactor", _parse_file, yylineno);
-	_error_occurred = TRUE;
+	_error_occurred = true;
 	return;
     }
 
@@ -1149,7 +1149,7 @@ boolean ScalarNode::cfgParseLocalIncrementComment(
 	     "interactor",
 	     _parse_file,
 	     yylineno);
-	_error_occurred = TRUE;
+	_error_occurred = true;
 	return;
     }
 #endif
@@ -1160,7 +1160,7 @@ boolean ScalarNode::cfgParseLocalIncrementComment(
     if (!si) {
  	ErrorMessage("'local increment' comment out of order (file %s, line%d)",
 			filename, lineno);
-	return FALSE;
+	return false;
     }
     si->useLocalDelta(component_num, double_step);
     if (!EqualString(mode,"local")) 
@@ -1184,11 +1184,11 @@ boolean ScalarNode::cfgParseLocalIncrementComment(
 	interactor->restore_local_increment[component_num] = 
 	    uiuEqualString(mode, "local");
 #endif
-   return TRUE;
+   return true;
 
 }
 
-boolean ScalarNode::cfgParseLocalContinuousComment(
+bool ScalarNode::cfgParseLocalContinuousComment(
 		const char *comment, const char *filename, int lineno)
 {
     int            items_parsed;
@@ -1198,7 +1198,7 @@ boolean ScalarNode::cfgParseLocalContinuousComment(
     ASSERT(comment);
 
     if (strncmp(comment," local continuous",17))
-        return FALSE;
+        return false;
 
     items_parsed =
 	sscanf(comment,
@@ -1223,7 +1223,7 @@ boolean ScalarNode::cfgParseLocalContinuousComment(
 #if 1
 	ErrorMessage("Bad 'local continuous' comment (file %s, line %d)",
 			filename, lineno);
-	return FALSE;
+	return false;
 #else
 	uiuModelessErrorMessageDialog
 	    (_parse_widget,
@@ -1231,7 +1231,7 @@ boolean ScalarNode::cfgParseLocalContinuousComment(
 	     "local continuous",
 	     _parse_file,
 	     yylineno);
-	_error_occurred = TRUE;
+	_error_occurred = true;
 	return;
 #endif
     }
@@ -1246,7 +1246,7 @@ boolean ScalarNode::cfgParseLocalContinuousComment(
 	     "interactor",
 	     _parse_file,
 	     yylineno);
-	_error_occurred = TRUE;
+	_error_occurred = true;
 	return;
     }
 
@@ -1261,7 +1261,7 @@ boolean ScalarNode::cfgParseLocalContinuousComment(
 	     "interactor",
 	     _parse_file,
 	     yylineno);
-	_error_occurred = TRUE;
+	_error_occurred = true;
 	return;
     }
 #endif
@@ -1272,9 +1272,9 @@ boolean ScalarNode::cfgParseLocalContinuousComment(
     if (!si) {
  	ErrorMessage("'local continuous' comment out of order (file %s, line%d)",
 			filename, lineno);
-	return FALSE;
+	return false;
     }
-    si->useLocalContinuous((continuous == 0 ? FALSE : TRUE));
+    si->useLocalContinuous((continuous == 0 ? false : true));
     if (!EqualString(mode,"local"))
        si->useGlobalContinuous();
     
@@ -1288,35 +1288,35 @@ boolean ScalarNode::cfgParseLocalContinuousComment(
 	    uiuEqualString(mode, "local");
 #endif
 
-    return TRUE;
+    return true;
 
 }
 
 //
 // Determine if this node is of the given class.
 //
-boolean ScalarNode::isA(Symbol classname)
+bool ScalarNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassScalarNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->InteractorNode::isA(classname);
 }
 
-boolean ScalarNode::isMinimumVisuallyWriteable()
+bool ScalarNode::isMinimumVisuallyWriteable()
 { 
     return 
 	this->isInputDefaulting(DATA_PARAM_NUM) 	&& 
 	this->isAttributeVisuallyWriteable(MIN_PARAM_NUM); 
 }
-boolean ScalarNode::isMaximumVisuallyWriteable()
+bool ScalarNode::isMaximumVisuallyWriteable()
 { 
     return 
 	this->isInputDefaulting(DATA_PARAM_NUM) 	&& 
 	this->isAttributeVisuallyWriteable(MAX_PARAM_NUM); 
 }
-boolean ScalarNode::isDecimalsVisuallyWriteable()
+bool ScalarNode::isDecimalsVisuallyWriteable()
 { 
     return 
 	this->isInputDefaulting(DATA_PARAM_NUM) 	&& 
@@ -1324,7 +1324,7 @@ boolean ScalarNode::isDecimalsVisuallyWriteable()
  	 this->isInputDefaulting(MAX_PARAM_NUM))  	&&
         this->isAttributeVisuallyWriteable(DECIMALS_PARAM_NUM);
 }
-boolean ScalarNode::isDeltaVisuallyWriteable()
+bool ScalarNode::isDeltaVisuallyWriteable()
 { 
     const char *delta_method = this->getInputValueString(INCRMETHOD_PARAM_NUM);
 
@@ -1338,7 +1338,7 @@ boolean ScalarNode::isDeltaVisuallyWriteable()
     if (!this->isInputDefaulting(INCRMETHOD_PARAM_NUM) && 
 	!this->isInputConnected(INCRMETHOD_PARAM_NUM)  && 
 	!EqualString(delta_method,"absolute")) 		
-	return FALSE;
+	return false;
 
     return 
 	this->isInputDefaulting(DATA_PARAM_NUM) 	&& 
@@ -1352,10 +1352,10 @@ boolean ScalarNode::isDeltaVisuallyWriteable()
 // tell us so.  We then get numComponent==3, but all the parameter
 // values are 2d, which results in an ASSERTion failure.
 //
-boolean     ScalarNode::netParseComment(const char* comment,
+bool     ScalarNode::netParseComment(const char* comment,
                                         const char *file, int lineno)
 {
-    boolean r = this->InteractorNode::netParseComment(comment,file,lineno);
+    bool r = this->InteractorNode::netParseComment(comment,file,lineno);
     if (r && EqualSubstring(comment," output[",8)) {
   	Parameter *p = this->getOutputParameter(1);
 	this->numComponents = p->getComponentCount();
@@ -1368,8 +1368,8 @@ boolean     ScalarNode::netParseComment(const char* comment,
 //
 // If we're parsing input #4 (which is now REFRESH and was at one point REMAP)
 // and the net version is older than 3.1.0 (which is compiled in by DXVersion.h),
-// then set the defaulting status = TRUE.  Reason:  the older ui was setting
-// the defaulting status of this unused param to FALSE.  Now that we want to use
+// then set the defaulting status = true.  Reason:  the older ui was setting
+// the defaulting status of this unused param to false.  Now that we want to use
 // the param again, old nets believe the param is set.
 //
 // So, this chunk of code should go away if REFRESH goes away.  It should also
@@ -1380,15 +1380,15 @@ boolean     ScalarNode::netParseComment(const char* comment,
 // purpose is to deal with old nets, so if comments change this code won't really
 // affected.
 //
-boolean ScalarNode::parseIOComment(boolean input, const char* comment,
-	    const char* filename, int lineno, boolean valueOnly)
+bool ScalarNode::parseIOComment(bool input, const char* comment,
+	    const char* filename, int lineno, bool valueOnly)
 {
     int      defaulting = 0, items_parsed, ionum, tmp_type;
-    int	     visible = TRUE;
-    boolean  parse_error = FALSE; 
+    int	     visible = true;
+    bool  parse_error = false; 
 
-    if(this->Node::parseIOComment(input, comment, filename, lineno, valueOnly) == FALSE)
-	return FALSE;
+    if(this->Node::parseIOComment(input, comment, filename, lineno, valueOnly) == false)
+	return false;
 
     //
     //
@@ -1400,8 +1400,8 @@ boolean ScalarNode::parseIOComment(boolean input, const char* comment,
     // This code turns into NoOp starting with net version == 3.1.0
     //
     Network *net = this->getNetwork();
-    if (net->getNetMajorVersion() >  3) return TRUE;
-    if (net->getNetMinorVersion() >= 1) return TRUE;
+    if (net->getNetMajorVersion() >  3) return true;
+    if (net->getNetMinorVersion() >= 1) return true;
 
     ASSERT(comment);
 
@@ -1410,7 +1410,7 @@ boolean ScalarNode::parseIOComment(boolean input, const char* comment,
 	if (valueOnly) {
 	    if (sscanf(comment, " input[%d]: defaulting = %d", 
 				&ionum, &defaulting) != 2)
-		parse_error = TRUE;
+		parse_error = true;
 	    /*type = DXType::UndefinedType;*/
 	} else {
 	    items_parsed = sscanf(comment,
@@ -1432,7 +1432,7 @@ boolean ScalarNode::parseIOComment(boolean input, const char* comment,
 					    &ionum, &defaulting, &tmp_type);
 			/*type = (Type) tmp_type;*/
 			if (items_parsed != 3) 
-			    parse_error = TRUE;
+			    parse_error = true;
 		    } 
 		}
 		else 
@@ -1444,17 +1444,17 @@ boolean ScalarNode::parseIOComment(boolean input, const char* comment,
     } 
 
     if ((!parse_error) && (input) && 
-	(ionum == REFRESH_PARAM_NUM) && (defaulting == FALSE)) {
+	(ionum == REFRESH_PARAM_NUM) && (defaulting == false)) {
 	Parameter *par = this->getInputParameter(REFRESH_PARAM_NUM);
-	par->setUnconnectedDefaultingStatus(TRUE);
+	par->setUnconnectedDefaultingStatus(true);
     }
 
  
-    return TRUE;
+    return true;
 }
 
 
-boolean ScalarNode::printJavaValue (FILE* jf)
+bool ScalarNode::printJavaValue (FILE* jf)
 {
     const char* indent = "        ";
     int comp_count = this->getComponentCount();
@@ -1478,7 +1478,7 @@ boolean ScalarNode::printJavaValue (FILE* jf)
 		indent, var_name, i,min,max,step,decimals,value);
 	}
     }
-    return TRUE;
+    return true;
 }
 
 

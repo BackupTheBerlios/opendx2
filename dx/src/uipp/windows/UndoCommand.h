@@ -34,7 +34,7 @@ class UndoCommand : public NoUndoCommand
     //
     // 
     //
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -53,14 +53,14 @@ class UndoCommand : public NoUndoCommand
     //   Calls superclass function() then registers 
     //   this command as the scope's undo command.
     //
-    boolean registerScope(CommandScope* scope);
+    bool registerScope(CommandScope* scope);
 
     //
     // Override of superclass registerScope():
     //   Calls superclass function() then unregisters 
     //   this command as the scope's undo command.
     //
-    boolean unregisterScope(CommandScope* scope);
+    bool unregisterScope(CommandScope* scope);
 
     //
     // Returns a pointer to the class name.

@@ -34,12 +34,12 @@ class ToggleButtonInterface : public CommandInterface
     //
     // Private class data:
     //
-    static boolean ToggleButtonInterfaceClassInitialized;
+    static bool ToggleButtonInterfaceClassInitialized;
 
     //
     // Private member data:
     //
-    boolean state;	// state of toggle button
+    bool state;	// state of toggle button
 
     //
     // Calls the CommandInterface executeCommand method.
@@ -60,7 +60,7 @@ class ToggleButtonInterface : public CommandInterface
     ToggleButtonInterface(
 			  char*    name,
 			  Command* command,
-			  boolean  state,
+			  bool  state,
 			  const char *bubbleHelp = NULL);
 
     //
@@ -85,12 +85,12 @@ class ToggleButtonInterface : public CommandInterface
     //
     // Changes current state to new setting.
     //
-    void setState(const boolean state, const boolean notify=true);
+    void setState(const bool state, const bool notify=true);
 
     //
     // Returns the current stateof the toggle button.
     //
-    boolean getState();
+    bool getState();
 
     //friend void ToggleButtonInterface_ExecuteCommandCB(Widget    widget,
 				//       XtPointer clientData,

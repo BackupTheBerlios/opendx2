@@ -33,7 +33,7 @@ enum LicType { TRIAL, BETA, NODELOCKED, FLOATING };
 class TemporaryLicense {
   private:
     char* dxui_args;
-    boolean limited_use;
+    bool limited_use;
 
     void setDxuiArgs(const char* );
 
@@ -42,7 +42,7 @@ class TemporaryLicense {
     void initialize();
     TemporaryLicense(){
 	this->dxui_args = NUL(char*);
-	this->limited_use = FALSE;
+	this->limited_use = false;
     };
     ~TemporaryLicense(){
 	if (this->dxui_args) delete this->dxui_args;
@@ -54,7 +54,7 @@ class TemporaryLicense {
   public:
     static const char* MakeKey(enum Arkh , char *, int , int , time_t *, enum DxType );
     const char* getDxuiArgs() { return this->dxui_args; }
-    boolean isLimitedUse() { return this->limited_use; }
+    bool isLimitedUse() { return this->limited_use; }
 };
 
 #endif

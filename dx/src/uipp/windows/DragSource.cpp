@@ -47,7 +47,7 @@ extern "C" int gethostname(char *address, int address_len);
 // drawable in X.  Using Xpm would be a great way to make a prettier cursor.
 //
 
-boolean DragSource::DragSourceClassInitialized = FALSE;
+bool DragSource::DragSourceClassInitialized = false;
 //XtTranslations DragSource::drag_tranlations = NULL;
 
 void* DragSource::TransferData = 0;
@@ -73,7 +73,7 @@ DragSource::~DragSource()
 {
 }
 
-void DragSource::addSupportedType (int tag, const char *typeName, boolean preferred)
+void DragSource::addSupportedType (int tag, const char *typeName, bool preferred)
 {
     ASSERT(typeName);
     ASSERT(typeName[0]);
@@ -239,7 +239,7 @@ void DragSource::addSupportedType (int tag, const char *typeName, boolean prefer
 //    XtAddCallback(this->drag_context, XmNdropFinishCallback, 
 //		    DragSource_DropFinishCB, this);
 //    if (this->intra_toplevel) {
-//	this->inside_own_shell = TRUE;
+//	this->inside_own_shell = true;
 //	this->top_level_window = 0;
 //	XtAddCallback(this->drag_context, XmNtopLevelLeaveCallback, 
 //			DragSource_TopLevelLeaveCB, this);
@@ -380,7 +380,7 @@ void DragSource::addSupportedType (int tag, const char *typeName, boolean prefer
 //    XGetWindowProperty (d, root, DELETE_ATOM, 0, 4, False, XA_STRING,
 //	&actual_type, &actual_format, &nitems, &remain, &data);
 //
-//    if ((data) && (!strcmp((const char *)data, "TRUE"))) {
+//    if ((data) && (!strcmp((const char *)data, "true"))) {
 //	if (DragSource::TransferData) 
 //#if !defined(sun4)
 //	    free (DragSource::TransferData);
@@ -415,7 +415,7 @@ void DragSource::dropFinish(long, int, unsigned char)
 //	ds->inside_own_shell = (ds->top_level_window == tlecbs->window);
 //}
 
-boolean DragSource::isIntraShell()
+bool DragSource::isIntraShell()
 {
     ASSERT(this->intra_toplevel);
 //    ASSERT(this->drag_context);

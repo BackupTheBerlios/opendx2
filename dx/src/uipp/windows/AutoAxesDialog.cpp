@@ -92,7 +92,7 @@ int AutoAxesDialog::MinWidths[] = {
 //	    WarningMessage("Set value failed:%s", name);}
 //
 
-boolean AutoAxesDialog::ClassInitialized = FALSE;
+bool AutoAxesDialog::ClassInitialized = false;
 
 
 //#define BG_IS_TEXTPOPUP 1
@@ -1378,7 +1378,7 @@ void AutoAxesDialog::createDialog()
 //	dialog->unmanage();
 //	break;
 //      default:
-//	ASSERT(FALSE);
+//	ASSERT(false);
 //	break;
 //    }
 //}
@@ -1583,7 +1583,7 @@ AutoAxesDialog::AutoAxesDialog(ImageWindow* image) :
     this->saved_bg_color = NULL;
     this->fontSelection = NULL; 
     this->dirtyBits = 0;
-    this->deferNotify = FALSE;
+    this->deferNotify = false;
     this->tickList[XTICK_LIST] = this->tickList[YTICK_LIST] = 
 	this->tickList[ZTICK_LIST] = NULL;
     this->bgColor = NULL;
@@ -1617,7 +1617,7 @@ AutoAxesDialog::AutoAxesDialog(ImageWindow* image) :
 	//    fg, bg, depth);
 
 
- //       AutoAxesDialog::ClassInitialized = TRUE;
+ //       AutoAxesDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
@@ -1650,14 +1650,14 @@ AutoAxesDialog::~AutoAxesDialog()
 
 void AutoAxesDialog::unmanage()
 {
-    this->setMinWidth(FALSE);
+    this->setMinWidth(false);
     this->Dialog::unmanage();
 }
 
 void AutoAxesDialog::manage()
 {
     this->Dialog::manage();
-    this->setMinWidth(TRUE);
+    this->setMinWidth(true);
     this->update();
 }
 
@@ -1740,19 +1740,19 @@ void AutoAxesDialog::setAutoAxesDialogTicks()
 	//	(!this->image->isAutoAxesZTickLocsSet())) 
 	//	SET_OM_NAME(this->ticks_om, "All");
 	//}
-	//this->setTicksSensitivity(TRUE);
+	//this->setTicksSensitivity(true);
  //   }
  //   else if ((this->image->isAutoAxesXTickLocsSet()) ||
 	//	(this->image->isAutoAxesYTickLocsSet()) ||
 	//	(this->image->isAutoAxesZTickLocsSet())) 
  //   {
 	//XmToggleButtonSetState(this->ticks_tb, True, False);
-	//this->setTicksSensitivity(TRUE);
+	//this->setTicksSensitivity(true);
  //   }
  //   else
  //   {
 	//XmToggleButtonSetState(this->ticks_tb, False, False);
-	//this->setTicksSensitivity(FALSE);
+	//this->setTicksSensitivity(false);
  //   }
 
  //   this->dirtyBits&= ~DIRTY_TICKS;
@@ -1776,7 +1776,7 @@ void AutoAxesDialog::setAutoAxesDialogXTickLocs()
 //	this->tickList[XTICK_LIST]->setListSize (size);
 //	if (dvals) delete dvals;
 //	XmToggleButtonSetState(this->ticks_tb, True, False);
-//	this->setTicksSensitivity(TRUE);
+//	this->setTicksSensitivity(true);
 //	this->dirtyBits&= ~DIRTY_XTICK_LOCS;
 //	this->tickList[XTICK_LIST]->markNumbersClean();
 //    } else {
@@ -1900,7 +1900,7 @@ void AutoAxesDialog::setAutoAxesDialogYTickLocs()
 //	this->tickList[YTICK_LIST]->setListSize (size);
 //	if (dvals) delete dvals;
 //	XmToggleButtonSetState(this->ticks_tb, True, False);
-//	this->setTicksSensitivity(TRUE);
+//	this->setTicksSensitivity(true);
 //	this->dirtyBits&= ~DIRTY_YTICK_LOCS;
 //	this->tickList[YTICK_LIST]->markNumbersClean();
 //    } else {
@@ -1937,7 +1937,7 @@ void AutoAxesDialog::setAutoAxesDialogZTickLocs()
 //	this->tickList[ZTICK_LIST]->setListSize (size);
 //	if (dvals) delete dvals;
 //	XmToggleButtonSetState(this->ticks_tb, True, False);
-//	this->setTicksSensitivity(TRUE);
+//	this->setTicksSensitivity(true);
 //	this->dirtyBits&= ~DIRTY_ZTICK_LOCS;
 //	this->tickList[ZTICK_LIST]->markNumbersClean();
 //    } else {
@@ -2057,7 +2057,7 @@ void AutoAxesDialog::setAutoAxesDialogAnnotationColors()
 //    int		i, n, ncolors;
 //    char  	*sval[5], sv0[256], sv1[256], sv2[256], sv3[256];
 //    char  	*color[5], cr0[256], cr1[256], cr2[256], cr3[256];
-//    boolean     clear = FALSE;
+//    bool     clear = false;
 //    
 //    color[0] = cr0; color[1] = cr1; color[2] = cr2; color[3] = cr3;
 //    color[4] = 0;
@@ -2116,7 +2116,7 @@ void AutoAxesDialog::setAutoAxesDialogAnnotationColors()
 //#endif
 //		    if (EqualString(nextColor, "clear")) {
 //			SET_OM_NAME(this->background_om, "clear")
-//			clear = TRUE;
+//			clear = true;
 //		    } else
 //			SET_OM_NAME(this->background_om, "opaque");
 //		}
@@ -2155,7 +2155,7 @@ void AutoAxesDialog::setAutoAxesDialogCorners()
 //    if (!this->image->isAutoAxesCornersSet())
 //    {
 //	XmToggleButtonSetState(this->corners_tb, False, False);
-//	this->setCornersSensitivity(FALSE);
+//	this->setCornersSensitivity(false);
 //    }
 //    else
 //    {
@@ -2165,7 +2165,7 @@ void AutoAxesDialog::setAutoAxesDialogCorners()
 //	    XtVaSetValues(this->corners_number[i], 
 //		XmNdValue, DoubleVal(dval[i], dx_l), NULL);
 //        }
-//	this->setCornersSensitivity(TRUE);
+//	this->setCornersSensitivity(true);
 //    }
 //    this->dirtyBits&= ~DIRTY_CORNERS;
 }
@@ -2181,7 +2181,7 @@ void AutoAxesDialog::setAutoAxesDialogCursor()
 //    if (this->deferNotify) return ;
 //    if (!this->image->isAutoAxesCursorSet()) {
 //	XmToggleButtonSetState(this->cursor_tb, False, False);
-//	this->setCursorSensitivity (FALSE);
+//	this->setCursorSensitivity (false);
 //    } else {
 //	XmToggleButtonSetState(this->cursor_tb, True, False);
 //	this->image->getAutoAxesCursor (&dval[0], &dval[1], &dval[2]);
@@ -2189,7 +2189,7 @@ void AutoAxesDialog::setAutoAxesDialogCursor()
 //	    XtVaSetValues(this->cursor_number[i], XmNdValue, 
 //		DoubleVal(dval[i], dx_l), NULL);
 //	}
-//	this->setCursorSensitivity (TRUE);
+//	this->setCursorSensitivity (true);
 //    }
 //    this->dirtyBits&= ~DIRTY_CURSOR;
 }
@@ -2203,7 +2203,7 @@ void AutoAxesDialog::setAutoAxesDialogEnable()
     //this->dirtyBits&= ~DIRTY_ENABLE;
 }
 
-boolean
+bool
 AutoAxesDialog::isDirty (int member)
 {
     switch (member) {
@@ -2224,7 +2224,7 @@ AutoAxesDialog::isDirty (int member)
     }
 }
 
-boolean
+bool
 AutoAxesDialog::isDirty()
 {
     return (
@@ -2239,7 +2239,7 @@ void AutoAxesDialog::installValues()
 {
 //    int        i;
 //    Boolean    set;
-//    boolean    first;
+//    bool    first;
 //    Widget     wid;
 //    char       value[256];
 //    char       colors[256];
@@ -2249,10 +2249,10 @@ void AutoAxesDialog::installValues()
 //    int        ndx;
 //    DrivenNode *dnode;
 //
-//    boolean    did_we_send = FALSE;
+//    bool    did_we_send = false;
 //
 //    if (!this->isDirty()) return ;
-//    this->deferNotify = TRUE;
+//    this->deferNotify = true;
 //
 //    //
 //    // Defer visual notification, so that update is not
@@ -2298,7 +2298,7 @@ void AutoAxesDialog::installValues()
 //	    XtVaGetValues(this->ticks_om, XmNmenuHistory, &wid, NULL);
 //	    if (EqualString(XtName(wid), "All")) {
 //		XtVaGetValues(this->ticks_number[0], XmNiValue, &ival[0], NULL);
-//		boolean to_send = (this->dirtyBits == DIRTY_TICKS);
+//		bool to_send = (this->dirtyBits == DIRTY_TICKS);
 //		Widget in_or_out;
 //		XtVaGetValues(this->ticks_direction[0], XmNmenuHistory, &in_or_out, NULL);
 //		if (EqualString(XtName(in_or_out), "Out"))
@@ -2336,21 +2336,21 @@ void AutoAxesDialog::installValues()
 //    // Ticks Values
 //    //
 //    TickLabelList *tll;
-//    boolean value_mode = FALSE;
+//    bool value_mode = false;
 //    if (XmToggleButtonGetState(this->ticks_tb)) {
 //	XtVaGetValues(this->ticks_om, XmNmenuHistory, &wid, NULL);
-//	if(EqualString(XtName(wid), "Values")) value_mode = TRUE;
+//	if(EqualString(XtName(wid), "Values")) value_mode = true;
 //    }
 //
 //    // Tick Labels
 //    // Must do Labels before locations becuase labels might be empty.  If you
-//    // set send==TRUE for a parameter which is empty and which was empty, then
+//    // set send==true for a parameter which is empty and which was empty, then
 //    // the sendValues doesn't happen.
 //    for (i=XTICK_LIST; i<=ZTICK_LIST; i++) {
 //	tll = this->tickList[i];
 //
 //	int dirty_flag=0;
-//	boolean iscon=false;
+//	bool iscon=false;
 //	switch (i) {
 //	    case XTICK_LIST: 
 //		dirty_flag = DIRTY_XTICK_LABELS; 
@@ -2365,9 +2365,9 @@ void AutoAxesDialog::installValues()
 //		iscon = this->image->isAutoAxesZTickLabelsConnected();
 //		break;
 //	}
-//	boolean send = (this->dirtyBits == dirty_flag);
+//	bool send = (this->dirtyBits == dirty_flag);
 //	if ((this->dirtyBits&dirty_flag) && (!iscon)) {
-//	    boolean to_be_set = XmToggleButtonGetState(this->ticks_tb) && value_mode ;
+//	    bool to_be_set = XmToggleButtonGetState(this->ticks_tb) && value_mode ;
 //
 //	    if (to_be_set) {
 //		char *cp = tll->getTickTextString();
@@ -2417,7 +2417,7 @@ void AutoAxesDialog::installValues()
 //	tll = this->tickList[i];
 //
 //	int dirty_flag=0;
-//	boolean iscon=false;
+//	bool iscon=false;
 //	switch (i) {
 //	    case XTICK_LIST: 
 //		dirty_flag = DIRTY_XTICK_LOCS; 
@@ -2432,9 +2432,9 @@ void AutoAxesDialog::installValues()
 //		iscon = this->image->isAutoAxesZTickLocsConnected();
 //		break;
 //	}
-//	boolean send = (this->dirtyBits == dirty_flag);
+//	bool send = (this->dirtyBits == dirty_flag);
 //	if ((this->dirtyBits&dirty_flag) && (!iscon)) {
-//	    boolean to_be_set = XmToggleButtonGetState(this->ticks_tb) && value_mode ;
+//	    bool to_be_set = XmToggleButtonGetState(this->ticks_tb) && value_mode ;
 //
 //	    if (to_be_set) {
 //		switch (i) {
@@ -2520,10 +2520,10 @@ void AutoAxesDialog::installValues()
 //    //
 //    if ((this->dirtyBits&DIRTY_LABELS) && (!this->image->isAutoAxesLabelsConnected())) {
 //	value[0] = '\0';
-//	first = TRUE;
+//	first = true;
 //	int vndx;
 //	int j;
-//	boolean empty_string_list = TRUE;
+//	bool empty_string_list = true;
 //	vndx = 0;
 //	for(i = 0; i < 3; i++) {
 //	    str = XmTextGetString(this->axes_label[i]);
@@ -2531,16 +2531,16 @@ void AutoAxesDialog::installValues()
 //	    if (str) {
 //		int len = STRLEN(str);
 //		if ((len != 0) && (len != 2)) 
-//		    empty_string_list = FALSE;
+//		    empty_string_list = false;
 //		else if ((len == 2) && ((str[0] != '"')||(str[1] != '"')))
-//		    empty_string_list = FALSE;
+//		    empty_string_list = false;
 //	    }
 // 
 //	    if(!first) value[vndx++] = ',';
 //
 //	    // If the first or last characters are not "'s,
 //	    // place "'s around the string
-//	    boolean quote_item;
+//	    bool quote_item;
 //	    quote_item = str[0] != '"' || str[STRLEN(str)-1] != '"';
 //
 //	    int startndx, endndx;
@@ -2565,7 +2565,7 @@ void AutoAxesDialog::installValues()
 //		}
 //	    }
 //
-//	    first = FALSE;
+//	    first = false;
 //	    delete str;
 //	}
 //	value[vndx++] = '\0';
@@ -2642,7 +2642,7 @@ void AutoAxesDialog::installValues()
 //	colors[0] = '\0';
 //	strcat(value, "{");
 //	strcat(colors, "{");
-//	first = TRUE;
+//	first = true;
 //
 //#if BG_IS_TEXTPOPUP
 //	str = this->bgColor->getText();
@@ -2655,7 +2655,7 @@ void AutoAxesDialog::installValues()
 //	    strcat(colors, "\"");
 //	    strcat(colors, str);
 //	    strcat(colors, "\"");
-//	    first = FALSE;
+//	    first = false;
 //	}
 //	XtFree(str);
 //
@@ -2670,7 +2670,7 @@ void AutoAxesDialog::installValues()
 //	    strcat(colors, "\"");
 //	    strcat(colors, str);
 //	    strcat(colors, "\"");
-//	    first = FALSE;
+//	    first = false;
 //	}
 //	XtFree(str);
 //
@@ -2685,7 +2685,7 @@ void AutoAxesDialog::installValues()
 //	    strcat(colors, "\"");
 //	    strcat(colors, str);
 //	    strcat(colors, "\"");
-//	    first = FALSE;
+//	    first = false;
 //	}
 //	XtFree(str);
 //
@@ -2699,17 +2699,17 @@ void AutoAxesDialog::installValues()
 //	    strcat(value, "\"labels\"");
 //	    strcat(colors, "\"");
 //	    strcat(colors, str);
-//	    strcat(colors, "\""); first = FALSE;
+//	    strcat(colors, "\""); first = false;
 //	}
 //	XtFree(str);
 //
 //	if(!first) {
 //	    strcat(value, "}");
 //	    strcat(colors, "}");
-//	    this->image->setAutoAxesAnnotation(value, FALSE);
+//	    this->image->setAutoAxesAnnotation(value, false);
 //	    this->image->setAutoAxesColors(colors, this->dirtyBits == DIRTY_COLORS);
 //	} else {
-//	    this->image->unsetAutoAxesAnnotation(FALSE);
+//	    this->image->unsetAutoAxesAnnotation(false);
 //	    this->image->unsetAutoAxesColors(this->dirtyBits == DIRTY_COLORS);
 //	}
 //	did_we_send|= (this->dirtyBits == DIRTY_COLORS);
@@ -2722,7 +2722,7 @@ void AutoAxesDialog::installValues()
 //    if ((this->dirtyBits&DIRTY_ENABLE) && (!this->image->isAutoAxesEnableConnected())) {
 //	XtVaGetValues(this->enable_tb, XmNset, &set, NULL);
 //	this->image->setAutoAxesEnable((set ? 1 : 0), (this->dirtyBits == DIRTY_ENABLE));
-//	//if (!set) this->flipAllTabsUp(FALSE);
+//	//if (!set) this->flipAllTabsUp(false);
 //	did_we_send|= (this->dirtyBits == DIRTY_ENABLE);
 //    }
 //    this->dirtyBits&= ~DIRTY_ENABLE;
@@ -2734,13 +2734,13 @@ void AutoAxesDialog::installValues()
 //	dnode->undeferVisualNotification();
 //
 //    ASSERT (did_we_send);
-//    this->deferNotify = FALSE;
+//    this->deferNotify = false;
 }
 
 void
-AutoAxesDialog::flipAllTabsUp(boolean send)
+AutoAxesDialog::flipAllTabsUp(bool send)
 {
-    this->image->unsetAutoAxesEnable(FALSE);
+    this->image->unsetAutoAxesEnable(false);
 
     // Miscellaneous
     if (!this->image->isAutoAxesFrameConnected())
@@ -2854,10 +2854,10 @@ void AutoAxesDialog::setEnableSensitivity()
 //
 // Do the clear/opaque option menu also.  They're really the same param.
 //
-void AutoAxesDialog::setColorsSensitivity(boolean clear)
+void AutoAxesDialog::setColorsSensitivity(bool clear)
 {
-    boolean isCon = this->image->isAutoAxesColorsConnected();
-    boolean sens = ((!isCon) && (!clear)); 
+    bool isCon = this->image->isAutoAxesColorsConnected();
+    bool sens = ((!isCon) && (!clear)); 
 
     //
     // One widget depends on connectedness and on an option menu, 
@@ -2875,22 +2875,22 @@ void AutoAxesDialog::setColorsSensitivity(boolean clear)
 //    XtSetSensitive (this->label_color,   !isCon);
 }
 
-void AutoAxesDialog::setCornersSensitivity(boolean button_set)
+void AutoAxesDialog::setCornersSensitivity(bool button_set)
 {
 //int i;
 //
-//    boolean isCon = this->image->isAutoAxesCornersConnected();
+//    bool isCon = this->image->isAutoAxesCornersConnected();
 //    Boolean sens = ((!isCon) && (button_set)); 
 //    XtSetSensitive (this->corners_tb, !isCon);
 //    for(i = 0; i < 6; i++) 
 //	XtSetSensitive(this->corners_number[i], sens);
 }
 
-void AutoAxesDialog::setCursorSensitivity (boolean button_set)
+void AutoAxesDialog::setCursorSensitivity (bool button_set)
 {
 //int i;
 //
-//    boolean isCon = this->image->isAutoAxesCursorConnected();
+//    bool isCon = this->image->isAutoAxesCursorConnected();
 //    Boolean sens = ((!isCon) && (button_set)); 
 //    XtSetSensitive (this->cursor_tb, !isCon);
 //    for(i = 0; i < 3; i++)
@@ -2898,14 +2898,14 @@ void AutoAxesDialog::setCursorSensitivity (boolean button_set)
 }
 
 
-void AutoAxesDialog::setTicksSensitivity(boolean button_set)
+void AutoAxesDialog::setTicksSensitivity(bool button_set)
 {
     //
     // There are 3 different modes.
     //
  //   Widget w;
  //   XtVaGetValues(this->ticks_om, XmNmenuHistory, &w, NULL);
- //   boolean isCon = this->image->isAutoAxesTicksConnected();
+ //   bool isCon = this->image->isAutoAxesTicksConnected();
  //   Boolean sens_per = 
 	//((!isCon) && (button_set) && (EqualString(XtName(w), "PerAxis")));
  //   Boolean sens_all = 
@@ -2997,7 +2997,7 @@ AutoAxesDialog::TLLModifyCB (TickLabelList *, void* clientData)
 // XmNminWidth before their respective activities.
 //
 void
-AutoAxesDialog::setMinWidth(boolean going_up)
+AutoAxesDialog::setMinWidth(bool going_up)
 {
 //#ifndef AIX312_MWM_IS_FIXED
 //int i;
@@ -3057,14 +3057,14 @@ AutoAxesDialog::setMinWidth(boolean going_up)
 //    int minWidth = 0;
 //
 //    if (dialog->isManaged()) {
-//	boolean will_be_managed;
+//	bool will_be_managed;
 //	for (i=0; i<=BUTTON_FORM; i++) {
-//	    will_be_managed = FALSE;
+//	    will_be_managed = false;
 //	    if ((dialog->subForms[i] != widget_to_manage) && 
 //		(XtIsManaged(dialog->subForms[i]))) {
-//		will_be_managed = TRUE;
+//		will_be_managed = true;
 //	    } else if ((dialog->subForms[i] == widget_to_manage) && (set))
-//		will_be_managed = TRUE;
+//		will_be_managed = true;
 //
 //	    if ((will_be_managed) && (AutoAxesDialog::MinWidths[i] > minWidth))
 //		minWidth = AutoAxesDialog::MinWidths[i];
@@ -3078,9 +3078,9 @@ AutoAxesDialog::setMinWidth(boolean going_up)
 //	//
 //	Dimension width;
 //	XtVaGetValues (diag, XmNwidth, &width, NULL);
-//	boolean maintain_width = TRUE;
+//	bool maintain_width = true;
 //	if ((!set) && (width == AutoAxesDialog::MinWidths[which_form]))
-//	    maintain_width = FALSE;
+//	    maintain_width = false;
 //
 //	if ((width >= minWidth) && (maintain_width))
 //	    XtVaSetValues (diag, XmNminWidth, width, NULL);
@@ -3210,7 +3210,7 @@ AutoAxesDialog::setMinWidth(boolean going_up)
 //{
 //    ASSERT(clientData);
 //    AutoAxesDialog *dialog = (AutoAxesDialog*) clientData;
-//    boolean clear;
+//    bool clear;
 //
 //#if defined(BG_IS_TEXTPOPUP)
 //    char *str = dialog->bgColor->getText();
@@ -3220,9 +3220,9 @@ AutoAxesDialog::setMinWidth(boolean going_up)
 //
 //    if(!EqualString("clear", str)) {
 //	SET_OM_NAME(dialog->background_om, "opaque");
-//	clear = FALSE;
+//	clear = false;
 //    } else 
-//	clear = TRUE;
+//	clear = true;
 //
 //    if(str) delete str;
 //
@@ -3236,7 +3236,7 @@ AutoAxesDialog::setMinWidth(boolean going_up)
 //{
 //    ASSERT(clientData);
 //    AutoAxesDialog *dialog = (AutoAxesDialog*) clientData;
-//    boolean clear = EqualString (XtName(w), "clear");
+//    bool clear = EqualString (XtName(w), "clear");
 //
 //    //
 //    // If the option menu says "clear", then put that text into the

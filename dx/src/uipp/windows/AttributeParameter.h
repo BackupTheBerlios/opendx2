@@ -51,7 +51,7 @@ class AttributeParameter : public BinaryParameter
 
      Node 	*node;
      int	index;
-     boolean	syncOnTypeMatch;
+     bool	syncOnTypeMatch;
 
   public:
 
@@ -75,12 +75,12 @@ class AttributeParameter : public BinaryParameter
     // If the super-class method succeeds then, copy the value into 
     // the attribute (the secondary parameter value).
     //
-    virtual boolean 	setValue(const char *v, Type type, boolean coerce=TRUE)
-		{  boolean r = this->BinaryParameter::setValue(v,type,coerce);
+    virtual bool 	setValue(const char *v, Type type, bool coerce=true)
+		{  bool r = this->BinaryParameter::setValue(v,type,coerce);
 		   if (r && this->syncOnTypeMatch && (this->hasValue() &&
 			     this->getValueType() == this->get2ndValueType())) {
 			r = this->set2ndValue(this->getSetValueString(),
-							type,FALSE);
+							type,false);
 			ASSERT(r);
 		   }
 		   return r;
@@ -90,16 +90,16 @@ class AttributeParameter : public BinaryParameter
     //
     // Copy the parameter value into the Attribute value.
     //
-    boolean  syncAttributeValue();
+    bool  syncAttributeValue();
 
     //
     // Make sure that the primary parameter has the same value as the
     // attribute when appropriate.  Appropriate is defined as the primary
     // parameter having a value and a type which is the same as the attribute's.
     //
-    boolean	syncPrimaryValue(boolean force = FALSE); 
+    bool	syncPrimaryValue(bool force = false); 
 
-    void setSyncOnTypeMatch(boolean v = TRUE) 
+    void setSyncOnTypeMatch(bool v = true) 
 			{ this->syncOnTypeMatch = v; }
 
     //
@@ -108,15 +108,15 @@ class AttributeParameter : public BinaryParameter
     // and (the primary parameter is defaulting or the value has the same 
     // type as the attribute value.
     //
-    boolean  isAttributeVisuallyWriteable();
+    bool  isAttributeVisuallyWriteable();
 
-    boolean 	setAttributeValue(const char *val, boolean force = FALSE)
+    bool 	setAttributeValue(const char *val, bool force = false)
 		{ return this->set2ndValue(val) && 
 				this->syncPrimaryValue(force); }
 
-    boolean 	initAttributeValue(const char *val)
+    bool 	initAttributeValue(const char *val)
 		{ return this->set2ndValue(val) && 
-			 this->syncPrimaryValue(TRUE); }
+			 this->syncPrimaryValue(true); }
 
 
 
@@ -132,7 +132,7 @@ class AttributeParameter : public BinaryParameter
     //
     // S/Get the i'th component of a vector attribute.  
     //
-    boolean setAttributeComponentValue(int index, double value) 
+    bool setAttributeComponentValue(int index, double value) 
 		{ return this->set2ndComponentValue(index, value) && 
 					this->syncPrimaryValue(); }
 
@@ -145,7 +145,7 @@ class AttributeParameter : public BinaryParameter
 		{ return (this->has2ndValue() ? 
 				this->get2ndComponentCount() : 0); }
 
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

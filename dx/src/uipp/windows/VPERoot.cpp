@@ -86,7 +86,7 @@ void VPERoot::showWorkSpace (int page)
     // hidden.  This way the user doesn't see the canvas repositioning.  It just
     // appears at the proper location.
     //
-    boolean reset_scrollbars = FALSE;
+    bool reset_scrollbars = false;
     this->to_be_shown = this;
     if (page) 
 	this->to_be_shown = (EditorWorkSpace*)this->getElement(page);
@@ -127,13 +127,13 @@ void VPERoot::showWorkSpace (int page)
 //    return True;
 //}
 
-boolean VPERoot::isA (Symbol classname)
+bool VPERoot::isA (Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassVPERoot);
     return (s == classname);
 }
 
-boolean VPERoot::isA (const char* classname)
+bool VPERoot::isA (const char* classname)
 {
     Symbol s = theSymbolManager->registerSymbol(classname);
     return this->isA(s);

@@ -26,8 +26,8 @@ PixelImageFormat::PixelImageFormat (const char *name, ImageFormatDialog *dialog)
     this->dirty = 0;
     this->size_val = NUL(char*);
     //this->size_text = NUL(Widget);
-    this->use_nodes_resolution = TRUE;
-    this->use_nodes_aspect = TRUE;
+    this->use_nodes_resolution = true;
+    this->use_nodes_aspect = true;
     //this->size_timer = 0;
 }
 
@@ -81,24 +81,24 @@ PixelImageFormat::~PixelImageFormat()
 //    return body;
 //}
 
-boolean PixelImageFormat::useLocalResolution()
+bool PixelImageFormat::useLocalResolution()
 {
 ImageNode *node = this->dialog->getNode();
-    boolean rescon = node->isRecordResolutionConnected();
-    boolean rerender = this->dialog->isRerenderAllowed();
+    bool rescon = node->isRecordResolutionConnected();
+    bool rerender = this->dialog->isRerenderAllowed();
 
-    if ((rescon) || (!rerender)) return FALSE;
-    return ((this->dirty & PixelImageFormat::DirtyResolution)?TRUE:FALSE) ;
+    if ((rescon) || (!rerender)) return false;
+    return ((this->dirty & PixelImageFormat::DirtyResolution)?true:false) ;
 }
 
-boolean PixelImageFormat::useLocalAspect()
+bool PixelImageFormat::useLocalAspect()
 {
 ImageNode *node = this->dialog->getNode();
-    boolean aspcon = node->isRecordAspectConnected();
-    boolean rerender = this->dialog->isRerenderAllowed();
+    bool aspcon = node->isRecordAspectConnected();
+    bool rerender = this->dialog->isRerenderAllowed();
 
-    if ((aspcon) || (!rerender)) return FALSE;
-    return ((this->dirty & PixelImageFormat::DirtyAspect)?TRUE:FALSE) ;
+    if ((aspcon) || (!rerender)) return false;
+    return ((this->dirty & PixelImageFormat::DirtyAspect)?true:false) ;
 }
 
 void PixelImageFormat::setCommandActivation()
@@ -111,34 +111,34 @@ ImageNode *node = this->dialog->getNode();
     //
     // Flags which will tell use what to do...
     //
-    boolean rescon = node->isRecordResolutionConnected();
-    boolean resset = rescon || node->isRecordResolutionSet();
-    boolean aspcon = node->isRecordAspectConnected();
-    boolean aspset = aspcon || node->isRecordAspectSet();
-    boolean dirty_res = (this->dirty & PixelImageFormat::DirtyResolution);
-    boolean dirty_asp = (this->dirty & PixelImageFormat::DirtyAspect);
-    boolean rerender = this->dialog->isRerenderAllowed();
+    bool rescon = node->isRecordResolutionConnected();
+    bool resset = rescon || node->isRecordResolutionSet();
+    bool aspcon = node->isRecordAspectConnected();
+    bool aspset = aspcon || node->isRecordAspectSet();
+    bool dirty_res = (this->dirty & PixelImageFormat::DirtyResolution);
+    bool dirty_asp = (this->dirty & PixelImageFormat::DirtyAspect);
+    bool rerender = this->dialog->isRerenderAllowed();
 
     //
     // What are the node's values?
     //
-    boolean resfetched = FALSE;
-    boolean aspfetched = FALSE;
+    bool resfetched = false;
+    bool aspfetched = false;
     if (rescon) {
 	node->getRecordResolution(x,y);
-	resfetched = TRUE;
+	resfetched = true;
     } 
     if (aspcon) {
 	node->getRecordAspect(aspect);
-	aspfetched = TRUE;
+	aspfetched = true;
     } 
     if ((rerender) && (!resfetched) && (resset)) {
 	node->getRecordResolution(x,y);
-	resfetched = TRUE;
+	resfetched = true;
     }
     if ((rerender) && (!aspfetched) && (aspset)) {
 	node->getRecordAspect(aspect);
-	aspfetched = TRUE;
+	aspfetched = true;
     }
     if (!resfetched) 
 	node->getResolution(x,y);
@@ -226,8 +226,8 @@ void PixelImageFormat::parseImageSize(const char *str)
 
     char *dimstr = DuplicateString(str);
 
-    boolean width_parsed = FALSE;
-    boolean height_parsed = FALSE;
+    bool width_parsed = false;
+    bool height_parsed = false;
     int width, height;
 
     char *cp = strchr(dimstr, (int)'x');
@@ -237,7 +237,7 @@ void PixelImageFormat::parseImageSize(const char *str)
     }
     if ((!cp) || (cp != dimstr)) {
 	int items_parsed = sscanf (dimstr, "%d", &width);
-	if (items_parsed == 1) width_parsed = TRUE;
+	if (items_parsed == 1) width_parsed = true;
     }
     delete dimstr;
 
@@ -249,7 +249,7 @@ void PixelImageFormat::parseImageSize(const char *str)
 	cp++;
 	if (cp[0]) {
 	    int items_parsed = sscanf (cp, "%d", &height);
-	    if (items_parsed == 1) height_parsed = TRUE;
+	    if (items_parsed == 1) height_parsed = true;
 	}
     }
     delete dimstr;
@@ -308,11 +308,11 @@ void PixelImageFormat::shareSettings (ImageFormat *imgfmt)
     }
 }
 
-boolean PixelImageFormat::isA(Symbol classname)
+bool PixelImageFormat::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassPixelImageFormat);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ImageFormat::isA(classname);
 }

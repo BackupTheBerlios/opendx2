@@ -41,17 +41,17 @@ class Dialog;
 //				
 class LoadMacroDialog : public OpenNetworkDialog
 {
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //friend void LoadMacroDialog_LoadDirectoryCB(Widget widget, 
 				//	XtPointer clientData,
     //                                 	XtPointer callData);
-    boolean doingOk;
+    bool doingOk;
 
   protected:
 
     //static String  DefaultResources[];
-    virtual boolean okCallback(Dialog *d);
+    virtual bool okCallback(Dialog *d);
     virtual void okFileWork(const char *string);
     virtual void createDialog();
 

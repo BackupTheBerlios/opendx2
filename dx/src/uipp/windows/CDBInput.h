@@ -47,8 +47,8 @@ class CDBInput : public CDBParameter
 #else
     Widget  valueWidget;
 #endif
-    boolean valueChanged;
-    boolean initialValueIsDefault;
+    bool valueChanged;
+    bool initialValueIsDefault;
     char   *initialValue;
     int	    modified;    
 
@@ -60,9 +60,9 @@ class CDBInput : public CDBParameter
 #if 00 
 	this->valueWidget = NULL;
 #endif
-	this->valueChanged = FALSE;
+	this->valueChanged = false;
 	this->initialValue = NULL;
-	this->initialValueIsDefault = FALSE;
+	this->initialValueIsDefault = false;
 	this->valueTextPopup = new TextPopup();
 	this->modified = 0;
     }

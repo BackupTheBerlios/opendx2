@@ -217,8 +217,8 @@ ImageNode::ImageNode(NodeDefinition *nd, Network *net, int instnc) :
     DisplayNode(nd, net, instnc)
 {
     ImageDefinition *imnd = (ImageDefinition*)nd;
-    this->macroDirty = TRUE;
-    this->translating = FALSE;
+    this->macroDirty = true;
+    this->translating = false;
 
     //
     // Anything below here also belongs in this->setDefaultCfgState().
@@ -232,28 +232,28 @@ ImageNode::~ImageNode()
 {
 }
 
-boolean 
+bool 
 ImageNode::initialize()
 {
-    theApplication->setBusyCursor(TRUE);
+    theApplication->setBusyCursor(true);
 
     this->DisplayNode::initialize();
 
     if (! this->setMessageIdParameter(IMAGETAG))
-	    return FALSE;
+	    return false;
 
-    this->enableVector(FALSE, FALSE);
+    this->enableVector(false, false);
     if (this->image != NULL)
-	this->image->allowDirectInteraction(FALSE);
+	this->image->allowDirectInteraction(false);
 
     this->height = -1;
 
-    this->enableSoftwareRendering(TRUE, FALSE);
-    this->setButtonUp(TRUE, FALSE);
+    this->enableSoftwareRendering(true, false);
+    this->setButtonUp(true, false);
 
-    theApplication->setBusyCursor(FALSE);
+    theApplication->setBusyCursor(false);
 
-    return TRUE;
+    return true;
 }
 
 void ImageNode::setDefaultCfgState()
@@ -282,21 +282,21 @@ void ImageNode::setDefaultCfgState()
 }
 
 
-boolean ImageNode::useVector()
+bool ImageNode::useVector()
 {
     Parameter *p = this->getInputParameter(USEVECTOR);
     const char *s = p->getValueOrDefaultString();
     return *s != '0';
 }
 
-boolean ImageNode::useAutoAxes()
+bool ImageNode::useAutoAxes()
 {
     Parameter *p = this->getInputParameter(AAENABLE);
     const char *s = p->getValueOrDefaultString();
     return *s != '0';
 }
 
-boolean ImageNode::useSoftwareRendering()
+bool ImageNode::useSoftwareRendering()
 {
     Parameter *p = this->getInputParameter(RENDER_MODE);
     const char *s = p->getValueOrDefaultString();
@@ -309,7 +309,7 @@ boolean ImageNode::useSoftwareRendering()
 Type ImageNode::setInputValue(int index,
 			      const char *value,
 			      Type t,
-			      boolean send)
+			      bool send)
 {
     Type result;
 
@@ -388,7 +388,7 @@ Type ImageNode::setInputValue(int index,
 Type ImageNode::setInputSetValue(int index,
 			      const char *value,
 			      Type t,
-			      boolean send)
+			      bool send)
 {
     Type result;
 
@@ -468,30 +468,30 @@ Type ImageNode::setInputSetValue(int index,
     return result;
 }
 
-boolean ImageNode::sendValues(boolean ignoreDirty)
+bool ImageNode::sendValues(bool ignoreDirty)
 {
     ListIterator li(*this->getNetwork()->getImageList());
     ImageWindow *w;
-    boolean sendMacro = TRUE;	// This shouldn't be necessary, 
+    bool sendMacro = true;	// This shouldn't be necessary, 
 				// the loop should catch all cases.
     while( (w = (ImageWindow*)li.getNext()) )
 	if (w == this->image)
 	{
-	    sendMacro = TRUE;
+	    sendMacro = true;
 	    break;
 	}
 	else if (w->getAssociatedNode() != NULL &&
 	    w->getAssociatedNode()->isA(ClassImageNode))
 	{
-	    sendMacro = FALSE;
+	    sendMacro = false;
 	    break;
 	}
     if (sendMacro && (ignoreDirty || this->macroDirty))
     {
 	DXPacketIF *pif = theDXApplication->getPacketIF();
 	//if (pif == NULL || !this->sendMacro(pif))
-	//    return FALSE;
-	this->macroDirty = FALSE;
+	//    return false;
+	this->macroDirty = false;
     }
     return this->DisplayNode::sendValues(ignoreDirty);
 }
@@ -502,25 +502,25 @@ boolean ImageNode::sendValues(boolean ignoreDirty)
 // work.  If you never open an image window then each image tool will
 // write out an image macro.  This should really be done in Network.
 //
-boolean ImageNode::printValues(FILE *f, const char *prefix, PrintType dest)
+bool ImageNode::printValues(FILE *f, const char *prefix, PrintType dest)
 {
     ListIterator li(*this->getNetwork()->getImageList());
     ImageWindow *w;
-    boolean sendMacro=TRUE;
+    bool sendMacro=true;
     while( (w = (ImageWindow*)li.getNext()) )
 	if (w == this->image)
 	{
-	    sendMacro = TRUE;
+	    sendMacro = true;
 	    break;
 	}
 	else if ((w->getAssociatedNode())&&(w->getAssociatedNode()->isA(ClassImageNode)))
 	{
-	    sendMacro = FALSE;
+	    sendMacro = false;
 	    break;
 	}
     if (sendMacro)
 	//if (!this->printMacro(f))
-	//    return FALSE;
+	//    return false;
    return DisplayNode::printValues(f, prefix, dest);
 }
 
@@ -529,7 +529,7 @@ boolean ImageNode::printValues(FILE *f, const char *prefix, PrintType dest)
 #define VECTOR_LENGTH (FLOAT_LENGTH*3+10)
 #define INT_LENGTH    11
 
-void ImageNode::notifyUseVectorChange(boolean newUse)
+void ImageNode::notifyUseVectorChange(bool newUse)
 {
     if (newUse == this->useVector())
 	return;
@@ -539,12 +539,12 @@ void ImageNode::notifyUseVectorChange(boolean newUse)
     {
 	if (newUse)
 	{
-	    this->useAssignedInputValue(TO, FALSE);
-	    this->useAssignedInputValue(FROM, FALSE);
-	    this->useAssignedInputValue(WIDTH, FALSE);
-	    this->useAssignedInputValue(UP, FALSE);
-	    this->useAssignedInputValue(VIEWANGLE, FALSE);
-	    this->useAssignedInputValue(PROJECTION, FALSE);
+	    this->useAssignedInputValue(TO, false);
+	    this->useAssignedInputValue(FROM, false);
+	    this->useAssignedInputValue(WIDTH, false);
+	    this->useAssignedInputValue(UP, false);
+	    this->useAssignedInputValue(VIEWANGLE, false);
+	    this->useAssignedInputValue(PROJECTION, false);
 	    this->setInputDirty(TO);
 	    this->setInputDirty(FROM);
 	    this->setInputDirty(WIDTH);
@@ -554,15 +554,15 @@ void ImageNode::notifyUseVectorChange(boolean newUse)
 	}
 	else
 	{
-	    this->useDefaultInputValue(TO, FALSE);
-	    this->useDefaultInputValue(FROM, FALSE);
-	    this->useDefaultInputValue(WIDTH, FALSE);
-	    this->useDefaultInputValue(UP, FALSE);
-	    this->useDefaultInputValue(VIEWANGLE, FALSE);
+	    this->useDefaultInputValue(TO, false);
+	    this->useDefaultInputValue(FROM, false);
+	    this->useDefaultInputValue(WIDTH, false);
+	    this->useDefaultInputValue(UP, false);
+	    this->useDefaultInputValue(VIEWANGLE, false);
 	}
     }
 }
-void ImageNode::enableVector(boolean use, boolean send)
+void ImageNode::enableVector(bool use, bool send)
 {
     if (use == this->useVector())
 	return;
@@ -571,31 +571,31 @@ void ImageNode::enableVector(boolean use, boolean send)
     Parameter *p = this->getInputParameter(USEVECTOR);
     p->setDirty();
 }
-void ImageNode::setTo(double *to, boolean send)
+void ImageNode::setTo(double *to, bool send)
 {
     char s[100];
     sprintf(s, "[%g %g %g]", to[0], to[1], to[2]);
     this->setInputValue(TO, s, DXType::VectorType, send);
 }
-void ImageNode::setFrom(double *from, boolean send)
+void ImageNode::setFrom(double *from, bool send)
 {
     char s[100];
     sprintf(s, "[%g %g %g]", from[0], from[1], from[2]);
     this->setInputValue(FROM, s, DXType::VectorType, send);
 }
-void ImageNode::setResolution(int x, int y, boolean send)
+void ImageNode::setResolution(int x, int y, bool send)
 {
     char s[100];
     sprintf(s, "%d", x);
     this->setInputValue(RESOLUTION, s, DXType::IntegerType, send);
     this->height = y;
 }
-void ImageNode::setWidth(double w, boolean send)
+void ImageNode::setWidth(double w, bool send)
 {
     char s[100];
     sprintf(s, "%g", w);
 
-    boolean persp;
+    bool persp;
     this->getProjection(persp);
 
     if (persp)
@@ -603,26 +603,26 @@ void ImageNode::setWidth(double w, boolean send)
     else
 	this->setInputValue(WIDTH, s, DXType::ScalarType, send);
 }
-void ImageNode::setAspect(double a, boolean send)
+void ImageNode::setAspect(double a, bool send)
 {
     char s[100];
     sprintf(s, "%g", a);
     this->setInputValue(ASPECT, s, DXType::ScalarType, send);
 }
-void ImageNode::setThrottle(double a, boolean send)
+void ImageNode::setThrottle(double a, bool send)
 {
     char s[100];
     sprintf(s, "%g", a);
     this->setInputValue(THROTTLE, s, DXType::ScalarType, send);
 }
 
-void ImageNode::setUp(double *up, boolean send)
+void ImageNode::setUp(double *up, bool send)
 {
     char s[100];
     sprintf(s, "[%g %g %g]", up[0], up[1], up[2]);
     this->setInputValue(UP, s, DXType::VectorType, send);
 }
-void ImageNode::setBox(double box[4][3], boolean send)
+void ImageNode::setBox(double box[4][3], bool send)
 {
     int i;
     int j;
@@ -630,33 +630,33 @@ void ImageNode::setBox(double box[4][3], boolean send)
 	for (j = 0; j < 4; ++j)
 	    this->boundingBox[j][i] = box[j][i];
 }
-void ImageNode::notifyProjectionChange(boolean newPersp)
+void ImageNode::notifyProjectionChange(bool newPersp)
 {
     int parameter;
     if (newPersp)
 	parameter = WIDTH;
     else
 	parameter = VIEWANGLE;
-    this->useDefaultInputValue(parameter, FALSE);
+    this->useDefaultInputValue(parameter, false);
     if (newPersp)
 	parameter = VIEWANGLE;
     else
 	parameter = WIDTH;
-    this->useAssignedInputValue(parameter, FALSE);
+    this->useAssignedInputValue(parameter, false);
 }
-void ImageNode::setProjection(boolean persp, boolean send)
+void ImageNode::setProjection(bool persp, bool send)
 {
     char s[100];
     sprintf(s, "%d", persp);
     this->setInputValue(PROJECTION, s, DXType::IntegerType, send);
 }
 
-void ImageNode::setViewAngle(double angle, boolean send)
+void ImageNode::setViewAngle(double angle, bool send)
 {
     char s[100];
     sprintf(s, "%g", angle);
 
-    boolean persp;
+    bool persp;
     this->getProjection(persp);
 
     if (persp)
@@ -664,18 +664,18 @@ void ImageNode::setViewAngle(double angle, boolean send)
     else
 	this->setInputSetValue(VIEWANGLE, s, DXType::ScalarType, send);
 }
-void ImageNode::setButtonUp(boolean up, boolean send)
+void ImageNode::setButtonUp(bool up, bool send)
 {
     char s[100];
     sprintf(s, "%d", up? 1: 2);
     this->setInputValue(BUTTON_STATE, s, DXType::IntegerType, send);
 }
-void ImageNode::setApprox(boolean up, const char *approx, boolean send)
+void ImageNode::setApprox(bool up, const char *approx, bool send)
 {
     int param = up? BUTTON_UP_APPROX: BUTTON_DOWN_APPROX;
     this->setInputValue(param, approx, DXType::StringType, send);
 }
-void ImageNode::setDensity(boolean up, int density, boolean send)
+void ImageNode::setDensity(bool up, int density, bool send)
 {
     char s[100];
     sprintf(s, "%d", density);
@@ -684,7 +684,7 @@ void ImageNode::setDensity(boolean up, int density, boolean send)
     this->setInputValue(param, s, DXType::IntegerType, send);
 }
 
-void ImageNode::setBackgroundColor(const char *color, boolean send)
+void ImageNode::setBackgroundColor(const char *color, bool send)
 {
     if (color == NULL)
 	this->useDefaultInputValue(BACKGROUND, send);
@@ -693,25 +693,25 @@ void ImageNode::setBackgroundColor(const char *color, boolean send)
 }
 
 
-void ImageNode::enableSoftwareRendering(boolean enable, boolean send)
+void ImageNode::enableSoftwareRendering(bool enable, bool send)
 {
     const char *s = enable? "0": "1";
 
     if (enable)
     {
 	if (!this->isInputDefaulting(BUTTON_UP_DENSITY))
-	    this->useDefaultInputValue(BUTTON_UP_DENSITY, FALSE);
+	    this->useDefaultInputValue(BUTTON_UP_DENSITY, false);
 	if (!this->isInputDefaulting(BUTTON_DOWN_DENSITY))
-	    this->useDefaultInputValue(BUTTON_DOWN_DENSITY, FALSE);
+	    this->useDefaultInputValue(BUTTON_DOWN_DENSITY, false);
     }
     else
     {
 	if (this->isInputSet(BUTTON_UP_DENSITY) &&
 		this->isInputDefaulting(BUTTON_UP_DENSITY))
-	    this->useAssignedInputValue(BUTTON_UP_DENSITY, FALSE);
+	    this->useAssignedInputValue(BUTTON_UP_DENSITY, false);
 	if (this->isInputSet(BUTTON_DOWN_DENSITY) &&
 		this->isInputDefaulting(BUTTON_DOWN_DENSITY))
-	    this->useAssignedInputValue(BUTTON_DOWN_DENSITY, FALSE);
+	    this->useAssignedInputValue(BUTTON_DOWN_DENSITY, false);
     }
     this->setInputValue(RENDER_MODE, s, DXType::StringType, send);
 }
@@ -784,7 +784,7 @@ void ImageNode::getBox(double box[4][3])
 	for (j = 0; j < 4; ++j)
 	    box[j][i] = this->boundingBox[j][i];
 }
-void ImageNode::getProjection(boolean &persp)
+void ImageNode::getProjection(bool &persp)
 {
     const char *s;
     int ii;
@@ -814,14 +814,14 @@ void ImageNode::getViewAngle(double &angle)
     else
 	sscanf(s, "%lg", &angle);
 }
-boolean ImageNode::isButtonUp()
+bool ImageNode::isButtonUp()
 {
     int value;
     const char *s = this->getInputValueString(BUTTON_STATE);
     sscanf(s, "%d", &value);
     return value == 1;
 }
-void ImageNode::getApprox(boolean up, const char *&approx)
+void ImageNode::getApprox(bool up, const char *&approx)
 {
     int param = up? BUTTON_UP_APPROX: BUTTON_DOWN_APPROX;
     if (this->isInputDefaulting(param))
@@ -829,7 +829,7 @@ void ImageNode::getApprox(boolean up, const char *&approx)
     else
 	approx = this->getInputValueString(param);
 }
-void ImageNode::getDensity(boolean up, int &density)
+void ImageNode::getDensity(bool up, int &density)
 {
     int param = up? BUTTON_UP_DENSITY: BUTTON_DOWN_DENSITY;
 
@@ -932,9 +932,9 @@ void ImageNode::handleImageMessage(int id, const char *line)
 	double viewAngle;
 
 	if (EqualString(s, "width"))
-	    persp = FALSE;
+	    persp = false;
 	else
-	    persp = TRUE;
+	    persp = true;
 
 	double xdiff = from[0] - to[0];
 	double ydiff = from[1] - to[1];
@@ -964,25 +964,25 @@ void ImageNode::handleImageMessage(int id, const char *line)
              */
             if (imode != NAVIGATE || ddcamera == 1)
             {
-                this->setTo(to, FALSE);
-                this->setFrom(from, FALSE);
-                this->setUp(up, FALSE);
+                this->setTo(to, false);
+                this->setFrom(from, false);
+                this->setUp(up, false);
             }
 
-	    this->setResolution(x, y, FALSE);
-	    this->setWidth(w, FALSE);
-	    this->setAspect(a, FALSE);
-	    this->setBox(box, FALSE);
-	    this->setProjection(persp, FALSE);
-	    this->setViewAngle(viewAngle, FALSE);
-	    this->enableVector(TRUE, FALSE);
+	    this->setResolution(x, y, false);
+	    this->setWidth(w, false);
+	    this->setAspect(a, false);
+	    this->setBox(box, false);
+	    this->setProjection(persp, false);
+	    this->setViewAngle(viewAngle, false);
+	    this->enableVector(true, false);
 	    this->sendValuesQuietly();
 	    iw->newCamera(box, aamat, from, to, up, x, y, w, persp, viewAngle);
 	}
         else if (!iw->cameraIsInitialized() || imode == NAVIGATE)
             iw->newCamera(box, aamat, from, to, up, x, y, w, persp, viewAngle);
 
-	iw->allowDirectInteraction(TRUE);
+	iw->allowDirectInteraction(true);
 
 	if (this->savedInteractionMode != NONE)  {
 	    iw->setInteractionMode(this->savedInteractionMode);
@@ -993,20 +993,20 @@ void ImageNode::handleImageMessage(int id, const char *line)
 	"%*d:  IMAGE:  ##%*d %dx%d",
 	&x, &y) == 2)
     {
-	this->setResolution(x, y, FALSE);
+	this->setResolution(x, y, false);
 
-	iw->allowDirectInteraction(FALSE);
+	iw->allowDirectInteraction(false);
 
 	iw->clearFrameBufferOverlay();
     }
 }
 
-boolean ImageNode::associateImage(ImageWindow *w)
+bool ImageNode::associateImage(ImageWindow *w)
 {
-    boolean result = this->DisplayNode::associateImage(w);
+    bool result = this->DisplayNode::associateImage(w);
 
     if (result && w)
-	w->allowDirectInteraction(FALSE);
+	w->allowDirectInteraction(false);
 
     return result;
 }
@@ -1022,11 +1022,11 @@ char *ImageNode::inputValueString(int i, const char *prefix)
 	return NULL;
 }
 
-boolean ImageNode::printIOComment(FILE *f, boolean input, int index, 
-					const char *indent, boolean valueOnly)
+bool ImageNode::printIOComment(FILE *f, bool input, int index, 
+					const char *indent, bool valueOnly)
 {
     if (index == RECENABLE && input)
-	return TRUE;
+	return true;
     else
 	return this->DisplayNode::printIOComment(f, input, index, 
 					indent,valueOnly);
@@ -1034,17 +1034,17 @@ boolean ImageNode::printIOComment(FILE *f, boolean input, int index,
 
 void ImageNode::openDefaultWindow()
 {
-    this->openImageWindow(TRUE);
+    this->openImageWindow(true);
 }
 
 //
 // Determine if this node is of the given class.
 //
-boolean ImageNode::isA(Symbol classname)
+bool ImageNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassImageNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->DisplayNode::isA(classname);
 }
@@ -1082,7 +1082,7 @@ const char *ImageNode::getPickIdentifier()
     return this->getModuleMessageIdString();
 }
 
-boolean ImageNode::netParseComment(const char* comment,
+bool ImageNode::netParseComment(const char* comment,
 				   const char *file, int lineno)
 {
     int major;
@@ -1111,27 +1111,27 @@ boolean ImageNode::netParseComment(const char* comment,
     // flags from 1/2 to 0/1 
     //
     if (major == 2 && minor >= 0 && micro >= 1)
-	this->translating = TRUE;
-    boolean res =
+	this->translating = true;
+    bool res =
 	this->DisplayNode::netParseComment(comment, file, lineno);
-    this->translating = FALSE;
+    this->translating = false;
 
     return res;
 }
 
-boolean ImageNode::netPrintAuxComment(FILE *f)
+bool ImageNode::netPrintAuxComment(FILE *f)
 {
     if (!this->DisplayNode::netPrintAuxComment(f))
-        return FALSE;
+        return false;
 
     if (!this->printCommonComments(f,"    "))
-        return FALSE;
+        return false;
 
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageNode::netParseAuxComment(const char* comment,
+bool ImageNode::netParseAuxComment(const char* comment,
                                    const char* file, int lineno)
 {
     return this->DisplayNode::netParseAuxComment(comment,file,lineno) ||
@@ -1139,43 +1139,43 @@ boolean ImageNode::netParseAuxComment(const char* comment,
 }
 
 
-boolean ImageNode::cfgPrintNode(FILE *f, PrintType dest)
+bool ImageNode::cfgPrintNode(FILE *f, PrintType dest)
 {
     if (!this->DisplayNode::cfgPrintNode(f,dest))
-	return FALSE;
+	return false;
 
     //
     // Print the inputs that have values
     //
     int i, num = this->getInputCount();
     for (i=1 ; i<=num ; i++) {
-        if (!this->printIOComment(f, TRUE, i,NULL,TRUE))
-            return FALSE;
+        if (!this->printIOComment(f, true, i,NULL,true))
+            return false;
     }
 
     if (!this->printCommonComments(f))
-	return FALSE;
+	return false;
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageNode::cfgParseComment(const char *comment, const char *file,
+bool ImageNode::cfgParseComment(const char *comment, const char *file,
                                 int lineno)
 {
     if (this->DisplayNode::cfgParseComment(comment,file,lineno))
-	return TRUE;
+	return true;
 
-    if (this->parseIOComment(TRUE, comment,file,lineno,TRUE))
-	return TRUE;
+    if (this->parseIOComment(true, comment,file,lineno,true))
+	return true;
 
     if (this->parseCommonComments(comment,file,lineno))
-	return TRUE;
+	return true;
 
-    return FALSE;
+    return false;
 
 }
 
-boolean ImageNode::printCommonComments(FILE *f, const char *indent)
+bool ImageNode::printCommonComments(FILE *f, const char *indent)
 {
 
     if (!indent)
@@ -1186,10 +1186,10 @@ boolean ImageNode::printCommonComments(FILE *f, const char *indent)
     //
     if(fprintf (f, "%s// internal caching: %d\n", indent,
 			this->getInternalCacheability()) <= 0)
-	return FALSE;
+	return false;
 
     if (!this->image)
-	return TRUE;
+	return true;
 
     //
     // Only print the 'interaction mode' comment if the relevent input 
@@ -1213,15 +1213,15 @@ boolean ImageNode::printCommonComments(FILE *f, const char *indent)
 	    default: 		mode = "NONE"; break;
 	}
 	if (fprintf(f,"%s// interaction mode = %s\n",indent,mode) <= 0)
-	    return FALSE;
+	    return false;
     }
 
 
-    return TRUE;
+    return true;
 
 }
 
-boolean ImageNode::setInteractionMode(const char *mode)
+bool ImageNode::setInteractionMode(const char *mode)
 {
     int i, n;
     char imode[32], arg[256];
@@ -1276,7 +1276,7 @@ boolean ImageNode::setInteractionMode(const char *mode)
 		goto no_arg;
 	    
 	    List *pl = 
-	      theDXApplication->network->makeClassifiedNodeList(clss, TRUE);
+	      theDXApplication->network->makeClassifiedNodeList(clss, true);
 	    
 	    if (pl)
 	    {
@@ -1309,13 +1309,13 @@ boolean ImageNode::setInteractionMode(const char *mode)
 		delete pl;
 	    }
 	}
-        img->allowDirectInteraction(TRUE);
+        img->allowDirectInteraction(true);
         img->setInteractionMode(interactionMode);
     } else
 	this->savedInteractionMode = interactionMode;
 
 no_arg:
-    return TRUE;
+    return true;
 }
 
 void ImageNode::setInteractionModeParameter (DirectInteractionMode mode)
@@ -1339,10 +1339,10 @@ char *cp = 0;
 	default:
 	    cp = NUL(char*);
     }
-    if (cp) this->setInputValue(INTERACTIONMODE, cp, DXType::StringType, FALSE);
+    if (cp) this->setInputValue(INTERACTIONMODE, cp, DXType::StringType, false);
 }
 
-boolean ImageNode::parseCommonComments(const char *comment, const char *file,
+bool ImageNode::parseCommonComments(const char *comment, const char *file,
                                 int lineno)
 {
     char mode[128];
@@ -1360,7 +1360,7 @@ boolean ImageNode::parseCommonComments(const char *comment, const char *file,
 	if (img) 
 	    img->updateFromNewCfgState();
 	
-	return TRUE;
+	return true;
     } else if (EqualSubstring(comment,cp,strlen(cp))) {
 	int cacheval, items;
 	items = sscanf (comment, " internal caching: %d", &cacheval);
@@ -1376,14 +1376,14 @@ boolean ImageNode::parseCommonComments(const char *comment, const char *file,
 		    this->setInternalCacheability (InternalsCacheOnce);
 		    break;
 		default:
-		    return FALSE; 
+		    return false; 
 		    break;
 	    }
-	    return TRUE;
+	    return true;
 	}
     }
 
-    return FALSE;
+    return false;
 }
 
 
@@ -1419,8 +1419,8 @@ boolean ImageNode::parseCommonComments(const char *comment, const char *file,
 
 int ImageNode::handleNodeMsgInfo(const char *line)
 {
-    boolean save = FALSE, throttle = FALSE, bckgnd = FALSE,
-	    ititle = FALSE, autoaxes = FALSE, rdropt = FALSE;
+    bool save = false, throttle = false, bckgnd = false,
+	    ititle = false, autoaxes = false, rdropt = false;
     char *p = (char *)line, *q, r, *argbuf;
 
     if (! line)
@@ -1485,7 +1485,7 @@ int ImageNode::handleNodeMsgInfo(const char *line)
     //
     // I would like to see this fixed with a 2nd defaulting arg to
     // setInteractionMode() that indicates whether or not to enable 
-    // interaction mode.  It would default to TRUE.
+    // interaction mode.  It would default to true.
     //
     if (this->image && this->image->directInteractionAllowed())
 #endif
@@ -1496,7 +1496,7 @@ int ImageNode::handleNodeMsgInfo(const char *line)
     // supposed to deal with parameter changes in :ioParameterStatusChanged().
     //
 #if 0
-    PARSECOMMAND("title=", this->setTitle(argbuf,TRUE));
+    PARSECOMMAND("title=", this->setTitle(argbuf,true));
 #else
     PARSEPARAM("title=",           StringType,      IMAGENAME,	   ititle);
 #endif
@@ -1521,12 +1521,12 @@ int ImageNode::handleNodeMsgInfo(const char *line)
 
 #undef PARSEPARAM
 
-void ImageNode::reflectStateChange(boolean) { }
+void ImageNode::reflectStateChange(bool) { }
 
-boolean ImageNode::isDataDriven()
+bool ImageNode::isDataDriven()
 {
     int i, icnt = this->getInputCount();
-    boolean driven = FALSE;
+    bool driven = false;
 
     for (i = 2; !driven && i <= icnt; i++)
 	driven = !this->isInputDefaulting(i);
@@ -1535,7 +1535,7 @@ boolean ImageNode::isDataDriven()
 }
 
 
-void ImageNode::ioParameterStatusChanged(boolean input, int index,
+void ImageNode::ioParameterStatusChanged(bool input, int index,
 				 NodeParameterStatusChange status)
 {
     switch (index)
@@ -1546,7 +1546,7 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
 		if (status == ParameterArkAdded ||
 				status == ParameterArkRemoved)
 	        {
-		    boolean status = this->isInputDefaulting(THROTTLE);
+		    bool status = this->isInputDefaulting(THROTTLE);
 		    this->image->sensitizeThrottleDialog(status);
 		}
 		else if (status == ParameterValueChanged ||
@@ -1567,12 +1567,12 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
 	case RECASPECT:
 	    if (this->image)
 	    {
-		// This used to say isRecFileInputSet() instead of TRUE
+		// This used to say isRecFileInputSet() instead of true
 		// but it always worked because isRecFileInputSet always returns
 		// the wrong value.  Nowdays, we only want to revisit the sensitivity
 		// of the dialogs, not the sensitivity of the command anyway.
-		this->image->sensitizePrintImageDialog(TRUE);
-		this->image->sensitizeSaveImageDialog(TRUE);
+		this->image->sensitizePrintImageDialog(true);
+		this->image->sensitizeSaveImageDialog(true);
 	    }
 	    break;
 
@@ -1689,7 +1689,7 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
 	case INTERACTIONMODE:
 	    if (this->image)
 	    {
-		boolean status = this->isInteractionModeConnected();
+		bool status = this->isInteractionModeConnected();
 		this->image->sensitizeViewControl(!status);
 	    }
 	    break;
@@ -1697,7 +1697,7 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
 	case IMAGENAME:
 	    if (this->image)
 	    {
-		boolean status = this->isInputConnected(IMAGENAME);
+		bool status = this->isInputConnected(IMAGENAME);
 		if ((!status) && (this->isInputDefaulting(IMAGENAME)))
 		    this->setTitle(NUL(char*));
 		else
@@ -1815,7 +1815,7 @@ void ImageNode::ioParameterStatusChanged(boolean input, int index,
 // senstivities of another object.  That is ImageWindow's decision.
 //
 void  ImageNode::updateWindowSensitivities() { }
-void  ImageNode::openImageWindow(boolean manage)
+void  ImageNode::openImageWindow(bool manage)
 {
     this->DisplayNode::openImageWindow(manage);
 }
@@ -1829,21 +1829,21 @@ int ImageNode::getMessageIdParamNumber() { return IMAGETAG; }
 // surrounding quotes becuase the value will be used in a .net file and one
 // the window mgr border and quotes are not acceptable in those situations.
 //
-void ImageNode::setTitle(const char *title, boolean fromServer)
+void ImageNode::setTitle(const char *title, bool fromServer)
 {
     //
     // Hands off the param if it's connected.
     //
     if (!this->isInputConnected(IMAGENAME)) {
 	if ((!title) || (!title[0])) {
-	    this->useDefaultInputValue(IMAGENAME, FALSE);
+	    this->useDefaultInputValue(IMAGENAME, false);
 	} else {
 	    if ((fromServer) && (this->isInputDefaulting(IMAGENAME))) {
 		this->setInputAttributeFromServer (IMAGENAME,title,DXType::StringType);
 	    } else {
 		const char *v = this->getInputValueString (IMAGENAME);
 		if (!EqualString (v, title))
-		    this->setInputValue (IMAGENAME, title, DXType::StringType, FALSE);
+		    this->setInputValue (IMAGENAME, title, DXType::StringType, false);
 	    }
 	}
     }
@@ -1902,15 +1902,15 @@ const char *ImageNode::getTitle()
 	return this->DisplayNode::getTitle();
 }
 
-boolean ImageNode::hardwareMode()
+bool ImageNode::hardwareMode()
 {
     ImageWindow* iw = this->image;
-    if (!iw) return FALSE;
+    if (!iw) return false;
 
     return iw->hardwareMode();
 }
 
-void ImageNode::enableJava(const char* filename, boolean send)
+void ImageNode::enableJava(const char* filename, bool send)
 {
     Node* webOptions = this->getWebOptionsNode();
 
@@ -1918,11 +1918,11 @@ void ImageNode::enableJava(const char* filename, boolean send)
     // Set enable flag and filename inputs to the WebOptions tool
     // Other inputs can default.
     //
-    webOptions->setInputValue (WEB_FILE, filename, DXType::StringType, FALSE);
-    webOptions->setInputValue (WEB_ENABLED, "1", DXType::FlagType, TRUE);
+    webOptions->setInputValue (WEB_FILE, filename, DXType::StringType, false);
+    webOptions->setInputValue (WEB_ENABLED, "1", DXType::FlagType, true);
 }
 
-void ImageNode::disableJava(boolean send)
+void ImageNode::disableJava(bool send)
 {
 
     Node* webOptions = this->getWebOptionsNode();
@@ -1930,7 +1930,7 @@ void ImageNode::disableJava(boolean send)
     // Set enable flag and filename inputs to the WebOptions tool
     // Other inputs can default.
     //
-    webOptions->setInputValue (WEB_ENABLED, "0", DXType::FlagType, TRUE);
+    webOptions->setInputValue (WEB_ENABLED, "0", DXType::FlagType, true);
 }
 
 Node* ImageNode::getWebOptionsNode()
@@ -1955,8 +1955,8 @@ void ImageNode::unjavifyNode()
     if (p->isConnected()) 
 	p->disconnectArks();
 
-    this->useDefaultInputValue(JAVA_OPTIONS, TRUE);
-    this->setInputVisibility (JAVA_OPTIONS, FALSE);
+    this->useDefaultInputValue(JAVA_OPTIONS, true);
+    this->setInputVisibility (JAVA_OPTIONS, false);
 }
 
 //
@@ -1977,9 +1977,9 @@ void ImageNode::javifyNode (Node* w, Node* s)
     }
     ASSERT(webOptions);
 
-    if (this->isInputConnected(JAVA_OPTIONS) == FALSE) {
-	this->useDefaultInputValue(JAVA_OPTIONS, FALSE);
-	this->setInputVisibility (JAVA_OPTIONS, TRUE);
+    if (this->isInputConnected(JAVA_OPTIONS) == false) {
+	this->useDefaultInputValue(JAVA_OPTIONS, false);
+	this->setInputVisibility (JAVA_OPTIONS, true);
 	StandIn* wosi = webOptions->getStandIn();
 	StandIn* si = this->getStandIn();
 	if ((si) && (wosi)) {
@@ -2005,7 +2005,7 @@ void ImageNode::javifyNode (Node* w, Node* s)
     // it, then the network won't be javified properly.  We'll put up
     // an error message but we won't prevent the user from doing this.
     //
-    if (webOptions->isInputConnected(WEB_COUNTERS) == FALSE) {
+    if (webOptions->isInputConnected(WEB_COUNTERS) == false) {
 	if (seq_rcvr == NUL(Node*)) {
 	    WarningMessage (
 		"WebOptions macro of Image tool (instance %d)\n"
@@ -2014,7 +2014,7 @@ void ImageNode::javifyNode (Node* w, Node* s)
 		"when run under control of DXServer.",
 		this->getInstanceNumber());
 	} else {
-	    webOptions->useDefaultInputValue(WEB_COUNTERS, FALSE);
+	    webOptions->useDefaultInputValue(WEB_COUNTERS, false);
 	    StandIn* wsi = webOptions->getStandIn();
 	    StandIn* rsi = seq_rcvr->getStandIn();
 	    if ((wsi) && (rsi)) {
@@ -2026,12 +2026,12 @@ void ImageNode::javifyNode (Node* w, Node* s)
     }
 }
 
-boolean ImageNode::isJavified()
+bool ImageNode::isJavified()
 {
     return this->isInputConnected(JAVA_OPTIONS);
 }
 
-boolean ImageNode::isJavified(Node* webOptions)
+bool ImageNode::isJavified(Node* webOptions)
 {
     return webOptions->isInputConnected(WEB_COUNTERS);
 }
@@ -2040,7 +2040,7 @@ const char* ImageNode::getWebOptionsFormat()
 {
     Node* webOptions = this->getWebOptionsNode();
     const char* fmt = NUL(char*);
-    if (webOptions->isInputConnected(WEB_FORMAT) == FALSE) 
+    if (webOptions->isInputConnected(WEB_FORMAT) == false) 
 	fmt = webOptions->getInputValueString(WEB_FORMAT);
     if (fmt) {
     	if (EqualString(fmt, "\"NULL\"")) fmt = NUL(char*);
@@ -2050,24 +2050,24 @@ const char* ImageNode::getWebOptionsFormat()
 }
 
 
-boolean ImageNode::isWebOptionsOrbit()
+bool ImageNode::isWebOptionsOrbit()
 {
-    boolean retval = FALSE;
+    bool retval = false;
     Node* webOptions = this->getWebOptionsNode();
     const char* orbit = NUL(char*);
-    if (webOptions->isInputConnected(WEB_ORBIT) == FALSE) 
+    if (webOptions->isInputConnected(WEB_ORBIT) == false) 
 	orbit = webOptions->getInputValueString(WEB_ORBIT);
     if ((orbit) && (EqualString(orbit, "1"))) 
-	retval = TRUE;
+	retval = true;
     return retval;
     
 }
 
 
-boolean ImageNode::printAsJava(FILE* f)
+bool ImageNode::printAsJava(FILE* f)
 {
-    if (this->DisplayNode::printAsJava(f) == FALSE)
-	return FALSE;
+    if (this->DisplayNode::printAsJava(f) == false)
+	return false;
 
     Node* webOptions = this->getWebOptionsNode();
     const char* wns = webOptions->getNameString();
@@ -2080,20 +2080,20 @@ boolean ImageNode::printAsJava(FILE* f)
     if (fprintf (f,
 	"%s%s_%d.addInputArc (%d, %s_%d, %d);\n",
 	indent, ns, instno, JAVA_OPTIONS, wns, winstno, 1) 
-	<= 0) return FALSE;
+	<= 0) return false;
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageNode::isWebOptionsImgIdConnected()
+bool ImageNode::isWebOptionsImgIdConnected()
 {
     Node* webOptions = this->getWebOptionsNode();
     return webOptions->isInputConnected(WEB_ID);
 }
 
-boolean ImageNode::printInputAsJava(int input)
+bool ImageNode::printInputAsJava(int input)
 {
-    boolean retval = FALSE;
+    bool retval = false;
     switch (input) {
 	case FROM:
 	case VIEWANGLE:
@@ -2102,7 +2102,7 @@ boolean ImageNode::printInputAsJava(int input)
 	case UP:
 	case IMAGENAME:
 	case INTERACTIONMODE:
-	    retval = TRUE;
+	    retval = true;
 	    break;
     }
     return retval;

@@ -48,8 +48,8 @@ class ImageNode : public DisplayNode
     //
     //  Print/parse comments that are common to both .nets and .cfgs.
     //
-    boolean printCommonComments(FILE *f, const char *indent = NULL);
-    boolean parseCommonComments(const char* comment, const char *file,
+    bool printCommonComments(FILE *f, const char *indent = NULL);
+    bool parseCommonComments(const char* comment, const char *file,
                                         int lineno);
     //
     // The mode that was saved in the .net/.cfg file (when not data-driven). 
@@ -70,8 +70,8 @@ class ImageNode : public DisplayNode
 
     Node* getWebOptionsNode();
 
-    static boolean SendString(void* , PacketIFCallback , FILE* , char* , boolean);
-    static void FormatMacro (FILE* , PacketIFCallback , void* , char* [], boolean);
+    static bool SendString(void* , PacketIFCallback , FILE* , char* , bool);
+    static void FormatMacro (FILE* , PacketIFCallback , void* , char* [], bool);
 
 
   protected:
@@ -86,20 +86,20 @@ class ImageNode : public DisplayNode
     // The height which isn't stored in the parameter list.
     int height;
 
-    // A boolean which says whether we're translating old values
+    // A bool which says whether we're translating old values
     // into new ones.
-    boolean translating;
+    bool translating;
 
     //
     // Fields and members to control the image macro.  When a parameter
     // that affects the image macro changes, macroDirty should be set
     // indicating that when ready, the system should update the macro.
-    boolean macroDirty;
-    virtual boolean sendMacro(DXPacketIF *pif);
-    virtual boolean printMacro(FILE *f,
+    bool macroDirty;
+    virtual bool sendMacro(DXPacketIF *pif);
+    virtual bool printMacro(FILE *f,
 			       PacketIFCallback callback = NULL,
                                void *callbackData = NULL,
-                               boolean viasocket  = FALSE);
+                               bool viasocket  = false);
 
     
     // Fields for handling and storing parts of the image messages
@@ -116,8 +116,8 @@ class ImageNode : public DisplayNode
     // A name describing the type of window can be written into window_name in order
     // to enable nicer warning messages.
     //
-    virtual boolean defaultWindowIsCDB(char* window_name = NULL)
-	{ if (window_name) strcpy (window_name, "Image Window"); return FALSE; }
+    virtual bool defaultWindowIsCDB(char* window_name = NULL)
+	{ if (window_name) strcpy (window_name, "Image Window"); return false; }
 
     double  boundingBox[4][3];
 
@@ -125,34 +125,34 @@ class ImageNode : public DisplayNode
     // gets printed and sent to the server.  The image node prevents
     // "RECENABLE", whether to record frames or not, from being saved.
     virtual char   *inputValueString(int i, const char *prefix);
-    virtual boolean printIOComment(FILE *f, boolean input, int index, 
+    virtual bool printIOComment(FILE *f, bool input, int index, 
 					const char *indent = NULL,
-					boolean valuesOnly = FALSE);
+					bool valuesOnly = false);
 
-    virtual void notifyProjectionChange(boolean newPersp);
-    virtual void notifyUseVectorChange(boolean newUse);
+    virtual void notifyProjectionChange(bool newPersp);
+    virtual void notifyUseVectorChange(bool newUse);
 
     virtual char *netEndOfMacroNodeString(const char *prefix);
 
-    virtual boolean netParseComment(const char* comment,
+    virtual bool netParseComment(const char* comment,
 				    const char *file, int lineno);
-    virtual boolean netPrintAuxComment(FILE *f);
-    virtual boolean netParseAuxComment(const char *comment,
+    virtual bool netPrintAuxComment(FILE *f);
+    virtual bool netParseAuxComment(const char *comment,
 		const char *file,
 		int lineno);
 
 
 
     virtual int  handleNodeMsgInfo(const char *line);
-    virtual void reflectStateChange(boolean unmanage);
+    virtual void reflectStateChange(bool unmanage);
 
-    virtual void ioParameterStatusChanged(boolean input, int index,
+    virtual void ioParameterStatusChanged(bool input, int index,
 			    NodeParameterStatusChange status);
 
     //
     // Used by setAutoAxes{X,Y,Z}TickLocs().
     //
-    void setAutoAxesTickLocs (int param, double *t, int size, boolean send);
+    void setAutoAxesTickLocs (int param, double *t, int size, bool send);
 
   public:
     //
@@ -165,40 +165,40 @@ class ImageNode : public DisplayNode
     //
     ~ImageNode();
 
-    virtual boolean initialize();
+    virtual bool initialize();
 
-    virtual void setTitle(const char *title, boolean fromServer = FALSE);
+    virtual void setTitle(const char *title, bool fromServer = false);
     virtual const char *getTitle();
 
     virtual Type setInputValue(int index,
 		       const char *value,
 		       Type t = DXType::UndefinedType,
-		       boolean send = TRUE);
-    boolean sendValues(boolean ignoreDirty = TRUE);
-    virtual boolean	printValues(FILE *f, const char *prefix, PrintType dest);
-    virtual boolean associateImage(ImageWindow *w);
+		       bool send = true);
+    bool sendValues(bool ignoreDirty = true);
+    virtual bool	printValues(FILE *f, const char *prefix, PrintType dest);
+    virtual bool associateImage(ImageWindow *w);
 
     enum Cacheability getInternalCacheability() { return this->internalCache; }
     void setInternalCacheability(enum Cacheability c) { this->internalCache = c; }
 
     //
     // Access functions
-    boolean useVector();
-    void    enableVector(boolean use, boolean send = TRUE);
-    void    setTo(double *to, boolean send = TRUE);
-    void    setFrom(double *from, boolean send = TRUE);
-    void    setResolution(int x, int y, boolean send = TRUE);
-    void    setWidth(double w, boolean send = TRUE);
-    void    setAspect(double a, boolean send = TRUE);
-    void    setThrottle(double a, boolean send = TRUE);
-    void    setUp(double *up, boolean send = TRUE);
-    void    setBox(double box[4][3], boolean send = TRUE);
-    void    setProjection(boolean persp, boolean send = TRUE);
-    void    setViewAngle(double angle, boolean send = TRUE);
-    void    setButtonUp(boolean up, boolean send = TRUE);
-    void    setApprox(boolean up, const char *approx, boolean send = TRUE);
-    void    setDensity(boolean up, int density, boolean send = TRUE);
-    void    setBackgroundColor(const char *color, boolean send = TRUE);
+    bool useVector();
+    void    enableVector(bool use, bool send = true);
+    void    setTo(double *to, bool send = true);
+    void    setFrom(double *from, bool send = true);
+    void    setResolution(int x, int y, bool send = true);
+    void    setWidth(double w, bool send = true);
+    void    setAspect(double a, bool send = true);
+    void    setThrottle(double a, bool send = true);
+    void    setUp(double *up, bool send = true);
+    void    setBox(double box[4][3], bool send = true);
+    void    setProjection(bool persp, bool send = true);
+    void    setViewAngle(double angle, bool send = true);
+    void    setButtonUp(bool up, bool send = true);
+    void    setApprox(bool up, const char *approx, bool send = true);
+    void    setDensity(bool up, int density, bool send = true);
+    void    setBackgroundColor(const char *color, bool send = true);
 
     void    getTo(double *to);
     void    getFrom(double *from);
@@ -208,27 +208,27 @@ class ImageNode : public DisplayNode
     void    getThrottle(double &v);
     void    getUp(double *up);
     void    getBox(double box[4][3]);
-    void    getProjection(boolean &persp);
+    void    getProjection(bool &persp);
     void    getViewAngle(double &angle);
-    boolean isButtonUp();
-    void    getApprox(boolean up, const char *&approx);
-    void    getDensity(boolean up, int &density);
+    bool isButtonUp();
+    void    getApprox(bool up, const char *&approx);
+    void    getDensity(bool up, int &density);
     void    getBackgroundColor(const char *&color);
     void    getRecordEnable(int &x);
     void    getRecordResolution(int &x, int &y);
     void    getRecordAspect(double &aspect);
 
-    boolean useAutoAxes();
+    bool useAutoAxes();
 
-    void    setRecordEnable(int use, boolean send = TRUE);
-    void    setRecordResolution(int x, boolean send = TRUE);
-    void    setRecordAspect(double aspect, boolean send = TRUE);
-    void    setRecordFile(const char *file, boolean send = TRUE);
-    void    setRecordFormat(const char *format, boolean send = TRUE);
+    void    setRecordEnable(int use, bool send = true);
+    void    setRecordResolution(int x, bool send = true);
+    void    setRecordAspect(double aspect, bool send = true);
+    void    setRecordFile(const char *file, bool send = true);
+    void    setRecordFormat(const char *format, bool send = true);
     void    getRecordFile(const char *&file);
     void    getRecordFormat(const char *&format);
 
-    void enableSoftwareRendering(boolean use, boolean send = TRUE);
+    void enableSoftwareRendering(bool use, bool send = true);
 
     //
     //
@@ -255,83 +255,83 @@ class ImageNode : public DisplayNode
     double getAutoAxesLabelScale ();
     int getAutoAxesTicksCount ();
 
-    void setAutoAxesCorners (double dval[], boolean send);
-    void setAutoAxesCursor (double x,   double  y,   double  z,    boolean send);
-    void setAutoAxesFlag (int index, boolean state, boolean send);
-    void setAutoAxesFrame (boolean state, boolean send);
-    void setAutoAxesGrid (boolean state, boolean send);
-    void setAutoAxesAdjust (boolean state, boolean send);
-    void setAutoAxesInteger (int index, int d, boolean send);
-    void setAutoAxesEnable (int d, boolean send);
-    void setAutoAxesDouble (int index, double d, boolean send);
-    void setAutoAxesLabelScale (double d, boolean send);
-    void setAutoAxesStringList (int index, char *value, boolean send);
-    void setAutoAxesLabels (char *value, boolean send);
-    void setAutoAxesAnnotation (char *value, boolean send);
-    void setAutoAxesColors (char *value, boolean send);
-    void setAutoAxesXTickLocs (double *t, int size, boolean send);
-    void setAutoAxesYTickLocs (double *t, int size, boolean send);
-    void setAutoAxesZTickLocs (double *t, int size, boolean send);
-    void setAutoAxesXTickLabels (char *value, boolean send);
-    void setAutoAxesYTickLabels (char *value, boolean send);
-    void setAutoAxesZTickLabels (char *value, boolean send);
-    void setAutoAxesString (int index, char *value, boolean send);
-    void setAutoAxesFont (char *value, boolean send);
-    void setAutoAxesTicks (int t1, int t2, int t3, boolean send);
-    void setAutoAxesTicks (int t, boolean send);
+    void setAutoAxesCorners (double dval[], bool send);
+    void setAutoAxesCursor (double x,   double  y,   double  z,    bool send);
+    void setAutoAxesFlag (int index, bool state, bool send);
+    void setAutoAxesFrame (bool state, bool send);
+    void setAutoAxesGrid (bool state, bool send);
+    void setAutoAxesAdjust (bool state, bool send);
+    void setAutoAxesInteger (int index, int d, bool send);
+    void setAutoAxesEnable (int d, bool send);
+    void setAutoAxesDouble (int index, double d, bool send);
+    void setAutoAxesLabelScale (double d, bool send);
+    void setAutoAxesStringList (int index, char *value, bool send);
+    void setAutoAxesLabels (char *value, bool send);
+    void setAutoAxesAnnotation (char *value, bool send);
+    void setAutoAxesColors (char *value, bool send);
+    void setAutoAxesXTickLocs (double *t, int size, bool send);
+    void setAutoAxesYTickLocs (double *t, int size, bool send);
+    void setAutoAxesZTickLocs (double *t, int size, bool send);
+    void setAutoAxesXTickLabels (char *value, bool send);
+    void setAutoAxesYTickLabels (char *value, bool send);
+    void setAutoAxesZTickLabels (char *value, bool send);
+    void setAutoAxesString (int index, char *value, bool send);
+    void setAutoAxesFont (char *value, bool send);
+    void setAutoAxesTicks (int t1, int t2, int t3, bool send);
+    void setAutoAxesTicks (int t, bool send);
 
-    void disableAutoAxesCorners (boolean send);
-    void unsetAutoAxesCorners (boolean send);
-    void unsetAutoAxesCursor (boolean send);
-    void unsetAutoAxesTicks (boolean send);
-    void unsetAutoAxesXTickLocs (boolean send);
-    void unsetAutoAxesYTickLocs (boolean send);
-    void unsetAutoAxesZTickLocs (boolean send);
-    void unsetAutoAxesStringList (int index, boolean send);
-    void unsetAutoAxesAnnotation (boolean send);
-    void unsetAutoAxesLabels (boolean send);
-    void unsetAutoAxesColors (boolean send);
-    void unsetAutoAxesXTickLabels (boolean send);
-    void unsetAutoAxesYTickLabels (boolean send);
-    void unsetAutoAxesZTickLabels (boolean send);
-    void unsetAutoAxesString (int index, boolean send);
-    void unsetAutoAxesFont (boolean send);
-    void unsetAutoAxesEnable (boolean send);
-    void unsetAutoAxesFrame (boolean send);
-    void unsetAutoAxesGrid (boolean send);
-    void unsetAutoAxesAdjust (boolean send);
-    void unsetAutoAxesLabelScale (boolean send);
+    void disableAutoAxesCorners (bool send);
+    void unsetAutoAxesCorners (bool send);
+    void unsetAutoAxesCursor (bool send);
+    void unsetAutoAxesTicks (bool send);
+    void unsetAutoAxesXTickLocs (bool send);
+    void unsetAutoAxesYTickLocs (bool send);
+    void unsetAutoAxesZTickLocs (bool send);
+    void unsetAutoAxesStringList (int index, bool send);
+    void unsetAutoAxesAnnotation (bool send);
+    void unsetAutoAxesLabels (bool send);
+    void unsetAutoAxesColors (bool send);
+    void unsetAutoAxesXTickLabels (bool send);
+    void unsetAutoAxesYTickLabels (bool send);
+    void unsetAutoAxesZTickLabels (bool send);
+    void unsetAutoAxesString (int index, bool send);
+    void unsetAutoAxesFont (bool send);
+    void unsetAutoAxesEnable (bool send);
+    void unsetAutoAxesFrame (bool send);
+    void unsetAutoAxesGrid (bool send);
+    void unsetAutoAxesAdjust (bool send);
+    void unsetAutoAxesLabelScale (bool send);
 
-    void unsetRecordResolution (boolean send);
-    void unsetRecordAspect (boolean send);
-    void unsetRecordFile (boolean send);
-    void unsetRecordFormat (boolean send);
-    void unsetRecordEnable (boolean send);
+    void unsetRecordResolution (bool send);
+    void unsetRecordAspect (bool send);
+    void unsetRecordFile (bool send);
+    void unsetRecordFormat (bool send);
+    void unsetRecordEnable (bool send);
 
-    boolean isAutoAxesCornersSet ();
-    boolean isAutoAxesCursorSet ();
-    boolean isSetAutoAxesFlag (int index);
-    boolean isSetAutoAxesFrame ();
-    boolean isSetAutoAxesGrid ();
-    boolean isSetAutoAxesAdjust ();
-    boolean isAutoAxesStringListSet (int index);
-    boolean isAutoAxesAnnotationSet ();
-    boolean isAutoAxesLabelsSet ();
-    boolean isAutoAxesColorsSet ();
-    boolean isAutoAxesStringSet (int index);
-    boolean isAutoAxesFontSet ();
-    boolean isAutoAxesTicksSet ();
-    boolean isAutoAxesXTickLocsSet ();
-    boolean isAutoAxesYTickLocsSet ();
-    boolean isAutoAxesZTickLocsSet ();
-    boolean isAutoAxesXTickLabelsSet ();
-    boolean isAutoAxesYTickLabelsSet ();
-    boolean isAutoAxesZTickLabelsSet ();
-    boolean isAutoAxesDoubleSet (int index);
-    boolean isAutoAxesLabelScaleSet ();
+    bool isAutoAxesCornersSet ();
+    bool isAutoAxesCursorSet ();
+    bool isSetAutoAxesFlag (int index);
+    bool isSetAutoAxesFrame ();
+    bool isSetAutoAxesGrid ();
+    bool isSetAutoAxesAdjust ();
+    bool isAutoAxesStringListSet (int index);
+    bool isAutoAxesAnnotationSet ();
+    bool isAutoAxesLabelsSet ();
+    bool isAutoAxesColorsSet ();
+    bool isAutoAxesStringSet (int index);
+    bool isAutoAxesFontSet ();
+    bool isAutoAxesTicksSet ();
+    bool isAutoAxesXTickLocsSet ();
+    bool isAutoAxesYTickLocsSet ();
+    bool isAutoAxesZTickLocsSet ();
+    bool isAutoAxesXTickLabelsSet ();
+    bool isAutoAxesYTickLabelsSet ();
+    bool isAutoAxesZTickLabelsSet ();
+    bool isAutoAxesDoubleSet (int index);
+    bool isAutoAxesLabelScaleSet ();
 
 
-    boolean useSoftwareRendering();
+    bool useSoftwareRendering();
 
     virtual const char *getPickIdentifier();
 
@@ -340,9 +340,9 @@ class ImageNode : public DisplayNode
     // Save and retrieve image window state (camera, approx, render mode...)
     // to and from the .cfg file.
     //
-    virtual boolean cfgParseComment(const char* comment,
+    virtual bool cfgParseComment(const char* comment,
                                 const char* filename, int lineno);
-    virtual boolean cfgPrintNode(FILE *f, PrintType);
+    virtual bool cfgPrintNode(FILE *f, PrintType);
 
 
     virtual void setDefaultCfgState();
@@ -350,61 +350,61 @@ class ImageNode : public DisplayNode
 
     virtual Type setInputSetValue(int index, const char *value,
 				Type type = DXType::UndefinedType,
-				boolean send = TRUE);
+				bool send = true);
     
-    boolean isAutoAxesEnableConnected();
-    boolean isAutoAxesCornersConnected();
-    boolean isAutoAxesCursorConnected();
-    boolean isAutoAxesFrameConnected();
-    boolean isAutoAxesGridConnected();
-    boolean isAutoAxesAdjustConnected();
-    boolean isAutoAxesAnnotationConnected();
-    boolean isAutoAxesLabelsConnected();
-    boolean isAutoAxesColorsConnected();
-    boolean isAutoAxesFontConnected();
-    boolean isAutoAxesTicksConnected();
-    boolean isAutoAxesXTickLocsConnected();
-    boolean isAutoAxesYTickLocsConnected();
-    boolean isAutoAxesZTickLocsConnected();
-    boolean isAutoAxesXTickLabelsConnected();
-    boolean isAutoAxesYTickLabelsConnected();
-    boolean isAutoAxesZTickLabelsConnected();
-    boolean isAutoAxesLabelScaleConnected();
-    boolean isBGColorConnected();
-    boolean isThrottleConnected();
+    bool isAutoAxesEnableConnected();
+    bool isAutoAxesCornersConnected();
+    bool isAutoAxesCursorConnected();
+    bool isAutoAxesFrameConnected();
+    bool isAutoAxesGridConnected();
+    bool isAutoAxesAdjustConnected();
+    bool isAutoAxesAnnotationConnected();
+    bool isAutoAxesLabelsConnected();
+    bool isAutoAxesColorsConnected();
+    bool isAutoAxesFontConnected();
+    bool isAutoAxesTicksConnected();
+    bool isAutoAxesXTickLocsConnected();
+    bool isAutoAxesYTickLocsConnected();
+    bool isAutoAxesZTickLocsConnected();
+    bool isAutoAxesXTickLabelsConnected();
+    bool isAutoAxesYTickLabelsConnected();
+    bool isAutoAxesZTickLabelsConnected();
+    bool isAutoAxesLabelScaleConnected();
+    bool isBGColorConnected();
+    bool isThrottleConnected();
 
-    boolean isViewControlInputSet();
-    boolean isImageNameInputSet();
-    boolean isRecordEnableSet();
-    boolean isRecordFileSet();
-    boolean isRecordFormatSet();
-    boolean isRecordResolutionSet();
-    boolean isRecordAspectSet();
-    boolean isRecFileInputSet();
+    bool isViewControlInputSet();
+    bool isImageNameInputSet();
+    bool isRecordEnableSet();
+    bool isRecordFileSet();
+    bool isRecordFormatSet();
+    bool isRecordResolutionSet();
+    bool isRecordAspectSet();
+    bool isRecFileInputSet();
 
-    boolean isRecordEnableConnected();
-    boolean isRecordFileConnected();
-    boolean isRecordFormatConnected();
-    boolean isRecordResolutionConnected();
-    boolean isRecordAspectConnected();
-    boolean isInteractionModeConnected();
+    bool isRecordEnableConnected();
+    bool isRecordFileConnected();
+    bool isRecordFormatConnected();
+    bool isRecordResolutionConnected();
+    bool isRecordAspectConnected();
+    bool isInteractionModeConnected();
     
-    boolean isRenderModeSet();
-    boolean isButtonUpApproxSet();
-    boolean isButtonDownApproxSet();
-    boolean isButtonUpDensitySet();
-    boolean isButtonDownDensitySet();
-    boolean isRenderModeConnected();
-    boolean isButtonUpApproxConnected();
-    boolean isButtonDownApproxConnected();
-    boolean isButtonUpDensityConnected();
-    boolean isButtonDownDensityConnected();
+    bool isRenderModeSet();
+    bool isButtonUpApproxSet();
+    bool isButtonDownApproxSet();
+    bool isButtonUpDensitySet();
+    bool isButtonDownDensitySet();
+    bool isRenderModeConnected();
+    bool isButtonUpApproxConnected();
+    bool isButtonDownApproxConnected();
+    bool isButtonUpDensityConnected();
+    bool isButtonDownDensityConnected();
 
-    boolean isDataDriven();
+    bool isDataDriven();
 
-    boolean setInteractionMode(const char *mode);
+    bool setInteractionMode(const char *mode);
     void    setInteractionModeParameter (DirectInteractionMode mode);
-    virtual void    openImageWindow(boolean manage = TRUE);
+    virtual void    openImageWindow(bool manage = true);
 
     //  
     // Most nodes' id parameter is number 1 but a few aren't.  This number is
@@ -418,26 +418,26 @@ class ImageNode : public DisplayNode
     // On behalf of ImageFormatDialog (Save/Print Image dialogs) which needs to
     // know what strategy to use for saving the current image.
     //
-    boolean hardwareMode();
+    bool hardwareMode();
  
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
-    virtual void enableJava(const char* base_name, boolean send=FALSE);
-    virtual void disableJava(boolean send=FALSE);
-    virtual boolean isJavified();
-    virtual boolean isJavified(Node* webOptions);
+    virtual void enableJava(const char* base_name, bool send=false);
+    virtual void disableJava(bool send=false);
+    virtual bool isJavified();
+    virtual bool isJavified(Node* webOptions);
     virtual void javifyNode(Node* webOptions, Node*);
     virtual void unjavifyNode();
     virtual const char* getJavaNodeName() { return "ImageNode"; }
-    virtual boolean printInputAsJava(int input);
+    virtual bool printInputAsJava(int input);
     const char* getWebOptionsFormat();
-    boolean isWebOptionsOrbit();
-    virtual boolean printAsJava(FILE*);
-    boolean isWebOptionsImgIdConnected();
+    bool isWebOptionsOrbit();
+    virtual bool printAsJava(FILE*);
+    bool isWebOptionsImgIdConnected();
 
     //
     // Returns a pointer to the class name.

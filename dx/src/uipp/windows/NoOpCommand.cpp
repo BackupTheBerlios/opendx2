@@ -17,19 +17,19 @@
 
 NoOpCommand::NoOpCommand(const char*   name,
 			 CommandScope* scope,
-			 boolean       active) : Command(name, scope, active)
+			 bool       active) : Command(name, scope, active)
 {
     //
     // No op.
     //
 }
 
-boolean NoOpCommand::doIt(CommandInterface *ci)
+bool NoOpCommand::doIt(CommandInterface *ci)
 {
-    return TRUE;
+    return true;
 }
 
-boolean NoOpCommand::undoIt()
+bool NoOpCommand::undoIt()
 {
-    return TRUE;
+    return true;
 }

@@ -65,7 +65,7 @@ Dictionary *theDynamicPackageDictionary = new Dictionary;
 /*****************************************************************************/
 
 static
-boolean _ParsePackageLine(char*      line,
+bool _ParsePackageLine(char*      line,
 			    int        lineNumber,
 			    int        start)
 {
@@ -99,10 +99,10 @@ boolean _ParsePackageLine(char*      line,
 		(const char*)begin,
 		(const void*) NULL);
 
-    return TRUE;
+    return true;
 
 error:
-    return FALSE;
+    return false;
 }
 /*****************************************************************************/
 /* _ParseModuleLine -						     */
@@ -194,7 +194,7 @@ error:
 /*****************************************************************************/
 
 static
-boolean _ParseCategoryLine(Dictionary*    mdf,
+bool _ParseCategoryLine(Dictionary*    mdf,
 			      NodeDefinition* module,
 			      char*      line,
 			      int        lineNumber,
@@ -211,12 +211,12 @@ boolean _ParseCategoryLine(Dictionary*    mdf,
 
     current = start;
 
-    return TRUE;
+    return true;
 }
 
 #endif // NOT_NEEDED
 
-boolean ParseMDFTypes(ParameterDefinition *param, char *p, int lineNumber)
+bool ParseMDFTypes(ParameterDefinition *param, char *p, int lineNumber)
 {
     char buffer[1000];
     char *q;
@@ -262,14 +262,14 @@ boolean ParseMDFTypes(ParameterDefinition *param, char *p, int lineNumber)
 		     lineNumber);
 		if (input_type)
 		    delete input_type;
-		return FALSE;
+		return false;
 	    }
 
 	    /*
 	     * Begin a new type and the type to the param list of type.
 	     */
             input_type = new DXType(type);
-	    boolean r = param->addType(input_type);
+	    bool r = param->addType(input_type);
 	    ASSERT(r);
 	    input_type = NUL(DXType*);
 
@@ -294,64 +294,64 @@ boolean ParseMDFTypes(ParameterDefinition *param, char *p, int lineNumber)
 	     lineNumber);
 	if (input_type)
 	    delete input_type;
-	return FALSE;
+	return false;
     }
     /*
      * Begin a new type and add the type to the input list of type.
      */
     input_type = new DXType(type);
-    boolean r  = param->addType(input_type);
+    bool r  = param->addType(input_type);
     ASSERT(r);
 
-    return TRUE;
+    return true;
 }
 
 /*****************************************************************************/
 
 //
 // Parse 'attribute:%d' from the given line.
-// Return TRUE on success and set *val to %d.
+// Return true on success and set *val to %d.
 //
-static boolean GetIntegerAttribute(const char *line, const char *attr, 
+static bool GetIntegerAttribute(const char *line, const char *attr, 
 					int *val)
 {
     const char *c = strstr(line,attr);
     if (!c)
-	return FALSE;
+	return false;
     c += STRLEN(attr);
     while (*c && *c != ':') c++;
     if (!*c)
-	return FALSE;
+	return false;
     c++;
     *val = atoi(c);
-    return TRUE;
+    return true;
 }
 
-boolean _ParseParameterAttributes(ParameterDefinition *pd , const char *attr)
+bool _ParseParameterAttributes(ParameterDefinition *pd , const char *attr)
 {
     int val;
-    boolean v;
+    bool v;
 
     if (GetIntegerAttribute(attr,"private",&val)) {
-	v = (val == 1 ? FALSE : TRUE);
+	v = (val == 1 ? false : true);
 	pd->setViewability(v);
-	if (!v)	pd->setDefaultVisibility(FALSE);
+	if (!v)	pd->setDefaultVisibility(false);
     } else if (GetIntegerAttribute(attr,"hidden",&val)) {
-	v = (val == 1 ? FALSE : TRUE);
+	v = (val == 1 ? false : true);
 	pd->setDefaultVisibility(v);
     } 
 
     if (GetIntegerAttribute(attr,"visible",&val)) {
-	boolean visible=FALSE, viewable=FALSE;
+	bool visible=false, viewable=false;
 	if (val == 0) {
-	    viewable = TRUE;
-	    visible = FALSE;
+	    viewable = true;
+	    visible = false;
 	} else if (val == 1) {
-	    viewable = TRUE;
-	    visible = TRUE;
+	    viewable = true;
+	    visible = true;
 	} else if (val == 2) {
-	    viewable = FALSE;
-	    visible  = FALSE;
+	    viewable = false;
+	    visible  = false;
 	}
 	pd->setViewability(viewable);
 	pd->setDefaultVisibility(visible);
@@ -364,7 +364,7 @@ boolean _ParseParameterAttributes(ParameterDefinition *pd , const char *attr)
 	(val >= 0))
 	pd->setRerouteOutput(val+1);	// MDF uses 0 based indices.
     
-    return TRUE;
+    return true;
 }
 
 /*****************************************************************************/
@@ -375,7 +375,7 @@ boolean _ParseParameterAttributes(ParameterDefinition *pd , const char *attr)
 /*****************************************************************************/
 
 static
-boolean _ParseOutboardLine(NodeDefinition* module,
+bool _ParseOutboardLine(NodeDefinition* module,
 			   char*      line,
 			   int        lineNumber,
 			   int        start)
@@ -456,12 +456,12 @@ boolean _ParseOutboardLine(NodeDefinition* module,
     if (substring[1])
         module->setDefaultOutboardHost(substring[1]);
 
-    return TRUE;
+    return true;
 
 error:
     ErrorMessage("Encountered an erroneous OUTBOARD specification on line %d.",
 	 lineNumber);
-    return FALSE;
+    return false;
 }
 /*****************************************************************************/
 /* _ParseLOADABLELine -							     */
@@ -471,7 +471,7 @@ error:
 /*****************************************************************************/
 
 static
-boolean _ParseLoadableLine(NodeDefinition* module,
+bool _ParseLoadableLine(NodeDefinition* module,
 			   char*      line,
 			   int        lineNumber,
 			   int        start)
@@ -540,12 +540,12 @@ boolean _ParseLoadableLine(NodeDefinition* module,
 #endif
 
     module->setDynamicLoadFile(substring);
-    return TRUE;
+    return true;
 
 error:
     ErrorMessage("Encountered an erroneous LOADABLE specification on line %d.",
 	 lineNumber);
-    return FALSE;
+    return false;
 }
 /*****************************************************************************/
 /* _ParseInputLine -							     */
@@ -555,7 +555,7 @@ error:
 /*****************************************************************************/
 
 static
-boolean _ParseInputLine(Dictionary*    mdf,
+bool _ParseInputLine(Dictionary*    mdf,
 			   NodeDefinition* module,
 			   char*      line,
 			   int        lineNumber,
@@ -717,11 +717,11 @@ boolean _ParseInputLine(Dictionary*    mdf,
      */
     module->addInput(input);
     
-    return TRUE;
+    return true;
 
 error:
     if (input) delete input;
-    return FALSE;
+    return false;
 }
 
 
@@ -733,7 +733,7 @@ error:
 /*****************************************************************************/
 
 static
-boolean _ParseOutputLine(Dictionary*    mdf,
+bool _ParseOutputLine(Dictionary*    mdf,
 			    NodeDefinition* module,
 			    char*      line,
 			    int        lineNumber,
@@ -875,11 +875,11 @@ boolean _ParseOutputLine(Dictionary*    mdf,
 
     module->addOutput(output);
 
-    return TRUE;
+    return true;
 error:
     if (output) delete output;
 
-    return FALSE;
+    return false;
 }
 
 
@@ -891,7 +891,7 @@ error:
 /*****************************************************************************/
 
 static
-boolean _ParseOptionsLine(Dictionary*    mdf,
+bool _ParseOptionsLine(Dictionary*    mdf,
 			      NodeDefinition* module,
 			      char*      line,
 			      int        lineNumber,
@@ -917,7 +917,7 @@ boolean _ParseOptionsLine(Dictionary*    mdf,
 // Expose OPTIONS line parsing so that it can be called
 // from MacroDefintion.
 //
-boolean ParseMDFOptions (ParameterDefinition* pd, char* p)
+bool ParseMDFOptions (ParameterDefinition* pd, char* p)
 {
     /*
      * Parse Selection  values (separated by ';').
@@ -955,7 +955,7 @@ boolean ParseMDFOptions (ParameterDefinition* pd, char* p)
     }
 
     delete[] value;
-    return TRUE;
+    return true;
 }
 
 
@@ -967,7 +967,7 @@ boolean ParseMDFOptions (ParameterDefinition* pd, char* p)
 /*****************************************************************************/
 
 static
-boolean _ParseRepeatLine(Dictionary*    mdf,
+bool _ParseRepeatLine(Dictionary*    mdf,
 			      NodeDefinition* module,
 			      char*      line,
 			      int        lineNumber,
@@ -1005,7 +1005,7 @@ boolean _ParseRepeatLine(Dictionary*    mdf,
 	    ("Encountered error when expecting a repeat value on line %d.",
 	     lineNumber);
 
-	return FALSE;
+	return false;
     }
 
     value = atoi(&line[current]);
@@ -1031,23 +1031,23 @@ boolean _ParseRepeatLine(Dictionary*    mdf,
 	    module->setInputRepeatCount(0);
 	else
 	    module->setOutputRepeatCount(0);
-	return FALSE;
+	return false;
     }
   
-    return TRUE;
+    return true;
 }
 
 
 /*****************************************************************************/
 /* _FinishNodeDefinition -						     */
 /*                                                                           */
-/* Return TRUE if the module was added to the mdf dictionary 		     */ 
+/* Return true if the module was added to the mdf dictionary 		     */ 
 /*                                                                           */
 /*                                                                           */
 /*****************************************************************************/
 
 static
-boolean _FinishNodeDefinition(Dictionary*    mdf,
+bool _FinishNodeDefinition(Dictionary*    mdf,
 			   NodeDefinition* module)
 {
 
@@ -1068,9 +1068,9 @@ boolean _FinishNodeDefinition(Dictionary*    mdf,
 	(nameSym == NDAllocatorDictionary::SetNodeNameSymbol)) {
 	module->completeDefinition();
 	mdf->addDefinition(nameSym,module);
-	return TRUE;
+	return true;
     } else {
-	return FALSE;
+	return false;
     }
     
 }
@@ -1083,7 +1083,7 @@ boolean _FinishNodeDefinition(Dictionary*    mdf,
 /*                                                                           */
 /*****************************************************************************/
 
-boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
+bool ReadMDF(Dictionary* mdf, FILE*   input, bool uionly)
 {
     NodeDefinition *module;
     int        state;
@@ -1091,12 +1091,12 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
     int        end;
     Symbol	category;
     int        line_number;
-    boolean    parsed_flags, checked_flags=FALSE, finished;
-    boolean    parsed_category,  parsed_description, parsed_outboard;
-    boolean    checked_category=FALSE, checked_description=FALSE, checked_outboard=FALSE; 
-    boolean	parsed_loadable, checked_loadable=FALSE;
-    boolean	checked_repeat=FALSE;
-    boolean    get_another_line;
+    bool    parsed_flags, checked_flags=false, finished;
+    bool    parsed_category,  parsed_description, parsed_outboard;
+    bool    checked_category=false, checked_description=false, checked_outboard=false; 
+    bool	parsed_loadable, checked_loadable=false;
+    bool	checked_repeat=false;
+    bool    get_another_line;
     char*      p;
     char       line[2048];
     int		last_iostate;
@@ -1110,10 +1110,10 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
     state            = ST_PACKAGE;
     last_iostate = ST_NONE;
     
-    finished         = FALSE;
-    get_another_line = TRUE;
+    finished         = false;
+    get_another_line = true;
     parsed_description = parsed_outboard =  parsed_loadable =
-	parsed_category = parsed_flags = FALSE;
+	parsed_category = parsed_flags = false;
 
     for (;;)
     {
@@ -1121,7 +1121,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 	{
 
 	    checked_description = parsed_description;
-	    checked_repeat	= /*parsed_repeat =*/ FALSE; 
+	    checked_repeat	= /*parsed_repeat =*/ false; 
 	    checked_loadable	= parsed_loadable;
 	    checked_outboard	= parsed_outboard;
 	    checked_category	= parsed_category;
@@ -1141,7 +1141,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		 */
 		if (p == NUL(char*))
 		{
-		    finished = TRUE;
+		    finished = true;
 		    break;
 		}
 
@@ -1176,7 +1176,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 	}
 	else
 	{
-	    get_another_line = TRUE;
+	    get_another_line = true;
 	}
 
 	/*
@@ -1207,7 +1207,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		/*
 		 * Don't get another line yet...
 		 */
-		get_another_line = FALSE;
+		get_another_line = false;
 	    	state = ST_MODULE;
 	    }
 
@@ -1237,12 +1237,12 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		    delete module;
 	    }
 
-	    checked_description = parsed_description = FALSE;
-	    checked_outboard	= parsed_outboard = FALSE;
-	    checked_loadable	= parsed_loadable = FALSE;
-	    checked_category	= parsed_category = FALSE;
-	    checked_flags	= parsed_flags    = FALSE;
-	    checked_repeat	= /*parsed_repeat   =*/ FALSE;
+	    checked_description = parsed_description = false;
+	    checked_outboard	= parsed_outboard = false;
+	    checked_loadable	= parsed_loadable = false;
+	    checked_category	= parsed_category = false;
+	    checked_flags	= parsed_flags    = false;
+	    checked_repeat	= /*parsed_repeat   =*/ false;
 	   
 	    /*
 	     * Add the module index to the module index list.
@@ -1267,7 +1267,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 	    /*
 	     * Parse "CATEGORY" keyword.
 	     */
-	    checked_category = TRUE;
+	    checked_category = true;
 	    if (IsToken(line, "CATEGORY", start))
 	    {
 		/*
@@ -1288,7 +1288,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		}
 			
 		module->setCategory(category);
-	        parsed_category = TRUE;
+	        parsed_category = true;
 
 		if (!parsed_description)
 		    state = ST_DESCRIPTION;
@@ -1309,7 +1309,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		/*
 		 * Don't get another line yet...
 		 */
-		get_another_line = FALSE;
+		get_another_line = false;
 		if (!checked_description)
 		    state = ST_DESCRIPTION;
 		else if (!checked_outboard)
@@ -1326,7 +1326,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 
 	  case ST_DESCRIPTION:
 
-	    checked_description = TRUE;
+	    checked_description = true;
 
 	    /*
 	     * Parse "DESCRIPTION" keyword.
@@ -1342,7 +1342,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		 * Store away the description string.
 		 */
 		module->setDescription(&line[start]);
-	 	parsed_description = TRUE;
+	 	parsed_description = true;
 
 		if (!parsed_category)
 		    state = ST_CATEGORY;
@@ -1358,7 +1358,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		/*
 		 * Don't get another line yet...
 		 */
-		get_another_line = FALSE;
+		get_another_line = false;
 		if (!checked_category)
 		    state = ST_CATEGORY;
 		else if (!checked_outboard)
@@ -1373,7 +1373,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 
 	  case ST_LOADABLE:
 
-	    checked_loadable = TRUE;
+	    checked_loadable = true;
 	    /*
 	     * Parse "LOADABLE" keyword.
 	     */
@@ -1389,7 +1389,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		 */
 		if (!_ParseLoadableLine(module, line, line_number, start))
 		    goto error;
-		parsed_loadable = TRUE;
+		parsed_loadable = true;
 
 		if (!parsed_category)
 		    state = ST_CATEGORY;
@@ -1405,7 +1405,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		/*
 		 * Don't get another line yet...
 		 */
-		get_another_line = FALSE;
+		get_another_line = false;
 
 		if (!checked_category)
 		    state = ST_CATEGORY;
@@ -1422,7 +1422,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 
 	  case ST_OUTBOARD:
 
-	    checked_outboard = TRUE;
+	    checked_outboard = true;
 	    /*
 	     * Parse "OUTBOARD" keyword.
 	     */
@@ -1438,7 +1438,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		 */
 		if (!_ParseOutboardLine(module, line, line_number, start))
 		    goto error;
-		parsed_outboard = TRUE;
+		parsed_outboard = true;
 
 		if (!parsed_category)
 		    state = ST_CATEGORY;
@@ -1454,7 +1454,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		/*
 		 * Don't get another line yet...
 		 */
-		get_another_line = FALSE;
+		get_another_line = false;
 
 		if (!checked_loadable)
 		    state = ST_LOADABLE;
@@ -1471,13 +1471,13 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 
 	  case ST_FLAGS:
 
-	    checked_flags = TRUE;
+	    checked_flags = true;
 	    /*
 	     * Parse "FLAGS" keyword.
 	     */
 	    if (IsToken(line, "FLAGS", start)) {
 
-		parsed_flags = TRUE;
+		parsed_flags = true;
 
 		if (strstr(line,"SWITCH")) module->setMDFFlagSWITCH();
 		if (strstr(line,"ERR_CONT")) module->setMDFFlagERR_CONT();
@@ -1503,7 +1503,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		/*
 		 * Don't get another line yet...
 		 */
-		get_another_line = FALSE;
+		get_another_line = false;
 
 		if (!checked_category)
 		    state = ST_CATEGORY;
@@ -1537,7 +1537,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		/*
 		 * Don't get another line yet...
 		 */
-		get_another_line = FALSE;
+		get_another_line = false;
 
 		/*
 		 * If not successful, try parsing repeat line.
@@ -1572,7 +1572,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		/*
 		 * Don't get another line yet...
 		 */
-		get_another_line = FALSE;
+		get_another_line = false;
 
 		/*
 		 * If not successful, assume end of module definition...
@@ -1582,7 +1582,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 	    break;
 
 	  case ST_REPEAT: 
-	    checked_repeat = TRUE;
+	    checked_repeat = true;
 	    if (IsToken(line, "REPEAT", start))
 	    {
 		if (_ParseRepeatLine(mdf, module, line, line_number, 
@@ -1597,8 +1597,8 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		        state = ST_PACKAGE;
 		    } else
 			ASSERT(0);
-	    	    /*parsed_repeat = TRUE;*/
-		    get_another_line = TRUE;
+	    	    /*parsed_repeat = true;*/
+		    get_another_line = true;
 		}
 		else
 		{
@@ -1610,7 +1610,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		/*
 		 * Don't get another line yet...
 		 */
-		get_another_line = FALSE;
+		get_another_line = false;
 
 		/*
 		 * If not successful, try parsing output or module line.
@@ -1634,7 +1634,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		     * Next, parse another line of selections
 		     */
 		    state = ST_OPTIONS;
-		    get_another_line = TRUE;
+		    get_another_line = true;
 		}
 		else
 		{
@@ -1646,7 +1646,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 		/*
 		 * Don't get another line yet...
 		 */
-		get_another_line = FALSE;
+		get_another_line = false;
 
 		/*
 		 * If not successful, try parsing output or module line.
@@ -1660,7 +1660,7 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 
 
 	  default:
-	    ASSERT(FALSE);
+	    ASSERT(false);
 	}
     }
 
@@ -1673,22 +1673,22 @@ boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 	    delete module;
     }
 
-    return TRUE;
+    return true;
 
 error:
     if (module) delete module;
 
-    return FALSE;
+    return false;
 }
 
-boolean LoadMDFFile(const char *file, const char *mdftype, Dictionary *mdf,
-			boolean uionly)
+bool LoadMDFFile(const char *file, const char *mdftype, Dictionary *mdf,
+			bool uionly)
 {
     FILE *input;
-    boolean parsed;
+    bool parsed;
 
     if (!file || !*file)
-        return TRUE;
+        return true;
 
     input = fopen(file, "r");
     if (input != NUL(FILE*))
@@ -1700,24 +1700,24 @@ boolean LoadMDFFile(const char *file, const char *mdftype, Dictionary *mdf,
 	{
 	    ErrorMessage("Error found in %s module definition file \"%s\".",
 			mdftype,file);
-	    return FALSE;
+	    return false;
 	}
     }
     else
     {
 	ErrorMessage ("Cannot open %s module description file \"%s\".", 
 			mdftype,file);
-	return FALSE;
+	return false;
     }
-    return TRUE;
+    return true;
 }
 
 #ifdef NOT_YET
-boolean ReadMDFFiles(const char *root, Dictionary *mdf)
+bool ReadMDFFiles(const char *root, Dictionary *mdf)
 {
 
     FILE*   input;
-    boolean parsed;
+    bool parsed;
     char    pathname[256];
 
 
@@ -1727,7 +1727,7 @@ boolean ReadMDFFiles(const char *root, Dictionary *mdf)
     sprintf(pathname, "%s/lib/dx.mdf", root);
 
     if (!LoadMDFFile(pathname,"system",mdf))
-	return FALSE;
+	return false;
 
     /*
      * Load UI module description file.
@@ -1735,7 +1735,7 @@ boolean ReadMDFFiles(const char *root, Dictionary *mdf)
     sprintf(pathname, "%s/ui/ui.mdf", root);
 
     if (!LoadMDFFile(pathname,"UI",mdf))
-	return FALSE;
+	return false;
 
     /*
      * Load user module description file, if defined.
@@ -1753,7 +1753,7 @@ boolean ReadMDFFiles(const char *root, Dictionary *mdf)
 		ErrorMessage
 		    ("Error found in user module definition file \"%s\".",
 		     program->user_module);
-		return FALSE;
+		return false;
 	    }
 	}
 	else
@@ -1761,7 +1761,7 @@ boolean ReadMDFFiles(const char *root, Dictionary *mdf)
 	    ErrorMessage
 		("Cannot open user module description file \"%s\".",
 		 program->user_module);
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -1782,7 +1782,7 @@ boolean ReadMDFFiles(const char *root, Dictionary *mdf)
     /*
      * Return successfully.
      */
-    return TRUE;
+    return true;
 }
 #endif // NOT_YET
 
@@ -1898,14 +1898,14 @@ void InitializeMDF(UimMDF* mdf)
     {
 	if (module->dialog_type == CONF_DIALOG_COMPUTE)
 	{
-	    module->input[0].visible = FALSE;
+	    module->input[0].visible = false;
 	}
 	else if (module->name == mdf->name.colormap)
 	{
-	    module->input[0].visible = FALSE;
-	    module->input[1].visible = FALSE;
-	    module->input[2].visible = FALSE;
-	    module->input[3].visible = FALSE;
+	    module->input[0].visible = false;
+	    module->input[1].visible = false;
+	    module->input[2].visible = false;
+	    module->input[3].visible = false;
 	}
 	else if (module->name == mdf->name.image)
 	{
@@ -1916,7 +1916,7 @@ void InitializeMDF(UimMDF* mdf)
 	    {
 		if (k != 1)
 		{
-		    module->input[k].visible = FALSE;
+		    module->input[k].visible = false;
 		}
 	    }
 	}
@@ -1929,7 +1929,7 @@ void InitializeMDF(UimMDF* mdf)
 	    {
 		if (k != 1 AND k != 29 AND k != 30)
 		{
-		    module->input[k].visible = FALSE;
+		    module->input[k].visible = false;
 		}
 	    }
 	}

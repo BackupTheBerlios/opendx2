@@ -39,10 +39,10 @@ class NewCommand : public OptionalPreActionCommand
     //
     // Protected member data:
     //
-    virtual boolean needsConfirmation();
+    virtual bool needsConfirmation();
     virtual void    doPreAction();
 
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -50,7 +50,7 @@ class NewCommand : public OptionalPreActionCommand
     //
     NewCommand(const char      *name,
 	       CommandScope    *scope,
-	       boolean		active,
+	       bool		active,
 	       Network	       *net);
 
 

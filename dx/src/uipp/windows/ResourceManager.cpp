@@ -28,7 +28,7 @@ void ResourceManager::BuildTheResourceManager()
 
 ResourceManager::ResourceManager()
 {
-    this->write_protection_complaint=FALSE;
+    this->write_protection_complaint=false;
 }
 
 ResourceManager::~ResourceManager()
@@ -105,12 +105,12 @@ void ResourceManager::removeListValue(Symbol key, const char* value)
 void ResourceManager::registerMultiValued(const char* resource)
 {
     Symbol key = theSymbolManager->getSymbol(resource);
-    boolean must_init = FALSE;
+    bool must_init = false;
     if (!key) {
 	key = theSymbolManager->registerSymbol(resource);
-	must_init = TRUE;
+	must_init = true;
     }
-    ASSERT (this->multi_valued.isMember((void*)key)==FALSE);
+    ASSERT (this->multi_valued.isMember((void*)key)==false);
     this->multi_valued.appendElement((void*)key);
     ASSERT (this->resources.findDefinition(key)==0);
     List* values = new List();
@@ -144,14 +144,14 @@ void ResourceManager::saveListResource(Symbol key)
     int os=0;
     ListIterator iter(*values);
     Symbol v;
-    boolean first = TRUE;
+    bool first = true;
     while (v=(Symbol)(long)iter.getNext()) {
 	const char* str = theSymbolManager->getSymbolString(v);
 	if (!first) {
 	    spec[os++] = VALUE_SEPARATOR;
 	    spec[os] = '\0';
 	} else {
-	    first = FALSE;
+	    first = false;
 	}
 	strcpy (&spec[os], str);
 	os+= strlen(str);
@@ -194,10 +194,10 @@ void ResourceManager::initializeValue(Symbol key)
 	const char* class_name = theIBMApplication->getApplicationClass();
 
 	//char fname[256];
-	//if (!theIBMApplication->getApplicationDefaultsFileName(fname, TRUE)) {
+	//if (!theIBMApplication->getApplicationDefaultsFileName(fname, true)) {
 	//	if (!this->write_protection_complaint) {
 	//		ModalWarningMessage (ERRMSG, fname);
-	//		this->write_protection_complaint = TRUE;
+	//		this->write_protection_complaint = true;
 	//	}
 	//}
 
@@ -236,10 +236,10 @@ void ResourceManager::initializeMultiValued(Symbol key)
 	//   const char* class_name = theIBMApplication->getApplicationClass();
 
 	//   char fname[256];
-	//   if (!theIBMApplication->getApplicationDefaultsFileName(fname, TRUE)) {
+	//   if (!theIBMApplication->getApplicationDefaultsFileName(fname, true)) {
 	//if (!this->write_protection_complaint) {
 	//    ModalWarningMessage (ERRMSG, fname);
-	//    this->write_protection_complaint = TRUE;
+	//    this->write_protection_complaint = true;
 	//}
 	//   }
 	//XrmDatabase db = XrmGetFileDatabase(fname);

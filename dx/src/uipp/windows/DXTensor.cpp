@@ -20,7 +20,7 @@
 //  It checks to see if the string in s represents a valid Tensor.
 //  index is set to point to the character following the lexed tensor.
 //
-boolean
+bool
 IsTensor(const char *s, int& index )
 {
 	DXTensor t;
@@ -33,7 +33,7 @@ IsTensor(const char *s, int& index )
 //  It checks to see if the string in s represents a valid vector.
 //  index is set to point to the character following the lexed vector.
 //
-boolean
+bool
 IsVector(const char *s, int& index, int& tuple)
 {
         DXTensor t;
@@ -42,10 +42,10 @@ IsVector(const char *s, int& index, int& tuple)
         if (t.setValue(s, tindex) && (t.getDimensions() == 1)) {
 		tuple = t.getDimensionSize(1);
 		index = tindex;
-                return TRUE;
+                return true;
 	}
 
-        return FALSE;
+        return false;
 }
 
 
@@ -114,26 +114,26 @@ Realloc (void *ptr, int size)
 
 //
 // Set the value of this according to the value parsed from s.
-// Return TRUE on success, FALSE on failure.
+// Return true on success, false on failure.
 // On successful return, index points to the character following the
 // the last character in the successfully parsed value found in s.
 // On failure, index is unchanged.
 //
-boolean
+bool
 DXTensor::setValue(const char *s, int& index)
 {
     int j;
     int components = 0;
     int ndim = 1, loc_index = index;
     char c;
-    boolean saw_value = FALSE, saw_right_bracket = FALSE;
-    boolean saw_scalar =  FALSE;
+    bool saw_value = false, saw_right_bracket = false;
+    bool saw_scalar =  false;
     DXTensor *subv = NUL(DXTensor*); 
     
     SkipWhiteSpace(s,loc_index);
 
     if (s[loc_index] != '[')
-	return FALSE;
+	return false;
     loc_index++;
 
     while (s[loc_index]) {
@@ -174,19 +174,19 @@ DXTensor::setValue(const char *s, int& index)
 			goto error;
 		    }
 	    }
-	    saw_value = TRUE;
+	    saw_value = true;
 	} else if (c == ']') {
-	    if (saw_value == FALSE)
+	    if (saw_value == false)
 		goto error;
-	    saw_scalar = FALSE;
-	    saw_right_bracket = TRUE;
+	    saw_scalar = false;
+	    saw_right_bracket = true;
 	    loc_index++;
 	    break;
 	} else if (c == ',') {
 	    if (!saw_value)	/* This checks for ',,' */
 		goto error;
-	    saw_value = FALSE;
-	    saw_scalar = FALSE;
+	    saw_value = false;
+	    saw_scalar = false;
 	    loc_index++;
 	} else {
 	    /* Scalars are not allowed if we already saw a sub-vector */
@@ -205,8 +205,8 @@ DXTensor::setValue(const char *s, int& index)
 				++components * sizeof(*scalars));
 	    ASSERT(this->scalars);
 	    this->scalars[components-1] = val;
-	    saw_value = TRUE;
-	    saw_scalar = TRUE;
+	    saw_value = true;
+	    saw_scalar = true;
 	}
     }
 
@@ -226,10 +226,10 @@ DXTensor::setValue(const char *s, int& index)
     }
 
     index = loc_index;
-    return TRUE;
+    return true;
 
 error:
-    return FALSE;
+    return false;
 
 }
 
@@ -249,10 +249,10 @@ DXTensor::printValue()
 //
 // Parse a string that represents an (N x M x...)-dimensional Tensor and set 
 // the value represented into this->scalars[].
-// Return TRUE on success, FALSE otherwise.
+// Return true on success, false otherwise.
 //
 //
-boolean
+bool
 DXTensor::setValue(const char *s)
 {
     int i;
@@ -338,7 +338,7 @@ DXTensor::getValueString()
 	return (strval);
 	
 }
-boolean DXTensor::setVectorComponentValue(int component, double val)
+bool DXTensor::setVectorComponentValue(int component, double val)
 {
     ASSERT(this->getDimensions() == 1);
     ASSERT(this->dim_sizes[0] >= component);
@@ -347,7 +347,7 @@ boolean DXTensor::setVectorComponentValue(int component, double val)
 	delete this->strval;
 	this->strval = NULL;
     }
-    return TRUE;
+    return true;
 }
 
 //

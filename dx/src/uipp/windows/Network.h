@@ -34,11 +34,11 @@ typedef long CPNodeStatus;	// Also defined in ControlPanel.h
 
 //
 // Defines the default output remapping mode.
-// When FALSE, outputs are not to be remapped by the executive.
+// When false, outputs are not to be remapped by the executive.
 // This is however only advisor, it is up to the DrivenInteractorNodes and
 // their derived classes to read their Network's remap mode an use it. 
 //
-#define DEFAULT_REMAP_INTERACTOR_MODE	FALSE
+#define DEFAULT_REMAP_INTERACTOR_MODE	false
 
 //
 // Referenced classes:
@@ -92,7 +92,7 @@ class Network : public Base
     //
     void parseComment(char *comment);
     void parseFunctionID(char *name);
-    void parseArgument(char *name, const boolean isVarname);
+    void parseArgument(char *name, const unsigned char isVarname);
     void parseLValue(char *name);
     void parseRValue(char *name);
     void parseStringAttribute(char *name, char *value);
@@ -102,8 +102,8 @@ class Network : public Base
     //
     // Parse all .net file comments.
     //
-    void parseVersionComment(const char* comment, boolean netfile);
-    boolean netParseComments(const char* comment, const char *file, 
+    void parseVersionComment(const char* comment, bool netfile);
+    bool netParseComments(const char* comment, const char *file, 
 							int lineno);
     void netParseMacroComment(const char* comment);
     void netParseMODULEComment(const char* comment);
@@ -116,7 +116,7 @@ class Network : public Base
     //
     // Parse all .cfg file comments.
     //
-    boolean cfgParseComments(const char* comment, const char *file, 
+    bool cfgParseComments(const char* comment, const char *file, 
 							int lineno);
     void cfgParsePanelComment(const char* comment);
     void cfgParseInteractorComment(const char* comment);
@@ -130,7 +130,7 @@ class Network : public Base
     //
     friend void ParseComment(char* comment);
     friend void ParseFunctionID(char* name);
-    friend void ParseArgument(char* name, const boolean isVarname);
+    friend void ParseArgument(char* name, const unsigned char isVarname);
     friend void ParseLValue(char* name);
     friend void ParseRValue(char* name);
     friend void ParseIntAttribute(char* name, int value);
@@ -139,7 +139,7 @@ class Network : public Base
     friend void yyerror(char *, ...);
 
     int visitNodes(Node *n);
-    boolean markAndCheckForCycle(Node *srcNode, Node *dstNode);
+    bool markAndCheckForCycle(Node *srcNode, Node *dstNode);
 
 
     //
@@ -173,32 +173,32 @@ class Network : public Base
     // notifying the editor of the new nodes.  Instead we notify the editor
     // after the network is complete. 
     //
-    boolean             readingNetwork;
+    bool             readingNetwork;
 
     //
     // Add the given panel this network and if the instance number is 0
     // then allocate a new instance number for the panel.
     //
-    boolean addPanel(ControlPanel *p, int instance = 0);
+    bool addPanel(ControlPanel *p, int instance = 0);
 
     //
     // Check version numbers using rules taken from ParseVersionComment
     // If there is a problem post on Info Message
     //
-    boolean versionMismatchQuery (boolean netfile, const char *file);
+    bool versionMismatchQuery (bool netfile, const char *file);
 
     //
     // If the net came from a file and the file was encrypted, 
-    // then this is set to TRUE.
+    // then this is set to true.
     //
-    boolean netFileWasEncoded;
+    bool netFileWasEncoded;
 
     static Decorator* lastObjectParsed;
     // Print decorator comments in the .net file.
     static void SetOwner(void*);
     static void DeleteSelections(void*);
     static void Select(void*);
-    virtual boolean parseDecoratorComment (const char *comment,
+    virtual bool parseDecoratorComment (const char *comment,
                                 const char *filename, int lineno);
 
     //
@@ -212,7 +212,7 @@ class Network : public Base
     // list.  In the latter case, the user should delete the returned list.
     //
     static List *GetDestinationNodes(Node *src, int output_index, 
-			List *destList, boolean rcvrsOk = FALSE);
+			List *destList, bool rcvrsOk = false);
 
     //
     // Do a recursive depth-first search of this network for macro nodes.
@@ -231,14 +231,14 @@ public:
 	//
 	static Network 		*network;
 	static char		*parse_file;
-	static boolean		error_occurred;
-	static boolean 		stop_parsing;
-	static boolean 		issued_version_error;
-	static boolean 		ignoreUndefinedModules;
+	static bool		error_occurred;
+	static bool 		stop_parsing;
+	static bool 		issued_version_error;
+	static bool 		ignoreUndefinedModules;
 	static Dictionary	*undefined_modules;
 	static Dictionary	*redefined_modules;
 	static int		parse_mode;
-	static boolean 		main_macro_parsed;
+	static bool 		main_macro_parsed;
 
 	ParseState(); 
 	~ParseState(); 
@@ -263,7 +263,7 @@ public:
 	Node	*node;
 	int	input_index;
 	int	output_index;
-	boolean	node_error_occurred;
+	bool	node_error_occurred;
 	ControlPanel *control_panel;
 
     } parseState;
@@ -273,7 +273,7 @@ private:
     //
     // Keep track if whether or not the .net had a Get or a Set in it.
     //
-    boolean fileHadGetOrSetNodes;	// Set during parse of .net file
+    bool fileHadGetOrSetNodes;	// Set during parse of .net file
 
     //
     // See fixupTransmitter() below for comment.
@@ -313,7 +313,7 @@ private:
     Symbol		category;
     Symbol		name;
     char 		*prefix;
-    boolean		remapInteractorOutputs;
+    bool		remapInteractorOutputs;
 
     DeferrableAction	*deferrableRemoveNode;
     DeferrableAction	*deferrableAddNode;
@@ -343,14 +343,14 @@ private:
     Command*		setNameCmd;
     Command*		helpOnNetworkCmd;
 
-    boolean		parse(FILE *f);
-    boolean		dirty;
-    boolean		fileDirty;
+    bool		parse(FILE *f);
+    bool		dirty;
+    bool		fileDirty;
     char*               fileName;
 
-    boolean             macro;
+    bool             macro;
     MacroDefinition     *definition;
-    boolean		deleting;		// True during destructor.
+    bool		deleting;		// True during destructor.
 
     SaveAsDialog	*saveAsDialog;
     Dialog		*saveCfgDialog;
@@ -362,7 +362,7 @@ private:
     //
     // Parse any network specific info out of the .cfg comments.
     //
-    boolean cfgParseComment(const char *name, const char *file, int lineno);
+    bool cfgParseComment(const char *name, const char *file, int lineno);
 
     //
     // Used to allocate uniq ids for control panels in this network.
@@ -381,13 +381,13 @@ private:
     // Deletes a given panel from the panel list.
     // Should you be using this->closeControlPanel(...).
     //
-    boolean deletePanel(ControlPanel* panel, boolean destroyPanelsNow = FALSE);
+    bool deletePanel(ControlPanel* panel, bool destroyPanelsNow = false);
 
     //
     // Do any work that is necessary to read in a new .cfg file and/or
     // clear the network of any .cfg information.
     //
-    void clearCfgInformation(boolean destroyPanelsNow = FALSE);
+    void clearCfgInformation(bool destroyPanelsNow = false);
 
     //
     // The work space grid to be used by the editor.
@@ -415,17 +415,17 @@ private:
     // Print the visual program as a .c file that uses libDX calls.
     // An error message is printed if there was an error.
     //
-    boolean printAsCCode(FILE *f);
+    bool printAsCCode(FILE *f);
 #endif // DXUI_DEVKIT
 
     //
     // Print comments and 'include' statements for the macros that are
-    // referenced in this network.  If nested is TRUE, then we don't print
-    // the 'include' statements.  Return TRUE on sucess or FALSE on failure.
+    // referenced in this network.  If nested is true, then we don't print
+    // the 'include' statements.  Return true on sucess or false on failure.
     // nested and processedMacros args are only really intended to be 
     // used in the recursive calls (i.e. not by generic users).
     //
-    virtual boolean printMacroReferences(FILE *f, boolean inline_define,
+    virtual bool printMacroReferences(FILE *f, bool inline_define,
                         PacketIFCallback echoCallback, void *echoClientData);
 
     //
@@ -442,7 +442,7 @@ private:
     // For editing operations which automatically chop arcs and replace
     // them with transmitters/receivers.
     //
-    boolean	chopInputArk(Node*, int, Dictionary*, Dictionary*);
+    bool	chopInputArk(Node*, int, Dictionary*, Dictionary*);
 
   public:
     
@@ -457,17 +457,17 @@ private:
     // Adds a given image window to the image window list.
     // Deletes a given image window from the image window list.
     //
-    boolean addImage(ImageWindow* image);
+    bool addImage(ImageWindow* image);
     List   *getImageList() { return &this->imageList; }
     int		getImageCount() { return this->imageList.getSize(); }
-    boolean removeImage(ImageWindow* image);
+    bool removeImage(ImageWindow* image);
 
     //
     // Posts the sequencer
     void    postSequencer();
 
-    void    setRemapInteractorOutputMode(boolean val = TRUE);
-    boolean isRemapInteractorOutputMode()
+    void    setRemapInteractorOutputMode(bool val = true);
+    bool isRemapInteractorOutputMode()
 		{ return this->remapInteractorOutputs; }
 
 
@@ -475,13 +475,13 @@ private:
     // Maintain the Transmitter and Receiver lists.
     // The transmitter list contains all transmitters, and the receiver
     // list contains only "transmitter-less" receivers.
-    boolean addTransmitter(Node *n);
-    boolean removeTransmitter(Node *n);
+    bool addTransmitter(Node *n);
+    bool removeTransmitter(Node *n);
     Node   *getTransmitter(int i);
     int     getTransmitterCount();
 
-    boolean addReceiver(Node *n);
-    boolean removeReceiver(Node *n);
+    bool addReceiver(Node *n);
+    bool removeReceiver(Node *n);
     Node   *getReceiver(int i);
     int     getReceiverCount();
 #endif
@@ -490,9 +490,9 @@ private:
     // Probe management:
     //
 #if 00
-    boolean addProbe(Node*);
-    boolean deleteProbe(Node*);
-    boolean changeProbe(Node*);
+    bool addProbe(Node*);
+    bool deleteProbe(Node*);
+    bool changeProbe(Node*);
     int	    getProbeListSize();
     List    *getProbeList();
 #endif
@@ -501,9 +501,9 @@ private:
     // Pick management:
     //
 #if 00
-    boolean addPick(Node*);
-    boolean deletePick(Node*);
-    boolean changePick(Node*);
+    bool addPick(Node*);
+    bool deletePick(Node*);
+    bool changePick(Node*);
     int	    getPickListSize();
     List    *getPickList();
 #endif
@@ -524,10 +524,10 @@ private:
     // If the given panel(s) contain 0 interactors, then also call 
     // this->deletePanel() on the panel. 
     // If do_unmanage is true, then unmanage the control panel(s).
-    // do_unmanage should be FALSE when call from the control panel's
+    // do_unmanage should be false when call from the control panel's
     // close callback.
     //
-    void closeControlPanel(int panelInstance, boolean do_unmanage = TRUE);
+    void closeControlPanel(int panelInstance, bool do_unmanage = true);
     //
     // Open the given panel indicated by panelInstance.
     // If panelInstance is 0, manage all panels.
@@ -592,7 +592,7 @@ private:
     {
 	return this->helpOnNetworkCmd;
     }
-    boolean  clear(boolean destroyPanelsNow = FALSE);
+    bool  clear(bool destroyPanelsNow = false);
 
 
     //
@@ -615,8 +615,8 @@ private:
     //
     // Name and Category manipulations 
     //
-    void    setDescription(const char *description, boolean markDirty = TRUE);
-    Symbol  setCategory(const char *cat, boolean markDirty = TRUE);
+    void    setDescription(const char *description, bool markDirty = true);
+    Symbol  setCategory(const char *cat, bool markDirty = true);
     Symbol  setName(const char *n);
     const char *getDescriptionString();
     const char *getCategoryString() 
@@ -633,23 +633,23 @@ private:
     //
     // Printing/sending script representations of this network 
     //
-    virtual boolean printNetwork(FILE *f,
+    virtual bool printNetwork(FILE *f,
 				PrintType dest);
-    virtual boolean printHeader(FILE *f,
+    virtual bool printHeader(FILE *f,
 				PrintType dest,
 				PacketIFCallback echoCallback = NULL,
 				void *echoClientData = NULL);
-    virtual boolean printBody(FILE *f,
+    virtual bool printBody(FILE *f,
 			      PrintType dest,
 			      PacketIFCallback echoCallback = NULL,
 			      void *echoClientData = NULL);
-    virtual boolean printTrailer(FILE *f,
+    virtual bool printTrailer(FILE *f,
 				 PrintType dest,
 				 PacketIFCallback echoCallback = NULL,
 				 void *echoClientData = NULL);
-    virtual boolean printValues(FILE *f, PrintType dest);
-    virtual boolean sendNetwork();
-    virtual boolean sendValues(boolean force = FALSE);
+    virtual bool printValues(FILE *f, PrintType dest);
+    virtual bool sendNetwork();
+    virtual bool sendValues(bool force = false);
 
     //
     // Convert a filename (with or without corresponding extensions)
@@ -660,30 +660,30 @@ private:
 
     //
     // Determine if the network is in a state that can be saved to disk.
-    // If so, then return TRUE, otherwise return FALSE and issue an error.
+    // If so, then return true, otherwise return false and issue an error.
     //
-    boolean isNetworkSavable();
+    bool isNetworkSavable();
 
     //
     // Save the network as a file in the .net and .cfg files
     //
-    virtual boolean saveNetwork(const char *name, boolean force = FALSE);
+    virtual bool saveNetwork(const char *name, bool force = false);
 
-    boolean openCfgFile(const char *name, boolean openStartup = FALSE, 
-					  boolean send = TRUE);
-    boolean saveCfgFile(const char *name);
+    bool openCfgFile(const char *name, bool openStartup = false, 
+					  bool send = true);
+    bool saveCfgFile(const char *name);
 
     //
     // markNetwork sets the flag marked[j] (0 based) if note j
     // is connected to node i (0 based) in the d direction where d < 0
     // means above (to its inputs), and d > 0 means below (to its outputs),
     // and 0 means in both directions.
-    int     connectedNodes(boolean *marked, int i, int d);
+    int     connectedNodes(bool *marked, int i, int d);
     void    sortNetwork();
 
-    boolean checkForCycle(Node *srcNode, Node *dstNode);
-    virtual boolean readNetwork(const char *netfile, const char *cfgfile = NULL,
-		boolean ignoreUndefinedModules = FALSE);
+    bool checkForCycle(Node *srcNode, Node *dstNode);
+    virtual bool readNetwork(const char *netfile, const char *cfgfile = NULL,
+		bool ignoreUndefinedModules = false);
 
     // These are called by readNetwork() and any other functions that want to
     // READ a .net file. Returns FILE* and deals with encoded networks.
@@ -693,12 +693,12 @@ private:
     // NOTE that encoding is done outside dxui (by dxencode).  
     //
     static FILE* OpenNetworkFILE(const char *netfile, 
-				boolean *wasEncoded, char **errmsg = NULL);
+				bool *wasEncoded, char **errmsg = NULL);
     FILE* openNetworkFILE(const char *netfile, char **errmsg = NULL);
     //
     // Close the .net file that was opened with [Oo]penNetworkFILE().
     //
-    static void CloseNetworkFILE(FILE *f, boolean wasEncoded);
+    static void CloseNetworkFILE(FILE *f, bool wasEncoded);
     void closeNetworkFILE(FILE *f);
 
 
@@ -706,43 +706,43 @@ private:
     // Save the network as a file in the .net and .cfg files and any
     // per Node files (auxiliary)
     //
-    boolean netPrintNetwork(const char *name);
-    boolean cfgPrintNetwork(const char *name, PrintType dest = PrintFile);
+    bool netPrintNetwork(const char *name);
+    bool cfgPrintNetwork(const char *name, PrintType dest = PrintFile);
     void setCPSelectionOwner (ControlPanel *cp) { this->selectionOwner = cp; }
     ControlPanel *getSelectionOwner () { return this->selectionOwner; }
-    boolean auxPrintNetwork();
+    bool auxPrintNetwork();
 
-    boolean isDirty() { return this->dirty; }
+    bool isDirty() { return this->dirty; }
     void    setDirty();
-    void    clearDirty() { this->dirty = FALSE; }
-    void    setFileDirty(boolean val = TRUE) { this->fileDirty = val; }
-    void    clearFileDirty() { this->fileDirty = FALSE; }
+    void    clearDirty() { this->dirty = false; }
+    void    setFileDirty(bool val = true) { this->fileDirty = val; }
+    void    clearFileDirty() { this->fileDirty = false; }
     //
     // Is the network different than that on disk.  Before using this,
     // be careful, to be sure you shouldn't be using saveToFileRequired() 
     // instead.
     //
-    boolean isFileDirty() { return this->fileDirty; }
+    bool isFileDirty() { return this->fileDirty; }
 
     //
     // Return true if the network is different from that on disk, and the
     // application allows saving of .net and .cfg files.
     //
-    boolean saveToFileRequired();
+    bool saveToFileRequired();
 
 
     // Add a node to the network's node list.
     void addNode(Node *node, EditorWorkSpace *where = NULL);
-    void deleteNode(Node *node, boolean undefer=TRUE);
+    void deleteNode(Node *node, bool undefer=true);
     Node *findNode(Symbol name, int instance);
 
-    Node *findNode(const char* name, int* startpos = NULL, boolean byLabel = FALSE);
+    Node *findNode(const char* name, int* startpos = NULL, bool byLabel = false);
 
     void postSaveAsDialog(Command* cmd = NULL);
     void postSaveCfgDialog();
     void postOpenCfgDialog();
 
-    boolean postNameDialog();
+    bool postNameDialog();
     void editNetworkComment();
     void postHelpOnNetworkDialog();
 
@@ -752,17 +752,17 @@ private:
     // it from being a macro.
     // makeMacro makes this network a macro if do is true, else it makes it
     // be a "normal" net.
-    boolean isMacro();
-    boolean canBeMacro();
-    boolean makeMacro(boolean make);
+    bool isMacro();
+    bool canBeMacro();
+    bool makeMacro(bool make);
 
     ParameterDefinition *getInputDefinition(int i);
     ParameterDefinition *getOutputDefinition(int i);
     int getInputCount();
     int getOutputCount();
 
-    boolean moveInputPosition(MacroParameterNode *n, int index);
-    boolean moveOutputPosition(MacroParameterNode *n, int index);
+    bool moveInputPosition(MacroParameterNode *n, int index);
+    bool moveOutputPosition(MacroParameterNode *n, int index);
 
     void setDefinition(MacroDefinition *md);
     MacroDefinition *getDefinition();
@@ -770,7 +770,7 @@ private:
     //
     // Colormap Management functions
     //
-    void    openColormap(boolean openAll);
+    void    openColormap(bool openAll);
 
     Node   *getNode(const char *name, int instance);
 
@@ -815,13 +815,13 @@ private:
     // Returns true if the caller is the last element of the image list.
     // It is assumed that each member of this list will determine, during
     // Node::prepareToSendNode, will call this to see if it's the last one.
-    boolean isLastImage();
+    bool isLastImage();
 
     //
     // Given lists of old and new NodeDefinitions, redefine any nodes 
     // in the current network.
     //
-    boolean redefineNodes(Dictionary *newdefs, Dictionary *olddefs);
+    bool redefineNodes(Dictionary *newdefs, Dictionary *olddefs);
 
     //
     // Find the first free index (indices start from 1) for nodes with the
@@ -830,7 +830,7 @@ private:
     //
     int findFreeNodeIndex(const char *nodename);
 
-    boolean isDeleted() {return this->deleting;}
+    bool isDeleted() {return this->deleting;}
 
     int getNodeCount();
 
@@ -856,8 +856,8 @@ private:
     // to the conflicted node in the existing network.  The use of this is
     // undoing a deletion of a set of nodes.
     //
-    boolean mergeNetworks(Network *, List *panels, boolean all, boolean stitch=FALSE);
-    boolean mergePanels (Network *);
+    bool mergeNetworks(Network *, List *panels, bool all, bool stitch=false);
+    bool mergePanels (Network *);
 
     //
     // The decorators are held in this->decoratorList (no interactors in the list)
@@ -875,22 +875,22 @@ private:
     //
     // look through the network list and make a node list of the given class.  
     // If classname == NULL, then all nodes are included in the list.
-    // If classname != NULL, and includeSubclasses = FALSE, then nodes must
+    // If classname != NULL, and includeSubclasses = false, then nodes must
     // be of the given class and not derived from the given class.
     // If no nodes were found then NULL is returned.
     // The returned List must be deleted by the caller.
     //
     List *makeClassifiedNodeList(const char *classname,
-				 boolean includeSubclasses = TRUE);
+				 bool includeSubclasses = true);
 
     List *makeNamedControlPanelList(const char *name);
     List *makeLabelledNodeList(const char *label);
 
     //
-    // Search the network for a node of the given class and return TRUE
+    // Search the network for a node of the given class and return true
     // if found.
     //
-    boolean containsClassOfNode(const char *classname);
+    bool containsClassOfNode(const char *classname);
 
     //
     // look through the network list and make a list of the nodes with
@@ -900,7 +900,7 @@ private:
     //
     List *makeNamedNodeList(const char *nodename);
 
-    boolean isReadingNetwork() { return this->readingNetwork; }
+    bool isReadingNetwork() { return this->readingNetwork; }
 
 #ifdef DXUI_DEVKIT
     //
@@ -908,7 +908,7 @@ private:
     // If the filename does not have a '.c' extension, one is added.
     // An error message is printed if there was an error.
     //
-    boolean saveAsCCode(const char *filename);
+    bool saveAsCCode(const char *filename);
 
 #endif // DXUI_DEVKIT
 
@@ -923,7 +923,7 @@ private:
     void optimizeNodeOutputCacheability();
 
 
-    boolean wasNetFileEncoded() { return this->netFileWasEncoded;}
+    bool wasNetFileEncoded() { return this->netFileWasEncoded;}
 
     //
     // See if the given label is unique among nodes requiring uniqueness.
@@ -957,17 +957,17 @@ private:
     // This had always been protected but is now public because we need to
     // revisit command activation for reasons other than adding/removing nodes.
     //
-    virtual void changeExistanceWork(Node *n, boolean adding);
+    virtual void changeExistanceWork(Node *n, bool adding);
 
 #if WORKSPACE_PAGES
     Dictionary* getGroupManagers() { return this->groupManagers; }
     void	copyGroupInfo (Node* , List* );
     void	copyGroupInfo (Node* , Node* );
-    boolean	chopArks(List*, Dictionary*, Dictionary*);
-    boolean	replaceInputArks(List*, List*);
+    bool	chopArks(List*, Dictionary*, Dictionary*);
+    bool	replaceInputArks(List*, List*);
 #endif
 
-    virtual boolean isJavified() { return FALSE; }
+    virtual bool isJavified() { return false; }
 
     //
     // Returns a pointer to the class name.

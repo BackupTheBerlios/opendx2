@@ -16,7 +16,7 @@
 
 SelectorListNode::SelectorListNode(NodeDefinition *nd, 
 			Network *net, int instnc) : 
-				SelectionNode(nd, net, instnc,TRUE) 
+				SelectionNode(nd, net, instnc,true) 
 { 
 }
 SelectorListNode::~SelectorListNode()
@@ -34,11 +34,11 @@ InteractorInstance *SelectorListNode::newInteractorInstance()
 //
 // Determine if this node is of the given class.
 //
-boolean SelectorListNode::isA(Symbol classname)
+bool SelectorListNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassSelectorListNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->InteractorNode::isA(classname);
 }

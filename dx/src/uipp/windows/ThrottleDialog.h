@@ -41,7 +41,7 @@ class ThrottleDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //Widget closebtn;
     //Widget seconds;

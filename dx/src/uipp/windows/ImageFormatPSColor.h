@@ -28,7 +28,7 @@ class ImageFormatPSColor : public PostScriptImageFormat
   private:
 
     //static String  DefaultResources[];
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
 
@@ -57,7 +57,7 @@ class ImageFormatPSColor : public PostScriptImageFormat
     // Returns a pointer to the class name.
     //
     const char* getClassName() { return ClassImageFormatPSColor; }
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 };
 
 

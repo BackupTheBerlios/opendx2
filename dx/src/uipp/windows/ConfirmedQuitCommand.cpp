@@ -19,7 +19,7 @@
 
 ConfirmedQuitCommand::ConfirmedQuitCommand(const char*   name,
                          CommandScope* scope,
-                         boolean       active,
+                         bool       active,
 			 DXApplication *app) :
     OptionalPreActionCommand(name, scope, active,
                              "Save Confirmation",
@@ -55,7 +55,7 @@ void   ConfirmedQuitCommand::doPreAction()
         net->postSaveAsDialog(this);
 }
 
-boolean ConfirmedQuitCommand::doIt(CommandInterface *ci)
+bool ConfirmedQuitCommand::doIt(CommandInterface *ci)
 {
     // 
     // If the application doesn't allow confirmation, then don't do it.
@@ -65,7 +65,7 @@ boolean ConfirmedQuitCommand::doIt(CommandInterface *ci)
     // 
     if (!theDXApplication->appAllowsConfirmedQuit()) {
 	theDXApplication->shutdownApplication();
-	return TRUE;
+	return true;
     }
 
 
@@ -87,17 +87,17 @@ boolean ConfirmedQuitCommand::doIt(CommandInterface *ci)
 		(this->application,
 		 "quit",
 		 scope,
-		 TRUE,
+		 true,
 		 "Quit",
 		 dialogQuestion);
     }
 
     this->command->execute(ci);
 
-    return TRUE;
+    return true;
 }
 
-boolean ConfirmedQuitCommand::needsConfirmation()
+bool ConfirmedQuitCommand::needsConfirmation()
 {
     DXApplication *ap = this->application;
 

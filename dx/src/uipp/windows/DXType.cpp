@@ -16,7 +16,7 @@
 #include "DXValue.h"
 
 
-boolean DXType::DXTypeClassInitialized = FALSE;
+bool DXType::DXTypeClassInitialized = false;
 List	*DXType::TypeList;
 //
 // Forces initialization so that we can call static member functions
@@ -87,12 +87,12 @@ inline void DXType::InitializeClass()
 	    DXType::TypeList->appendElement(&_baseType[i]);
 	}
 
-	DXType::DXTypeClassInitialized = TRUE;
+	DXType::DXTypeClassInitialized = true;
     }
 }
 
 
-boolean DXType::AddUserType(const Type  type,
+bool DXType::AddUserType(const Type  type,
 			    const char* name)
 {
     DXTypeName* userType;
@@ -102,7 +102,7 @@ boolean DXType::AddUserType(const Type  type,
     //
     userType = new DXTypeName;
 
-    userType->userDefined = TRUE;
+    userType->userDefined = true;
     userType->type        = type;
     userType->name        = DuplicateString(name);
 
@@ -139,7 +139,7 @@ Type DXType::FindTypeMatch(const char *value,
    
 }
 
-boolean DXType::DeleteType(const Type type)
+bool DXType::DeleteType(const Type type)
 {
     ListIterator iterator(*DXType::TypeList);
     DXTypeName*  knownType;
@@ -149,7 +149,7 @@ boolean DXType::DeleteType(const Type type)
     // Iterate through the type list and look for a matching type.
     // If found, delete the type from the list, deallocate the
     // the name string and the type record if user-defined, and
-    // return TRUE.
+    // return true.
     //
     for (knownType  = (DXTypeName*)iterator.getNext(), position = 1;
 	 knownType != NUL(DXTypeName*);
@@ -164,17 +164,17 @@ boolean DXType::DeleteType(const Type type)
 		delete knownType;
 	    }
 	}
-	return TRUE;
+	return true;
     }
 
     //
-    // No match...return FALSE.
+    // No match...return false.
     //
-    return FALSE;
+    return false;
 }
 
  
-boolean DXType::DeleteType(const char* name)
+bool DXType::DeleteType(const char* name)
 {
     ListIterator iterator(*DXType::TypeList);
     DXTypeName*  knownType;
@@ -184,7 +184,7 @@ boolean DXType::DeleteType(const char* name)
     // Iterate through the type list and look for a matching type.
     // If found, delete the type from the list, deallocate the
     // the name string and the type record if user-defined, and
-    // return TRUE.
+    // return true.
     //
     for (knownType  = (DXTypeName*)iterator.getNext(), position = 1;
 	 knownType != NUL(DXTypeName*);
@@ -199,13 +199,13 @@ boolean DXType::DeleteType(const char* name)
 		delete knownType;
 	    }
 	}
-	return TRUE;
+	return true;
     }
 
     //
-    // No match...return FALSE.
+    // No match...return false.
     //
-    return FALSE;
+    return false;
 }
 
 
@@ -255,7 +255,7 @@ Type DXType::StringToType(const char* string)
 }
 
 
-boolean DXType::MatchType(const Type source,
+bool DXType::MatchType(const Type source,
 			  const Type destination)
 {
     Type intersection;
@@ -272,7 +272,7 @@ boolean DXType::MatchType(const Type source,
     //
     if (NOT intersection OR intersection == DXType::ListType)
     {
-	return FALSE;
+	return false;
     }
 
     //
@@ -281,7 +281,7 @@ boolean DXType::MatchType(const Type source,
     if (source      == DXType::ObjectType OR
 	destination == DXType::ObjectType)
     {
-	return TRUE;
+	return true;
     }
 
     //
@@ -290,7 +290,7 @@ boolean DXType::MatchType(const Type source,
     //
     if ((source & DXType::ListType) AND (NOT (destination & DXType::ListType)))
     {
-	return FALSE;
+	return false;
     }
 
     //
@@ -307,7 +307,7 @@ boolean DXType::MatchType(const Type source,
 	(baseDestination == DXType::FlagType OR
 	 baseDestination == DXType::IntegerType))
     {
-	return FALSE;
+	return false;
     }
 	 
 #ifdef OH_YES_THEY_CAN
@@ -317,25 +317,25 @@ boolean DXType::MatchType(const Type source,
     if (baseSource      == DXType::FlagType AND
         baseDestination == DXType::IntegerType)
     {
-	return FALSE;
+	return false;
     }
 #endif
 
     //
     // Passed all the tests... return successfully.
     //
-    return TRUE;
+    return true;
 }
 
 
-boolean DXType::MatchType(DXType& source,
+bool DXType::MatchType(DXType& source,
 			  DXType& destination)
 {
     return DXType::MatchType(source.getType(), destination.getType());
 }
 
 
-boolean DXType::MatchTypeLists(List& source,
+bool DXType::MatchTypeLists(List& source,
 			       List& destination)
 {
     ListIterator sourceIterator(source);
@@ -356,7 +356,7 @@ boolean DXType::MatchTypeLists(List& source,
 		//
 		// Match found... return successfully.
 		//
-		return TRUE;
+		return true;
 	    }
 	}
 
@@ -369,7 +369,7 @@ boolean DXType::MatchTypeLists(List& source,
     //
     // No match... return unsuccessfully.
     //
-    return FALSE;
+    return false;
 }
 
 
@@ -386,7 +386,7 @@ List* DXType::IntersectTypeLists(List& first,
     DXType*      thirdType;
     DXTypeName*  typeName;
     long         intersection;
-    boolean      found;
+    bool      found;
 
     typeListIterator.setList(*DXType::TypeList);
 
@@ -412,13 +412,13 @@ List* DXType::IntersectTypeLists(List& first,
 		//
 		// Make sure that the intersection type is a valid type.
 		//
-		found = FALSE;
+		found = false;
 		typeListIterator.setPosition(1);
 		while((typeName=(DXTypeName*)typeListIterator.getNext()))
 		{
 		    if (intersection == typeName->type)
 		    {
-			found = TRUE;
+			found = true;
 			break;
 		    }
 		}
@@ -428,13 +428,13 @@ List* DXType::IntersectTypeLists(List& first,
 		// If type intersection found, search the new list for the
 		// same type.
 		//
-		found = FALSE;
+		found = false;
 		thirdIterator.setPosition(1);
 		while((thirdType=(DXType*)thirdIterator.getNext()))
 		{
 		    if (intersection == thirdType->getType())
 		    {
-			found = TRUE;
+			found = true;
 			break;
 		    }
 		}
@@ -494,14 +494,14 @@ DXType::DXType(const Type type)
 }
 
 
-boolean DXType::setType(const Type type)
+bool DXType::setType(const Type type)
 {
     ListIterator iterator(*DXType::TypeList);
     DXTypeName*  knownType;
 
     //
     // Iterate through the type list and look for a matching type.
-    // If found, set the instance type and name and return TRUE.
+    // If found, set the instance type and name and return true.
     //
     while ((knownType=(DXTypeName*)iterator.getNext()))
     {
@@ -509,14 +509,14 @@ boolean DXType::setType(const Type type)
 	{
 	    this->type = type;
 	    this->name = (const char*)knownType->name;
-	    return TRUE;
+	    return true;
 	}
     }
 
     //
-    // If not found, return FALSE.
+    // If not found, return false.
     //
-    return FALSE;
+    return false;
 }
 #if 0
 //
@@ -532,7 +532,7 @@ Type DXType::ValueToType(const char *value)
 
     //
     // Iterate through the type list and look for a matching type.
-    // If found, set the instance type and name and return TRUE.
+    // If found, set the instance type and name and return true.
     //
     while (knownType = (DXTypeName*)iterator.getNext())
     {
@@ -541,7 +541,7 @@ Type DXType::ValueToType(const char *value)
     }
 
     //
-    // If not found, return FALSE.
+    // If not found, return false.
     //
     return DXType::UndefinedType;
 
@@ -553,7 +553,7 @@ Type DXType::ValueToType(const char *value)
 // Give a value contained in the value string, determine its type.
 // Returns the number of types found that match the value. 
 //
-boolean DXType::ValueToType(const char *value, List& typelist)
+bool DXType::ValueToType(const char *value, List& typelist)
 {
 
     ListIterator iterator(*DXType::TypeList);
@@ -562,7 +562,7 @@ boolean DXType::ValueToType(const char *value, List& typelist)
 
     //
     // Iterate through the type list and look for a matching type.
-    // If found, set the instance type and name and return TRUE.
+    // If found, set the instance type and name and return true.
     //
     while ((knownType=(DXTypeName*)iterator.getNext()))
     {
@@ -605,10 +605,10 @@ boolean DXType::ValueToType(const char *value, List& typelist)
 Type DXType::ConvertVersionType(Type t)
 {
 	Type r;
- 	boolean   waslist = FALSE;	
+ 	bool   waslist = false;	
 
 	if (t & MT_LIST) {
- 	    waslist = TRUE;	
+ 	    waslist = true;	
 	    t &= ~MT_LIST;
 	} 
 
@@ -654,7 +654,7 @@ Type DXType::DetermineListItemType(const char *val)
      char buf1[512];
      char buf2[512];
      Type ctype, type = DXType::UndefinedType;
-     boolean quitting = FALSE;
+     bool quitting = false;
    
      if (EqualString(val,"NULL") || EqualString(val,"null"))
 	return DXType::ValueType;
@@ -687,12 +687,12 @@ Type DXType::DetermineListItemType(const char *val)
 
 	if (ctype == DXType::UndefinedType) { 
 	    type = DXType::UndefinedType;
-	    quitting = TRUE;
+	    quitting = true;
 	} else if (type != ctype) {
 	    type = DXType::ValueType;
    	}
 	if (type == DXType::ValueType)
-	    quitting = TRUE;
+	    quitting = true;
 	count++;	
 	if ((s1)&&(s1!=buf1)) {
 	    delete s1;

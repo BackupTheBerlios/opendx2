@@ -25,9 +25,9 @@ class NoUndoCommand : public Command
     //
     // No op for this class...
     //
-    virtual boolean undoIt()
+    virtual bool undoIt()
     {
-	return FALSE;
+	return false;
     }
 
     //
@@ -36,7 +36,7 @@ class NoUndoCommand : public Command
     //
     NoUndoCommand(const char*   name,
 		  CommandScope* scope,
-		  boolean       active);
+		  bool       active);
 
   public:
     //

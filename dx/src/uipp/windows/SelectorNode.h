@@ -68,7 +68,7 @@ class SelectorNode : public SelectionNode
     // Deselect all current selections and make the given index
     // the current selection.
     //
-    void setSelectedOptionIndex(int index, boolean send = TRUE);
+    void setSelectedOptionIndex(int index, bool send = true);
 
     //
     // If there is only one item selected, then return its index,
@@ -79,7 +79,7 @@ class SelectorNode : public SelectionNode
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

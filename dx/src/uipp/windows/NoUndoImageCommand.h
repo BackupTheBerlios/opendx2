@@ -40,7 +40,7 @@ class NoUndoImageCommand : public NoUndoCommand
     ImageWindow 	*image;
     ImageCommandType 	commandType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -48,7 +48,7 @@ class NoUndoImageCommand : public NoUndoCommand
     //
     NoUndoImageCommand(const char*   name,
                    CommandScope  *scope,
-                   boolean       active,
+                   bool       active,
 		   ImageWindow  *image,
 		   ImageCommandType comType);
 

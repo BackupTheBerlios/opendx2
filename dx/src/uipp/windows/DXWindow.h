@@ -65,8 +65,8 @@ class DXWindow : public IBMMainWindow
 
     //Widget  anchorButton;	// optional first menu item
 
-    boolean startup;		// Is this supposed to be opened at startup. 
-    boolean anchor;		// is this an anchor window?
+    bool startup;		// Is this supposed to be opened at startup. 
+    bool anchor;		// is this an anchor window?
     //Pixmap  anchorPixmap;	// anchor pixmap
  
     // 
@@ -151,19 +151,19 @@ class DXWindow : public IBMMainWindow
     // Update any visual state or anything else that is required.  At this
     // level we handle the anchor pixmap if initialized.
     //
-    //virtual void setAnchor(boolean isAnchor);
+    //virtual void setAnchor(bool isAnchor);
     //
     // Create the anchor button widget and add the pixmap if desired and not
     // already present
     //
-    //void createAnchor(boolean addPixmap);
+    //void createAnchor(bool addPixmap);
 
     //
     // Constructor for the subclasses:
     //
     DXWindow(const char*   name,
-	     boolean isAnchor, 
-	     boolean usesMenuBar = TRUE);
+	     bool isAnchor, 
+	     bool usesMenuBar = true);
 
     //
     // Install the default resources for this class and then call the
@@ -203,7 +203,7 @@ class DXWindow : public IBMMainWindow
     virtual void notify
 	(const Symbol message, const void *msgdata=NULL, const char *msg=NULL);
 
-    boolean isAnchor() { return this->anchor; }
+    bool isAnchor() { return this->anchor; }
 
     //
     // Post the panel access dialog with this window PanelAccessManager info.
@@ -220,8 +220,8 @@ class DXWindow : public IBMMainWindow
     //
     virtual void manage();
 
-    virtual boolean printComment(FILE *f);
-    virtual boolean parseComment(const char *line, const char *file,
+    virtual bool printComment(FILE *f);
+    virtual bool parseComment(const char *line, const char *file,
                                 int lineno); 
     //
     // Reset the window to use the default settings for the state that is
@@ -232,12 +232,12 @@ class DXWindow : public IBMMainWindow
     //
     // Determine if this window is a startup window.
     //
-    boolean isStartup() { return this->startup; }
+    bool isStartup() { return this->startup; }
     //
     // Virtual because SequencerWindow must set a startup flag in his node
     // at the same time.
     //
-    virtual void setStartup(boolean set = TRUE);
+    virtual void setStartup(bool set = true);
 
     //
     // Called by the MainWindow CloseCallback

@@ -9,12 +9,15 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include <windows.h>
+#include <winsock.h>
+
 #include "DXApplication.h"
 #include "StartServerDialog.h"
 #include "StartOptionsDialog.h"
 #include "DXChild.h"
 
-boolean StartServerDialog::ClassInitialized = FALSE;
+bool StartServerDialog::ClassInitialized = false;
 
 //String StartServerDialog::DefaultResources[] = 
 //{
@@ -31,7 +34,7 @@ boolean StartServerDialog::ClassInitialized = FALSE;
 
 
 
-boolean StartServerDialog::okCallback(Dialog *clientData)   // AJ 
+bool StartServerDialog::okCallback(Dialog *clientData)   // AJ 
 {
  //   StartServerDialog  *d = (StartServerDialog*)clientData;
 
@@ -47,7 +50,7 @@ boolean StartServerDialog::okCallback(Dialog *clientData)   // AJ
 
  //   this->unmanage();
 
- //   theDXApplication->setBusyCursor(TRUE);
+ //   theDXApplication->setBusyCursor(true);
 
  //   theDXApplication->getServerParameters(
 	//&autoStart,
@@ -70,11 +73,11 @@ boolean StartServerDialog::okCallback(Dialog *clientData)   // AJ
  //   DXChild *c = theDXApplication->startServer();
  //   theDXApplication->completeConnection(c);
 
- //   theDXApplication->setBusyCursor(FALSE);
+ //   theDXApplication->setBusyCursor(false);
 
  //   if(s)   XtFree(s);     //   AJ
 
- //   return FALSE;	// Unmanaged above
+ //   return false;	// Unmanaged above
 	return false;
 }
 
@@ -244,7 +247,7 @@ StartServerDialog::StartServerDialog() :
 
     if (NOT StartServerDialog::ClassInitialized)
     {
-        StartServerDialog::ClassInitialized = TRUE;
+        StartServerDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

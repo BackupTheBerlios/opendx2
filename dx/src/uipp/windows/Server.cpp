@@ -29,17 +29,17 @@ void Server::notifyClients(Symbol message, const void *data, const char *msg)
 }
 
 
-boolean Server::registerClient(Client* client)
+bool Server::registerClient(Client* client)
 {
     ASSERT(client);
 
     //
-    // If the client is already present in the list return FALSE;
+    // If the client is already present in the list return false;
     // otherwise, append the client to the list and return the result.
     //
     if (this->clientList.isMember(client))
     {
-	return FALSE;
+	return false;
     }
     else
     {
@@ -48,13 +48,13 @@ boolean Server::registerClient(Client* client)
 }
 
 
-boolean Server::unregisterClient(Client* client)
+bool Server::unregisterClient(Client* client)
 {
     int position;
 
     //
     // If the client is in the list, delete the client from the list
-    // and return the result; otherwise, return FALSE.
+    // and return the result; otherwise, return false.
     //
     if ( (position = this->clientList.getPosition(client)) )
     {
@@ -62,7 +62,7 @@ boolean Server::unregisterClient(Client* client)
     }
     else
     {
-	return FALSE;
+	return false;
     }
 }
 

@@ -69,7 +69,7 @@ class InteractorStyle : public Base {
     Symbol		name;
     char		*interactorName;	// Name applied to widget
     InteractorAllocator	allocateInteractor;
-    boolean		isDefault;
+    bool		isDefault;
     char*		javaStyle;
 
   protected:
@@ -80,11 +80,11 @@ class InteractorStyle : public Base {
     // Added supported style/name/interactorbuild group to the list
     // of supported styles for the given named interactor (node name).
     //
-    static boolean AddSupportedStyle(const char *interactor,
+    static bool AddSupportedStyle(const char *interactor,
 		    InteractorStyleEnum style,
 		    const char *stylename,
 		    InteractorAllocator ia);
-    static boolean AddSupportedStyle(const char *interactor,
+    static bool AddSupportedStyle(const char *interactor,
 		    InteractorStyleEnum style,
 		    const char *stylename,
 		    const char *javaStyle,
@@ -115,7 +115,7 @@ class InteractorStyle : public Base {
     Interactor *createInteractor(InteractorInstance *ii);
 
     const char* getJavaStyle() { return this->javaStyle; }
-    boolean hasJavaStyle() { return (this->javaStyle != NUL(char*)); }
+    bool hasJavaStyle() { return (this->javaStyle != NUL(char*)); }
 
     const char *getNameString() 
 	{ return theSymbolManager->getSymbolString(this->name); }

@@ -13,7 +13,7 @@
 #include "ColormapEditor.h"
 #include "ColormapNode.h"
 
-boolean ColormapNBinsDialog::ClassInitialized = FALSE;
+bool ColormapNBinsDialog::ClassInitialized = false;
 
 //String ColormapNBinsDialog::DefaultResources[] = {
 //	"*dialogTitle:			Number of Histogram Bins",
@@ -32,7 +32,7 @@ ColormapNBinsDialog::ColormapNBinsDialog(
 
     if (NOT ColormapNBinsDialog::ClassInitialized)
     {
-        ColormapNBinsDialog::ClassInitialized = TRUE;
+        ColormapNBinsDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -154,7 +154,7 @@ void ColormapNBinsDialog::setStepper()
 }
 
 
-boolean ColormapNBinsDialog::okCallback(Dialog *dialog)
+bool ColormapNBinsDialog::okCallback(Dialog *dialog)
 {
     int	nbins;
     ColormapNode* node;
@@ -164,5 +164,5 @@ boolean ColormapNBinsDialog::okCallback(Dialog *dialog)
     //XtVaGetValues(this->nbinsstepper, XmNiValue, &nbins, NULL);
     //node->setNBinsValue((double)nbins);
 
-    return TRUE;
+    return true;
 }

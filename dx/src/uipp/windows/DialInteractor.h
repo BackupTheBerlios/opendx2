@@ -50,7 +50,7 @@ class DialInteractor : public ScalarInteractor
     //Widget	dialWidget;
     //Widget 	numberWidget;
 
-    static boolean DialInteractorClassInitialized;
+    static bool DialInteractorClassInitialized;
 
     // Call the virtual callback for value changes. 
     //
@@ -112,7 +112,7 @@ class DialInteractor : public ScalarInteractor
     //
     virtual void handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change);
+					bool major_change);
 
     //
     // One time initialize for the class.
@@ -129,7 +129,7 @@ class DialInteractor : public ScalarInteractor
 };
 
 //Widget createNumberComponent(Widget  parent,
-//                             boolean isInteger,
+//                             bool isInteger,
 //                             double  min,
 //                             double  max,
 //                             double  value,

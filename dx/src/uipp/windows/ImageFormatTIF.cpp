@@ -11,7 +11,7 @@
 
 #include "ImageFormatTIF.h"
 
-boolean ImageFormatTIF::ClassInitialized = FALSE;
+bool ImageFormatTIF::ClassInitialized = false;
 
 //String ImageFormatTIF::DefaultResources[] = {
 //    NUL(char*)
@@ -38,15 +38,15 @@ void ImageFormatTIF::initialize()
 	//    PixelImageFormat::DefaultResources);
 	//this->setDefaultResources (theApplication->getRootWidget(),
 	//    ImageFormatTIF::DefaultResources);
-	ImageFormatTIF::ClassInitialized = TRUE;
+	ImageFormatTIF::ClassInitialized = true;
     }
 }
 
-boolean ImageFormatTIF::isA(Symbol classname)
+bool ImageFormatTIF::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassImageFormatTIF);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ImageFormat::isA(classname);
 }

@@ -17,15 +17,15 @@
 
 ViewControlWhichCameraCommand::ViewControlWhichCameraCommand(const char   *name,
 						 CommandScope *scope,
-						 boolean       active,
+						 bool       active,
 						 ViewControlDialog  *d):
     NoUndoCommand(name, scope, active)
 {
     this->viewControlDialog = d;
 }
 
-boolean ViewControlWhichCameraCommand::doIt(CommandInterface *ci)
+bool ViewControlWhichCameraCommand::doIt(CommandInterface *ci)
 {
     this->viewControlDialog->setWhichCameraVector();
-    return TRUE;
+    return true;
 }

@@ -39,7 +39,7 @@ extern "C" int gethostname(char *address, int address_len);
 //static char *header_fmt = "%d, net length = %d, cfg length = %d\n";
 static char *header_fmt = "%[^:]:%d, net length = %d, cfg length = %d";
 
-DXDropSite::DXDropSite (boolean intraExecutable): DropSite()
+DXDropSite::DXDropSite (bool intraExecutable): DropSite()
 {
     this->intraExecutable = intraExecutable;
 }
@@ -50,7 +50,7 @@ DXDropSite::~DXDropSite() { }
 //
 // Kick off the recieving end of the transfer using .net and .cfg files.  
 //
-//boolean DXDropSite::transfer(char *type, XtPointer value, unsigned long len, int x, int y)
+//bool DXDropSite::transfer(char *type, XtPointer value, unsigned long len, int x, int y)
 //{
 //FILE            *netf;
 //FILE            *cfgf;
@@ -70,13 +70,13 @@ DXDropSite::~DXDropSite() { }
 //    if(sscanf(buf, header_fmt, draghost, &dragpid, &net_len, &cfg_len) < 4)
 //    {
 //        WarningMessage("DXDropSite:transfer drop failed");
-//        return FALSE;
+//        return false;
 //    }
 //    newline = strchr(buf, '\n');
 //    header_len = newline - buf;
 //
 //    //
-//    // prevent dnd between programs... silly goal?  We set intraExecutable==TRUE
+//    // prevent dnd between programs... silly goal?  We set intraExecutable==true
 //    // for dnd from vpe to c.p.   The proper way to implement this is with
 //    // root window properties.  The drag source is setting HOST_NAME and PROCESS.
 //    // It could also set LENGTH and 1 other to handle the entire header or even
@@ -84,11 +84,11 @@ DXDropSite::~DXDropSite() { }
 //    //
 //    if (this->intraExecutable) 
 //    {
-//        Boolean mismatch = FALSE;
+//        Boolean mismatch = false;
 //        gethostname (hostname, sizeof(hostname));
-//        if (strcmp(hostname, draghost)) mismatch = TRUE;
-//        else if (dragpid != getpid()) mismatch = TRUE;
-//	if (mismatch) return FALSE;
+//        if (strcmp(hostname, draghost)) mismatch = true;
+//        else if (dragpid != getpid()) mismatch = true;
+//	if (mismatch) return false;
 //    }
 //
 //    //
@@ -98,7 +98,7 @@ DXDropSite::~DXDropSite() { }
 //    netf = fopen(netfilename, "w");
 //    if (!netf) {
 //        WarningMessage("DXDropSite:no file write permission");
-//	return FALSE;
+//	return false;
 //    }
 //
 //    fwrite(&(buf[header_len]), sizeof(char), (unsigned int)net_len, netf);
@@ -117,11 +117,11 @@ DXDropSite::~DXDropSite() { }
 //    } else
 //	cfgfilename[0] = '\0';
 //
-//    Network *tmpnet = theDXApplication->newNetwork(TRUE);
+//    Network *tmpnet = theDXApplication->newNetwork(true);
 //    if ((cfgfilename)&&(cfgfilename[0]))
-//        ret = tmpnet->readNetwork(netfilename, cfgfilename, TRUE);
+//        ret = tmpnet->readNetwork(netfilename, cfgfilename, true);
 //    else
-//        ret = tmpnet->readNetwork(netfilename, NULL, TRUE);
+//        ret = tmpnet->readNetwork(netfilename, NULL, true);
 //
 //    List *tmppanels = NUL(List*);
 //    if (ret) {

@@ -19,14 +19,14 @@ class UndoRepeatableTab : public UndoNode
     private:
     protected:
 	static char OperationName[];
-	boolean adding;
-	boolean input;
+	bool adding;
+	bool input;
     public:
 	virtual const char* getLabel() { return UndoRepeatableTab::OperationName; }
 	virtual ~UndoRepeatableTab(){}
-	virtual boolean canUndo();
-	UndoRepeatableTab (EditorWindow* editor, Node* n, boolean adding, boolean input);
-	virtual void undo(boolean first_in_list=TRUE);
+	virtual bool canUndo();
+	UndoRepeatableTab (EditorWindow* editor, Node* n, bool adding, bool input);
+	virtual void undo(bool first_in_list=true);
 	virtual const char* getClassName() { return UndoRepeatableTabClassName; }
 };
 

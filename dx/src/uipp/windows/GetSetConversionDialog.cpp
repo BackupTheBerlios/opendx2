@@ -29,7 +29,7 @@
 #define FIND_ALL        4
 #define DONE            5
 
-boolean GetSetConversionDialog::ClassInitialized = FALSE;
+bool GetSetConversionDialog::ClassInitialized = false;
 
 //Cursor GetSetConversionDialog::WatchCursor = 0;
 
@@ -61,7 +61,7 @@ GetSetConversionDialog::GetSetConversionDialog() :
 {
     if (NOT GetSetConversionDialog::ClassInitialized)
     {
-        GetSetConversionDialog::ClassInitialized = TRUE;
+        GetSetConversionDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
@@ -71,7 +71,7 @@ GetSetConversionDialog::GetSetConversionDialog() :
     this->global_option = NULL;
     this->local_option = NULL;
 
-    this->quiet_mode = FALSE;
+    this->quiet_mode = false;
 }
 
 
@@ -357,7 +357,7 @@ GetSetConversionDialog::getActiveEditor ()
 	//return NULL;
 
     int cnt, *posList;
-    //boolean memory_allocated;
+    //bool memory_allocated;
     EditorWindow *e = NULL;
 
     //memory_allocated = XmListGetSelectedPos (list, &posList, &cnt);
@@ -395,7 +395,7 @@ GetSetConversionDialog::getActiveEditor ()
 // This controls the dialog's behavior wrt which window I'll ride on top of.
 //
 void
-GetSetConversionDialog::unhinge(boolean select_next_editor)
+GetSetConversionDialog::unhinge(bool select_next_editor)
 {
     //Widget dshell = this->getRootWidget();
  //   while ((dshell) && (XtClass(dshell) != xmDialogShellWidgetClass))
@@ -405,7 +405,7 @@ GetSetConversionDialog::unhinge(boolean select_next_editor)
     EditorWindow *e = NULL;
 
     int cnt = this->referenced_macros->getSize() + (this->list_includes_main?1:0);
-    boolean found_managed_editor = FALSE;
+    bool found_managed_editor = false;
 
     int posList;
     for (posList=1; posList<=cnt; posList++) {
@@ -425,7 +425,7 @@ GetSetConversionDialog::unhinge(boolean select_next_editor)
 	ASSERT(net);
 	e = net->getEditor();
 	if ((e) && (e->isManaged())) {
-	    found_managed_editor = TRUE;
+	    found_managed_editor = true;
 	    break;
 	}
     }
@@ -448,7 +448,7 @@ void
 GetSetConversionDialog::post()
 {
     this->unhinge();
-    boolean ism = this->isManaged();
+    bool ism = this->isManaged();
     //if (this->list) XmListDeselectAllItems (this->list);
     this->Dialog::post();
     if (!ism) this->update();
@@ -507,12 +507,12 @@ GetSetConversionDialog::update()
 	//delete cp;
 	//XmListAddItem (this->list, xmstr, 1);
 	//XmStringFree(xmstr);
-	//this->list_includes_main = TRUE;
+	//this->list_includes_main = true;
 	//if (gets) delete gets;
 	//if (sets) delete sets;
 	//sets = gets = NULL;
  //   } else
-	//this->list_includes_main = FALSE;
+	//this->list_includes_main = false;
 
  //   ListIterator it(*maclist);
  //   MacroDefinition *md;
@@ -532,7 +532,7 @@ GetSetConversionDialog::update()
 	//XmListSelectItem (this->list, selected_xmstr, True);
  //   else {
 	//this->updateNetName (NULL);
-	//this->unhinge(TRUE);
+	//this->unhinge(true);
  //   }
  //   if (selected_xmstr)
 	//XmStringFree(selected_xmstr);
@@ -609,7 +609,7 @@ GetSetConversionDialog::updateNetName(Network *net)
 
     if ((gcnt == 0) && (scnt == 0)) {
 	if (net) this->update();
-	this->setFindButton (TRUE, TRUE);
+	this->setFindButton (true, true);
     } 
 }
 
@@ -667,14 +667,14 @@ GlobalLocalNode *gln;
     if (gets) {
 	it.setList(*gets);
 	while ( (gln = (GlobalLocalNode*)it.getNext()) )
-	    e->selectNode("Get", gln->getInstanceNumber(), TRUE);
+	    e->selectNode("Get", gln->getInstanceNumber(), true);
 	delete gets;
 	gets = NULL;
     }
     if (sets) {
 	it.setList(*sets);
 	while ( (gln = (GlobalLocalNode*)it.getNext()) )
-	    e->selectNode("Set", gln->getInstanceNumber(), TRUE);
+	    e->selectNode("Set", gln->getInstanceNumber(), true);
 	delete sets;
 	sets = NULL;
     }
@@ -704,7 +704,7 @@ Network *net = NULL;
 	else this->updateNetName(NULL);
     } else {
 	this->updateNetName(net);
-	this->setFindButton (FALSE, FALSE);
+	this->setFindButton (false, false);
     }
 
     if (gets) delete gets;
@@ -715,8 +715,8 @@ void
 GetSetConversionDialog::selectNextNode()
 {
 int search_instance;
-boolean get_found = FALSE;
-boolean set_found = FALSE;
+bool get_found = false;
+bool set_found = false;
 EditorWindow *e = this->getActiveEditor();
 Network *net = e->getNetwork();
 GlobalLocalNode *gln, *found_node;
@@ -738,11 +738,11 @@ ListIterator it;
 	    int instance = gln->getInstanceNumber();
 	    if (instance < this->next_get_instance) continue;
 	    else if (instance == this->next_get_instance) {
-		get_found = TRUE;
+		get_found = true;
 		found_node = gln;
 		break;
 	    } else if (instance < search_instance) {
-		get_found = TRUE;
+		get_found = true;
 		found_node = gln;
 		search_instance = instance;
 	    }
@@ -764,11 +764,11 @@ ListIterator it;
 		int instance = gln->getInstanceNumber();
 		if (instance < this->next_set_instance) continue;
 		else if (instance == this->next_set_instance) {
-		    set_found = TRUE;
+		    set_found = true;
 		    found_node = gln;
 		    break;
 		} else if (instance < search_instance) {
-		    set_found = TRUE;
+		    set_found = true;
 		    found_node = gln;
 		    search_instance = instance;
 		}
@@ -784,14 +784,14 @@ ListIterator it;
     //
     e->deselectAllNodes();
     if ((!set_found) && (!get_found)) {
-	this->setFindButton (TRUE, TRUE);
+	this->setFindButton (true, true);
 	this->update();
     } else {
 	char *s = DuplicateString (found_node->getNameString());
-	e->selectNode(s, found_node->getInstanceNumber(), TRUE);
+	e->selectNode(s, found_node->getInstanceNumber(), true);
 	delete s;
 	this->selectPartner (found_node, e);
-	this->setFindButton (FALSE, FALSE);
+	this->setFindButton (false, false);
     }
 
     if (gets) delete gets;
@@ -814,7 +814,7 @@ int dummy=0;
 		const char *dest_name = dest->getNameString();
 		if (EqualString(dest_name, "Set")) {
 		    char *tmp = DuplicateString (dest_name);
-		    ew->selectNode (tmp, dest->getInstanceNumber(), TRUE);
+		    ew->selectNode (tmp, dest->getInstanceNumber(), true);
 		    delete tmp;
 		}
 	    }
@@ -827,7 +827,7 @@ int dummy=0;
 	    const char *src_name = src->getNameString();
 	    if (EqualString(src_name, "Get")) {
 		char *tmp = DuplicateString (src_name);
-		ew->selectNode (tmp, src->getInstanceNumber(), TRUE);
+		ew->selectNode (tmp, src->getInstanceNumber(), true);
 		delete tmp;
 	    }
 	}
@@ -835,7 +835,7 @@ int dummy=0;
 }
 
 void
-GetSetConversionDialog::setFindButton (boolean first, boolean done)
+GetSetConversionDialog::setFindButton (bool first, bool done)
 {
 //char *cp;
 //
@@ -922,7 +922,7 @@ GetSetConversionDialog::setFindButton (boolean first, boolean done)
 //	dshell = XtParent(dshell);
 //
 //    if (lcs->selected_item_count == 0) {
-//	dialog->setFindButton (TRUE, TRUE);
+//	dialog->setFindButton (true, true);
 //	Command *cmd = EditorWindow::GetGlobalCmd();
 //	if (cmd) cmd->deactivate();
 //	cmd = EditorWindow::GetLocalCmd();
@@ -937,7 +937,7 @@ GetSetConversionDialog::setFindButton (boolean first, boolean done)
 //    XDefineCursor (XtDisplay(root), XtWindow(root), 
 //	GetSetConversionDialog::WatchCursor);
 //    XSync (XtDisplay(root), False);
-//    dialog->quiet_mode = TRUE;
+//    dialog->quiet_mode = true;
 //    EditorWindow *e = dialog->getActiveEditor();
 //    ASSERT(e);
 //    if ((!e->isManaged()) || (lcs->reason == XmCR_DEFAULT_ACTION))
@@ -948,9 +948,9 @@ GetSetConversionDialog::setFindButton (boolean first, boolean done)
 //	    XmNtransientFor, e->getRootWidget(), 
 //	NULL);
 //
-//    dialog->quiet_mode = FALSE;
+//    dialog->quiet_mode = false;
 //
-//    dialog->setFindButton (TRUE, FALSE);
+//    dialog->setFindButton (true, false);
 //    dialog->updateNetName (e->getNetwork());
 //    XUndefineCursor (XtDisplay(root), XtWindow(root));
 //}
@@ -984,7 +984,7 @@ GetSetConversionDialog::setFindButton (boolean first, boolean done)
 //	dialog->unmanage();
 //	break;
 //      default:
-//	ASSERT(FALSE);
+//	ASSERT(false);
 //	break;
 //    }
 //}

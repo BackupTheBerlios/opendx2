@@ -15,7 +15,7 @@
 #include "ErrorDialogManager.h"
 
 
-boolean OpenCFGDialog::ClassInitialized = FALSE;
+bool OpenCFGDialog::ClassInitialized = false;
 
 //String OpenCFGDialog::DefaultResources[] =
 //{
@@ -26,10 +26,10 @@ boolean OpenCFGDialog::ClassInitialized = FALSE;
 
 void OpenCFGDialog::okFileWork(const char *string)
 {
-    boolean  result;
+    bool  result;
     char *op;
 
-    result = this->network->openCfgFile(string, TRUE);
+    result = this->network->openCfgFile(string, true);
     op = "reading";
 
     if(NOT result)
@@ -42,11 +42,11 @@ OpenCFGDialog::OpenCFGDialog(Network *net) :
 {
 
     this->network = net;
-    this->hasCommentButton = FALSE;
+    this->hasCommentButton = false;
 
     if (NOT OpenCFGDialog::ClassInitialized)
     {
-        OpenCFGDialog::ClassInitialized = TRUE;
+        OpenCFGDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 

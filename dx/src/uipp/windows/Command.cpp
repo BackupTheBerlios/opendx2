@@ -19,7 +19,7 @@
 #include "DXStrings.h"
 
 
-boolean Command::CommandClassInitialized = FALSE;
+bool Command::CommandClassInitialized = false;
 
 Symbol Command::MsgActivate     	= NUL(Symbol);
 Symbol Command::MsgDeactivate   	= NUL(Symbol);
@@ -30,7 +30,7 @@ Symbol Command::MsgEndExecuting 	= NUL(Symbol);
 
 Command::Command(const char*   name,
 		 CommandScope* scope,
-		 boolean       active)
+		 bool       active)
 {
     ASSERT(name);
 
@@ -52,7 +52,7 @@ Command::Command(const char*   name,
 	Command::MsgEndExecuting =
 	    theSymbolManager->registerSymbol("EndExecuting");
 
-	Command::CommandClassInitialized = TRUE;
+	Command::CommandClassInitialized = true;
     }
 
     //
@@ -60,7 +60,7 @@ Command::Command(const char*   name,
     //
     this->name    = DuplicateString(name);
     this->active  = active;
-    this->hasUndo = TRUE;
+    this->hasUndo = true;
 
     if (scope != NUL(CommandScope*))
     {
@@ -134,9 +134,9 @@ Command::~Command()
 }
 
 
-boolean Command::registerClient(Client* DXinterface)
+bool Command::registerClient(Client* DXinterface)
 {
-    boolean result;
+    bool result;
 
     //
     // Add the interface to the interface list.
@@ -167,10 +167,10 @@ void Command::activate()
     //
     // 10/11/96 Reversed these 2 lines in order to make RepeatingToggle.  The
     // new class (subclasses from ToggleButtonInterface) and executes its associated
-    // command whenever it's activated and getState()==TRUE.  In order to do that,
+    // command whenever it's activated and getState()==true.  In order to do that,
     // the command must be active first.
     //
-    this->active = TRUE;
+    this->active = true;
     this->notifyClients(Command::MsgActivate);
 }
 
@@ -180,18 +180,18 @@ void Command::deactivate(const char *reason)
     //
     // 10/11/96 Reversed these 2 lines in order to match Command::activate().
     //
-    this->active = FALSE;
+    this->active = false;
     this->notifyClients(Command::MsgDeactivate, NULL, reason);
 }
 
 
-boolean Command::registerScope(CommandScope* scope)
+bool Command::registerScope(CommandScope* scope)
 {
     ASSERT(scope);
 
     if (this->scopeList.isMember(scope))
     {
-	return FALSE;
+	return false;
     }
     else
     {
@@ -200,7 +200,7 @@ boolean Command::registerScope(CommandScope* scope)
 }
 
 
-boolean Command::unregisterScope(CommandScope* scope)
+bool Command::unregisterScope(CommandScope* scope)
 {
     int position;
 
@@ -212,30 +212,30 @@ boolean Command::unregisterScope(CommandScope* scope)
     }
     else
     {
-	return FALSE;
+	return false;
     }
 }
 
 
-boolean Command::execute(CommandInterface *ci)
+bool Command::execute(CommandInterface *ci)
 {
     ListIterator  scopeListIterator(this->scopeList);
     CommandScope* scope;
-    boolean       result;
+    bool       result;
 
     //
     // If this command is not active, do not execute.
     //
     if (NOT this->active)
     {
-	return FALSE;
+	return false;
     }
 
     //
     // Turn busy cursor on.
     //
 //    ASSERT(theApplication);
-//    theApplication->setBusyCursor(TRUE);
+//    theApplication->setBusyCursor(true);
 
 
     //
@@ -277,17 +277,17 @@ boolean Command::execute(CommandInterface *ci)
 	for (list.setList(deactivateCmds); (c=(Command *)list.getNext()); )
 	    c->deactivate();
 
-	result = TRUE;
+	result = true;
     }
     else
     {
-	result = FALSE;
+	result = false;
     }
 
     //
     // Turn the busy cursor off.
     //
-    //theApplication->setBusyCursor(FALSE);
+    //theApplication->setBusyCursor(false);
 
     //
     // Return execution result.
@@ -296,12 +296,12 @@ boolean Command::execute(CommandInterface *ci)
 }
 
 
-boolean Command::undo()
+bool Command::undo()
 {
     ListIterator  scopeListIterator(this->scopeList);
     CommandScope* scope;
     Command*      command;
-    boolean       result;
+    bool       result;
 
     //
     // Undo the command (in the subclasses).
@@ -316,11 +316,11 @@ boolean Command::undo()
 	    }
 	}
 
-	result = TRUE;
+	result = true;
     }
     else
     {
-	result = FALSE;
+	result = false;
     }
 
     //

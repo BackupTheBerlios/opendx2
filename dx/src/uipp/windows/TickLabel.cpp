@@ -25,7 +25,7 @@
 //};
 #define MAX_TICK_LABEL_LEN 64
 
-boolean TickLabel::ClassInitialized = FALSE;
+bool TickLabel::ClassInitialized = false;
 
 TickLabel::TickLabel (double dval, const char *str, int pos, 
 TickSelectCB tscb, void *clientData) :
@@ -40,10 +40,10 @@ TickSelectCB tscb, void *clientData) :
     //this->text = NUL(Widget);
     //this->form = NUL(Widget);
 
-    this->selected = FALSE;
+    this->selected = false;
     this->tscb = tscb;
     this->clientData = clientData;
-    this->ignoreVerifyCallback = FALSE;
+    this->ignoreVerifyCallback = false;
 }
 
 void TickLabel::initialize()
@@ -54,7 +54,7 @@ void TickLabel::initialize()
     if (NOT TickLabel::ClassInitialized) {
 	//this->setDefaultResources(theApplication->getRootWidget(),
 	//    TickLabel::DefaultResources);
-	TickLabel::ClassInitialized = TRUE;
+	TickLabel::ClassInitialized = true;
     }
 }
 
@@ -132,16 +132,16 @@ TickLabel::createLine ()
 //    XtAddEventHandler (this->text, ButtonPressMask, False,
 //	(XtEventHandler)TickLabel_SelectEH, (XtPointer)this);
 //
-//    this->ignoreVerifyCallback = TRUE;
+//    this->ignoreVerifyCallback = true;
 //    if (this->str) XmTextFieldSetString (this->text, this->str);
 //    else XmTextFieldSetString (this->text, "");
-//    this->ignoreVerifyCallback = FALSE;
+//    this->ignoreVerifyCallback = false;
 //    XtAddCallback (this->text, XmNmodifyVerifyCallback,
 //	(XtCallbackProc)TickLabel_TextModifyCB, (XtPointer)this);
 //
 //    this->setRootWidget(form);
-//    this->selected = TRUE;
-//    this->setSelected (FALSE, FALSE);
+//    this->selected = true;
+//    this->setSelected (false, false);
 }
 
 const char *
@@ -162,7 +162,7 @@ TickLabel::setText (const char *str)
 {
  //   if (this->str) delete this->str;
  //   this->str = DuplicateString(str);
- //   this->ignoreVerifyCallback = TRUE;
+ //   this->ignoreVerifyCallback = true;
  //   if (this->text) {
 	//if (this->str)
 	//    XmTextFieldSetString (this->text, this->str);
@@ -170,7 +170,7 @@ TickLabel::setText (const char *str)
 	//    XmTextFieldSetString (this->text, "");
  //   }
  //   this->setText();
- //   this->ignoreVerifyCallback = FALSE;
+ //   this->ignoreVerifyCallback = false;
 }
 
 void
@@ -187,10 +187,10 @@ TickLabel::setNumber (double dval)
 }
 
 void
-TickLabel::setSelected (boolean set, boolean callCallback)
+TickLabel::setSelected (bool set, bool callCallback)
 {
 //Pixel bg,ts,bs,fg;
-//boolean changed = (set != this->selected);
+//bool changed = (set != this->selected);
 //
 //    this->selected = set;
 //    if (!this->form) return ;
@@ -223,7 +223,7 @@ TickLabel::setSelected (boolean set, boolean callCallback)
 //{
 //    TickLabel *tlab = (TickLabel *)clientData;
 //    ASSERT(tlab);
-//    tlab->setSelected(TRUE, TRUE);
+//    tlab->setSelected(true, true);
 //}
 //
 //
@@ -242,7 +242,7 @@ TickLabel::setSelected (boolean set, boolean callCallback)
 //{
 //    TickLabel *tlab = (TickLabel *)clientData;
 //    ASSERT(tlab);
-//    tlab->setSelected(!tlab->selected, TRUE);
+//    tlab->setSelected(!tlab->selected, true);
 //}
 //
 //void TickLabel_NumberCB(Widget , XtPointer clientData, XtPointer)
@@ -260,7 +260,7 @@ TickLabel::setSelected (boolean set, boolean callCallback)
 //    ASSERT(tlab);
 //    XmTextVerifyCallbackStruct *tvcs = (XmTextVerifyCallbackStruct*)cbs;
 //
-//    if ((tlab->str) && (tlab->ignoreVerifyCallback == FALSE)) {
+//    if ((tlab->str) && (tlab->ignoreVerifyCallback == false)) {
 //	delete tlab->str;
 // 	tlab->str = NULL;
 //    }

@@ -46,7 +46,7 @@ class ImageLookCommand : public NoUndoCommand
     // Protected member data:
     //
 
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
 
   public:
@@ -55,7 +55,7 @@ class ImageLookCommand : public NoUndoCommand
     //
     ImageLookCommand(const char   *name,
 		   CommandScope *scope,
-		   boolean       active,
+		   bool       active,
 		   ImageWindow  *w,
 		   LookDirection dir);
 

@@ -16,7 +16,7 @@
 #include "DXStrings.h"
 
 
-boolean SaveCFGDialog::ClassInitialized = FALSE;
+bool SaveCFGDialog::ClassInitialized = false;
 
 //String SaveCFGDialog::DefaultResources[] =
 //{
@@ -27,7 +27,7 @@ boolean SaveCFGDialog::ClassInitialized = FALSE;
 
 void SaveCFGDialog::saveFile(const char *string)
 {
-    boolean  result;
+    bool  result;
     char *op;
 
     result = this->network->saveCfgFile(string);
@@ -42,11 +42,11 @@ SaveCFGDialog::SaveCFGDialog(Network *net) :
                 SaveFileDialog("saveCFGDialog", ".cfg")
 {
     this->network= net;
-    this->hasCommentButton = FALSE;
+    this->hasCommentButton = false;
 
     if (NOT SaveCFGDialog::ClassInitialized)
     {
-        SaveCFGDialog::ClassInitialized = TRUE;
+        SaveCFGDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

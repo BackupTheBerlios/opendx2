@@ -19,7 +19,7 @@
 
 NewCommand::NewCommand(const char      *name,
 		       CommandScope    *scope,
-		       boolean		active,
+		       bool		active,
 		       Network	       *net) :
     OptionalPreActionCommand(name, scope, active,
 			     "Save Confirmation",
@@ -48,14 +48,14 @@ void   NewCommand::doPreAction()
 
 }
 
-boolean NewCommand::doIt(CommandInterface *ci)
+bool NewCommand::doIt(CommandInterface *ci)
 {
     theDXApplication->resetServer();
     return this->network->clear();
 }
 
 
-boolean NewCommand::needsConfirmation()
+bool NewCommand::needsConfirmation()
 {
 #if 0
     //

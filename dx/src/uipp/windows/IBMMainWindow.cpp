@@ -22,7 +22,7 @@
 #include "WizardDialog.h"
 
 
-boolean IBMMainWindow::ClassInitialized = FALSE;
+bool IBMMainWindow::ClassInitialized = false;
 
 //String IBMMainWindow::DefaultResources[] =
 //{
@@ -46,7 +46,7 @@ boolean IBMMainWindow::ClassInitialized = FALSE;
 #if 0
 //
 // This method should only be called if this window does not have a
-// menu bar (i.e. this->hasMenuBar == FALSE);
+// menu bar (i.e. this->hasMenuBar == false);
 //
 void IBMMainWindow::createMenus(Widget parent)
 {
@@ -55,8 +55,8 @@ void IBMMainWindow::createMenus(Widget parent)
 #endif
 
 //void IBMMainWindow::createBaseHelpMenu(Widget parent, 
-//				boolean add_standard_help, 
-//				boolean addAboutApp)
+//				bool add_standard_help, 
+//				bool addAboutApp)
 //{
 //    ASSERT(parent);
 //    Widget            pulldown;
@@ -103,14 +103,14 @@ void IBMMainWindow::createMenus(Widget parent)
 //
 //        this->helpAboutAppCmd =
 //            new HelpMenuCommand
-//                ("helpAboutApp", NULL, TRUE, HelpMenuCommand::AboutApp);
+//                ("helpAboutApp", NULL, true, HelpMenuCommand::AboutApp);
 //	this->aboutAppOption =
 //            new ButtonInterface(pulldown, "aboutAppOption",
 //                this->helpAboutAppCmd);
 //
 //        this->helpTechSupportCmd =
 //            new HelpMenuCommand
-//                ("helpTechSupport", NULL, TRUE, HelpMenuCommand::TechSupport);
+//                ("helpTechSupport", NULL, true, HelpMenuCommand::TechSupport);
 //	this->techSupportOption =
 //            new ButtonInterface(pulldown, "techSupportOption",
 //                this->helpTechSupportCmd);
@@ -120,7 +120,7 @@ void IBMMainWindow::createMenus(Widget parent)
 //}
 
 
-IBMMainWindow::IBMMainWindow(const char* name, boolean usesMenuBar): 
+IBMMainWindow::IBMMainWindow(const char* name, bool usesMenuBar): 
 		MainWindow(name, usesMenuBar)
 {
 //    this->helpMenuPulldown = NULL;
@@ -138,10 +138,10 @@ IBMMainWindow::IBMMainWindow(const char* name, boolean usesMenuBar):
     if (usesMenuBar)  {
         this->helpOnContextCmd =
             new HelpOnContextCommand
-                ("helpOnContext", NULL, TRUE, this);
+                ("helpOnContext", NULL, true, this);
         this->helpOnWindowCmd =
             new UIComponentHelpCommand
-                ("helpOnWindow", NULL, TRUE, this);
+                ("helpOnWindow", NULL, true, this);
     } else {
         this->helpOnContextCmd  = NULL;
         this->helpOnWindowCmd = NULL;
@@ -195,7 +195,7 @@ void IBMMainWindow::initialize()
 
 void IBMMainWindow::postWizard()
 {
-    if (theIBMApplication->inWizardMode() == FALSE) return;
+    if (theIBMApplication->inWizardMode() == false) return;
     if ((this->wizardDialog) && (this->wizardDialog->isManaged())) return ;
 
     if (theIBMApplication->isWizardWindow(this->UIComponent::name)) {

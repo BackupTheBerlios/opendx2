@@ -95,14 +95,14 @@ UndoDeletion::UndoDeletion (EditorWindow* editor, List* nodes, List* decorators)
 	this->y = MIN(this->y, y);
     }
 
-    boolean is_undoable = TRUE;
+    bool is_undoable = true;
     iter.setList(nodes_selected);
     while (n=(Node*)iter.getNext()) {
 	if (n->isA(ClassSequencerNode)) {
-	    is_undoable = FALSE;
+	    is_undoable = false;
 	    break;
 	} else if (n->isA(ClassDXLOutputNode)) {
-	    is_undoable = FALSE;
+	    is_undoable = false;
 	    break;
 	}
     }
@@ -116,7 +116,7 @@ UndoDeletion::UndoDeletion (EditorWindow* editor, List* nodes, List* decorators)
 
     iter.setList(nodes_selected);
     while (n = (Node*)iter.getNext()) {
-	n->getStandIn()->setSelected(FALSE);
+	n->getStandIn()->setSelected(false);
     }
 }
 
@@ -129,7 +129,7 @@ UndoDeletion::~UndoDeletion()
 // Write out the contents in the buffer and let a new network read
 // it back in.
 //
-void UndoDeletion::undo(boolean first_in_list) 
+void UndoDeletion::undo(bool first_in_list) 
 {
     char msg[128];
     if (!this->buffer) return ;
@@ -180,20 +180,20 @@ void UndoDeletion::undo(boolean first_in_list)
 
     // register the new network as the editor's pendingPaste,
     // then tell it to add the new nodes.
-    if (this->editor->setPendingPaste (net_file_name, NUL(const char*), FALSE))
-	this->editor->addCurrentNode (this->x, this->y, this->workSpace, TRUE);
+    if (this->editor->setPendingPaste (net_file_name, NUL(const char*), false))
+	this->editor->addCurrentNode (this->x, this->y, this->workSpace, true);
 
-    //if (first_in_list) this->editor->selectNode (n, TRUE, TRUE);
+    //if (first_in_list) this->editor->selectNode (n, true, true);
     unlink (net_file_name);
 }
 
 //
 // How can I tell if the contents of the buffer are usable?
 //
-boolean UndoDeletion::canUndo()
+bool UndoDeletion::canUndo()
 {
-    if (!this->buffer) return FALSE;
-    return TRUE;
+    if (!this->buffer) return false;
+    return true;
 }
 
 void UndoDeletion::selectConnectedTo (Node* n, List& nodes_selected)
@@ -219,7 +219,7 @@ void UndoDeletion::selectConnectedInputs (Node* n, int input, List& nodes_select
 	    StandIn* si = source->getStandIn();
 	    if (si->isSelected()) continue;
 	    nodes_selected.appendElement(source);
-	    si->setSelected(TRUE);
+	    si->setSelected(true);
 	}
 }
 
@@ -236,6 +236,6 @@ void UndoDeletion::selectConnectedOutputs (Node* n, int output, List& nodes_sele
 	    StandIn* si = dest->getStandIn();
 	    if (si->isSelected()) continue;
 	    nodes_selected.appendElement(dest);
-	    si->setSelected(TRUE);
+	    si->setSelected(true);
 	}
 }

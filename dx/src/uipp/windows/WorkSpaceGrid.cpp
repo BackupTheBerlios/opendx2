@@ -22,7 +22,7 @@ WorkSpaceGrid::WorkSpaceGrid()
 //
 void WorkSpaceGrid::setDefaultConfiguration()
 {
-    this->active = FALSE;
+    this->active = false;
     this->width = this->height = 50;
 //    this->x_alignment =  this->y_alignment = XmALIGNMENT_NONE;
 }
@@ -109,18 +109,18 @@ void WorkSpaceGrid::parseAlignment(const char *align)
 //
 // Parse a control panel's 'layout' comment.
 //
-boolean WorkSpaceGrid::printComments(FILE *f)
+bool WorkSpaceGrid::printComments(FILE *f)
 {
     char *s = this->getCommentString();
-    boolean r;
+    bool r;
  
     if (!s)
-	return TRUE;
+	return true;
 
     if (fputs(s,f) < 0) 
-	r = FALSE;
+	r = false;
     else 
-	r = TRUE;
+	r = true;
 
     if (s) delete s;
 
@@ -151,7 +151,7 @@ char *WorkSpaceGrid::getCommentString()
 //
 // Parse a control panel's 'layout' comment.
 //
-boolean WorkSpaceGrid::parseComment(const char *comment,
+bool WorkSpaceGrid::parseComment(const char *comment,
                                 const char *filename, int lineno)
 {
     int      items_parsed;
@@ -161,7 +161,7 @@ boolean WorkSpaceGrid::parseComment(const char *comment,
     char     alignment[8];
 
     if (!EqualSubstring(comment+1,"layout",6))
-        return FALSE;
+        return false;
 
     items_parsed =
         sscanf(comment,
@@ -181,7 +181,7 @@ boolean WorkSpaceGrid::parseComment(const char *comment,
         ErrorMessage("Bad 'layout' panel comment (file %s, line %d)",
                                 filename, lineno);
 #endif
-        return TRUE;
+        return true;
     }
 
     /*
@@ -191,6 +191,6 @@ boolean WorkSpaceGrid::parseComment(const char *comment,
     this->setSpacing(width, height);
     this->parseAlignment(alignment);
     
-    return TRUE;
+    return true;
 }
 

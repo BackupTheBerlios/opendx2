@@ -61,11 +61,11 @@ class VPERoot : public EditorWorkSpace, public WorkSpaceRoot
 	this->EditorWorkSpace::setPlacementCount(count);
     }
 
-    virtual boolean getLineDrawingEnabled() {
+    virtual bool getLineDrawingEnabled() {
 	return this->EditorWorkSpace::getLineDrawing();
     }
 
-    virtual boolean getOverlapEnabled() {
+    virtual bool getOverlapEnabled() {
 	return this->EditorWorkSpace::getOverlap();
     }
 
@@ -143,8 +143,8 @@ class VPERoot : public EditorWorkSpace, public WorkSpaceRoot
     // Returns a pointer to the class name.
     //
     const char* getClassName() { return ClassVPERoot; }
-    virtual boolean isA (Symbol classname);
-    boolean isA (const char* classname);
+    virtual bool isA (Symbol classname);
+    bool isA (const char* classname);
 };
 
 

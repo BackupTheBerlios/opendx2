@@ -30,7 +30,7 @@ InteractorInstance::InteractorInstance(InteractorNode *n)
     this->setAttrDialog = NUL(SetAttrDialog*);
     this->node = n;
     this->verticalLayout = this->defaultVertical();
-    this->selected = FALSE;
+    this->selected = false;
     this->java_var_name = NUL(char*);
 }
 	
@@ -63,7 +63,7 @@ void InteractorInstance::setXYSize(int width, int height)
     	this->interactor->setXYSize(width,height);
 } 
 
-void InteractorInstance::setVerticalLayout(boolean vertical) 
+void InteractorInstance::setVerticalLayout(bool vertical) 
 {
 
     if (vertical == this->verticalLayout)
@@ -76,7 +76,7 @@ void InteractorInstance::setVerticalLayout(boolean vertical)
 
     this->getNetwork()->setFileDirty();
 }
-void InteractorInstance::setSelected(boolean select) 
+void InteractorInstance::setSelected(bool select) 
 { 
     this->selected = select; 
     if (this->interactor)
@@ -159,7 +159,7 @@ Network  *InteractorInstance::getNetwork()
 // called by InteractorNode::notifyAllInteractorsOfChangeAttributes().
 //
 void InteractorInstance::handleInteractorStateChange(
-		InteractorInstance *src_ii, boolean unmanage)
+		InteractorInstance *src_ii, bool unmanage)
 { 
     if (this->interactor)
     	this->interactor->handleInteractorStateChange(src_ii, unmanage);
@@ -170,19 +170,19 @@ void InteractorInstance::handleInteractorStateChange(
 }
 
 //
-// If the interactor for this instance exists, then return TRUE
+// If the interactor for this instance exists, then return true
 // and the width and height in *x and *y respectively.
-// If the interactor does not exists return FALSE and set *x and *y to 0.
+// If the interactor does not exists return false and set *x and *y to 0.
 //
-boolean InteractorInstance::getXYSize(int *x, int *y)	
+bool InteractorInstance::getXYSize(int *x, int *y)	
 {
     if (this->interactor) {
 	this->interactor->getXYSize(x,y);
-	return TRUE;
+	return true;
     } else {
 	*x = this->width;
 	*y = this->height;
-	return FALSE;
+	return false;
     }
 }
 void InteractorInstance::getXYPosition(int *x, int *y)	
@@ -222,12 +222,12 @@ void InteractorInstance::uncreateInteractor()
  
 }
 //
-// Return TRUE/FALSE indicating if this class of interactor instance has
+// Return true/false indicating if this class of interactor instance has
 // a set attributes dialog (i.e. this->newSetAttrDialog returns non-NULL).
 //
-boolean InteractorInstance::hasSetAttrDialog()
+bool InteractorInstance::hasSetAttrDialog()
 {
-    return FALSE;
+    return false;
 }
 //
 // Open the set attributes dialog for this interactor instance.
@@ -266,19 +266,19 @@ SetAttrDialog *InteractorInstance::newSetAttrDialog()
 // Make sure the given output's current value complies with any attributes.
 // This is called by InteractorInstance::setOutputValue() which is
 // intern intended to be called by the Interactors.
-// If verification fails (returns FALSE), then a reason is expected to
+// If verification fails (returns false), then a reason is expected to
 // placed in *reason.  This string must be freed by the caller. 
-// At this level we always return TRUE (assuming that there are no
+// At this level we always return true (assuming that there are no
 // attributes) and set *reason to NULL.
 //
-boolean InteractorInstance::verifyValueAgainstAttributes(int output, 
+bool InteractorInstance::verifyValueAgainstAttributes(int output, 
 							const char *val,
 							Type t,
 							char **reason)
 {
     if (*reason)
 	*reason = NULL;
-    return TRUE;
+    return true;
 }
 //
 // Make sure the given value complies with any attributes and if so
@@ -292,8 +292,8 @@ boolean InteractorInstance::verifyValueAgainstAttributes(int output,
 // the reason (as passed back by verifyValueAgainstAttributes()) for
 // failure.  This string is expected to be freed by the caller.
 //
-boolean InteractorInstance::setAndVerifyOutput(int index, const char *val,
-                                        Type type, boolean send,
+bool InteractorInstance::setAndVerifyOutput(int index, const char *val,
+                                        Type type, bool send,
 					char **reason)
 {
     Node *n = this->getNode();
@@ -303,17 +303,17 @@ boolean InteractorInstance::setAndVerifyOutput(int index, const char *val,
 	oldval = DuplicateString(oldval); 
     }
 
-    boolean r = FALSE;
+    bool r = false;
     if (reason)
 	*reason = NULL;
-    if ( (type = n->setOutputValue(index,val,type,FALSE)) ) {
+    if ( (type = n->setOutputValue(index,val,type,false)) ) {
 	const char *coerced = n->getOutputValueString(index);
 	if (this->verifyValueAgainstAttributes(index, coerced, type, reason)) {
 	    if (send)
 		n->sendValues();
-	    r = TRUE;
+	    r = true;
 	} else {	// Restore original state
-	    n->setOutputValue(index,oldval,DXType::UndefinedType,FALSE);
+	    n->setOutputValue(index,oldval,DXType::UndefinedType,false);
 	    n->clearOutputDirty(index);
 	}
     }
@@ -329,7 +329,7 @@ boolean InteractorInstance::setAndVerifyOutput(int index, const char *val,
 // to belong to.  The caller will then add "this" to the appropriate
 // ControlPanel.
 //
-boolean InteractorInstance::switchNets (Network *newnet)
+bool InteractorInstance::switchNets (Network *newnet)
 {
     // find my node and bid farewell so that I don't get hurt
     // when he is deleted.   I know that the instance numbers of my old node
@@ -337,24 +337,24 @@ boolean InteractorInstance::switchNets (Network *newnet)
     // node in the new net.
     InteractorNode *oldnode = this->node;
     ASSERT (oldnode);
-    if (!oldnode->removeInstance (this)) return FALSE;
+    if (!oldnode->removeInstance (this)) return false;
     InteractorNode *newnode = (InteractorNode *)
 	newnet->findNode (oldnode->getNameSymbol(), oldnode->getInstanceNumber());
     ASSERT (newnode);
-    if (!newnode->appendInstance (this)) return FALSE;
+    if (!newnode->appendInstance (this)) return false;
     this->node = newnode;
 
-    return TRUE;
+    return true;
 }
 
 
-boolean InteractorInstance::printAsJava (FILE* jf)
+bool InteractorInstance::printAsJava (FILE* jf)
 {
     int x,y,w,h;
     this->getXYPosition (&x, &y);
     this->getXYSize (&w,&h);
     ControlPanel* cpan = this->getControlPanel();
-    boolean devstyle = cpan->isDeveloperStyle();
+    bool devstyle = cpan->isDeveloperStyle();
 
     InteractorNode* ino = (InteractorNode*)this->node;
     const char* node_var_name = ino->getJavaVariable();
@@ -372,7 +372,7 @@ boolean InteractorInstance::printAsJava (FILE* jf)
     const char* var_name = this->getJavaVariable();
     fprintf (jf, "        %s %s = new %s();\n", java_style, var_name, java_style);
     fprintf (jf, "        %s.addInteractor(%s);\n", node_var_name, var_name);
-    if (this->style->hasJavaStyle() == FALSE)
+    if (this->style->hasJavaStyle() == false)
 	fprintf (jf, 
 	    "        %s.setUseQuotes(false);\n", var_name);
     fprintf (jf, "        %s.setStyle(%d);\n", var_name, devstyle?1:0);
@@ -398,7 +398,7 @@ boolean InteractorInstance::printAsJava (FILE* jf)
 
     fprintf (jf, "        %s.addInteractor(%s);\n", cpan->getJavaVariableName(), var_name);
 	
-    return TRUE;
+    return true;
 }
 
 int InteractorInstance::CountLines (const char* str)

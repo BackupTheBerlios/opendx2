@@ -44,7 +44,7 @@ class Dialog : public UIComponent
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
     //
@@ -69,14 +69,14 @@ class Dialog : public UIComponent
     //static Widget CreateMainForm(Widget parent, String name, 
 				// ArgList arg, Cardinal argcount);
 
-    boolean managed;
+    bool managed;
 
     //Widget parent;
     //Widget ok;
     //Widget cancel;
     //Widget help;
 
-    virtual boolean okCallback(Dialog * /* clientData */) {return TRUE;}
+    virtual bool okCallback(Dialog * /* clientData */) {return true;}
     virtual void helpCallback(Dialog * /* clientData */) {}
     virtual void cancelCallback(Dialog * /* clientData */) {}
 
@@ -110,7 +110,7 @@ class Dialog : public UIComponent
 
     virtual void manage();
     virtual void unmanage();
-    virtual boolean isManaged();
+    virtual bool isManaged();
 
     //
     // Set the title of the dialog after this->root has been created.

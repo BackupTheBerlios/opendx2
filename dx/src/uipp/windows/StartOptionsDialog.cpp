@@ -15,7 +15,7 @@
 
 #include <ctype.h>
 
-boolean StartOptionsDialog::ClassInitialized = FALSE;
+bool StartOptionsDialog::ClassInitialized = false;
 
 //String StartOptionsDialog::DefaultResources[] = {
 //    ".dialogTitle:			Options...",
@@ -86,7 +86,7 @@ boolean StartOptionsDialog::ClassInitialized = FALSE;
 //    XtFree(s);
 //}
 
-boolean StartOptionsDialog::okCallback(Dialog *clientData)
+bool StartOptionsDialog::okCallback(Dialog *clientData)
 {
     //StartOptionsDialog      *d = (StartOptionsDialog*)clientData;
 
@@ -125,7 +125,7 @@ boolean StartOptionsDialog::okCallback(Dialog *clientData)
     //XtFree(options);
     //XtFree(sMem);
 
-    //return TRUE;
+    //return true;
 	return false;
 }
 
@@ -344,7 +344,7 @@ StartOptionsDialog::StartOptionsDialog() :
 
     if (NOT StartOptionsDialog::ClassInitialized)
     {
-        StartOptionsDialog::ClassInitialized = TRUE;
+        StartOptionsDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 

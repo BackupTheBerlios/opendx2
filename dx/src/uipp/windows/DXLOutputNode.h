@@ -56,9 +56,9 @@ class DXLOutputNode : public DrivenNode
     //
     // This is a nop because setLabelString() does all the work
     //
-    virtual void reflectStateChange(boolean unmanage); 
+    virtual void reflectStateChange(bool unmanage); 
 
-    virtual void ioParameterStatusChanged(boolean input, int index,
+    virtual void ioParameterStatusChanged(bool input, int index,
                                 NodeParameterStatusChange status);
 
   public:
@@ -72,26 +72,26 @@ class DXLOutputNode : public DrivenNode
     //
     ~DXLOutputNode();
 
-    virtual boolean initialize();
+    virtual bool initialize();
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
-    // Return TRUE if the node can be switched (pasted/merged/moved) from
+    // Return true if the node can be switched (pasted/merged/moved) from
     // the 'from' net to the 'to' net.
     //
-    virtual boolean canSwitchNetwork(Network *from, Network *to);
+    virtual bool canSwitchNetwork(Network *from, Network *to);
 
 
     //
     // When setting the label, keep the 1st parameter up to date.
     //
-    virtual boolean setLabelString(const char *label);
+    virtual bool setLabelString(const char *label);
 
-    virtual boolean needsFastSort() { return TRUE; }
+    virtual bool needsFastSort() { return true; }
 
     virtual const char* getJavaNodeName() { return "DXLOutputNode"; }
 

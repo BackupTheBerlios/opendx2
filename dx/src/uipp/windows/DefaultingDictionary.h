@@ -55,7 +55,7 @@ class DefaultingDictionary : public Dictionary
     ~DefaultingDictionary(){ default_stack.clear(); }
 
 
-    boolean pushDefaultDefinition(const void *def)
+    bool pushDefaultDefinition(const void *def)
 		{ return default_stack.insertElement(def,1); }
 
     const void *popDefaultDefinition()

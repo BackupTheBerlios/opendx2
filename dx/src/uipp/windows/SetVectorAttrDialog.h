@@ -49,7 +49,7 @@ class SetVectorAttrDialog : public SetScalarAttrDialog
 			//XtPointer clientData, 
 			//XtPointer callData);
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     void createComponentPulldown(const char *name);
 
@@ -76,9 +76,9 @@ class SetVectorAttrDialog : public SetScalarAttrDialog
 
     // 
     // Get whether or not the which component option is set. 
-    // Return TRUE if set to 'All Components' 
+    // Return true if set to 'All Components' 
     // 
-    boolean isAllAttributesMode();
+    bool isAllAttributesMode();
 
     //
     // Install the default resources for this class and then call the

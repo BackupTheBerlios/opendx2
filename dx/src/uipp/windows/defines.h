@@ -16,8 +16,6 @@
 #include <dx/arch.h>
 
 #if defined(HAVE_WINDOWS_H) && (defined(intelnt) || defined(WIN32))
-#include <windows.h>
-#include <winsock.h>
 #define S_IXUSR S_IEXEC
 #define S_IXGRP S_IEXEC
 #define S_IXOTH S_IEXEC
@@ -136,16 +134,16 @@ Got to have SOME popen available
  */
 #define UI_YYLMAX	4096
 
-#ifndef TRUE
-#define TRUE			((boolean)1)
+#ifndef true
+#define true			((bool)1)
 #endif
 
-#ifndef FALSE
-#define FALSE			((boolean)0)
+#ifndef false
+#define false			((bool)0)
 #endif
 
 #ifndef UNDEFINED
-#define UNDEFINED		((boolean)-1)
+#define UNDEFINED		((bool)-1)
 #endif
 
 #define AND			&&
@@ -157,7 +155,6 @@ Got to have SOME popen available
 /***
  *** Types:
  ***/
-typedef unsigned char boolean;
 
 /*****************************************************************************/
 /* NUL -								     */
@@ -184,8 +181,8 @@ typedef unsigned char boolean;
 	  (fprintf(stderr,						\
 	     "Internal error detected at \"%s\":%d.\n",			\
 	  __FILE__, __LINE__),						\
-	  abort(), (int)FALSE) :					\
-	  (int)TRUE)
+	  abort(), (int)false) :					\
+	  (int)true)
 */
 /*
  * Find this in Application.C
@@ -233,14 +230,6 @@ do {									\
 
 #if defined(HAVE_LIBXMSTATIC)
 #define XMSTATIC
-#endif
-
-#if !CXX_HAS_FALSE
-boolean false = (boolean)0;
-#endif
-
-#if !CXX_HAS_TRUE
-boolean true = (boolean)1;
 #endif
 
 #endif

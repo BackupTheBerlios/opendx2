@@ -44,7 +44,7 @@ class FileSelectorInteractor : public ValueInteractor
     //
     // Private member data:
     // 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //
     // Calls the virtual method this->buttonCallback() when the 
@@ -84,7 +84,7 @@ class FileSelectorInteractor : public ValueInteractor
     // After calling the super class method, set the label on the 
     // FileSelectorDialog if we have one.
     //
-    virtual void setLabel(const char *labelString, boolean re_layout = TRUE);
+    virtual void setLabel(const char *labelString, bool re_layout = true);
 
 #if 0
     //
@@ -118,7 +118,7 @@ class FileSelectorInteractor : public ValueInteractor
     //
     virtual void handleInteractivePartStateChange(
 				InteractorInstance *src_ii,
-				boolean major_change);
+				bool major_change);
 
     //
     // Update the text value from the instance's notion of the current text.

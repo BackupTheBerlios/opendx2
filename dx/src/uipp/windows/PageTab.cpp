@@ -33,7 +33,7 @@ extern "C" int gethostname(char *address, int address_len);
 
 //Pixmap PageTab::AnimationPixmap = NUL(Pixmap);
 //Pixmap PageTab::AnimationMaskPixmap = NUL(Pixmap);
-boolean PageTab::ClassInitialized = FALSE;
+bool PageTab::ClassInitialized = false;
 Dictionary* PageTab::DropTypeDictionary = new Dictionary;
 Dictionary* PageTab::DragTypeDictionary = new Dictionary;
 //Widget PageTab::DragIcon = NUL(Widget);
@@ -47,10 +47,10 @@ PageTab::PageTab(PageSelector* sel, WorkSpace* ws, const char* group) :
 {
     this->workSpace = ws;
     this->selector = sel;
-    this->set = FALSE;
+    this->set = false;
     this->group_rec = NUL(PageGroupRecord*);
     this->position = 0;
-    this->has_desired_position = FALSE;
+    this->has_desired_position = false;
     //this->color_timer = 0;
     this->group_name = DuplicateString(group);
 }
@@ -69,7 +69,7 @@ void PageTab::activate()
 
 //void PageTab::createButton (Widget p, PageGroupRecord* prec)
 //{
-//    this->has_desired_position = TRUE;
+//    this->has_desired_position = true;
 //    this->desired_position = prec->order_in_list;
 //    this->createButton(p);
 //    this->setGroup(prec);
@@ -80,10 +80,10 @@ void PageTab::activate()
 //    if (!PageTab::ClassInitialized) {
 //	this->setDefaultResources (theApplication->getRootWidget(),
 //	    PageTab::DefaultResources);
-//        this->DXDropSite::addSupportedType (PageTab::PageName, DXPAGENAME, TRUE);
+//        this->DXDropSite::addSupportedType (PageTab::PageName, DXPAGENAME, true);
 //
-//	this->DXDropSite::addSupportedType (PageTab::Modules, DXMODULES, TRUE);
-//        this->DragSource::addSupportedType (PageTab::PageName, DXPAGENAME, TRUE);
+//	this->DXDropSite::addSupportedType (PageTab::Modules, DXMODULES, true);
+//        this->DragSource::addSupportedType (PageTab::PageName, DXPAGENAME, true);
 //
 //        PageTab::DragIcon = this->createDragIcon(pagedrag_width, pagedrag_height,
 //	     (char *)pagedrag_bits, (char *)pagedragmask_bits);
@@ -91,14 +91,14 @@ void PageTab::activate()
 //	      XtWindow(p), animation_bits, animation_width, animation_height);
 //	      PageTab::AnimationMaskPixmap = XCreateBitmapFromData(XtDisplay(p),
 //	      XtWindow(p), anim_mask_bits, anim_mask_width, anim_mask_height);
-//	PageTab::ClassInitialized = TRUE;
+//	PageTab::ClassInitialized = true;
 //    }
 //
 //    Widget w = this->getRootWidget();
 //
 //    this->setDragWidget(w);
 //    this->setDragIcon(PageTab::DragIcon);
-//    this->setIntraShellBehavior(TRUE);
+//    this->setIntraShellBehavior(true);
 //}
 
 PageTab::~PageTab()
@@ -107,7 +107,7 @@ PageTab::~PageTab()
     //if (this->color_timer) XtRemoveTimeOut(this->color_timer);
 }
 
-void PageTab::setState(boolean value)
+void PageTab::setState(bool value)
 {
     this->NotebookTab::setState(value);
     if (this->group_rec) this->group_rec->showing = value;
@@ -123,11 +123,11 @@ void PageTab::setGroup(PageGroupRecord* rec)
     this->setPosition (this->position);
 }
 
-void PageTab::setPosition (int order, boolean designated_by_user)
+void PageTab::setPosition (int order, bool designated_by_user)
 {
     this->position = order;
 
-    if (designated_by_user) this->has_desired_position = FALSE;
+    if (designated_by_user) this->has_desired_position = false;
     if (this->group_rec) this->group_rec->order_in_list = order;
 }
 
@@ -161,9 +161,9 @@ int PageTab::getPosition ()
 // This is used to put up the same page which was showing when the net
 // was saved.
 //
-boolean PageTab::getDesiredShowing() 
+bool PageTab::getDesiredShowing() 
 {
-    return (this->group_rec?this->group_rec->showing:FALSE);
+    return (this->group_rec?this->group_rec->showing:false);
 }
 
 //extern "C"
@@ -172,15 +172,15 @@ boolean PageTab::getDesiredShowing()
 //    PageTab* pt = (PageTab*)clientData;
 //    ASSERT(pt);
 //    XtVaSetValues (pt->getRootWidget(), XmNforeground, pt->pending_fg, NULL);
-//    pt->setDirty(TRUE,TRUE);
+//    pt->setDirty(true,true);
 //    pt->color_timer = 0;
 //}
 
 // Called to consumate a dnd operation
-//boolean PageTab::decodeDropType 
+//bool PageTab::decodeDropType 
 //(int tag, char *type, XtPointer value, unsigned long len, int, int)
 //{
-//boolean retVal;
+//bool retVal;
 //int x,y;
 //int width,height;
 //EditorWorkSpace* ews = (EditorWorkSpace*)this->getWorkSpace();
@@ -211,19 +211,19 @@ boolean PageTab::getDesiredShowing()
 //	    retVal = this->selector->changeOrdering (this, (char*)value);
 //	    break;
 //	default:
-//	    retVal = FALSE;
+//	    retVal = false;
 //	    break;
 //    }
 //    return retVal;
 //}
 
-//boolean PageTab::decodeDragType (int tag,
+//bool PageTab::decodeDragType (int tag,
 //	char *a, XtPointer *value, unsigned long *length, long operation)
 //{
-//boolean retVal;
+//bool retVal;
 //
-//    if (this->isIntraShell() == FALSE) 
-//	return FALSE;
+//    if (this->isIntraShell() == false) 
+//	return false;
 //
 //    const char* gname = this->getGroupName();
 //    char* cp = DuplicateString(gname);
@@ -234,13 +234,13 @@ boolean PageTab::getDesiredShowing()
 //	case PageTab::PageTrash:
 //	    gname = this->getGroupName();
 //	    if (!gname) 
-//		retVal = FALSE;
+//		retVal = false;
 //	    else if (EqualString(gname, "Untitled"))
-//		retVal = FALSE;
+//		retVal = false;
 //	    else {
 //		*value = (XtPointer)cp;
 //		*length = strlen(cp);
-//		retVal = TRUE;
+//		retVal = true;
 //	    }
 //	    break;
 //#endif
@@ -251,11 +251,11 @@ boolean PageTab::getDesiredShowing()
 //	    //
 //	    *value = (XtPointer)cp;
 //	    *length = strlen(cp);
-//	    retVal = TRUE;
+//	    retVal = true;
 //	    break;
 //
 //	default:
-//	    retVal = FALSE;
+//	    retVal = false;
 //	    break;
 //    }
 //    return retVal;
@@ -282,14 +282,14 @@ void PageTab::unmanage()
 // In order to get the drop to hit our page, we must remove its page group info
 // and replace it with our own.
 //
-boolean PageTab::mergeNetElements (Network* tmpnet, List* tmppanels, int x, int y)
+bool PageTab::mergeNetElements (Network* tmpnet, List* tmppanels, int x, int y)
 {
     EditorWorkSpace* ews = (EditorWorkSpace*)this->getWorkSpace();
     EditorWindow* ew = this->selector->getEditor();
     ASSERT(ew);
-    if (!ew->pagifyNetNodes (tmpnet, ews)) return FALSE;
-    boolean retVal = ews->mergeNetElements (tmpnet, tmppanels, x, y);
-    if (retVal) ews->setMembersInitialized(FALSE);
+    if (!ew->pagifyNetNodes (tmpnet, ews)) return false;
+    bool retVal = ews->mergeNetElements (tmpnet, tmppanels, x, y);
+    if (retVal) ews->setMembersInitialized(false);
     return retVal;
 }
 

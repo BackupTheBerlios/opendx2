@@ -61,7 +61,7 @@ Network* GroupManager::getGroupNetwork(const char *name)
 }
 
 
-boolean GroupManager::registerGroup(const char *name, Network *net)
+bool GroupManager::registerGroup(const char *name, Network *net)
 {
     GroupRecord *record;
     ASSERT (net == this->network);
@@ -72,18 +72,18 @@ boolean GroupManager::registerGroup(const char *name, Network *net)
     	this->groups.addDefinition(name,(const void*)record); 
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean GroupManager::addGroupMember(const char *name, Network *net)
+bool GroupManager::addGroupMember(const char *name, Network *net)
 {
     ASSERT (net == this->network);
 
     if (IsBlankString(name))
-	return FALSE;
+	return false;
 
     if (NOT this->hasGroup(name))
-	return FALSE;	
+	return false;	
 
     GroupRecord *grec = this->getGroup(name);
 
@@ -93,15 +93,15 @@ boolean GroupManager::addGroupMember(const char *name, Network *net)
 	net->setFileDirty();
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean  GroupManager::removeGroupMember(const char *name, Network *net)
+bool  GroupManager::removeGroupMember(const char *name, Network *net)
 {
     ASSERT (net == this->network);
 
     if (NOT this->hasGroup(name))
-	return FALSE;	
+	return false;	
 
     EditorWindow* editor = net->getEditor();
     if (editor) {
@@ -109,20 +109,20 @@ boolean  GroupManager::removeGroupMember(const char *name, Network *net)
 	net->setFileDirty();
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean     GroupManager::createGroup(const char *name, Network *net)
+bool     GroupManager::createGroup(const char *name, Network *net)
 {
     ASSERT (net == this->network);
 
-    boolean result;
+    bool result;
 
     if (IsBlankString(name))
-	return FALSE;
+	return false;
 
     if (this->groups.findDefinition(name))
-	return FALSE;	// Named group already exists.
+	return false;	// Named group already exists.
 
     GroupRecord *record = this->recordAllocator(net, name);
 
@@ -134,14 +134,14 @@ boolean     GroupManager::createGroup(const char *name, Network *net)
 	if (editor) {
 	    editor->setGroup(record, this->groupID);
 	    net->setFileDirty();
-	    net->changeExistanceWork(NUL(Node*), TRUE);
+	    net->changeExistanceWork(NUL(Node*), true);
 	}
     }
 
     return result;
 }
 
-boolean     GroupManager::removeGroup(const char *name, Network *net) 
+bool     GroupManager::removeGroup(const char *name, Network *net) 
 {
     ASSERT (net == this->network);
 
@@ -150,35 +150,35 @@ boolean     GroupManager::removeGroup(const char *name, Network *net)
     record = (GroupRecord*)this->groups.removeDefinition(name);
 
     if (NOT record) 
-	return FALSE;
+	return false;
 
     EditorWindow* editor = net->getEditor();
     if (editor) {
 	editor->resetGroup(name, this->groupID);
 	net->setFileDirty();
-	net->changeExistanceWork(NUL(Node*), FALSE);
+	net->changeExistanceWork(NUL(Node*), false);
     }
 
     delete record;
 
-    return TRUE;
+    return true;
 }
 
 
-boolean     GroupManager::selectGroupNodes(const char *name) 
+bool     GroupManager::selectGroupNodes(const char *name) 
 {
     GroupRecord *record;
 
     record = (GroupRecord*) this->groups.findDefinition(name);
 
     if(NOT record)
-	return FALSE;	
+	return false;	
     
     EditorWindow* editor = record->network->getEditor();
     if (editor)
 	editor->selectGroup(name, this->groupID);
 
-    return TRUE;
+    return true;
 }
 
 

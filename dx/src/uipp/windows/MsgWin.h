@@ -51,7 +51,7 @@ class MsgWin : public DXWindow
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //friend void MsgWin_SelectCB(Widget, XtPointer, XtPointer);
 
     void clearSelectableLines();
@@ -68,12 +68,12 @@ class MsgWin : public DXWindow
     // flag is set, then prompt the user with a Yes/No dialog about opening
     // the editor.
     //
-    // Return TRUE, if we posted a dialog to ask the user if we should post
+    // Return true, if we posted a dialog to ask the user if we should post
     // the window.
     //
-    boolean openEditorIfNecessary(Network *net,
+    bool openEditorIfNecessary(Network *net,
                                 const char *nodeName, int inst,
-                                boolean promptUser);
+                                bool promptUser);
 
   protected:
     //
@@ -81,10 +81,10 @@ class MsgWin : public DXWindow
     //
     List selectableLines;
 //    Widget list;
-    boolean firstMsg;
-    boolean executing;
-    boolean beenManaged;
-    boolean beenBeeped;
+    bool firstMsg;
+    bool executing;
+    bool beenManaged;
+    bool beenBeeped;
 
     char *logFileName;
     FILE *logFile;
@@ -152,7 +152,7 @@ class MsgWin : public DXWindow
     //
     // A function to select a selectable line.
     //
-    virtual void selectLine(int, boolean promptUser=TRUE);
+    virtual void selectLine(int, bool promptUser=true);
 
     //
     // Install the default resources for this class and then call the
@@ -181,9 +181,9 @@ class MsgWin : public DXWindow
     virtual void endExecution();
     virtual void standBy();
 
-    virtual boolean clear();
-    virtual boolean log(const char *);
-    virtual boolean save(const char*);
+    virtual bool clear();
+    virtual bool log(const char *);
+    virtual bool save(const char*);
 
     virtual void postLogDialog();
     virtual void postSaveDialog();
@@ -200,10 +200,10 @@ class MsgWin : public DXWindow
     //
     // activateSameSelection will be passed to XmListSelectPos().  When findNextError
     // is called from code (rather than from a user's menu selection), 
-    // activateSameSelection will be set FALSE so that a MsgWin whose selection is 
+    // activateSameSelection will be set false so that a MsgWin whose selection is 
     // already at the end of the list, won't auto-popup and bring up its associated vpe.
     //
-    virtual void findNextError(boolean activateSameSelection = TRUE);
+    virtual void findNextError(bool activateSameSelection = true);
     virtual void findPrevError();
 
     //
@@ -215,12 +215,12 @@ class MsgWin : public DXWindow
     //
     // Automatically issue script commands turn turn tracing on/off
     //
-    boolean toggleTracing();
+    bool toggleTracing();
 
     //
     // Usage("memory",0); script command
     //
-    boolean memoryUse();
+    bool memoryUse();
 
     //
     // Returns a pointer to the class name.

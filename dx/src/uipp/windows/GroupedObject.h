@@ -48,8 +48,8 @@ class GroupedObject
 
     Dictionary		*groups;
 
-    virtual	boolean printGroupComment (FILE *);
-    virtual	boolean parseGroupComment 
+    virtual	bool printGroupComment (FILE *);
+    virtual	bool parseGroupComment 
 	(const char* comment, const char* filename, int lineno);
 
   public:

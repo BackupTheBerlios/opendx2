@@ -15,7 +15,7 @@
 #include "SeparatorDecorator.h"
 #include "Network.h"
 
-boolean SetSeparatorAttrDlg::ClassInitialized = FALSE;
+bool SetSeparatorAttrDlg::ClassInitialized = false;
 
 //String SetSeparatorAttrDlg::DefaultResources[] =
 //{
@@ -42,14 +42,14 @@ boolean SetSeparatorAttrDlg::ClassInitialized = FALSE;
 #define DIRTY_STYLE 2
 
 SetSeparatorAttrDlg::SetSeparatorAttrDlg(
-				boolean , SeparatorDecorator *dec) : 
+				bool , SeparatorDecorator *dec) : 
 				Dialog("SeparatorAttributes")
 {
     this->decorator = dec;
     this->dirty = DIRTY_COLORS | DIRTY_STYLE ;
 
     if (!SetSeparatorAttrDlg::ClassInitialized) {
-	SetSeparatorAttrDlg::ClassInitialized = TRUE;
+	SetSeparatorAttrDlg::ClassInitialized = true;
         //this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -68,7 +68,7 @@ SetSeparatorAttrDlg::post()
     this->restoreCallback (this);
 }
 
-boolean
+bool
 SetSeparatorAttrDlg::restoreCallback (Dialog * )
 {
  //   //
@@ -131,12 +131,12 @@ SetSeparatorAttrDlg::restoreCallback (Dialog * )
  //   }
 
 
- //   return TRUE;
+ //   return true;
 
 	return false;
 }
 
-boolean
+bool
 SetSeparatorAttrDlg::okCallback (Dialog* )
 {
 //Colormap cmap;
@@ -145,7 +145,7 @@ SetSeparatorAttrDlg::okCallback (Dialog* )
 //XrmValue toinout, from;
 //Pixel bg, ts, bs;
 //XColor cdef;
-//Boolean use_default = FALSE;
+//Boolean use_default = false;
 //
 //    if (this->dirty) {
 //	this->decorator->getNetwork()->setFileDirty();
@@ -165,7 +165,7 @@ SetSeparatorAttrDlg::okCallback (Dialog* )
 //	NULL);
 //	if (!strcmp(XtName(choice), DEFAULT_SETTING)) {
 //	    color = "#b4b4b4b4b4b4";
-//	    use_default = TRUE;
+//	    use_default = true;
 //	} 
 //
 //	toinout.size = sizeof(Pixel);
@@ -218,7 +218,7 @@ SetSeparatorAttrDlg::okCallback (Dialog* )
 //    }
 //
 //
-//    return TRUE;
+//    return true;
 	return false;
 }
 

@@ -38,7 +38,7 @@ class DXAnchorWindow: public DXWindow {
   // P R I V A T E   P R I V A T E   P R I V A T E   
   private:
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //friend void DXAnchorWindow_FileMenuMapCB(Widget, XtPointer, XtPointer);
     //friend void DXAnchorWindow_LogoCB(Widget, XtPointer, XtPointer);
@@ -117,7 +117,7 @@ class DXAnchorWindow: public DXWindow {
 
   public:
 
-    boolean 		postVPE();
+    bool 		postVPE();
 
     //
     // This window will post a copyright notice inside itself as a substitute
@@ -132,7 +132,7 @@ class DXAnchorWindow: public DXWindow {
     //
     void resetWindowTitle();
 
-    DXAnchorWindow (const char *name, boolean isAnchor, boolean usesMenuBar = TRUE);
+    DXAnchorWindow (const char *name, bool isAnchor, bool usesMenuBar = true);
     ~DXAnchorWindow();
 
     const char *getClassName() { return ClassDXAnchorWindow; }

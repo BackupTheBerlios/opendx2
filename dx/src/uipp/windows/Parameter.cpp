@@ -24,13 +24,13 @@ Parameter::Parameter(ParameterDefinition *pd)
 {
     this->definition = pd;
     this->value = NUL(DXValue*);
-    this->dirty = TRUE;
-    this->defaultingWhenUnconnected = TRUE;
+    this->dirty = true;
+    this->defaultingWhenUnconnected = true;
     if (pd) {
         this->visible = pd->getDefaultVisibility();
         this->cacheability = pd->getDefaultCacheability();
     } else {
-        this->visible = TRUE; 
+        this->visible = true; 
         this->cacheability = OutputFullyCached; 
     }
 }
@@ -69,7 +69,7 @@ void Parameter::disconnectArks()
 //
 // Return true if the Executive needs to know the value of this parameter
 //
-boolean Parameter::isNeededValue(boolean ignoreDirty)
+bool Parameter::isNeededValue(bool ignoreDirty)
 {
     if (this->definition->isInput()) {		// An input
 	if (!this->isConnected())
@@ -78,7 +78,7 @@ boolean Parameter::isNeededValue(boolean ignoreDirty)
 	return ignoreDirty || this->isDirty();
     }
 
-    return FALSE;
+    return false;
 }
 
 //
@@ -87,10 +87,10 @@ boolean Parameter::isNeededValue(boolean ignoreDirty)
 // The types we can coerce are StringType, ListType, VectorType and TensorType.
 // Return T/F indicating whether the value was successfully set (and coerced)
 //
-boolean Parameter::coerceAndSetValue(const char *value, Type type)
+bool Parameter::coerceAndSetValue(const char *value, Type type)
 {
     char *s = DXValue::CoerceValue(value, type);
-    boolean r = FALSE;
+    bool r = false;
     if (s) {
         r = this->value->setValue(s, type);
 	delete s;
@@ -129,7 +129,7 @@ Type Parameter::setValue(const char *value)
     //
     FOR_EACH_PARAM_TYPE(pd, dxtype, iterator) {
         type = dxtype->getType();
-        if (this->setValue(value,type, FALSE))
+        if (this->setValue(value,type, false))
 	    return type;
     }   
 
@@ -138,15 +138,15 @@ Type Parameter::setValue(const char *value)
     //
     FOR_EACH_PARAM_TYPE(pd, dxtype, iterator) {
         type = dxtype->getType();
-        if (this->setValue(value,type, TRUE))
+        if (this->setValue(value,type, true))
 	    return type;
     }   
 
     return DXType::UndefinedType;
 }
-boolean Parameter::setValue(const char *value, Type type, boolean coerce)
+bool Parameter::setValue(const char *value, Type type, bool coerce)
 {
-    boolean success;
+    bool success;
 
     if (!this->value) 
 	this->value = new DXValue;
@@ -155,32 +155,32 @@ boolean Parameter::setValue(const char *value, Type type, boolean coerce)
     if (type == DXType::UndefinedType AND NOT value) {
     	if (this->value) delete this->value;
 	this->value = NUL(DXValue*);
-	success = TRUE;
+	success = true;
     } else {
 	ParameterDefinition *pd = this->getDefinition();
 	ListIterator li(*pd->getTypes());
 	DXType *dxt;
-	boolean typeMatch = FALSE;
+	bool typeMatch = false;
 	while( (dxt = (DXType*)li.getNext()) )
 	    if (dxt->MatchType(type, dxt->getType()))
 	    {
-		typeMatch = TRUE;
+		typeMatch = true;
 		break;
 	    }
 	if (typeMatch && (
 		   this->value->setValue(value, type)  ||
 		   (coerce && this->coerceAndSetValue(value,type)))) {
-	    success = TRUE;
+	    success = true;
 	} else
-	    success = FALSE;
+	    success = false;
     }
 
     if (success) {
 	this->setDirty();
 	if (type == DXType::UndefinedType AND NOT value)
-	    this->setUnconnectedDefaultingStatus(TRUE);
+	    this->setUnconnectedDefaultingStatus(true);
 	else
-	    this->setUnconnectedDefaultingStatus(FALSE);
+	    this->setUnconnectedDefaultingStatus(false);
     }
 
     return success;
@@ -191,11 +191,11 @@ boolean Parameter::setValue(const char *value, Type type, boolean coerce)
 // the same as setValue, but if it is defaulting, then we set the
 // value but leave the parameter clean and defaulting.
 //
-boolean Parameter::setSetValue(const char *value, Type type)
+bool Parameter::setSetValue(const char *value, Type type)
 {
-    boolean was_defaulting = this->defaultingWhenUnconnected;
+    bool was_defaulting = this->defaultingWhenUnconnected;
 
-    boolean r = this->setValue(value,type);
+    bool r = this->setValue(value,type);
         
     if (was_defaulting) {
         this->clearDirty();
@@ -272,11 +272,11 @@ double Parameter::getComponentValue(int component)
 // and integers, the component number must be 1.  
 // Components are indexed from 1.
 //
-boolean Parameter::setComponentValue(int component, double val)
+bool Parameter::setComponentValue(int component, double val)
 {
     ASSERT(component > 0);
     DXValue *v = this->value;
-    boolean r = true;
+    bool r = true;
 
     ASSERT(v);
 
@@ -305,7 +305,7 @@ boolean Parameter::setComponentValue(int component, double val)
 //
 // Determine if this instance is derived from the given class 
 //
-boolean Parameter::isA(const char *classname)
+bool Parameter::isA(const char *classname)
 {
     Symbol s = theSymbolManager->registerSymbol(classname);
     return this->isA(s);
@@ -313,20 +313,20 @@ boolean Parameter::isA(const char *classname)
 //
 // Determine if this instance is derived from the given class 
 //
-boolean Parameter::isA(Symbol classname)
+bool Parameter::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassParameter);
     return (s == classname);
 }
 
-boolean Parameter::isDefaulting()
+bool Parameter::isDefaulting()
 {
    if (this->isInput() && this->isConnected())
-	return FALSE;
+	return false;
    else
 	return this->defaultingWhenUnconnected;
 }
-void Parameter::setUnconnectedDefaultingStatus(boolean defaulting)	
+void Parameter::setUnconnectedDefaultingStatus(bool defaulting)	
 {
     if (this->defaultingWhenUnconnected != defaulting) 
     {
@@ -334,9 +334,9 @@ void Parameter::setUnconnectedDefaultingStatus(boolean defaulting)
 	this->defaultingWhenUnconnected = defaulting; 
     }
 }
-boolean Parameter::addArk(Ark *a)	
+bool Parameter::addArk(Ark *a)	
 {
-    boolean r = this->arcs.appendElement((const void*)a);
+    bool r = this->arcs.appendElement((const void*)a);
 
     //
     // If this is the first arc and this is an output parameter,
@@ -482,7 +482,7 @@ char *Parameter::getObjectCreateCode(const char *indent,
     int i, rank, shape, items;
     Type type = this->getValueType();
     DXTensor tensor;
-    boolean r;
+    bool r;
     int count, hasDecimal;
     double *data;
 

@@ -14,8 +14,8 @@
 #include "ToggleToggleInteractor.h"
 #include "InteractorStyle.h"
 
-boolean 
-  ToggleToggleInteractor::ToggleToggleInteractorClassInitialized = FALSE;
+bool 
+  ToggleToggleInteractor::ToggleToggleInteractorClassInitialized = false;
 
 //
 // Define the mapping of toggle states (Up/down) to option indices (1/2).
@@ -52,7 +52,7 @@ void ToggleToggleInteractor::initialize()
         //                         ToggleInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                         Interactor::DefaultResources);
-        ToggleToggleInteractor::ToggleToggleInteractorClassInitialized = TRUE;
+        ToggleToggleInteractor::ToggleToggleInteractorClassInitialized = true;
     }
 }
 
@@ -91,7 +91,7 @@ Interactor *ToggleToggleInteractor::AllocateInteractor(
 //
 void ToggleToggleInteractor::updateDisplayedInteractorValue()
 {
-    boolean set;
+    bool set;
     ToggleInstance *ti = (ToggleInstance*)this->interactorInstance;
     ASSERT(ti);
     ToggleNode        *tnode = (ToggleNode*)ti->getNode();

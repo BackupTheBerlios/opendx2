@@ -92,14 +92,14 @@ ColormapNode::~ColormapNode()
     delete this->updateMinMaxAttr;
 }
 
-boolean ColormapNode::initialize()
+bool ColormapNode::initialize()
 {
     if (this->getInputCount() != EXPECTED_INPUTS) {
         fprintf(stderr, 
            "Expected %d inputs for %s node, please check the mdf file.\n",
                         EXPECTED_INPUTS,
                         this->getNameString());
-	return FALSE;
+	return false;
     }
 
     this->deferMinMaxUpdates();
@@ -109,14 +109,14 @@ boolean ColormapNode::initialize()
     this->initMaximumValue("100.0");
     this->initNBinsValue("20");
 
-    this->installTHEDefaultMaps(FALSE); 
+    this->installTHEDefaultMaps(false); 
 
     this->undeferMinMaxUpdates();
 
-    return TRUE;
+    return true;
 
 }
-boolean ColormapNode::hasDefaultHSVMap()
+bool ColormapNode::hasDefaultHSVMap()
 {
     return !EqualString(this->getInputValueString(DEFHMAP_PARAM_NUM),"NULL") &&
 	   !EqualString(this->getInputValueString(DEFSMAP_PARAM_NUM),"NULL") &&
@@ -126,7 +126,7 @@ boolean ColormapNode::hasDefaultHSVMap()
 // Install the currently defined default hsv colormap and send it 
 // to the executive if requested.
 //
-void ColormapNode::installCurrentDefaultHSVMap(boolean send)
+void ColormapNode::installCurrentDefaultHSVMap(bool send)
 {
     const char *hmap = this->getInputValueString(DEFHMAP_PARAM_NUM);
     const char *smap = this->getInputValueString(DEFSMAP_PARAM_NUM);
@@ -143,19 +143,19 @@ void ColormapNode::installCurrentDefaultHSVMap(boolean send)
 	//
 	this->deferVisualNotification();
 
-	this->setInputValue(HMAP_PARAM_NUM,hmap,DXType::UndefinedType,FALSE);
-	this->setInputValue(SMAP_PARAM_NUM,smap,DXType::UndefinedType,FALSE);
-	this->setInputValue(VMAP_PARAM_NUM,vmap,DXType::UndefinedType,FALSE);
+	this->setInputValue(HMAP_PARAM_NUM,hmap,DXType::UndefinedType,false);
+	this->setInputValue(SMAP_PARAM_NUM,smap,DXType::UndefinedType,false);
+	this->setInputValue(VMAP_PARAM_NUM,vmap,DXType::UndefinedType,false);
 
 	this->undeferVisualNotification();
 
 	if (send)
-	    this->sendValues(FALSE);
+	    this->sendValues(false);
 
     }
 
 }
-boolean ColormapNode::hasDefaultOpacityMap()
+bool ColormapNode::hasDefaultOpacityMap()
 {
     return !EqualString(this->getInputValueString(DEFOMAP_PARAM_NUM),"NULL");
 }
@@ -163,7 +163,7 @@ boolean ColormapNode::hasDefaultOpacityMap()
 // Install the currently defined default opacity colormap and send it 
 // to the executive if requested.
 //
-void ColormapNode::installCurrentDefaultOpacityMap(boolean send)
+void ColormapNode::installCurrentDefaultOpacityMap(bool send)
 {
     const char *opmap = this->getInputValueString(DEFOMAP_PARAM_NUM);
 
@@ -179,27 +179,27 @@ void ColormapNode::installCurrentDefaultOpacityMap(boolean send)
 	
     }
 }
-boolean ColormapNode::hasDefaultMin()
+bool ColormapNode::hasDefaultMin()
 {
     return !EqualString(this->getInputValueString(DEFMIN_PARAM_NUM),"NULL"); 
 }
-boolean ColormapNode::hasDefaultMax()
+bool ColormapNode::hasDefaultMax()
 {
     return !EqualString(this->getInputValueString(DEFMAX_PARAM_NUM),"NULL"); 
 }
-void ColormapNode::installCurrentDefaultMin(boolean send)
+void ColormapNode::installCurrentDefaultMin(bool send)
 {
-    this->installCurrentDefaultMinOrMax(TRUE, send);
+    this->installCurrentDefaultMinOrMax(true, send);
 }
-void ColormapNode::installCurrentDefaultMax(boolean send)
+void ColormapNode::installCurrentDefaultMax(bool send)
 {
-    this->installCurrentDefaultMinOrMax(FALSE, send);
+    this->installCurrentDefaultMinOrMax(false, send);
 }
 //
 // Install the currently defined default min or max and send it 
 // to the executive if requested.
 //
-void ColormapNode::installCurrentDefaultMinOrMax(boolean min, boolean send)
+void ColormapNode::installCurrentDefaultMinOrMax(bool min, bool send)
 {
     const char *name;
     int pnum;
@@ -229,7 +229,7 @@ void ColormapNode::installCurrentDefaultMinOrMax(boolean min, boolean send)
 	this->undeferMinMaxUpdates();
 
 	if (send)
-	    this->sendValues(FALSE);
+	    this->sendValues(false);
 	//
 	// Setting the above inputs may/does not result in a  
 	// a notifyVisuals to take place in 
@@ -244,7 +244,7 @@ void ColormapNode::installCurrentDefaultMinOrMax(boolean min, boolean send)
 // Install the currently defined default min and max and send it 
 // to the executive if requested.
 //
-void ColormapNode::installCurrentDefaultMinAndMax(boolean send)
+void ColormapNode::installCurrentDefaultMinAndMax(bool send)
 {
     //
     // Keep every setInputValue*() from updating the editor
@@ -252,12 +252,12 @@ void ColormapNode::installCurrentDefaultMinAndMax(boolean send)
     this->deferVisualNotification();
 
     this->deferMinMaxUpdates();
-    this->installCurrentDefaultMin(FALSE);
-    this->installCurrentDefaultMax(FALSE);
+    this->installCurrentDefaultMin(false);
+    this->installCurrentDefaultMax(false);
     this->undeferMinMaxUpdates();
 
     if (send)
-	this->sendValues(FALSE);
+	this->sendValues(false);
     //
     // Setting the above inputs may/does not result in a  
     // a notifyVisuals to take place in DrivenNode::ioParameterStatusChange().
@@ -271,7 +271,7 @@ void ColormapNode::installCurrentDefaultMinAndMax(boolean send)
 // Install the THE default h/s/v/opacity colormap and send it to the executive
 // if requested.
 //
-void ColormapNode::installTHEDefaultMaps(boolean send)
+void ColormapNode::installTHEDefaultMaps(bool send)
 {
     int count = 2; 
 
@@ -311,13 +311,13 @@ void ColormapNode::installTHEDefaultMaps(boolean send)
 //
 // G/Set the 'minimum' attribute for the given component
 //
-boolean ColormapNode::initNBinsValue(const char *val)
+bool ColormapNode::initNBinsValue(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
                                                 NHIST_PARAM_NUM);
     return p->initAttributeValue(val);
 }
-boolean ColormapNode::setNBinsValue(double nbins)
+bool ColormapNode::setNBinsValue(double nbins)
 {
     char value[256];
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
@@ -335,18 +335,18 @@ double ColormapNode::getNBinsValue()
 //
 // G/Set the 'minimum' attribute for the given component
 //
-boolean ColormapNode::initMinimumValue(const char *val)
+bool ColormapNode::initMinimumValue(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
                                                 MIN_PARAM_NUM);
-    boolean r = p->initAttributeValue(val);
+    bool r = p->initAttributeValue(val);
     return r;
 }
-boolean ColormapNode::setMinimumValue(double min)
+bool ColormapNode::setMinimumValue(double min)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
                                                 MIN_PARAM_NUM);
-    boolean r = p->setAttributeComponentValue(1, min);
+    bool r = p->setAttributeComponentValue(1, min);
     return r;
 }
 double ColormapNode::getMinimumValue()
@@ -358,18 +358,18 @@ double ColormapNode::getMinimumValue()
 //
 // G/Set the 'maximum' attribute for the given component
 //
-boolean ColormapNode::initMaximumValue(const char *val)
+bool ColormapNode::initMaximumValue(const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
                                                 MAX_PARAM_NUM);
-    boolean r = p->initAttributeValue(val);
+    bool r = p->initAttributeValue(val);
     return r;
 }
-boolean ColormapNode::setMaximumValue(double max)
+bool ColormapNode::setMaximumValue(double max)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
                                                 MAX_PARAM_NUM);
-    boolean r = p->setAttributeComponentValue(1, max);
+    bool r = p->setAttributeComponentValue(1, max);
     return r;
 }
 double ColormapNode::getMaximumValue()
@@ -421,7 +421,7 @@ ColormapNode::getTitle()
 }
 
 
-void ColormapNode::setTitle(const char *title, boolean fromServer)
+void ColormapNode::setTitle(const char *title, bool fromServer)
 {
     if (this->title) {
 	delete this->title;
@@ -438,15 +438,15 @@ void ColormapNode::setTitle(const char *title, boolean fromServer)
 
     ColormapEditor *editor = this->colormapEditor;
     if (editor)
-	editor->setWindowTitle(title, TRUE);
+	editor->setWindowTitle(title, true);
 }
 
-boolean ColormapNode::isTitleVisuallyWriteable()
+bool ColormapNode::isTitleVisuallyWriteable()
 {
     return this->isInputDefaulting(LABEL_PARAM_NUM);
 }
 
-boolean 
+bool 
 ColormapNode::netParseComment(const char* comment,
                 		   const char* filename, int lineno)
 {
@@ -466,12 +466,12 @@ ColormapNode::netParseComment(const char* comment,
 	    if (EqualSubstring(comment," input[3]",9)) {
 		const char *vlist = this->getInputValueString(3);
 		char buf[128], last[128];
-		int	index = -1, first = TRUE;
+		int	index = -1, first = true;
 		this->deferMinMaxUpdates();
 		while (DXValue::NextListItem(vlist,&index,
 						DXType::ScalarListType,buf,128)) {
 		    if (first) {
-			first = FALSE;
+			first = false;
 			this->setMinimumValue(atof(buf));
 		    } else {
 			strcpy(last,buf);
@@ -508,24 +508,24 @@ ColormapNode::netParseComment(const char* comment,
 		this->undeferMinMaxUpdates();
 	   } 
 	}
-	return TRUE;
+	return true;
     } else {
-	return FALSE;
+	return false;
     }
 }
 
 
-boolean ColormapNode::netPrintAuxComment(FILE *f)
+bool ColormapNode::netPrintAuxComment(FILE *f)
 {
     if (!this->DrivenNode::netPrintAuxComment(f))
-        return FALSE;
+        return false;
 
     if (!this->printCommonComments(f,"    "))
-        return FALSE;
+        return false;
 
-    return TRUE;
+    return true;
 }
-boolean 
+bool 
 ColormapNode::netParseAuxComment(const char* comment,
                 		   const char* filename, int lineno)
 {
@@ -588,12 +588,12 @@ ColormapNode::netParseAuxComment(const char* comment,
 	    this->convertOldInputs();
 	}
 
-	return TRUE;
+	return true;
     }
     else if (this->parseCommonComments(comment,filename,lineno))
-        return TRUE;
+        return true;
 
-    return FALSE;
+    return false;
 }
 
 
@@ -619,7 +619,7 @@ void ColormapNode::installMaps(
 		int s_count,  double  *s_level, double  *s_value,
 		int v_count,  double  *v_level, double  *v_value,
 		int op_count, double *op_level, double *op_value,
-		boolean send_how)
+		bool send_how)
 {
     int      length;
     char*    value;
@@ -650,7 +650,7 @@ void ColormapNode::installMaps(
 				DXType::UndefinedType);
     else
     	this->setInputValue(HMAP_PARAM_NUM, value, 
-				DXType::UndefinedType, FALSE);
+				DXType::UndefinedType, false);
    
    /*
     * Assign the value to the saturation map parameter.
@@ -661,7 +661,7 @@ void ColormapNode::installMaps(
 						DXType::UndefinedType);
     else
 	this->setInputValue(SMAP_PARAM_NUM, value, 
-		    		DXType::UndefinedType, FALSE);
+		    		DXType::UndefinedType, false);
    /*
     * Assign the value to the value map parameter.
     */
@@ -671,7 +671,7 @@ void ColormapNode::installMaps(
 						DXType::UndefinedType);
     else
 	this->setInputValue(VMAP_PARAM_NUM, value, 
-		    		DXType::UndefinedType, FALSE);
+		    		DXType::UndefinedType, false);
 
     /*
      * Assign the value to the correct parameter.
@@ -682,12 +682,12 @@ void ColormapNode::installMaps(
 						DXType::UndefinedType);
     else
 	this->setInputValue(OMAP_PARAM_NUM, value, 
-				DXType::UndefinedType, FALSE);
+				DXType::UndefinedType, false);
 
     delete value;
 
     if (send_how == SEND_NOW)
-	this->sendValues(FALSE);
+	this->sendValues(false);
 
     this->undeferVisualNotification();
     
@@ -718,7 +718,7 @@ void ColormapNode::installNewMaps(
 		int s_count,  double  *s_level, double  *s_value,
 		int v_count,  double  *v_level, double  *v_value,
 		int op_count, double *op_level, double *op_value,
-		boolean send)
+		bool send)
 {
     this->installMaps(
 		h_count,  h_level,  h_value,
@@ -757,7 +757,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
         p++;
 	if (EqualString(p,"NULL"))
 	    p = NULL;
-	this->setTitle(p,TRUE);
+	this->setTitle(p,true);
     }
 
     //
@@ -774,7 +774,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
 	    buf = DuplicateString(p);
 	    index = 0;
 	    if (IsScalar(buf, index)) {
-		/*update_attr = TRUE;*/
+		/*update_attr = true;*/
 		values++;
 		buf[index] = '\0';
 		this->setInputAttributeFromServer(MIN_PARAM_NUM,buf,
@@ -799,7 +799,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
 	    buf = DuplicateString(p);
 	    index = 0;
 	    if (IsScalar(buf, index)) {
-		/*update_attr = TRUE;*/
+		/*update_attr = true;*/
 		values++;
 		buf[index] = '\0';
 		this->setInputAttributeFromServer(MAX_PARAM_NUM,buf,
@@ -837,15 +837,15 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
     //
     if ( (p = strstr((char*)line,"map=")) ) {
         char *buf = new char [STRLEN(p)];
-   	/*update_attr = FALSE;*/
+   	/*update_attr = false;*/
 	do {
-	    boolean null_default;
+	    bool null_default;
 	    int i1, i2;
 	    if (EqualSubstring(p+4,"NULL",4)) {
-		null_default = TRUE; 
+		null_default = true; 
 		strcpy(buf,"NULL");
 	    } else if (FindDelimitedString(p+4,'{','}', buf))
-		null_default = FALSE; 
+		null_default = false; 
 	    else
 		continue;	// I don't expect to get here
 	    switch (*(p-1)) { 		// Get character just before 'map='
@@ -891,7 +891,7 @@ int ColormapNode::handleNodeMsgInfo(const char *line)
 // node.   Among other times, this is called after receiving a message
 // from the executive.  This ignores "unmanaged".
 //
-void ColormapNode::reflectStateChange(boolean /* unmanaged */ ) 
+void ColormapNode::reflectStateChange(bool /* unmanaged */ ) 
 {
    ColormapEditor *editor = this->colormapEditor;
 
@@ -922,7 +922,7 @@ int *ColormapNode::getHistogram(int *nhist)
     return hist;
 }
 
-boolean ColormapNode::isNBinsAlterable()
+bool ColormapNode::isNBinsAlterable()
 {
      return this->isInputConnected(DATA_PARAM_NUM) &&
             !this->isInputConnected(NHIST_PARAM_NUM);
@@ -931,7 +931,7 @@ boolean ColormapNode::isNBinsAlterable()
 //
 // Clear the histogram data if we disconnect
 //
-void ColormapNode::ioParameterStatusChanged(boolean input, int index,
+void ColormapNode::ioParameterStatusChanged(bool input, int index,
                                          NodeParameterStatusChange status )
 {
     if (input) {
@@ -976,11 +976,11 @@ void ColormapNode::ioParameterStatusChanged(boolean input, int index,
 //
 // Determine if this node is of the given class.
 //
-boolean ColormapNode::isA(Symbol classname)
+bool ColormapNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassColormapNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->DrivenNode::isA(classname);
 }
@@ -1032,15 +1032,15 @@ const char *ColormapNode::getOpacityMapList()
 }
 //
 // Read the .cm file and set the 1st - 4th inputs and the min/max with 
-// the values found there.  If send is TRUE, then update the executive.
+// the values found there.  If send is true, then update the executive.
 //
-boolean ColormapNode::cmOpenFile(const char *cmapfile, boolean send,
-						boolean installDefaultOnError)
+bool ColormapNode::cmOpenFile(const char *cmapfile, bool send,
+						bool installDefaultOnError)
 {
-    boolean r = this->cmAccessFile(cmapfile, TRUE, installDefaultOnError);
+    bool r = this->cmAccessFile(cmapfile, true, installDefaultOnError);
 
     if (send)
-	this->sendValues(FALSE);
+	this->sendValues(false);
 
     return r;
 }
@@ -1048,20 +1048,20 @@ boolean ColormapNode::cmOpenFile(const char *cmapfile, boolean send,
 // Save the .cm file from the 1st - 4th inputs and the min/max with 
 // the values found there. 
 //
-boolean ColormapNode::cmSaveFile(const char *cmapfile)
+bool ColormapNode::cmSaveFile(const char *cmapfile)
 {
-    return this->cmAccessFile(cmapfile, FALSE);
+    return this->cmAccessFile(cmapfile, false);
 }
 //
 // Save or read a .cm file which contains control point information about
-// the colormap editor.  If an error occurs  and FALSE is returned, 
-// otherwise TRUE.  If a failure occurs while reading
-// the .cm file and useDefaultOnOpenError is TRUE,  then the default colormap 
+// the colormap editor.  If an error occurs  and false is returned, 
+// otherwise true.  If a failure occurs while reading
+// the .cm file and useDefaultOnOpenError is true,  then the default colormap 
 // is installed (without being sent to the executive). 
 //
-boolean ColormapNode::cmAccessFile(const char *cmapfile, 
-					boolean opening,
-					boolean useDefaultOnOpenError)
+bool ColormapNode::cmAccessFile(const char *cmapfile, 
+					bool opening,
+					bool useDefaultOnOpenError)
 {
     char *map, *cmname, *name,*path,*temp;
     double min,max;
@@ -1107,7 +1107,7 @@ boolean ColormapNode::cmAccessFile(const char *cmapfile,
 	map = this->cmParseMap(fp, min,max);
 	if (!map) 
 	    goto error;
-	this->setInputValue(HMAP_PARAM_NUM,map,DXType::VectorListType,FALSE);
+	this->setInputValue(HMAP_PARAM_NUM,map,DXType::VectorListType,false);
 	delete map;
 	//
 	// Parse the saturation map
@@ -1115,7 +1115,7 @@ boolean ColormapNode::cmAccessFile(const char *cmapfile,
 	map = this->cmParseMap(fp, min,max);
 	if (!map)
 	    goto error;
-	this->setInputValue(SMAP_PARAM_NUM,map,DXType::VectorListType,FALSE);
+	this->setInputValue(SMAP_PARAM_NUM,map,DXType::VectorListType,false);
 	delete map;
 	//
 	// Parse the value map
@@ -1123,7 +1123,7 @@ boolean ColormapNode::cmAccessFile(const char *cmapfile,
 	map = this->cmParseMap(fp, min,max);
 	if (!map)
 	    goto error;
-	this->setInputValue(VMAP_PARAM_NUM,map,DXType::VectorListType,FALSE);
+	this->setInputValue(VMAP_PARAM_NUM,map,DXType::VectorListType,false);
 	delete map;
 	//
 	// Parse the opacity map
@@ -1131,7 +1131,7 @@ boolean ColormapNode::cmAccessFile(const char *cmapfile,
 	map = this->cmParseMap(fp, min,max);
 	if (!map) 
 	    goto error;
-	this->setInputValue(OMAP_PARAM_NUM,map,DXType::VectorListType,FALSE);
+	this->setInputValue(OMAP_PARAM_NUM,map,DXType::VectorListType,false);
 	delete map;
 
     } else {    // Saving
@@ -1177,21 +1177,21 @@ boolean ColormapNode::cmAccessFile(const char *cmapfile,
     if (fp) {
 	if (fclose(fp) != 0) {
 	    this->undeferVisualNotification();
-	    return FALSE; 
+	    return false; 
 	}
     }
     if (cmname) delete cmname;
 
     this->undeferVisualNotification(); 
-    return TRUE;
+    return true;
 
 error:
     if (cmname) delete cmname;
     if (fp) fclose(fp);
     if (fp && opening && useDefaultOnOpenError)
-	this->installTHEDefaultMaps(FALSE);
+	this->installTHEDefaultMaps(false);
     this->undeferVisualNotification(); 
-    return FALSE;
+    return false;
 }
 //
 // This method implements backwards compatibility for v 2.0.2 nets
@@ -1283,7 +1283,7 @@ void ColormapNode::convertOldInputs()
 			hsvcnt, hsvdata, s,
 			hsvcnt, hsvdata, v,
 			opcnt,  opdata,  op,
-			FALSE);
+			false);
 
     if (hsvdata) delete hsvdata;
     if (h) delete h;
@@ -1372,7 +1372,7 @@ error:
 // map (either hue/sat/val/opacity).
 // No error message is issued if an error occurs.
 //
-boolean ColormapNode::cmPrintMap(FILE *fp, double min, double max, 
+bool ColormapNode::cmPrintMap(FILE *fp, double min, double max, 
 						const char *map)
 {
     double *values = NULL;
@@ -1395,11 +1395,11 @@ boolean ColormapNode::cmPrintMap(FILE *fp, double min, double max,
     } 
 
     if (values) delete values;
-    return TRUE;
+    return true;
 
 error:
     if (values) delete values;
-    return FALSE;
+    return false;
 }
 void ColormapNode::UpdateAttrParam(void *data, void *request_data)
 {
@@ -1421,51 +1421,51 @@ void ColormapNode::UpdateAttrParam(void *data, void *request_data)
 // when the network is marked dirty (i.e. the first execution of a new
 // network).
 //
-boolean ColormapNode::expectingModuleMessage()
+bool ColormapNode::expectingModuleMessage()
 {
     return this->getNetwork()->isDirty() || 
 		this->DrivenNode::expectingModuleMessage();
 }
-boolean ColormapNode::hasCfgState()
+bool ColormapNode::hasCfgState()
 {
-    return TRUE;
+    return true;
 }
-boolean ColormapNode::cfgPrintNode(FILE *f, PrintType dest)
+bool ColormapNode::cfgPrintNode(FILE *f, PrintType dest)
 {
     if (!this->cfgPrintNodeLeader(f))
-	return FALSE;
+	return false;
     
     //
     // Print the inputs that have values
     //
     int i, num = this->getInputCount();
     for (i=1 ; i<=num ; i++) {
-        if (!this->printIOComment(f, TRUE, i,NULL,TRUE))
-            return FALSE;
+        if (!this->printIOComment(f, true, i,NULL,true))
+            return false;
     }
 
     if (!this->printCommonComments(f))
-        return FALSE;
+        return false;
 
-    return TRUE;
+    return true;
 
 }
 
-boolean ColormapNode::cfgParseComment(const char *comment, const char *file,
+bool ColormapNode::cfgParseComment(const char *comment, const char *file,
                                 int lineno)
 {
     if (this->cfgParseNodeLeader(comment,file,lineno))
-        return TRUE;
+        return true;
 
-    if (this->parseIOComment(TRUE, comment,file,lineno,TRUE))
-        return TRUE;
+    if (this->parseIOComment(true, comment,file,lineno,true))
+        return true;
 
     if (this->parseCommonComments(comment,file,lineno))
-        return TRUE;
+        return true;
 
-    return FALSE;
+    return false;
 }
-boolean ColormapNode::printCommonComments(FILE *f, const char *indent)
+bool ColormapNode::printCommonComments(FILE *f, const char *indent)
 {
     int x, y, w, h;
 
@@ -1484,25 +1484,25 @@ boolean ColormapNode::printCommonComments(FILE *f, const char *indent)
     const char *title = this->getTitle();
     if (title)
         if (fprintf(f, "%s// Colormap: title = %s\n", indent, title) < 0)
-            return FALSE;;
+            return false;;
 
     //
     // parseCommonComments() assumes this is the last comment
     //
     if (!UIComponent::PrintGeometryComment(f, x,y,w,h,NULL,indent))
-	return FALSE;
+	return false;
 
 
-    return TRUE;
+    return true;
 }
-boolean ColormapNode::parseCommonComments(const char *comment, const char *file,
+bool ColormapNode::parseCommonComments(const char *comment, const char *file,
                                 int lineno)
 {
 
 #define TITLE_COMMENT_LEN 19	// The length of " Colormap: title = "
     if (EqualSubstring(" Colormap: title = ",comment,TITLE_COMMENT_LEN)) {
 	this->setTitle(comment + TITLE_COMMENT_LEN); 
-	return TRUE;
+	return true;
     } else if (UIComponent::ParseGeometryComment(comment,file,lineno,
 			&this->xpos, &this->ypos, 
 			&this->width, &this->height))  {
@@ -1518,10 +1518,10 @@ boolean ColormapNode::parseCommonComments(const char *comment, const char *file,
 	    this->syncAttributeParameters();
 	    this->colormapEditor->handleStateChange();
 	}
-	return TRUE;
+	return true;
     } 
 
-    return FALSE;
+    return false;
 }
 
 int ColormapNode::getMessageIdParamNumber() { return ID_PARAM_NUM; }
@@ -1534,7 +1534,7 @@ int ColormapNode::getMessageIdParamNumber() { return ID_PARAM_NUM; }
 // operations is the wrong network.  The instance number will be updated
 // by switching networks at which time its safe to go ahead and spout off.
 //
-void ColormapNode::switchNetwork(Network *from, Network *to, boolean silently)
+void ColormapNode::switchNetwork(Network *from, Network *to, bool silently)
 {
     this->DrivenNode::switchNetwork(from, to);
 
@@ -1560,17 +1560,17 @@ void ColormapNode::switchNetwork(Network *from, Network *to, boolean silently)
 void ColormapNode::deferMinMaxUpdates()
 {
     NodeDefinition* nd = this->getDefinition();
-    ASSERT(nd->isAllowedInMacro() == FALSE);
+    ASSERT(nd->isAllowedInMacro() == false);
     if (this->getNetwork() == theDXApplication->network)
 	this->updateMinMaxAttr->deferAction();
-    else if (this->updateMinMaxAttr->isActionDeferred() == FALSE)
+    else if (this->updateMinMaxAttr->isActionDeferred() == false)
 	this->updateMinMaxAttr->deferAction();
 }
 
 void ColormapNode::undeferMinMaxUpdates()
 {
     NodeDefinition* nd = this->getDefinition();
-    ASSERT(nd->isAllowedInMacro() == FALSE);
+    ASSERT(nd->isAllowedInMacro() == false);
     if (this->getNetwork() == theDXApplication->network)
 	this->updateMinMaxAttr->undeferAction();
 }

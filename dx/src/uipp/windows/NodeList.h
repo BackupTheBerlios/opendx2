@@ -58,9 +58,9 @@ class NodeList : public List
     // lookup.  
     //
     virtual void clear();
-    virtual boolean insertElement(const void* , const int);
-    virtual boolean replaceElement(const void* , const int);
-    virtual boolean deleteElement(const int position);
+    virtual bool insertElement(const void* , const int);
+    virtual bool replaceElement(const void* , const int);
+    virtual bool deleteElement(const int position);
     virtual List *dup();
 
     List* makeClassifiedNodeList( const char* );

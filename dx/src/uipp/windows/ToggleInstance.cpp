@@ -25,12 +25,12 @@ ToggleInstance::~ToggleInstance()
 {
 }
 //
-// Return TRUE/FALSE indicating if this class of interactor instance has
+// Return true/false indicating if this class of interactor instance has
 // a set attributes dialog (i.e. this->newSetAttrDialog returns non-NULL).
 //
-boolean ToggleInstance::hasSetAttrDialog()
+bool ToggleInstance::hasSetAttrDialog()
 {
-    return TRUE;
+    return true;
 }
 
 //
@@ -43,17 +43,17 @@ SetAttrDialog *ToggleInstance::newSetAttrDialog()
     return (SetAttrDialog*)d;
 }
 
-boolean ToggleInstance::printAsJava (FILE* jf)
+bool ToggleInstance::printAsJava (FILE* jf)
 {
     const char* indent = "        ";
-    if (this->style->hasJavaStyle() == FALSE)
+    if (this->style->hasJavaStyle() == false)
 	return InteractorInstance::printAsJava(jf);
 
     int x,y,w,h;
     this->getXYPosition (&x, &y);
     this->getXYSize (&w,&h);
     ControlPanel* cpan = this->getControlPanel();
-    boolean devstyle = cpan->isDeveloperStyle();
+    bool devstyle = cpan->isDeveloperStyle();
     ToggleNode* tn = (ToggleNode*)this->getNode();
     const char* node_var_name = tn->getJavaVariable();
 
@@ -90,14 +90,14 @@ boolean ToggleInstance::printAsJava (FILE* jf)
 
     fprintf(jf, "        %s.addInteractor(%s);\n", cpan->getJavaVariableName(), var_name);
 
-    return TRUE;
+    return true;
 }
 
-void ToggleInstance::setVerticalLayout(boolean )
+void ToggleInstance::setVerticalLayout(bool )
 {
 
-    if (FALSE == this->verticalLayout)
+    if (false == this->verticalLayout)
 	return;
-    this->verticalLayout = FALSE;
+    this->verticalLayout = false;
 }
 

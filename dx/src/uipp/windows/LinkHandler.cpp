@@ -118,7 +118,7 @@ void LinkHandler::addSubCommand(const char *command,
     subdict->addDefinition(subcommand, (void*)ne);
 }
 
-boolean LinkHandler::executeLinkCommand(const char *commandString, int id)
+bool LinkHandler::executeLinkCommand(const char *commandString, int id)
 {
     return this->commandEntry->parse(commandString, id);
 }

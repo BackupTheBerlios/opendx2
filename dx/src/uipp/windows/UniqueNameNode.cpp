@@ -13,16 +13,16 @@
 #include "UniqueNameNode.h"
 #include "SymbolManager.h"
 
-boolean UniqueNameNode::isA(Symbol classname)
+bool UniqueNameNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol (ClassUniqueNameNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->Node::isA(classname);
 }
 
-boolean UniqueNameNode::namesConflict 
+bool UniqueNameNode::namesConflict 
     (const char* his_label, const char* my_label, const char* his_classname)
 {
     return EqualString(his_label, my_label); 

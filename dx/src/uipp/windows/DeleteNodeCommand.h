@@ -38,7 +38,7 @@ class DeleteNodeCommand : public NoUndoCommand
     EditorWindow *editor;
     List	*toDelete;	// Buffer of nodes to restore on undo. 
 
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
    
   public:
     //
@@ -46,7 +46,7 @@ class DeleteNodeCommand : public NoUndoCommand
     //
     DeleteNodeCommand(const char*   name,
 		      CommandScope* scope, 
-		      boolean	active,
+		      bool	active,
                       EditorWindow* editor);
 
     //

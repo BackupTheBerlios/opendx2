@@ -32,7 +32,7 @@ class VPEAnnotator : public LabelDecorator
   // P R I V A T E   P R I V A T E   P R I V A T E
   // P R I V A T E   P R I V A T E   P R I V A T E
   private:
-    static boolean VPEAnnotatorClassInitialized;
+    static bool VPEAnnotatorClassInitialized;
 
     // D R A G - N - D R O P
     // D R A G - N - D R O P
@@ -43,7 +43,7 @@ class VPEAnnotator : public LabelDecorator
   protected:
     //static String 	   DefaultResources[]; 
     //static Widget          DragIcon;
-    static boolean         DragDictionaryInitialized;
+    static bool         DragDictionaryInitialized;
     //static  void           PixelToRGB(Widget, Pixel, float *, float *, float *);
 
     virtual void           completeDecorativePart();
@@ -54,27 +54,27 @@ class VPEAnnotator : public LabelDecorator
     // There are 2 constructors - 1 public, 1 protected - because this class
     // can be instantiated or subclassed.
     //
-    VPEAnnotator(boolean developerStyle, const char *name);
+    VPEAnnotator(bool developerStyle, const char *name);
 
-    virtual boolean resizeOnUpdate() { return TRUE; }
-    virtual boolean requiresLineReroutingOnResize() { return TRUE; }
+    virtual bool resizeOnUpdate() { return true; }
+    virtual bool requiresLineReroutingOnResize() { return true; }
 
     Base* layout_information;
 
   // P U B L I C   P U B L I C   P U B L I C
   // P U B L I C   P U B L I C   P U B L I C
   public:
-    static    Decorator*     AllocateDecorator (boolean devStyle);
+    static    Decorator*     AllocateDecorator (bool devStyle);
     virtual   void	     openDefaultWindow();
-    virtual   boolean 	     printPostScriptPage(FILE *f);
+    virtual   bool 	     printPostScriptPage(FILE *f);
 
 #if WORKSPACE_PAGES
     virtual   Network*	     getNetwork() { return this->LabelDecorator::getNetwork(); }
 
     // C O N T R O L   P A N E L   C O M M E N T   F U N C T I O N S
     // C O N T R O L   P A N E L   C O M M E N T   F U N C T I O N S
-    virtual   boolean	     printComment (FILE *f);
-    virtual   boolean	     parseComment (const char *comment,
+    virtual   bool	     printComment (FILE *f);
+    virtual   bool	     parseComment (const char *comment,
 				const char *filename, int line);
 #endif
 
@@ -100,10 +100,10 @@ class VPEAnnotator : public LabelDecorator
     // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
     // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
     virtual   void initialize();
-    	  	   VPEAnnotator(boolean developerStyle =TRUE);
+    	  	   VPEAnnotator(bool developerStyle =true);
     	  	  ~VPEAnnotator(); 
     const    char* getClassName() { return ClassVPEAnnotator; }
-    virtual  boolean isA(Symbol classname);
+    virtual  bool isA(Symbol classname);
 };
 
 

@@ -15,7 +15,7 @@
 #include "ParameterDefinition.h"
 
 
-boolean DescrDialog::ClassInitialized = FALSE;
+bool DescrDialog::ClassInitialized = false;
 //String  DescrDialog::DefaultResources[] =
 //{
 //    "*dialogTitle:                Description of %s",
@@ -359,7 +359,7 @@ DescrDialog::DescrDialog(Node *n) :
 
     if (NOT DescrDialog::ClassInitialized)
     {
-        DescrDialog::ClassInitialized = TRUE;
+        DescrDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
     this->node = n;

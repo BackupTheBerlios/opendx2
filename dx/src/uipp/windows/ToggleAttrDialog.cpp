@@ -15,7 +15,7 @@
 #include "ToggleInstance.h"
 #include "ErrorDialogManager.h"
 
-boolean ToggleAttrDialog::ClassInitialized = FALSE;
+bool ToggleAttrDialog::ClassInitialized = false;
 
 //String  ToggleAttrDialog::DefaultResources[] =
 //{
@@ -44,7 +44,7 @@ ToggleAttrDialog::ToggleAttrDialog(
 
     if (NOT ToggleAttrDialog::ClassInitialized)
     {
-        ToggleAttrDialog::ClassInitialized = TRUE;
+        ToggleAttrDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -73,7 +73,7 @@ void ToggleAttrDialog::setAttributeSensitivity()
 {
     ToggleInstance *ti = (ToggleInstance*)this->interactorInstance;
     ToggleNode *tnode = (ToggleNode*)ti->getNode();
-    boolean s;
+    bool s;
 
     if (tnode->isSetAttributeVisuallyWriteable())
 	s = true;
@@ -92,7 +92,7 @@ void ToggleAttrDialog::setAttributeSensitivity()
 // Read the current attribute settings from the dialog and set them in  
 // the given InteractorInstance indicated with this->interactorInstance 
 //
-boolean ToggleAttrDialog::storeAttributes()  
+bool ToggleAttrDialog::storeAttributes()  
 {
  //   ToggleInstance *ti = (ToggleInstance*)this->interactorInstance;
  //   ToggleNode *tnode = (ToggleNode*)ti->getNode();
@@ -106,14 +106,14 @@ boolean ToggleAttrDialog::storeAttributes()
  //   if (!tnode->setToggleValues(setval,resetval))  {
 	//ModalErrorMessage(this->getRootWidget(),
 	//		"Set and Unset values are incompatible");
-	//return FALSE;
+	//return false;
  //   }
 
  //   tnode->sendValues();
 
  //   if (setval) XtFree (setval);
  //   if (resetval) XtFree (resetval);
- //   return TRUE;
+ //   return true;
  //   
 	return false;
 }

@@ -19,7 +19,7 @@
 #include "DXApplication.h"
 #include "ErrorDialogManager.h"
 
-boolean SelectorInteractor::SelectorInteractorClassInitialized = FALSE;
+bool SelectorInteractor::SelectorInteractorClassInitialized = false;
 
 //String SelectorInteractor::DefaultResources[] =  {
 //    "*allowHorizontalResizing:		True",
@@ -41,7 +41,7 @@ SelectorInteractor::SelectorInteractor(const char *name,
     //this->pulldown = NULL;
     //this->optionMenu = NULL;
     //this->optionForm = NULL;
-    this->visinit = FALSE;
+    this->visinit = false;
 }
 
 //
@@ -59,7 +59,7 @@ void SelectorInteractor::initialize()
         //                          SelectorInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          Interactor::DefaultResources);
-        SelectorInteractor::SelectorInteractorClassInitialized = TRUE;
+        SelectorInteractor::SelectorInteractorClassInitialized = true;
     }
 }
 
@@ -311,7 +311,7 @@ void SelectorInteractor::reloadMenuOptions()
 //    ASSERT(w);
 //    ASSERT(optnum > 0);
 //
-//    si->setSelectedOptionIndex(optnum, TRUE);
+//    si->setSelectedOptionIndex(optnum, true);
 //}
 
 //
@@ -346,7 +346,7 @@ void SelectorInteractor::updateDisplayedInteractorValue()
 //
 void SelectorInteractor::handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change)
+					bool major_change)
 {
     //this->reloadMenuOptions();
     if (this->currentLayout & WorkSpaceComponent::Horizontal) {
@@ -385,12 +385,12 @@ void SelectorInteractor::layoutInteractorVertically()
 }
 
 
-void SelectorInteractor::setAppearance(boolean developer_style)
+void SelectorInteractor::setAppearance(bool developer_style)
 {
-    boolean changing = (developer_style != this->getAppearance());
+    bool changing = (developer_style != this->getAppearance());
     this->Interactor::setAppearance(developer_style);
-    if ((changing) || (this->visinit == FALSE)) {
+    if ((changing) || (this->visinit == false)) {
 	this->reloadMenuOptions();
-	this->visinit = TRUE;
+	this->visinit = true;
     }
 }

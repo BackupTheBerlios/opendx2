@@ -86,7 +86,7 @@ class Node : public Base
     // Used only be the Network for sorting, graph analysis, etc.
     // See isMarked(), setMarked() and clearMarked().
     //
-    boolean	marked;
+    bool	marked;
 
     //
     // This dispatches messages to this->execModuleMessageHandler().
@@ -146,14 +146,14 @@ class Node : public Base
     // the given type (i.e. by adding "'s, {}'s, []'s and so on).
     // If send is true (the default), the results will be sent to the server
     // if possible.
-    // If notify is TRUE, then call ioParameterStatusChanged() with one of
+    // If notify is true, then call ioParameterStatusChanged() with one of
     // Node::ParameterSetValueChanged and Node::ParameterValueChanged.
     // index is 1 based.
     //
     Type setIOValue(List *io, int index, const char *value, 
 					Type t = DXType::UndefinedType,
-					boolean send = TRUE,
-					boolean notify = TRUE);
+					bool send = true,
+					bool notify = true);
 
     // This is the same as setIOValue, but it sends the value to the
     // executive without causing an executive execution in execute on change.
@@ -162,14 +162,14 @@ class Node : public Base
     //
     //  Mark the given parameter as clean.
     //
-    void setIODirty(List *io, int index, boolean dirty);
+    void setIODirty(List *io, int index, bool dirty);
 
 #if WORKSPACE_PAGES
 #else
     //
     // Parse the process group info.
     //
-    boolean netParsePgrpComment(const char* comment,
+    bool netParsePgrpComment(const char* comment,
                 		const char* filename, int lineno);
 #endif
 
@@ -177,7 +177,7 @@ class Node : public Base
     // Determine if the index'th parameter in the give list is connected 
     // (i.e. has an arc) to another parameter. 
     //
-    boolean isIOConnected(List *io, int index);
+    bool isIOConnected(List *io, int index);
 
     //
     // Get the default value of the index'th parameter in the given list. 
@@ -189,7 +189,7 @@ class Node : public Base
     //
     Cacheability getIOCacheability(List *io, int index);
     virtual void setIOCacheability(List *io, int index, Cacheability c);
-    boolean isIOCacheabilityWriteable(List *io, int index);
+    bool isIOCacheabilityWriteable(List *io, int index);
 
     //
     // Get the currently set value of the index'th parameter in the given 
@@ -199,12 +199,12 @@ class Node : public Base
     //
     // Get the default value of the index'th parameter in the given list. 
     //
-    boolean     isIODefaulting(List *io, int index);
+    bool     isIODefaulting(List *io, int index);
     //
     // Determine if the value of the index'th parameter in the given list
     // has been set, independent of whether it's defaulting or not.
     //
-    boolean     isIOSet(List *io, int index);
+    bool     isIOSet(List *io, int index);
     //
     // Get the value of the index'th parameter in the given list. 
     //
@@ -219,7 +219,7 @@ class Node : public Base
     // (i.e. main_Display_1_in_3)
     //
     char *getNetworkIONameString(int index, 
-					boolean input, char *buffer);
+					bool input, char *buffer);
 
     //
     // Get the name of the index'th parameter in the given list. 
@@ -255,22 +255,22 @@ private:
     //
     // Determine if the index'th parameter from the given list has visible tab. 
     //
-    boolean	isIOVisible(List *io, int index);
+    bool	isIOVisible(List *io, int index);
 
     //
     // Set the index'th parameter from the given list to be visible.
     //
-    void	setIOVisibility(List *io, int index, boolean v);
+    void	setIOVisibility(List *io, int index, bool v);
 
     //
     // Set all unconnected, defaulting params to be either visible or not.
     //
-    void	setAllIOVisibility(List *io, boolean v);
+    void	setAllIOVisibility(List *io, bool v);
 
     //
     // Determine if the index'th parameter from the given list is viewable 
     //
-    boolean	isIOViewable(List *io, int index);
+    bool	isIOViewable(List *io, int index);
 
     //
     // Print 'name = value'  for the index'th parameter in the given list.
@@ -280,18 +280,18 @@ private:
     //
     // Determine if the index'th parameter in the given list is required. 
     //
-    boolean	isIORequired(List *io, int index);
+    bool	isIORequired(List *io, int index);
 
     //
     // Determine if the given parameter list contains parameters which
     // can be exposed, implying that there are some that are hidden. 
     //
-    boolean hasExposableIO(List *io);
+    bool hasExposableIO(List *io);
     //
     // Determine if the given parameter list contains parameters which
     // can be hidden, implying that there are some that are exposed. 
     //
-    boolean hasHideableIO(List *io);
+    bool hasHideableIO(List *io);
 
     //
     // On behalf of automatic graph layout we need to store information
@@ -320,20 +320,20 @@ private:
     char	*moduleMessageId;
 
     void setInstanceNumber(int inst) { instanceNumber = inst; }
-    boolean appendInput(Parameter *p) 
+    bool appendInput(Parameter *p) 
 		{ return inputParameters.appendElement((const void*)p); }
-    boolean appendOutput(Parameter *p) 
+    bool appendOutput(Parameter *p) 
 		{ return outputParameters.appendElement((const void*)p); }
 
     //
     // Add an Ark to the index'th parameter of parameter list 'io'.
     //
-    virtual boolean addIOArk(List *io, int indx, Ark *a); 
-    virtual boolean removeIOArk(List *io, int index, Ark *a);
+    virtual bool addIOArk(List *io, int indx, Ark *a); 
+    virtual bool removeIOArk(List *io, int index, Ark *a);
 
-    boolean removeInputArk(int index, Ark *a)
+    bool removeInputArk(int index, Ark *a)
 		{ return this->removeIOArk(&this->inputParameters, index, a); }
-    boolean removeOutputArk(int index, Ark *a)
+    bool removeOutputArk(int index, Ark *a)
 		{ return this->removeIOArk(&this->outputParameters, index, a); }
 
 
@@ -342,8 +342,8 @@ private:
     // this node.   An error  ocurrs if the parameter list indicated does
     // not have repeatable parameters.
     //
-    virtual boolean addRepeats(boolean input);
-    virtual boolean removeRepeats(boolean input);
+    virtual bool addRepeats(bool input);
+    virtual bool removeRepeats(bool input);
 
     Parameter *getInputParameter(int i)
     {
@@ -363,19 +363,19 @@ private:
     // the indicated parameter with the value and type found in the comment.
     // (Made virtual 9/95 in order to peek at comments inside SelectionNode.)
     //
-    virtual boolean parseIOComment(boolean input, const char* comment,
-                const char* filename, int lineno, boolean valueOnly = FALSE);
+    virtual bool parseIOComment(bool input, const char* comment,
+                const char* filename, int lineno, bool valueOnly = false);
 
     //
     // These are called when a 'node' comment is found in the .net.
     //
-    boolean	netParseNodeComment(const char* comment, 
+    bool	netParseNodeComment(const char* comment, 
 						const char *file, int lineno);
     //
     // These are called to parse any comments after the 'node', 'input',
     // 'output' and 'pgrp'  comments in the .net file.
     //
-    virtual boolean	netParseAuxComment(const char* comment, 
+    virtual bool	netParseAuxComment(const char* comment, 
 						const char *file, int lineno);
     //
     // Create the invocation of the script language Node call. 
@@ -405,42 +405,42 @@ private:
 
     //
     // Set the index'th i/o parameter to use either the default value 
-    // or the assigned valued. if notify is TRUE then call 
+    // or the assigned valued. if notify is true then call 
     // ioParameterStatusChanged() with Node::ParameterSetValueToDefaulting.
     // If there is a connection to the executive, then send the change.
     //
     void setIODefaultingStatus(int index,
-				       boolean input,
-				       boolean defaulting,
-				       boolean send = TRUE,
-				       boolean notify = TRUE);
+				       bool input,
+				       bool defaulting,
+				       bool send = true,
+				       bool notify = true);
 
     //
     // Notify anybody that needs to know that a parameter has changed its
     // value or arcs.
     //
 #if 0
-    virtual void ioParameterValueChanged(boolean input, int index);
-    virtual void ioParameterArkChanged(boolean input, int index,boolean added);
+    virtual void ioParameterValueChanged(bool input, int index);
+    virtual void ioParameterArkChanged(bool input, int index,bool added);
 
     void	inputParameterValueChanged(int index)
-			{ this->ioParameterValueChanged(TRUE, index); }
+			{ this->ioParameterValueChanged(true, index); }
     void	outputParameterValueChanged(int index)
-			{ this->ioParameterValueChanged(FALSE, index); }
+			{ this->ioParameterValueChanged(false, index); }
     void	inputParameterArkAdded(int index)
-			{ this->ioParameterArkChanged(TRUE, index, ); }
+			{ this->ioParameterArkChanged(true, index, ); }
     void	inputParameterArkRemoved(int index)
-			{ this->ioParameterArkChanged(TRUE, index, FALSE); }
+			{ this->ioParameterArkChanged(true, index, false); }
     void	outputParameterArkAdded(int index)
-			{ this->ioParameterArkChanged(FALSE, index, TRUE); }
+			{ this->ioParameterArkChanged(false, index, true); }
     void	outputParameterArkRemoved(int index)
-			{ this->ioParameterArkChanged(FALSE, index, FALSE); }
+			{ this->ioParameterArkChanged(false, index, false); }
 #endif
-    virtual void ioParameterStatusChanged(boolean input, int index, 
+    virtual void ioParameterStatusChanged(bool input, int index, 
 				NodeParameterStatusChange status);
     // notifyIo is the same as io sort of.  notifyIo adds a check to see
     // if the network is in the process of going away.  That avoids useless work.
-    void notifyIoParameterStatusChanged(boolean input, int index, 
+    void notifyIoParameterStatusChanged(bool input, int index, 
 				NodeParameterStatusChange status); 
 
     //
@@ -456,12 +456,12 @@ private:
     //
     // Print the comment section that precedes the Node invocation. 
     //
-    boolean     	netPrintCommentHeader(FILE *f);
-    virtual boolean     printIOComment(FILE *f, boolean input, int index, 
+    bool     	netPrintCommentHeader(FILE *f);
+    virtual bool     printIOComment(FILE *f, bool input, int index, 
 					const char *indent = NULL,
-					boolean valueOnly = FALSE);
-    boolean     	netPrintPgrpComment(FILE *f);
-    virtual boolean     netPrintAuxComment(FILE *f);
+					bool valueOnly = false);
+    bool     	netPrintPgrpComment(FILE *f);
+    virtual bool     netPrintAuxComment(FILE *f);
 
 
     //
@@ -481,23 +481,23 @@ private:
     virtual void updateModuleMessageProtocol(DXPacketIF *pif);
 
     //
-    // Return TRUE/FALSE, indicating whether or not we support a message 
+    // Return true/false, indicating whether or not we support a message 
     // protocol between the executive module that runs for this node and the
     // UI.  By default Nodes do not have message protocols.
     //
-    virtual boolean hasModuleMessageProtocol();
+    virtual bool hasModuleMessageProtocol();
 
     //
-    // Return TRUE/FALSE, indicating whether or not we expect to receive
+    // Return true/false, indicating whether or not we expect to receive
     // a message from the UI when our module executes in the executive.
     // Be default Nodes do not expect messages.
     //
-    virtual boolean expectingModuleMessage();
+    virtual bool expectingModuleMessage();
 
     //
     // Returns a string that is used to register 
     // this->ExecModuleMessageHandler() when this->hasModuleMessageProtocol() 
-    // return TRUE.  This version, returns an id that is unique to this 
+    // return true.  This version, returns an id that is unique to this 
     // instance of this node.
     //
     // IMPORTANT: this must set this->moduleMessageId so that Node::~Node()
@@ -524,16 +524,16 @@ private:
     //
     // See if the given string is a viable label to be used as an identifier.
     // Also make sure it is not a reserved script language word.
-    // Return TRUE if ok, FALSE otherwise and issue and error message.
+    // Return true if ok, false otherwise and issue and error message.
     //
-    boolean verifyRestrictedLabel(const char *label);
+    bool verifyRestrictedLabel(const char *label);
 
     //
     // Print/parse the 'node %s[%d]:' comment.
     // Not all nodes have cfg info, but it is provided for those that do. 
     //
-    boolean cfgPrintNodeLeader(FILE *f);
-    boolean cfgParseNodeLeader(const char *comment, 
+    bool cfgPrintNodeLeader(FILE *f);
+    bool cfgParseNodeLeader(const char *comment, 
                                 const char *file, int lineno);
 
 
@@ -591,9 +591,9 @@ private:
     //
     // Used by ONLY Network for sorting and graph analysis.
     //
-    boolean	isMarked()	{ return this->marked; }
-    void	setMarked()	{ this->marked = TRUE; }
-    void	clearMarked()	{ this->marked = FALSE; }
+    bool	isMarked()	{ return this->marked; }
+    void	setMarked()	{ this->marked = true; }
+    void	clearMarked()	{ this->marked = false; }
 
 
     // FIXME: these should not be public. They are called by the newNode
@@ -604,18 +604,18 @@ private:
     // Build a Node's input and output parameter lists based on this
     // node definition.
     //
-    boolean buildParameterLists();
+    bool buildParameterLists();
 
 
     //
     // Perform any additional initializations that were not performed
-    // in the constrctor.  If this returns TRUE initialization was 
-    // successful, otherwise FALSE.  If FALSE, then it is assumed that
+    // in the constrctor.  If this returns true initialization was 
+    // successful, otherwise false.  If false, then it is assumed that
     // initialize() will issue the error/warning message. 
     // initialize() is called before the Node is actually added to the
     // Network.
     //
-    virtual boolean initialize();
+    virtual bool initialize();
 
     //
     // initializeAfterNodeMember() is called after initialize() but after the 
@@ -639,7 +639,7 @@ private:
 
 
     // Get the label of this module. 
-    virtual boolean setLabelString(const char *label);
+    virtual bool setLabelString(const char *label);
     virtual const char *getLabelString();
 
     int     getInputCount() { return inputParameters.getSize(); }
@@ -660,25 +660,25 @@ private:
     //
     // Add/remove a set of input our output parameters to the give model.
     //
-    boolean addInputRepeats()    { return addRepeats(TRUE); }
-    boolean removeInputRepeats() { return removeRepeats(TRUE); }
-    boolean addOutputRepeats()    { return addRepeats(FALSE); }
-    boolean removeOutputRepeats() { return removeRepeats(FALSE); }
+    bool addInputRepeats()    { return addRepeats(true); }
+    bool removeInputRepeats() { return removeRepeats(true); }
+    bool addOutputRepeats()    { return addRepeats(false); }
+    bool removeOutputRepeats() { return removeRepeats(false); }
 
 
-    boolean hasExposableInput()
+    bool hasExposableInput()
 		{ return this->hasExposableIO(&this->inputParameters); }
-    boolean hasExposableOutput()
+    bool hasExposableOutput()
 		{ return this->hasExposableIO(&this->outputParameters); }
-    boolean hasHideableInput()
+    bool hasHideableInput()
 		{ return this->hasHideableIO(&this->inputParameters); }
-    boolean hasHideableOutput()
+    bool hasHideableOutput()
 		{ return this->hasHideableIO(&this->outputParameters); }
 
-    boolean hasRemoveableInput();
-    boolean hasRemoveableOutput();
-    boolean isInputRepeatable();
-    boolean isOutputRepeatable();
+    bool hasRemoveableInput();
+    bool hasRemoveableOutput();
+    bool isInputRepeatable();
+    bool isOutputRepeatable();
     int	    getInputRepeatCount() { return this->definition->getInputRepeatCount(); } 
     int	    getOutputRepeatCount() { return this->definition->getOutputRepeatCount(); } 
 
@@ -691,9 +691,9 @@ private:
     //
     // Manage inputs. 
     //
-    boolean addInputArk(Ark *a, int index)
+    bool addInputArk(Ark *a, int index)
         { return addIOArk(&inputParameters, index, a); }
-    boolean addOutputArk(Ark *a, int index)
+    bool addOutputArk(Ark *a, int index)
         { return addIOArk(&outputParameters, index, a); }
 
     const List *getInputArks(int index)
@@ -701,7 +701,7 @@ private:
     const List *getOutputArks(int index)
         { return getIOArks(&outputParameters, index); }
     
-    virtual boolean deleteArk(Ark *a);
+    virtual bool deleteArk(Ark *a);
 
     // If these get virtualized, you must replace p->getValue() with 
     // this->getInputValueString(i) in Node.C 
@@ -731,9 +731,9 @@ private:
     // by the caller.
     //
     char *getNetworkInputNameString(int index, char *buf = NULL)
-        { return getNetworkIONameString(index, TRUE, buf); }
+        { return getNetworkIONameString(index, true, buf); }
     char *getNetworkOutputNameString(int index, char *buf = NULL)
-        { return getNetworkIONameString(index, FALSE, buf); }
+        { return getNetworkIONameString(index, false, buf); }
 
     const char* const *getInputTypeStrings(int index)
         { return getIOTypeStrings(&inputParameters, index); }
@@ -757,79 +757,79 @@ private:
     const char *getInputSetValueString(int index)
         { return getIOSetValueString(&inputParameters, index); }
 
-    boolean isInputRequired(int index)
+    bool isInputRequired(int index)
         { return isIORequired(&inputParameters, index); }
-    boolean isOutputRequired(int index)
+    bool isOutputRequired(int index)
         { return isIORequired(&outputParameters, index); }
 
-    boolean isInputConnected(int index)
+    bool isInputConnected(int index)
         { return isIOConnected(&inputParameters, index); }
-    boolean isOutputConnected(int index)
+    bool isOutputConnected(int index)
         { return isIOConnected(&outputParameters, index); }
-    boolean isParameterConnected(int index, boolean input)
+    bool isParameterConnected(int index, bool input)
         { return (input ? isIOConnected(&inputParameters, index) 
                         : isIOConnected(&outputParameters, index)); }
 
-    void setInputVisibility(int index, boolean v)
+    void setInputVisibility(int index, bool v)
         { this->setIOVisibility(&inputParameters, index, v); }
-    void setOutputVisibility(int index, boolean v)
+    void setOutputVisibility(int index, bool v)
         { this->setIOVisibility(&outputParameters, index, v); }
 
-    void setAllInputsVisibility(boolean v)
+    void setAllInputsVisibility(bool v)
         { this->setAllIOVisibility(&inputParameters, v); }
-    void setAllOutputsVisibility(boolean v)
+    void setAllOutputsVisibility(bool v)
         { this->setAllIOVisibility(&outputParameters, v); }
 
     void clearInputDirty(int index)
-        { this->setIODirty(&inputParameters, index, FALSE); }
+        { this->setIODirty(&inputParameters, index, false); }
     void setInputDirty(int index)
-        { this->setIODirty(&inputParameters, index, TRUE); }
+        { this->setIODirty(&inputParameters, index, true); }
     void clearOutputDirty(int index)
-        { this->setIODirty(&outputParameters, index, FALSE); }
+        { this->setIODirty(&outputParameters, index, false); }
     void setOutputDirty(int index)
-        { this->setIODirty(&outputParameters, index, TRUE); }
+        { this->setIODirty(&outputParameters, index, true); }
 
-    boolean isInputVisible(int index)
+    bool isInputVisible(int index)
         { return isIOVisible(&inputParameters, index); }
-    boolean isOutputVisible(int index)
+    bool isOutputVisible(int index)
         { return isIOVisible(&outputParameters, index); }
-    boolean isParameterVisible(int index, boolean input)
+    bool isParameterVisible(int index, bool input)
 	{ return (input ? isInputVisible(index) : isOutputVisible(index)); }
 
-    boolean isInputViewable(int index)
+    bool isInputViewable(int index)
         { return isIOViewable(&inputParameters, index); }
-    boolean isOutputViewable(int index)
+    bool isOutputViewable(int index)
         { return isIOViewable(&outputParameters, index); }
-    boolean isParameterViewable(int index, boolean input)
+    bool isParameterViewable(int index, bool input)
 	{ return (input ? isInputViewable(index) : isOutputViewable(index)); }
 
     Cacheability getOutputCacheability(int index)
 	{ return this->getIOCacheability(&outputParameters, index); }
     void setOutputCacheability(int index, Cacheability c)
 	{ this->setIOCacheability(&outputParameters, index, c); }
-    boolean isOutputCacheabilityWriteable(int index)
+    bool isOutputCacheabilityWriteable(int index)
 	{ return this->isIOCacheabilityWriteable(&outputParameters, index); }
 
-    boolean isInputDefaulting(int index)
+    bool isInputDefaulting(int index)
         { return isIODefaulting(&inputParameters, index); }
 
-    boolean isInputSet(int index)
+    bool isInputSet(int index)
         { return isIOSet(&inputParameters, index); }
 
-    boolean hasWriteableCacheability()	
+    bool hasWriteableCacheability()	
 		{ return this->definition->hasWriteableCacheability(); }
     Cacheability getNodeCacheability() { return this->nodeCacheability; }
     void setNodeCacheability(Cacheability val);
 
-    boolean isParameterDefaulting(int index, int input)
+    bool isParameterDefaulting(int index, int input)
         { return (input ? isIODefaulting(&inputParameters, index) 
                         : false); }
 
     //
-    // Match output_index of this node to input_index of n.  Returns TRUE
+    // Match output_index of this node to input_index of n.  Returns true
     // if they can connect.
     //
-    virtual boolean typeMatchOutputToInput(
+    virtual bool typeMatchOutputToInput(
 	int output_index,
 	Node *n,
 	int input_index);
@@ -842,17 +842,17 @@ private:
     //
     virtual Type setInputSetValue(int index, const char *value, 
 				 Type type = DXType::UndefinedType,
-				 boolean send = TRUE);
+				 bool send = true);
 
     virtual Type setInputValue(int index,
 			       const char *value,
 			       Type t = DXType::UndefinedType,
-			       boolean send = TRUE)
+			       bool send = true)
         { return setIOValue(&inputParameters, index, value, t, send); }
     virtual Type setOutputValue(int index,
 				const char *value,
 				Type t = DXType::UndefinedType,
-				boolean send = TRUE)
+				bool send = true)
         { return setIOValue(&outputParameters, index, value, t, send); }
 
     // These are the same as setInputValue and setOutputValue, but they send
@@ -868,7 +868,7 @@ private:
         { return setIOValueQuietly(&outputParameters, index, value, t); }
 
     virtual Type clearOutputValue(int index,
-				  boolean send = TRUE)
+				  bool send = true)
         { return setIOValue(&outputParameters, 
 			    index, 
 			    NULL, 
@@ -893,22 +893,22 @@ private:
     // These are called for the comments found in the .net and .cfg files
     // respectively. 
     //
-    virtual boolean	netParseComment(const char* comment, 
+    virtual bool	netParseComment(const char* comment, 
 						const char *file, int lineno);
-    virtual boolean	cfgParseComment(const char* comment, 
+    virtual bool	cfgParseComment(const char* comment, 
 						const char *file, int lineno);
 
     //
     // Print the stuff that belong in a .cfg file
     // At this level, there is nothing.
     //
-    virtual boolean     cfgPrintNode(FILE *f, PrintType destination); 
+    virtual bool     cfgPrintNode(FILE *f, PrintType destination); 
 
     //
     // Print the invocation of the script language Node call. 
     // LETS TALK IF YOU WANT TO MAKE THIS VIRTUAL (can you use netNodeString()).
     //
-    boolean     netPrintNode(FILE *f, 
+    bool     netPrintNode(FILE *f, 
 			  PrintType destination, 
 			  const char *prefix,
 			  PacketIFCallback callback = NUL(PacketIFCallback),
@@ -918,7 +918,7 @@ private:
     // Print the invocation of any script language that is
     // to occur at the beginning of the containing macro.
     //
-    boolean	netPrintBeginningOfMacroNode(FILE *f, 
+    bool	netPrintBeginningOfMacroNode(FILE *f, 
 			  PrintType destination, 
 			  const char *prefix,
 			  PacketIFCallback callback = NUL(PacketIFCallback),
@@ -928,7 +928,7 @@ private:
     // Print the invocation of any script language that is
     // to occur at the end of the containing macro.
     //
-    boolean	netPrintEndOfMacroNode(FILE *f, 
+    bool	netPrintEndOfMacroNode(FILE *f, 
 			  PrintType destination, 
 			  const char *prefix,
 			  PacketIFCallback callback = NUL(PacketIFCallback),
@@ -939,17 +939,17 @@ private:
     // The name passed in is file name used to save the network (without the
     // .net extension). 
     //
-    virtual boolean 	auxPrintNodeFile();
+    virtual bool 	auxPrintNodeFile();
     
     //
     //  Print parameter name/value ('name,name = value,value;') pairs.
     //
-    virtual boolean	printValues(FILE *f, const char *prefix, PrintType dest);
+    virtual bool	printValues(FILE *f, const char *prefix, PrintType dest);
     //
     // For inputs, outputs or both sets of parameters send the values
     // for of which do not have arcs. 
     //  
-    virtual boolean     sendValues(boolean     ignoreDirty = TRUE);
+    virtual bool     sendValues(bool     ignoreDirty = true);
 
     //
     // Send all dirty input and output values to the executive in the
@@ -994,8 +994,8 @@ private:
     // A name describing the type of window can be written into window_name in order
     // to enable nicer warning messages.
     //
-    virtual boolean defaultWindowIsCDB(char* window_name = NULL)
-	{ if (window_name) strcpy (window_name, "Configuration Dialog"); return TRUE; }
+    virtual bool defaultWindowIsCDB(char* window_name = NULL)
+	{ if (window_name) strcpy (window_name, "Configuration Dialog"); return true; }
 
     //
     //  Open this node's configuration dialog box.
@@ -1008,10 +1008,10 @@ private:
     virtual void openHelpWindow();
 
     //
-    // Returns FALSE for most nodes and is overridden by InteractorNode and
+    // Returns false for most nodes and is overridden by InteractorNode and
     // MacroNode.
     //
-    virtual boolean isAllowedInMacro()
+    virtual bool isAllowedInMacro()
     {
 	return this->definition->isAllowedInMacro();
     }
@@ -1020,20 +1020,20 @@ private:
     // Manipulate whether the default value or assigned value is used 
     // as the value for i/o parameter i.  Parameters are indexed from 1.
     //
-    void 	useDefaultInputValue(int index, boolean send = TRUE) 
-			{this->setIODefaultingStatus(index,TRUE,TRUE,send);}
-    void 	useAssignedInputValue(int index, boolean send = TRUE) 
-			{this->setIODefaultingStatus(index,TRUE,FALSE,send);}
-    void 	useDefaultOutputValue(int index, boolean send = TRUE) 
-			{this->setIODefaultingStatus(index,FALSE,TRUE,send);}
-    void 	useAssignedOutputValue(int index, boolean send = TRUE) 
-			{this->setIODefaultingStatus(index,FALSE,FALSE,send);}
+    void 	useDefaultInputValue(int index, bool send = true) 
+			{this->setIODefaultingStatus(index,true,true,send);}
+    void 	useAssignedInputValue(int index, bool send = true) 
+			{this->setIODefaultingStatus(index,true,false,send);}
+    void 	useDefaultOutputValue(int index, bool send = true) 
+			{this->setIODefaultingStatus(index,false,true,send);}
+    void 	useAssignedOutputValue(int index, bool send = true) 
+			{this->setIODefaultingStatus(index,false,false,send);}
 
     //
     // Determine if this node is a node of the given class
     //
-    boolean isA(const char *classname);
-    virtual boolean isA(Symbol classname);
+    bool isA(const char *classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Reset the node to using the default cfg state (probably before reading
@@ -1043,21 +1043,21 @@ private:
     virtual void setDefaultCfgState();
 
     //
-    // Return TRUE if this node has state that will be saved in a .cfg file.
+    // Return true if this node has state that will be saved in a .cfg file.
     // At this level, nodes do not have cfg state.
     //
-    virtual boolean hasCfgState();
+    virtual bool hasCfgState();
 
     //
     // Disconnect all input and output arcs from this node.
     //
-    boolean disconnectArks();
+    bool disconnectArks();
 
     //
-    // Return TRUE if the node can be switched (pasted/merged/moved) from 
+    // Return true if the node can be switched (pasted/merged/moved) from 
     // the 'from' net to the 'to' net.
     //
-    virtual boolean canSwitchNetwork(Network *from, Network *to);
+    virtual bool canSwitchNetwork(Network *from, Network *to);
 
     //
     // Switch the node's net from 'from' to 'to'
@@ -1067,7 +1067,7 @@ private:
     // at the other ends of those arcs however those nodes are just going to
     // be thrown away at the end of the merge.
     //
-    virtual void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
+    virtual void switchNetwork(Network *from, Network *to, bool silently=false);
 
     //
     // Get the selectable values for the n'th input.
@@ -1090,9 +1090,9 @@ private:
     //
     // Routines to print the module as DX C code.
     //
-    boolean beginDXCallModule(FILE *f);
-    boolean callDXCallModule(FILE *f);
-    boolean endDXCallModule(FILE *f);
+    bool beginDXCallModule(FILE *f);
+    bool callDXCallModule(FILE *f);
+    bool endDXCallModule(FILE *f);
 #endif // DXUI_DEVKIT
 
     //
@@ -1115,12 +1115,12 @@ private:
     // need special handling:  Transmitter,Receiver,Display,Image,UniqueNameNode
     // because they're frequently looked up.
     //
-    virtual boolean needsFastSort() { return FALSE; }
+    virtual bool needsFastSort() { return false; }
 
-    virtual boolean printAsJava(FILE* );
+    virtual bool printAsJava(FILE* );
     virtual const char* getJavaNodeName() { return "Node"; }
-    virtual boolean hasJavaRepresentation() { return FALSE; }
-    virtual boolean printInputAsJava(int input) { return FALSE; }
+    virtual bool hasJavaRepresentation() { return false; }
+    virtual bool printInputAsJava(int input) { return false; }
     virtual const char *getJavaInputValueString(int index)
         { return getInputValueString(index); }
 
@@ -1128,8 +1128,8 @@ private:
     //
     // Java Beans
     //
-    virtual boolean printAsBean(FILE*) { return TRUE; }
-    virtual boolean printAsBeanInitCall(FILE*) { return TRUE; }
+    virtual bool printAsBean(FILE*) { return true; }
+    virtual bool printAsBeanInitCall(FILE*) { return true; }
 
     //
     // On behalf of GraphLayout we store layout information on a 

@@ -38,7 +38,7 @@ class SetAnnotatorTextDialog : public SetDecoratorTextDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     DecoratorStyle* hide_style;
@@ -71,7 +71,7 @@ class SetAnnotatorTextDialog : public SetDecoratorTextDialog
     //
     // Constructor:
     //
-    SetAnnotatorTextDialog(boolean readonly, 
+    SetAnnotatorTextDialog(bool readonly, 
 	LabelDecorator *dec);
 
     //

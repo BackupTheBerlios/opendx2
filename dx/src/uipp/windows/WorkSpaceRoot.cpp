@@ -273,7 +273,7 @@ void WorkSpaceRoot::showRoot()
 //
 // Determine if this WorkSpace is a WorkSpace of the given class
 //
-boolean WorkSpaceRoot::isA(const char *classname)
+bool WorkSpaceRoot::isA(const char *classname)
 {
     Symbol s = theSymbolManager->registerSymbol(classname);
     return this->isA(s);
@@ -281,7 +281,7 @@ boolean WorkSpaceRoot::isA(const char *classname)
 //
 // Determine if this WorkSpace is of the given class.
 //
-boolean WorkSpaceRoot::isA(Symbol classname)
+bool WorkSpaceRoot::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassWorkSpaceRoot);
     return (s == classname);
@@ -325,8 +325,8 @@ int w,h;
 
     unsigned int x_align = info->getGridXAlignment();
     unsigned int y_align = info->getGridYAlignment();
-    boolean is_active = info->isGridActive();
-    boolean prevent_overlap = info->getPreventOverlap();
+    bool is_active = info->isGridActive();
+    bool prevent_overlap = info->getPreventOverlap();
     info->getGridSpacing(w,h);
 
     ListIterator it(this->page_list);

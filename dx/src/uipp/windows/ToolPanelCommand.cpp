@@ -20,7 +20,7 @@
 
 ToolPanelCommand::ToolPanelCommand(const char*     name,
 				   CommandScope*   scope,
-				   boolean         active,
+				   bool         active,
 				   EditorWindow* editor) :
 	Command(name, scope, active)
 {
@@ -33,21 +33,21 @@ ToolPanelCommand::ToolPanelCommand(const char*     name,
 }
 
 
-boolean ToolPanelCommand::doIt(CommandInterface *ci)
+bool ToolPanelCommand::doIt(CommandInterface *ci)
 {
     //
     // Toggle the tool panel and toggle button interface states.
     //
     this->editor->toggleToolPanel();
     this->notifyClients(ToggleButtonInterface::MsgToggleState);
-    return TRUE;
+    return true;
 }
 
 
 
-boolean ToolPanelCommand::undoIt()
+bool ToolPanelCommand::undoIt()
 {
     this->doIt(NULL);
-    return TRUE;
+    return true;
 }
 

@@ -15,7 +15,7 @@
 #include "SequencerNode.h"
 
 
-boolean SequencerWindow::ClassInitialized = FALSE;
+bool SequencerWindow::ClassInitialized = false;
 
 //String SequencerWindow::DefaultResources[] = {
 //	".title:			      Sequence Control",
@@ -57,7 +57,7 @@ boolean SequencerWindow::ClassInitialized = FALSE;
 //    //
 //    // Install the correct state from the node.
 //    //
-//    this->handleStateChange(FALSE);
+//    this->handleStateChange(false);
 //
 //#if 0
 //    //
@@ -84,11 +84,11 @@ boolean SequencerWindow::ClassInitialized = FALSE;
 //
 
 SequencerWindow::SequencerWindow(SequencerNode* node) 
-                       		: DXWindow("sequencerWindow", FALSE, FALSE)
+                       		: DXWindow("sequencerWindow", false, false)
 {
     this->node = node;
     //this->vcr = NULL;
-    this->handlingStateChange = FALSE;
+    this->handlingStateChange = false;
 
     //
     // Install the default resources for THIS class (not the derived classes)
@@ -96,7 +96,7 @@ SequencerWindow::SequencerWindow(SequencerNode* node)
     if (NOT SequencerWindow::ClassInitialized)
     {
 	ASSERT(theApplication);
-        SequencerWindow::ClassInitialized = TRUE;
+        SequencerWindow::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -129,9 +129,9 @@ void SequencerWindow::reset()
 {
     //Arg    arg[3];
 
-    //XtSetArg(arg[0], XmNforwardButtonState,  FALSE);
-    //XtSetArg(arg[1], XmNbackwardButtonState, FALSE);
-    //XtSetArg(arg[2], XmNframeSensitive,      TRUE);
+    //XtSetArg(arg[0], XmNforwardButtonState,  false);
+    //XtSetArg(arg[1], XmNbackwardButtonState, false);
+    //XtSetArg(arg[2], XmNframeSensitive,      true);
 
     //XtSetValues(this->vcr, arg, 3);
 
@@ -240,7 +240,7 @@ void SequencerWindow::mapRaise()
 //
 //      default:
 //
-//        ASSERT(FALSE);
+//        ASSERT(false);
 //        break;
 //    }
 //
@@ -272,7 +272,7 @@ void SequencerWindow::mapRaise()
 //
 // Update all state of the VCR with info from the Node.
 //
-void SequencerWindow::handleStateChange(boolean unmanage)
+void SequencerWindow::handleStateChange(bool unmanage)
 {
     SequencerNode *snode = this->node;
 
@@ -296,7 +296,7 @@ void SequencerWindow::handleStateChange(boolean unmanage)
     // that we are installing, otherwise the executive and the vcr get out
     // of sync. 
     //
-    this->handlingStateChange = TRUE;
+    this->handlingStateChange = true;
 
  //   XtVaSetValues(this->vcr,
 	//XmNminimum,		snode->getMinimumValue(),
@@ -322,7 +322,7 @@ void SequencerWindow::handleStateChange(boolean unmanage)
 
  //       NULL);
 
-    this->handlingStateChange = FALSE;
+    this->handlingStateChange = false;
 }
 //
 // Disable the Frame control. 
@@ -406,16 +406,16 @@ void SequencerWindow::endExecution()
 void SequencerWindow::manage()
 {
     this->DXWindow::manage();
-    this->setStartup(TRUE);
+    this->setStartup(true);
 }
 
 void SequencerWindow::unmanage()
 {
     this->DXWindow::unmanage();
-    this->setStartup(FALSE);
+    this->setStartup(false);
 }
 
-void SequencerWindow::setStartup (boolean flag)
+void SequencerWindow::setStartup (bool flag)
 {
     this->DXWindow::setStartup(flag);
     this->node->setStartup(flag);

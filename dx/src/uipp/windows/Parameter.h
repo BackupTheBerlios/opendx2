@@ -50,10 +50,10 @@ class Parameter : public Base
 	ParameterDefinition	*definition;
 	DXValue	*value;
 	List	arcs;	    // List of paraters that where connected too
- 	boolean defaultingWhenUnconnected; // Should we use the default value. 
- 	boolean viewable;  // Is this parameter's tab exposable. 
- 	boolean visible;    // Is this parameter's tab visible. 
- 	boolean dirty;	    // Has parameter changed	
+ 	bool defaultingWhenUnconnected; // Should we use the default value. 
+ 	bool viewable;  // Is this parameter's tab exposable. 
+ 	bool visible;    // Is this parameter's tab visible. 
+ 	bool dirty;	    // Has parameter changed	
 
   protected:
     //
@@ -72,7 +72,7 @@ class Parameter : public Base
     // Return T/F indicating whether the value was successfully set (and 
     // coerced).
     //
-    boolean coerceAndSetValue(const char *value, Type type);
+    bool coerceAndSetValue(const char *value, Type type);
 
 
   public:
@@ -91,45 +91,45 @@ class Parameter : public Base
     //
     // Add/remove an arc to/from the given parameter 
     //
-    boolean 	addArk(Ark *a);
-    boolean 	removeArk(Ark *a) { return arcs.removeElement(a); }
+    bool 	addArk(Ark *a);
+    bool 	removeArk(Ark *a) { return arcs.removeElement(a); }
     Ark 	*getArk(int i) { return (Ark *)arcs.getElement(i); }
-    boolean 	isConnected() { return this->arcs.getSize() != 0; }
+    bool 	isConnected() { return this->arcs.getSize() != 0; }
 
     //
     // Manipulate the exposability and visibility 
     //
-    void 	setVisibility(boolean v) { this->visible = 
+    void 	setVisibility(bool v) { this->visible = 
 					   this->isViewable() && v; }
-    void 	setVisible()		{ this->visible = TRUE; }
-    boolean	isVisible()		{ return this->visible; }
-    boolean	isVisibleByDefault()	
+    void 	setVisible()		{ this->visible = true; }
+    bool	isVisible()		{ return this->visible; }
+    bool	isVisibleByDefault()	
 			{ ASSERT(this->definition);
 			  return this->definition->getDefaultVisibility(); }
-    void 	clearVisible()		{ this->visible = FALSE; }
-    boolean	isViewable()		{ ASSERT(this->definition);
+    void 	clearVisible()		{ this->visible = false; }
+    bool	isViewable()		{ ASSERT(this->definition);
 					  return this->definition->isViewable();
 					}
     
     //
     // Manipulate the Value and definition
     //
-    void 	setDirty()	{ this->dirty = TRUE; }
-    boolean 	isDirty()	{ return this->dirty == TRUE; }
-    void 	clearDirty()	{ this->dirty = FALSE; }
-    boolean  	isNeededValue(boolean ignoreDirty = TRUE);
-    boolean  	isRequired() { return this->definition->required; }
+    void 	setDirty()	{ this->dirty = true; }
+    bool 	isDirty()	{ return this->dirty == true; }
+    void 	clearDirty()	{ this->dirty = false; }
+    bool  	isNeededValue(bool ignoreDirty = true);
+    bool  	isRequired() { return this->definition->required; }
 			
-    boolean 	isInput()		{ return this->definition->isInput(); }
-    boolean 	isDefaulting();	
-    void 	setUnconnectedDefaultingStatus(boolean defaulting=TRUE);
+    bool 	isInput()		{ return this->definition->isInput(); }
+    bool 	isDefaulting();	
+    void 	setUnconnectedDefaultingStatus(bool defaulting=true);
    
     //
     // Set the value of this parameter to the value represented by v which 
-    // must match the given type.  If coerce is TRUE, then try and add
+    // must match the given type.  If coerce is true, then try and add
     // syntactic sugar to make the value match the type.
     //
-    boolean 	setValue(const char *v, Type t, boolean coerce = TRUE);
+    bool 	setValue(const char *v, Type t, bool coerce = true);
 
     //
     // Use setValue(v,t,c) to try and set the value to one of the types.
@@ -142,11 +142,11 @@ class Parameter : public Base
     // the same as setValue, but if it is defaulting, then we set the
     // value but leave the parameter clean and defaulting.
     //
-    boolean setSetValue(const char *value, Type type);
+    bool setSetValue(const char *value, Type type);
 
 
     // DXValue 	*getValue() { return this->value; } 
-    boolean 	hasValue() 
+    bool 	hasValue() 
 		{ return (this->value != NUL(DXValue*)) && 
  		 	 (this->value->getType() != DXType::UndefinedType); } 
     Type    	getValueType() 
@@ -214,7 +214,7 @@ class Parameter : public Base
     //
     int getComponentCount();
     double getComponentValue(int component);
-    boolean setComponentValue(int component, double val);
+    bool setComponentValue(int component, double val);
 
 #if 0
     //
@@ -239,7 +239,7 @@ class Parameter : public Base
     // Determine if this (input) and another parameter (output) are type 
     // compatible. 
     //
-    boolean typeMatch(Parameter *src) 
+    bool typeMatch(Parameter *src) 
  		{ return DXType::MatchTypeLists(src->definition->types,
 					        this->definition->types); }
     
@@ -251,7 +251,7 @@ class Parameter : public Base
     {
 	return this->cacheability;
     }
-    boolean isFullyCached()
+    bool isFullyCached()
     {
 	return this->cacheability == OutputFullyCached;
     }
@@ -264,16 +264,16 @@ class Parameter : public Base
 	    this->setDirty();
 	}
     }
-    boolean hasWriteableCacheability()
+    bool hasWriteableCacheability()
                 { return this->definition->hasWriteableCacheability(); }
-    boolean getDefaultCacheability()
+    bool getDefaultCacheability()
                 { return this->definition->getDefaultCacheability(); }
 
     //
     // Determine if this instance is derived  from the give class.
     //
-    boolean isA(const char *classname);
-    virtual boolean isA(Symbol classname);
+    bool isA(const char *classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Remove all the Arks connected to this parameter.

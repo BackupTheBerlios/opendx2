@@ -75,7 +75,7 @@ void CommentStyle::AppendParseBuffer(const char* text)
 //	// annotation %s: %s\n
 //	// annotation %s_end: NO_TEXT_SYMBOL\n
 //
-boolean CommentStyle::printComment (FILE* f)
+bool CommentStyle::printComment (FILE* f)
 {
 char begin_stmnt[64];
 char end_stmnt[64];
@@ -88,7 +88,7 @@ char end_stmnt[64];
     if ((cp) && (cp[0])) {
 
 	if (fprintf (f, "    // annotation %s: %ld\n", begin_stmnt, strlen(cp)) < 0)
-	    return FALSE;
+	    return false;
 
 	char* line_to_print = DuplicateString(cp);
 	//
@@ -107,42 +107,42 @@ char end_stmnt[64];
 	    if (print_buf[next] == '\n') {
 		print_buf[next] = '\0';
 		int j;
-		boolean is_line_whitespace = TRUE;
+		bool is_line_whitespace = true;
 		for (j=0; j<next; j++) {
 		    if ((print_buf[j] != ' ') &&
 			(print_buf[j] != '\t')) {
-			is_line_whitespace = FALSE;
+			is_line_whitespace = false;
 			break;
 		    }
 		}
 		if (!is_line_whitespace) {
 		    if (fprintf (f, 
 			"    // annotation %s: %s\n", this->getKeyword(), print_buf) < 0)
-			return FALSE;
+			return false;
 		} else {
 		    if (fprintf (f, "    // annotation %s: %s\n", 
 			this->getKeyword(), NO_TEXT_SYMBOL) < 0)
-			return FALSE;
+			return false;
 		}
 		next = 0;
 	    } else if (print_buf[next] == '\0') {
 		int j;
-		boolean is_line_whitespace = TRUE;
+		bool is_line_whitespace = true;
 		for (j=0; j<next; j++) {
 		    if ((print_buf[j] != ' ') &&
 			(print_buf[j] != '\t')) {
-			is_line_whitespace = FALSE;
+			is_line_whitespace = false;
 			break;
 		    }
 		}
 		if (!is_line_whitespace) {
 		    if (fprintf (f, "    // annotation %s: %s\n", 
 			this->getKeyword(), print_buf) < 0)
-			return FALSE;
+			return false;
 		} else {
 		    if (fprintf (f, "    // annotation %s: %s\n", 
 			this->getKeyword(), NO_TEXT_SYMBOL) < 0)
-			return FALSE;
+			return false;
 		}
 		break;
 	    } else {
@@ -157,17 +157,17 @@ char end_stmnt[64];
 	delete line_to_print;
 
 	if (fprintf (f, "    // annotation %s: %s\n", end_stmnt, NO_TEXT_SYMBOL) < 0)
-	    return FALSE;
+	    return false;
     }
-    return TRUE;
+    return true;
 }
 
 //
 //
-boolean CommentStyle::parseComment (const char *comment, const char *file, int l)
+bool CommentStyle::parseComment (const char *comment, const char *file, int l)
 {
 int items_parsed;
-boolean retVal = FALSE;
+bool retVal = false;
 
 char begin_stmnt[64];
 char end_stmnt[64];
@@ -211,15 +211,15 @@ char end_stmnt[64];
 		} else {
 		}
 		CommentStyle::AppendParseBuffer(additional_text);
-		retVal = TRUE;
+		retVal = true;
 	    } else if (EqualString(keyword, begin_stmnt)) {
 		int str_size = 128;
 		sscanf (additional_text, "%d", &str_size);
 		CommentStyle::InitParseBuffer(str_size);
-		retVal = TRUE;
+		retVal = true;
 	    } else if (EqualString(keyword, end_stmnt)) {
 		this->setPrintableText(CommentStyle::ParseBuffer); 
-		retVal = TRUE;
+		retVal = true;
 	    } else {
 		//
 		// This comment was intended for a different CommentStyle object

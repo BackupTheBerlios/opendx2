@@ -32,9 +32,9 @@ void SetAttrDialog::cancelCallback(Dialog* dialog)
    // We don't need to do anything, since we only send the attributes
    // to the interactor on Ok.
 } 
-boolean SetAttrDialog::okCallback(Dialog* dialog)
+bool SetAttrDialog::okCallback(Dialog* dialog)
 {
-    boolean r;
+    bool r;
     SetAttrDialog *sad = (SetAttrDialog*)dialog;
     InteractorNode *inode = 
 		(InteractorNode*)sad->interactorInstance->getNode();
@@ -42,13 +42,13 @@ boolean SetAttrDialog::okCallback(Dialog* dialog)
     inode->deferVisualNotification();
 
     if (!sad->storeAttributes())  {
-	r = FALSE;
+	r = false;
 	inode->undeferVisualNotification();
     } else {
-	r = TRUE;
+	r = true;
 	inode->notifyVisualsOfStateChange();
 	inode->undeferVisualNotification();
-	inode->sendValues(FALSE);
+	inode->sendValues(false);
     }
     return r;
 } 

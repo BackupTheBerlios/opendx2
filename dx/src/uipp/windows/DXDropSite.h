@@ -40,7 +40,7 @@ class DXDropSite : public DropSite
     // needed by control panel dnd because you can't drop an interactor
     // into a different copy of dx.
     //
-    boolean intraExecutable;
+    bool intraExecutable;
 
   protected:
 
@@ -49,16 +49,16 @@ class DXDropSite : public DropSite
     // temporary network and panels, and hands off to a required subclass'
     // method to merge the temp net and/or the temp panels.
     //
-    virtual boolean mergeNetElements (Network *tmpnet, List *tmppanels, int x, int y) = 0;
+    virtual bool mergeNetElements (Network *tmpnet, List *tmppanels, int x, int y) = 0;
 
-    //boolean transfer(char *, XtPointer, unsigned long, int, int);
+    //bool transfer(char *, XtPointer, unsigned long, int, int);
 
   public:
 
     //
     // Constructor:
     //
-    DXDropSite(boolean intraExecutable = FALSE);
+    DXDropSite(bool intraExecutable = false);
  
     //
     // Destructor:

@@ -58,7 +58,7 @@ class BinaryParameter : public Parameter
     //
     Type	set2ndValue(const char *v)
 			{ return this->secondValue->setValue(v); }
-    boolean 	set2ndValue(const char *v, Type t, boolean coerce = TRUE)
+    bool 	set2ndValue(const char *v, Type t, bool coerce = true)
 			{ return this->secondValue->setValue(v,t,coerce); }
     //
     // Set the stored value.
@@ -66,11 +66,11 @@ class BinaryParameter : public Parameter
     // the same as setValue, but if it is defaulting, then we set the
     // value but leave the parameter clean and defaulting.
     //
-    boolean set2ndSetValue(const char *v, Type t)
+    bool set2ndSetValue(const char *v, Type t)
 			{ return this->secondValue->setSetValue(v,t); }
 
 
-    boolean 	has2ndValue() 
+    bool 	has2ndValue() 
 		{ return this->secondValue->hasValue(); }
     Type    	get2ndValueType() 
 		{ return this->secondValue->getValueType(); }
@@ -109,7 +109,7 @@ class BinaryParameter : public Parameter
     //
     double get2ndComponentValue(int component)
 		{ return this->secondValue->getComponentValue(component); }
-    boolean set2ndComponentValue(int component, double val)
+    bool set2ndComponentValue(int component, double val)
 		{ return this->secondValue->setComponentValue(component, val); }
     int get2ndComponentCount()
 		{ return this->secondValue->getComponentCount(); }

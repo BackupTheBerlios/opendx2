@@ -25,7 +25,7 @@ Tab::Tab(StandIn *standIn):
 
 //static XmString nullXmString = NULL;
 
-void Tab::createTab(boolean createManaged)
+void Tab::createTab(bool createManaged)
 {
  //   Arg      arg[10];
  //   int      n = 0;
@@ -38,7 +38,7 @@ void Tab::createTab(boolean createManaged)
  //   XtSetArg(arg[n], XmNwidth,       standIn->getIOWidth());	n++;
  //   XtSetArg(arg[n], XmNheight,      standIn->getIOHeight());	n++;
  //   XtSetArg(arg[n], XmNborderWidth, 0);			n++;
- //   XtSetArg(arg[n], XmNfillOnArm,   FALSE);			n++;
+ //   XtSetArg(arg[n], XmNfillOnArm,   false);			n++;
 
  //   this->x = 0;
  //   this->y = 0;
@@ -82,7 +82,7 @@ void Tab::createTab(boolean createManaged)
 //	XmNarmColor, background, 
 //    NULL);
 //}
-//void Tab::moveTabX(Position x, boolean update)
+//void Tab::moveTabX(Position x, bool update)
 //{
 //
 //    /*
@@ -95,7 +95,7 @@ void Tab::createTab(boolean createManaged)
 //    if(update)
 //	this->x = x;
 //}
-//void Tab::moveTabY(Position y, boolean update)
+//void Tab::moveTabY(Position y, bool update)
 //{
 //    /*
 //     * If the tab has not been initialized...
@@ -107,7 +107,7 @@ void Tab::createTab(boolean createManaged)
 //    if(update)
 //	this->y = y;
 //}
-//void Tab::moveTabXY(Position x, Position y, boolean update)
+//void Tab::moveTabXY(Position x, Position y, bool update)
 //{
 //    /*
 //     * If the tab has not been initialized...

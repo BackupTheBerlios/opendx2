@@ -100,17 +100,17 @@ char *InteractorNode::netNodeString(const char *prefix)
 // changed the label, then we notify all instances with 
 // notifyVisualsOfStateChange().
 //
-void InteractorNode::ioParameterStatusChanged(boolean input, int index, 
+void InteractorNode::ioParameterStatusChanged(bool input, int index, 
 					NodeParameterStatusChange status)
 {
-    boolean doit = FALSE;
+    bool doit = false;
 
     this->deferVisualNotification();
 
     if (status & Node::ParameterArkChanged) { 
 	if (input) {
 	    if (index == this->getLabelParameterIndex())
-		doit = TRUE;
+		doit = true;
 	    //
 	    // If we become un data driven, then we must make sure the
 	    // outputs get sent on the next execution.
@@ -142,9 +142,9 @@ void InteractorNode::ioParameterStatusChanged(boolean input, int index,
 	    //   	a) 1 to having 0 arcs
 	    //	b) 2 to having 1 arc 
 	    //
-	    boolean added = status == Node::ParameterArkAdded;
+	    bool added = status == Node::ParameterArkAdded;
 	    if ((narcs <= 1) || (added && narcs == 2))
-		doit = TRUE;
+		doit = true;
 	} 
 	if (doit)
 	    this->notifyVisualsOfStateChange();
@@ -247,15 +247,15 @@ const char *InteractorNode::getInteractorLabel()
 // check for the input comment for the label parameter value.  If
 // we see the label parameter value then save it.
 //
-boolean     InteractorNode::netParseComment(const char* comment,
+bool     InteractorNode::netParseComment(const char* comment,
 					const char *file, int lineno)
 {
-    boolean r = this->ShadowedOutputNode::netParseComment(comment,file,lineno);
+    bool r = this->ShadowedOutputNode::netParseComment(comment,file,lineno);
     int lindex = this->getLabelParameterIndex();
     if (r && (lindex > 0)) { 
 	const char *label = this->getInputSetValueString(lindex);
 	if (!EqualString(label,"NULL"))      // Parameter has value.
-	    this->saveInteractorLabel(label, TRUE);
+	    this->saveInteractorLabel(label, true);
     }
     return r;
 }
@@ -264,19 +264,19 @@ boolean     InteractorNode::netParseComment(const char* comment,
 // Print the information that belongs in the configuration file (.cfg) for 
 // this node.
 //
-boolean InteractorNode::cfgPrintNode(FILE *f, PrintType dest)
+bool InteractorNode::cfgPrintNode(FILE *f, PrintType dest)
 {
     if (fprintf(f, "//\n") < 0)
-	return FALSE;
+	return false;
 
     if (!this->Node::cfgPrintNode(f, dest)  	||
         !this->cfgPrintInteractor(f)		||
         !this->cfgPrintInteractorInstances(f,dest))
-	return FALSE;
+	return false;
 
-    return TRUE;
+    return true;
 }
-boolean InteractorNode::cfgParseComment(const char* comment,
+bool InteractorNode::cfgParseComment(const char* comment,
                 const char* filename, int lineno)
 {
     ASSERT(comment);
@@ -293,7 +293,7 @@ boolean InteractorNode::cfgParseComment(const char* comment,
 //
 // Print general information about an interactor  
 //
-boolean InteractorNode::cfgPrintInteractorInstances(FILE *f, PrintType dest)
+bool InteractorNode::cfgPrintInteractorInstances(FILE *f, PrintType dest)
 {
     InteractorInstance *ii;
     ListIterator iterator(this->instanceList);
@@ -308,14 +308,14 @@ boolean InteractorNode::cfgPrintInteractorInstances(FILE *f, PrintType dest)
         if (!this->cfgPrintInstanceComment(f, ii) 	|| 
 	    !this->cfgPrintInstanceLabelComment(f, ii)	||
 	    !this->cfgPrintInstanceAuxInfo(f, ii))
-		return FALSE;
+		return false;
     }
-    return TRUE;
+    return true;
 }
 //
 // Print general information about an interactor  
 //
-boolean InteractorNode::cfgPrintInteractor(FILE *f)
+bool InteractorNode::cfgPrintInteractor(FILE *f)
 {
     return this->cfgPrintInteractorComment(f) &&
 	   this->cfgPrintInteractorAuxInfo(f);
@@ -323,7 +323,7 @@ boolean InteractorNode::cfgPrintInteractor(FILE *f)
 //
 // Print the '// interactor...' comment  to the file.
 //
-boolean InteractorNode::cfgPrintInteractorComment(FILE *f)
+bool InteractorNode::cfgPrintInteractorComment(FILE *f)
 {
     return fprintf(f, 
 		"// interactor %s[%d]: num_components = 1, value = %s\n",
@@ -337,7 +337,7 @@ boolean InteractorNode::cfgPrintInteractorComment(FILE *f)
 // Lookup up the interactor in the current network and set the current output
 // value.
 //
-boolean InteractorNode::cfgParseInteractorComment(const char* comment, 
+bool InteractorNode::cfgParseInteractorComment(const char* comment, 
 		const char* filename, int lineno)
 {
     int        num_components, instance, items_parsed;
@@ -345,7 +345,7 @@ boolean InteractorNode::cfgParseInteractorComment(const char* comment,
     char       interactor_name[64];
     
     if (strncmp(" interactor",comment,11))
-	return FALSE;
+	return false;
 
     items_parsed =
 	sscanf(comment,
@@ -367,7 +367,7 @@ boolean InteractorNode::cfgParseInteractorComment(const char* comment,
 	ErrorMessage("Bad interactor comment file %s line %d\n", 
 					filename,lineno);
 #endif
-	return TRUE;
+	return true;
     }
 
     ASSERT(!strcmp(this->getNameString(), interactor_name));
@@ -377,34 +377,34 @@ boolean InteractorNode::cfgParseInteractorComment(const char* comment,
     if (num_components < 0) {
 	ErrorMessage("Bad 'num_components' value, file %s line %d\n",
 					filename, lineno);
-	return TRUE;
+	return true;
     }
 
     if (this->numComponents != num_components) { 
-	if (!this->hasDynamicDimensionality(TRUE)) {
+	if (!this->hasDynamicDimensionality(true)) {
 	    ErrorMessage(
 	    "Unmatched num_components and %s does not allow dimensionality"
 	    " changes (file %s line %d)\n", 
 	    this->getNameString(), filename, lineno);
-	    return TRUE;
+	    return true;
 	}
 	if (!this->changeDimensionality(num_components)) {
 	    ErrorMessage(
 	    "Dimensionality adjustment failed for %s"
 	    " (file %s line %d)\n", 
 	    this->getNameString(), filename, lineno);
-	    return TRUE;
+	    return true;
 	}
     }
 #endif
 
 #if 1
-    if (this->setOutputValue(1,value,DXType::UndefinedType, FALSE) == 
+    if (this->setOutputValue(1,value,DXType::UndefinedType, false) == 
 				DXType::UndefinedType) {
 	ErrorMessage(
 		"Encountered an erroneous output value (file %s, line %d).",
 			filename, lineno);	
-	return TRUE;
+	return true;
    }
 	
 #else
@@ -416,7 +416,7 @@ boolean InteractorNode::cfgParseInteractorComment(const char* comment,
 	     "Encountered an erroneous output value (%s file, line %d).",
 	     _parse_file,
 	     yylineno);
-	_error_occurred = TRUE;
+	_error_occurred = true;
 	return;
     }
 
@@ -428,7 +428,7 @@ boolean InteractorNode::cfgParseInteractorComment(const char* comment,
 	}
     }
 
-    node->output[0].value_in_use = TRUE;
+    node->output[0].value_in_use = true;
 
     /*
      * Reset interactor index;
@@ -441,13 +441,13 @@ boolean InteractorNode::cfgParseInteractorComment(const char* comment,
     _parse_state = _PARSED_INTERACTOR;
 #endif // 0
 
-    return TRUE;
+    return true;
 }
 
 // 
 // Print the 'instance: ...' comment for this instance of the InteractorNode. 
 //
-boolean InteractorNode::cfgPrintInstanceComment(FILE *f, 
+bool InteractorNode::cfgPrintInstanceComment(FILE *f, 
 					InteractorInstance *ii)
 {
     InteractorStyle *is; 
@@ -477,7 +477,7 @@ boolean InteractorNode::cfgPrintInstanceComment(FILE *f,
 // additional .cfg comments.  If they do than the subclass must implement
 // this routine.
 //
-boolean InteractorNode::cfgParseInstanceComment(const char* comment, 
+bool InteractorNode::cfgParseInstanceComment(const char* comment, 
 		const char* filename, int lineno)
 {
     int            items_parsed;
@@ -489,7 +489,7 @@ boolean InteractorNode::cfgParseInstanceComment(const char* comment,
     InteractorInstance *ii;
  
     if (strncmp(" instance: panel",comment,16))
-	return FALSE;
+	return false;
 
 #if 0	// FIXME: This is for temporary backwards compatiblity with .cfg
 	// files that were saved with versions of dxui dated between 12/31/93
@@ -553,7 +553,7 @@ boolean InteractorNode::cfgParseInstanceComment(const char* comment,
 		ErrorMessage("Bad 'instance' comment (file %s, line %d)",
 				    filename,lineno);
     #endif
-		return FALSE;
+		return false;
 	    }
 
 	}
@@ -586,9 +586,9 @@ boolean InteractorNode::cfgParseInstanceComment(const char* comment,
 	interactor->restore_increment = 
 	    (struct _uinincrement *)uiuCalloc(n, sizeof(struct _uinincrement));
 	interactor->local_increment = 
-	    (boolean*)uiuCalloc(n, sizeof(boolean*));
+	    (bool*)uiuCalloc(n, sizeof(bool*));
 	interactor->restore_local_increment = 
-	    (boolean*)uiuCalloc(n, sizeof(boolean*));
+	    (bool*)uiuCalloc(n, sizeof(bool*));
     }
 #endif
 
@@ -662,7 +662,7 @@ boolean InteractorNode::cfgParseInstanceComment(const char* comment,
 	    ErrorMessage("Could not find default interactor style to replace "
 			 "unsupported style (file %s, line %d)", 
 			filename, lineno);
-	    return FALSE;
+	    return false;
 	}
     }
     
@@ -672,32 +672,32 @@ boolean InteractorNode::cfgParseInstanceComment(const char* comment,
 	ErrorMessage(
 	    "'instance' comment refers to undefined panel (file %s, line %d)", 
 	    filename,lineno); 
-   	return TRUE;
+   	return true;
     }
 
 #if 0
     if(NOT cp->updated)
     {
 	cp->clearInstances();
-	cp->updated = TRUE;
+	cp->updated = true;
     }
 #endif
 
     ii = this->addInstance(x, y, is, cp, width, height );
     if (!ii)
-	return TRUE;
+	return true;
 
-    ii->setVerticalLayout(vertical == 0 ? FALSE : TRUE);
+    ii->setVerticalLayout(vertical == 0 ? false : true);
 
     if(cp->isManaged())
 	ii->createInteractor();
 
-    return TRUE;
+    return true;
 }
 //
 // Print the interactor instance's label comment.
 //
-boolean InteractorNode::cfgPrintInstanceLabelComment(FILE *f, 
+bool InteractorNode::cfgPrintInstanceLabelComment(FILE *f, 
 						InteractorInstance *ii)
 
 {
@@ -705,25 +705,25 @@ boolean InteractorNode::cfgPrintInstanceLabelComment(FILE *f,
 
     if (l) {
         if (fprintf(f, "// label: value = ") < 0)
-	    return FALSE;
+	    return false;
 	while (*l) {
 	    char c = *l;
 	    if (c == '\n') {
 		if (fputc('\\', f) == EOF)
-		    return FALSE;
+		    return false;
 		c = 'n';
 	    }
 	    if (fputc(c, f) == EOF)
-		return FALSE;
+		return false;
 	    l++;
 	}   
 	if (fputc('\n', f) == EOF)
-	    return FALSE;
+	    return false;
     }
 
-    return TRUE;
+    return true;
 }
-boolean InteractorNode::cfgParseLabelComment(const char* comment, 
+bool InteractorNode::cfgParseLabelComment(const char* comment, 
 				const char *filename, int lineno)
 {
     int            items_parsed;
@@ -732,7 +732,7 @@ boolean InteractorNode::cfgParseLabelComment(const char* comment,
     ASSERT(comment);
 
     if (strncmp(comment," label",6))
-	return FALSE;
+	return false;
 
     items_parsed = sscanf(comment, " label: value = %[^\n]", label);
 
@@ -744,14 +744,14 @@ boolean InteractorNode::cfgParseLabelComment(const char* comment,
 #if 1
 	ErrorMessage("Bad .cfg interactor 'label' comment (file %s, line %d)",
 			filename, lineno);
-	return FALSE;
+	return false;
 #else
         uiuModelessErrorMessageDialog
             (_parse_widget,
              "Encountered an erroneous label comment (%s file, line %d).",
              _parse_file,
              yylineno);
-        _error_occurred = TRUE;
+        _error_occurred = true;
         return;
 #endif
     }
@@ -763,7 +763,7 @@ boolean InteractorNode::cfgParseLabelComment(const char* comment,
                         filename, lineno);
     } else 
         ii->setLocalLabel(label);
-    return TRUE;
+    return true;
 
 }
 InteractorInstance *InteractorNode::newInteractorInstance()
@@ -816,7 +816,7 @@ Type InteractorNode::setOutputValue(
                                 int index,
                                 const char *value,
                                 Type t,
-                                boolean send)
+                                bool send)
 {
     Type type;
 
@@ -867,7 +867,7 @@ void InteractorNode::openControlPanels()
 	while ( (ii = (InteractorInstance*) iterator.getNext()) ) {
 	    ControlPanel *panel = ii->getControlPanel();
 	    panel->manage();	// Raise it even if it is managed.
-	    ii->setSelected(TRUE);
+	    ii->setSelected(true);
 	}
     } else {
 	//
@@ -897,7 +897,7 @@ void InteractorNode::openControlPanels()
 	    //
 	    cp->manage();
 	    ASSERT(ii);
-	    //ii->setSelected(TRUE);
+	    //ii->setSelected(true);
 	} 
     }
 
@@ -907,22 +907,22 @@ void InteractorNode::openControlPanels()
 // Indicates whether this node has outputs that can be remapped by the
 // server.
 //
-boolean InteractorNode::hasRemappableOutput()
+bool InteractorNode::hasRemappableOutput()
 {
-    return FALSE;
+    return false;
 }
 //
 // Do what ever is necessary to enable/disable remapping of output values
 // by the server.
 // At this level of the class hierarchy, we do nothing since
-// hasRemappableOutput() returns FALSE.
+// hasRemappableOutput() returns false.
 //
-void InteractorNode::setOutputRemapping(boolean val)
+void InteractorNode::setOutputRemapping(bool val)
 {
     return;
 }
 
-void InteractorNode::reflectStateChange( boolean unmanage)
+void InteractorNode::reflectStateChange( bool unmanage)
 {
     ListIterator iterator(this->instanceList);
     InteractorInstance *ii;
@@ -937,16 +937,16 @@ void InteractorNode::reflectStateChange( boolean unmanage)
 // the ControlPanel's work space.
 // This may be called by a ControlPanel.
 //
-boolean InteractorNode::deleteInstance(InteractorInstance *ii)
+bool InteractorNode::deleteInstance(InteractorInstance *ii)
 { 
     if (this->removeInstance(ii)) {
 	delete ii;
-	return TRUE;
+	return true;
     } 
     this->getNetwork()->setFileDirty();
-    return FALSE;
+    return false;
 }
-boolean InteractorNode::removeInstance(InteractorInstance *ii)
+bool InteractorNode::removeInstance(InteractorInstance *ii)
 {
     return this->instanceList.removeElement((void*)ii); 
 }
@@ -993,18 +993,18 @@ Type  InteractorNode::getTheCurrentOutputType(int index)
 // Does this node support dimensionality changes.
 // By default all interactors do NOT support this.
 //
-boolean InteractorNode::hasDynamicDimensionality(boolean ignoreDataDriven)
+bool InteractorNode::hasDynamicDimensionality(bool ignoreDataDriven)
 {
-    return FALSE;
+    return false;
 }
-boolean InteractorNode::changeDimensionality(int new_dim)
+bool InteractorNode::changeDimensionality(int new_dim)
 {
    this->getNetwork()->setFileDirty();
    return this->doDimensionalityChange(new_dim);
 }
-boolean InteractorNode::doDimensionalityChange(int new_dim)
+bool InteractorNode::doDimensionalityChange(int new_dim)
 {
-    return FALSE;
+    return false;
 }
 //
 // Called when a message is received from the executive after
@@ -1049,7 +1049,7 @@ int InteractorNode::handleCommonMsgInfo(const char *line)
 	ASSERT(label_index > 0);
         while (*p != '"') p++;
 	FindDelimitedString(p,'"','"', buf);
-	this->saveInteractorLabel(buf,TRUE);
+	this->saveInteractorLabel(buf,true);
 	this->setInputAttributeFromServer(label_index,
                                                	this->lastInteractorLabel,
 						DXType::StringType);
@@ -1090,7 +1090,7 @@ int InteractorNode::getLabelParameterIndex()
 // This is most likely used during initialization after setting the outputs
 // (which sets the shadowing inputs).
 //
-void InteractorNode::setShadowingInputsDefaulting(boolean send)
+void InteractorNode::setShadowingInputsDefaulting(bool send)
 {
     int i, ocnt = this->getOutputCount();
 
@@ -1101,7 +1101,7 @@ void InteractorNode::setShadowingInputsDefaulting(boolean send)
     }
 }
 void InteractorNode::saveInteractorLabel(const char *label,
-                                        boolean strip_quotes)
+                                        bool strip_quotes)
 {
     if (this->lastInteractorLabel) 
         delete this->lastInteractorLabel;
@@ -1118,24 +1118,24 @@ void InteractorNode::saveInteractorLabel(const char *label,
 #else
         const char *p1 = (char*)label; 
 #endif
-	boolean had_quote;
+	bool had_quote;
         while (*p1 && *p1 != '"')
                 p1++;
 	if (*p1 == '"')  {
 	    p1++;				// Skip the first "
-	    had_quote = TRUE;
+	    had_quote = true;
 	} else 
-	    had_quote = FALSE;
+	    had_quote = false;
 #if 00
 	char *p2 = this->lastInteractorLabel;
-	boolean skipping = FALSE;
+	bool skipping = false;
 	*p2 = '\0';
         ASSERT(*p1);
         while (*p1 && (skipping || *p1 != '"')) {
 	    if (!skipping && (*p1 == '\\')) {
-		skipping = TRUE;
+		skipping = true;
 	    } else {
-		skipping = FALSE;
+		skipping = false;
 		*p2 = *p1;
 		p2++;
 	    }
@@ -1164,16 +1164,16 @@ void InteractorNode::saveInteractorLabel(const char *label,
 //
 // Determine if this node is of the given class.
 //
-boolean InteractorNode::isA(Symbol classname)
+bool InteractorNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassInteractorNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ShadowedOutputNode::isA(classname);
 }
 #if 0	// 8/9/93
-boolean InteractorNode::isAttributeVisuallyWriteable(int input_index)
+bool InteractorNode::isAttributeVisuallyWriteable(int input_index)
 {
      return
         !this->isInputConnected(DATA_PARAM_NUM) &&
@@ -1182,30 +1182,30 @@ boolean InteractorNode::isAttributeVisuallyWriteable(int input_index)
 #endif
 
 //
-// Return TRUE if this node has state that will be saved in a .cfg file.
+// Return true if this node has state that will be saved in a .cfg file.
 //
-boolean InteractorNode::hasCfgState()
+bool InteractorNode::hasCfgState()
 {
-    return TRUE;
+    return true;
 }
 
 
-boolean InteractorNode::printAsJava(FILE* aplf)
+bool InteractorNode::printAsJava(FILE* aplf)
 {
-    if (this->ShadowedOutputNode::printAsJava(aplf) == FALSE)
-	return FALSE;
+    if (this->ShadowedOutputNode::printAsJava(aplf) == false)
+	return false;
 
     InteractorInstance *ii;
     ListIterator it(this->instanceList);
     while ( (ii = (InteractorInstance*)it.getNext()) ) {
-	if (ii->printAsJava(aplf) == FALSE) return FALSE;
+	if (ii->printAsJava(aplf) == false) return false;
 	this->printJavaValue(aplf);
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean InteractorNode::printJavaValue (FILE* jf)
+bool InteractorNode::printJavaValue (FILE* jf)
 {
     const char* indent = "        ";
     char var_name[32]; 
@@ -1245,7 +1245,7 @@ boolean InteractorNode::printJavaValue (FILE* jf)
     delete head;
     delete escaped_value;
 
-    return TRUE;
+    return true;
 }
 
 

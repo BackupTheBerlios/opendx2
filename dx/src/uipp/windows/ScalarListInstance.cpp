@@ -48,12 +48,12 @@ void ScalarListInstance::setComponentValue(int component, double val)
 // Make sure the given output's current value complies with any attributes.
 // This is called by InteractorInstance::setOutputValue() which is
 // intern intended to be called by the Interactors.
-// If verification fails (returns FALSE), then a reason is expected to
+// If verification fails (returns false), then a reason is expected to
 // placed in *reason.  This string must be freed by the caller.
-// At this level we always return TRUE (assuming that there are no
+// At this level we always return true (assuming that there are no
 // attributes) and set *reason to NULL.
 //
-boolean ScalarListInstance::verifyValueAgainstAttributes(int output,
+bool ScalarListInstance::verifyValueAgainstAttributes(int output,
 					    	const char *val,
                                                 Type t,
                                                 char **reason)
@@ -61,7 +61,7 @@ boolean ScalarListInstance::verifyValueAgainstAttributes(int output,
     Type itemtype = t & DXType::ListTypeMask;
     int index = -1;
     char buf[1024];
-    boolean r = TRUE;
+    bool r = true;
 
     if (reason)
 	*reason = NULL;

@@ -17,7 +17,7 @@
 // of this uicomponent (i.e. we send the current geometry to the 
 // PostScript output file).  
 //
-boolean ArkStandIn::printAsPostScript(FILE *f)
+bool ArkStandIn::printAsPostScript(FILE *f)
 {
 	int i, *x = NULL, *y = NULL;
 
@@ -44,12 +44,12 @@ boolean ArkStandIn::printAsPostScript(FILE *f)
 	//	if (y) XtFree((char*)y);
 	//}
 
-	//return TRUE;
+	//return true;
 
 error:
 	//if (x) XtFree((char*)x);
 	//if (y) XtFree((char*)y);
 
-	return FALSE;
+	return false;
 }
 

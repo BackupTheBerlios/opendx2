@@ -54,7 +54,7 @@ class UIComponentHelpCommand : public NoUndoCommand
     //
     // Does nothing;
     //
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -62,7 +62,7 @@ class UIComponentHelpCommand : public NoUndoCommand
     //
     UIComponentHelpCommand(const char*   name,
 			 CommandScope* scope,
-			 boolean       active,
+			 bool       active,
 			 UIComponent*   component);
 
     //

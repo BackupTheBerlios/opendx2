@@ -44,7 +44,7 @@ class SelectionAttrDialog : protected ListEditor, public SetAttrDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
 
   protected:
@@ -82,7 +82,7 @@ class SelectionAttrDialog : protected ListEditor, public SetAttrDialog
     // Get the value in the value editor that should be added to the list.
     // Return T/F if value should be added.
     // The returned string must be freed by the caller.
-    // Upon return FALSE, the value is not created.
+    // Upon return false, the value is not created.
     //
     virtual char * getValueEditorValue();
 
@@ -112,7 +112,7 @@ class SelectionAttrDialog : protected ListEditor, public SetAttrDialog
     ~SelectionAttrDialog();
 
     virtual void loadAttributes();
-    virtual boolean storeAttributes();
+    virtual bool storeAttributes();
     virtual void updateDisplayedAttributes();
 
     //

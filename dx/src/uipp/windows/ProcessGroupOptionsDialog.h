@@ -43,7 +43,7 @@ class ProcessGroupOptionsDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     ProcessGroupAssignDialog *pgad;
 
   protected:
@@ -54,7 +54,7 @@ class ProcessGroupOptionsDialog : public Dialog
     //friend void ProcessGroupOptionsDialog_ToggleCB(Widget w, XtPointer clientData, XtPointer);
     //friend void ProcessGroupOptionsDialog_NumberTextCB(Widget w, XtPointer clientData, XtPointer);
 
-    virtual boolean okCallback(Dialog *clientData);
+    virtual bool okCallback(Dialog *clientData);
 
     virtual void createDialog();
     //Widget execText;

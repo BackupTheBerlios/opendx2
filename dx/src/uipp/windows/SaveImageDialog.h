@@ -38,7 +38,7 @@ class SaveImageDialog : public ImageFormatDialog
 {
   private:
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     //Widget			file_name;
@@ -58,7 +58,7 @@ class SaveImageDialog : public ImageFormatDialog
 
     //virtual Widget 		createControls(Widget parent );
 
-    virtual boolean 		okCallback(Dialog *);
+    virtual bool 		okCallback(Dialog *);
     virtual void		restoreCallback();
     virtual int			getRequiredHeight() { return 190; }
 
@@ -84,13 +84,13 @@ class SaveImageDialog : public ImageFormatDialog
     virtual void 	setCommandActivation();
 
     virtual const char*	getOutputFile();
-    virtual boolean	isPrinting() { return FALSE; }
-    virtual boolean             postFileSelectionDialog();
-    void		setFilename(const char *file, boolean skip_callbacks=TRUE);
+    virtual bool	isPrinting() { return false; }
+    virtual bool             postFileSelectionDialog();
+    void		setFilename(const char *file, bool skip_callbacks=true);
 
-    boolean		dirtyCurrent();
-    boolean		dirtyContinuous() 
-	{ this->sid_dirty|= DirtyContinuous; return TRUE; }
+    bool		dirtyCurrent();
+    bool		dirtyContinuous() 
+	{ this->sid_dirty|= DirtyContinuous; return true; }
 
     //
     // Constructor:

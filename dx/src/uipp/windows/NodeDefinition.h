@@ -50,7 +50,7 @@ class NodeDefinition : public Definition
     // Private member data:
     //
 
-    boolean uiLoadedOnly;	// Was this definition only loaded by the ui 
+    bool uiLoadedOnly;	// Was this definition only loaded by the ui 
 
   protected:
     //
@@ -67,14 +67,14 @@ class NodeDefinition : public Definition
     char	*outboardCommand;	// Name of executable file.	
     char	*outboardHost;	
 
-    boolean	userTool;  	// TRUE if defined by a user .mdf file and 
-			   	// defaults to TRUE 
+    bool	userTool;  	// true if defined by a user .mdf file and 
+			   	// defaults to true 
 
-    boolean	writeableCacheability;   // Is the cacheability of this type of
+    bool	writeableCacheability;   // Is the cacheability of this type of
 					// node modifyable
     Cacheability defaultCacheability;    // Is this module cached by default
 
-    virtual boolean addIODef(List *l, ParameterDefinition *pd) 
+    virtual bool addIODef(List *l, ParameterDefinition *pd) 
 	    	{ return l->appendElement((void*)pd); }
 
     //
@@ -113,12 +113,12 @@ class NodeDefinition : public Definition
     // Get the list of INPUT/OUTPUT lines in the MDF and the REPEAT if any
     // The returned string must be delete by the caller.
     //
-    char *getMDFParametersString(boolean inputs);
+    char *getMDFParametersString(bool inputs);
 
     //
     // Set/clear one of the this->mdf_flag bits.
     //
-    void setMDFFlag(boolean val, long flag);
+    void setMDFFlag(bool val, long flag);
 
 
   public:
@@ -144,7 +144,7 @@ class NodeDefinition : public Definition
     //
     ~NodeDefinition();
 
-    virtual boolean isDerivedFromMacro();
+    virtual bool isDerivedFromMacro();
     
     //
     // Instance number manipulations 
@@ -157,9 +157,9 @@ class NodeDefinition : public Definition
     // Add an input or output to the list of i/o definitions 
     // (makes a copy of *pd).
     //
-    boolean addInput(ParameterDefinition *pd) 
+    bool addInput(ParameterDefinition *pd) 
 		{ return addIODef(&inputDefs, pd); };
-    boolean addOutput(ParameterDefinition *pd) 
+    bool addOutput(ParameterDefinition *pd) 
 		{ return addIODef(&outputDefs, pd); };
 
     //
@@ -186,15 +186,15 @@ class NodeDefinition : public Definition
     int  getInputRepeatCount()		{ return input_repeats ; }    
     void setOutputRepeatCount(int n)	{ output_repeats = n; }    
     int  getOutputRepeatCount()		{ return output_repeats ; }    
-    boolean isOutputRepeatable() 	{ return output_repeats != 0; }    
-    boolean isInputRepeatable()	 	{ return input_repeats != 0; }    
+    bool isOutputRepeatable() 	{ return output_repeats != 0; }    
+    bool isInputRepeatable()	 	{ return input_repeats != 0; }    
 
     //
     // Manipulate the cacheability of the node 
     //
-    void        setWriteableCacheability(boolean v) 
+    void        setWriteableCacheability(bool v) 
 				{ this->writeableCacheability= v; }
-    boolean     hasWriteableCacheability() 
+    bool     hasWriteableCacheability() 
 				{ return this->writeableCacheability;}
     void        setDefaultCacheability(Cacheability c) 
 				{ this->defaultCacheability = c; }
@@ -234,7 +234,7 @@ class NodeDefinition : public Definition
     //
     virtual void finishDefinition() {}
 
-    virtual boolean isAllowedInMacro() { return TRUE; }
+    virtual bool isAllowedInMacro() { return true; }
 
     //
     // Returns a pointer to the class name.
@@ -249,33 +249,33 @@ class NodeDefinition : public Definition
     virtual Parameter *newParameter(ParameterDefinition *pd, 
 						Node *n, int index);
 
-    void setMDFFlagERR_CONT(boolean val = TRUE);
-    boolean isMDFFlagERR_CONT();
-    void setMDFFlagSWITCH(boolean val = TRUE);
-    boolean isMDFFlagSWITCH();
-    void setMDFFlagPIN(boolean val = TRUE);
-    boolean isMDFFlagPIN();
-    void setMDFFlagSIDE_EFFECT(boolean val = TRUE);
-    boolean isMDFFlagSIDE_EFFECT();
-    void setMDFFlagASYNCHRONOUS(boolean val = TRUE);
-    boolean isMDFFlagASYNCHRONOUS();
-    void setMDFFlagPERSISTENT(boolean val = TRUE);
-    boolean isMDFFlagPERSISTENT();
-    void setMDFFlagREACH(boolean val = TRUE); 
-    boolean isMDFFlagREACH();
-    void setMDFFlagREROUTABLE(boolean val = TRUE);
-    boolean isMDFFlagREROUTABLE();
-    void setMDFFlagLOOP(boolean val = TRUE);
-    boolean isMDFFlagLOOP();
+    void setMDFFlagERR_CONT(bool val = true);
+    bool isMDFFlagERR_CONT();
+    void setMDFFlagSWITCH(bool val = true);
+    bool isMDFFlagSWITCH();
+    void setMDFFlagPIN(bool val = true);
+    bool isMDFFlagPIN();
+    void setMDFFlagSIDE_EFFECT(bool val = true);
+    bool isMDFFlagSIDE_EFFECT();
+    void setMDFFlagASYNCHRONOUS(bool val = true);
+    bool isMDFFlagASYNCHRONOUS();
+    void setMDFFlagPERSISTENT(bool val = true);
+    bool isMDFFlagPERSISTENT();
+    void setMDFFlagREACH(bool val = true); 
+    bool isMDFFlagREACH();
+    void setMDFFlagREROUTABLE(bool val = true);
+    bool isMDFFlagREROUTABLE();
+    void setMDFFlagLOOP(bool val = true);
+    bool isMDFFlagLOOP();
 
 				
-    boolean isOutboard(); 
+    bool isOutboard(); 
     void setDefaultOutboardHost(const char *host);
     const char *getDefaultOutboardHost() { return this->outboardHost;}
     void setOutboardCommand(const char *comand);
     const char *getOutboardCommand() { return this->outboardCommand;}
 
-    boolean isDynamicallyLoaded(); 
+    bool isDynamicallyLoaded(); 
     void setDynamicLoadFile(const char *file);
     const char *getDynamicLoadFile();
 
@@ -285,8 +285,8 @@ class NodeDefinition : public Definition
     //
     char *getMDFString();
 
-    boolean isUserTool() { return this->userTool; }
-    void setUserTool(boolean setting = TRUE) { this->userTool = setting; }
+    bool isUserTool() { return this->userTool; }
+    void setUserTool(bool setting = true) { this->userTool = setting; }
 
     //
     // Called after reading in a mdf record for this node definition.
@@ -295,13 +295,13 @@ class NodeDefinition : public Definition
     //
     void	completeDefinition();
 
-    boolean isUILoadedOnly(); 
+    bool isUILoadedOnly(); 
     void setUILoadedOnly(); 
 
     //
     // Add a selectable value for the n'th input.
     //
-    boolean addInputValueOption(int n, const char *value);
+    bool addInputValueOption(int n, const char *value);
 
 
 };

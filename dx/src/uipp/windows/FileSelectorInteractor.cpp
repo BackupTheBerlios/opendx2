@@ -18,7 +18,7 @@
 
 #define TEXT_COLUMNS	16
 
-boolean FileSelectorInteractor::ClassInitialized = FALSE;
+bool FileSelectorInteractor::ClassInitialized = false;
 
 //String FileSelectorInteractor::DefaultResources[] =
 //{
@@ -71,7 +71,7 @@ void FileSelectorInteractor::initialize()
         //                          ValueInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          Interactor::DefaultResources);
-        FileSelectorInteractor::ClassInitialized = TRUE;
+        FileSelectorInteractor::ClassInitialized = true;
     }
 }
 //
@@ -130,9 +130,9 @@ void FileSelectorInteractor::initialize()
 //void FileSelectorInteractor::buttonCallback(Widget w, XtPointer callData)
 //{
 //    InteractorInstance *ii = this->interactorInstance;
-//    boolean first = FALSE;
+//    bool first = false;
 //    if (!this->fileSelectorDialog) {
-//	first = TRUE;
+//	first = true;
 //	this->fileSelectorDialog = new FileSelectorDialog(
 //					this->getRootWidget(),
 //					(FileSelectorInstance*)ii);
@@ -171,7 +171,7 @@ void FileSelectorInteractor::completeInteractivePart()
 //
 void FileSelectorInteractor::handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change)
+					bool major_change)
 {
     this->updateDisplayedInteractorValue();
 }
@@ -217,7 +217,7 @@ void FileSelectorInteractor::updateDisplayedInteractorValue()
 // FileSelectorDialog if we have one. 
 //
 void FileSelectorInteractor::setLabel(const char *labelString, 
-					boolean re_layout)
+					bool re_layout)
 {
     this->ValueInteractor::setLabel(labelString,re_layout);
     if (this->fileSelectorDialog)  {

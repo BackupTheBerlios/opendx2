@@ -9,6 +9,8 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include <windows.h>
+
 using namespace System;
 using namespace System::IO;
 using namespace System::Runtime::InteropServices;
@@ -54,10 +56,10 @@ IBMApplication::IBMApplication(char* className): BaseApp(className)
     //this->icon_pmap = XtUnspecifiedPixmap;
     this->genericHelpCmd  = new HelpMenuCommand("genericAppHelp",
 				NULL,
-				TRUE,HelpMenuCommand::GenericHelp); 
+				true,HelpMenuCommand::GenericHelp); 
     this->helpTutorialCmd = new HelpMenuCommand("helpTutorial",
 				NULL, 
-				TRUE,
+				true,
 				HelpMenuCommand::HelpTutorial);
 
     this->aboutAppString = NULL;
@@ -96,40 +98,6 @@ IBMApplication::~IBMApplication()
     }
 #endif
 }
-
-//void IBMApplication::getResources(IBMResource& resourceBase)
-//{
-//	char *retval = new char[256];
-//	ASSERT(theResourceManager);
-//
-//	char* _IBMResource[] = {"UIRoot", "wizard", "noWizardNames", NULL};
-//	theResourceManager->getValue("UIRoot", retval);
-//	if(strlen(retval) > 0) {
-//		resourceBase.UIRoot = new char[strlen(retval) + 1];
-//		strcpy(resourceBase.UIRoot, retval);
-//		strcpy(retval, "");
-//	}
-//	theResourceManager->getValue("noWizardNames", retval);
-//	if(strlen(retval) > 0) {
-//		resourceBase.noWizardNames = new char[strlen(retval) + 1];
-//		strcpy(resourceBase.noWizardNames, retval);
-//		strcpy(retval, "");
-//	}
-//	theResourceManager->getValue("wizard", retval);
-//	if(strcmp(retval, "True")==0)
-//		resourceBase.wizard = true;
-//
-//	delete [] retval;
-//}
-
-//
-// Install the default resources for this class.
-//
-//void IBMApplication::installDefaultResources(Widget baseWidget)
-//{
-//    this->setDefaultResources(baseWidget, IBMApplication::DefaultResources);
-//    this->Application::installDefaultResources(baseWidget);
-//}
 
 //
 // Motif has opened up its scheme for calculating shadow colors.  The routine
@@ -227,11 +195,11 @@ IBMApplication::~IBMApplication()
 //}
 //
 
-boolean IBMApplication::initializeWindowSystem(unsigned int *argcp, char **argv)
+bool IBMApplication::initializeWindowSystem(unsigned int *argcp, char **argv)
 {
 
     if (!this->BaseApp::initializeWindowSystem(argcp, argv))
-        return FALSE;
+        return false;
 
 //#if defined(DEBUG) && defined(BETA_VERSION)
 //    fprintf(stderr,"This is a BETA version. Undef BETA_VERSION"
@@ -250,7 +218,7 @@ boolean IBMApplication::initializeWindowSystem(unsigned int *argcp, char **argv)
 //	XmSetColorCalculation ((XmColorProc)IBMApplication_ColorProc);
 //
 //
-    return TRUE;
+    return true;
 }
 
 void IBMApplication::getResources() {
@@ -262,39 +230,55 @@ void IBMApplication::getResources() {
 
 }
 
-boolean IBMApplication::initialize(unsigned int* argcp,
-				   char**        argv)
+bool IBMApplication::initialize(unsigned int* argcp,
+								   char**        argv)
 {
-    if (!this->BaseApp::initialize(argcp,argv))
-        return FALSE;
+	if (!this->BaseApp::initialize(argcp,argv))
+		return false;
 
-    this->parseCommand(argcp, argv);
+	this->parseCommand(argcp, argv);
 
 	// We need getResources here from the XmlPreferences
 
 	this->getResources();
-    //
-    // Get application resources.
-    //
-    //this->getResources((XtPointer)&IBMApplication::resource,
-		  //     _IBMResourceList,
-		  //     XtNumber(_IBMResourceList));
+	//
+	// Get application resources.
+	//
+	//this->getResources((XtPointer)&IBMApplication::resource,
+	//     _IBMResourceList,
+	//     XtNumber(_IBMResourceList));
 
-    if (IBMApplication::resource.UIRoot == NULL) {
-	char *s = getenv("DXROOT");
-	if (s) 
-	    // POSIX says we better copy the result of getenv(), so...
-	    // This will show up as a memory leak, not worth worrying about
-	    IBMApplication::resource.UIRoot = DuplicateString(s); 
-	else
-	    IBMApplication::resource.UIRoot =  "/usr/local/dx";
-    }
+	if (IBMApplication::resource.UIRoot == NULL) {
+		char *s = getenv("DXROOT");
+		if (s) 
+			// POSIX says we better copy the result of getenv(), so...
+			// This will show up as a memory leak, not worth worrying about
+			IBMApplication::resource.UIRoot = DuplicateString(s); 
+		else {
+			// set to the directory from with dxui was launched
+			TCHAR szPath[MAX_PATH]; 
 
-//    this->initIcon();
+			if( !GetModuleFileName( NULL, szPath, MAX_PATH ) )
+				IBMApplication::resource.UIRoot = DuplicateString("/usr/local/dx");
+			else {
+				int len=strlen(szPath)-1;
+				while(len > 0) {
+					if(szPath[len] == '\\') {
+						szPath[len+1] = '\0';
+						len = 0;
+					}
+					len--;
+				}
+				IBMApplication::resource.UIRoot = DuplicateString(szPath);
+			}
+		}
+	}
 
-    this->parseNoWizardNames();
+	//    this->initIcon();
 
-    return TRUE;
+	this->parseNoWizardNames();
+
+	return true;
 }
 
 HelpWin *IBMApplication::newHelpWindow()
@@ -362,7 +346,7 @@ const char *IBMApplication::getStartTutorialCommandString()
 //
 // Start the tutorial on behalf of the application.
 //
-boolean IBMApplication::startTutorial()
+bool IBMApplication::startTutorial()
 {
     char *url = new char[strlen(getUIRoot()) + 35];
     strcpy(url, "file://");
@@ -372,7 +356,7 @@ boolean IBMApplication::startTutorial()
 	system("dx -tutor");
     delete[] url;
 
-    return TRUE;
+    return true;
 }
 //void IBMApplication::handleXtWarning(char *message)
 //{
@@ -733,7 +717,7 @@ const char *IBMApplication::getHTMLDirectory()
     }
     return htmlDir;
 }
-const char *IBMApplication::getTmpDirectory(boolean bList)
+const char *IBMApplication::getTmpDirectory(bool bList)
 {
 #ifndef MAX_DIR_PATH_LIST
 #define MAX_DIR_PATH_LIST  255
@@ -801,7 +785,7 @@ const char *IBMApplication::getTmpDirectory(boolean bList)
 // Application Resources
 //
 
-boolean IBMApplication::getApplicationDefaultsFileName(char* res_file, boolean create)
+bool IBMApplication::getApplicationDefaultsFileName(char* res_file, bool create)
 {
 	//
 	// Print the resource database to the file.
@@ -846,7 +830,7 @@ const char* class_name = this->getApplicationClass();
     sprintf (resource_line, "%s*%s: %s\n", class_name, resource, value);
 
     char res_file[256];
-    if (this->getApplicationDefaultsFileName(res_file, TRUE)) {
+    if (this->getApplicationDefaultsFileName(res_file, true)) {
 	// Here, it would be nice to use a function like
 	// XrmRemoveLineResource() but I can't find any
 	// such beast.  If one were available, then when
@@ -884,11 +868,11 @@ void IBMApplication::parseNoWizardNames()
     int len = strlen(nwn);
     int names = 0;
     int i;
-    boolean trailing_name_sep = FALSE;
+    bool trailing_name_sep = false;
     for (i=0; i<len; i++) {
 	if (nwn[i] == NAME_SEP) {
 	    if (i == (len-1)) 
-		trailing_name_sep = TRUE;
+		trailing_name_sep = true;
 	    nwn[i] = '\0';
 	    names++;
 	}
@@ -932,7 +916,7 @@ void IBMApplication::printNoWizardNames()
 const char* class_name = this->getApplicationClass();
 
  //   char res_file[256];
- //   if (!this->getApplicationDefaultsFileName(res_file,TRUE)) {
+ //   if (!this->getApplicationDefaultsFileName(res_file,true)) {
 	////
 	//// Probably should complain somehow, but the user is not in a position
 	//// to deal with this sort of complaint.  This happens when the user
@@ -985,24 +969,24 @@ const char* class_name = this->getApplicationClass();
     delete[] resource_line;
 }
 
-boolean IBMApplication::isWizardWindow(const char* name)
+bool IBMApplication::isWizardWindow(const char* name)
 {
-    if (this->inWizardMode() == FALSE) return FALSE;
+    if (this->inWizardMode() == false) return false;
 
-    if (!this->noWizards) return TRUE;
+    if (!this->noWizards) return true;
 
     ListIterator it(*this->noWizards);
     char *wiz;
     while ( (wiz = (char*)it.getNext()) ) {
-	if (EqualString(wiz, name)) return FALSE;
+	if (EqualString(wiz, name)) return false;
     }
 
-    return TRUE;
+    return true;
 }
 
-//Pixmap IBMApplication::getLogoPixmap(boolean create_if_necessary)
+//Pixmap IBMApplication::getLogoPixmap(bool create_if_necessary)
 //{
-//    if ((this->logo_pmap == XtUnspecifiedPixmap) && (create_if_necessary == TRUE))
+//    if ((this->logo_pmap == XtUnspecifiedPixmap) && (create_if_necessary == true))
 //	this->initLogo();
 //    return this->logo_pmap;
 //}

@@ -16,7 +16,7 @@
 #include "ScalarInstance.h"
 #include "ErrorDialogManager.h"
 
-boolean SliderInteractor::SliderInteractorClassInitialized = FALSE;
+bool SliderInteractor::SliderInteractorClassInitialized = false;
 
 //String SliderInteractor::DefaultResources[] =  {
 //    ".allowHorizontalResizing:	True",
@@ -66,12 +66,12 @@ void SliderInteractor::initialize()
         //                          SliderInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          Interactor::DefaultResources);
-        SliderInteractor::SliderInteractorClassInitialized = TRUE;
+        SliderInteractor::SliderInteractorClassInitialized = true;
     }
 }
 
 
-//static Widget CreateSliderComponent(Widget,  boolean, double, double,
+//static Widget CreateSliderComponent(Widget,  bool, double, double,
 //				     double, double, int,   XtCallbackProc,   
 //				     int, void *) ;
 //
@@ -95,7 +95,7 @@ Interactor *SliderInteractor::AllocateInteractor(const char *name,
 void SliderInteractor::completeInteractivePart()
 {
  //   if (this->componentForm)
-	//this->passEvents(this->componentForm, TRUE);
+	//this->passEvents(this->componentForm, true);
 }
 
 //
@@ -136,7 +136,7 @@ void SliderInteractor::completeInteractivePart()
 //// Build a slider component with the given attributes.
 ////
 //static Widget CreateSliderComponent(Widget  parent, 
-//				     boolean isInteger,
+//				     bool isInteger,
 //				     double  min,
 //				     double  max,
 //				     double  value,
@@ -227,13 +227,13 @@ void SliderInteractor::completeInteractivePart()
 //     * there is continuous update), then get the interactor value, store it,
 //     * and send it.
 //     */
-//    boolean send = (cb->reason != XmCR_DRAG) || si->isContinuous();
+//    bool send = (cb->reason != XmCR_DRAG) || si->isContinuous();
 //    if (send) {
 //        double value = cb->value;
 //        ScalarNode *node       = (ScalarNode*)si->getNode(); 
 //	si->setComponentValue(component, value);
 //	char *s = si->buildValueFromComponents();
-//	node->setOutputValue(1,s,DXType::UndefinedType, TRUE);
+//	node->setOutputValue(1,s,DXType::UndefinedType, true);
 //	delete s;
 //    }
 //}
@@ -275,7 +275,7 @@ void SliderInteractor::updateSliderValue()
 //
 void SliderInteractor::handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change)
+					bool major_change)
 {
  //   Arg		   wargs[8];
  //   int		   i,components,n;

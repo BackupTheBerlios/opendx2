@@ -19,7 +19,7 @@
 
 HelpMenuCommand::HelpMenuCommand(const char*   name,
 				       CommandScope* scope,
-				       boolean       active,
+				       bool       active,
 				       HelpMenuCommandType comType ) :
 	NoUndoCommand(name, scope, active)
 {
@@ -27,9 +27,9 @@ HelpMenuCommand::HelpMenuCommand(const char*   name,
 }
 
 
-boolean HelpMenuCommand::doIt(CommandInterface *ci)
+bool HelpMenuCommand::doIt(CommandInterface *ci)
 {
-    boolean ret = FALSE;
+    bool ret = false;
 
     switch (this->commandType) {
 
@@ -42,7 +42,7 @@ boolean HelpMenuCommand::doIt(CommandInterface *ci)
 	// the CommandInterface referencing this command. 
 	//
 	ci->componentHelp();
-	ret = TRUE;
+	ret = true;
 	break;
 
     case HelpMenuCommand::HelpTutorial:
@@ -54,7 +54,7 @@ boolean HelpMenuCommand::doIt(CommandInterface *ci)
     case HelpMenuCommand::AboutApp:
 	
 	InfoMessage(theIBMApplication->getAboutAppString());
-	ret = TRUE;
+	ret = true;
 
 	break;
 
@@ -68,7 +68,7 @@ boolean HelpMenuCommand::doIt(CommandInterface *ci)
 	    InfoMessage(theIBMApplication->getTechSupportString());
 	delete url;
 	}
-	ret = TRUE;
+	ret = true;
 
 	break;
 

@@ -22,7 +22,7 @@
 
 #include "DictionaryIterator.h"
 
-boolean SetPageNameDialog::ClassInitialized = FALSE;
+bool SetPageNameDialog::ClassInitialized = false;
 //String SetPageNameDialog::DefaultResources[] =
 //{
 //    "*nameLabel.labelString:            Page Name:",
@@ -60,13 +60,13 @@ SetPageNameDialog::SetPageNameDialog(PageSelector* psel):
     this->page_name = NUL(char*);
     //this->ps_toggle = NUL(Widget);
     //this->auto_scroll_toggle = NUL(Widget);
-    this->incl = FALSE;
+    this->incl = false;
     this->position = 1;
     //this->position_number = NUL(Widget);
-    this->stop_updates = FALSE;
+    this->stop_updates = false;
     if (NOT SetPageNameDialog::ClassInitialized)
     {
-        SetPageNameDialog::ClassInitialized = TRUE;
+        SetPageNameDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -269,7 +269,7 @@ void SetPageNameDialog::update()
 //	if (this->workspace) 
 //	    this->incl = this->workspace->getPostscriptInclusion();
 //	else 
-//	    this->incl = FALSE;
+//	    this->incl = false;
 //	XmToggleButtonSetState (this->ps_toggle, this->incl, False);
 //
 //#if defined(AUTO_REPOSITION)
@@ -279,7 +279,7 @@ void SetPageNameDialog::update()
 //	if (this->workspace)
 //	    this->auto_scroll = this->workspace->getUsesRecordedPositions();
 //	else
-//	    this->auto_scroll = FALSE;
+//	    this->auto_scroll = false;
 //	XmToggleButtonSetState (this->auto_scroll_toggle, this->auto_scroll, False);
 //#endif
 //    }
@@ -296,30 +296,30 @@ void SetPageNameDialog::manage()
 }
 
 
-boolean SetPageNameDialog::okCallback(Dialog *)
+bool SetPageNameDialog::okCallback(Dialog *)
 {
     return this->applyCallback(this);
 }
 
-boolean SetPageNameDialog::applyCallback(Dialog *)
+bool SetPageNameDialog::applyCallback(Dialog *)
 {
-    this->stop_updates = TRUE;
+    this->stop_updates = true;
     //
     // Set the new name
     //
-//    boolean retVal = TRUE;
+//    bool retVal = true;
 //    char *name = PageSelector::GetTextWidgetToken(this->page_name_widget);
 //    if (name) {
 //	if (!EqualString(name, this->page_name)) {
 //	    char errMsg[256];
-//	    boolean retVal = this->selector->verifyPageName(name, errMsg);
+//	    bool retVal = this->selector->verifyPageName(name, errMsg);
 //	    if (!retVal) {
 //		XmTextSetString (this->page_name_widget, (char*)
 //		    (this->page_name?this->page_name:""));
 //		ErrorMessage (errMsg);
-//		this->stop_updates = FALSE;
+//		this->stop_updates = false;
 //		this->update();
-//		return FALSE;
+//		return false;
 //	    }
 //	    this->selector->changePageName (this->workspace, name);
 //	}
@@ -334,13 +334,13 @@ boolean SetPageNameDialog::applyCallback(Dialog *)
 //    XtVaGetValues (this->position_number, XmNiValue, &newpos, NULL);
 //    if (newpos != this->position) {
 //	PageTab* pt = (PageTab*)this->selector->page_buttons->getElement(newpos);
-//	this->selector->changeOrdering (pt, this->page_name, FALSE);
+//	this->selector->changeOrdering (pt, this->page_name, false);
 //    }
 //
 //    //
 //    // Set the new postscript value.
 //    //
-//    boolean incl = XmToggleButtonGetState (this->ps_toggle);
+//    bool incl = XmToggleButtonGetState (this->ps_toggle);
 //    if (incl != this->incl) {
 //	this->workspace->setPostscriptInclusion(incl);
 //    }
@@ -349,13 +349,13 @@ boolean SetPageNameDialog::applyCallback(Dialog *)
 //    //
 //    // Set the auto-scroll feature.
 //    //
-//    boolean auto_scroll = XmToggleButtonGetState (this->auto_scroll_toggle);
+//    bool auto_scroll = XmToggleButtonGetState (this->auto_scroll_toggle);
 //    if (this->auto_scroll != auto_scroll) {
 //	this->workspace->useRecordedPositions (auto_scroll);
 //    }
 //#endif
 //
-//    this->stop_updates = FALSE;
+//    this->stop_updates = false;
 //    this->update();
 //    return retVal;
 	return false;
@@ -380,17 +380,17 @@ boolean SetPageNameDialog::applyCallback(Dialog *)
 //    SetPageNameDialog* psel = (SetPageNameDialog*)clientData;
 //    ASSERT(psel);
 //    XmTextVerifyCallbackStruct *tvcs = (XmTextVerifyCallbackStruct*)cbs;
-//    boolean good_chars = TRUE;
+//    bool good_chars = true;
 //    XmTextBlock tbrec = tvcs->text;
 //    int i;
 //    for (i=0; i<tbrec->length; i++) {
 //	if ((tbrec->ptr[i] != '_') && 
 //	    (tbrec->ptr[i] != ' ') &&
 //	    (!isalnum((int)tbrec->ptr[i]))) {
-//	    good_chars = FALSE;
+//	    good_chars = false;
 //	    break;
 //	} else if ((i == 0) && (tvcs->startPos == 0) && (tbrec->ptr[i] == ' ')) {
-//	    good_chars = FALSE;
+//	    good_chars = false;
 //	    break;
 //	}
 //    }

@@ -40,7 +40,7 @@ class DescrDialog : public Dialog
     //
     Node *node;
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     void createDialog();

@@ -43,7 +43,7 @@ SequencerNode::SequencerNode(NodeDefinition *nd, Network *net, int instnc) :
     ShadowedOutputNode(nd, net, instnc)
 {
     this->seq_window = NULL;
-    this->wasExecuted = FALSE;
+    this->wasExecuted = false;
     this->xpos = this->ypos = UIComponent::UnspecifiedPosition;
     this->width = this->height = UIComponent::UnspecifiedDimension;
 
@@ -60,9 +60,9 @@ SequencerNode::SequencerNode(NodeDefinition *nd, Network *net, int instnc) :
     int minor = net->getNetMinorVersion();
     int micro = net->getNetMicroVersion();
     if (VERSION_NUMBER (major, minor, micro) < VERSION_NUMBER (3,1,4))
-	this->startup = TRUE;
+	this->startup = true;
     else
-	this->startup = FALSE;
+	this->startup = false;
 }
 
 SequencerNode::~SequencerNode()
@@ -75,7 +75,7 @@ SequencerNode::~SequencerNode()
     if (this->seq_window) delete this->seq_window;
 }
 
-boolean SequencerNode::initialize()
+bool SequencerNode::initialize()
 {
     this->seq_window = NUL(SequencerWindow*);
 
@@ -84,7 +84,7 @@ boolean SequencerNode::initialize()
            "Expected %d inputs for %s node, please check the mdf file.\n",
                         EXPECTED_INPUTS,
                         this->getNameString());
-	return FALSE;
+	return false;
     }
 
     //
@@ -101,7 +101,7 @@ boolean SequencerNode::initialize()
 	!this->initStopValue(    100)) {
 	ErrorMessage("Error setting default attributes for %s",
                         this->getNameString());
-	return FALSE;
+	return false;
     }
 
     this->undeferVisualNotification();
@@ -109,11 +109,11 @@ boolean SequencerNode::initialize()
     this->current         = 0;
     this->next            = 1;
     this->previous        = 1;
-    this->step            = FALSE;
-    this->loop            = FALSE;
-    this->palindrome      = FALSE;
-    this->current_defined = FALSE;
-    this->ignoreFirstFrameMsg = FALSE;
+    this->step            = false;
+    this->loop            = false;
+    this->palindrome      = false;
+    this->current_defined = false;
+    this->ignoreFirstFrameMsg = false;
 
     this->transmitted     = false;
 
@@ -123,7 +123,7 @@ boolean SequencerNode::initialize()
 
     theDXApplication->openSequencerCmd->activate();
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -131,7 +131,7 @@ boolean SequencerNode::initialize()
 // (integer list of min and max) and then call the super class method
 // if the input is not the attribute parameter.
 //
-void SequencerNode::ioParameterStatusChanged(boolean input, int index,
+void SequencerNode::ioParameterStatusChanged(bool input, int index,
                                 NodeParameterStatusChange status)
 {
     if (input && (status & Node::ParameterValueChanged) &&
@@ -198,42 +198,42 @@ char* SequencerNode::netNodeString(const char *prefix)
     return s;
 }
 
-boolean SequencerNode::netPrintAuxComment(FILE *f)
+bool SequencerNode::netPrintAuxComment(FILE *f)
 {
-    this->wasExecuted = TRUE;
+    this->wasExecuted = true;
 
     if (!this->DrivenNode::netPrintAuxComment(f))
-	return FALSE;
+	return false;
 
     if (!this->printCommonComments(f,"    "))
-        return FALSE;
+        return false;
 
-    return TRUE;
+    return true;
 
 }
-boolean SequencerNode::netParseAuxComment(const char* comment,
+bool SequencerNode::netParseAuxComment(const char* comment,
                             		const char *file, 
                             		int lineno)
 {
-    this->wasExecuted = TRUE;
+    this->wasExecuted = true;
 
     if (this->DrivenNode::netParseAuxComment(comment,file,lineno))
-	return TRUE;
+	return true;
 
     if (this->parseCommonComments(comment,file,lineno))
-        return TRUE;
+        return true;
 
-    return FALSE;
+    return false;
 
 }
 
-boolean SequencerNode::cfgPrintNode(FILE *f, PrintType dest)
+bool SequencerNode::cfgPrintNode(FILE *f, PrintType dest)
 {
     if (!this->cfgPrintNodeLeader(f))
-        return FALSE;
+        return false;
 
     if (!this->printCommonComments(f))
-	return FALSE;
+	return false;
 
     //
     // Print startup mode into the cfg file.
@@ -242,19 +242,19 @@ boolean SequencerNode::cfgPrintNode(FILE *f, PrintType dest)
     // behavior during drag-n-drop and not relevant when printing to the exec.
     //
     if (fprintf (f, "// startup = %d\n", (dest == PrintFile ? this->startup: 0)) < 0)
-	return FALSE;
+	return false;
 
-    return TRUE;
+    return true;
 }
-boolean SequencerNode::cfgParseComment(const char* comment,
+bool SequencerNode::cfgParseComment(const char* comment,
                             		const char *file, 
                             		int lineno)
 {
     if (this->cfgParseNodeLeader(comment,file,lineno)) 
-        return TRUE;
+        return true;
 
     if (this->parseCommonComments(comment,file,lineno))
-        return TRUE;
+        return true;
 
     //
     // Parse the startup mode from the cfg file.
@@ -265,14 +265,14 @@ boolean SequencerNode::cfgParseComment(const char* comment,
 	int items_parsed = sscanf (comment, " startup = %d", &startup_flag);
 	if (items_parsed == 1) {
 	    this->setStartup(startup_flag);
-	    return TRUE;
+	    return true;
 	}
     }
 
-    return FALSE;
+    return false;
 } 
 
-boolean SequencerNode::printCommonComments(FILE *f, const char *indent)
+bool SequencerNode::printCommonComments(FILE *f, const char *indent)
 {
     if (!indent)
 	indent = ""; 
@@ -295,7 +295,7 @@ boolean SequencerNode::printCommonComments(FILE *f, const char *indent)
            this->loop ? "on" : "off", 
 	   this->isStepMode() ? "on" : "off", 
 	   this->palindrome ? "on" : "off") < 0)
-	return FALSE;
+	return false;
 
     int x,y,w,h;
     if (this->seq_window) {
@@ -307,13 +307,13 @@ boolean SequencerNode::printCommonComments(FILE *f, const char *indent)
     
     if (x != UIComponent::UnspecifiedPosition) {
 	if (!UIComponent::PrintGeometryComment(f,x,y,w,h,NULL,indent))
-	    return FALSE;
+	    return false;
     }
-    return TRUE;
+    return true;
 }
 
 
-boolean SequencerNode::parseCommonComments(const char* comment,
+bool SequencerNode::parseCommonComments(const char* comment,
                             		const char *file, 
                             		int lineno)
 {
@@ -329,7 +329,7 @@ boolean SequencerNode::parseCommonComments(const char* comment,
 	// See comment in :cfgPrint.  This is to preserve behavior of existing
 	// nets.
 	//
-	this->startup = TRUE;
+	this->startup = true;
 
 	if (EqualSubstring(comment," vcr[",5)) {
 	    expected_items = 10;
@@ -355,7 +355,7 @@ boolean SequencerNode::parseCommonComments(const char* comment,
 	{
 	    ErrorMessage("Malformed comment at line %d in file %s (ignoring)",
 					lineno, file);
-	    return TRUE;
+	    return true;
 	} 
 
 	//
@@ -376,7 +376,7 @@ boolean SequencerNode::parseCommonComments(const char* comment,
 	this->loop       = EqualString(loop, "on");
 	this->step       = EqualString(step, "on");
 	this->palindrome = EqualString(pal,  "on");
-	return TRUE;
+	return true;
 
     }
 
@@ -390,10 +390,10 @@ boolean SequencerNode::parseCommonComments(const char* comment,
 	    this->seq_window->setGeometry(this->xpos,this->ypos,
 					this->width,this->height);
 
-	return TRUE;
+	return true;
     }
 
-    return FALSE;
+    return false;
 }
 
 // 
@@ -471,7 +471,7 @@ int SequencerNode::handleNodeMsgInfo(const char *line)
     int index, values = 0;
     char *p, *buf = NULL;
  
-    this->wasExecuted = TRUE;
+    this->wasExecuted = true;
 
     //
     // Handle the 'min=%g' part of the message.
@@ -544,10 +544,10 @@ int SequencerNode::handleNodeMsgInfo(const char *line)
 	// Change the currently display frame and ignore the next 
 	// 'frame %d %d' message from the executive (not Sequencer).
 	//
-	this->current_defined = TRUE;
+	this->current_defined = true;
 	this->current = atoi(p); 
 	this->next = this->current + this->getDeltaValue();
-	this->ignoreFirstFrameMsg = TRUE;
+	this->ignoreFirstFrameMsg = true;
     }
 
     //
@@ -557,8 +557,8 @@ int SequencerNode::handleNodeMsgInfo(const char *line)
     //
     int min_val = this->getMinimumValue();
     int max_val = this->getMaximumValue();
-    boolean min_dflting = this->isInputDefaulting(MIN_PARAM_NUM);
-    boolean max_dflting = this->isInputDefaulting(MAX_PARAM_NUM);
+    bool min_dflting = this->isInputDefaulting(MIN_PARAM_NUM);
+    bool max_dflting = this->isInputDefaulting(MAX_PARAM_NUM);
     if (min_dflting || max_dflting) {
 	char *setattr = NULL, *set = NULL;
 	if (max_dflting && (min_val > max_val)) {
@@ -610,10 +610,10 @@ int SequencerNode::handleNodeMsgInfo(const char *line)
 	    // Change the currently display frame and ignore the next 
 	    // 'frame %d %d' message.
 	    //
-	    this->current_defined = TRUE;
+	    this->current_defined = true;
 	    this->current = this->getStartValue();
 	    this->next = this->current + this->getDeltaValue();
-	    this->ignoreFirstFrameMsg = TRUE;
+	    this->ignoreFirstFrameMsg = true;
 	}
 	delete buf;
     }
@@ -638,7 +638,7 @@ int SequencerNode::handleNodeMsgInfo(const char *line)
     return values;
 }
 
-void SequencerNode::reflectStateChange(boolean unmanage)
+void SequencerNode::reflectStateChange(bool unmanage)
 {
     if (this->seq_window)
 	this->seq_window->handleStateChange(unmanage);
@@ -652,46 +652,46 @@ void SequencerNode::reflectStateChange(boolean unmanage)
 }
 
 #if 0 // 8/9/93
-boolean SequencerNode::isAttributeVisuallyWriteable(int input_index)
+bool SequencerNode::isAttributeVisuallyWriteable(int input_index)
 {
      return 
 	 this->isInputDefaulting(DATA_PARAM_NUM) && 
      	 this->ShadowedOutputNode::isAttributeVisuallyWriteable(input_index); 
 }
 #endif
-boolean SequencerNode::isMinimumVisuallyWriteable()
+bool SequencerNode::isMinimumVisuallyWriteable()
 { 
     return this->isInputDefaulting(DATA_PARAM_NUM) &&
    	   this->isAttributeVisuallyWriteable(MIN_PARAM_NUM); 
 }
-boolean SequencerNode::isMaximumVisuallyWriteable()
+bool SequencerNode::isMaximumVisuallyWriteable()
 { 
     return this->isInputDefaulting(DATA_PARAM_NUM) &&
    	   this->isAttributeVisuallyWriteable(MAX_PARAM_NUM); 
 }
 #ifdef HAS_START_STOP
-boolean SequencerNode::isStartVisuallyWriteable()
+bool SequencerNode::isStartVisuallyWriteable()
 	{ return this->isAttributeVisuallyWriteable(START_PARAM_NUM); }
-boolean SequencerNode::isStopVisuallyWriteable()
+bool SequencerNode::isStopVisuallyWriteable()
 	{ return this->isAttributeVisuallyWriteable(STOP_PARAM_NUM); }
 #endif
-boolean SequencerNode::isDeltaVisuallyWriteable()
+bool SequencerNode::isDeltaVisuallyWriteable()
 	{ return this->isAttributeVisuallyWriteable(DELTA_PARAM_NUM); }
 
-boolean SequencerNode::initMinimumValue(int val)
+bool SequencerNode::initMinimumValue(int val)
 {
     char buf[64];
     sprintf(buf,"%d",val);
     return this->initInputAttributeParameter(MIN_PARAM_NUM,buf);
 }
-boolean SequencerNode::setMinimumValue(int val)
+bool SequencerNode::setMinimumValue(int val)
 {
     char buf[64];
     sprintf(buf,"%d",val);
     return this->setInputAttributeParameter(MIN_PARAM_NUM,buf);
 }
 #if 0
-boolean SequencerNode::setMinimumValue(const char *val)
+bool SequencerNode::setMinimumValue(const char *val)
 {
     return this->setInputAttributeParameter(MIN_PARAM_NUM,val);
 }
@@ -701,20 +701,20 @@ int SequencerNode::getMinimumValue()
     const char *val = this->getInputAttributeParameterValue(MIN_PARAM_NUM);
     return atoi(val);
 }
-boolean SequencerNode::initMaximumValue(int val)
+bool SequencerNode::initMaximumValue(int val)
 {
     char buf[64];
     sprintf(buf,"%d",val);
     return this->initInputAttributeParameter(MAX_PARAM_NUM,buf);
 }
-boolean SequencerNode::setMaximumValue(int val)
+bool SequencerNode::setMaximumValue(int val)
 {
     char buf[64];
     sprintf(buf,"%d",val);
     return this->setInputAttributeParameter(MAX_PARAM_NUM,buf);
 }
 #if 0
-boolean SequencerNode::setMaximumValue(const char *val)
+bool SequencerNode::setMaximumValue(const char *val)
 {
     return this->setInputAttributeParameter(MAX_PARAM_NUM,val);
 }
@@ -724,20 +724,20 @@ int SequencerNode::getMaximumValue()
     const char *val = this->getInputAttributeParameterValue(MAX_PARAM_NUM);
     return atoi(val);
 }
-boolean SequencerNode::initDeltaValue(int val)
+bool SequencerNode::initDeltaValue(int val)
 {
     char buf[64];
     sprintf(buf,"%d",val);
     return this->initInputAttributeParameter(DELTA_PARAM_NUM,buf);
 }
-boolean SequencerNode::setDeltaValue(int val)
+bool SequencerNode::setDeltaValue(int val)
 {
     char buf[64];
     sprintf(buf,"%d",val);
     return this->setInputAttributeParameter(DELTA_PARAM_NUM,buf);
 }
 #if 0
-boolean SequencerNode::setDeltaValue(const char *val)
+bool SequencerNode::setDeltaValue(const char *val)
 {
     return this->setInputAttributeParameter(DELTA_PARAM_NUM,val);
 }
@@ -747,24 +747,24 @@ int SequencerNode::getDeltaValue()
     const char *val = this->getInputAttributeParameterValue(DELTA_PARAM_NUM);
     return atoi(val);
 }
-boolean SequencerNode::initStartValue(int val)
+bool SequencerNode::initStartValue(int val)
 {
 #ifndef HAS_START_STOP 
     this->startValue = val;
     this->updateAttributes();
-    return TRUE;
+    return true;
 #else
     char buf[64];
     sprintf(buf,"%d",val);
     return this->initInputAttributeParameter(START_PARAM_NUM,buf);
 #endif
 }
-boolean SequencerNode::setStartValue(int val)
+bool SequencerNode::setStartValue(int val)
 {
 #ifndef HAS_START_STOP 
     this->startValue = val;
     this->updateAttributes();
-    return TRUE;
+    return true;
 #else
     char buf[64];
     sprintf(buf,"%d",val);
@@ -772,7 +772,7 @@ boolean SequencerNode::setStartValue(int val)
 #endif
 }
 #if 0
-boolean SequencerNode::setStartValue(const char *val)
+bool SequencerNode::setStartValue(const char *val)
 {
     return this->setInputAttributeParameter(START_PARAM_NUM,val);
 }
@@ -786,24 +786,24 @@ int SequencerNode::getStartValue()
     return atoi(val);
 #endif
 }
-boolean SequencerNode::initStopValue(int val)
+bool SequencerNode::initStopValue(int val)
 {
 #ifndef HAS_START_STOP 
     this->stopValue = val;
     this->updateAttributes();
-    return TRUE;
+    return true;
 #else
     char buf[64];
     sprintf(buf,"%d",val);
     return this->initInputAttributeParameter(STOP_PARAM_NUM,buf);
 #endif
 }
-boolean SequencerNode::setStopValue(int val)
+bool SequencerNode::setStopValue(int val)
 {
 #ifndef HAS_START_STOP 
     this->stopValue = val;
     this->updateAttributes();
-    return TRUE;
+    return true;
 #else
     char buf[64];
     sprintf(buf,"%d",val);
@@ -811,7 +811,7 @@ boolean SequencerNode::setStopValue(int val)
 #endif
 }
 #if 0
-boolean SequencerNode::setStopValue(const char *val)
+bool SequencerNode::setStopValue(const char *val)
 {
     return this->setInputAttributeParameter(STOP_PARAM_NUM,val);
 }
@@ -857,34 +857,34 @@ void SequencerNode::setBackwardPlay()
     if (this->seq_window) 
 	this->seq_window->setPlayDirection(SequencerNode::BackwardDirection);
 }
-void SequencerNode::setStepMode(boolean val)
+void SequencerNode::setStepMode(bool val)
 {
     if (this->step == val)
 	return;
 
     this->step = val;
     if (this->seq_window) 
-	this->seq_window->handleStateChange(FALSE);
+	this->seq_window->handleStateChange(false);
     
 }
-void SequencerNode::setLoopMode(boolean val)
+void SequencerNode::setLoopMode(bool val)
 {
     if (this->loop == val)
 	return;
 
     this->loop = val;
     if (this->seq_window) 
-	this->seq_window->handleStateChange(FALSE);
+	this->seq_window->handleStateChange(false);
     
 }
-void SequencerNode::setPalindromeMode(boolean val)
+void SequencerNode::setPalindromeMode(bool val)
 {
     if (this->palindrome == val)
 	return;
 
     this->palindrome = val;
     if (this->seq_window) 
-	this->seq_window->handleStateChange(FALSE);
+	this->seq_window->handleStateChange(false);
     
 }
 //
@@ -961,8 +961,8 @@ void SequencerNode::ProcessFrameInterrupt(void *clientData, int id, void *p)
     //Widget vcr = NUL(Widget);
     SequencerNode* sequencer = (SequencerNode*)clientData; 
 
-    if (sequencer->ignoreFirstFrameMsg == TRUE) {
-    	sequencer->ignoreFirstFrameMsg = FALSE;
+    if (sequencer->ignoreFirstFrameMsg == true) {
+    	sequencer->ignoreFirstFrameMsg = false;
 	return;
     }
 
@@ -973,7 +973,7 @@ void SequencerNode::ProcessFrameInterrupt(void *clientData, int id, void *p)
 
     sequencer->current         = frame;
     sequencer->next            = next_frame;
-    sequencer->current_defined = TRUE;
+    sequencer->current_defined = true;
 
     //if (vcr)
     //      XtVaSetValues(vcr,
@@ -986,11 +986,11 @@ void SequencerNode::ProcessFrameInterrupt(void *clientData, int id, void *p)
 //
 // Determine if this node is of the given class.
 //
-boolean SequencerNode::isA(Symbol classname)
+bool SequencerNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassSequencerNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ShadowedOutputNode::isA(classname);
 }
@@ -1024,40 +1024,40 @@ void SequencerNode::updateAttributes()
 				DXType::IntegerListType);
     }
 }
-boolean SequencerNode::canSwitchNetwork(Network *from, Network *to)
+bool SequencerNode::canSwitchNetwork(Network *from, Network *to)
 {
     if (to->sequencer != NULL) {
 	WarningMessage("Attempt to add a second Sequencer to network ignored.");
-	return FALSE; 
+	return false; 
     }
 
-    return TRUE;
+    return true;
 }
 //
-// Return TRUE if this node has state that will be saved in a .cfg file.
+// Return true if this node has state that will be saved in a .cfg file.
 //
-boolean SequencerNode::hasCfgState()
+bool SequencerNode::hasCfgState()
 {
-    return TRUE;
+    return true;
 }
 
 
 int SequencerNode::getMessageIdParamNumber() { return ID_PARAM_NUM; }
 
-boolean SequencerNode::isStartup()
+bool SequencerNode::isStartup()
 {
     if (!this->seq_window) return this->startup;
     return this->seq_window->isStartup();
 }
 
-boolean SequencerNode::printInputAsJava(int input)
+bool SequencerNode::printInputAsJava(int input)
 {
-    boolean retval = FALSE;
+    bool retval = false;
     switch (input) {
 	case MIN_PARAM_NUM:
 	case MAX_PARAM_NUM:
 	case DELTA_PARAM_NUM:
-	    retval = TRUE;
+	    retval = true;
 	    break;
 	default:
 	    break;

@@ -14,7 +14,7 @@
 #include "DXStrings.h"
 #include "WorkSpace.h"
 
-boolean VPEPostIt::VPEPostItClassInitialized = FALSE;
+bool VPEPostIt::VPEPostItClassInitialized = false;
 
 //String VPEPostIt::DefaultResources[] =
 //{
@@ -47,7 +47,7 @@ boolean VPEPostIt::VPEPostItClassInitialized = FALSE;
 //
 #define PRIVATE_DEFAULT "#505050"
 
-VPEPostIt::VPEPostIt(boolean developerStyle) : VPEAnnotator (developerStyle, "VPEPostIt")
+VPEPostIt::VPEPostIt(bool developerStyle) : VPEAnnotator (developerStyle, "VPEPostIt")
 {
 //    this->bg_pixmap = NUL(Pixmap);
 }
@@ -67,29 +67,29 @@ VPEPostIt::initialize()
     if (!VPEPostIt::VPEPostItClassInitialized) {
 	//this->setDefaultResources(theApplication->getRootWidget(),
 	//	VPEPostIt::DefaultResources);
-	VPEPostIt::VPEPostItClassInitialized = TRUE;
+	VPEPostIt::VPEPostItClassInitialized = true;
     }
 
     if (!VPEAnnotator::DragDictionaryInitialized) {
 	if ((theDXApplication->appAllowsSavingNetFile()) &&
 	    (theDXApplication->appAllowsSavingCfgFile()) &&
 	    (theDXApplication->appAllowsEditorAccess())) {
-	    this->addSupportedType (Decorator::Trash, DXTRASH, FALSE);
-	    this->addSupportedType (Decorator::Modules, DXMODULES, FALSE);
+	    this->addSupportedType (Decorator::Trash, DXTRASH, false);
+	    this->addSupportedType (Decorator::Modules, DXMODULES, false);
 	}
 	// Don't use text because Shift+drag breaks
-	//this->addSupportedType (Decorator::Text, "TEXT", FALSE);
+	//this->addSupportedType (Decorator::Text, "TEXT", false);
  
 	//VPEAnnotator::DragIcon = this->createDragIcon (moduledrag_width,
 	//    moduledrag_height, (char *)moduledrag_bits, (char *)moduledragmask_bits);
-	VPEAnnotator::DragDictionaryInitialized = TRUE;
+	VPEAnnotator::DragDictionaryInitialized = true;
     }
 
 }
  
 
 Decorator*
-VPEPostIt::AllocateDecorator (boolean devStyle)
+VPEPostIt::AllocateDecorator (bool devStyle)
 {
     return new VPEPostIt (devStyle);
 }
@@ -97,15 +97,15 @@ VPEPostIt::AllocateDecorator (boolean devStyle)
 //
 // Determine if this Component is of the given class.
 //
-boolean VPEPostIt::isA(Symbol classname)
+bool VPEPostIt::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassVPEPostIt);
-    if (s == classname) return TRUE;
+    if (s == classname) return true;
     return this->VPEAnnotator::isA(classname);
 }
 
 
-void VPEPostIt::setLabel(const char *newStr, boolean)
+void VPEPostIt::setLabel(const char *newStr, bool)
 {
     //if (this->labelString) XmStringFree(this->labelString);
     //this->labelString = 0;
@@ -126,7 +126,7 @@ void VPEPostIt::setLabel(const char *newStr, boolean)
     //delete font;
 }
 
-boolean VPEPostIt::printPostScriptPage (FILE *f)
+bool VPEPostIt::printPostScriptPage (FILE *f)
 {
 //Pixel pixel;
 int xpos, ypos, xsize, ysize;
@@ -139,9 +139,9 @@ float red,green,blue;
     //if (fprintf(f,"%f %f %f %d %d %d %d Box\n",
 	   // red,green,blue,
 	   // xpos, ypos, xsize, ysize) < 0)
-	return FALSE;
+	return false;
 
-    //return TRUE;
+    //return true;
 }
 
 void VPEPostIt::completeDecorativePart()
@@ -151,10 +151,10 @@ void VPEPostIt::completeDecorativePart()
     //
     // Make the foreground yellow by default.
     //
-    boolean yellow_by_default = FALSE;
+    bool yellow_by_default = false;
  //   if (!this->isResourceSet(XmNforeground)) {
 	//this->setResource (XmNforeground, PRIVATE_DEFAULT);
-	//yellow_by_default = TRUE;
+	//yellow_by_default = true;
  //   }
 #endif
 
@@ -197,11 +197,11 @@ void VPEPostIt::makePixmap()
  //   float red, green, blue;
  //   VPEAnnotator::PixelToRGB (this->customPart, fg, &red, &green, &blue);
  //   float light = (red*0.30) + (0.59*green) + (0.11*blue);
- //   boolean extreme_color = FALSE;
+ //   bool extreme_color = false;
  //   if (light >= 0.55)
-	//extreme_color = TRUE;
+	//extreme_color = true;
  //   else if (light == 0)
-	//extreme_color = TRUE;
+	//extreme_color = true;
  //   bg = (extreme_color? bs : ts);
  //   if (this->bg_pixmap) {
 	//XFreePixmap(d, this->bg_pixmap);
@@ -242,7 +242,7 @@ void VPEPostIt::setFont (const char *font)
 void VPEPostIt::setResource (const char *res, const char *val)
 {
 //    if (EqualString(res, XmNforeground)) {
-//	boolean yellow_by_default = FALSE;
+//	bool yellow_by_default = false;
 //
 //#if defined(PRIVATE_DEFAULT)
 //	//
@@ -250,7 +250,7 @@ void VPEPostIt::setResource (const char *res, const char *val)
 //	//
 //	if ((!val) || (!val[0])) {
 //	    this->VPEAnnotator::setResource (XmNforeground, PRIVATE_DEFAULT);
-//	    yellow_by_default = TRUE;
+//	    yellow_by_default = true;
 //	} else 
 //#endif
 //	    this->VPEAnnotator::setResource (res, val);

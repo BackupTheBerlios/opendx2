@@ -83,13 +83,13 @@ const char* ProcessGroupManager::getGroupNewHost(const char *name)
 	return record->newhost;
 }
 
-boolean ProcessGroupManager::getGroupHostDirty(const char *name)
+bool ProcessGroupManager::getGroupHostDirty(const char *name)
 {
     ProcessGroupRecord *record
     	= (ProcessGroupRecord*)this->groups.findDefinition(name);
 
     if(NOT record)
-	return FALSE;
+	return false;
     else
 	return record->isDirty();
 }
@@ -100,22 +100,22 @@ void ProcessGroupManager::clearGroupHostDirty(const char *name)
     	= (ProcessGroupRecord*)this->groups.findDefinition(name);
 
     if(record)
-	record->setDirty(FALSE);
+	record->setDirty(false);
 }
 
-boolean ProcessGroupManager::assignHost(int n, const char *hostname)
+bool ProcessGroupManager::assignHost(int n, const char *hostname)
 {
     return assignHost(this->getGroupName(n), hostname);
 }
 
-boolean ProcessGroupManager::assignHost(const char *groupname,
+bool ProcessGroupManager::assignHost(const char *groupname,
                                       const char *hostname)
 {
     ProcessGroupRecord *record
         = (ProcessGroupRecord*)this->groups.findDefinition(groupname);
 
     if(NOT record)
-        return FALSE;
+        return false;
 
     if(record->newhost)
          delete record->newhost;
@@ -125,7 +125,7 @@ boolean ProcessGroupManager::assignHost(const char *groupname,
     else
         record->newhost = DuplicateString("localhost");
 
-    return TRUE;
+    return true;
 }
 
 void ProcessGroupManager::updateHosts()
@@ -146,7 +146,7 @@ void ProcessGroupManager::updateHosts()
 		 delete record->host;
 
 	    record->host = DuplicateString(record->newhost);
-	    record->setDirty(TRUE);
+	    record->setDirty(true);
 	    record->getNetwork()->setFileDirty();
 	}
         delete record->newhost;
@@ -182,7 +182,7 @@ const char* ProcessGroupManager::getArgument(const char *name)
 	return NUL(char*);
 }
 
-boolean ProcessGroupManager::getArgumentDirty(const char *name)
+bool ProcessGroupManager::getArgumentDirty(const char *name)
 {
     ProcessHostRecord *record = 
                 (ProcessHostRecord*)this->arguments.findDefinition(name);
@@ -190,7 +190,7 @@ boolean ProcessGroupManager::getArgumentDirty(const char *name)
     if(record) 
     	return record->dirty; 
     else
-	return FALSE;
+	return false;
 }
 
 void ProcessGroupManager::clearArgumentDirty(const char *name)
@@ -199,7 +199,7 @@ void ProcessGroupManager::clearArgumentDirty(const char *name)
                 (ProcessHostRecord*)this->arguments.findDefinition(name);
     
     if(record) 
-    	record->dirty = FALSE; 
+    	record->dirty = false; 
 }
 
 void  ProcessGroupManager::assignArgument(const char *host,const char *args)
@@ -222,7 +222,7 @@ void  ProcessGroupManager::assignArgument(const char *host,const char *args)
     	this->arguments.addDefinition(host,(const void*)record); 
     }
 
-    record->dirty = TRUE;
+    record->dirty = true;
     this->app->network->setFileDirty();
 }
 // clear the argument dictionary
@@ -309,14 +309,14 @@ void ProcessGroupManager::sendAssignment(int function)
     if (!p)
         return;
 
-    this->setDirty(FALSE);
+    this->setDirty(false);
     if (!this->assignment)
         return;
 
     List *list;
     ListIterator li;
     int i;
-    boolean first;
+    bool first;
     char *func = NULL, *host, *grouplist,*group, *cmd;
 
 	switch(function)
@@ -324,7 +324,7 @@ void ProcessGroupManager::sendAssignment(int function)
 	   case ATTACH:
 
 		func = "group attach";
-		this->dirty = FALSE;
+		this->dirty = false;
 		break;
 
 	   case DETACH:
@@ -334,7 +334,7 @@ void ProcessGroupManager::sendAssignment(int function)
 
 	   default:
 
-		ASSERT(FALSE);
+		ASSERT(false);
 	}
 
         for(i = 1; i <= this->assignment->getSize(); i++)
@@ -352,13 +352,13 @@ void ProcessGroupManager::sendAssignment(int function)
 	    grouplist = new char[grouplistSize + 20 * list->getSize()];
 	    grouplist[0] = '\0';
 
-            first = TRUE;
+            first = true;
             li.setList(*list);
             while( (group = (char*)li.getNext()) )
 	    {
 	    	this->clearGroupHostDirty(group);
                 if(first)
-                    first = FALSE;
+                    first = false;
                 else
                     strcat(grouplist, ",");
 
@@ -420,7 +420,7 @@ void   ProcessGroupManager::updateAssignment()
     List *list, *oldList;
     ListIterator li, oldLi;
     int i;
-    boolean first, argsDirty;
+    bool first, argsDirty;
     char *host, *grouplist,*group,*oldGroup, *cmd;
 
     //
@@ -473,7 +473,7 @@ void   ProcessGroupManager::updateAssignment()
 	else
 	    oldList = (List*)this->assignment->findDefinition(host);
 
-        first = TRUE;
+        first = true;
         li.setList(*list);
         while( (group = (char*)li.getNext()) )
 	{
@@ -494,7 +494,7 @@ void   ProcessGroupManager::updateAssignment()
             if(first)
             {
                  strcpy(grouplist, group);
-                 first = FALSE;
+                 first = false;
             }
             else
             {
@@ -525,7 +525,7 @@ void   ProcessGroupManager::updateAssignment()
 
     this->clearAssignment();
     this->assignment = newAss;
-    this->dirty = FALSE;
+    this->dirty = false;
 }
 
 
@@ -572,14 +572,14 @@ void ProcessGroupManager::attachGroup(const char *host, const char *group)
     delete cmd;
 }
 
-boolean ProcessGroupManager::addGroupAssignment(const char* host, 
+bool ProcessGroupManager::addGroupAssignment(const char* host, 
 						const char *group)
 {
     if(NOT this->assignment)
     {
 	this->assignment = this->createAssignment();
 	this->sendAssignment(ATTACH);
-	return TRUE;
+	return true;
     }
 
     List *list = (List*)this->assignment->findDefinition(host);
@@ -587,35 +587,35 @@ boolean ProcessGroupManager::addGroupAssignment(const char* host,
     {
 	list = new List();
 	if(NOT this->assignment->addDefinition(host, (void*)list))
-	    return FALSE;
+	    return false;
     }
 
     list->appendElement((void*)DuplicateString(group));	
     this->attachGroup(host, group);
 
-    return TRUE;
+    return true;
 }
 
-boolean ProcessGroupManager::removeGroupAssignment(const char *group)
+bool ProcessGroupManager::removeGroupAssignment(const char *group)
 {
     if(NOT this->assignment)
-	return FALSE;
+	return false;
 
     List *list;
     ListIterator li;
     int i, size = this->assignment->getSize();
-    boolean found;
+    bool found;
     char *name;
 
     for(i=1; i<=size; i++)
     {
     	list = (List*)this->assignment->getDefinition(i);
-	found = FALSE;
+	found = false;
 	li.setList(*list);
 	while( (name = (char*)li.getNext()) )
 	    if(EqualString(name, group))
 	    {
-		found = TRUE;
+		found = true;
 		break;
 	    }
 
@@ -631,14 +631,14 @@ boolean ProcessGroupManager::removeGroupAssignment(const char *group)
     	    if(this->assignment->getSize() == 0)
 		this->clearAssignment();
 
-	    return TRUE;
+	    return true;
         }
     }
 
-    return FALSE;
+    return false;
 }
 
-boolean ProcessGroupManager::printComment(FILE *f)
+bool ProcessGroupManager::printComment(FILE *f)
 {
 
     int	  i;
@@ -647,10 +647,10 @@ boolean ProcessGroupManager::printComment(FILE *f)
     const char  *host, *args, *group;
 
     if(NOT this->assignment)
-	return TRUE;
+	return true;
 
     if (fprintf(f, "//\n") <= 0)
-	return FALSE;
+	return false;
 
     for(i=1; i <= this->assignment->getSize(); i++)
     {
@@ -661,46 +661,46 @@ boolean ProcessGroupManager::printComment(FILE *f)
 	if(args)
 	{
     	    if (fprintf(f, "// pgroup assignment: \"%s(%s): ", host,args) <= 0)
-	    	return FALSE;
+	    	return false;
 	}
 	else
 	{
     	    if (fprintf(f, "// pgroup assignment: \"%s: ", host) <= 0)
-	    	return FALSE;
+	    	return false;
 	}
 
     	li.setList(*list);
 
 	group = (char*)li.getNext();
 	if (fprintf(f, "%s", group) <= 0)
-            return FALSE;
+            return false;
 
     	while( (group = (char*)li.getNext()) )
 	    if (fprintf(f, ", %s", group) <= 0)
-		return FALSE;
+		return false;
 
 	if (fprintf(f, "\"\n") <= 0)
-	    return FALSE;
+	    return false;
     } 
 
-    return TRUE;
+    return true;
 }
 
-boolean ProcessGroupManager::printAssignment(FILE *f)
+bool ProcessGroupManager::printAssignment(FILE *f)
 {
     if (NOT this->assignment)
-	return TRUE;
+	return true;
 
     List *list;
     ListIterator li;
     int i;
-    boolean first;
+    bool first;
     char *func, *host, *grouplist,*group, *cmd;
 
 	func = "group attach";
 
 	if(fprintf(f, "\n") <= 0)
-	    return FALSE;
+	    return false;
 
         for(i = 1; i <= this->assignment->getSize(); i++)
         {
@@ -717,14 +717,14 @@ boolean ProcessGroupManager::printAssignment(FILE *f)
 	    grouplist[0] = '\0';
 
 
-            first = TRUE;
+            first = true;
             li.setList(*list);
             while( (group = (char*)li.getNext()) )
 	    {
                 if(first)
                 {
                     strcpy(grouplist, group);
-                    first = FALSE;
+                    first = false;
                 }
                 else
                 {
@@ -746,30 +746,30 @@ boolean ProcessGroupManager::printAssignment(FILE *f)
 				   	func,grouplist,host);
 
 	   if(fprintf(f, "%s", cmd) <= 0)
-		return FALSE;
+		return false;
  
 	   if(fprintf(f, "$sync\n") <= 0)
-	        return FALSE;
+	        return false;
 
            delete grouplist;
            delete cmd;
         }
 
 
-    return TRUE;
+    return true;
 }
 
 //
 // Parse the group information from the cfg file.
 //
-boolean ProcessGroupManager::parseComment(const char *comment,
+bool ProcessGroupManager::parseComment(const char *comment,
                                 const char *filename, int lineno,Network *net)
 {
 
     char *p, *c, *host, *args;
 
     if (strncmp(comment," pgroup assignment",STRLEN(" pgroup assignment")))
-        return FALSE;
+        return false;
 
     char *line = DuplicateString(comment);
 
@@ -827,21 +827,21 @@ boolean ProcessGroupManager::parseComment(const char *comment,
     this->clearAssignment();
     this->assignment = this->createAssignment();
 
-    this->dirty = TRUE;
+    this->dirty = true;
 
     delete line;
-    return TRUE;
+    return true;
 
 error:
 
     ErrorMessage("Bad process group aasignment(%s, line %d).",filename,lineno); 
     delete line;
-    return FALSE;
+    return false;
 }
 
-boolean ProcessGroupManager::removeGroup(const char *name, Network *net)
+bool ProcessGroupManager::removeGroup(const char *name, Network *net)
 {
-    boolean ret = this->GroupManager::removeGroup (name, net);
+    bool ret = this->GroupManager::removeGroup (name, net);
     this->removeGroupAssignment(name);
 
     return ret;

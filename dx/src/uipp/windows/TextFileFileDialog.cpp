@@ -15,7 +15,7 @@
 
 #include <sys/stat.h>
 
-boolean TextFileFileDialog::ClassInitialized = FALSE;
+bool TextFileFileDialog::ClassInitialized = false;
 
 //String TextFileFileDialog::DefaultResources[] =
 //{
@@ -47,7 +47,7 @@ TextFileFileDialog::TextFileFileDialog( TextFile *tf ) :
     this->textFile = tf;
     if (NOT TextFileFileDialog::ClassInitialized)
     {
-        TextFileFileDialog::ClassInitialized = TRUE;
+        TextFileFileDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

@@ -78,7 +78,7 @@ void GroupedObject::addToGroup(const char* name, Symbol groupID)
 }
 
 
-boolean GroupedObject::printGroupComment (FILE *f)
+bool GroupedObject::printGroupComment (FILE *f)
 {
     if (this->groups) {
 	int i;
@@ -90,14 +90,14 @@ boolean GroupedObject::printGroupComment (FILE *f)
 	    const char *group_name = this->getGroupName(gsym);
 
 	    if ((!group_name) || (!group_name[0]))
-		return TRUE;
+		return true;
 	    
 	    if (fprintf (f, "%s// %s group: %s\n", __indent, manager, group_name) < 0)
-		return FALSE;
+		return false;
 
 	}
     }
-    return TRUE;
+    return true;
 }
 
 
@@ -106,13 +106,13 @@ boolean GroupedObject::printGroupComment (FILE *f)
 // Loop over all group managers, using the name of each to form
 // a parse string.
 //
-boolean GroupedObject::parseGroupComment (const char* comment,
+bool GroupedObject::parseGroupComment (const char* comment,
 				  const char* , int )
 {
     int i;
     Dictionary* groupManagers = this->getNetwork()->getGroupManagers();
     int count = groupManagers->getSize();
-    boolean group_comment = FALSE;
+    bool group_comment = false;
     GroupManager *gmgr = NUL(GroupManager*);
     for (i=1; i<=count; i++) {
 	gmgr = (GroupManager*)groupManagers->getDefinition(i);
@@ -120,20 +120,20 @@ boolean GroupedObject::parseGroupComment (const char* comment,
 	char buf[128];
 	sprintf (buf, " %s group:", mgr_name);
 	if (EqualSubstring (buf, comment, strlen(buf))) {
-	    group_comment = TRUE;
+	    group_comment = true;
 	    break;
 	}
     }
 
-    if (!group_comment) return FALSE;
+    if (!group_comment) return false;
     char *group_name = (char *) strchr(comment, ':');
     group_name++;
     SkipWhiteSpace(group_name);
 
-    if (!group_name) return FALSE;
+    if (!group_name) return false;
 
     this->addToGroup(group_name, gmgr->getManagerSymbol());
-    return TRUE;
+    return true;
 }
 
 

@@ -182,24 +182,24 @@ struct ImageCamera {
     double  zoomFactor;
     double  aspect;
     int     projection;
-    boolean undoable;
-    boolean redoable;
+    bool undoable;
+    bool redoable;
 };
 struct ImageState {
     int			width;
     int			height;
 //    Pixmap		pixmap;
     //GC			gc;
-    boolean		hardwareRender;
-    boolean		hardwareRenderExists;
-    boolean		resizeFromServer;
-    boolean		frameBuffer;
+    bool		hardwareRender;
+    bool		hardwareRenderExists;
+    bool		resizeFromServer;
+    bool		frameBuffer;
     long		hardwareWindow;
     ImageCamera		hardwareCamera;
-    boolean		globeDisplayed;
-    boolean		degenerateBox;
+    bool		globeDisplayed;
+    bool		degenerateBox;
     int			imageCount;
-    boolean		resizeCausesExecution;
+    bool		resizeCausesExecution;
     //
     // when turning resizeCausesExecution back on (it's turned off during
     // parsing), set a flag which will cause it to be turned on after a resize
@@ -229,7 +229,7 @@ class ImageWindow : public DXWindow
     //
     // Private class data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //friend void ImageWindow_FileMenuMapCB(Widget, XtPointer, XtPointer);
     //friend void ImageWindow_WindowsMenuMapCB(Widget, XtPointer, XtPointer);
@@ -280,13 +280,13 @@ class ImageWindow : public DXWindow
 				//   XtPointer clientData,
 				//   XEvent    *callData,
 				//   Boolean   *continue_to_dispatch);
-    //static boolean HandleExposures(XEvent *event, void *clientData);
+    //static bool HandleExposures(XEvent *event, void *clientData);
     //friend void ImageWindow_ChangeImageNameCB(Widget    selectBox,
 		  //    		  XtPointer clientData,
 		  //    		  XtPointer callData);
     //friend Boolean ImageWindow_ResetEORWP(XtPointer);
     //friend void ImageWindow_ResizeTO (XtPointer , XtIntervalId* );
-    boolean adjustDepth(int &depth);
+    bool adjustDepth(int &depth);
 
     void completePictureCreation();
     List         panelNameList;
@@ -302,34 +302,34 @@ class ImageWindow : public DXWindow
     // apply the pending interaction mode with applyPendingInteractionMode().
     //
     // Install the given mode as the new interaction mode. 
-    // If ignoreMatchingModes is FALSE, then we return immediately if the
+    // If ignoreMatchingModes is false, then we return immediately if the
     // mode is already set otherwise, we go ahead and set the window for
     // the given mode.  See, set/activateInteractionMode().
     //
     DirectInteractionMode pendingInteractionMode;
     DirectInteractionMode currentInteractionMode;
-    boolean setInteractionMode(DirectInteractionMode mode,
-                        boolean ignoreMatchingModes);
+    bool setInteractionMode(DirectInteractionMode mode,
+                        bool ignoreMatchingModes);
 #if 00
-    boolean activateInteractionMode();
+    bool activateInteractionMode();
 #endif
-    boolean applyPendingInteractionMode();
+    bool applyPendingInteractionMode();
 
     Network*		network;
 
     //
     // Image state 
     //
-    boolean		directInteraction;
+    bool		directInteraction;
     ImageAtoms		atoms;
     ImageState		state;
     Stack*		managed_state;
 
     // are we just switching between hardware and software?
-    boolean		switchingSoftware;
+    bool		switchingSoftware;
 
     // Have we pushed since the last execution?
-    boolean		pushedSinceExec;
+    bool		pushedSinceExec;
 
     int		currentProbeInstance;	
     int		currentPickInstance;		
@@ -350,7 +350,7 @@ class ImageWindow : public DXWindow
 
 
 
-    virtual void resizeImage(boolean ok_to_send=TRUE);
+    virtual void resizeImage(bool ok_to_send=true);
     //virtual void zoomImage(XmPictureCallbackStruct*);
     //virtual void roamImage(XmPictureCallbackStruct*);
     //virtual void rotateImage(XmPictureCallbackStruct*);
@@ -520,7 +520,7 @@ class ImageWindow : public DXWindow
     //
     CommandInterface*	onVisualProgramOption;
 
-    boolean cameraInitialized;
+    bool cameraInitialized;
 
     //
     // add a work proc for resetting the execute-on-resize flag because
@@ -532,7 +532,7 @@ class ImageWindow : public DXWindow
     //XtWorkProcId reset_eor_wp;
     int  pending_resize_x, pending_resize_y; 
     int  pending_resize_width, pending_resize_height;
-    static boolean NeedsSyncForResize;
+    static bool NeedsSyncForResize;
 
   protected:
 
@@ -586,7 +586,7 @@ class ImageWindow : public DXWindow
     // image.
     virtual void newCanvasImage();
     //virtual void trackFrameBuffer(XEvent *event, Boolean *continue_to_dispatch);
-    //virtual boolean handleExposures(XEvent *event);
+    //virtual bool handleExposures(XEvent *event);
 
     virtual void serverDisconnected();
 
@@ -646,7 +646,7 @@ class ImageWindow : public DXWindow
     //
     // Constructor for the masses:
     //
-    ImageWindow(boolean  isAnchor, Network* network);
+    ImageWindow(bool  isAnchor, Network* network);
 
 
     //
@@ -688,16 +688,16 @@ class ImageWindow : public DXWindow
     void    addProbe(Node*);
     void    deleteProbe(Node*);
     void    changeProbe(Node*);
-    boolean selectProbeByInstance(int instanceNumber);
+    bool selectProbeByInstance(int instanceNumber);
     ProbeNode    *getCurrentProbeNode();
-    boolean setCurrentProbe(int instanceNumber);
+    bool setCurrentProbe(int instanceNumber);
 
     void    addPick(Node*);
     void    deletePick(Node*);
     void    changePick(Node*);
-    boolean selectPickByInstance(int instanceNumber);
+    bool selectPickByInstance(int instanceNumber);
     PickNode   *getCurrentPickNode();
-    boolean setCurrentPick(int instanceNumber);
+    bool setCurrentPick(int instanceNumber);
 
     //
     // three functions to control the hightlighting of the Execute button.
@@ -710,25 +710,25 @@ class ImageWindow : public DXWindow
  //   {
 	//return this->canvas;
  //   }
-    boolean directInteractionAllowed()
+    bool directInteractionAllowed()
     {
 	return this->directInteraction;
     }
-    void allowDirectInteraction(boolean allow);
+    void allowDirectInteraction(bool allow);
 
     virtual void clearFrameBufferOverlay();
 
     //
     // Associates an Image or Display style node with an ImageWindow.
-    // Returns TRUE if there wasn't another node already associated, FALSE
+    // Returns true if there wasn't another node already associated, false
     // if there was.
-    boolean associateNode(Node *n);
+    bool associateNode(Node *n);
     Node   *getAssociatedNode() { return this->node; }
-    boolean isAssociatedWithNode();
+    bool isAssociatedWithNode();
 
 
-    boolean enablePerspective(boolean enable);
-    boolean getPerspective();
+    bool enablePerspective(bool enable);
+    bool getPerspective();
     void setViewAngle(double viewAngle);
     void getViewAngle(double &viewAngle);
     void setResolution(int x, int y);
@@ -743,56 +743,56 @@ class ImageWindow : public DXWindow
     void getUp(double *v);
     void getThrottle(double &v);
     void setThrottle(double v);
-    boolean updateThrottleDialog(double v);
+    bool updateThrottleDialog(double v);
 
-    boolean isAutoAxesCursorSet ();
-    boolean isAutoAxesCornersSet ();
-    boolean isSetAutoAxesFrame ();
-    boolean isSetAutoAxesGrid ();
-    boolean isSetAutoAxesAdjust ();
-    boolean isAutoAxesAnnotationSet ();
-    boolean isAutoAxesLabelsSet ();
-    boolean isAutoAxesColorsSet ();
-    boolean isAutoAxesFontSet ();
-    boolean isAutoAxesTicksSet ();
-    boolean isAutoAxesLabelScaleSet ();
-    boolean isAutoAxesXTickLocsSet ();
-    boolean isAutoAxesYTickLocsSet ();
-    boolean isAutoAxesZTickLocsSet ();
-    boolean isAutoAxesXTickLabelsSet ();
-    boolean isAutoAxesYTickLabelsSet ();
-    boolean isAutoAxesZTickLabelsSet ();
+    bool isAutoAxesCursorSet ();
+    bool isAutoAxesCornersSet ();
+    bool isSetAutoAxesFrame ();
+    bool isSetAutoAxesGrid ();
+    bool isSetAutoAxesAdjust ();
+    bool isAutoAxesAnnotationSet ();
+    bool isAutoAxesLabelsSet ();
+    bool isAutoAxesColorsSet ();
+    bool isAutoAxesFontSet ();
+    bool isAutoAxesTicksSet ();
+    bool isAutoAxesLabelScaleSet ();
+    bool isAutoAxesXTickLocsSet ();
+    bool isAutoAxesYTickLocsSet ();
+    bool isAutoAxesZTickLocsSet ();
+    bool isAutoAxesXTickLabelsSet ();
+    bool isAutoAxesYTickLabelsSet ();
+    bool isAutoAxesZTickLabelsSet ();
 
-    boolean isBGColorConnected ();
-    boolean isThrottleConnected ();
-    boolean isRecordEnableConnected ();
-    boolean isRecordFileConnected ();
-    boolean isRecordFormatConnected ();
-    boolean isRecordResolutionConnected ();
-    boolean isRecordAspectConnected ();
-    boolean isAutoAxesEnableConnected ();
-    boolean isAutoAxesCornersConnected ();
-    boolean isAutoAxesCursorConnected ();
-    boolean isAutoAxesFrameConnected ();
-    boolean isAutoAxesGridConnected ();
-    boolean isAutoAxesAdjustConnected ();
-    boolean isAutoAxesAnnotationConnected ();
-    boolean isAutoAxesLabelsConnected ();
-    boolean isAutoAxesColorsConnected ();
-    boolean isAutoAxesFontConnected ();
-    boolean isAutoAxesTicksConnected ();
-    boolean isAutoAxesXTickLocsConnected ();
-    boolean isAutoAxesYTickLocsConnected ();
-    boolean isAutoAxesZTickLocsConnected ();
-    boolean isAutoAxesXTickLabelsConnected ();
-    boolean isAutoAxesYTickLabelsConnected ();
-    boolean isAutoAxesZTickLabelsConnected ();
-    boolean isAutoAxesLabelScaleConnected ();
-    boolean isRenderModeConnected ();
-    boolean isButtonUpApproxConnected ();
-    boolean isButtonDownApproxConnected ();
-    boolean isButtonUpDensityConnected ();
-    boolean isButtonDownDensityConnected ();
+    bool isBGColorConnected ();
+    bool isThrottleConnected ();
+    bool isRecordEnableConnected ();
+    bool isRecordFileConnected ();
+    bool isRecordFormatConnected ();
+    bool isRecordResolutionConnected ();
+    bool isRecordAspectConnected ();
+    bool isAutoAxesEnableConnected ();
+    bool isAutoAxesCornersConnected ();
+    bool isAutoAxesCursorConnected ();
+    bool isAutoAxesFrameConnected ();
+    bool isAutoAxesGridConnected ();
+    bool isAutoAxesAdjustConnected ();
+    bool isAutoAxesAnnotationConnected ();
+    bool isAutoAxesLabelsConnected ();
+    bool isAutoAxesColorsConnected ();
+    bool isAutoAxesFontConnected ();
+    bool isAutoAxesTicksConnected ();
+    bool isAutoAxesXTickLocsConnected ();
+    bool isAutoAxesYTickLocsConnected ();
+    bool isAutoAxesZTickLocsConnected ();
+    bool isAutoAxesXTickLabelsConnected ();
+    bool isAutoAxesYTickLabelsConnected ();
+    bool isAutoAxesZTickLabelsConnected ();
+    bool isAutoAxesLabelScaleConnected ();
+    bool isRenderModeConnected ();
+    bool isButtonUpApproxConnected ();
+    bool isButtonDownApproxConnected ();
+    bool isButtonUpDensityConnected ();
+    bool isButtonDownDensityConnected ();
 
     void getAutoAxesCorners (double dval[]);
     void getAutoAxesCursor (double *x, double *y, double *z);
@@ -812,81 +812,81 @@ class ImageWindow : public DXWindow
     double getAutoAxesLabelScale ();
     int getAutoAxesTicksCount ();
 
-    void setAutoAxesCorners (double dval[], boolean send);
-    void setAutoAxesCursor (double x, double  y, double  z, boolean send);
-    void setAutoAxesFrame (boolean state, boolean send);
-    void setAutoAxesGrid (boolean state, boolean send);
-    void setAutoAxesAdjust (boolean state, boolean send);
-    void setAutoAxesEnable (int d, boolean send);
-    void setAutoAxesLabelScale (double d, boolean send);
-    void setAutoAxesAnnotation (char *value, boolean send);
-    void setAutoAxesColors (char *value, boolean send);
-    void setAutoAxesLabels (char *value, boolean send);
-    void setAutoAxesFont (char *value, boolean send);
-    void setAutoAxesTicks (int t1, int t2, int t3, boolean send);
-    void setAutoAxesTicks (int t, boolean send);
-    void setAutoAxesXTickLocs (double *t, int size, boolean send);
-    void setAutoAxesYTickLocs (double *t, int size, boolean send);
-    void setAutoAxesZTickLocs (double *t, int size, boolean send);
-    void setAutoAxesXTickLabels (char *value, boolean send);
-    void setAutoAxesYTickLabels (char *value, boolean send);
-    void setAutoAxesZTickLabels (char *value, boolean send);
+    void setAutoAxesCorners (double dval[], bool send);
+    void setAutoAxesCursor (double x, double  y, double  z, bool send);
+    void setAutoAxesFrame (bool state, bool send);
+    void setAutoAxesGrid (bool state, bool send);
+    void setAutoAxesAdjust (bool state, bool send);
+    void setAutoAxesEnable (int d, bool send);
+    void setAutoAxesLabelScale (double d, bool send);
+    void setAutoAxesAnnotation (char *value, bool send);
+    void setAutoAxesColors (char *value, bool send);
+    void setAutoAxesLabels (char *value, bool send);
+    void setAutoAxesFont (char *value, bool send);
+    void setAutoAxesTicks (int t1, int t2, int t3, bool send);
+    void setAutoAxesTicks (int t, bool send);
+    void setAutoAxesXTickLocs (double *t, int size, bool send);
+    void setAutoAxesYTickLocs (double *t, int size, bool send);
+    void setAutoAxesZTickLocs (double *t, int size, bool send);
+    void setAutoAxesXTickLabels (char *value, bool send);
+    void setAutoAxesYTickLabels (char *value, bool send);
+    void setAutoAxesZTickLabels (char *value, bool send);
 
-    void unsetAutoAxesCorners (boolean send);
-    void unsetAutoAxesCursor (boolean send);
-    void unsetAutoAxesTicks (boolean send);
-    void unsetAutoAxesXTickLocs (boolean send);
-    void unsetAutoAxesYTickLocs (boolean send);
-    void unsetAutoAxesZTickLocs (boolean send);
-    void unsetAutoAxesXTickLabels (boolean send);
-    void unsetAutoAxesYTickLabels (boolean send);
-    void unsetAutoAxesZTickLabels (boolean send);
-    void unsetAutoAxesAnnotation (boolean send);
-    void unsetAutoAxesLabels (boolean send);
-    void unsetAutoAxesColors (boolean send);
-    void unsetAutoAxesFont (boolean send);
-    void unsetAutoAxesEnable (boolean send);
-    void unsetAutoAxesFrame (boolean send);
-    void unsetAutoAxesGrid (boolean send);
-    void unsetAutoAxesAdjust (boolean send);
-    void unsetAutoAxesLabelScale (boolean send);
+    void unsetAutoAxesCorners (bool send);
+    void unsetAutoAxesCursor (bool send);
+    void unsetAutoAxesTicks (bool send);
+    void unsetAutoAxesXTickLocs (bool send);
+    void unsetAutoAxesYTickLocs (bool send);
+    void unsetAutoAxesZTickLocs (bool send);
+    void unsetAutoAxesXTickLabels (bool send);
+    void unsetAutoAxesYTickLabels (bool send);
+    void unsetAutoAxesZTickLabels (bool send);
+    void unsetAutoAxesAnnotation (bool send);
+    void unsetAutoAxesLabels (bool send);
+    void unsetAutoAxesColors (bool send);
+    void unsetAutoAxesFont (bool send);
+    void unsetAutoAxesEnable (bool send);
+    void unsetAutoAxesFrame (bool send);
+    void unsetAutoAxesGrid (bool send);
+    void unsetAutoAxesAdjust (bool send);
+    void unsetAutoAxesLabelScale (bool send);
 
     void setTranslateSpeed(double);
     void setRotateSpeed(double);
     double getTranslateSpeed();
     double getRotateSpeed();
 
-    void setSoftware(boolean sw);
-    void getSoftware(boolean &sw);
-    void setApproximation(boolean up, ApproxMode mode);
-    void getApproximation(boolean up, ApproxMode &mode);
-    void setDensity(boolean up, int density);
-    void getDensity(boolean up, int &density);
+    void setSoftware(bool sw);
+    void getSoftware(bool &sw);
+    void setApproximation(bool up, ApproxMode mode);
+    void getApproximation(bool up, ApproxMode &mode);
+    void setDensity(bool up, int density);
+    void getDensity(bool up, int &density);
 
-    boolean setInteractionMode(DirectInteractionMode mode);
+    bool setInteractionMode(DirectInteractionMode mode);
     DirectInteractionMode getInteractionMode();
 
     void newCamera(int image_width, int image_height);
     void newCamera(double box[4][3], double aamat[4][4], double *from, double *to, 
 	double *up, int image_width, int image_height, double width,
-	boolean perspective, double viewAngle);
+	bool perspective, double viewAngle);
     void undoCamera();
     void redoCamera();
     void resetCamera();
-    boolean setView(ViewDirection direction); 
-    boolean setLook(LookDirection direction); 
-    boolean setConstraint(ConstraintDirection direction); 
+    bool setView(ViewDirection direction); 
+    bool setLook(LookDirection direction); 
+    bool setConstraint(ConstraintDirection direction); 
     ConstraintDirection getConstraint();
 
-    boolean setBackgroundColor(const char *color); 
-    boolean updateBGColorDialog(const char *color); 
+    bool setBackgroundColor(const char *color); 
+    bool updateBGColorDialog(const char *color); 
     const char *getBackgroundColor();
     void  setDisplayGlobe();
 
-    boolean enableRecord(boolean enable);
-    boolean useRecord();
-    boolean setRecordFile(const char *file);
-    boolean setRecordFormat(const char *format);
+    bool enableRecord(bool enable);
+    bool useRecord();
+    bool setRecordFile(const char *file);
+    bool setRecordFormat(const char *format);
     const char *getRecordFile();
     const char *getRecordFormat();
     void getRecordResolution(int &x, int &y);
@@ -911,20 +911,20 @@ class ImageWindow : public DXWindow
     //
     // Post several of the controlling dialogs.
     //
-    boolean postRenderingOptionsDialog();
-    boolean postAutoAxesDialog();
-    boolean postThrottleDialog();
-    boolean postViewControlDialog();
-    boolean postChangeImageNameDialog();
-    boolean postBackgroundColorDialog();
-    boolean postVPE();
-    boolean postSaveImageDialog();
-    boolean postPrintImageDialog();
+    bool postRenderingOptionsDialog();
+    bool postAutoAxesDialog();
+    bool postThrottleDialog();
+    bool postViewControlDialog();
+    bool postChangeImageNameDialog();
+    bool postBackgroundColorDialog();
+    bool postVPE();
+    bool postSaveImageDialog();
+    bool postPrintImageDialog();
 
 
-    void sensitizePrintImageDialog(boolean flag);
-    void sensitizeSaveImageDialog(boolean flag);
-    void sensitizeThrottleDialog(boolean flag);
+    void sensitizePrintImageDialog(bool flag);
+    void sensitizeSaveImageDialog(bool flag);
+    void sensitizeThrottleDialog(bool flag);
 
     //
     // Get commands.
@@ -1003,13 +1003,13 @@ class ImageWindow : public DXWindow
     void setAutoAxesDialogYTickLabels();
     void setAutoAxesDialogZTickLabels();
 
-    void sensitizeViewControl(boolean flag);
-    void sensitizeChangeImageName(boolean flag);
-    void sensitizeRenderMode(boolean flag);
-    void sensitizeButtonUpApprox(boolean flag);
-    void sensitizeButtonDownApprox(boolean flag);
-    void sensitizeButtonUpDensity(boolean flag);
-    void sensitizeButtonDownDensity(boolean flag);
+    void sensitizeViewControl(bool flag);
+    void sensitizeChangeImageName(bool flag);
+    void sensitizeRenderMode(bool flag);
+    void sensitizeButtonUpApprox(bool flag);
+    void sensitizeButtonDownApprox(bool flag);
+    void sensitizeButtonUpDensity(bool flag);
+    void sensitizeButtonDownDensity(bool flag);
 
 
     //
@@ -1024,11 +1024,11 @@ class ImageWindow : public DXWindow
     // Allow the DisplayNode to turn off execution on resizes due to
     // reading the 'window: pos=... size=...' comments. 
     //
-    boolean isExecuteOnResize() { return this->state.resizeCausesExecution; }
-    void setExecuteOnResize(boolean setting = TRUE) 
+    bool isExecuteOnResize() { return this->state.resizeCausesExecution; }
+    void setExecuteOnResize(bool setting = true) 
 				{ this->state.resizeCausesExecution = setting; }
     void resetExecuteOnResizeWhenAble();
-    //boolean hasPendingWindowPlacement() { return (boolean)(this->reset_eor_wp != 0); }
+    //bool hasPendingWindowPlacement() { return (bool)(this->reset_eor_wp != 0); }
  
     //
     // Before calling the super class method we verify that doing this will 
@@ -1055,11 +1055,11 @@ class ImageWindow : public DXWindow
     // Allow the node to set the sensitivity of the background
     // color dialog box when the associated tab is attached/deattached
     // to an arc.
-    void sensitizeBackgroundColorDialog(boolean flag);
+    void sensitizeBackgroundColorDialog(bool flag);
 
     //
     // Determine whether the camera has been initializes
-    boolean cameraIsInitialized() { return this->cameraInitialized;}
+    bool cameraIsInitialized() { return this->cameraInitialized;}
 
     //
     // Called by the MainWindow CloseCallback.  We call the super class
@@ -1072,13 +1072,13 @@ class ImageWindow : public DXWindow
     // On behalf of ImageFormatDialog (Save/Print Image dialogs) which needs to
     // know what strategy to use for saving the current image.
     //
-    boolean hardwareMode() { return this->state.hardwareRender; }
+    bool hardwareMode() { return this->state.hardwareRender; }
 
     //
     // Make sure the changing the window title doesn't change the where
     // parameter (due to new window placement features.)
     //
-    virtual void setWindowTitle(const char* name, boolean check_geometry=FALSE);
+    virtual void setWindowTitle(const char* name, bool check_geometry=false);
 
 
     //

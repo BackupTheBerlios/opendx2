@@ -14,7 +14,7 @@
 #include "TextFileFileDialog.h"
 
 
-boolean TextFile::ClassInitialized = FALSE;
+bool TextFile::ClassInitialized = false;
 //String TextFile::DefaultResources[] =
 //{
 //        ".fsdButton.labelString: ...",
@@ -33,7 +33,7 @@ TextFile::TextFile() : UIComponent("textFile")
 
     if (NOT TextFile::ClassInitialized)
     {
-        TextFile::ClassInitialized = TRUE;
+        TextFile::ClassInitialized = true;
 	//this->installDefaultResources();
     }
 }
@@ -144,7 +144,7 @@ void TextFile::createTextFile(
 //
 // De/Install callbacks for the text widget. 
 //
-void TextFile::enableCallbacks(boolean enable)
+void TextFile::enableCallbacks(bool enable)
 {
  //   ASSERT(this->getRootWidget() && this->fileName);
 
@@ -174,7 +174,7 @@ char *TextFile::getText()
     //return XmTextGetString(this->fileName);
 	return NULL;
 }
-void TextFile::setText(const char *value, boolean doActivate)
+void TextFile::setText(const char *value, bool doActivate)
 {
     //XmTextSetString(this->fileName, (char*)value);
 
@@ -191,7 +191,7 @@ void TextFile::setText(const char *value, boolean doActivate)
 
 void TextFile::fileSelectCallback(const char *value)
 {
-    this->setText(value, TRUE);
+    this->setText(value, true);
 }
 
 void TextFile::activateTextCallback(const char *value, void *callData)

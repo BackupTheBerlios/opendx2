@@ -41,7 +41,7 @@ class NoUndoNetworkCommand : public NoUndoCommand
     Network		*network;
     NetworkCommandType 	commandType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -49,7 +49,7 @@ class NoUndoNetworkCommand : public NoUndoCommand
     //
     NoUndoNetworkCommand(const char*   name,
                    CommandScope  *scope,
-                   boolean       active,
+                   bool       active,
 		   Network	*n,
 		   NetworkCommandType comType);
 

@@ -32,7 +32,7 @@ class ExecCommandDialog : public SetNameDialog
     //
     // Private member data:
     //
-    static boolean 	ClassInitialized;
+    static bool 	ClassInitialized;
 
   protected:
     //
@@ -44,7 +44,7 @@ class ExecCommandDialog : public SetNameDialog
 
     void saveLastCommand(const char*);
     virtual const char *getText();
-    virtual boolean saveText(const char *s);
+    virtual bool saveText(const char *s);
 
     //
     // Install the default resources for this class and then call the

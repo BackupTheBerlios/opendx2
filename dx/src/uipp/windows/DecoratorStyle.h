@@ -22,7 +22,7 @@ class Dictionary;
 class Decorator;
 
 typedef Decorator* 
-(*DecoratorAllocator)(boolean developerStyle);
+(*DecoratorAllocator)(bool developerStyle);
 
 extern void BuildtheDecoratorStyleDictionary(void);
 
@@ -31,9 +31,9 @@ class DecoratorStyle : public Base {
 
     Symbol		name;
     DecoratorAllocator	allocateDecorator;
-    boolean		isDefault;
+    bool		isDefault;
     char *		key;
-    boolean		useInVPE;
+    bool		useInVPE;
 
   public:
 	
@@ -53,10 +53,10 @@ class DecoratorStyle : public Base {
     // Added supported style/name/decoratorbuild group to the list
     // of supported styles for the given named decorator (node name).
     //
-    static boolean AddSupportedStyle(const char *decorator,
+    static bool AddSupportedStyle(const char *decorator,
 		    DecoratorStyleEnum style,
 		    const char *stylename,
-		    boolean useInVPE,
+		    bool useInVPE,
 		    DecoratorAllocator ia);
 
     static void BuildDictionary(void);
@@ -78,14 +78,14 @@ class DecoratorStyle : public Base {
     static Dictionary *GetDecoratorStyleDictionary();
 
 
-    DecoratorStyle(DecoratorStyleEnum s, const char *n, boolean useInVPE, 
+    DecoratorStyle(DecoratorStyleEnum s, const char *n, bool useInVPE, 
 				DecoratorAllocator ia, const char *key);
 
     ~DecoratorStyle();
 
-    Decorator *createDecorator(boolean developerStyle);
+    Decorator *createDecorator(bool developerStyle);
 
-    boolean allowedInVPE() { return this->useInVPE; }
+    bool allowedInVPE() { return this->useInVPE; }
 
     const char *getKeyString()
 	{ return this->key; }

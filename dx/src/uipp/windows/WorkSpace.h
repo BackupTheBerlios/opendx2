@@ -70,10 +70,10 @@ class WorkSpace : public UIComponent
     //// Saved in constructor for use during initializeRootWidget().
     //Widget   parent;	
 
-    boolean wasLineDrawingEnabled;
-    boolean wasAllowOverlap;
-    boolean wasManhattanEnabled;
-    boolean activeManyPlacements;
+    bool wasLineDrawingEnabled;
+    bool wasAllowOverlap;
+    bool wasManhattanEnabled;
+    int activeManyPlacements;
 
   protected:
 
@@ -108,7 +108,7 @@ class WorkSpace : public UIComponent
     //
     WorkSpace(const char *name, WorkSpaceInfo *info);
 
-    virtual boolean isRoot() { return TRUE; }
+    virtual bool isRoot() { return true; }
 
     //
     // Record lineDrawing, overlap, and manhattan values so that they can
@@ -129,7 +129,7 @@ class WorkSpace : public UIComponent
     //
     // One time class initializations 
     //
-    virtual void initializeRootWidget(boolean loadDefaultResources = FALSE);
+    virtual void initializeRootWidget(bool loadDefaultResources = false);
 
     virtual void setCursor(int cursorType);
     virtual void resetCursor();
@@ -172,16 +172,16 @@ class WorkSpace : public UIComponent
     // Used by undo operations to determine if an undone move will clobber
     // other objects.
     //
-    virtual boolean isEmpty (int x, int y, int width, int height);
+    virtual bool isEmpty (int x, int y, int width, int height);
 
     //
     // On behalf of Page/Root
     //
     int getPlacementCount() { return this->activeManyPlacements; }
     void setPlacementCount(int count);
-    boolean getLineDrawing() { return this->wasLineDrawingEnabled; }
-    boolean getOverlap() { return this->wasAllowOverlap; }
-    boolean getManhattan() { return this->wasManhattanEnabled; }
+    bool getLineDrawing() { return this->wasLineDrawingEnabled; }
+    bool getOverlap() { return this->wasAllowOverlap; }
+    bool getManhattan() { return this->wasManhattanEnabled; }
 
     //
     // Returns a pointer to the class name.

@@ -12,7 +12,7 @@
 #include "ToggleButtonInterface.h"
 
 
-boolean ToggleButtonInterface::ToggleButtonInterfaceClassInitialized = FALSE;
+bool ToggleButtonInterface::ToggleButtonInterfaceClassInitialized = false;
 
 Symbol ToggleButtonInterface::MsgToggleOn    = NUL(Symbol);
 Symbol ToggleButtonInterface::MsgToggleOff   = NUL(Symbol);
@@ -22,7 +22,7 @@ Symbol ToggleButtonInterface::MsgToggleState = NUL(Symbol);
 ToggleButtonInterface::ToggleButtonInterface(
 					     char*    name,
 					     Command* command,
-					     boolean  state,
+					     bool  state,
 					     const char *bubbleHelp):
 	CommandInterface(name, command)
 {
@@ -42,7 +42,7 @@ ToggleButtonInterface::ToggleButtonInterface(
 	ToggleButtonInterface::MsgToggleState =
 	    theSymbolManager->registerSymbol("ToggleState");
 
-	ToggleButtonInterface::ToggleButtonInterfaceClassInitialized = TRUE;
+	ToggleButtonInterface::ToggleButtonInterfaceClassInitialized = true;
     }
 
     //
@@ -59,7 +59,7 @@ ToggleButtonInterface::ToggleButtonInterface(
 	//     xmToggleButtonWidgetClass,
 	//     parent,
 	//     XmNset,            this->state,
-	//     XmNvisibleWhenOff, TRUE,
+	//     XmNvisibleWhenOff, true,
 	//     NULL));
 
     //
@@ -93,11 +93,11 @@ void ToggleButtonInterface::notify(const Symbol message,
 {
     if (message == ToggleButtonInterface::MsgToggleOn)
     {
-	this->setState(TRUE);
+	this->setState(true);
     }
     else if (message == ToggleButtonInterface::MsgToggleOff)
     {
-	this->setState(FALSE);
+	this->setState(false);
     }
     else if (message == ToggleButtonInterface::MsgToggleState)
     {
@@ -120,7 +120,7 @@ void ToggleButtonInterface::toggleState()
 }
 
 
-void ToggleButtonInterface::setState(const boolean state, const boolean notify)
+void ToggleButtonInterface::setState(const bool state, const bool notify)
 {
     this->state = state;
 
@@ -129,9 +129,9 @@ void ToggleButtonInterface::setState(const boolean state, const boolean notify)
 	//XtVaSetValues(this->getRootWidget(), XmNset, this->state, NULL);
  //   }
 }
-boolean ToggleButtonInterface::getState()
+bool ToggleButtonInterface::getState()
 {
-	boolean set=false;
+	bool set=false;
 
  //   if (this->getRootWidget())
  //   {

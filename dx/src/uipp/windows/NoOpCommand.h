@@ -34,12 +34,12 @@ class NoOpCommand : public Command
     //
     // Does nothing;
     //
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
     //
     // Undoes nothing;
     //
-    virtual boolean undoIt();
+    virtual bool undoIt();
 
   public:
     //
@@ -47,7 +47,7 @@ class NoOpCommand : public Command
     //
     NoOpCommand(const char*   name,
 		CommandScope* scope,
-		boolean       active);
+		bool       active);
 
     //
     // Destructor:

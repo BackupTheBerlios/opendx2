@@ -57,7 +57,7 @@ class PanelAccessManager : public Base
     //
     Network *network;
     ControlPanel *cp;
-    boolean 	isActive;
+    bool 	isActive;
 
 
     //
@@ -83,14 +83,14 @@ class PanelAccessManager : public Base
     //
     // Parse/Print a control panel's 'inaccessible' comment.
     //
-    boolean cfgParseInaccessibleComment(const char *comment,
+    bool cfgParseInaccessibleComment(const char *comment,
                                 const char *filename, int lineno);
-    boolean cfgPrintInaccessibleComment(FILE *f);
+    bool cfgPrintInaccessibleComment(FILE *f);
 
     //
-    // Return TRUE if cfgPrintInaccessibleComment needs to be called.
+    // Return true if cfgPrintInaccessibleComment needs to be called.
     //
-    boolean hasCfgComment();
+    bool hasCfgComment();
 
  
     //
@@ -120,10 +120,10 @@ class PanelAccessManager : public Base
     //
     // Determine if the given panel (specified by instance number) is accessible
     //
-    boolean     isAccessiblePanel(int instanceNumber);
-    boolean     isAccessibleGroup(const char* name);
+    bool     isAccessiblePanel(int instanceNumber);
+    bool     isAccessibleGroup(const char* name);
 
-    boolean isActivated();
+    bool isActivated();
 
     //
     // Returns a pointer to the class name.

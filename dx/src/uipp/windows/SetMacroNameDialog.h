@@ -35,7 +35,7 @@ class SetMacroNameDialog : public Dialog
     // Private member data:
     //
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     Network *network;
 
   protected:
@@ -56,7 +56,7 @@ class SetMacroNameDialog : public Dialog
 
     //static String DefaultResources[];
 
-    virtual boolean okCallback(Dialog *d);
+    virtual bool okCallback(Dialog *d);
     virtual void createDialog();
 
     //
@@ -73,11 +73,11 @@ class SetMacroNameDialog : public Dialog
 
     //
     // Check the given name to see if it is a valid macro name.
-    // If realMacro is TRUE, then don't allow the name to be 'main'.
-    // If it is return TRUE, othewise return FALSE and issue an error
+    // If realMacro is true, then don't allow the name to be 'main'.
+    // If it is return true, othewise return false and issue an error
     // message.
     //
-    boolean verifyMacroName(const char *name, boolean realMacro);
+    bool verifyMacroName(const char *name, bool realMacro);
 
   public:
     //

@@ -34,7 +34,7 @@ class Network;
 //				
 class SaveCFGDialog : public dxui::SaveFileDialog
 {
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     Network	*network;

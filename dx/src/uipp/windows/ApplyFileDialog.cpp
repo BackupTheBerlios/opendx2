@@ -14,7 +14,7 @@
 
 
 
-boolean ApplyFileDialog::ClassInitialized = FALSE;
+bool ApplyFileDialog::ClassInitialized = false;
 
 //String ApplyFileDialog::DefaultResources[] =
 //{
@@ -31,10 +31,10 @@ boolean ApplyFileDialog::ClassInitialized = FALSE;
 ApplyFileDialog::ApplyFileDialog() :
 			FileDialog("applyFileDialog")
 {
-    this->hasCommentButton = TRUE;	// Turn the help button into Apply
+    this->hasCommentButton = true;	// Turn the help button into Apply
     if (NOT ApplyFileDialog::ClassInitialized)
     {
-        ApplyFileDialog::ClassInitialized = TRUE;
+        ApplyFileDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -45,7 +45,7 @@ ApplyFileDialog::ApplyFileDialog() :
 ApplyFileDialog::ApplyFileDialog(const char *name) :
 			FileDialog(name)
 {
-    this->hasCommentButton = TRUE;	// Turn the help button into Apply
+    this->hasCommentButton = true;	// Turn the help button into Apply
 }
 
 //void ApplyFileDialog::installDefaultResources(Widget  baseWidget)
@@ -79,9 +79,9 @@ void ApplyFileDialog::helpCallback(Dialog *d)
 	return;
     } 
 
-    //theApplication->setBusyCursor(TRUE);
+    //theApplication->setBusyCursor(true);
     this->okFileWork(string);
-    //theApplication->setBusyCursor(FALSE);
+    //theApplication->setBusyCursor(false);
     delete string; 
 }
 

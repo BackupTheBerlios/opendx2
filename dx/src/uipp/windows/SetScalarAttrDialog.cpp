@@ -25,7 +25,7 @@
 #endif
 
 
-boolean SetScalarAttrDialog::ClassInitialized = FALSE;
+bool SetScalarAttrDialog::ClassInitialized = false;
 
 //String  SetScalarAttrDialog::DefaultResources[] =
 //{
@@ -125,7 +125,7 @@ SetScalarAttrDialog::SetScalarAttrDialog(
 
     if (NOT SetScalarAttrDialog::ClassInitialized)
     {
-        SetScalarAttrDialog::ClassInitialized = TRUE;
+        SetScalarAttrDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -237,13 +237,13 @@ int SetScalarAttrDialog::getCurrentComponentNumber()
 }
 //
 // Indicate whether to update all attributes when a dialog attribute
-// is changed.  At this level we return FALSE, but provide this 
+// is changed.  At this level we return false, but provide this 
 // to allow others (i.e. SetVectorAttrDialog) to indicate that
 // all values are to be updated. 
 //
-boolean SetScalarAttrDialog::isAllAttributesMode()
+bool SetScalarAttrDialog::isAllAttributesMode()
 {
-   return FALSE;
+   return false;
 }
 
 //
@@ -269,7 +269,7 @@ void SetScalarAttrDialog::updateAllAttributes(int component_index)
 // the given InteractorInstance indicated with this->interactorInstance and
 // this->componentIndex.
 //
-boolean SetScalarAttrDialog::storeAttributes()
+bool SetScalarAttrDialog::storeAttributes()
 {
  //   int component_index, ncomp = this->numComponents;
  //   ScalarNode *sinode; 
@@ -321,14 +321,14 @@ boolean SetScalarAttrDialog::storeAttributes()
 	////
 	//if (this->usingGlobalContinuous) {
 	//    si->setLocalContinuous(this->localContinuousValue == True ?
-	//				    TRUE : FALSE);
+	//				    true : false);
 	//    si->useGlobalContinuous(this->globalContinuousValue == True ?
-	//				    TRUE : FALSE);
+	//				    true : false);
 	//} else {
 	//    si->setGlobalContinuous(this->globalContinuousValue == True ?
-	//				    TRUE : FALSE);
+	//				    true : false);
 	//    si->useLocalContinuous(this->localContinuousValue == True ?
-	//				TRUE : FALSE);
+	//				true : false);
 	//}
  //   }
  //   //
@@ -339,7 +339,7 @@ boolean SetScalarAttrDialog::storeAttributes()
  //   if (mins) delete mins;
  //   if (maxs) delete maxs;
 
- //   return TRUE;
+ //   return true;
 	return false;
 }
 //
@@ -394,7 +394,7 @@ void SetScalarAttrDialog::updateDisplayedComponentAttributes(
 //    //
 //    ASSERT(this->maxLabel);
 //
-//    boolean   is_integer = si->isIntegerTypeComponent();
+//    bool   is_integer = si->isIntegerTypeComponent();
 //    max = attr->maximum;
 //    min = attr->minimum;
 //    decimals = attr->decimals;
@@ -474,8 +474,8 @@ void SetScalarAttrDialog::updateDisplayedComponentAttributes(
 //    // (i.e. it will be grayed-out) and the other is not, the set the
 //    // appropriate bound on the ungrayed-out one. 
 //    //
-//    boolean min_gray = !XtIsSensitive(this->minNumber); 
-//    boolean max_gray = !XtIsSensitive(this->maxNumber); 
+//    bool min_gray = !XtIsSensitive(this->minNumber); 
+//    bool max_gray = !XtIsSensitive(this->maxNumber); 
 //    double min_of_min, min_of_max, max_of_min, max_of_max;
 //    XmGetNumberBounds((XmNumberWidget)this->minNumber, 
 //				&min_of_min, &max_of_min);
@@ -538,11 +538,11 @@ void SetScalarAttrDialog::adjustIncrementBounds()
 //    if (w == sad->globalIncrement)  {
 //	ScalarInstance *si = (ScalarInstance*)sad->interactorInstance;
 //        ScalarNode *snode = (ScalarNode*)si->getNode();
-//        attr->usingGlobalIncrement = TRUE; 
+//        attr->usingGlobalIncrement = true; 
 //	nextValue = attr->globalIncrementValue;
 //	sensitive = (snode->isDeltaVisuallyWriteable() ? True : False); 
 //    } else  {
-//        attr->usingGlobalIncrement = FALSE; 
+//        attr->usingGlobalIncrement = false; 
 //	nextValue = attr->localIncrementValue;
 //	sensitive = True;
 //    }
@@ -632,10 +632,10 @@ void SetScalarAttrDialog::adjustIncrementBounds()
 //    // Get the toggle value that should be displayed for this menu selection.
 //    //
 //    if (w == sad->globalUpdate)  {
-//	sad->usingGlobalContinuous = TRUE;
+//	sad->usingGlobalContinuous = true;
 //	nextValue = sad->globalContinuousValue;
 //    } else {
-//	sad->usingGlobalContinuous = FALSE;
+//	sad->usingGlobalContinuous = false;
 //	nextValue = sad->localContinuousValue;
 //    }
 //    
@@ -695,9 +695,9 @@ void SetScalarAttrDialog::adjustIncrementBounds()
 //}
 //
 
-boolean SetScalarAttrDialog::okCallback(Dialog* dialog)
+bool SetScalarAttrDialog::okCallback(Dialog* dialog)
 {
-   boolean r = this->SetAttrDialog::okCallback(dialog);
+   bool r = this->SetAttrDialog::okCallback(dialog);
 #ifdef DEBUG
    printf("Writing resources to resources.dx\n");
    Application::DumpApplicationResources("resources.dx");

@@ -41,13 +41,13 @@ class Command : public Server
     //
     // Private class data:
     //
-    static boolean CommandClassInitialized; // Command class initialized?
+    static bool CommandClassInitialized; // Command class initialized?
 
     //
     // Private member data:
     //
     char*		name;		// name of the command
-    boolean		active;		// is the command active?
+    bool		active;		// is the command active?
     List		activateCmds;	// Commands to activate on success
     List		deactivateCmds;	// Commands to activate on success
     List		autoActivators;	// Commands that automatically 
@@ -59,7 +59,7 @@ class Command : public Server
     //
     // Protected member data:
     //
-    boolean		hasUndo;	// TRUE if this Command supports undo
+    bool		hasUndo;	// true if this Command supports undo
     List		scopeList;	// list of command scopes
 
     //
@@ -71,14 +71,14 @@ class Command : public Server
     // NULL.  So, if this method uses ci, it may also need to be prepared to 
     // handle the case where ci==NULL. 
     //
-    virtual boolean doIt(CommandInterface *ci) = 0;
+    virtual bool doIt(CommandInterface *ci) = 0;
 
     //
     // To be defined by subclasses:
     //   This function will be called by undo() function to perform
     //   the actual undo work.
     //
-    virtual boolean undoIt() = 0;
+    virtual bool undoIt() = 0;
 
     //
     // Constructor:
@@ -86,7 +86,7 @@ class Command : public Server
     //
     Command(const char*   name,
 	    CommandScope* scope,
-	    boolean       active);
+	    bool       active);
 
   public:
     //
@@ -108,7 +108,7 @@ class Command : public Server
     //   Sends activation/deactivation message to client interfaces
     //   to sync it with the current state of the Command object.
     //
-    virtual boolean registerClient(Client* client);
+    virtual bool registerClient(Client* client);
 
     //
     // Intiates the action or actions supported by this Command object.
@@ -118,14 +118,14 @@ class Command : public Server
     // CommandInterface that initiated the execution is provided, otherwise
     // ci is passed as NULL. 
     //
-    virtual boolean execute(CommandInterface *ci = NULL);
+    virtual bool execute(CommandInterface *ci = NULL);
 
     //
     // Causes the action initiated by the execute() member function to be
     // reversed. This funciton provides the public interface through 
     // which any command is be reversed.
     //
-    boolean undo();
+    bool undo();
 
     //
     // Enables the command and any user interface component associated
@@ -142,20 +142,20 @@ class Command : public Server
 
     //
     // Registers a new scope to this command.
-    //   Returns TRUE if successful; FALSE, otherwise.
+    //   Returns true if successful; false, otherwise.
     //
-    virtual boolean registerScope(CommandScope* scope);
+    virtual bool registerScope(CommandScope* scope);
 
     //
     // Unregisters a scope from this command.
-    //   Returns TRUE if successful; FALSE, otherwise.
+    //   Returns true if successful; false, otherwise.
     //
-    virtual boolean unregisterScope(CommandScope* scope);
+    virtual bool unregisterScope(CommandScope* scope);
 
     //
     // Returns active status.
     //
-    boolean isActive()
+    bool isActive()
     {
 	return this->active;
     }
@@ -163,7 +163,7 @@ class Command : public Server
     //
     // Returns undo capability status.
     //
-    boolean canUndo()
+    bool canUndo()
     {
 	return this->hasUndo;
     }

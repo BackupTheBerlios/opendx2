@@ -15,7 +15,7 @@
 #include "Network.h"
 #include "ErrorDialogManager.h"
 
-boolean SetPanelNameDialog::ClassInitialized = FALSE;
+bool SetPanelNameDialog::ClassInitialized = false;
 
 //String SetPanelNameDialog::DefaultResources[] =
 //{
@@ -32,7 +32,7 @@ SetPanelNameDialog::SetPanelNameDialog(ControlPanel *cp) :
   
     if (NOT SetPanelNameDialog::ClassInitialized)
     {
-        SetPanelNameDialog::ClassInitialized = TRUE;
+        SetPanelNameDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -56,18 +56,18 @@ const char *SetPanelNameDialog::getText()
     return this->controlPanel->getPanelNameString();
 }
 
-boolean SetPanelNameDialog::saveText(const char *s)
+bool SetPanelNameDialog::saveText(const char *s)
 {
     if (IsBlankString(s)) {
 	ModalErrorMessage(
 		"The name string cannot be blank.");
-        return FALSE;
+        return false;
     } else {
 	ControlPanel *panel = this->controlPanel;
     	panel->setPanelName(s);
     	panel->getNetwork()->setFileDirty();
     }
 
-    return TRUE;
+    return true;
 }
 

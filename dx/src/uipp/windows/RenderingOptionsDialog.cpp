@@ -17,7 +17,7 @@
 #include "ButtonInterface.h"
 
 
-boolean RenderingOptionsDialog::ClassInitialized = FALSE;
+bool RenderingOptionsDialog::ClassInitialized = false;
 
 RenderingOptionsDialog::RenderingOptionsDialog(
 				     ImageWindow *w):
@@ -26,7 +26,7 @@ RenderingOptionsDialog::RenderingOptionsDialog(
 
     if (NOT RenderingOptionsDialog::ClassInitialized)
     {
-        RenderingOptionsDialog::ClassInitialized = TRUE;
+        RenderingOptionsDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
     this->imageWindow = w;
@@ -117,13 +117,13 @@ void RenderingOptionsDialog::createDialog()
 //	NULL);
 //
 //    this->softwareButton = new ToggleButtonInterface(modeSection,
-//	  "softwareButton", iw->getSoftwareCmd(), TRUE);
+//	  "softwareButton", iw->getSoftwareCmd(), true);
 //    XtVaSetValues(this->softwareButton->getRootWidget(),
 //        XmNindicatorType   , XmONE_OF_MANY,
 //        XmNshadowThickness , 0,
 //	NULL);
 //    this->hardwareButton = new ToggleButtonInterface(modeSection,
-//	  "hardwareButton", iw->getHardwareCmd(), FALSE);
+//	  "hardwareButton", iw->getHardwareCmd(), false);
 //    XtVaSetValues(this->hardwareButton->getRootWidget(),
 //        XmNindicatorType   , XmONE_OF_MANY,
 //        XmNshadowThickness , 0,
@@ -362,7 +362,7 @@ void RenderingOptionsDialog::update()
 {  
     this->resetApproximations();
 
-    boolean sw;
+    bool sw;
     this->imageWindow->getSoftware(sw);
 
     if (sw)
@@ -383,7 +383,7 @@ void RenderingOptionsDialog::resetApproximations()
  //   ApproxMode mode;
  //   Widget b;
 
- //   this->imageWindow->getApproximation(TRUE, mode);
+ //   this->imageWindow->getApproximation(true, mode);
  //   switch (mode) {
  //   case APPROX_WIREFRAME:
 	//b = this->upWireframe->getRootWidget();
@@ -407,7 +407,7 @@ void RenderingOptionsDialog::resetApproximations()
 	//XmNmenuHistory, b,
 	//NULL);
 
- //   this->imageWindow->getApproximation(FALSE, mode);
+ //   this->imageWindow->getApproximation(false, mode);
  //   switch (mode) {
  //   case APPROX_WIREFRAME:
 	//b = this->downWireframe->getRootWidget();
@@ -429,16 +429,16 @@ void RenderingOptionsDialog::resetApproximations()
 	//NULL);
  //   
  //   int density;
- //   this->imageWindow->getDensity(TRUE, density);
+ //   this->imageWindow->getDensity(true, density);
  //   XtVaSetValues(this->upEveryNumber,
 	//XmNiValue, density,
 	//NULL);
- //   this->imageWindow->getDensity(FALSE, density);
+ //   this->imageWindow->getDensity(false, density);
  //   XtVaSetValues(this->downEveryNumber,
 	//XmNiValue, density,
 	//NULL);
  //   
- //   boolean sw;
+ //   bool sw;
  //   this->imageWindow->getSoftware(sw);
  //   if (sw)
  //   {
@@ -488,9 +488,9 @@ void RenderingOptionsDialog::resetApproximations()
 //    XtVaGetValues(widget, XmNiValue, &v, NULL);
 //
 //    if (widget == dialog->upEveryNumber)
-//	dialog->imageWindow->setDensity(TRUE, v);
+//	dialog->imageWindow->setDensity(true, v);
 //    else if (widget == dialog->downEveryNumber)
-//	dialog->imageWindow->setDensity(FALSE, v);
+//	dialog->imageWindow->setDensity(false, v);
 //}
 ////
 //// Install the default resources for this class.
@@ -502,7 +502,7 @@ void RenderingOptionsDialog::resetApproximations()
 //    this->Dialog::installDefaultResources( baseWidget);
 //}
 
-void RenderingOptionsDialog::sensitizeRenderMode(boolean flag)
+void RenderingOptionsDialog::sensitizeRenderMode(bool flag)
 {
     if (flag)
     {
@@ -516,22 +516,22 @@ void RenderingOptionsDialog::sensitizeRenderMode(boolean flag)
     }
 }
 
-void RenderingOptionsDialog::sensitizeButtonUpApprox(boolean flag)
+void RenderingOptionsDialog::sensitizeButtonUpApprox(bool flag)
 {
     //XtSetSensitive(this->buttonUpOptionMenu, flag);
 }
 
-void RenderingOptionsDialog::sensitizeButtonDownApprox(boolean flag)
+void RenderingOptionsDialog::sensitizeButtonDownApprox(bool flag)
 {
     //XtSetSensitive(this->buttonDownOptionMenu, flag);
 }
 
-void RenderingOptionsDialog::sensitizeButtonUpDensity(boolean flag)
+void RenderingOptionsDialog::sensitizeButtonUpDensity(bool flag)
 {
     //XtSetSensitive(this->upEveryNumber, flag);
 }
 
-void RenderingOptionsDialog::sensitizeButtonDownDensity(boolean flag)
+void RenderingOptionsDialog::sensitizeButtonDownDensity(bool flag)
 {
     //XtSetSensitive(this->downEveryNumber, flag);
 }

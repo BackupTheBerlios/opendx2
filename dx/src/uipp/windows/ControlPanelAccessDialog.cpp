@@ -23,7 +23,7 @@
 
 ControlPanelAccessDialog* theCPAccessDialog = NULL; 
 
-boolean ControlPanelAccessDialog::ClassInitialized = FALSE;
+bool ControlPanelAccessDialog::ClassInitialized = false;
 
 //String  ControlPanelAccessDialog::DefaultResources[] = {
 //	"*XmToggleButton.indicatorSize: 15",
@@ -43,7 +43,7 @@ ControlPanelAccessDialog::ControlPanelAccessDialog(
 
     if (NOT ControlPanelAccessDialog::ClassInitialized)
     {
-        ControlPanelAccessDialog::ClassInitialized = TRUE;
+        ControlPanelAccessDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -319,7 +319,7 @@ void ControlPanelAccessDialog::makeToggles()
  //    XtManageChild(this->sform);
 }
 
-boolean ControlPanelAccessDialog::okCallback(Dialog *dialog)
+bool ControlPanelAccessDialog::okCallback(Dialog *dialog)
 {
  //   Boolean set;
  //   int i, inst, size = this->toggleList[0].getSize();
@@ -357,7 +357,7 @@ boolean ControlPanelAccessDialog::okCallback(Dialog *dialog)
 	//     this->panelManager->addInaccessibleGroup(gname);
 	//}	
  //   }
- //   return TRUE;
+ //   return true;
 	return false;
 }
 

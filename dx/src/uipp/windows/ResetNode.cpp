@@ -46,7 +46,7 @@ ResetNode::~ResetNode()
 // so that we can use them later when setting the attributes for the
 // Interactor.
 //
-boolean ResetNode::initialize()
+bool ResetNode::initialize()
 {
     return this->ToggleNode::initialize();
 }
@@ -71,15 +71,15 @@ int ResetNode::handleInteractorMsgInfo(const char *line)
     int vals = 0;
 
     if (strstr(line,"Resetting oneshot"))  {
-	this->reset(FALSE);	// Don't send value
+	this->reset(false);	// Don't send value
 	this->clearOutputDirty(1);	// Don't send it later either
 	vals++;
     }
     return vals;
 }
-boolean ResetNode::expectingModuleMessage()
+bool ResetNode::expectingModuleMessage()
 {
-    return TRUE; 
+    return true; 
 }
 
 //
@@ -107,11 +107,11 @@ int ResetNode::strcatParameterNameLvalue(char *s,  Parameter *p,
 //
 // Determine if this node is of the given class.
 //
-boolean ResetNode::isA(Symbol classname)
+bool ResetNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassResetNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ToggleNode::isA(classname);
 }

@@ -36,7 +36,7 @@ class ImageCDB : public ConfigurationDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     //friend void ImageCDB_ActivateOutputCacheCB(Widget , XtPointer , XtPointer);

@@ -45,23 +45,23 @@ InteractorInstance* FileSelectorNode::newInteractorInstance()
 //
 // Print the file filter comment 
 //
-boolean FileSelectorNode::cfgPrintInstanceAuxInfo(FILE *f,
+bool FileSelectorNode::cfgPrintInstanceAuxInfo(FILE *f,
 					InteractorInstance *ii)
 {
     FileSelectorInstance *fsi = (FileSelectorInstance*)ii;
     const char *filter = fsi->getFileFilter();
 
     if (!this->ValueNode::cfgPrintInstanceAuxInfo(f,ii))
-	return FALSE;
+	return false;
 
     if (filter && (fprintf(f,"// filter = %s\n",filter) < 0))
-	return FALSE;
-    return TRUE;
+	return false;
+    return true;
 }
 //
 // Parse the file filter and all the super class's comments.
 //
-boolean FileSelectorNode::cfgParseComment(const char *comment,
+bool FileSelectorNode::cfgParseComment(const char *comment,
 			const char *filename, int lineno)
 {
     if (!EqualSubstring(comment," filter = ",10)) 
@@ -73,11 +73,11 @@ boolean FileSelectorNode::cfgParseComment(const char *comment,
     if (!fsi) {
         ErrorMessage("'filter' comment out of order (file %s, line%d)",
                         filename, lineno);
-	// Return TRUE though since we acknowledged the comment.
+	// Return true though since we acknowledged the comment.
     } else  {
         fsi->setFileFilter(comment + 10);
     }
-    return TRUE;
+    return true;
 }
 //
 // We implement this for FileSelector node so that we can keep the
@@ -89,7 +89,7 @@ Type FileSelectorNode::setOutputValue(
                                 int indx,
                                 const char *value,
                                 Type t,
-                                boolean send)
+                                bool send)
 {
 //GDA
 #if 1
@@ -101,7 +101,7 @@ Type FileSelectorNode::setOutputValue(
     if (indx == 2)
 	return this->ValueNode::setOutputValue(2,localValue,t,send);
 
-    Type type = this->ValueNode::setOutputValue(1,localValue,t,FALSE);
+    Type type = this->ValueNode::setOutputValue(1,localValue,t,false);
     if (type != DXType::UndefinedType) {
 	char *basename = (char*)this->getOutputValueString(1);
 	basename = DuplicateString(basename);
@@ -128,7 +128,7 @@ Type FileSelectorNode::setOutputValue(
     if (indx == 2)
 	return this->ValueNode::setOutputValue(2,value,t,send);
 
-    Type type = this->ValueNode::setOutputValue(1,value,t,FALSE);
+    Type type = this->ValueNode::setOutputValue(1,value,t,false);
     if (type != DXType::UndefinedType) {
 	char *basename = (char*)this->getOutputValueString(1);
 	basename = DuplicateString(basename);
@@ -157,11 +157,11 @@ Type FileSelectorNode::setOutputValue(
 //
 // Determine if this node is of the given class.
 //
-boolean FileSelectorNode::isA(Symbol classname)
+bool FileSelectorNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassFileSelectorNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ValueNode::isA(classname);
 }

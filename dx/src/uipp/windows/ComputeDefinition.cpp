@@ -39,7 +39,7 @@ Node *ComputeDefinition::newNode(Network *net, int instance)
 void ComputeDefinition::finishDefinition()
 {
     ParameterDefinition *p = this->getInputDefinition(1);
-    p->setDefaultVisibility(FALSE);
+    p->setDefaultVisibility(false);
 }
 
 

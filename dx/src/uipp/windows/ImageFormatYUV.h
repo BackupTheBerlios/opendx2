@@ -28,7 +28,7 @@ class ImageFormatYUV : public PixelImageFormat
   private:
 
     //static String  DefaultResources[];
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
 
@@ -52,15 +52,15 @@ class ImageFormatYUV : public PixelImageFormat
     virtual const char*		paramString() { return "yuv"; }
     virtual const char*		menuString() { return "YUV"; }
     virtual const char*		fileExtension() { return ".yuv"; }
-    virtual boolean 		supportsAppend() { return TRUE; }
+    virtual bool 		supportsAppend() { return true; }
     virtual void		eraseOutputFile(const char *fname);
-    virtual boolean		supportsDelayedColors() { return FALSE; }
+    virtual bool		supportsDelayedColors() { return false; }
 
     //
     // Returns a pointer to the class name.
     //
     const char* getClassName() { return ClassImageFormatYUV; }
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 };
 
 

@@ -48,14 +48,14 @@ class MoveNodesDialog : public Dialog
 
     //Widget apply;
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     EditorWorkSpace* workspace;
     PageSelector* selector;
     TextSelector* selector_menu;
 
-    boolean stop_updates;
-    boolean applyCallback(Dialog *d);
+    bool stop_updates;
+    bool applyCallback(Dialog *d);
 
     CommandScope* scope;
     Command* apply_cmd;
@@ -68,7 +68,7 @@ class MoveNodesDialog : public Dialog
     //
     //static String DefaultResources[];
 
-    virtual boolean okCallback(Dialog *d);
+    virtual bool okCallback(Dialog *d);
     virtual void createDialog();
 
     //
@@ -132,7 +132,7 @@ class MoveNodesCommand : public NoUndoCommand
     // Protected member data:
     //
 
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
 
   public:
@@ -141,7 +141,7 @@ class MoveNodesCommand : public NoUndoCommand
     //
     MoveNodesCommand(const char   *name,
 		   CommandScope *scope,
-		   boolean       active,
+		   bool       active,
 		   MoveNodesDialog  *w);
 
     //

@@ -31,7 +31,7 @@ class DXValue : public Base
     // Protected member data:
     //
     DXType	type;		// value type
-    boolean	defined;	// is the value defined?
+    bool	defined;	// is the value defined?
 
     // FIX ME: Are the following should be in a union?
 
@@ -45,10 +45,10 @@ class DXValue : public Base
     // Determines whether the specified string is a valid string value
     // of the specified type (of DXType constant).
     //
-    static boolean IsValidValue(const char* string,
+    static bool IsValidValue(const char* string,
 				const Type  type);
 
-    static boolean IsValidValue(const char* string,
+    static bool IsValidValue(const char* string,
 				DXType&     type)
     {
 	ASSERT(string);
@@ -140,7 +140,7 @@ class DXValue : public Base
     // Otherwise, the returned string must be deleted by the caller.
     //
     static char *AdjustVectorDimensions(const char *vec, int new_dim,
-                                                double dflt, boolean is_int);
+                                                double dflt, bool is_int);
 
     //
     // Make sure all values (Scalar[List], Integer[List] and Vector[List] 
@@ -150,11 +150,11 @@ class DXValue : public Base
     // mins/maxs are arrays of minimum and maximum values for the 
     // corresponding components (scalar and integer only have a single 
     // component).  
-    // TRUE is returned if the value needs to be clamped to be within the 
-    // given ranges, FALSE otherwise.  If clampedval is provided, then a 
+    // true is returned if the value needs to be clamped to be within the 
+    // given ranges, false otherwise.  If clampedval is provided, then a 
     // string is passed back which represents the clamped value. 
     //
-    static boolean ClampVSIValue(const char *val, Type valtype, 
+    static bool ClampVSIValue(const char *val, Type valtype, 
 			double *mins, double *maxs,
                         char **clampedval);
 
@@ -189,7 +189,7 @@ class DXValue : public Base
     // ScalarInstance:140 related to the vector interactor - c1tignor33?
     //
     static char *FormatDouble(double value, char *buf = NULL, int decimals = -1,
-	boolean strip_all_zeros = FALSE);
+	bool strip_all_zeros = false);
 
     //
     // Constructor:
@@ -204,7 +204,7 @@ class DXValue : public Base
     //
     // Is the value defined?
     //
-    boolean isDefined()
+    bool isDefined()
     {
 	return this->defined;
     }
@@ -216,13 +216,13 @@ class DXValue : public Base
 
     //
     // Assigns a string value of the specified type (DXType constant).
-    // Returns TRUE if the new value has been assigned;
-    // returns FALSE otherwise.
+    // Returns true if the new value has been assigned;
+    // returns false otherwise.
     //
-    boolean setValue(const char* string,
+    bool setValue(const char* string,
 		     const Type  type);
 
-    boolean setValue(const char* string,
+    bool setValue(const char* string,
 		     DXType&     type)
     {
 	ASSERT(string);
@@ -231,27 +231,27 @@ class DXValue : public Base
 
     //
     // Assigns a string value.
-    // Returns TRUE if the string is correct; returns FALSE, otherwise.
+    // Returns true if the string is correct; returns false, otherwise.
     //
-    boolean setString(const char* string);
+    bool setString(const char* string);
 
     //
     // Assigns an integer value.
-    // Returns TRUE if successful, FALSE otherwise.
+    // Returns true if successful, false otherwise.
     //
-    boolean setInteger(const int integer);
+    bool setInteger(const int integer);
 
     //
     // Assigns a scalar value.
-    // Returns TRUE if successful, FALSE otherwise.
+    // Returns true if successful, false otherwise.
     //
-    boolean setScalar(const double scalar);
+    bool setScalar(const double scalar);
 
     //
     // Assigns a vector value.
-    // Returns TRUE if successful, FALSE otherwise.
+    // Returns true if successful, false otherwise.
     //
-    boolean setVector(DXTensor& vector);
+    bool setVector(DXTensor& vector);
 
     //
     // Returns the string representation of the current value.
@@ -274,13 +274,13 @@ class DXValue : public Base
     int getVectorComponentCount();
 
 
-    boolean setVectorComponentValue(int component, double val);
+    bool setVectorComponentValue(int component, double val);
 
 
     //
     // Does the given string represent the given type?
     //
-    boolean Valid(const char* string, const Type type);
+    bool Valid(const char* string, const Type type);
 
     //
     // Returns a pointer to the class name.

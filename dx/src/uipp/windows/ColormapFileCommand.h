@@ -32,13 +32,13 @@ class ColormapFileCommand : public NoUndoCommand
 
   private:
     ColormapEditor    *editor;
-    boolean		opening;
+    bool		opening;
 
   protected:
     //
     // Implements the command:
 
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -46,9 +46,9 @@ class ColormapFileCommand : public NoUndoCommand
     //
     ColormapFileCommand(const char*     name,
                         CommandScope*   scope,
-                        boolean         active,
+                        bool         active,
                         ColormapEditor* editor,
-			boolean		opening);
+			bool		opening);
 
 
     //

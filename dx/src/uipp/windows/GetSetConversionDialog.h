@@ -49,7 +49,7 @@ class GetSetConversionDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
     //static Cursor  WatchCursor;
 
@@ -69,10 +69,10 @@ class GetSetConversionDialog : public Dialog
     int next_get_instance;
     int next_set_instance;
 
-    boolean list_includes_main;
-    boolean quiet_mode;
+    bool list_includes_main;
+    bool quiet_mode;
 
-    void setFindButton (boolean first, boolean done);
+    void setFindButton (bool first, bool done);
 
     static char *GetFileName(Network *);
 
@@ -95,7 +95,7 @@ class GetSetConversionDialog : public Dialog
     //friend Boolean EditorWindow_GetSetWP(XtPointer);
 
     void update();
-    void unhinge(boolean select_next_editor = FALSE);
+    void unhinge(bool select_next_editor = false);
     void updateNetName(Network *);
 
     static void GetSetPlacements

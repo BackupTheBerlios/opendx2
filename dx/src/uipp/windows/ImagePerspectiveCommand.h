@@ -39,13 +39,13 @@ class ImagePerspectiveCommand : public NoUndoCommand
     // Private member data:
     //
     ImageWindow *imageWindow;
-    boolean      enablePerspective;	// True for enabling, false for dis...
+    bool      enablePerspective;	// True for enabling, false for dis...
 
   protected:
     //
     // Protected member data:
     //
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
 
   public:
@@ -54,9 +54,9 @@ class ImagePerspectiveCommand : public NoUndoCommand
     //
     ImagePerspectiveCommand(const char   *name,
 		     CommandScope *scope,
-		     boolean       active,
+		     bool       active,
 		     ImageWindow  *w,
-		     boolean       enable);
+		     bool       enable);
 
     //
     // Destructor:

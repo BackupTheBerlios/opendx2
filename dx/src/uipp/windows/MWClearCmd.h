@@ -42,7 +42,7 @@ class MWClearCmd : public NoUndoCommand
     //
     MsgWin *messageWindow;
 
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -50,7 +50,7 @@ class MWClearCmd : public NoUndoCommand
     //
     MWClearCmd(const char *name,
 	       CommandScope *scope,
-	       boolean active,
+	       bool active,
 	       MsgWin *win);
 
     //

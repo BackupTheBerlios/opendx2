@@ -23,7 +23,7 @@
 #include "ErrorDialogManager.h"
 #include "DXPacketIF.h"
 
-boolean ProcessGroupCreateDialog::ClassInitialized = FALSE;
+bool ProcessGroupCreateDialog::ClassInitialized = false;
 
 //String  ProcessGroupCreateDialog::DefaultResources[] = {
 //	"*dialogTitle:				Execution Groups...",
@@ -48,7 +48,7 @@ ProcessGroupCreateDialog::ProcessGroupCreateDialog(EditorWindow *editor)
 
     if (NOT ProcessGroupCreateDialog::ClassInitialized)
     {
-        ProcessGroupCreateDialog::ClassInitialized = TRUE;
+        ProcessGroupCreateDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
@@ -669,7 +669,7 @@ void ProcessGroupCreateDialog::addCallbacks()
     //              (XtPointer)this);
 }
 
-void ProcessGroupCreateDialog::setButtonsSensitive(boolean setting)
+void ProcessGroupCreateDialog::setButtonsSensitive(bool setting)
 {
     //XtSetSensitive(this->createbtn, setting); 
     //XtSetSensitive(this->removebtn, setting); 

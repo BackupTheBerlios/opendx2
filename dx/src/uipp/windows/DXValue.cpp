@@ -31,15 +31,15 @@ static void clip_trailing_zeros(char *buf)
 
     if (c) {
 	char a, *p = c+2;
-	boolean doit = TRUE;
-	boolean space = FALSE;
+	bool doit = true;
+	bool space = false;
 	while ( (a=*p) ) {
 	    if (a == ' ')  {
-		space = TRUE;
+		space = true;
 		break;
 	    }
 	    if (a != '0') {
-		doit = FALSE;
+		doit = false;
 		break;
 	    } 
 	    p++;
@@ -59,12 +59,12 @@ static void clip_trailing_zeros(char *buf)
 }
 
 //
-// Returns TRUE if a NULL string is found; returns FALSE otherwise.
+// Returns true if a NULL string is found; returns false otherwise.
 // The index variable is updated to the character following the lexed
 // string upon successful return.
 //
 static
-boolean _IsNULL(const char* string,
+bool _IsNULL(const char* string,
 		int&         index)
 {
     int i;
@@ -76,18 +76,18 @@ boolean _IsNULL(const char* string,
 	EqualSubstring(&string[i], "null", 4))
     {
 	index = i + 4;
-	return TRUE;
+	return true;
     }
     else
     {
-	return FALSE;
+	return false;
     }
 
 }    
 
 
 //
-// Returns TRUE if a value string is found; returns FALSE otherwise.
+// Returns true if a value string is found; returns false otherwise.
 // If the type of value is specified (scalar, vector, or tensor), a
 // comparison will be only against the specified type; otherwise, all
 // three types will be checked. 
@@ -97,7 +97,7 @@ boolean _IsNULL(const char* string,
 // return.
 //
 static
-boolean _IsValue(const char* string,
+bool _IsValue(const char* string,
 		 int&        index,
 		 Type&       type)
 {
@@ -105,7 +105,7 @@ boolean _IsValue(const char* string,
 
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
 
     switch(type)
@@ -126,7 +126,7 @@ boolean _IsValue(const char* string,
 	if (IsScalar(string, index))
 	{
 	    type = DXType::ScalarType;
-	    return TRUE;
+	    return true;
 	}
 
 	//
@@ -135,7 +135,7 @@ boolean _IsValue(const char* string,
 	if (IsVector(string, index, tuple))
 	{
 	    type = DXType::VectorType;
-	    return TRUE;
+	    return true;
 	}
 
 	//
@@ -144,25 +144,25 @@ boolean _IsValue(const char* string,
 	if (IsTensor(string, index))
 	{
 	    type = DXType::TensorType;
-	    return TRUE;
+	    return true;
 	}
 
 	//
 	// No match... return unsuccessfully.
 	//
-	return FALSE;
+	return false;
     }
 }
 
 //
-// Returns TRUE if a list of specified type is found; returns FALSE
+// Returns true if a list of specified type is found; returns false
 // otherwise.  
 // The index variable is updated to the character following the lexed 
 // string upon successful return.
 // This does NOT check for list constructors.
 //
 static
-boolean _IsList(const char* string,
+bool _IsList(const char* string,
 		int&        index,
 		const Type  type)
 {
@@ -171,14 +171,14 @@ boolean _IsList(const char* string,
     int     tuple;
     int     first_tuple=0;
     int     elements;
-    boolean lexed;
+    bool lexed;
 
     //
     // Parameter validity check...
     //
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
     
     ASSERT(index >= 0 AND index <= STRLEN(string) + 1);
@@ -202,7 +202,7 @@ boolean _IsList(const char* string,
     }
     else
     {
-	return FALSE;
+	return false;
     }
 
     while (string[i] != '\0' AND string[i] != '}')
@@ -240,7 +240,7 @@ boolean _IsList(const char* string,
 	    }
 	    else if (tuple != first_tuple)
 	    {
-		return FALSE;
+		return false;
 	    }
 	    break;
 
@@ -257,7 +257,7 @@ boolean _IsList(const char* string,
 	    break;
 
 	  default:
-	    return FALSE;
+	    return false;
 	}
 
 	if (lexed)
@@ -266,10 +266,10 @@ boolean _IsList(const char* string,
 	}
 	else
 	{
-	    return FALSE;
+	    return false;
 	}
 
-	boolean value_ok = FALSE;
+	bool value_ok = false;
 	switch (type) {
 	  default:
 		break;
@@ -279,7 +279,7 @@ boolean _IsList(const char* string,
 			break;
 	  	  case DXType::VectorType:
 	  	  case DXType::TensorType: 
-			if (string[i] == '[') value_ok = TRUE;
+			if (string[i] == '[') value_ok = true;
 			break; 
 		}
 		// Fall through
@@ -290,7 +290,7 @@ boolean _IsList(const char* string,
 		//
 		if (!value_ok && !IsWhiteSpace(&string[i]) && 
 			(string[i] != ',') && (string[i] != '}'))
-		    return FALSE;
+		    return false;
 	 	break;
 	}
 	//
@@ -304,29 +304,29 @@ boolean _IsList(const char* string,
     //
     if (string[i] != '}' OR elements == 0)
     {
-	return FALSE;
+	return false;
     }
 
     //
     // Return successfully.
     //
     index = i + 1;
-    return TRUE;
+    return true;
 
 }
 
 
 //
-// Returns TRUE if a list constructor is found; returns FALSE
+// Returns true if a list constructor is found; returns false
 // otherwise.  The index variable is updated to the character
 // following the lexed string upon successful return.
 //
 static
-boolean _uinIsListConstructor(const char* string,
+bool _uinIsListConstructor(const char* string,
 			      int&        index)
 {
-    boolean parsed_dot_dot;
-    boolean parsed_colon;
+    bool parsed_dot_dot;
+    bool parsed_colon;
     int     elements;
     int     i;
 
@@ -335,14 +335,14 @@ boolean _uinIsListConstructor(const char* string,
     //
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
     
     ASSERT(index >= 0 AND index <= STRLEN(string) + 1);
 
     elements       = 0;
-    parsed_dot_dot = FALSE;
-    parsed_colon   = FALSE;
+    parsed_dot_dot = false;
+    parsed_colon   = false;
 
     //
     // Skip space.
@@ -355,7 +355,7 @@ boolean _uinIsListConstructor(const char* string,
     //
     if (string[i] != '{')
     {
-	return FALSE;
+	return false;
     }
 
     i++;
@@ -370,7 +370,7 @@ boolean _uinIsListConstructor(const char* string,
 	}
 	else
 	{
-	    return FALSE;
+	    return false;
 	}
 
 	switch(elements)
@@ -378,21 +378,21 @@ boolean _uinIsListConstructor(const char* string,
 	  case 1:
 	    if (string[i] == '.' AND string[i + 1] == '.')
 	    {
-		parsed_dot_dot = TRUE;
+		parsed_dot_dot = true;
 
 		i += 2;
 		SkipWhiteSpace(string, i);
 	    }
 	    else
 	    {
-		return FALSE;
+		return false;
 	    }
 	    break;
 
 	  case 2:
 	    if (parsed_dot_dot AND string[i] == ':')
 	    {
-		parsed_colon = TRUE;
+		parsed_colon = true;
 
 		i++;
 		SkipWhiteSpace(string, i);
@@ -402,7 +402,7 @@ boolean _uinIsListConstructor(const char* string,
 	  case 3:
 	    if (NOT parsed_colon)
 	    {
-		return FALSE;
+		return false;
 	    }
 	    break;
 	}
@@ -413,7 +413,7 @@ boolean _uinIsListConstructor(const char* string,
     //
     if (string[i] != '}')
     {
-	return FALSE;
+	return false;
     }
 
     //
@@ -423,47 +423,47 @@ boolean _uinIsListConstructor(const char* string,
     {
 	if (elements != 3)
 	{
-	    return FALSE;
+	    return false;
 	}
     }
     else if (elements != 2)
     {
-	return FALSE;
+	return false;
     }
 
     //
     // Return successfully.
     //
     index = i + 1;
-    return TRUE;
+    return true;
 }
 
 //
-// Returns TRUE if a list of specified type is found; returns FALSE
+// Returns true if a list of specified type is found; returns false
 // otherwise.  
 // The index variable is updated to the character following the lexed 
 // string upon successful return.
 // This checks for both standard lists and list constructors.
 //
 static 
-boolean IsList(const char* string,
+bool IsList(const char* string,
 		int&        index,
 		const Type  type)
 {
 
-    boolean r = _IsList(string, index, type);
+    bool r = _IsList(string, index, type);
     if (!r && (type & DXType::ValueType))
 	r = _uinIsListConstructor(string,index);
     return r;
 }
 
 //
-// Returns TRUE if an object string is found; returns FALSE
+// Returns true if an object string is found; returns false
 // otherwise.  The index variable is updated to the character
 // following the lexed string upon successful return.
 //
 static
-boolean _IsObject(const char* string,
+bool _IsObject(const char* string,
 		  int&        index)
 {
     Type value_type;
@@ -471,75 +471,75 @@ boolean _IsObject(const char* string,
 
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
 
     ASSERT(index >= 0 AND index <= STRLEN(string) + 1);
 
     if (IsInteger(string, index))
     {
-	return TRUE;
+	return true;
     }
 
     if (IsScalar(string, index))
     {
-	return TRUE;
+	return true;
     }
 
     if (IsVector(string, index, tuple))
     {
-	return TRUE;
+	return true;
     }
 
     if (IsTensor(string, index))
     {
-	return TRUE;
+	return true;
     }
 
     value_type = DXType::UndefinedType;
     if (_IsValue(string, index, value_type))
     {
-	return TRUE;
+	return true;
     }
 
     if (IsString(string, index))
     {
-	return TRUE;
+	return true;
     }
 
     if (IsList(string, index, DXType::IntegerType))
     {
-	return TRUE;
+	return true;
     }
 
     if (IsList(string, index, DXType::ScalarType))
     {
-	return TRUE;
+	return true;
     }
 
     if (IsList(string, index, DXType::VectorType))
     {
-	return TRUE;
+	return true;
     }
 
     if (IsList(string, index, DXType::TensorType))
     {
-	return TRUE;
+	return true;
     }
 
     if (IsList(string, index, DXType::StringType))
     {
-	return TRUE;
+	return true;
     }
 
 #if 0
     if (_uinIsListConstructor(string, index))
     {
-	return TRUE;
+	return true;
     }
 #endif
 
-    return FALSE;
+    return false;
 }
 
 
@@ -550,25 +550,25 @@ boolean _IsObject(const char* string,
 // 
 // FIXME: this needs to know about user types (also see DXType::ValueToType()).
 //
-boolean DXValue::IsValidValue(const char* string,
+bool DXValue::IsValidValue(const char* string,
 		       const Type  type)
 {
     int em_size=4096;
     char extra_memory[4096];
     char*   value;
-    boolean result;
+    bool result;
     Type    value_type;
     Type    list_type;
     int     tuple;
     int     i;
-    boolean to_be_freed;
+    bool to_be_freed;
 
     //
     // No string... return unsuccessfully.
     //
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
 
     //
@@ -576,11 +576,11 @@ boolean DXValue::IsValidValue(const char* string,
     //
     if (strlen(string) >= em_size) {
 	value = DuplicateString(string);
-        to_be_freed = TRUE;
+        to_be_freed = true;
     } else {
 	value = extra_memory;
 	strcpy (value, string);
-	to_be_freed = FALSE;
+	to_be_freed = false;
     }
     for (i = 0; value[i] != '\0'; i++)
     {
@@ -612,14 +612,14 @@ boolean DXValue::IsValidValue(const char* string,
     //
     // Initialize the result.
     //
-    result = FALSE;
+    result = false;
 
     //
     // Special-case NULL.
     //
     if (_IsNULL(value, i))
     {
-	result = TRUE;
+	result = true;
     }
 
     //
@@ -711,7 +711,7 @@ boolean DXValue::IsValidValue(const char* string,
 	     type & DXType::UserType6 OR
 	     type & DXType::DescriptionType)
     {
-	result = TRUE;
+	result = true;
     }
 
     //
@@ -741,7 +741,7 @@ DXValue::DXValue()
     // Initialize instance data.
     //
     this->type.setType(DXType::UndefinedType);
-    this->defined = FALSE;
+    this->defined = false;
     this->string  = NUL(char*);
     this->integer = 0;
     this->scalar  = 0.0;
@@ -782,20 +782,20 @@ void DXValue::clear()
     //
     // Set this value object to be undefined.
     //
-    this->defined = FALSE;
+    this->defined = false;
     (void)this->type.setType(DXType::UndefinedType);
 }
 
 //
 // Assigns a string value of the specified type (DXType constant).
-// Returns TRUE if the new value has been assigned;
-// returns FALSE otherwise.
+// Returns true if the new value has been assigned;
+// returns false otherwise.
 //
-boolean DXValue::setValue(const char* string,
+bool DXValue::setValue(const char* string,
 			  const Type  type)
 {
     int i;
-    boolean r;
+    bool r;
     ASSERT(this);
 
     if (DXValue::IsValidValue(string, type))
@@ -939,17 +939,17 @@ boolean DXValue::setValue(const char* string,
 		}
 		else
 		{
-		    ASSERT(FALSE);
+		    ASSERT(false);
 		}
 		break;
 	    }
 	}
 
-	return TRUE;
+	return true;
     }
     else
     {
-	return FALSE;
+	return false;
     }
 }
 
@@ -963,9 +963,9 @@ const char* DXValue::getValueString()
 
 //
 // Assigns a value in string representation.
-// Returns TRUE if the string is correct; returns FALSE, otherwise.
+// Returns true if the string is correct; returns false, otherwise.
 //
-boolean DXValue::setString(const char* string)
+bool DXValue::setString(const char* string)
 {
     ASSERT(this);
 
@@ -975,20 +975,20 @@ boolean DXValue::setString(const char* string)
 	this->type.setType(DXType::StringType);
 	this->string = DuplicateString(string);
 
-	return TRUE;
+	return true;
     }
     else
     {
-	return FALSE;
+	return false;
     }
 }
 
 
 //
 // Assigns an integer value.
-// Returns TRUE if successful, FALSE otherwise.
+// Returns true if successful, false otherwise.
 //
-boolean DXValue::setInteger(const int integer)
+bool DXValue::setInteger(const int integer)
 {
     ASSERT(this);
 
@@ -1012,15 +1012,15 @@ boolean DXValue::setInteger(const int integer)
     //
     // Return successfully.
     //
-    return TRUE;
+    return true;
 }
 
 
 //
 // Assigns a scalar value.
-// Returns TRUE if successful, FALSE otherwise.
+// Returns true if successful, false otherwise.
 //
-boolean DXValue::setScalar(const double scalar)
+bool DXValue::setScalar(const double scalar)
 {
     ASSERT(this);
 
@@ -1043,7 +1043,7 @@ boolean DXValue::setScalar(const double scalar)
     //
     // Return successfully.
     //
-    return TRUE;
+    return true;
 }
 
 //
@@ -1059,11 +1059,11 @@ boolean DXValue::setScalar(const double scalar)
 //
 // The strip_all_zeros argument was added 9/12/95 because vector interactors
 // want to get converted to ints whenever possible but it's wrong to do
-// a strstr for ".0".  The default value of strip_all_zeros is FALSE and it's
-// specified as TRUE by ScalarInstance (as of 9/12/95 anyway).
+// a strstr for ".0".  The default value of strip_all_zeros is false and it's
+// specified as true by ScalarInstance (as of 9/12/95 anyway).
 //
 char *DXValue::FormatDouble(double value, char *buf, int decimals, 
-boolean strip_all_zeros)
+bool strip_all_zeros)
 {
     if (!buf)
         buf = new char[64];
@@ -1111,7 +1111,7 @@ boolean strip_all_zeros)
     return buf;
 }
 
-boolean DXValue::setVector(DXTensor& vector)
+bool DXValue::setVector(DXTensor& vector)
 {
     ASSERT(this); 
     ASSERT(this->tensor);
@@ -1130,7 +1130,7 @@ boolean DXValue::setVector(DXTensor& vector)
     this->tensor = vector.dup();
     this->string = DuplicateString(vector.getValueString());
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -1148,7 +1148,7 @@ char *DXValue::NextListItem(const char *s, int *index,
 				Type listtype, char *buf, int bufsz)
 {
     int start, i = *index;
-    boolean r = true;
+    bool r = true;
     char *p ;
 
     if (!s)
@@ -1252,7 +1252,7 @@ char *DXValue::CoerceValue(const char *value, Type type)
     } else {
         char *p = (char*)value;
 	int cnt, end;
-        boolean failed;
+        bool failed;
 
 	SkipWhiteSpace(p);
 	cnt = STRLEN(p);
@@ -1291,9 +1291,9 @@ char *DXValue::CoerceValue(const char *value, Type type)
 	}
 
 	if (!DXValue::IsValidValue(s,type)) 
-	    failed = TRUE;
+	    failed = true;
 	else
-	    failed = FALSE;
+	    failed = false;
 	
 	//
   	// Try and coerce a list with a single element (i.e. coerce both the
@@ -1306,7 +1306,7 @@ char *DXValue::CoerceValue(const char *value, Type type)
 		if (p2) {
 		    delete s;
 		    s = p2;
-		    failed = FALSE;
+		    failed = false;
 		}
 		delete p;
 	    }
@@ -1397,15 +1397,15 @@ int DXValue::GetListItemCount(const char *list, Type listtype)
    }
 
    char stack[4096];
-   boolean to_be_freed;
+   bool to_be_freed;
    int size = 4096;
    if (STRLEN(list) < size) {
        buf = stack;
-       to_be_freed = FALSE;
+       to_be_freed = false;
    } else {
        size = STRLEN(list);
        buf = new char [size];
-       to_be_freed = TRUE;
+       to_be_freed = true;
    }
    while (DXValue::NextListItem(list, &idx, listtype, buf, size))
 	count++;
@@ -1416,11 +1416,11 @@ int DXValue::GetListItemCount(const char *list, Type listtype)
    return count;
 }
 
-boolean DXValue::setVectorComponentValue(int component, double val)
+bool DXValue::setVectorComponentValue(int component, double val)
 {
     ASSERT(this->type.getType() == DXType::VectorType);
     ASSERT(this->tensor);
-    boolean r = this->tensor->setVectorComponentValue(component, val);
+    bool r = this->tensor->setVectorComponentValue(component, val);
     if (r) {
 	if (this->string) delete this->string;
 	this->string = DuplicateString(this->tensor->getValueString());
@@ -1434,7 +1434,7 @@ boolean DXValue::setVectorComponentValue(int component, double val)
 // Otherwise, the returned string must be deleted by the caller.
 //
 char *DXValue::AdjustVectorDimensions(const char *vec, int new_dim,
-                                                double dflt, boolean is_int)
+                                                double dflt, bool is_int)
 {
     DXTensor vector;
     int i;
@@ -1481,15 +1481,15 @@ char *DXValue::AdjustVectorDimensions(const char *vec, int new_dim,
 // mins/maxs are arrays of minimum and maximum values for the 
 // corresponding components (scalar and integer only have a single 
 // component).  
-// TRUE is returned if the value needs to be clamped to be within the 
-// given ranges, FALSE otherwise.  If clampedval is provided, then a 
+// true is returned if the value needs to be clamped to be within the 
+// given ranges, false otherwise.  If clampedval is provided, then a 
 // string is passed back which represents the clamped value.
 //
-boolean DXValue::ClampVSIValue(const char *val, Type valtype,
+bool DXValue::ClampVSIValue(const char *val, Type valtype,
 		    double *mins, double *maxs,
                         char **clampedval)
 {
-    boolean reset = FALSE;
+    bool reset = false;
     char valbuf[64], itembuf[1024];
     Type itemtype;
     DXValue dxval;
@@ -1497,7 +1497,7 @@ boolean DXValue::ClampVSIValue(const char *val, Type valtype,
     ASSERT(val);
     if (!dxval.setValue(val,valtype)) {
 	if (clampedval) *clampedval = NULL;
-	return FALSE;
+	return false;
     }
     itemtype = valtype & DXType::ListTypeMask;
     ASSERT((itemtype == DXType::IntegerType) ||
@@ -1521,7 +1521,7 @@ boolean DXValue::ClampVSIValue(const char *val, Type valtype,
 	    if (ClampVSIValue(itembuf,itemtype,mins,maxs,&newval)) {
 	        ASSERT(newval);
 	        s = newval;
-		reset = TRUE;
+		reset = true;
 	    } else {
 	       s = itembuf;
 	    }
@@ -1561,8 +1561,8 @@ boolean DXValue::ClampVSIValue(const char *val, Type valtype,
     } else {
 
 	int i, ncomp;
-	boolean isvector =  (itemtype == DXType::VectorType);
-	boolean isinteger = (itemtype == DXType::IntegerType);
+	bool isvector =  (itemtype == DXType::VectorType);
+	bool isinteger = (itemtype == DXType::IntegerType);
 
 	if (isvector)
 	    ncomp = dxval.getVectorComponentCount();
@@ -1586,10 +1586,10 @@ boolean DXValue::ClampVSIValue(const char *val, Type valtype,
 	    }
 	    if (val > max) {
 		val = max;
-		reset = TRUE;
+		reset = true;
 	    } else if (val < min) {
 		val = min;
-		reset = TRUE;
+		reset = true;
 	    }
 	    if (isinteger) {
 		sprintf(valbuf,"%d ", (int)(val));
@@ -1640,7 +1640,7 @@ int DXValue::GetDoublesFromList(const char *list, Type listtype,
         for (i=0 ; i<count ; i++) {
             char        stringval[64];
             if (DXValue::NextListItem(list,&index,listtype,stringval)) {
-		boolean r;
+		bool r;
 		int this_tuple, j;
 		switch (listtype) {
 		    case DXType::IntegerListType:
@@ -1666,11 +1666,11 @@ int DXValue::GetDoublesFromList(const char *list, Type listtype,
 			offset += vtuple;
 			break;
 		    default:
-			ASSERT(FALSE);
+			ASSERT(false);
 		}
 		nitems++;
             } else {
-                ASSERT(FALSE);
+                ASSERT(false);
 	    }	
         }
     }
@@ -1702,15 +1702,15 @@ char *DXValue::DeleteListItem(const char *list, Type listtype, int position)
    int len = STRLEN(list);
    char buf_space[1024];
    int space_size = 1024;
-   boolean to_be_freed;
+   bool to_be_freed;
    newlist= new char[len];
 
    if (len > space_size) {
        buf = new char[len];
-       to_be_freed = TRUE;
+       to_be_freed = true;
    } else {
        buf = buf_space;
-       to_be_freed = FALSE;
+       to_be_freed = false;
    }
 
    //
@@ -1762,7 +1762,7 @@ char *DXValue::ReplaceListItem(const char *list, const char *item,
 {
    char *p, *value = NULL, *newlist, *buf;
    int i, idx;
-   boolean premature_end;
+   bool premature_end;
    int listlen = STRLEN(list);
    int itemlen = STRLEN(item);
 
@@ -1773,13 +1773,13 @@ char *DXValue::ReplaceListItem(const char *list, const char *item,
    
    char buf_space[1024];
    int space_size = 1024;
-   boolean to_be_freed;
+   bool to_be_freed;
    if ((listlen+1) > space_size) {
        buf = new char[listlen + 1];
-       to_be_freed = TRUE;
+       to_be_freed = true;
    } else {
        buf = buf_space;
-       to_be_freed = FALSE;
+       to_be_freed = false;
    }
    newlist= new char [listlen + itemlen + position + 4];
 
@@ -1794,11 +1794,11 @@ char *DXValue::ReplaceListItem(const char *list, const char *item,
    //
    strcpy(newlist,"{"); 
    p = newlist;
-   premature_end = FALSE;
+   premature_end = false;
    for (i=1, p+=STRLEN(p); i<position ; i++, p += STRLEN(p)) {
         value = DXValue::NextListItem(list, &idx, listtype, buf, space_size);
         if (!value) {
-   	    premature_end = FALSE;
+   	    premature_end = false;
             break;
 	}
 	strcat(p," ");	
@@ -1837,7 +1837,7 @@ int DXValue::getVectorComponentCount()
 {
     DXTensor vlist_item, *t = NULL;
     char *listitem;
-    boolean r;
+    bool r;
 
     switch (this->type.getType()) {
 	case DXType::VectorType:
@@ -1903,7 +1903,7 @@ char *DXValue::InsertListItem(const char *list, const char *item,
 {
    char *p, *value = NULL, *newlist, *buf;
    int i, idx;
-   boolean premature_end;
+   bool premature_end;
    int listlen = STRLEN(list);
    int itemlen = STRLEN(item);
 
@@ -1929,11 +1929,11 @@ char *DXValue::InsertListItem(const char *list, const char *item,
    //
    strcpy(newlist,"{"); 
    p = newlist;
-   premature_end = FALSE;
+   premature_end = false;
    for (i=1, p+=STRLEN(p); i<position ; i++, p += STRLEN(p)) {
         value = DXValue::NextListItem(list, &idx, listtype, buf);    
         if (!value) {
-   	    premature_end = FALSE;
+   	    premature_end = false;
             break;
 	}
 	strcat(p," ");	

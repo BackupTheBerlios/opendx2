@@ -69,7 +69,7 @@ class ToggleInteractor : public Interactor
     //
     // ... because there is no such that as a vertical toggle interactor
     //
-    virtual boolean acceptsLayoutChanges() { return FALSE; }
+    virtual bool acceptsLayoutChanges() { return false; }
 
     //
     // Destructor:
@@ -85,7 +85,7 @@ class ToggleInteractor : public Interactor
     // Just call updateDisplayedInteractorValue(); 
     //
     virtual void handleInteractivePartStateChange(InteractorInstance *src_ii,
-						boolean major_change);
+						bool major_change);
 
     //
     // Set the displayed label of the interactor and do a layout if
@@ -93,7 +93,7 @@ class ToggleInteractor : public Interactor
     // We override the default to always set the toggle label instead
     // and set the interactor label to "".
     //
-    virtual void setLabel(const char *labelString, boolean re_layout);
+    virtual void setLabel(const char *labelString, bool re_layout);
 
     const char *getClassName() { return ClassToggleInteractor; }
 

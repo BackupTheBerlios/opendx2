@@ -91,38 +91,38 @@ void CascadeMenu::createMenu()
 //
 // Append the given UIComponent to the sub menu and manage it.
 //
-boolean CascadeMenu::appendComponent(UIComponent *uic)
+bool CascadeMenu::appendComponent(UIComponent *uic)
 {
     //ASSERT(this->subMenu == XtParent(uic->getRootWidget()));
 
     if (!this->componentList.appendElement(uic))
-	return FALSE;
+	return false;
 
     uic->manage(); 
-    return TRUE;
+    return true;
 }
 //
 // Remove (but do not delete) the given UIComponent from the submenu and
 // unmanage it.
 //
-boolean CascadeMenu::removeComponent(UIComponent *uic)
+bool CascadeMenu::removeComponent(UIComponent *uic)
 {
     if (!this->componentList.removeElement(uic))
-	return FALSE;
+	return false;
 
     uic->unmanage();
-    return TRUE;
+    return true;
 }
 //
 // Remove and delete the given UIComponent from the submenu. 
 //
-boolean CascadeMenu::deleteComponent(UIComponent *uic)
+bool CascadeMenu::deleteComponent(UIComponent *uic)
 {
     if (!this->componentList.removeElement(uic))
-	return FALSE;
+	return false;
 
     delete uic;
-    return TRUE;
+    return true;
 }
 //
 // Remove and delete all UIComponents owned by the menu.
@@ -157,18 +157,18 @@ void CascadeMenu::setLabel(const char *label)
 //
 // Set the sensitivity of the cascade menu item based on the sensitivity
 // of its immediate children.  If any are sensitive, then set the sensitivity
-// to true (active) else not sensitive.  We return TRUE if the cascade was
-// set active, otherwise FALSE.
+// to true (active) else not sensitive.  We return true if the cascade was
+// set active, otherwise false.
 //
-boolean CascadeMenu::setActivationFromChildren()
+bool CascadeMenu::setActivationFromChildren()
 {
     UIComponent *uic;
     ListIterator iterator(this->componentList);
-    boolean active = FALSE;
+    bool active = false;
 
     while(!active && (uic = (UIComponent*)iterator.getNext())) {
 	if (uic->isActivated())
-	   active = TRUE; 
+	   active = true; 
     }
 
     if (active)

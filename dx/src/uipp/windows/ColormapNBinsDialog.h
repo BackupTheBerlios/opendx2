@@ -35,9 +35,9 @@ class ColormapNBinsDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
-    boolean okCallback(Dialog *dialog);
+    bool okCallback(Dialog *dialog);
 
   protected:
     //

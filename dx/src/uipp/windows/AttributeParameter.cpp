@@ -20,19 +20,19 @@ AttributeParameter::AttributeParameter(ParameterDefinition *pd,
     this->set2ndValue("NULL");
     this->node = n; 
     this->index = index;
-    this->syncOnTypeMatch = TRUE;
+    this->syncOnTypeMatch = true;
 }
 //
 // Copy the parameter value into the Attribute value.
 //
-boolean  AttributeParameter::syncAttributeValue() 
+bool  AttributeParameter::syncAttributeValue() 
 {
     if (this->hasValue()) {
 	Type t = this->getValueType();
 	const char *v = this->getSetValueString();
-	return  this->set2ndValue(v,t,FALSE);
+	return  this->set2ndValue(v,t,false);
     } else 
-	return TRUE;
+	return true;
 
 }
 
@@ -42,18 +42,18 @@ boolean  AttributeParameter::syncAttributeValue()
 // attribute when appropriate.  Appropriate is defined as the primary
 // parameter having a value and a type which is the same as the attribute's.
 //
-boolean  AttributeParameter::syncPrimaryValue(boolean force) 
+bool  AttributeParameter::syncPrimaryValue(bool force) 
 {
     if (force || this->syncOnTypeMatch) {
 	Type t = this->get2ndValueType();
 	if (force || (this->hasValue() && this->getValueType() == t)) {
 	    ASSERT(this->isInput());
 	    const char *v = this->get2ndValueString();
-	    return this->node->setInputSetValue( this->index,v,t,FALSE) != 
+	    return this->node->setInputSetValue( this->index,v,t,false) != 
 			DXType::UndefinedType;
         }
     }
-    return TRUE;
+    return true;
 }
 
 //
@@ -62,7 +62,7 @@ boolean  AttributeParameter::syncPrimaryValue(boolean force)
 // and (the primary parameter is defaulting or the value has the same 
 // type as the attribute value.
 //
-boolean  AttributeParameter::isAttributeVisuallyWriteable()
+bool  AttributeParameter::isAttributeVisuallyWriteable()
 { 
     return this->isDefaulting();
 }
@@ -71,7 +71,7 @@ boolean  AttributeParameter::isAttributeVisuallyWriteable()
 //
 // Determine if this parameter is of the given class.
 //
-boolean AttributeParameter::isA(Symbol classname)
+bool AttributeParameter::isA(Symbol classname)
 {
     return 
       (classname == theSymbolManager->registerSymbol(ClassAttributeParameter))

@@ -27,13 +27,13 @@
 
 
 // FIXME: should be static class data
-static boolean initializing = FALSE;
+static bool initializing = false;
 
 ReceiverNode::ReceiverNode(NodeDefinition *nd, Network *net, int instnc) :
     UniqueNameNode(nd, net, instnc)
 {
 }
-boolean ReceiverNode::initialize()
+bool ReceiverNode::initialize()
 {
     const char *label;
 
@@ -45,11 +45,11 @@ boolean ReceiverNode::initialize()
 	if (tmtr)
 	    label = tmtr->getLabelString();
     }
-    initializing = TRUE;
+    initializing = true;
     this->setLabelString(label);
-    initializing = FALSE;
+    initializing = false;
 
-    return TRUE;
+    return true;
 }
 
 ReceiverNode::~ReceiverNode()
@@ -60,7 +60,7 @@ ReceiverNode::~ReceiverNode()
 //
 // Is this receiver connected to a Transmitter.
 //
-boolean ReceiverNode::isTransmitterConnected()
+bool ReceiverNode::isTransmitterConnected()
 {
     return this->isInputConnected(1);
 }
@@ -81,16 +81,16 @@ char *ReceiverNode::netNodeString(const char *prefix)
 // When a Receiver gets a new label, it has to disconnect from its existing
 // transmitter, and connect to the new one.  This will work even if it's
 // the transmitter that's changing our label.
-boolean ReceiverNode::setLabelString(const char *label)
+bool ReceiverNode::setLabelString(const char *label)
 {
     if (EqualString(label, this->getLabelString()))
-	return TRUE;
+	return true;
 
     if (initializing && this->getNetwork()->isReadingNetwork()) 
         return this->UniqueNameNode::setLabelString(label);
 
     if (!this->verifyRestrictedLabel(label))
-	return FALSE;
+	return false;
 
     //
     // Skip the conflict check when reading in a newer style net since
@@ -112,18 +112,18 @@ boolean ReceiverNode::setLabelString(const char *label)
     // versions of dx allowed the name conflict and we would like to try and fix
     // things and report what happened rather than read the net incorrectly.
     //
-    if ((conflict) && (this->getNetwork()->isReadingNetwork() == FALSE)) {
+    if ((conflict) && (this->getNetwork()->isReadingNetwork() == false)) {
 	ErrorMessage("A %s with name \"%s\" already exists.", conflict, label);
-	return FALSE;
+	return false;
     }
 
-    boolean found = FALSE;
+    bool found = false;
     List *ia = (List*)this->getInputArks(1);
     if ((ia) && (ia->getSize() > 0)) {
 	Ark *a = (Ark*)ia->getElement(1);
 	int dummy;
 	if (EqualString(a->getSourceNode(dummy)->getLabelString(), label))
-	    found = TRUE;
+	    found = true;
 	else
 	    delete a;
     }
@@ -131,11 +131,11 @@ boolean ReceiverNode::setLabelString(const char *label)
 
 
     if (!found) {
-	List* l = this->getNetwork()->makeClassifiedNodeList(ClassTransmitterNode, FALSE);
+	List* l = this->getNetwork()->makeClassifiedNodeList(ClassTransmitterNode, false);
 	ListIterator iterator;
 	Node *n;
 
-	if ((l) && (this->getNetwork()->isReadingNetwork() == FALSE)) {
+	if ((l) && (this->getNetwork()->isReadingNetwork() == false)) {
 	    //
 	    // Before creating any Arks, check for cycles.
 	    //
@@ -150,7 +150,7 @@ boolean ReceiverNode::setLabelString(const char *label)
 			    this->getLabelString(), label
 			);
 			delete l;
-			return FALSE;
+			return false;
 		    }
 		}
 	    }
@@ -161,7 +161,7 @@ boolean ReceiverNode::setLabelString(const char *label)
 	    while ( (n = (Node*)iterator.getNext()) ) {
 		if (EqualString(label, n->getLabelString()))
 		{
-		    found = TRUE;
+		    found = true;
 		    // link me to transmitter
 		    new Ark(n, 1, this, 1);
 		}
@@ -179,9 +179,9 @@ boolean ReceiverNode::setLabelString(const char *label)
     //
     if (conflict) {
 	ASSERT (this->getNetwork()->isReadingNetwork());
-	if (this->isTransmitterConnected() == FALSE) {
+	if (this->isTransmitterConnected() == false) {
 	    ErrorMessage("A %s with name \"%s\" already exists.", conflict, label);
-	    return FALSE;
+	    return false;
 	}
 	List *l = (List*)this->getInputArks(1);
 	ASSERT (l->getSize() > 0);
@@ -197,11 +197,11 @@ boolean ReceiverNode::setLabelString(const char *label)
 //
 // Determine if this node is of the given class.
 //
-boolean ReceiverNode::isA(Symbol classname)
+bool ReceiverNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassReceiverNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->UniqueNameNode::isA(classname);
 }
@@ -224,7 +224,7 @@ Node *ReceiverNode::getUltimateSourceNode(int* param_no)
     Node* tmtr = NUL(Node*);
     int i = 0;
     while (1) {
-	tmtr = this->getNetwork()->findNode(this->getLabelString(), &startPos, TRUE);
+	tmtr = this->getNetwork()->findNode(this->getLabelString(), &startPos, true);
 	if (!tmtr) break;
 	if (tmtr->isA(ClassTransmitterNode)) break;
 	if (++i > 100) break;
@@ -255,7 +255,7 @@ Node *ReceiverNode::getUltimateSourceNode(int* param_no)
 // Switch the node from one net to another.  Look for a transmitter
 // to connect to.
 //
-void ReceiverNode::switchNetwork(Network *from, Network *to, boolean silently)
+void ReceiverNode::switchNetwork(Network *from, Network *to, bool silently)
 {
     const char *label = this->getLabelString();
 
@@ -266,27 +266,27 @@ void ReceiverNode::switchNetwork(Network *from, Network *to, boolean silently)
     // know what name to use.
     //
     List *l = (List*)this->getInputArks(1);
-    boolean found = FALSE;
+    bool found = false;
     if (l->getSize() > 0) {
 	Ark *a = (Ark*)l->getElement(1);
 	int dummy;
 	if (EqualString(a->getSourceNode(dummy)->getLabelString(), label))   {
-	    found = TRUE;
+	    found = true;
 	} else  {
 	    delete a;
 	}
     }
 
-    boolean avoiding_cycle = FALSE;
+    bool avoiding_cycle = false;
     if (!found) {
-	l = to->makeClassifiedNodeList(ClassTransmitterNode, FALSE);
+	l = to->makeClassifiedNodeList(ClassTransmitterNode, false);
 	if (l) {
 	    Node *n;
 	    ListIterator iterator(*l);
 	    while ( (n = (Node*)iterator.getNext()) ) {
 		if (EqualString(label, n->getLabelString())) {
 		    if (to->checkForCycle(n, this)) {
-			avoiding_cycle = TRUE;
+			avoiding_cycle = true;
 			break;
 		    }
 		}
@@ -298,7 +298,7 @@ void ReceiverNode::switchNetwork(Network *from, Network *to, boolean silently)
 		    if (EqualString(label, n->getLabelString())) {
 			// link me to transmitter
 			new Ark(n, 1, this, 1);
-			found = TRUE;
+			found = true;
 		    }
 		}
 	    }
@@ -335,20 +335,20 @@ void ReceiverNode::switchNetwork(Network *from, Network *to, boolean silently)
 }
 
 
-boolean ReceiverNode::namesConflict (const char* his_label, const char* my_label,
+bool ReceiverNode::namesConflict (const char* his_label, const char* my_label,
     const char* his_classname)
 {
 
     //
     // You can always match names with other TransmitterNodes or ReceiverNodes.
     //
-    if (EqualString (his_classname, this->getClassName())) return FALSE;
-    if (EqualString (his_classname, ClassTransmitterNode)) return FALSE;
+    if (EqualString (his_classname, this->getClassName())) return false;
+    if (EqualString (his_classname, ClassTransmitterNode)) return false;
 
     //
     // You can always use the name Receiver.
     //
-    if (EqualString (my_label, "Reciever")) return FALSE;
+    if (EqualString (my_label, "Reciever")) return false;
 
     return this->UniqueNameNode::namesConflict (his_label, my_label, his_classname);
 }

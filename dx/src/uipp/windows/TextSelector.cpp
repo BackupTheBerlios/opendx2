@@ -42,7 +42,7 @@ TextSelector* TextSelector::GrabOwner = NUL(TextSelector*);
 //    NUL(char*)
 //};
 
-boolean TextSelector::ClassInitialized = FALSE;
+bool TextSelector::ClassInitialized = false;
 
 TextSelector::TextSelector () :
     UIComponent ("textSelector")
@@ -52,7 +52,7 @@ TextSelector::TextSelector () :
  //   this->diag_button = NUL(Widget);
  //   this->popupMenu = NUL(Widget);
  //   this->popupList = NUL(Widget);
- //   this->is_grabbed = FALSE;
+ //   this->is_grabbed = false;
  //   this->starting_button = 1;
  //   this->action_hook = 0;
  //   this->vsb = this->hsb = NUL(Widget);
@@ -62,10 +62,10 @@ TextSelector::TextSelector () :
  //   this->selected_items = NUL(int*);
  //   this->selected_cnt = 0;
  //   this->auto_fill_wpid = NUL(XtWorkProcId);
- //   this->case_sensitive = TRUE;
+ //   this->case_sensitive = true;
 
  //   if (!TextSelector::ClassInitialized) {
-	//TextSelector::ClassInitialized = TRUE;
+	//TextSelector::ClassInitialized = true;
 	//this->setDefaultResources(theIBMApplication->getRootWidget(), 
 	//    TextSelector::DefaultResources);
  //   }
@@ -95,7 +95,7 @@ TextSelector::~TextSelector()
 
 void TextSelector::setItems(char* items[], int nitems)
 {
- //   this->enableModifyCB(FALSE);
+ //   this->enableModifyCB(false);
 
  //   //
  //   // Copy the items;
@@ -115,7 +115,7 @@ void TextSelector::setItems(char* items[], int nitems)
  //   this->selected_items = NUL(int*);
 
  //   if (nitems)
-	//this->enableModifyCB(TRUE);
+	//this->enableModifyCB(true);
 }
 
 void TextSelector::setSelectedItem (int selected)
@@ -134,9 +134,9 @@ void TextSelector::setSelectedItem (int selected)
  //   this->selected_items[0] = selected;
 
  //   char *cp = (char*)this->item_list.getElement(selected);
- //   this->enableModifyCB(FALSE);
+ //   this->enableModifyCB(false);
  //   XmTextSetString (this->textField, cp);
- //   this->enableModifyCB(TRUE);
+ //   this->enableModifyCB(true);
 }
 
 int TextSelector::getSelectedItem (char* seli)
@@ -147,7 +147,7 @@ int TextSelector::getSelectedItem (char* seli)
  //   this->selected_items = NUL(int*);
  //   this->selected_cnt = 0;
 
- //   boolean sel = XmListGetSelectedPos 
+ //   bool sel = XmListGetSelectedPos 
 	//(this->popupList, &this->selected_items, &this->selected_cnt);
 
  //   if (sel == False)
@@ -162,7 +162,7 @@ int TextSelector::getSelectedItem (char* seli)
 	return 0;
 }
 
-//void TextSelector::enableModifyCB(boolean enab)
+//void TextSelector::enableModifyCB(bool enab)
 //{
 //    if (enab) {
 //	XtVaSetValues (this->textField, XmNeditable, True, NULL);
@@ -179,7 +179,7 @@ int TextSelector::getSelectedItem (char* seli)
 //    }
 //}
 
-//void TextSelector::createTextSelector(Widget parent, XtCallbackProc cbp, XtPointer cdata, boolean use_button)
+//void TextSelector::createTextSelector(Widget parent, XtCallbackProc cbp, XtPointer cdata, bool use_button)
 //{
 //    ASSERT (this->parent == NUL(Widget));
 //    this->parent = parent;
@@ -372,7 +372,7 @@ void TextSelector::updateList()
 //	delete this->old_event;
 //	this->old_event = NUL(XEvent*);
 //    }
-//    this->is_grabbed = FALSE;
+//    this->is_grabbed = false;
 //}
 //void TextSelector::grab(XEvent* e)
 //{
@@ -397,7 +397,7 @@ void TextSelector::updateList()
 //	ButtonPressMask | ButtonReleaseMask , GrabModeAsync, 
 //	GrabModeAsync, None, TextSelector::GrabCursor, e->xbutton.time);
 //
-//    this->is_button_release_grabbed = FALSE;
+//    this->is_button_release_grabbed = false;
 //    if (this->button_release_timer)
 //	XtRemoveTimeOut (this->button_release_timer);
 //
@@ -416,7 +416,7 @@ void TextSelector::updateList()
 //    this->old_event = new XEvent;
 //    memcpy (this->old_event, e, sizeof(XEvent));
 //
-//    this->is_grabbed = TRUE;
+//    this->is_grabbed = true;
 //}
 //
 //extern "C"  {
@@ -425,7 +425,7 @@ void TextSelector::updateList()
 //{
 //    TextSelector* psel = (TextSelector*)clientData;
 //    ASSERT(psel);
-//    psel->is_button_release_grabbed = TRUE;
+//    psel->is_button_release_grabbed = true;
 //    psel->button_release_timer = 0;
 //}
 //
@@ -461,13 +461,13 @@ void TextSelector::updateList()
 //	psel->button_release_timer = 0;
 //    }
 //    
-//    psel->is_button_release_grabbed = TRUE;
+//    psel->is_button_release_grabbed = true;
 //}
 //void TextSelector_EllipsisEH(Widget , XtPointer clientData, XEvent *e, Boolean *)
 //{
 //    TextSelector* psel = (TextSelector*)clientData;
 //    ASSERT(psel);
-//    if (psel->is_grabbed == TRUE)
+//    if (psel->is_grabbed == true)
 //	return ;
 //    psel->updateList();
 //
@@ -534,7 +534,7 @@ void TextSelector::updateList()
 //	XtRemoveActionHook (psel->action_hook);
 //    psel->action_hook = 0;
 //    psel->remove_hook_wpid = NUL(XtWorkProcId);
-//    return TRUE;
+//    return true;
 //}
 //
 //} // extern "C"
@@ -579,13 +579,13 @@ void TextSelector::updateList()
 //    //
 //    XmListCallbackStruct *lcs = (XmListCallbackStruct*)cbs;
 //    XEvent* xev = lcs->event;
-//    boolean inside = TRUE;
+//    bool inside = true;
 //    if ((xev) && ((xev->type == ButtonPress) || (xev->type == ButtonRelease))) {
 //	XButtonEvent* xbe = (XButtonEvent*)xev;
 //	Dimension width, height;
 //	XtVaGetValues (psel->popupList, XmNwidth, &width, XmNheight, &height, NULL);
 //	if ((xbe->x < 0) || (xbe->y < 0) || (xbe->x > width) || (xbe->y > height))
-//	    inside = FALSE;
+//	    inside = false;
 //    }
 //
 //    //
@@ -606,7 +606,7 @@ void TextSelector::updateList()
 //	    //
 //	    if (psel->selected_items) 
 //		XtFree((char*)psel->selected_items);
-//	    boolean sel = XmListGetSelectedPos
+//	    bool sel = XmListGetSelectedPos
 //		(psel->popupList, &psel->selected_items, &psel->selected_cnt);
 //	    if (sel == False) {
 //		psel->selected_items = NUL(int*);
@@ -637,7 +637,7 @@ void TextSelector::updateList()
 //    TextSelector* tsel = (TextSelector*)cdata;
 //    ASSERT (tsel);
 //    XmTextVerifyCallbackStruct *tvcs = (XmTextVerifyCallbackStruct*)callData;
-//    boolean good_chars = TRUE;
+//    bool good_chars = true;
 //
 //    XmTextBlock tbrec = tvcs->text;
 //
@@ -662,11 +662,11 @@ void TextSelector::updateList()
 //	ListIterator it(tsel->item_list);
 //	const char* item;
 //	int found = 0;
-//	boolean match = FALSE;
+//	bool match = false;
 //	int i = 1;
 //	while ( (item = (char*)it.getNext()) ) {
 //	    if (tsel->equalString (item, cp)) {
-//		match = TRUE;
+//		match = true;
 //		break;
 //	    } else if (tsel->equalSubstring (item, proposed, plen-1)) {
 //		found++;
@@ -675,7 +675,7 @@ void TextSelector::updateList()
 //	}
 //	if (match) {
 //	} else if (found == 0)
-//	    good_chars = FALSE; 
+//	    good_chars = false; 
 //	else if (found == 1) {
 //	    //
 //	    // This is the place to complete the entry automatically
@@ -708,21 +708,21 @@ void TextSelector::updateList()
 //    return True;
 //}
 
-//boolean TextSelector::autoFill(boolean any_match)
+//bool TextSelector::autoFill(bool any_match)
 //{
-//    boolean unused;
+//    bool unused;
 //    return this->autoFill(any_match, unused);
 //}
 //
 // if (any_match) then if we don't find an exact match but
 // we do find multiple substring matches, we'll accept the
 // first substring match
-//boolean TextSelector::autoFill(boolean any_match, boolean& unique_match)
+//bool TextSelector::autoFill(bool any_match, bool& unique_match)
 //{
- //   boolean retVal = FALSE;
- //   unique_match = FALSE;
+ //   bool retVal = false;
+ //   unique_match = false;
  //   char* cp = XmTextGetString (this->textField);
- //   if ((!cp) || (!cp[0])) return FALSE;
+ //   if ((!cp) || (!cp[0])) return false;
  //   int len = strlen(cp);
 
  //   //
@@ -748,8 +748,8 @@ void TextSelector::updateList()
 	//this->setSelectedItem (most_recent);
 	//if (this->popupList)
 	//    XmListSelectPos (this->popupList, most_recent, True);
-	//retVal = TRUE;
-	//unique_match = TRUE;
+	//retVal = true;
+	//unique_match = true;
  //   } else if ((found > 1) && (any_match)) {
 	//ASSERT(cp); // can we have a match with no text?
 	//int start = strlen(cp);
@@ -766,48 +766,48 @@ void TextSelector::updateList()
 	////
 	//if (this->popupList)
 	//    XmListSelectPos (this->popupList, index_of_first_match, True);
-	//retVal = TRUE;
+	//retVal = true;
  //   }
  //   XtFree(cp);
  //   return retVal;
 //}
 
-boolean TextSelector::equalString(const char* s1, const char* s2)
+bool TextSelector::equalString(const char* s1, const char* s2)
 {
     if (this->case_sensitive) return EqualString(s1,s2);
 
     int len = STRLEN(s1);
-    if (len != STRLEN(s2)) return FALSE;
+    if (len != STRLEN(s2)) return false;
 
-    boolean retval = TRUE;
+    bool retval = true;
     for (int i=0; i<len; i++) {
 	if (s1[i] == s2[i]) continue;
 	if (tolower(s1[i]) == tolower(s2[i])) continue;
-	retval = FALSE;
+	retval = false;
 	break;
     }
 
     return retval;
 }
 
-boolean TextSelector::equalSubstring(const char* s1, const char* s2, int n)
+bool TextSelector::equalSubstring(const char* s1, const char* s2, int n)
 {
     if (this->case_sensitive) return EqualSubstring(s1,s2,n);
 
     // what's supposed to happen if s2 is ""?
-    if (!s2[0]) return FALSE;
+    if (!s2[0]) return false;
 
-    boolean retval = TRUE;
+    bool retval = true;
 
     for (int i=0; i<n; i++) {
 	if (s2[i]=='\0') break;
 	if (s1[i]=='\0') {
-	    retval = FALSE;
+	    retval = false;
 	    break;
 	}
 	if (s1[i] == s2[i]) continue;
 	if (tolower(s1[i]) == tolower(s2[i])) continue;
-	retval = FALSE;
+	retval = false;
 	break;
     }
 
@@ -820,7 +820,7 @@ boolean TextSelector::equalSubstring(const char* s1, const char* s2, int n)
 //    TextSelector* tsel = (TextSelector*)cdata;
 //    ASSERT (tsel);
 //
-//    if ((tsel->autoFill(TRUE) == FALSE) && (tsel->popupList)) {
+//    if ((tsel->autoFill(true) == false) && (tsel->popupList)) {
 //	if (tsel->selected_items) {
 //	    XmListSelectPos (tsel->popupList, tsel->selected_items[0], True);
 //	} else {

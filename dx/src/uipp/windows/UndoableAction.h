@@ -21,7 +21,7 @@ class UndoableAction : public Base
     protected:
         EditorWindow* editor;
 
-	UndoableAction (EditorWindow* editor, boolean separator) { 
+	UndoableAction (EditorWindow* editor, bool separator) { 
 	    this->editor = editor; 
 	}
     public:
@@ -29,7 +29,7 @@ class UndoableAction : public Base
 	UndoableAction (EditorWindow* editor) { 
 	    this->editor = editor; 
 	}
-	virtual void undo(boolean first_in_list=TRUE)=0;
+	virtual void undo(bool first_in_list=true)=0;
 
 	//
 	// We rely on our creator to discard unusable UndoableActions.  However,
@@ -37,7 +37,7 @@ class UndoableAction : public Base
 	// us to test our own ability to undo.  That way menu items be modified
 	// (greyed out) as needed.
 	//
-	virtual boolean canUndo() = 0;
+	virtual bool canUndo() = 0;
 
 	//
 	// Supply text identifying the operation to be undone.  This might
@@ -63,7 +63,7 @@ class UndoableAction : public Base
 	// bunch of objects that collectively undo a single user-input,
 	// we need to be able to separate groups of undo objects.
 	//
-	virtual boolean isSeparator() { return FALSE; }
+	virtual bool isSeparator() { return false; }
 	virtual const char* getClassName() { return UndoableActionClassName; }
 };
 
@@ -74,9 +74,9 @@ class UndoSeparator : public UndoableAction
 	virtual ~UndoSeparator(){}
 	virtual const char* getLabel() { return NUL(const char*); }
 	UndoSeparator(EditorWindow* editor) : UndoableAction(editor) {}
-	virtual boolean isSeparator() { return TRUE; }
-	virtual void undo(boolean first_in_list=TRUE){}
-	virtual boolean canUndo() { return FALSE; }
+	virtual bool isSeparator() { return true; }
+	virtual void undo(bool first_in_list=true){}
+	virtual bool canUndo() { return false; }
 	virtual const char* getClassName() { return UndoSeparatorClassName; }
 };
 

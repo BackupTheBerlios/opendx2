@@ -32,10 +32,10 @@ class PixelImageFormat : public ImageFormat
 {
   private:
 
-    static boolean 	ClassInitialized;
+    static bool 	ClassInitialized;
     int			dirty;
-    boolean		use_nodes_resolution;
-    boolean		use_nodes_aspect;
+    bool		use_nodes_resolution;
+    bool		use_nodes_aspect;
     char*		size_val;
     //Widget		size_text;
     //XtIntervalId 	size_timer;
@@ -49,7 +49,7 @@ class PixelImageFormat : public ImageFormat
     //virtual Widget 		createBody(Widget parent);
     virtual void 		setCommandActivation();
     virtual void		shareSettings (ImageFormat*);
-    virtual boolean		supportsPrinting() { return FALSE; }
+    virtual bool		supportsPrinting() { return false; }
 
     //
     // Constructor:
@@ -75,13 +75,13 @@ class PixelImageFormat : public ImageFormat
 
     virtual int			getRecordResolution() { return this->width; }
     virtual double		getRecordAspect() { return this->aspect; }
-    virtual boolean		useLocalResolution();
-    virtual boolean		useLocalAspect();
+    virtual bool		useLocalResolution();
+    virtual bool		useLocalAspect();
     virtual int			getRequiredHeight() { return 45; }
     virtual void		applyValues() { this->dirty = 0; }
 
     const char* getClassName() { return ClassPixelImageFormat; }
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 };
 
 

@@ -75,13 +75,13 @@ class NDAllocatorDictionary :
     // Record a function to be used to do allocation for the 'Instance'
     // associated with the given name.
     //
-    boolean addAllocator(const char *name, NDAllocator alloc)
+    bool addAllocator(const char *name, NDAllocator alloc)
         {  ASSERT(this); return this->addDefinition(name,(const void*)alloc); }
 
     //
     // Push (intall) a default Allocator onto the stack.
     //
-    boolean pushDefaultAllocator(NDAllocator nda)
+    bool pushDefaultAllocator(NDAllocator nda)
         { ASSERT(this); return this->pushDefaultDefinition((const void*)nda); }
 
     //

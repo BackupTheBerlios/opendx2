@@ -50,7 +50,7 @@ class SetNameDialog : public TextEditDialog
 
     //friend void TextEditDialog_ApplyCB(Widget, XtPointer , XtPointer);
 
-    boolean 	hasApply;
+    bool 	hasApply;
 
   protected:
     //
@@ -63,7 +63,7 @@ class SetNameDialog : public TextEditDialog
     //
     // Constructor: make it protected so we can't directly instantiate it
     //
-    SetNameDialog(const char *name, boolean has_apply = FALSE);
+    SetNameDialog(const char *name, bool has_apply = false);
 
     //
     // Install the default resources for this class and then call the

@@ -27,16 +27,16 @@ class UndoAddArk : public UndoableAction
 	int destination_instance;
 	int input;
 	int output;
-	boolean adding;
+	bool adding;
 
 	Ark* lookupArk(Node* src, Node* dst);
 
     public:
 	virtual const char* getLabel() { return UndoAddArk::OperationName; }
 	virtual ~UndoAddArk(){}
-	virtual boolean canUndo();
-	UndoAddArk (EditorWindow* editor, Ark* arc, boolean adding);
-	virtual void undo(boolean first_in_list=TRUE);
+	virtual bool canUndo();
+	UndoAddArk (EditorWindow* editor, Ark* arc, bool adding);
+	virtual void undo(bool first_in_list=true);
 	virtual const char* getClassName() { return UndoAddArkClassName; }
 };
 

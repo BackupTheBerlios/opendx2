@@ -14,7 +14,7 @@
 #include "ErrorDialogManager.h"
 
 
-boolean LoadMacroDialog::ClassInitialized = FALSE;
+bool LoadMacroDialog::ClassInitialized = false;
 
 //String LoadMacroDialog::DefaultResources[] =
 //{
@@ -28,26 +28,26 @@ boolean LoadMacroDialog::ClassInitialized = FALSE;
 LoadMacroDialog::LoadMacroDialog() : 
                        OpenNetworkDialog("loadMacroDialog")
 {
-    this->doingOk = FALSE;
+    this->doingOk = false;
 
     if (NOT LoadMacroDialog::ClassInitialized)
     {
-        LoadMacroDialog::ClassInitialized = TRUE;
+        LoadMacroDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 LoadMacroDialog::LoadMacroDialog(const char *name) : 
                        OpenNetworkDialog(name)
 {
-    this->doingOk = FALSE;
+    this->doingOk = false;
 }
 
-boolean LoadMacroDialog::okCallback(Dialog *d)
+bool LoadMacroDialog::okCallback(Dialog *d)
 {
     ASSERT(this);
-    this->doingOk = TRUE; 
-    boolean r = this->OpenNetworkDialog::okCallback(d);
-    this->doingOk = FALSE; 
+    this->doingOk = true; 
+    bool r = this->OpenNetworkDialog::okCallback(d);
+    this->doingOk = false; 
     return r;
 }
 void LoadMacroDialog::okFileWork(const char *string)
@@ -148,11 +148,11 @@ void LoadMacroDialog::createDialog()
 //    char *dir = dialog->getCurrentDirectory();
 //    ASSERT(dir);
 //
-//    theApplication->setBusyCursor(TRUE);
-//    if (!MacroDefinition::LoadMacroDirectories(dir, TRUE, &errmsg)) {
+//    theApplication->setBusyCursor(true);
+//    if (!MacroDefinition::LoadMacroDirectories(dir, true, &errmsg)) {
 //	ModalErrorMessage(dialog->getRootWidget(),errmsg);
 //	delete errmsg;
 //    }
 //    delete dir;
-//    theApplication->setBusyCursor(FALSE);
+//    theApplication->setBusyCursor(false);
 //}

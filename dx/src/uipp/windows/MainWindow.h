@@ -61,13 +61,13 @@ class MainWindow : public UIComponent, public Client
     //
     static int WmOffsetX;
     static int WmOffsetY;
-    static boolean IsMwmRunning;
-    // set to TRUE if (XmIsMotifWMRunning() == FALSE && exists(_MOTIF_WM_INFO))
+    static bool IsMwmRunning;
+    // set to true if (XmIsMotifWMRunning() == false && exists(_MOTIF_WM_INFO))
     // This happens when displaying on dec and screws up window placement.
     // Note that on such a screen -geom cmd line option puts a window at the wrong
     // spot even if its not a Xt application.
-    static boolean IsMwmBroken;
-    static boolean OffsetsInitialized;
+    static bool IsMwmBroken;
+    static bool OffsetsInitialized;
 
     static void InitializeOffsets ();
 
@@ -100,17 +100,17 @@ class MainWindow : public UIComponent, public Client
     //Widget  menuBar;	// menu bar
     //Widget  workArea;	// work area widget created by derived class
     //Widget  commandArea; // command area widget created by derived class
-    boolean resizable;
-    boolean managed;	// True if the window has been managed.
+    bool resizable;
+    bool managed;	// True if the window has been managed.
     char    *title;	// The title being used for this window.
-    boolean hasMenuBar;		// Do we create the menuBar. 
+    bool hasMenuBar;		// Do we create the menuBar. 
 
     short	createX;	// X position of shell used at creation.
     short	createY;	// Y position of shell used at creation.
     short	createWidth;	// Width of shell used at creation.
     short	createHeight;	// Width of shell used at creation.
 
-    void    allowResize(boolean resizable);
+    void    allowResize(bool resizable);
 
     CommandScope                *commandScope;
 
@@ -132,7 +132,7 @@ class MainWindow : public UIComponent, public Client
     // This routine is called by initialize() function to create
     // the menus for the menubar in the window.
     // This function is defined here for windows that do not have
-    // menu bars (i.e. hasMenuBar == FALSE), so should never be called.
+    // menu bars (i.e. hasMenuBar == false), so should never be called.
     //
     //virtual void createMenus(Widget parent);
 
@@ -177,7 +177,7 @@ class MainWindow : public UIComponent, public Client
     //
     // Constructor for the subclasses:
     //
-    MainWindow(const char* name, boolean hasMenuBar = TRUE);
+    MainWindow(const char* name, bool hasMenuBar = true);
 
     //
     // Install the default resources for this class and then call the
@@ -213,7 +213,7 @@ class MainWindow : public UIComponent, public Client
     //
     // returns true if this window is currently "popped up" or managed.
     //
-    virtual boolean isManaged();
+    virtual bool isManaged();
 
     //
     // Manages the window.
@@ -238,10 +238,10 @@ class MainWindow : public UIComponent, public Client
     virtual void iconify();
 
     //
-    // Returns TRUE if the object has been initialized,
+    // Returns true if the object has been initialized,
     //   i.e., the window root widget has been created.
     //
-    boolean isInitialized()
+    bool isInitialized()
     {
 //	return this->getRootWidget() != NUL(Widget);
 		return false;
@@ -259,13 +259,13 @@ class MainWindow : public UIComponent, public Client
     // G/Set the name/title of this window.
     //
     const char *getWindowTitle();
-    virtual void setWindowTitle(const char *name, boolean check_geometry=FALSE);
+    virtual void setWindowTitle(const char *name, bool check_geometry=false);
 
     //
     // S/Get the size and dimensions.
     //
     virtual void setGeometry(int  x, int  y, int  width, int  height);
-    virtual boolean getGeometry(int *x, int *y, int *width, int *height);
+    virtual bool getGeometry(int *x, int *y, int *width, int *height);
 
     //
     // Window closing callback called by MainWindow_CloseCB().

@@ -47,7 +47,7 @@ int UxRecv(int s, char *ExternalBuffer, int BuffSize, int Flags);
 
 
 typedef void (*PacketIFCallback)(void *clientData, char *echoString);
-typedef boolean (*StallingHandler)(void *clientData);
+typedef bool (*StallingHandler)(void *clientData);
 
 //
 // PacketIF class definition:
@@ -87,7 +87,7 @@ class PacketIF : public Base
     int      	     socket;
     FILE    	     *stream;
     //XtInputId 	     inputHandlerId;
-    boolean	     deferPacketHandling;
+    bool	     deferPacketHandling;
     //XtWorkProcId     workProcId;      
     //XtIntervalId     workProcTimerId;  
     int      	     line_length;
@@ -105,7 +105,7 @@ class PacketIF : public Base
     PacketIFCallback errorCallback;
     void             *errorClientData;
 
-    boolean          endReceiving;
+    bool          endReceiving;
     void             *endReceiveData;	// Data passed back by
 
     StallingHandler   stallingWorker;
@@ -120,7 +120,7 @@ class PacketIF : public Base
      */
     void connectAsServer(int pport);
 
-    void connectAsClient(const char *host, int port, boolean local);
+    void connectAsClient(const char *host, int port, bool local);
 
     // 
     // Control whether or not the callbacks to handle messages on the
@@ -163,10 +163,10 @@ class PacketIF : public Base
 
     //
     // Receive a packet.
-    // If readSocket is FALSE, then we just process packets that are still
+    // If readSocket is false, then we just process packets that are still
     // in the line buffer.
     //
-    void packetReceive(boolean readSocket = TRUE);
+    void packetReceive(bool readSocket = true);
 
     //
     // Routines to handle PacketIF messages.
@@ -192,8 +192,8 @@ class PacketIF : public Base
     void _sendBytes(const char *string);
     void _sendImmediate(const char *string);
     void _sendPacket(int type, int packetId, const char *data = NULL, int length = 0);
-    boolean sendQueuedPackets();
-    boolean isSocketInputReady();
+    bool sendQueuedPackets();
+    bool isSocketInputReady();
     List output_queue;
     int output_queue_wpid;
     void sendPacket(int type, int packetId, const char *data = NULL, int length = 0);
@@ -230,7 +230,7 @@ class PacketIF : public Base
     //
     // Constructor:
     //
-    PacketIF(const char *server, int port, boolean local, boolean asClient);
+    PacketIF(const char *server, int port, bool local, bool asClient);
 
     //
     // Destructor:
@@ -263,11 +263,11 @@ class PacketIF : public Base
     void sendImmediate(const char *string);
 
     //
-    // Return TRUE if there was NOT a packet error.
-    // If returning TRUE and data!=NULL, then *data is set to the value 
+    // Return true if there was NOT a packet error.
+    // If returning true and data!=NULL, then *data is set to the value 
     // passed to the endReceiveContinuous() call.
     //
-    boolean receiveContinuous(void **data = NULL);
+    bool receiveContinuous(void **data = NULL);
 
     //
     // Terminates receiveContinuous() and causes it to set its *data to
@@ -287,14 +287,14 @@ class PacketIF : public Base
 
     //
     // Defer handing of messages until the function h is called (periodically)
-    // and returns TRUE.  At that point handling is reenabled.
+    // and returns true.  At that point handling is reenabled.
     // If stalling was not already enabled and there are no other problems,
-    // then we return TRUE, otherwise FALSE.
+    // then we return true, otherwise false.
     // Use isPacketHandlingStalled() to determine if handling is currently 
     // stalled.
     //
-    boolean stallPacketHandling(StallingHandler h, void *data);
-    boolean isPacketHandlingStalled();
+    bool stallPacketHandling(StallingHandler h, void *data);
+    bool isPacketHandlingStalled();
 
     //
     // Returns a pointer to the class name.

@@ -25,7 +25,7 @@
 //
 ScalarListNode::ScalarListNode(NodeDefinition *nd,
 			Network *net, int instance, 
-			boolean isvector, int dimensions) :
+			bool isvector, int dimensions) :
                         ScalarNode(nd, net, instance, isvector, dimensions)
 {
 }
@@ -36,10 +36,10 @@ ScalarListNode::ScalarListNode(NodeDefinition *nd,
 // so that we can use them later when setting the attributes for the
 // Interactor. 
 //
-boolean ScalarListNode::initialize()
+bool ScalarListNode::initialize()
 {
     if (!this->verifyInputCount())
-	return FALSE;
+	return false;
 
     const char *value=NULL;
     switch (this->numComponents) {
@@ -53,14 +53,14 @@ boolean ScalarListNode::initialize()
 	default: ASSERT(0); 
     }
 
-    if ((this->setOutputValue(1,value, DXType::UndefinedType, FALSE) == 
+    if ((this->setOutputValue(1,value, DXType::UndefinedType, false) == 
 				DXType::UndefinedType)
 	||
     	!this->setDefaultAttributes()) {
         ErrorMessage(
       "Error setting default attributes for %s interactor, check ui.mdf\n",
 		this->getNameString());
-	return FALSE;
+	return false;
     }
 
     //
@@ -71,7 +71,7 @@ boolean ScalarListNode::initialize()
     // corresponding shadowing input be non-defaulting.
     //
     this->setShadowingInputsDefaulting();
-    return TRUE;
+    return true;
 }
 //
 // Do what ever is necessary when the given component of the output
@@ -86,7 +86,7 @@ boolean ScalarListNode::initialize()
 // 	sub-class) so if changes are made here they may also need to be
 //	made there.
 //
-extern boolean ClampVSIValue(const char *val, Type valtype,
+extern bool ClampVSIValue(const char *val, Type valtype,
                         double *mins, double *maxs,
                         char **clampedval);
 
@@ -110,7 +110,7 @@ void ScalarListNode::doRangeCheckComponentValue(int component,
 
 #if 1
     if (DXValue::ClampVSIValue(val,output_type,mins,maxs,&clamped)) {
-	this->setOutputValue(1,clamped,DXType::UndefinedType,TRUE);
+	this->setOutputValue(1,clamped,DXType::UndefinedType,true);
         delete clamped;
     }
 #else
@@ -119,10 +119,10 @@ void ScalarListNode::doRangeCheckComponentValue(int component,
     while (sli = (ScalarListInstance*) iterator.getNext()) {
 	double value = sli->getComponentValue(component);
 	if (value < min) {
-	    doit = TRUE;
+	    doit = true;
 	    sli->setComponentValue(component,min);
 	} else if (value > max) {
-	    doit = TRUE;
+	    doit = true;
 	    sli->setComponentValue(component,max);
 	}
     }
@@ -242,7 +242,7 @@ int ScalarListNode::handleVectorListMsgInfo(const char *line)
     return values;
 }
 
-boolean ScalarListNode::adjustOutputDimensions(int old_dim, int new_dim)
+bool ScalarListNode::adjustOutputDimensions(int old_dim, int new_dim)
 {
 
 #define CHUNK	256
@@ -265,7 +265,7 @@ boolean ScalarListNode::adjustOutputDimensions(int old_dim, int new_dim)
 				this->isIntegerTypeComponent());
 	if (!vec) {
 	    delete value;
-	    return FALSE;
+	    return false;
 	}
 	int veclen = STRLEN(vec);
 	if (valuelen + veclen + 1 >= maxlen - 1 ) {
@@ -280,20 +280,20 @@ boolean ScalarListNode::adjustOutputDimensions(int old_dim, int new_dim)
 	delete vec;
     }
     strcat(v,"}");
-    this->setOutputValue(1,value,DXType::VectorListType,TRUE);
+    this->setOutputValue(1,value,DXType::VectorListType,true);
     delete value;
-    return TRUE;
+    return true;
 
 }
 
 //
 // Determine if this node is of the given class.
 //
-boolean ScalarListNode::isA(Symbol classname)
+bool ScalarListNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassScalarListNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ScalarNode::isA(classname);
 }

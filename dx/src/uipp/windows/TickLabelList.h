@@ -45,7 +45,7 @@ class TickLabelList : public UIComponent
 {
   private:
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String DefaultResources[];
 
     char *header;
@@ -95,9 +95,9 @@ class TickLabelList : public UIComponent
 
     //friend int TickLabelList_SortFunc (const void* e1, const void* e2);
 
-    void sortList(boolean up);
+    void sortList(bool up);
 
-    static boolean SortUp;
+    static bool SortUp;
 
   public:
 
@@ -110,9 +110,9 @@ class TickLabelList : public UIComponent
 
     void clear();
 
-    boolean isModified();
-    boolean isNumberModified();
-    boolean isTextModified();
+    bool isModified();
+    bool isNumberModified();
+    bool isTextModified();
     void markClean();
     void markNumbersClean();
     void markTextClean();

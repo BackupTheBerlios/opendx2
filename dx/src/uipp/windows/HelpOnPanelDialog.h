@@ -34,7 +34,7 @@ class HelpOnPanelDialog : public SetPanelCommentDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
     //

@@ -35,7 +35,7 @@ class SetBGColorDialog : public SetNameDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
     //
@@ -44,7 +44,7 @@ class SetBGColorDialog : public SetNameDialog
     ImageWindow *imageWindow;
     //static String DefaultResources[];
 
-    virtual boolean saveText(const char *s);
+    virtual bool saveText(const char *s);
     virtual const char *getText();
 
 

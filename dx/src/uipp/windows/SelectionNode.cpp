@@ -40,7 +40,7 @@
 int SelectionNode::OptionsLeftToSet = 0;
 
 SelectionNode::SelectionNode(NodeDefinition *nd, Network *net, int instnc,
-		boolean alwaysEnlistOutputs) :
+		bool alwaysEnlistOutputs) :
                 InteractorNode(nd, net, instnc) 
 		
 { 
@@ -59,19 +59,19 @@ SelectionNode::~SelectionNode()
 void SelectionNode::InstallNewOptions(void *staticData, void *requestData)
 {
     SelectionNode *sn = (SelectionNode*)staticData;
-    sn->installNewOptions(NULL,NULL,FALSE);
+    sn->installNewOptions(NULL,NULL,false);
 }
 //
 // Set up the interactor with the default options
 //
-boolean SelectionNode::initialize()
+bool SelectionNode::initialize()
 {
     if (this->getInputCount() != EXPECTED_SELECTOR_INPUTS) {
 	fprintf(stderr,
            "Expected %d inputs for %s interactor, please check the mdf file.\n",
                         EXPECTED_SELECTOR_INPUTS,
                         this->getNameString());
-	return FALSE;
+	return false;
     }
 
     //
@@ -80,20 +80,20 @@ boolean SelectionNode::initialize()
     //this->selectedOption = 0;	// This helps the next 2 lines
     this->initValueOptionsAttribute(this->getInitialValueList());
     this->initStringOptionsAttribute(this->getInitialStringList());
-    this->installNewOptions(NULL,NULL,FALSE);
+    this->installNewOptions(NULL,NULL,false);
 #if 000
 
     //
     // Set the default output values (must be one of the above options) 
     //
-    this->setOutputValue(1,"1", DXType::UndefinedType, FALSE);
-    this->setOutputValue(2,"on", DXType::UndefinedType, FALSE);
+    this->setOutputValue(1,"1", DXType::UndefinedType, false);
+    this->setOutputValue(2,"on", DXType::UndefinedType, false);
 #else
-    this->clearSelections(FALSE, FALSE);
+    this->clearSelections(false, false);
 #if 00
-    this->addSelectedOptionIndex(1,TRUE);
+    this->addSelectedOptionIndex(1,true);
 #else
-    this->addSelectedOptionIndex(1,FALSE);
+    this->addSelectedOptionIndex(1,false);
 #endif
 #endif
 
@@ -111,7 +111,7 @@ boolean SelectionNode::initialize()
     //
     this->setMessageIdParameter();
 
-    return TRUE;
+    return true;
 }
 //
 // If either of the list inputs has changed, we must determine the size
@@ -119,12 +119,12 @@ boolean SelectionNode::initialize()
 // NOTE: If this routine is being called, then one of the values must have a 
 //       set value (even though both are allowed not too).
 //
-void SelectionNode::ioParameterStatusChanged(boolean input, int index,
+void SelectionNode::ioParameterStatusChanged(bool input, int index,
 			NodeParameterStatusChange status)
 {
     if (input && (status & Node::ParameterValueChanged))  {
 	if ((index == VALLIST_PARAM_NUM) || (index == STRLIST_PARAM_NUM)) 
-	    this->installNewOptions(NULL,NULL, FALSE);
+	    this->installNewOptions(NULL,NULL, false);
 	
     }
     this->InteractorNode::ioParameterStatusChanged(input, index, status);
@@ -137,7 +137,7 @@ void SelectionNode::ioParameterStatusChanged(boolean input, int index,
 // If slist == NULL, update from the STRLIST parameter.
 //
 void SelectionNode::installNewOptions(const char *vlist, const char *slist, 
-					boolean send)
+					bool send)
 {
     static int kloodge = 0;
 
@@ -180,7 +180,7 @@ void SelectionNode::installNewOptions(const char *vlist, const char *slist,
 	
 #if 000
 	if (vcnt && scnt && (this->getOptionCount() == 0))
-	    this->addSelectedOptionIndex(1, FALSE, FALSE);
+	    this->addSelectedOptionIndex(1, false, false);
 #else
 	//
 	// Remove any selections that are out of range.
@@ -200,7 +200,7 @@ void SelectionNode::installNewOptions(const char *vlist, const char *slist,
 	// the SelectorInteractor gets upset
 	//
 	if (vcnt && scnt && this->selectedOptions.getSize() == 0) 
-	    this->addSelectedOptionIndex(1, FALSE,FALSE);
+	    this->addSelectedOptionIndex(1, false,false);
 #endif
 
 	this->notifyVisualsOfStateChange();
@@ -213,8 +213,8 @@ void SelectionNode::installNewOptions(const char *vlist, const char *slist,
 	    char *vval = this->getOptionValueString(selection); 
 	    char *sval = this->getOptionNameString(selection); 
 	    ASSERT(vval && sval);
-	    this->setOutputValue(1,vval,DXType::UndefinedType,FALSE);
-	    this->setOutputValue(2,sval,DXType::UndefinedType,FALSE);
+	    this->setOutputValue(1,vval,DXType::UndefinedType,false);
+	    this->setOutputValue(2,sval,DXType::UndefinedType,false);
 	    delete vval;
 	    delete sval;
 	}
@@ -223,7 +223,7 @@ void SelectionNode::installNewOptions(const char *vlist, const char *slist,
 #endif
 
 	if (send)
-	    this->sendValues(FALSE);
+	    this->sendValues(false);
 
     }
 
@@ -250,7 +250,7 @@ int SelectionNode::getShadowingInput(int output_index)
 
 }
 
-boolean SelectionNode::cfgPrintInteractorAuxInfo(FILE *f)
+bool SelectionNode::cfgPrintInteractorAuxInfo(FILE *f)
 {
 
     return this->cfgPrintSelectionsComment(f) &&
@@ -258,7 +258,7 @@ boolean SelectionNode::cfgPrintInteractorAuxInfo(FILE *f)
 	
 }
 
-boolean SelectionNode::cfgParseComment(const char *comment,
+bool SelectionNode::cfgParseComment(const char *comment,
                                 const char *filename, int lineno)
 {
     return this->cfgParseSelectionsComment(comment, filename,lineno)  ||
@@ -270,13 +270,13 @@ boolean SelectionNode::cfgParseComment(const char *comment,
 //
 // Get the list of all option values 
 //
-boolean SelectionNode::initValueOptionsAttribute(const char *vlist)
+bool SelectionNode::initValueOptionsAttribute(const char *vlist)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
                                                 VALLIST_PARAM_NUM);
     return p->initAttributeValue(vlist);
 }
-boolean SelectionNode::setValueOptionsAttribute(const char *vlist)
+bool SelectionNode::setValueOptionsAttribute(const char *vlist)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
                                                 VALLIST_PARAM_NUM);
@@ -292,13 +292,13 @@ const char *SelectionNode::getValueOptionsAttribute()
 //
 // Get the list of all option strings 
 //
-boolean SelectionNode::initStringOptionsAttribute(const char *vlist)
+bool SelectionNode::initStringOptionsAttribute(const char *vlist)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
                                                 STRLIST_PARAM_NUM);
     return p->initAttributeValue(vlist);
 }
-boolean SelectionNode::setStringOptionsAttribute(const char *vlist)
+bool SelectionNode::setStringOptionsAttribute(const char *vlist)
 {
     AttributeParameter *p = (AttributeParameter*) this->getInputParameter(
                                                 STRLIST_PARAM_NUM);
@@ -324,10 +324,10 @@ char  *SelectionNode::getOptionValueString(int optind)
 }
 //
 // Get the name of the indicated option.
-// The return string is not double quoted if keep_quotes is FALSE.
+// The return string is not double quoted if keep_quotes is false.
 // The return string must be deleted by the caller.
 //
-char  *SelectionNode::getOptionNameString(int optind, boolean keep_quotes)
+char  *SelectionNode::getOptionNameString(int optind, bool keep_quotes)
 {
    const char *list = this->getStringOptionsAttribute();
    char *value, *s = DXValue::GetListItem(list,optind,DXType::StringListType);
@@ -353,7 +353,7 @@ char  *SelectionNode::getOptionNameString(int optind, boolean keep_quotes)
 }
 
 
-boolean SelectionNode::cfgPrintSelectionsComment(FILE *f)
+bool SelectionNode::cfgPrintSelectionsComment(FILE *f)
 {
     int count = this->getOptionCount();
     int selectionCount = this->getSelectedOptionCount();
@@ -363,27 +363,27 @@ boolean SelectionNode::cfgPrintSelectionsComment(FILE *f)
     // selected option index is reasonable (i.e. >= 0).
     //
     if (fprintf(f, "// selections: maximum = %d, current = ", count) <= 0)
-	return FALSE;
+	return false;
 
     if (count <= 0 || selectionCount <= 0) {
 	if (fprintf(f,"-1") <= 0)
-	    return FALSE;
+	    return false;
     } else {
 	int i;
 	for (i=1 ; i<=count ; i++)
 	    // File uses 0 based indexing
 	    if (this->isOptionSelected(i) && (fprintf(f,"%d ",i-1) <= 0))
-		return FALSE;
+		return false;
     }
     if (fprintf(f,"\n") <= 0)
-	return FALSE;
+	return false;
 
-    return TRUE;
+    return true;
 }
 //
 // 
 //
-boolean SelectionNode::cfgParseSelectionsComment(const char *comment,
+bool SelectionNode::cfgParseSelectionsComment(const char *comment,
                                 const char *filename, int lineno)
 {
     int      items_parsed;
@@ -393,7 +393,7 @@ boolean SelectionNode::cfgParseSelectionsComment(const char *comment,
     ASSERT(comment);
 
     if (strncmp(comment," selections",11))
-        return FALSE;
+        return false;
 
     items_parsed =
 	sscanf(comment, 
@@ -414,32 +414,32 @@ boolean SelectionNode::cfgParseSelectionsComment(const char *comment,
     {
 	ErrorMessage("Can't parse 'selections' comment (file %s, line %d)",
 					filename, lineno);
-	return FALSE;
+	return false;
     }
 
     /*
      * Set current option(s).
      */
-    this->clearSelections(FALSE,FALSE);
+    this->clearSelections(false,false);
     if (option >= 0) {
 	// 1 based indexing
-	this->addSelectedOptionIndex(option+1, FALSE, FALSE);
+	this->addSelectedOptionIndex(option+1, false, false);
 	const char *p = comment + nchars;
 	while (sscanf(p,"%d%n",&option,&nchars) == 1) {
 	    if (option >= 0)
 		// 1 based indexing
-		this->addSelectedOptionIndex(option+1, FALSE, FALSE);
+		this->addSelectedOptionIndex(option+1, false, false);
 	    p += nchars;
 	}
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean SelectionNode::cfgPrintOptionComments(FILE *f)
+bool SelectionNode::cfgPrintOptionComments(FILE *f)
 {
     char *str, *val;
-    boolean r = TRUE;
+    bool r = true;
 
     int i = 0;
     int count = this->getOptionCount();
@@ -451,14 +451,14 @@ boolean SelectionNode::cfgPrintOptionComments(FILE *f)
 		i-1,		// File uses zero based indexing
 		str,	
   	        val) < 0)
-	    r = FALSE; 
+	    r = false; 
 	delete str;
 	delete val;
 	
     }
     return r;
 }
-boolean SelectionNode::cfgParseOptionComment(const char *comment,
+bool SelectionNode::cfgParseOptionComment(const char *comment,
                                 const char *filename, int lineno)
 {
     int      items_parsed;
@@ -469,7 +469,7 @@ boolean SelectionNode::cfgParseOptionComment(const char *comment,
     ASSERT(comment);
 
     if (strncmp(comment," option[",8))
-        return FALSE;
+        return false;
 
     items_parsed =
 	sscanf(comment,
@@ -485,7 +485,7 @@ boolean SelectionNode::cfgParseOptionComment(const char *comment,
     {
 	ErrorMessage("Can't parse 'option' comment (file %s, line %d)",
 					filename, lineno);
-	return FALSE;
+	return false;
     }
 
 
@@ -493,26 +493,26 @@ boolean SelectionNode::cfgParseOptionComment(const char *comment,
     if ((opt_index < 1) || (opt_index > this->getOptionCount()+1))
     {
 	ErrorMessage("Bad option index, (file %s, line %d)", filename, lineno);
-	return FALSE;
+	return false;
     }
 
 #if 000
     if (this->getSelectedOptionIndex() == opt_index) {
-	if (this->setOutputValue(2,name,DXType::StringType,FALSE) == 
+	if (this->setOutputValue(2,name,DXType::StringType,false) == 
 							DXType::UndefinedType)
 	{
 	    ErrorMessage(
 	       "Can't set string value of Selection option, (file %s, line %d)", 
 		filename, lineno);
-	    return FALSE;
+	    return false;
 	}	
-	if (this->setOutputValue(1,value, DXType::UndefinedType,FALSE) == 
+	if (this->setOutputValue(1,value, DXType::UndefinedType,false) == 
 							DXType::UndefinedType)
 	{
 	    ErrorMessage(
 	       "Can't set value of Selection option, (file %s, line %d)", 
 		filename, lineno);
-	    return FALSE;
+	    return false;
 	}	
     }
 #endif
@@ -526,13 +526,13 @@ boolean SelectionNode::cfgParseOptionComment(const char *comment,
 	this->optionCount = 0;
     }
 
-    boolean r;
+    bool r;
     r = this->appendOptionPair(value, name);
 
     if (!r) {
 	ErrorMessage("Can not add option to option list (file %s, line %d)",
 				filename, lineno);
-	return FALSE;
+	return false;
     }
 
 #if 000
@@ -544,20 +544,20 @@ boolean SelectionNode::cfgParseOptionComment(const char *comment,
     //
     if (--SelectionNode::OptionsLeftToSet == 0)  {
 	this->updateOutputs();
-	this->sendValues(FALSE);
+	this->sendValues(false);
     }
 #endif
 
-    return TRUE;
+    return true;
 
 }
 //
 // Add an option pair to the list of option pairs.
 // Do not send the values to the executive or notify CDBs or interactors.
 //
-boolean SelectionNode::appendOptionPair(const char *value, const char *label)
+bool SelectionNode::appendOptionPair(const char *value, const char *label)
 {
-    boolean r;
+    bool r;
     const char *slist;
     const char *vlist;
     char *str;
@@ -585,10 +585,10 @@ boolean SelectionNode::appendOptionPair(const char *value, const char *label)
     delete str;
 
     if (nvlist && nslist) {
-	this->installNewOptions(nvlist,nslist, FALSE);
-	r = TRUE; 
+	this->installNewOptions(nvlist,nslist, false);
+	r = true; 
     } else
-	r = FALSE;
+	r = false;
 
     if (nvlist) delete nvlist;
     if (nslist) delete nslist;
@@ -648,7 +648,7 @@ int SelectionNode::handleInteractorMsgInfo(const char *line)
         if (this->getInputSetValueType(VALLIST_PARAM_NUM) & DXType::ListType) {
 	    AttributeParameter *ap = (AttributeParameter*)
 			this->getInputParameter(VALLIST_PARAM_NUM);
-	    ap->syncPrimaryValue(TRUE);
+	    ap->syncPrimaryValue(true);
 	}
 	this->deferNewOptionInstallation->undeferAction();
     }
@@ -678,8 +678,8 @@ int SelectionNode::handleInteractorMsgInfo(const char *line)
 	// Make sure the internal output value and the shadowed inputs
 	// are in sync both internally and in the executive.
 	//
-	this->setSelectedOptions(selections,nselects,FALSE,FALSE);
-	this->updateOutputs(TRUE);
+	this->setSelectedOptions(selections,nselects,false,false);
+	this->updateOutputs(true);
 
     }
 
@@ -698,11 +698,11 @@ InteractorInstance *SelectionNode::newInteractorInstance()
 //
 // Determine if this node is of the given class.
 //
-boolean SelectionNode::isA(Symbol classname)
+bool SelectionNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassSelectionNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->InteractorNode::isA(classname);
 }
@@ -710,8 +710,8 @@ boolean SelectionNode::isA(Symbol classname)
 // Update the selected option index, and if requested, update the output
 // values to match the values indicated by the index.
 //
-void SelectionNode::changeSelectedOptionIndex(int index, boolean set,
-				boolean send, boolean update_outputs)
+void SelectionNode::changeSelectedOptionIndex(int index, bool set,
+				bool send, bool update_outputs)
 {
     int i, pos;
     ASSERT(index > 0);
@@ -739,13 +739,13 @@ void SelectionNode::changeSelectedOptionIndex(int index, boolean set,
     if (update_outputs) {
 	this->updateOutputs();
 	if (send)
-	    this->sendValues(FALSE);
+	    this->sendValues(false);
     }
 
 }
 
 static void enlist_items(char **values, int cnt, char *buf, 
-			boolean forceList, boolean quoteItems)
+			bool forceList, bool quoteItems)
 {
     int i;
 
@@ -773,7 +773,7 @@ static void enlist_items(char **values, int cnt, char *buf,
 // Update the output values based on the current selections, then send
 // the values to the server.
 //
-void SelectionNode::updateOutputs(boolean fromServer)
+void SelectionNode::updateOutputs(bool fromServer)
 {
     char *output;
     int cnt = 0, soptions = this->getSelectedOptionCount();
@@ -805,7 +805,7 @@ void SelectionNode::updateOutputs(boolean fromServer)
 
 	output = new char[ MAX(namelen,vallen) + 8];
 
-	enlist_items(values,cnt,output,this->alwaysEnlistOutputs,FALSE);
+	enlist_items(values,cnt,output,this->alwaysEnlistOutputs,false);
 
 
     } else {
@@ -816,7 +816,7 @@ void SelectionNode::updateOutputs(boolean fromServer)
     if (fromServer)
 	this->setShadowedOutputSentFromServer(1,output, DXType::UndefinedType);
     else
-	this->setOutputValue(1,output,DXType::UndefinedType, FALSE);
+	this->setOutputValue(1,output,DXType::UndefinedType, false);
 
     //
     // Undefer now, so that the next setOutputValue() causes all instances
@@ -825,12 +825,12 @@ void SelectionNode::updateOutputs(boolean fromServer)
     this->undeferVisualNotification();
 
     if (soptions > 0) 
-	enlist_items(names,cnt,output,this->alwaysEnlistOutputs,TRUE);
+	enlist_items(names,cnt,output,this->alwaysEnlistOutputs,true);
 
     if (fromServer)
 	this->setShadowedOutputSentFromServer(2,output, DXType::UndefinedType);
     else
-	this->setOutputValue(2,output,DXType::UndefinedType, FALSE);
+	this->setOutputValue(2,output,DXType::UndefinedType, false);
 
     if (cnt > 0) {
 	ASSERT(names && values);
@@ -846,51 +846,51 @@ void SelectionNode::updateOutputs(boolean fromServer)
 
 }
 void SelectionNode::addSelectedOptionIndex(int index, 
-				boolean send, boolean update_outputs)
+				bool send, bool update_outputs)
 {
-    this->changeSelectedOptionIndex(index,TRUE, send, update_outputs);
+    this->changeSelectedOptionIndex(index,true, send, update_outputs);
 }
 #if 00 // Not used
 void SelectionNode::removeSelectedOptionIndex(int index, 
-				boolean send, boolean update_outputs)
+				bool send, bool update_outputs)
 {
-    this->changeSelectedOptionIndex(index,FALSE, send, update_outputs);
+    this->changeSelectedOptionIndex(index,false, send, update_outputs);
 }
 #endif
-boolean SelectionNode::isOptionSelected(int index)
+bool SelectionNode::isOptionSelected(int index)
 {
     ASSERT(index > 0);
     ASSERT(index <= this->getOptionCount());
     return this->selectedOptions.isMember((void*)index); 
 }
-void SelectionNode::clearSelections(boolean send, boolean update)
+void SelectionNode::clearSelections(bool send, bool update)
 {
     this->selectedOptions.clear();
     if (update) {
 	this->updateOutputs();
 	if (send)
-	    this->sendValues(FALSE);
+	    this->sendValues(false);
     }
 }
 void SelectionNode::setSelectedOptions(int *setIndices, int count, 
-				boolean send, boolean update)
+				bool send, bool update)
 {
-    this->clearSelections(FALSE,FALSE);
+    this->clearSelections(false,false);
     int i, options = this->getOptionCount();
     for (i=0 ; i<count ; i++) {
 	int index = setIndices[i];
 	if (index > 0 && index <= options)
-	    this->addSelectedOptionIndex(index,FALSE,FALSE); 
+	    this->addSelectedOptionIndex(index,false,false); 
     }
 
     if (update) {
 	this->updateOutputs();
 	if (send)
-	    this->sendValues(FALSE);
+	    this->sendValues(false);
     }
 }
 
-boolean SelectionNode::printJavaType(FILE* jf, const char* indent, const char* var)
+bool SelectionNode::printJavaType(FILE* jf, const char* indent, const char* var)
 {
     Parameter *p = this->getOutputParameter(1);
     if (p->hasValue()) {
@@ -914,10 +914,10 @@ boolean SelectionNode::printJavaType(FILE* jf, const char* indent, const char* v
 	fprintf (jf, "%s// The output has no value saved in the net\n", indent);
 	fprintf (jf, "%s%s.setOutputType(BinaryInstance.STRING);\n", indent,var);
     }
-    return TRUE;
+    return true;
 }
 
-boolean SelectionNode::printJavaValue (FILE* jf)
+bool SelectionNode::printJavaValue (FILE* jf)
 {
     const char* indent = "        ";
     const char* var_name = this->getJavaVariable();
@@ -954,7 +954,7 @@ boolean SelectionNode::printJavaValue (FILE* jf)
 	    delete head;
 	}
 	if (fprintf (jf, "%s%s.setValues(%s_vn, %s_vo);\n",
-	    indent, var_name, var_name, var_name) <= 0) return FALSE;
+	    indent, var_name, var_name, var_name) <= 0) return false;
 
 	ListIterator it(selection_stmts);
 	char* cp;
@@ -963,7 +963,7 @@ boolean SelectionNode::printJavaValue (FILE* jf)
 	    delete cp;
 	}
     }
-    return TRUE;
+    return true;
 }
 
 

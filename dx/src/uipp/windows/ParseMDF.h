@@ -20,13 +20,13 @@
 class Dictionary;
 class ParameterDefinition;
 
-extern boolean ReadMDFFiles(const char* root, Dictionary* mdf, boolean uiOnly);
-extern boolean LoadMDFFile(const char* file, const char* type, 
-			Dictionary *mdf, boolean uiOnly);
-extern boolean ParseMDFTypes(ParameterDefinition *param,
+extern bool ReadMDFFiles(const char* root, Dictionary* mdf, bool uiOnly);
+extern bool LoadMDFFile(const char* file, const char* type, 
+			Dictionary *mdf, bool uiOnly);
+extern bool ParseMDFTypes(ParameterDefinition *param,
     char *line,
     int lineNumber = 0);
-extern boolean ParseMDFOptions (ParameterDefinition* pd, char* p);
+extern bool ParseMDFOptions (ParameterDefinition* pd, char* p);
 
 // 
 // A dictionary of strings that are filenames of dynamically loadable object 

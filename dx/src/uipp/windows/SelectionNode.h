@@ -44,7 +44,7 @@ class SelectionNode : public InteractorNode
     static      int OptionsLeftToSet;
 
     int		optionCount;
-    boolean	alwaysEnlistOutputs;
+    bool	alwaysEnlistOutputs;
 
     static void InstallNewOptions(void *staticdata, void *requestData);
     DeferrableAction *deferNewOptionInstallation;
@@ -53,14 +53,14 @@ class SelectionNode : public InteractorNode
     // Update the output values based on the current selections, then send
     // the values to the server.
     //
-    void updateOutputs(boolean fromServer = FALSE);
+    void updateOutputs(bool fromServer = false);
 
     //
     // Update the selected option index, and if requested, update the output
     // values to match the values indicated by the index.
     //
-    void changeSelectedOptionIndex(int index, boolean set,
-                        boolean send = TRUE, boolean update_outputs = TRUE);
+    void changeSelectedOptionIndex(int index, bool set,
+                        bool send = true, bool update_outputs = true);
 
 
     //
@@ -68,12 +68,12 @@ class SelectionNode : public InteractorNode
     // values to match the values indicated by the index.
     //
 #if 00 // Not used
-    void removeSelectedOptionIndex(int index, boolean send = TRUE, 
-						boolean update_outputs = TRUE);
+    void removeSelectedOptionIndex(int index, bool send = true, 
+						bool update_outputs = true);
 #endif
-    void addSelectedOptionIndex(int index, boolean send = TRUE, 
-						boolean update_outputs = TRUE);
-    void clearSelections(boolean send = TRUE, boolean update = TRUE);
+    void addSelectedOptionIndex(int index, bool send = true, 
+						bool update_outputs = true);
+    void clearSelections(bool send = true, bool update = true);
 
   protected:
     //
@@ -82,20 +82,20 @@ class SelectionNode : public InteractorNode
 
     List	selectedOptions;
 
-    boolean cfgPrintInteractorAuxInfo(FILE *f);
-    boolean cfgPrintSelectionsComment(FILE *f);
-    boolean cfgPrintOptionComments(FILE *f);
+    bool cfgPrintInteractorAuxInfo(FILE *f);
+    bool cfgPrintSelectionsComment(FILE *f);
+    bool cfgPrintOptionComments(FILE *f);
 
     //
     // Parse comments the 'option[' comment. 
     //
-    boolean cfgParseOptionComment(const char *comment,
+    bool cfgParseOptionComment(const char *comment,
 					const char *filename, int lineno);
 
     //
     // Parse comments the 'selections: ' comment. 
     //
-    boolean cfgParseSelectionsComment(const char *comment,
+    bool cfgParseSelectionsComment(const char *comment,
 					const char *filename, int lineno);
 
     // The messages we parse can contain one or more of the following...
@@ -127,13 +127,13 @@ class SelectionNode : public InteractorNode
     // NOTE: If this routine is being called, then one of the values must 
     //    have a set value (even though both are allowed not too).
     //
-    void ioParameterStatusChanged(boolean input, int index,
+    void ioParameterStatusChanged(bool input, int index,
 				NodeParameterStatusChange status);
 
-    boolean setValueOptionsAttribute(const char *vlist);
-    boolean setStringOptionsAttribute(const char *slist);
-    boolean initValueOptionsAttribute(const char *vlist);
-    boolean initStringOptionsAttribute(const char *slist);
+    bool setValueOptionsAttribute(const char *vlist);
+    bool setStringOptionsAttribute(const char *slist);
+    bool initValueOptionsAttribute(const char *vlist);
+    bool initStringOptionsAttribute(const char *slist);
     const char *getValueOptionsAttribute();
     const char *getStringOptionsAttribute();
 
@@ -155,7 +155,7 @@ class SelectionNode : public InteractorNode
     //
     SelectionNode(NodeDefinition *nd, Network *net, 
 				int instnc, 
-				boolean alwaysEnlistOutputs = FALSE);
+				bool alwaysEnlistOutputs = false);
 
     //
     // Destructor:
@@ -175,41 +175,41 @@ class SelectionNode : public InteractorNode
     char  *getOptionValueString(int optind);
     //
     // Get the name of the indicated option.
-    // The return string is not double quoted unless keep_quotes is TRUE.
+    // The return string is not double quoted unless keep_quotes is true.
     // Ther returned string must be deleted by the caller.
     //
-    char  *getOptionNameString(int optind, boolean keep_quotes = FALSE);
+    char  *getOptionNameString(int optind, bool keep_quotes = false);
 
-    boolean appendOptionPair(const char *val, const char *label);
+    bool appendOptionPair(const char *val, const char *label);
 
     //  
     // Use the value list and string list to set the new list of options.
     // Also, notify all instances that the state has changed.
     //
-    void installNewOptions(const char *vlist, const char *slist, boolean send);
+    void installNewOptions(const char *vlist, const char *slist, bool send);
 
 
     //
     // Called once for each class by the allocator in definition. 
     // 
-    virtual boolean initialize();
+    virtual bool initialize();
 
     //
     // Parse comments found in the .cfg that the InteractorNode knows how to
     // parse plus ones that it does not.
     //
-    virtual boolean cfgParseComment(const char *comment,
+    virtual bool cfgParseComment(const char *comment,
 					const char *filename, int lineno);
 
     //
     // Return true of the given index'ed option is selected.
     //
-    boolean isOptionSelected(int index);
+    bool isOptionSelected(int index);
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
 
     //
@@ -217,13 +217,13 @@ class SelectionNode : public InteractorNode
     // values to match the values indicated by the index.
     //
     void setSelectedOptions(int *setIndices, int count, 
-				boolean send = TRUE, 
-				boolean update_outputs = TRUE);
+				bool send = true, 
+				bool update_outputs = true);
 
-    virtual boolean printJavaType(FILE*, const char*, const char*);
+    virtual bool printJavaType(FILE*, const char*, const char*);
 
     virtual const char* getJavaNodeName() { return "SelectionNode"; }
-    virtual boolean printJavaValue(FILE*);
+    virtual bool printJavaValue(FILE*);
 
     //
     // Returns a pointer to the class name.

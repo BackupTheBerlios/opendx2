@@ -18,7 +18,7 @@ StreaklineNode::StreaklineNode(NodeDefinition *nd, Network *net, int instnc) :
     Node(nd, net, instnc)
 {
     this->setInputValue(NAME_NUM,this->getModuleMessageIdString(),
-				DXType::StringType,FALSE);
+				DXType::StringType,false);
 }
 
 StreaklineNode::~StreaklineNode()
@@ -28,23 +28,23 @@ StreaklineNode::~StreaklineNode()
 //
 // Determine if this node is of the given class.
 //
-boolean StreaklineNode::isA(Symbol classname)
+bool StreaklineNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassStreaklineNode);
     if (s == classname)
-        return TRUE;
+        return true;
     else
         return this->Node::isA(classname);
 }
 
 int StreaklineNode::assignNewInstanceNumber()
 {
-    boolean isConnected = this->isInputConnected(NAME_NUM);
+    bool isConnected = this->isInputConnected(NAME_NUM);
     int instance_number = this->Node::assignNewInstanceNumber();
 
     if (!isConnected)
 	this->setInputValue(NAME_NUM,this->getModuleMessageIdString(), 
-	    DXType::StringType,FALSE);
+	    DXType::StringType,false);
 
     return instance_number;
 }

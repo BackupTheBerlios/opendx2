@@ -18,7 +18,7 @@
 
 NoUndoMWCmd::NoUndoMWCmd(const char   *name,
 			 CommandScope* scope,
-			 boolean       active,
+			 bool       active,
 			 MsgWin       *messageWindow,
 			 MWCmdType     comType):
     NoUndoCommand(name, scope, active)
@@ -28,10 +28,10 @@ NoUndoMWCmd::NoUndoMWCmd(const char   *name,
 }
 
 
-boolean NoUndoMWCmd::doIt(CommandInterface *ci)
+bool NoUndoMWCmd::doIt(CommandInterface *ci)
 {
     MsgWin *messageWindow = this->messageWindow;
-    boolean     ret = TRUE;
+    bool     ret = true;
 
     ASSERT(messageWindow);
 

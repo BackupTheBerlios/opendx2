@@ -11,7 +11,7 @@
 
 
 /* Scanner skeleton version:
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/windows/netlex.h,v 1.1 2004/10/05 17:12:42 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/windows/netlex.h,v 1.2 2004/11/19 19:20:02 davidt Exp $
  */
 
 #define FLEX_SCANNER
@@ -635,8 +635,11 @@ char *yytext;
 /*****************************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/windows/netlex.h,v 1.1 2004/10/05 17:12:42 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/windows/netlex.h,v 1.2 2004/11/19 19:20:02 davidt Exp $
  * $Log: netlex.h,v $
+ * Revision 1.2  2004/11/19 19:20:02  davidt
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/10/05 17:12:42  davidt
  * Hacking all the UI classes to fit in a .NET based UI (removing all X and
  * Motif linkages.)
@@ -996,42 +999,42 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 141 "net.lex"
-{ return (V_TRUE); }
+{ return (V_true); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 142 "net.lex"
-{ return (V_TRUE); }
+{ return (V_true); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 143 "net.lex"
-{ return (V_FALSE); }
+{ return (V_false); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 144 "net.lex"
-{ return (V_FALSE); }
+{ return (V_false); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 145 "net.lex"
-{ return (V_TRUE); }
+{ return (V_true); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 146 "net.lex"
-{ return (V_TRUE); }
+{ return (V_true); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 147 "net.lex"
-{ return (V_FALSE); }
+{ return (V_false); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 148 "net.lex"
-{ return (V_FALSE); }
+{ return (V_false); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP

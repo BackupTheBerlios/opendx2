@@ -32,8 +32,8 @@ DrivenNode::DrivenNode(NodeDefinition *nd,
                         ModuleMessagingNode(nd, net, instance)
 {
     this->visualNotificationDeferrals = 0;
-    this->visualsNeedNotification = FALSE;
-    this->handlingLongMessage = FALSE;
+    this->visualsNeedNotification = false;
+    this->handlingLongMessage = false;
 }
 
 //
@@ -49,15 +49,15 @@ Type DrivenNode::setInputAttributeFromServer(int index,
 
     Parameter *p = this->getInputParameter(index);
     ASSERT(p->isA(ClassAttributeParameter));
-    boolean was_dirty = p->isDirty();
+    bool was_dirty = p->isDirty();
 #if 11 
-    boolean r = this->setInputAttributeParameter(index,val);
+    bool r = this->setInputAttributeParameter(index,val);
 #else   // We now do this to fix GRESH883, with the thinking being that when
 	// we get a value from the server, the real parameter (not just the 
 	// attribute parameter) should be updated, regardless of whether or
 	// not it type matches with the attribute. 
 	// Also, see AttributeParamter::setAttributeValue().
-    boolean r = this->setInputAttributeParameter(index,val, TRUE);
+    bool r = this->setInputAttributeParameter(index,val, true);
 #endif
     if (!was_dirty)
 	this->clearInputDirty(index);
@@ -72,13 +72,13 @@ Type DrivenNode::setInputAttributeFromServer(int index,
 //
 // Check all input parameters to see if any are connected.
 // If connected, then we consider the ModuleMessagingNode to be data-driven 
-// (at this level of the the class hierarchy) and return TRUE, 
-// otherwise FALSE.
+// (at this level of the the class hierarchy) and return true, 
+// otherwise false.
 //
-boolean DrivenNode::isDataDriven()
+bool DrivenNode::isDataDriven()
 {
     int i, icnt = this->getInputCount();
-    boolean driven = FALSE; 
+    bool driven = false; 
 
     for (i=1 ; !driven && i<=icnt ; i++)  {
 	if (this->isInputViewable(i)) 
@@ -95,7 +95,7 @@ boolean DrivenNode::isDataDriven()
 // Notify anybody that needs to know that a parameter has changed. 
 // At the level we notify all instances that the label has changed.
 //
-void DrivenNode::ioParameterStatusChanged(boolean input, int index, 
+void DrivenNode::ioParameterStatusChanged(bool input, int index, 
 					NodeParameterStatusChange status)
 {
     if ((input) && (status & Node::ParameterArkChanged)) {
@@ -103,7 +103,7 @@ void DrivenNode::ioParameterStatusChanged(boolean input, int index,
 	// If we become un data driven, then we must make sure the
 	// outputs get sent on the next execution.
 	//
-	boolean driven = this->isDataDriven();
+	bool driven = this->isDataDriven();
 	if (driven) {
 	    int i, ocnt = this->getOutputCount();
 	    for (i=1 ; i<=ocnt ; i++)	 
@@ -128,26 +128,26 @@ void DrivenNode::ioParameterStatusChanged(boolean input, int index,
 // Set the message id parameter for a data-driven node.  
 // We assume that the id parameter is always parameter found in
 // the parameter indexed by this->getMessageIdParamNumber().
-// Returns TRUE/FALSE.  If FALSE, an error message is given. 
+// Returns true/false.  If false, an error message is given. 
 //
-boolean DrivenNode::setMessageIdParameter(int id_index)
+bool DrivenNode::setMessageIdParameter(int id_index)
 {
     const char *id = this->getModuleMessageIdString();
 
     if (id_index == 0) {
 	id_index = this->getMessageIdParamNumber();
     	if (id_index == 0)
-	    return TRUE;
+	    return true;
     }
 
-    if (this->setInputValue(id_index, id, DXType::StringType, FALSE) == 
+    if (this->setInputValue(id_index, id, DXType::StringType, false) == 
 						DXType::UndefinedType) {
         ErrorMessage(
         "Error setting message id string for node %s, check ui.mdf\n",
                 this->getNameString());
-	return FALSE;
+	return false;
     }
-    return TRUE;
+    return true;
 }
 #if 0
 //
@@ -171,7 +171,7 @@ void DrivenNode::execModuleMessageHandler(int id, const char *line)
 {
     const char *p;
     int  values;
-    boolean do_notify;
+    bool do_notify;
 
 #ifdef DEBUG 
     printf("%s: receiving message #%d...\n", this->getNameString(), id);
@@ -191,20 +191,20 @@ void DrivenNode::execModuleMessageHandler(int id, const char *line)
 	//
 	// Begin handling a long message.
 	//
-	this->handlingLongMessage = TRUE;
+	this->handlingLongMessage = true;
 	//
 	// Don't notify visuals during a long message. 
 	//
-	do_notify = FALSE;
+	do_notify = false;
     } else if (EqualString(p,":  end")) {
 	//
 	// End of long message  encountered. 
 	//
-	this->handlingLongMessage = FALSE;
+	this->handlingLongMessage = false;
 	//
 	// Always notify visuals after a long message.
 	//
-	do_notify = TRUE;
+	do_notify = true;
     } else {
 	//
 	// Handle both long and short messages. 
@@ -220,16 +220,16 @@ void DrivenNode::execModuleMessageHandler(int id, const char *line)
     if (do_notify)
 	this->notifyVisualsOfStateChange();
 
-    this->undeferVisualNotification(TRUE);
+    this->undeferVisualNotification(true);
 }
 //
-// Return TRUE/FALSE, indicating whether or not we expect to receive
+// Return true/false, indicating whether or not we expect to receive
 // a message from the UI when our module executes in the executive.
 // By default, a module only executes in the executive for data-driven
 // nodes and so we don't expect messages unless the node 
 // is data-driven.
 //
-boolean DrivenNode::expectingModuleMessage()
+bool DrivenNode::expectingModuleMessage()
 {
     return this->isDataDriven();
 }
@@ -239,23 +239,23 @@ boolean DrivenNode::expectingModuleMessage()
 // This calls this->reflectStateChange() if notification is not
 // deferred.
 //
-void DrivenNode::notifyVisualsOfStateChange(boolean unmanage)
+void DrivenNode::notifyVisualsOfStateChange(bool unmanage)
 {
     if (!this->isVisualNotificationDeferred()) {
-        this->visualsNeedNotification = FALSE;
+        this->visualsNeedNotification = false;
         this->reflectStateChange(unmanage);
     } else {
-        this->visualsNeedNotification = TRUE;
+        this->visualsNeedNotification = true;
     }
 }
 //
 // Determine if the give attribute/paramater is visually writeable (i.e.
 // settable from something other than the CDB, like the SetAttrDialog).
 //
-boolean DrivenNode::isAttributeVisuallyWriteable(int input_index)
+bool DrivenNode::isAttributeVisuallyWriteable(int input_index)
 {
     if (!this->isDataDriven())
-	return TRUE;
+	return true;
 
     Parameter *p = this->getInputParameter(input_index);
     ASSERT(p->isA(ClassAttributeParameter));
@@ -265,7 +265,7 @@ boolean DrivenNode::isAttributeVisuallyWriteable(int input_index)
 //
 // Initialize the value of an attribute parameter.
 //
-boolean DrivenNode::initInputAttributeParameter(int index, const char *val)
+bool DrivenNode::initInputAttributeParameter(int index, const char *val)
 {
     AttributeParameter *p = (AttributeParameter*) 
 				this->getInputParameter(index);
@@ -273,12 +273,12 @@ boolean DrivenNode::initInputAttributeParameter(int index, const char *val)
 }
 //
 // Set the value of an attribute parameter.
-// If forceSync is TRUE (default = FALSE), then force the primary
+// If forceSync is true (default = false), then force the primary
 // parameters of the AttributeParameter to be updated regardless of
 // whether or not the types match.
 //
-boolean DrivenNode::setInputAttributeParameter(int index, 
-			const char *val, boolean forceSync)
+bool DrivenNode::setInputAttributeParameter(int index, 
+			const char *val, bool forceSync)
 {
     AttributeParameter *p = (AttributeParameter*) 
 				this->getInputParameter(index);
@@ -296,11 +296,11 @@ const char *DrivenNode::getInputAttributeParameterValue(int index)
 //
 // Determine if this node is of the given class.
 //
-boolean DrivenNode::isA(Symbol classname)
+bool DrivenNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassDrivenNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ModuleMessagingNode::isA(classname);
 }

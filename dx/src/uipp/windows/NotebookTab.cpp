@@ -10,7 +10,7 @@
 #include "DXStrings.h"
 
 int NotebookTab::CornerSize = 6;
-boolean NotebookTab::ClassInitialized = FALSE;
+bool NotebookTab::ClassInitialized = false;
 //XmFontList NotebookTab::FontList = 0;
 //
 //XPoint NotebookTab::LeftCorner[] = {
@@ -51,14 +51,14 @@ boolean NotebookTab::ClassInitialized = FALSE;
 NotebookTab::NotebookTab(const char* name) : UIComponent("notebookTab")
 {
     if (!NotebookTab::ClassInitialized) {
-	NotebookTab::ClassInitialized = TRUE;
+	NotebookTab::ClassInitialized = true;
     }
-    this->set = FALSE;
+    this->set = false;
     //this->label = XmStringCreateLtoR((char*)name, "small_bold");
     //this->label_str = DuplicateString(name);
-    this->dirty = TRUE;
+    this->dirty = true;
     //this->dbl_buffer = 0;
-    this->armed = FALSE;
+    this->armed = false;
     //this->multiclick_timer = 0;
     //this->repaint_timer = 0;
 }
@@ -83,9 +83,9 @@ NotebookTab::~NotebookTab()
 //{
 //    Widget w = XtVaCreateWidget (this->label_str, xmDrawnButtonWidgetClass, parent, 
 //	XmNmultiClick, XmMULTICLICK_KEEP,
-//	XmNpushButtonEnabled, FALSE,
+//	XmNpushButtonEnabled, false,
 //	XmNshadowThickness, 0,
-//	XmNrecomputeSize, FALSE,
+//	XmNrecomputeSize, false,
 //    NULL);
 //    this->setRootWidget(w);
 //
@@ -108,20 +108,20 @@ NotebookTab::~NotebookTab()
 
 void NotebookTab::activate()
 {
-    this->armed = FALSE;
-    this->setState(this->getState()==FALSE);
+    this->armed = false;
+    this->setState(this->getState()==false);
 }
 
 void NotebookTab::arm()
 {
-    this->armed = TRUE;
-    this->setDirty(TRUE,FALSE);
+    this->armed = true;
+    this->setDirty(true,false);
 }
 
 void NotebookTab::disarm()
 {
-    this->armed = FALSE;
-    this->setDirty(TRUE,FALSE);
+    this->armed = false;
+    this->setDirty(true,false);
 }
 
 void NotebookTab::expose()
@@ -153,17 +153,17 @@ void NotebookTab::setLabel(const char* str)
  //   } else {
 	//this->label = 0;
  //   }
- //   this->setDirty(TRUE,TRUE);
+ //   this->setDirty(true,true);
 }
 
-void NotebookTab::setState(boolean s)
+void NotebookTab::setState(bool s)
 {
     if (s == this->set) return ;
     this->set = s;
-    this->setDirty(TRUE, TRUE);
+    this->setDirty(true, true);
 }
 
-void NotebookTab::setDirty(boolean d, boolean repaint)
+void NotebookTab::setDirty(bool d, bool repaint)
 {
     this->dirty = d;
  //   if (this->repaint_timer) XtRemoveTimeOut(this->repaint_timer);
@@ -214,7 +214,7 @@ void NotebookTab::repaint()
  //   //
  //   // Draw left edge
  //   //
- //   boolean pushed_in = 
+ //   bool pushed_in = 
 	//((this->getState()) && (!this->isArmed()) ||
  //        (!this->getState()) && (this->isArmed()));
  //   if (pushed_in) {
@@ -304,7 +304,7 @@ void NotebookTab::repaint()
 	//XmSTRING_DIRECTION_L_TO_R, NUL(XRectangle*));
  //   XtReleaseGC(w, gc);
 
- //   this->dirty = FALSE;
+ //   this->dirty = false;
 }
 
 void NotebookTab::multiClickTimer()
@@ -351,13 +351,13 @@ void NotebookTab::multiClickTimer()
 //
 //void NotebookTab_ButtonEH(Widget w, XtPointer clientData, XEvent* xev, Boolean *doit)
 //{
-//    *doit = TRUE;
+//    *doit = true;
 //    if (!xev) return ;
 //    if ((xev->type != ButtonPress) && (xev->type != ButtonRelease)) return ;
 //    if (xev->xbutton.button != 1) return ;
 //    NotebookTab* nt = (NotebookTab*)clientData;
 //    ASSERT(nt);
-//    if (nt->getState()) *doit = FALSE;
+//    if (nt->getState()) *doit = false;
 //    if (xev->type == ButtonRelease)
 //	nt->multiClickTimer();
 //}

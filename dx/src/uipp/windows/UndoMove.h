@@ -58,10 +58,10 @@ class UndoStandInMove : public UndoMove
 	//
 	virtual void postpare();
 
-	virtual boolean canUndo();
+	virtual bool canUndo();
 	UndoStandInMove (EditorWindow* editor, StandIn* si, 
 		const char* className, int instance);
-	virtual void undo(boolean first_in_list=TRUE);
+	virtual void undo(bool first_in_list=true);
 	virtual const char* getClassName() { return UndoStandInMoveClassName; }
 };
 
@@ -85,10 +85,10 @@ class UndoDecoratorMove : public UndoMove
 	//
 	virtual void postpare();
 
-	virtual boolean canUndo();
+	virtual bool canUndo();
 	virtual ~UndoDecoratorMove();
 	UndoDecoratorMove (EditorWindow* editor, VPEAnnotator* dec);
-	virtual void undo(boolean first_in_list=TRUE);
+	virtual void undo(bool first_in_list=true);
 	virtual const char* getClassName() { return UndoDecoratorMoveClassName; }
 };
 #endif // _UndoMove_h

@@ -36,7 +36,7 @@ class NoUndoJavaNetCommand : public NoUndoCommand
     JavaNet		*network;
     JavaNetCommandType 	commandType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -44,7 +44,7 @@ class NoUndoJavaNetCommand : public NoUndoCommand
     //
     NoUndoJavaNetCommand(const char*   name,
                    CommandScope  *scope,
-                   boolean       active,
+                   bool       active,
 		   JavaNet	*n,
 		   JavaNetCommandType comType);
 

@@ -14,7 +14,7 @@
 #include "ControlPanel.h"
 
 
-boolean SetInteractorNameDialog::ClassInitialized = FALSE;
+bool SetInteractorNameDialog::ClassInitialized = false;
 
 //String SetInteractorNameDialog::DefaultResources[] = {
 //    "*dialogTitle: 			Set Interactor label...",
@@ -29,7 +29,7 @@ SetInteractorNameDialog::SetInteractorNameDialog( ControlPanel *panel)  :
 
     if (NOT SetInteractorNameDialog::ClassInitialized)
     {
-        SetInteractorNameDialog::ClassInitialized = TRUE;
+        SetInteractorNameDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -52,10 +52,10 @@ const char *SetInteractorNameDialog::getText()
     return this->panel->getInteractorLabel();
 }
 
-boolean SetInteractorNameDialog::saveText(const char *s)
+bool SetInteractorNameDialog::saveText(const char *s)
 {
     this->panel->setInteractorLabel(s);
-    return TRUE;
+    return true;
 }
 
 //

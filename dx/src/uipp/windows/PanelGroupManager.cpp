@@ -46,18 +46,18 @@ void PanelGroupManager::clear()
 }
 //
 // Create an empty group of control panels with the given name.
-// If name is already active, then return FALSE.
+// If name is already active, then return false.
 //
-boolean     PanelGroupManager::createPanelGroup(const char *name)
+bool     PanelGroupManager::createPanelGroup(const char *name)
 {
     List *l;
-    boolean result;
+    bool result;
 
     if (IsBlankString(name))
-	return FALSE;
+	return false;
 
     if (this->getPanelGroup(name,NULL))
-	return FALSE;	// Named group already exists.
+	return false;	// Named group already exists.
 
     l = new List;
 
@@ -74,16 +74,16 @@ boolean     PanelGroupManager::createPanelGroup(const char *name)
 // in the group. The panelInstance, should be a member of the network
 // with which this PanelGroupManager is associated.
 //
-boolean     PanelGroupManager::addGroupMember(const char *name,  
+bool     PanelGroupManager::addGroupMember(const char *name,  
 					int panelInstance)
 {
     List *l;
-    boolean result;
+    bool result;
 
     ASSERT(panelInstance > 0);
     l = (List*)this->panelGroups.findDefinition(name); 
     if (!l)
-	return FALSE;
+	return false;
     ASSERT(!l->isMember((const void*)panelInstance));
     result = l->appendElement((const void*)panelInstance);
 
@@ -94,19 +94,19 @@ boolean     PanelGroupManager::addGroupMember(const char *name,
 }
 //
 // Removes the given panelInstance from the named panel group.
-// Return FALSE if either the group does not exist or the instance
+// Return false if either the group does not exist or the instance
 // is not a member of the given group.
 //
-boolean     PanelGroupManager::removeGroupMember(const char *name, 
+bool     PanelGroupManager::removeGroupMember(const char *name, 
 					int panelInstance)
 {
     List *l;
-    boolean result;
+    bool result;
 
     ASSERT(panelInstance > 0);
     l = (List*)this->panelGroups.findDefinition(name); 
     if (!l)
-	return FALSE;
+	return false;
 
     result = l->removeElement((const void*)panelInstance);
     if(result)
@@ -150,15 +150,15 @@ const char *PanelGroupManager::getPanelGroup(int gindex, List *panels)
 //
 // Get a panel group by name.  If l is not NULL, then return in a l, a
 // list of ControlPanel instance numbers each of which is a member of the group.
-// Returns FALSE if the named group does not exist in this panel manager.
+// Returns false if the named group does not exist in this panel manager.
 //
-boolean PanelGroupManager::getPanelGroup(const char *name, List *panels)
+bool PanelGroupManager::getPanelGroup(const char *name, List *panels)
 {
     List *l = (List*)this->panelGroups.findDefinition(name); 
 
     if (l && panels) 
 	this->buildPanelList(l,panels);
-    return (l ? TRUE : FALSE);
+    return (l ? true : false);
 }
 
 //
@@ -180,7 +180,7 @@ void PanelGroupManager::buildPanelList(List *src, List *dest)
 //
 // Print the group information into the cfg file.
 //
-boolean PanelGroupManager::cfgPrintComment(FILE *f)
+bool PanelGroupManager::cfgPrintComment(FILE *f)
 {
     int	  i, inst;
     List  plist;
@@ -190,27 +190,27 @@ boolean PanelGroupManager::cfgPrintComment(FILE *f)
     for(i=1; (name = (char*)this->getPanelGroup(i, &plist)); i++)
     {
     	if (fprintf(f, "// panel group: \"%s\"", name) < 0)
-	    return FALSE;
+	    return false;
 
     	li.setList(plist);
 
     	while( (inst = (int)(long)li.getNext()) )
 	    if (fprintf(f, " %d", inst-1) < 0)
-		return FALSE;
+		return false;
 
     	if (fputc('\n', f) < 0)
-	    return FALSE;
+	    return false;
 
     	plist.clear();
     } 
 
-    return TRUE;
+    return true;
 }
 
 //
 // Parse the group information from the cfg file.
 //
-boolean PanelGroupManager::cfgParseComment(const char *comment,
+bool PanelGroupManager::cfgParseComment(const char *comment,
                                 const char *filename, int lineno)
 
 {
@@ -218,25 +218,25 @@ boolean PanelGroupManager::cfgParseComment(const char *comment,
     int  inst;
 
     if (strncmp(comment," panel group",12))
-        return FALSE;
+        return false;
 
     p = (char *) strchr(comment,'"');
     if (!p) {
 	ErrorMessage("Bad panel group name (%s, line %d)",filename,lineno); 
-	return FALSE;
+	return false;
     }
 
     c = p + 1;
     p = strchr(c,'"'); 
     if (!p) {
 	ErrorMessage("Bad panel group name (%s, line %d)",filename,lineno); 
-	return FALSE;
+	return false;
     }
     *p = '\0';
     strcpy(name,c);
     if (!this->createPanelGroup(name)) {
 	ErrorMessage("Can't create panel group named '%s'",name);
-	return FALSE;
+	return false;
     }
 
     *p = '"';	// Put back the "
@@ -247,12 +247,12 @@ boolean PanelGroupManager::cfgParseComment(const char *comment,
 	inst = atoi(p) + 1;
 	if (!this->addGroupMember(name, inst)) {
 	    ErrorMessage("Can't add panel instance %d to group '%s'",inst,name);
-	    return FALSE;
+	    return false;
 	}
 	FindWhiteSpace(p);	// Skip over the number or to end-of-string
 	SkipWhiteSpace(p);	// Skip to the next number or end-of-string 
     }
 
-    return TRUE;
+    return true;
 }
 

@@ -137,7 +137,7 @@ static const char NetExtensionUpper[] = ".NET";
 static const char CfgExtensionUpper[] = ".CFG";
 #endif
 
-static void GenerateModuleMessage(Dictionary *nodes, char *msg, boolean error);
+static void GenerateModuleMessage(Dictionary *nodes, char *msg, bool error);
 
 #define DEFAULT_MAIN_NAME "main"
 /***
@@ -167,14 +167,14 @@ static void GenerateModuleMessage(Dictionary *nodes, char *msg, boolean error);
 
 Network          *Network::ParseState::network;
 char             *Network::ParseState::parse_file;
-boolean          Network::ParseState::error_occurred;
-boolean          Network::ParseState::stop_parsing;
-boolean          Network::ParseState::issued_version_error;
-boolean          Network::ParseState::ignoreUndefinedModules;
+bool          Network::ParseState::error_occurred;
+bool          Network::ParseState::stop_parsing;
+bool          Network::ParseState::issued_version_error;
+bool          Network::ParseState::ignoreUndefinedModules;
 Dictionary       *Network::ParseState::undefined_modules;
 Dictionary       *Network::ParseState::redefined_modules;
 int              Network::ParseState::parse_mode;
-boolean          Network::ParseState::main_macro_parsed;
+bool          Network::ParseState::main_macro_parsed;
 
 List*		Network::RenameTransmitterList = NUL(List*);
 
@@ -204,15 +204,15 @@ void Network::ParseState::initializeForParse(Network *n, int mode,
 #if WORKSPACE_PAGES
     this->parse_sub_state     = _SUB_PARSED_NONE;
 #endif
-    this->main_macro_parsed   = FALSE;
-    this->error_occurred      = FALSE;
-    this->node_error_occurred = FALSE;
-    this->stop_parsing        = FALSE;
+    this->main_macro_parsed   = false;
+    this->error_occurred      = false;
+    this->node_error_occurred = false;
+    this->stop_parsing        = false;
     this->control_panel       = NUL(ControlPanel*);
 
     if (mode == _PARSE_NETWORK) {
 
-        this->issued_version_error = FALSE;
+        this->issued_version_error = false;
 
 	//
 	// Initialize the undefined/redefined modules dictionaries.
@@ -231,7 +231,7 @@ void Network::ParseState::initializeForParse(Network *n, int mode,
 
 Network::Network()
 {
-    this->deleting	= FALSE;
+    this->deleting	= false;
 
     this->editor       	= NUL(EditorWindow*);
     this->saveAsDialog 	= NUL(SaveAsDialog*);
@@ -245,14 +245,14 @@ Network::Network()
     this->comment 	= NULL;
     this->sequencer    	= NUL(SequencerNode*);
     this->fileName     	= NUL(char *);
-    this->readingNetwork = FALSE; 
+    this->readingNetwork = false; 
     this->definition 	= NULL;
-    this->remapInteractorOutputs = FALSE;
+    this->remapInteractorOutputs = false;
 
     this->commandScope = new CommandScope;
     this->openAllPanelsCmd =
 	new AccessNetworkPanelsCommand
-	    ("openAllControlPanels", this->commandScope, FALSE,
+	    ("openAllControlPanels", this->commandScope, false,
 		this, AccessNetworkPanelsCommand::OpenAllPanels);
 
     //
@@ -262,7 +262,7 @@ Network::Network()
     //
     this->openPanelByInstanceCmd =
 	new AccessNetworkPanelsCommand
-	    ("openPanelByInstance", this->commandScope, TRUE,
+	    ("openPanelByInstance", this->commandScope, true,
 		this, AccessNetworkPanelsCommand::OpenPanelByInstance);
     //
     // CommandInterfaces that use this must arrange to set the instance
@@ -271,37 +271,37 @@ Network::Network()
     //
     this->openPanelGroupByIndexCmd =
 	new AccessNetworkPanelsCommand
-	    ("openPanelGroupByIndex", this->commandScope, TRUE,
+	    ("openPanelGroupByIndex", this->commandScope, true,
 		this, AccessNetworkPanelsCommand::OpenPanelGroupByIndex);
 
     this->closeAllPanelsCmd =
 	new AccessNetworkPanelsCommand
-	    ("closeAllControlPanels", this->commandScope, FALSE, 
+	    ("closeAllControlPanels", this->commandScope, false, 
 		this, AccessNetworkPanelsCommand::CloseAllPanels);
 
     this->newCmd =
-	new NewCommand ("new", this->commandScope, FALSE, this);
+	new NewCommand ("new", this->commandScope, false, this);
 
     this->saveAsCmd =
         new NoUndoNetworkCommand("saveAsCommand", this->commandScope, 
-			FALSE,
+			false,
 			this, NoUndoNetworkCommand::SaveNetworkAs);
 
     this->saveCmd =
         new NoUndoNetworkCommand("saveCommand", this->commandScope, 
-			FALSE, this, NoUndoNetworkCommand::SaveNetwork);
+			false, this, NoUndoNetworkCommand::SaveNetwork);
     this->saveCfgCmd =
         new NoUndoNetworkCommand("saveCfgCommand", this->commandScope, 
-			FALSE, this, NoUndoNetworkCommand::SaveConfiguration);
+			false, this, NoUndoNetworkCommand::SaveConfiguration);
     this->openCfgCmd =
         new NoUndoNetworkCommand("openCfgCommand", this->commandScope, 
-			FALSE, this, NoUndoNetworkCommand::OpenConfiguration);
+			false, this, NoUndoNetworkCommand::OpenConfiguration);
     this->setNameCmd =
         new NoUndoNetworkCommand("setNameCommand", this->commandScope, 
-			TRUE, this, NoUndoNetworkCommand::SetNetworkName);
+			true, this, NoUndoNetworkCommand::SetNetworkName);
     this->helpOnNetworkCmd =
         new NoUndoNetworkCommand("helpOnNetworkCommand", this->commandScope,
-			FALSE,this,NoUndoNetworkCommand::HelpOnNetwork);
+			false,this,NoUndoNetworkCommand::HelpOnNetwork);
 
     this->panelGroupManager = new PanelGroupManager(this);
     this->panelAccessManager = new PanelAccessManager(this);
@@ -340,10 +340,10 @@ Network::~Network()
     ASSERT(this != theDXApplication->network);
 #endif
 
-    this->deleting = TRUE;
+    this->deleting = true;
 
-    // TRUE means delete the panels now... don't add them to the dump list.
-    this->clear(TRUE);
+    // true means delete the panels now... don't add them to the dump list.
+    this->clear(true);
 
     //
     // This must go after clear() in case the Nodes have items in the
@@ -429,7 +429,7 @@ Network::~Network()
 // Do any work that is necessary to read in a new .cfg file and/or
 // clear the network of any .cfg information.  
 //
-void Network::clearCfgInformation(boolean destroyPanelsNow)
+void Network::clearCfgInformation(bool destroyPanelsNow)
 {
     ControlPanel *p;
     while ( (p = (ControlPanel*) this->panelList.getElement(1)) ) 
@@ -445,11 +445,11 @@ void Network::clearCfgInformation(boolean destroyPanelsNow)
 
 }
 
-boolean Network::clear(boolean destroyPanelsNow)
+bool Network::clear(bool destroyPanelsNow)
 {
-    boolean was_deleting = this->deleting;
+    bool was_deleting = this->deleting;
 
-    this->deleting = TRUE;
+    this->deleting = true;
 
     this->prepareForNewNetwork();
 
@@ -540,11 +540,11 @@ boolean Network::clear(boolean destroyPanelsNow)
         NodeDefinition::ResetInstanceNumbers(theNodeDefinitionDictionary);
 
     this->category = 0;
-    this->macro = FALSE;
-    this->dirty = TRUE;
-    this->fileDirty = FALSE;
+    this->macro = false;
+    this->dirty = true;
+    this->fileDirty = false;
 
-    if ((this->definition) && (this->definition->isReadingNet() == FALSE)) {
+    if ((this->definition) && (this->definition->isReadingNet() == false)) {
 	delete this->definition;
 	this->definition = NULL;
     }
@@ -578,13 +578,13 @@ boolean Network::clear(boolean destroyPanelsNow)
     //
     this->workSpaceInfo.setDefaultConfiguration();
 
-    this->netFileWasEncoded = FALSE;
+    this->netFileWasEncoded = false;
 
     if (!was_deleting)
-	this->deleting = FALSE;
+	this->deleting = false;
 
-    this->changeExistanceWork(NUL(Node*), FALSE);
-    return TRUE;
+    this->changeExistanceWork(NUL(Node*), false);
+    return true;
 }
 //
 // Do whatever is necessary to speed up the process of reading in a 
@@ -608,7 +608,7 @@ void Network::prepareForNewNetwork()
     if (editor) 
 	editor->prepareForNewNetwork();	
 
-    this->fileHadGetOrSetNodes = FALSE;
+    this->fileHadGetOrSetNodes = false;
 }
 //
 // Do whatever is necessary to speed up the process of reading in a 
@@ -647,18 +647,18 @@ void Network::completeNewNetwork()
 void Network::AddNodeWork(void *staticData, void *requestData)
 {
      Network *n = (Network*)staticData;
-     n->changeExistanceWork((Node*)requestData, TRUE);
+     n->changeExistanceWork((Node*)requestData, true);
 }
 void Network::RemoveNodeWork(void *staticData, void *requestData)
 {
      Network *n = (Network*)staticData;
-     n->changeExistanceWork((Node*)requestData, FALSE);
+     n->changeExistanceWork((Node*)requestData, false);
 }
-void Network::changeExistanceWork(Node *n, boolean adding)
+void Network::changeExistanceWork(Node *n, bool adding)
 {
     List *l;
     ListIterator iter;
-    boolean hasCfg = FALSE;
+    bool hasCfg = false;
 
     //
     // If this isn't the 'main' network in dxui, then don't modify
@@ -666,7 +666,7 @@ void Network::changeExistanceWork(Node *n, boolean adding)
     // code whenever temporary networks are modified.  That shouldn't
     // change activation of application commands.  ...bug106
     //
-    boolean modify_application_commands = (this == theDXApplication->network);
+    bool modify_application_commands = (this == theDXApplication->network);
 
     if (adding) {
 	List dummy;
@@ -686,7 +686,7 @@ void Network::changeExistanceWork(Node *n, boolean adding)
 		    theDXApplication->openAllColormapCmd->activate();	
 	    }
 	    if (!hasCfg && n->hasCfgState())
-		hasCfg = TRUE;
+		hasCfg = true;
 	}
 	this->newCmd->activate();
 	if (theDXApplication->appAllowsSavingNetFile(this))
@@ -761,12 +761,12 @@ void Network::changeExistanceWork(Node *n, boolean adding)
 	    if(li.getPosition()-1 != l->getSize())
 	    {
 		if(((DisplayNode *)(node))->isLastImage())
-		   ((DisplayNode *)(node))->setLastImage(FALSE);
+		   ((DisplayNode *)(node))->setLastImage(false);
 	    }
 	    else
 	    {
 		if(!((DisplayNode *)(node))->isLastImage())
-		    ((DisplayNode *)(node))->setLastImage(TRUE);
+		    ((DisplayNode *)(node))->setLastImage(true);
 	    }
 	}
 	delete l;
@@ -795,12 +795,12 @@ ControlPanel *Network::newControlPanel(int instance)
 
     return panel;
 }
-boolean Network::addPanel(ControlPanel *panel, int instance)
+bool Network::addPanel(ControlPanel *panel, int instance)
 {
     //
     // Add it to the network's list of panels.
     //
-    boolean result = this->panelList.appendElement(panel);
+    bool result = this->panelList.appendElement(panel);
     ASSERT(result);
 
     //
@@ -834,7 +834,7 @@ boolean Network::addPanel(ControlPanel *panel, int instance)
         editor->notifyCPChange();
     }
    
-    return TRUE;
+    return true;
 }
 
 ControlPanel *Network::getPanelByInstance(int instance)
@@ -862,7 +862,7 @@ void Network::postSequencer()
 // Tell all data-driven interactors that they should ask the executive to
 // remap their outputs.
 //
-void Network::setRemapInteractorOutputMode(boolean val)
+void Network::setRemapInteractorOutputMode(bool val)
 {
     Node *node;
     ListIterator l;
@@ -901,9 +901,9 @@ const char *Network::getPrefix()
     return this->prefix;
 }
 
-boolean Network::deletePanel(ControlPanel* panel, boolean destroyPanelsNow)
+bool Network::deletePanel(ControlPanel* panel, bool destroyPanelsNow)
 {
-    boolean result;
+    bool result;
     int     position;
 
     ASSERT(panel);
@@ -960,13 +960,13 @@ boolean Network::deletePanel(ControlPanel* panel, boolean destroyPanelsNow)
     }
     else
     {
-	result = FALSE;
+	result = false;
     }
 
     return result;
 }
 
-boolean Network::addImage(ImageWindow* image)
+bool Network::addImage(ImageWindow* image)
 {
     ASSERT(image);
 
@@ -974,7 +974,7 @@ boolean Network::addImage(ImageWindow* image)
 }
 
 
-boolean Network::removeImage(ImageWindow* image)
+bool Network::removeImage(ImageWindow* image)
 {
     int position;
 
@@ -984,7 +984,7 @@ boolean Network::removeImage(ImageWindow* image)
     }
     else
     {
-	return FALSE;
+	return false;
     }
 }
 
@@ -1010,8 +1010,8 @@ void Network::addNode(Node *node, EditorWorkSpace *where)
 
 void Network::setDirty()
 {  
-    this->dirty = TRUE;
-    this->fileDirty = TRUE;
+    this->dirty = true;
+    this->fileDirty = true;
 
     DXExecCtl *execCtl = theDXApplication->getExecCtl();
 
@@ -1019,7 +1019,7 @@ void Network::setDirty()
 }
 
 
-void Network::deleteNode(Node *node, boolean undefer)
+void Network::deleteNode(Node *node, bool undefer)
 {
     //
     // Disconnect the node from other nodes in the network first.
@@ -1055,34 +1055,34 @@ Node *Network::findNode(Symbol name, int instance)
     }
     return NUL(Node*);
 }
-boolean Network::containsClassOfNode(const char *classname)
+bool Network::containsClassOfNode(const char *classname)
 {
     ListIterator iterator; 
     Node        *node;
 
     FOR_EACH_NETWORK_NODE(this, node, iterator) {
         if (EqualString(node->getClassName(),classname)) 
-	    return TRUE;
+	    return true;
     }
-    return FALSE; 
+    return false; 
 
 }
 //
 // look through the network list and make a list of the given class.  
 // If classname == NULL, then all nodes are included in the list.
-// If classname != NULL, and includeSubclasses = FALSE, then nodes must
+// If classname != NULL, and includeSubclasses = false, then nodes must
 // be of the given class and not derived from the given class.
 // If no nodes were found then NULL is returned.
 // The returned List must be deleted by the caller.
 //
 List *Network::makeClassifiedNodeList(const char *classname,
-					boolean includeSubclasses)
+					bool includeSubclasses)
 {
     Node *node;
     ListIterator iterator;
     List        *l = NUL(List*);
 
-    if ((classname != NUL(char*)) && (includeSubclasses == FALSE)) 
+    if ((classname != NUL(char*)) && (includeSubclasses == false)) 
 	return this->nodeList.makeClassifiedNodeList(classname);
 
     FOR_EACH_NETWORK_NODE(this, node, iterator) {
@@ -1125,7 +1125,7 @@ List *Network::makeNamedNodeList(const char *nodename)
 // If the given panel(s) do not contain any interactors, then delete them
 // from the network. 
 //
-void Network::closeControlPanel(int panelInstance, boolean do_unmanage)
+void Network::closeControlPanel(int panelInstance, bool do_unmanage)
 {
     ListIterator  iterator(this->panelList);
     List	   toDelete, toUnmanage;
@@ -1228,9 +1228,9 @@ Dictionary *_redefined_modules = NUL(Dictionary*);
 
 
 static
-boolean _ignoreUndefinedModules;
+bool _ignoreUndefinedModules;
 static
-boolean _main_macro_parsed;	/* main macro parsed?	  */
+bool _main_macro_parsed;	/* main macro parsed?	  */
 
 static
 int _parse_mode;		/* parsing mode		  */
@@ -1248,15 +1248,15 @@ Node* _node;			/* the current Node	  */
 ControlPanel *_control_panel;	/* the current control panel */
 
 static
-boolean _error_occurred;	/* error found ?	  */
+bool _error_occurred;	/* error found ?	  */
 
 static
-boolean _stop_parsing;		/* All parse functions return immediately */
+bool _stop_parsing;		/* All parse functions return immediately */
 static 
-boolean _issued_version_error; 
+bool _issued_version_error; 
 
 static
-boolean _node_error_occurred;	/* node error flag	  */
+bool _node_error_occurred;	/* node error flag	  */
 
 static
 int _input_index;		/* current input param index	  */
@@ -1274,8 +1274,8 @@ int _output_index;		/* current output param index	  */
 // 'netfile' contains the name of network file and should include the .net
 // extension.
 //
-boolean Network::readNetwork(const char *netFile, const char *cfgFile,
-			     boolean ignoreUndefinedModules)
+bool Network::readNetwork(const char *netFile, const char *cfgFile,
+			     bool ignoreUndefinedModules)
 {
     Decorator *dec;
     ListIterator it;
@@ -1309,7 +1309,7 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
     if (!f) {
 	delete netfile;
 	this->clear();
-	return FALSE;
+	return false;
     }
 
     if (this->fileName != NULL)
@@ -1333,7 +1333,7 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
     //
     // Parse the .net file
     //
-    this->readingNetwork = TRUE;
+    this->readingNetwork = true;
     this->prepareForNewNetwork();
 #ifdef NoParseState
     _parse_mode = _PARSE_NETWORK;
@@ -1341,9 +1341,9 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
 #else
     this->parseState.initializeForParse(this,_PARSE_NETWORK,netfile);
 #endif
-    boolean parse_terminated =  this->parse(f);
+    bool parse_terminated =  this->parse(f);
     this->completeNewNetwork();
-    this->readingNetwork = FALSE;
+    this->readingNetwork = false;
     this->closeNetworkFILE(f);	
 #ifdef NoParseState
 #else
@@ -1352,7 +1352,7 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
 
     if (parse_terminated)  {
 	this->clear();
-	return FALSE;
+	return false;
     }
 
     //
@@ -1398,7 +1398,7 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
     } else
 	cfgfile = (char*)cfgFile;
     
-    this->openCfgFile(cfgfile, FALSE, FALSE);
+    this->openCfgFile(cfgfile, false, false);
 
     if (cfgfile != cfgFile)
 	delete cfgfile;
@@ -1440,7 +1440,7 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
 	// turn line routing off before adding multiple vpe comments because
 	// each one can cause a line reroute.
 	//
-	boolean hasdec = (this->decoratorList.getSize() > 0);
+	bool hasdec = (this->decoratorList.getSize() > 0);
 	if (hasdec) {
 	    this->editor->beginPageChange();
 	    FOR_EACH_NETWORK_DECORATOR (this, dec, it) {
@@ -1466,7 +1466,7 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
      */
     GenerateModuleMessage(Network::ParseState::redefined_modules, 
 				"The following tools have been redefined",
-				FALSE);
+				false);
 
     /*
      * Generate one collective error message for undefined modules.
@@ -1481,7 +1481,7 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
 	  "Macro %s contains undefined tools.\n"
 	  "Reload macro %s after loading the following tools",
 		      this->getNameString(), this->getNameString());
-    GenerateModuleMessage(Network::ParseState::undefined_modules, msg, TRUE);
+    GenerateModuleMessage(Network::ParseState::undefined_modules, msg, true);
 
     //
     // These three are 0.0.0 unless they were parsed out of the .net
@@ -1519,11 +1519,11 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
 
     //
     // Fixup name conflicts with Transmitters/Receivers read in from old nets.
-    // (Must be done after readingNetwork is reset to FALSE, and dirty bit is cleared.)
+    // (Must be done after readingNetwork is reset to false, and dirty bit is cleared.)
     //
     this->renameTransmitters();
 
-    return TRUE;
+    return true;
 
 }
 
@@ -1537,17 +1537,17 @@ boolean Network::readNetwork(const char *netFile, const char *cfgFile,
 void Network::resetWindowTitles()
 {
 DXWindow *anchor = theDXApplication->getAnchor();
-boolean anchor_reset = FALSE;
+bool anchor_reset = false;
 
     if (this->editor) {
-	if (this->editor == anchor) anchor_reset = TRUE;
+	if (this->editor == anchor) anchor_reset = true;
 	this->editor->resetWindowTitle();
     }
 
     ListIterator li(this->imageList);
     ImageWindow *iw;
     while( (iw = (ImageWindow*)li.getNext()) ) {
-	if (iw == anchor) anchor_reset = TRUE;
+	if (iw == anchor) anchor_reset = true;
 	iw->resetWindowTitle();
     }
 
@@ -1574,11 +1574,11 @@ extern "C" int yychar;
 #endif
 
 //
-// Returns TRUE if the parse was prematurely terminated.
+// Returns true if the parse was prematurely terminated.
 //
-boolean Network::parse(FILE*    input)
+bool Network::parse(FILE*    input)
 {
-    boolean  result;
+    bool  result;
     
 
 
@@ -1600,15 +1600,15 @@ boolean Network::parse(FILE*    input)
 #ifdef NoParseState
     _node		 = NULL;
     _parse_state         = _PARSED_NONE;
-    _main_macro_parsed   = FALSE;
-    _error_occurred      = FALSE;
-    _node_error_occurred = FALSE;
-    _stop_parsing 	 = FALSE;
-    _issued_version_error = FALSE;
+    _main_macro_parsed   = false;
+    _error_occurred      = false;
+    _node_error_occurred = false;
+    _stop_parsing 	 = false;
+    _issued_version_error = false;
     _control_panel       = NUL(ControlPanel*);
 #endif
 
-    result = TRUE;
+    result = true;
 
 #if defined(USING_BISON)
     for (;;)
@@ -1620,7 +1620,7 @@ boolean Network::parse(FILE*    input)
 	 * If parse failed...
 	 */
 	if (yyparse()) {
-	    result = FALSE;
+	    result = false;
 	    break;
 	}
 
@@ -1633,7 +1633,7 @@ boolean Network::parse(FILE*    input)
 	 * If error found...
 	 */
 	if (Network::ParseState::stop_parsing || Network::ParseState::error_occurred) {
-	    result = FALSE;
+	    result = false;
 	    break;
 	}
     }
@@ -1664,7 +1664,7 @@ boolean Network::parse(FILE*    input)
 // by the names of the modules found in the dictionary. 
 // If the dictionary is empty, no dialog is posted.
 //
-static void GenerateModuleMessage(Dictionary *nodes, char *msg, boolean error)
+static void GenerateModuleMessage(Dictionary *nodes, char *msg, bool error)
 {
     int i, count;
     char *p, *message;
@@ -1721,7 +1721,7 @@ void Network::netParseMODULEComment(const char* comment)
     {
 	ErrorMessage("Invalid MODULE comment at %s:%d", 
 				Network::ParseState::parse_file, yylineno);
-	Network::ParseState::error_occurred = TRUE;
+	Network::ParseState::error_occurred = true;
 	return;
     }
 
@@ -1792,14 +1792,14 @@ void Network::netParseMacroComment(const char* comment)
 //
 // If the destination file doesn't currently exist don't bother doing anything.
 //
-boolean Network::versionMismatchQuery (boolean netfile, const char *file)
+bool Network::versionMismatchQuery (bool netfile, const char *file)
 {
-boolean want_to_proceed = TRUE;
+bool want_to_proceed = true;
 int response;
 
     if ((file) && (file[0])) {
 	struct STATSTRUCT statbuf;
-	if (STATFUNC(file, &statbuf) == -1) return TRUE;
+	if (STATFUNC(file, &statbuf) == -1) return true;
     }
 
     if ((this->netVersion.major >= 2) && netfile) {
@@ -1826,10 +1826,10 @@ int response;
 		    (char *)"Yes", (char *)"No", (char *)NULL);
 		switch (response) {
 		    case QuestionDialogManager::OK:
-			want_to_proceed = TRUE;
+			want_to_proceed = true;
 			break;
 		    default:
-			want_to_proceed = FALSE;
+			want_to_proceed = false;
 			break;
 		}
 	    } else {
@@ -1846,10 +1846,10 @@ int response;
 		    "Yes", "No", NULL);
 		switch (response) {
 		    case QuestionDialogManager::OK:
-			want_to_proceed = TRUE;
+			want_to_proceed = true;
 			break;
 		    default:
-			want_to_proceed = FALSE;
+			want_to_proceed = false;
 			break;
 		}
 	    }
@@ -1866,7 +1866,7 @@ int response;
 /*                                                                           */
 /*****************************************************************************/
 
-void Network::parseVersionComment(const char* comment, boolean netfile)
+void Network::parseVersionComment(const char* comment, bool netfile)
 {
     int  items_parsed;
     int  net_major=0;
@@ -1895,7 +1895,7 @@ void Network::parseVersionComment(const char* comment, boolean netfile)
 		ErrorMessage("Invalid version comment at %s:%d", 
 					    Network::ParseState::parse_file, 
 						yylineno);
-		Network::ParseState::error_occurred = TRUE;
+		Network::ParseState::error_occurred = true;
 		return;
 	    }
 	} else {
@@ -1921,7 +1921,7 @@ void Network::parseVersionComment(const char* comment, boolean netfile)
 	if (items_parsed != 6) {
 		ErrorMessage("Invalid version comment at %s:%d", 
 					    Network::ParseState::parse_file, yylineno);
-		Network::ParseState::error_occurred = TRUE;
+		Network::ParseState::error_occurred = true;
 		return;
 	}
     }
@@ -1955,18 +1955,18 @@ void Network::parseVersionComment(const char* comment, boolean netfile)
                    name,dx_major,dx_minor,dx_micro,
                    name,DX_MAJOR_VERSION,DX_MINOR_VERSION,DX_MICRO_VERSION,
                    name);
-	ParseState::issued_version_error = TRUE;
-	Network::ParseState::stop_parsing = TRUE;
+	ParseState::issued_version_error = true;
+	Network::ParseState::stop_parsing = true;
     } 
 }
 
 void Network::cfgParseVersionComment(const char* comment)
 {
-    Network::parseVersionComment(comment,FALSE);
+    Network::parseVersionComment(comment,false);
 }
 void Network::netParseVersionComment(const char* comment)
 {
-    Network::parseVersionComment(comment,TRUE);
+    Network::parseVersionComment(comment,true);
 }
 
 /*****************************************************************************/
@@ -1989,11 +1989,11 @@ void Network::netParseCATEGORYComment(const char* comment)
     {
 	ErrorMessage("Invalid CATEGORY comment at %s:%d", 
 				Network::ParseState::parse_file, yylineno);
-	Network::ParseState::error_occurred = TRUE;
+	Network::ParseState::error_occurred = true;
 	return;
     }
 
-    this->setCategory(category, FALSE);
+    this->setCategory(category, false);
 }
 
 
@@ -2017,11 +2017,11 @@ void Network::netParseDESCRIPTIONComment(const char* comment)
     {
 	ErrorMessage("Invalid DESCRIPTION comment at %s:%d", 
 					Network::ParseState::parse_file, yylineno);
-	Network::ParseState::error_occurred = TRUE;
+	Network::ParseState::error_occurred = true;
 	return;
     }
 
-    this->setDescription(description, FALSE);
+    this->setDescription(description, false);
 }
 
 
@@ -2087,14 +2087,14 @@ void Network::netParseNodeComment(const char* comment)
 
     this->parseState.node = NULL;
     
-    this->parseState.node_error_occurred = FALSE;
+    this->parseState.node_error_occurred = false;
 
     items_parsed = sscanf(comment, " node %[^[][%d]:", name, &instance);
     if (items_parsed != 2) {
 	ErrorMessage("Can't parse 'node' comment (file %s, line %d)",
 					Network::ParseState::parse_file, yylineno);
-	this->parseState.node_error_occurred = TRUE;
-	Network::ParseState::error_occurred = TRUE;
+	this->parseState.node_error_occurred = true;
+	Network::ParseState::error_occurred = true;
 	return;
     }
     NodeDefinition *nd = 
@@ -2103,15 +2103,15 @@ void Network::netParseNodeComment(const char* comment)
     if (nd == NULL)
     {
 	Network::ParseState::undefined_modules->addDefinition(name, NULL);
-	this->parseState.node_error_occurred = TRUE;
-	Network::ParseState::error_occurred = TRUE;
+	this->parseState.node_error_occurred = true;
+	Network::ParseState::error_occurred = true;
 	return;
     }
     this->parseState.node = nd->createNewNode(this, instance);
     if (this->parseState.node == NULL)
     {
-        Network::ParseState::error_occurred      = TRUE;
-	this->parseState.node_error_occurred = TRUE;
+        Network::ParseState::error_occurred      = true;
+	this->parseState.node_error_occurred = true;
 	return;
     }
     // 
@@ -2148,7 +2148,7 @@ void Network::netParseNodeComment(const char* comment)
     Symbol sym = nd->getNameSymbol();
     if ((sym == NDAllocatorDictionary::GetNodeNameSymbol) || 
         (sym == NDAllocatorDictionary::SetNodeNameSymbol))
-	this->fileHadGetOrSetNodes = TRUE;
+	this->fileHadGetOrSetNodes = true;
   
 
     this->parseState.input_index = 0;
@@ -2191,14 +2191,14 @@ void Network::cfgParseNodeComment(const char* comment)
         return;
 
     this->parseState.node = NULL;
-    this->parseState.node_error_occurred = FALSE;
+    this->parseState.node_error_occurred = false;
 
     items_parsed = sscanf(comment, " node %[^[][%d]:", name, &instance);
     if (items_parsed != 2) {
 	ErrorMessage("Can't parse 'node' comment (file %s, line %d)",
 					Network::ParseState::parse_file, yylineno);
-	this->parseState.node_error_occurred = TRUE;
-	Network::ParseState::error_occurred = TRUE;
+	this->parseState.node_error_occurred = true;
+	Network::ParseState::error_occurred = true;
 	return;
     }
     NodeDefinition *nd = 
@@ -2207,8 +2207,8 @@ void Network::cfgParseNodeComment(const char* comment)
     if (nd == NULL)
     {
 	Network::ParseState::undefined_modules->addDefinition(name, NULL);
-	this->parseState.node_error_occurred = TRUE;
-	Network::ParseState::error_occurred = TRUE;
+	this->parseState.node_error_occurred = true;
+	Network::ParseState::error_occurred = true;
 	return;
     }
     Symbol namesym = theSymbolManager->getSymbol(name);
@@ -2218,8 +2218,8 @@ void Network::cfgParseNodeComment(const char* comment)
 	WarningMessage("The '%s' tool is referenced at line %d in file %s,\n"
 			"but is not found in the program.",
 			name,yylineno,Network::ParseState::parse_file);
-        Network::ParseState::error_occurred      = TRUE;
-	this->parseState.node_error_occurred = TRUE;
+        Network::ParseState::error_occurred      = true;
+	this->parseState.node_error_occurred = true;
 	return;
     }
 
@@ -2242,7 +2242,7 @@ void Network::cfgParseNodeComment(const char* comment)
 //
 // Parse all comments out of the .net file
 //
-boolean Network::netParseComments(const char *comment, const char *filename,
+bool Network::netParseComments(const char *comment, const char *filename,
 					int lineno)
 {
 
@@ -2325,7 +2325,7 @@ boolean Network::netParseComments(const char *comment, const char *filename,
      */
     else if (EqualString(comment, " network: end of macro body"))
     {
-	this->parseState.main_macro_parsed = TRUE;
+	this->parseState.main_macro_parsed = true;
 	this->parseState.parse_state = _PARSED_NONE;
     }
     /*
@@ -2339,7 +2339,7 @@ boolean Network::netParseComments(const char *comment, const char *filename,
     {
 	if (!this->parseDecoratorComment(comment, 
 				Network::ParseState::parse_file, yylineno)) {
-	    Network::ParseState::error_occurred = TRUE;
+	    Network::ParseState::error_occurred = true;
 	} else {
 #if WORKSPACE_PAGES
 	    this->parseState.parse_sub_state = _SUB_PARSED_DECORATOR;
@@ -2352,13 +2352,13 @@ boolean Network::netParseComments(const char *comment, const char *filename,
     {
 	if (!this->parseDecoratorComment(comment, 
 				Network::ParseState::parse_file, yylineno)) {
-	    Network::ParseState::error_occurred = TRUE;
+	    Network::ParseState::error_occurred = true;
 	}
     }
     else if ((this->parseState.parse_state == _PARSED_NODE) && 
 	     (this->parseState.parse_sub_state == _SUB_PARSED_NODE) &&
 	     (strstr(comment, " group:")) &&
-	     (this->parseState.node_error_occurred == FALSE)) {
+	     (this->parseState.node_error_occurred == false)) {
 	if (!this->parseState.node->netParseComment(comment,
 				Network::ParseState::parse_file, yylineno)) {
 	    WarningMessage("Unrecognized comment at line %d of file %s"
@@ -2374,12 +2374,12 @@ boolean Network::netParseComments(const char *comment, const char *filename,
     {
         if (!this->workSpaceInfo.parseComment(comment, 
 				Network::ParseState::parse_file, yylineno)) {
-	    Network::ParseState::error_occurred      = TRUE;
+	    Network::ParseState::error_occurred      = true;
 	}
 	this->parseState.parse_state = _PARSED_WORKSPACE;
     }
     else if (this->parseState.parse_state == _PARSED_NODE && 
-			this->parseState.node_error_occurred == FALSE) {
+			this->parseState.node_error_occurred == false) {
 	if (!this->parseState.node->netParseComment(comment,
 				Network::ParseState::parse_file, yylineno)) {
 	    WarningMessage("Unrecognized comment at line %d of file %s"
@@ -2403,18 +2403,18 @@ boolean Network::netParseComments(const char *comment, const char *filename,
     else if (this->parseState.parse_state == _PARSED_NODE) {
 	WarningMessage("Unrecognized comment at line %d of file %s (ignoring)",
 			lineno,filename);
-	//this->parseState.node_error_occurred = TRUE;
-	//this->parseState.error_occurred      = TRUE;
+	//this->parseState.node_error_occurred = true;
+	//this->parseState.error_occurred      = true;
     }
 
-    return (Network::ParseState::error_occurred == FALSE);
+    return (Network::ParseState::error_occurred == false);
 
 }
 
 //
 // Parse all comments out of the .cfg file
 //
-boolean Network::cfgParseComments(const char *comment, const char *filename,
+bool Network::cfgParseComments(const char *comment, const char *filename,
 					int lineno)
 {
     
@@ -2458,7 +2458,7 @@ boolean Network::cfgParseComments(const char *comment, const char *filename,
 	if (vcr && vcr->cfgParseComment(comment,filename, lineno))
 	    this->parseState.parse_state 	 = _PARSED_VCR;
     	else
-	    this->parseState.error_occurred      = TRUE;
+	    this->parseState.error_occurred      = true;
     }
     else if (EqualSubstring(comment, " node", 5))
     {
@@ -2467,7 +2467,7 @@ boolean Network::cfgParseComments(const char *comment, const char *filename,
     else if ((this->parseState.parse_state == _PARSED_NODE) || 
 	     (this->parseState.parse_state == _PARSED_INTERACTOR))
     {
-	if ((this->parseState.node_error_occurred == FALSE) &&
+	if ((this->parseState.node_error_occurred == false) &&
 	    !this->parseState.node->cfgParseComment(comment,filename, lineno)) {
 	    WarningMessage("Unrecognized comment at line %d of file %s"
 			   " (ignoring)", lineno,filename);
@@ -2498,7 +2498,7 @@ boolean Network::cfgParseComments(const char *comment, const char *filename,
 	 this->parseState.parse_state = _PARSING_NETWORK_CFG;
     }
 
-    return (this->parseState.error_occurred == FALSE);
+    return (this->parseState.error_occurred == false);
  
 }
 /*****************************************************************************/
@@ -2589,19 +2589,20 @@ void Network::parseFunctionID(char *name)
 /*****************************************************************************/
 
 extern "C"
-void ParseArgument(char* name, const boolean isVarname)
+void ParseArgument(char* name, const unsigned char isVarname)
 {
     ASSERT(Network::ParseState::network);
     Network::ParseState::network->parseArgument(name,isVarname);
 }
-void Network::parseArgument(char* name, const boolean isVarname)
+
+void Network::parseArgument(char* name, const unsigned char isVarname)
 {
     int        parsed_items;
     int        instance;
     int        parameter;
     char       type[128];
     char       module[512];
-    boolean parse_error = FALSE;
+    bool parse_error = false;
     char macro[250];
 
     if (this->parseState.stop_parsing || this->parseState.main_macro_parsed)
@@ -2648,16 +2649,16 @@ void Network::parseArgument(char* name, const boolean isVarname)
 	 * If parse failed...
 	 */
 	if (parsed_items != 4)
-	    parse_error = TRUE;
+	    parse_error = true;
 
     } else if (!EqualString(macro, this->getNameString())) {
-	parse_error = TRUE;
+	parse_error = true;
     } 
 
     if (parse_error && !EqualString("NULL", name)) {
 	ErrorMessage( "Error parsing tool input %s (in %s, line %d)",
 	    name, this->parseState.parse_file, yylineno);
-	this->parseState.error_occurred = TRUE;
+	this->parseState.error_occurred = true;
 	return;
     }
 
@@ -2670,7 +2671,7 @@ void Network::parseArgument(char* name, const boolean isVarname)
 	{
 	    ErrorMessage( "Error parsing tool input %s (in %s, line %d)",
 		name, this->parseState.parse_file, yylineno);
-	    this->parseState.error_occurred = TRUE;
+	    this->parseState.error_occurred = true;
 	}
 #if 000	// Start of changes for expression into Compute 2/23/95
 	//
@@ -2706,7 +2707,7 @@ void Network::parseArgument(char* name, const boolean isVarname)
 		"Node %s had unexpected number of inputs, file %s, line %d",
 		this->parseState.node->getNameString(),
 					this->parseState.parse_file, yylineno);
-	    this->parseState.error_occurred = TRUE;
+	    this->parseState.error_occurred = true;
 	    return;
 	}
     }
@@ -2728,7 +2729,7 @@ void Network::parseArgument(char* name, const boolean isVarname)
 	return;
 
     Node *n;
-    boolean found = FALSE;
+    bool found = false;
 #if 00
     ListIterator l;
     FOR_EACH_NETWORK_NODE(this, n, l)
@@ -2759,10 +2760,10 @@ void Network::parseArgument(char* name, const boolean isVarname)
 		new Ark(n, parameter, this->parseState.node, 
 				this->parseState.input_index);
 		this->parseState.node->setInputVisibility(
-			this->parseState.input_index,TRUE);
-		n->setOutputVisibility(parameter,TRUE);
+			this->parseState.input_index,true);
+		n->setOutputVisibility(parameter,true);
 	    }
-	    found = TRUE;
+	    found = true;
 #if 00
 	    break;
 	}
@@ -2771,7 +2772,7 @@ void Network::parseArgument(char* name, const boolean isVarname)
     if (!found && !this->parseState.ignoreUndefinedModules)
     {
 	this->parseState.undefined_modules->addDefinition(module, NULL);
-	this->parseState.error_occurred = TRUE;
+	this->parseState.error_occurred = true;
 	return;
     }
 }
@@ -2914,7 +2915,7 @@ void Network::parseRValue(char* name)
     char       type[128];
     char       string[256];
     char       macro[256];
-    boolean	parse_error = FALSE;
+    bool	parse_error = false;
 
     if (!this->parseState.node || this->parseState.stop_parsing)
 	return;
@@ -2957,16 +2958,16 @@ void Network::parseRValue(char* name)
 		   &parameter);
 
 	if (parsed_items != 4)
-	    parse_error = TRUE;
+	    parse_error = true;
     } else if (!EqualString(macro, this->getNameString())) {
-	parse_error = TRUE;
+	parse_error = true;
     }
 
     if (parse_error || !EqualString(type, "out"))
 	return;
 
     Node *n;
-    boolean found = FALSE;
+    bool found = false;
     Symbol s_of_out = theSymbolManager->registerSymbol(string);
 #if 00
     ListIterator l;
@@ -2997,10 +2998,10 @@ void Network::parseRValue(char* name)
 		new Ark(n, parameter, 
 			this->parseState.node, 1);
 		this->parseState.node->setInputVisibility(1,
-						TRUE);
-		n->setOutputVisibility(parameter,TRUE);
+						true);
+		n->setOutputVisibility(parameter,true);
 	    }
-	    found = TRUE;
+	    found = true;
 #if 00
 	    break;
 	}
@@ -3009,7 +3010,7 @@ void Network::parseRValue(char* name)
     if (!found && !this->parseState.ignoreUndefinedModules)
     {
 	this->parseState.undefined_modules->addDefinition(string, NULL);
-	this->parseState.error_occurred = TRUE;
+	this->parseState.error_occurred = true;
 	return;
     }
 }
@@ -3032,7 +3033,7 @@ void Network::parseEndOfMacroDefinition()
 {
     if (this->parseState.stop_parsing)
 	return;
-    this->parseState.main_macro_parsed = TRUE;
+    this->parseState.main_macro_parsed = true;
 }
 
 
@@ -3048,7 +3049,7 @@ void yyerror(char* , ...)
 {
     ErrorMessage("Syntax error encountered (%s file, line %d).",
 	    Network::ParseState::network->parseState.parse_file, yylineno);
-    Network::ParseState::network->parseState.error_occurred = TRUE;
+    Network::ParseState::network->parseState.error_occurred = true;
 }
 
 //
@@ -3134,9 +3135,9 @@ char *Network::FilenameToCfgname(const char *filename)
 
 //
 // Determine if the network is in a state that can be saved to disk.
-// If so, then return TRUE, otherwise return FALSE and issue an error dialog. 
+// If so, then return true, otherwise return false and issue an error dialog. 
 //
-boolean Network::isNetworkSavable()
+bool Network::isNetworkSavable()
 {
     if (this->isMacro() && EqualString(this->getNameString(),DEFAULT_MAIN_NAME))
     {
@@ -3144,19 +3145,19 @@ boolean Network::isNetworkSavable()
 		     "To change the name, use the Macro Name option\n"
 		     "available in the Edit menu.",
 					DEFAULT_MAIN_NAME);
-	return FALSE;
+	return false;
     }
-    return TRUE;
+    return true;
 }
 
 
-boolean Network::saveNetwork(const char *name, boolean force)
+bool Network::saveNetwork(const char *name, bool force)
 {
     char *ext, *buf;
  
 
     if (!this->isNetworkSavable() && !force)
-	return FALSE;
+	return false;
 
     buf = DuplicateString(name);
     ext = (char*)strrstr(buf,(char *)NetExtension);
@@ -3175,8 +3176,8 @@ boolean Network::saveNetwork(const char *name, boolean force)
     // to a question dialog if it's necessary to ask her a question.
     // If fullName doesn't exist there can't be a version mismatch.
     //
-    if (!this->versionMismatchQuery (TRUE, fullName))
-	return FALSE;
+    if (!this->versionMismatchQuery (true, fullName))
+	return false;
 
     this->fileName = fullName;
 
@@ -3187,7 +3188,7 @@ boolean Network::saveNetwork(const char *name, boolean force)
     if (md)
         md->setFileName(fullName);
 
-    boolean ret =  this->netPrintNetwork(buf) &&
+    bool ret =  this->netPrintNetwork(buf) &&
 	           this->cfgPrintNetwork(buf) &&
 	           this->auxPrintNetwork();
 
@@ -3253,15 +3254,15 @@ boolean Network::saveNetwork(const char *name, boolean force)
     return ret;
 }
 
-boolean Network::openCfgFile(const char *name, 
-				boolean openStartup, boolean send)
+bool Network::openCfgFile(const char *name, 
+				bool openStartup, bool send)
 {
     char *cfgfile;
-    boolean ret;
+    bool ret;
     FILE *f;
 
     if (this->isMacro())
-	return TRUE;
+	return true;
     
     cfgfile = Network::FilenameToCfgname(name);
 
@@ -3274,21 +3275,21 @@ boolean Network::openCfgFile(const char *name,
 #else
 	this->parseState.initializeForParse(this,_PARSE_CONFIGURATION,cfgfile);
 #endif
-        this->readingNetwork = TRUE;
-        boolean stopped_parsing = this->parse(f);
+        this->readingNetwork = true;
+        bool stopped_parsing = this->parse(f);
 	if (openStartup)
 	    this->openControlPanel(-1);
 	if (send)
-	    this->sendValues(FALSE);
+	    this->sendValues(false);
 	ret = !stopped_parsing;	
-        this->readingNetwork = FALSE;
+        this->readingNetwork = false;
 #ifdef NoParseState
 #else
 	this->parseState.cleanupAfterParse();
 #endif
     }
     else {
-	ret = FALSE;	
+	ret = false;	
     }
 
     if (f) fclose(f);
@@ -3298,7 +3299,7 @@ boolean Network::openCfgFile(const char *name,
 }
 
 
-boolean Network::saveCfgFile(const char *name)
+bool Network::saveCfgFile(const char *name)
 {
     return this->cfgPrintNetwork(name);
 
@@ -3309,11 +3310,11 @@ boolean Network::saveCfgFile(const char *name)
 // The extension used is NetExtension, and will be added if not present in
 // the filename.
 //
-boolean Network::netPrintNetwork(const char *filename)
+bool Network::netPrintNetwork(const char *filename)
 {
     char *file, *tmpfile, *netfile;
     FILE *f;
-    boolean ret;
+    bool ret;
 
     netfile = Network::FilenameToNetname(filename);
 #if HAS_RENAME
@@ -3335,7 +3336,7 @@ boolean Network::netPrintNetwork(const char *filename)
 #endif
 	if (!f) {
 	    ErrorMessage("Can not open file %s for writing", netfile); 
-	    ret = FALSE;
+	    ret = false;
 	    goto out;
 	}
 	fclose(f);
@@ -3353,15 +3354,15 @@ boolean Network::netPrintNetwork(const char *filename)
 
     if (f == NULL)  {
         ErrorMessage("Can not open file %s for writing", netfile); 
-	ret = FALSE;
-    } else if (this->printNetwork(f, PrintFile) != TRUE) {
+	ret = false;
+    } else if (this->printNetwork(f, PrintFile) != true) {
         ErrorMessage("Error writing file %s",netfile);
         fclose(f);
 	unlink(file);
-	ret = FALSE;
+	ret = false;
     } else  { 
         fclose(f);
-	ret = TRUE;
+	ret = true;
 #if HAS_RENAME
 	if (tmpfile) {
 	    rename(tmpfile,netfile);
@@ -3382,18 +3383,18 @@ out:
 // The extension used is found in CfgExtension, and will be added if not 
 // present in the filename.
 //
-boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
+bool Network::cfgPrintNetwork(const char *filename, PrintType dest)
 {
     char *file, *tmpfile, *cfgfile; 
     FILE *f = NULL;
-    boolean ret, rmfile = TRUE;
+    bool ret, rmfile = true;
 
     cfgfile = Network::FilenameToCfgname(filename);
 
     if (this->isMacro()) {
 	unlink(cfgfile);
 	tmpfile = NULL;
-	ret = TRUE;
+	ret = true;
 	goto out;
     }
 
@@ -3415,7 +3416,7 @@ boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
 #endif
         if (!f) {
             ErrorMessage("Can not open file %s for writing", cfgfile);
-            ret = FALSE;
+            ret = false;
             goto out;
         }
         fclose(f);
@@ -3431,10 +3432,10 @@ boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
 	
     f = fopen (file, "w");
 
-    ret = TRUE;
+    ret = true;
     if (f == NULL)  {
         ErrorMessage("Can not open file %s for writing", file); 
-	ret = FALSE;
+	ret = false;
     } else { 
 	Node *n;
 	ControlPanel *cp;
@@ -3448,7 +3449,7 @@ boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
   	// Demarcates the beginning of the network cfg comments.
 	//
 	if (fprintf(f, "//\n// time: %s//\n", ctime(&t)) < 0) {
-	    ret = FALSE;
+	    ret = false;
 	    goto write_failed;
 	}
 
@@ -3464,7 +3465,7 @@ boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
 			DX_MAJOR_VERSION,
 			DX_MINOR_VERSION,
 			DX_MICRO_VERSION) < 0) {
-	    ret = FALSE;
+	    ret = false;
 	    goto write_failed;
 	}
 
@@ -3480,7 +3481,7 @@ boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
 	//
 	if(dest == PrintExec || dest == PrintFile) {
 	    if (!this->isMacro() && !theDXApplication->printComment(f)) {
-		ret = FALSE;
+		ret = false;
 		goto write_failed;
 	    }
 	}
@@ -3489,7 +3490,7 @@ boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
 	//
 	if (!this->panelGroupManager->cfgPrintComment(f) ||
 	    !this->panelAccessManager->cfgPrintInaccessibleComment(f)) {
-	    ret = FALSE;
+	    ret = false;
 	    goto write_failed;
 	}
 
@@ -3515,7 +3516,7 @@ boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
 	{
 	    ControlPanel *ownerCp = this->selectionOwner;
 	    if (!(ownerCp->cfgPrintPanel(f, PrintCPBuffer))) {
-		ret = FALSE;
+		ret = false;
 		goto write_failed;
 	    }
 
@@ -3527,7 +3528,7 @@ boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
 	    FOR_EACH_NETWORK_NODE(this, n, l) {
 		if (ownerCp->nodeIsInInstanceList (n)) {
 		    if (!n->cfgPrintNode(f, dest)) {
-			ret = FALSE;
+			ret = false;
 			goto write_failed;
 		    }
 		}
@@ -3537,19 +3538,19 @@ boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
 	{
 	    FOR_EACH_NETWORK_PANEL(this, cp, l) {
 		if (!cp->cfgPrintPanel(f)) {
-		    ret = FALSE;
+		    ret = false;
 		    goto write_failed;
 		}
 	    }
 	    FOR_EACH_NETWORK_NODE(this, n, l) {
-		boolean selected = FALSE;
+		bool selected = false;
 		if ((n->getStandIn()) && (n->getStandIn()->isSelected()))
-		    selected = TRUE;
+		    selected = true;
 		if(dest == PrintCut && selected ||
 		    (dest == PrintCPBuffer && selected) ||
 		    dest == PrintExec || dest == PrintFile) {
 		    if (!n->cfgPrintNode(f, dest)) {
-			ret = FALSE;
+			ret = false;
 			goto write_failed;
 		    }
 		}
@@ -3562,7 +3563,7 @@ boolean Network::cfgPrintNetwork(const char *filename, PrintType dest)
 	//
 	fflush(f);
 	if (ftell(f) != fsize)
-	    rmfile = FALSE;
+	    rmfile = false;
     }
 
 write_failed:
@@ -3593,32 +3594,32 @@ out:
 //
 // Print any files that are created on a per node basis. 
 //
-boolean Network::auxPrintNetwork()
+bool Network::auxPrintNetwork()
 {
-    boolean ret = TRUE;
+    bool ret = true;
     Node *n;
     ListIterator l;
 
     FOR_EACH_NETWORK_NODE(this, n, l) {	
 	if (!n->auxPrintNodeFile()) {
 	    // Nodes are expected to indicate any errors that occur.
-	    ret = FALSE;
+	    ret = false;
 	}
     }
 
     return ret;
 }
 
-boolean Network::printNetwork(FILE *f, PrintType dest)
+bool Network::printNetwork(FILE *f, PrintType dest)
 {
     if (!this->printHeader(f, dest))
-	return FALSE;
+	return false;
     if (!this->printBody(f, dest))
-	return FALSE;
+	return false;
     if (!this->printTrailer(f, dest))
-	return FALSE;
+	return false;
     if (!this->printValues(f, dest))
-	return FALSE;
+	return false;
 
 #if WORKSPACE_PAGES
     //
@@ -3629,7 +3630,7 @@ boolean Network::printNetwork(FILE *f, PrintType dest)
 	GroupManager *gmgr;
 	while ( (gmgr = (GroupManager*)di.getNextDefinition()) ) {
 	    if (!gmgr->printAssignment(f))
-		return FALSE;
+		return false;
 	}
     }
 #endif
@@ -3639,7 +3640,7 @@ boolean Network::printNetwork(FILE *f, PrintType dest)
 #else
 	if((dest == PrintFile)||(dest == PrintExec))
 	    if (!theDXApplication->PGManager->printAssignment(f))
-		return FALSE;
+		return false;
 #endif
 	
 	if (! theDXApplication->dxlAppNoNetworkExecute())
@@ -3650,7 +3651,7 @@ boolean Network::printNetwork(FILE *f, PrintType dest)
 			DX_MAJOR_VERSION, 
 			DX_MINOR_VERSION, 
 			DX_MICRO_VERSION) < 0)
-		return FALSE;
+		return false;
 
 	//
 	// Don't print the stuff that causes execution of this is a DXLink
@@ -3668,7 +3669,7 @@ boolean Network::printNetwork(FILE *f, PrintType dest)
 "// commented out.  This will facilitate the use of the DXLink routines\n"
 "// exDXLLoadScript() and DXLLoadVisualProgram() when the DXLink\n"
 "// application is connected to an executive.\n") < 0)
-		    return FALSE;
+		    return false;
 		comment = "// ";
 	    } else
 		comment = "";
@@ -3678,17 +3679,17 @@ boolean Network::printNetwork(FILE *f, PrintType dest)
 		if ((fprintf(f, "%s\nsequence %s();\n", comment,
 				this->getNameString()) < 0) ||
 		    (fprintf(f, "%splay;\n",comment) < 0))
-		    return FALSE;
+		    return false;
 	    }
 	    else if (fprintf(f, "%s%s();\n", comment,this->getNameString()) < 0)
-		return FALSE;	
+		return false;	
 	}
     }
 
-    return TRUE;  	
+    return true;  	
 }
 
-boolean Network::printHeader(FILE *f,
+bool Network::printHeader(FILE *f,
 			     PrintType dest,
 			     PacketIFCallback echoCallback,
 			     void *echoClientData)
@@ -3698,16 +3699,16 @@ boolean Network::printHeader(FILE *f,
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer)
     {
 	SPRINTF(s, "//\n");
-	if (fputs(s, f) < 0) return FALSE;
+	if (fputs(s, f) < 0) return false;
 	if (echoCallback)
 	    (*echoCallback)(echoClientData, s);
 	time_t t = time((time_t*)NULL);
 	SPRINTF(s, "// time: %s", ctime(&t));
-	if (fputs(s, f) < 0) return FALSE;
+	if (fputs(s, f) < 0) return false;
 	if (echoCallback)
 	    (*echoCallback)(echoClientData, s);
 	SPRINTF(s, "//\n");
-	if (fputs(s, f) < 0) return FALSE;
+	if (fputs(s, f) < 0) return false;
 	if (echoCallback)
 	    (*echoCallback)(echoClientData, s);
 	SPRINTF(s, 
@@ -3722,43 +3723,43 @@ boolean Network::printHeader(FILE *f,
 	    DX_MAJOR_VERSION,
 	    DX_MINOR_VERSION,
 	    DX_MICRO_VERSION);
-	if (fputs(s, f) < 0) return FALSE;
+	if (fputs(s, f) < 0) return false;
 	if (echoCallback)
 	    (*echoCallback)(echoClientData, s);
 	SPRINTF(s, "//\n");
-	if (fputs(s, f) < 0) return FALSE;
+	if (fputs(s, f) < 0) return false;
 	if (echoCallback)
 	    (*echoCallback)(echoClientData, s);
 
   	//
   	// Print the referenced 
   	//
-	int inline_define = FALSE;
+	int inline_define = false;
 #ifdef DEBUG
 	if (getenv("DXINLINE"))
-	    inline_define = TRUE;
+	    inline_define = true;
 #endif
 	if ((dest == PrintFile) &&
 	    !this->printMacroReferences(f, inline_define,
 						echoCallback,echoClientData))
-	    return FALSE;
+	    return false;
 
 	if (this->isMacro())
 	{
 	    SPRINTF(s, "// Begin MDF\n");
-	    if (fputs(s, f) < 0) return FALSE;
+	    if (fputs(s, f) < 0) return false;
 	    if (echoCallback)
 		(*echoCallback)(echoClientData, s);
 	}
 
 	SPRINTF(s, "// MODULE %s\n", theSymbolManager->getSymbolString(this->name));
-	if (fputs(s, f) < 0) return FALSE;
+	if (fputs(s, f) < 0) return false;
 	if (echoCallback)
 	    (*echoCallback)(echoClientData, s);
 	if (this->category)
 	{
 	    SPRINTF(s, "// CATEGORY %s\n", this->getCategoryString());
-	    if (fputs(s, f) < 0) return FALSE;
+	    if (fputs(s, f) < 0) return false;
 	    if (echoCallback)
 		(*echoCallback)(echoClientData, s);
 	}
@@ -3766,7 +3767,7 @@ boolean Network::printHeader(FILE *f,
 	{
 	    SPRINTF(s, "// DESCRIPTION %s\n", 
 		this->getDescriptionString() ? this->getDescriptionString() : " ");
-	    if (fputs(s, f) < 0) return FALSE;
+	    if (fputs(s, f) < 0) return false;
 	    if (echoCallback)
 		(*echoCallback)(echoClientData, s);
 	}
@@ -3812,7 +3813,7 @@ boolean Network::printHeader(FILE *f,
 			dflt? dflt: "(no default)",
 			pd->getDescription() ? pd->getDescription() : " ");
 		    delete types;
-		    if (fputs(s, f) < 0) return FALSE;
+		    if (fputs(s, f) < 0) return false;
 		    if (echoCallback)
 			(*echoCallback)(echoClientData, s);
 
@@ -3830,7 +3831,7 @@ boolean Network::printHeader(FILE *f,
 			    option_count++;
 			}
 			SPRINTF (&s[slen], " %s\n", options[one_less]);
-			if (fputs(s, f) < 0) return FALSE;
+			if (fputs(s, f) < 0) return false;
 			if (echoCallback)
 			    (*echoCallback)(echoClientData, s);
 		    }
@@ -3869,12 +3870,12 @@ boolean Network::printHeader(FILE *f,
 			pd->getDescription() ? pd->getDescription() : " ");
 		    delete types;
 		}
-	        if (fputs(s, f) < 0) return FALSE;
+	        if (fputs(s, f) < 0) return false;
 		if (echoCallback)
 		    (*echoCallback)(echoClientData, s);
 	    }
 	    SPRINTF(s, "// End MDF\n");
-	    if (fputs(s, f) < 0) return FALSE;
+	    if (fputs(s, f) < 0) return false;
 	    if (echoCallback)
 		(*echoCallback)(echoClientData, s);
 	}
@@ -3885,19 +3886,19 @@ boolean Network::printHeader(FILE *f,
   	//
 	if (this->comment) {
 	    if (fprintf(f,"//\n// comment: ") < 0)
-        	return FALSE;
+        	return false;
 	    int i, len=STRLEN(this->comment);
 	    for (i=0 ; i<len ; i++) {
 		char c = this->comment[i];
 		if (putc(c, f) == EOF)
-		    return FALSE;
+		    return false;
 		if ((c == '\n') && (i+1 != len)) {
 		    if (fprintf(f,"// comment: ") < 0)
-			return FALSE;
+			return false;
 		}
             }
 	    if (fprintf(f,"\n") < 0)
-		return FALSE;
+		return false;
 	}
 
 #if WORKSPACE_PAGES
@@ -3914,10 +3915,10 @@ boolean Network::printHeader(FILE *f,
 		if ((dest == PrintExec) || (dest == PrintFile)) 
 		    if (!this->isMacro()) 
 			if (!gmgr->printComment(f))
-			    return FALSE;
+			    return false;
 	    } else {
 		if (!gmgr->printComment(f))
-		    return FALSE;
+		    return false;
 	    }
 	}
 #else
@@ -3927,7 +3928,7 @@ boolean Network::printHeader(FILE *f,
 	if ((dest == PrintExec) || (dest == PrintFile))
 	    if (!this->isMacro() && 
 		!theDXApplication->PGManager->printComment(f))
-		return FALSE;
+		return false;
 #endif
 
 	//
@@ -3935,7 +3936,7 @@ boolean Network::printHeader(FILE *f,
 	//
         this->workSpaceInfo.printComments(f);
 	SPRINTF(s, "//\n");
-	if (fputs(s, f) < 0) return FALSE;
+	if (fputs(s, f) < 0) return false;
 	if (echoCallback)
 	    (*echoCallback)(echoClientData, s);
 
@@ -3947,7 +3948,7 @@ boolean Network::printHeader(FILE *f,
 	theSymbolManager->getSymbolString(this->name));
 
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-	if (fputs(s, f) < 0) return FALSE;
+	if (fputs(s, f) < 0) return false;
 	if (echoCallback) (*echoCallback)(echoClientData, s);
     } else {
 	ASSERT(dest==PrintExec);
@@ -3969,7 +3970,7 @@ boolean Network::printHeader(FILE *f,
 	    l = SPRINTF(s, "%c%s = %s\n", (i == 1? ' ': ','),
 		param->getNameString(), param->getDefaultValue());
 	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-	    if (fputs(s, f) < 0) return FALSE;
+	    if (fputs(s, f) < 0) return false;
 	    if (echoCallback) (*echoCallback)(echoClientData, s);
 	} else {
 	    ASSERT(dest==PrintExec);
@@ -3979,7 +3980,7 @@ boolean Network::printHeader(FILE *f,
     l = SPRINTF(s, ") -> (\n");
 
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-        if (fputs(s, f) < 0) return FALSE;
+        if (fputs(s, f) < 0) return false;
 	if (echoCallback) (*echoCallback)(echoClientData, s);
     } else {
 	ASSERT(dest==PrintExec);
@@ -3995,7 +3996,7 @@ boolean Network::printHeader(FILE *f,
 	    l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), param->getNameString());
 
 	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-	    if (fputs(s, f) < 0) return FALSE;
+	    if (fputs(s, f) < 0) return false;
 	    if (echoCallback) (*echoCallback)(echoClientData, s);
 	} else {
 	    ASSERT(dest==PrintExec);
@@ -4005,7 +4006,7 @@ boolean Network::printHeader(FILE *f,
     }
     l = SPRINTF(s, ") {\n");
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-	if (fputs(s, f) < 0) return FALSE;
+	if (fputs(s, f) < 0) return false;
 	if (echoCallback) (*echoCallback)(echoClientData, s);
     } else {
 	ASSERT(dest==PrintExec);
@@ -4020,12 +4021,12 @@ boolean Network::printHeader(FILE *f,
     {
 	if (!n->netPrintBeginningOfMacroNode(f, dest, prefix,
 					     echoCallback, echoClientData))
-	    return FALSE;
+	    return false;
     }
 
-    return TRUE;
+    return true;
 }
-boolean Network::printBody(FILE *f,
+bool Network::printBody(FILE *f,
 			   PrintType dest,
 			   PacketIFCallback echoCallback,
 			   void *echoClientData)
@@ -4050,7 +4051,7 @@ boolean Network::printBody(FILE *f,
 	{
 	    if (!n->netPrintNode(f, dest, prefix, echoCallback, 
 				 echoClientData))
-		return FALSE;
+		return false;
 	}
     }
 
@@ -4061,13 +4062,13 @@ boolean Network::printBody(FILE *f,
 	   (dest == PrintCut && dec->isSelected()))
 	{
 	    if (!dec->printComment (f))
-		return FALSE;
+		return false;
 	}
     }
 
-    return TRUE;
+    return true;
 }
-boolean Network::printTrailer(FILE *f,
+bool Network::printTrailer(FILE *f,
 			      PrintType dest,
 			      PacketIFCallback echoCallback,
 			      void *echoClientData)
@@ -4075,7 +4076,7 @@ boolean Network::printTrailer(FILE *f,
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer)
     {
         if (fprintf(f, "// network: end of macro body\n") < 0)
-	    return FALSE;
+	    return false;
     }
 
     Node *n;
@@ -4085,28 +4086,28 @@ boolean Network::printTrailer(FILE *f,
     {
 	if (!n->netPrintEndOfMacroNode(f, dest, prefix,
 					echoCallback, echoClientData))
-	    return FALSE;
+	    return false;
     }
 
     const char* s = "}\n";
     DXPacketIF* pif = theDXApplication->getPacketIF();
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-	if (fputs(s, f) < 0) return FALSE;
+	if (fputs(s, f) < 0) return false;
 	if (echoCallback) (*echoCallback)(echoClientData, (char*)s);
     } else {
 	ASSERT(dest==PrintExec);
 	pif->sendBytes(s);
     }
 
-    return TRUE;
+    return true;
 }
-boolean Network::printValues(FILE *f, PrintType ptype)
+bool Network::printValues(FILE *f, PrintType ptype)
 {
     Node *n;
     ListIterator l;
     const char *prefix;
 
-    if (ptype == PrintCPBuffer) return TRUE;
+    if (ptype == PrintCPBuffer) return true;
 
     prefix = this->getPrefix();
 
@@ -4115,29 +4116,29 @@ boolean Network::printValues(FILE *f, PrintType ptype)
 	// FIXME: ignoring annotate, requires minor fix to n->printValues().
 #if WORKSPACE_PAGES
 	StandIn* si = n->getStandIn();
-	boolean is_selected = (si?si->isSelected():FALSE);
+	bool is_selected = (si?si->isSelected():false);
 #endif
 	if ((ptype != PrintCut) || (is_selected))
 	    if (!n->printValues(f, prefix, ptype))
-		return FALSE;
+		return false;
     }
-    return TRUE;
+    return true;
 }
 void Network::SendNetwork(void * staticData, void * /*requestData */)
 {
      Network *n = (Network*)staticData;
      n->sendNetwork();
 }
-boolean Network::sendNetwork()
+bool Network::sendNetwork()
 {
     if (this->deferrableSendNetwork->isActionDeferred()) {
       this->deferrableSendNetwork->requestAction(NULL);
-      return TRUE;
+      return true;
     }
 
     DXPacketIF *pi = theDXApplication->getPacketIF();
     if (!pi)
-	return TRUE;
+	return true;
 
     void *cbData;
     PacketIFCallback cb;
@@ -4153,18 +4154,18 @@ boolean Network::sendNetwork()
 
     pi->sendMacroStart();
     if (!this->printHeader(pi->getFILE(), PrintExec, cb, cbData))
-	return FALSE;
+	return false;
     if (!this->printBody(pi->getFILE(), PrintExec, cb, cbData))
-	return FALSE;
+	return false;
     if (! this->printTrailer(pi->getFILE(), PrintExec, cb, cbData))
-	return FALSE;
+	return false;
     pi->sendMacroEnd();
     
     this->clearDirty();
 
-    return TRUE;
+    return true;
 }
-boolean Network::sendValues(boolean force)
+bool Network::sendValues(bool force)
 {
     Node *n;
     ListIterator l;
@@ -4173,14 +4174,14 @@ boolean Network::sendValues(boolean force)
     {
 	if (!n->sendValues(force))
 	{
-	    return FALSE;
+	    return false;
 	}
     }
-    return TRUE;
+    return true;
 }
 
 
-boolean Network::checkForCycle(Node *srcNode, Node *dstNode)
+bool Network::checkForCycle(Node *srcNode, Node *dstNode)
 {
     Node *n;
     ListIterator l;
@@ -4190,18 +4191,18 @@ boolean Network::checkForCycle(Node *srcNode, Node *dstNode)
 
     return this->markAndCheckForCycle(srcNode,dstNode);
 }
-boolean Network::markAndCheckForCycle(Node *srcNode, Node *dstNode)
+bool Network::markAndCheckForCycle(Node *srcNode, Node *dstNode)
 {
     int  i;
 
     if (srcNode == dstNode)
-        return TRUE;  // A cycle has been detected
+        return true;  // A cycle has been detected
 
     //
     // We've already been to this node (and not found a cycle).
     //
     if (dstNode->isMarked())
-	return FALSE;
+	return false;
 
     //
     // Follow the destination Node's output params.
@@ -4222,18 +4223,18 @@ boolean Network::markAndCheckForCycle(Node *srcNode, Node *dstNode)
                 int paramInd;
                 Node *dstPtr = a->getDestinationNode(paramInd);
                 if (this->markAndCheckForCycle(srcNode, dstPtr)) {
-                       return TRUE;  // A cycle has been detected
+                       return true;  // A cycle has been detected
                 }
             }
          }
     }
     dstNode->setMarked();
-    return FALSE; // No cycle has been found 
+    return false; // No cycle has been found 
 }
 
   
 int
-Network::connectedNodes(boolean *marked, int ind, int d)
+Network::connectedNodes(bool *marked, int ind, int d)
 {
     int		markedNodes = 0;
     int		i;
@@ -4243,7 +4244,7 @@ Network::connectedNodes(boolean *marked, int ind, int d)
     if (marked[ind])
 	return markedNodes;
 
-    marked[ind] = TRUE;
+    marked[ind] = true;
     ++markedNodes;
     n = (Node*)this->nodeList.getElement(ind+1);
 
@@ -4403,7 +4404,7 @@ void Network::cfgParseInteractorComment(const char* comment)
     {
         ErrorMessage("Bad interactor comment file %s line %d\n",
                                         Network::ParseState::parse_file,yylineno);
-	Network::ParseState::error_occurred = TRUE;
+	Network::ParseState::error_occurred = true;
 	return;
     }
 
@@ -4416,7 +4417,7 @@ void Network::cfgParseInteractorComment(const char* comment)
         ErrorMessage(
             "Interactor %s at line %d file %s not found in the symbol table",
                         interactor_name, yylineno, Network::ParseState::parse_file);
-	Network::ParseState::error_occurred = TRUE;
+	Network::ParseState::error_occurred = true;
 	return;
     }
 
@@ -4431,7 +4432,7 @@ void Network::cfgParseInteractorComment(const char* comment)
            "Node %s (instance %d) not found in the program (file %s, line %d)",
                         interactor_name, instance, 
 					Network::ParseState::parse_file, yylineno);
-	Network::ParseState::error_occurred = TRUE;
+	Network::ParseState::error_occurred = true;
 	return;
     }
 
@@ -4446,7 +4447,7 @@ void Network::cfgParseInteractorComment(const char* comment)
 //
 // Parse any network specific comments found in the .cfg file.
 //
-boolean Network::cfgParseComment(const char* comment, 
+bool Network::cfgParseComment(const char* comment, 
 					const char *file, int lineno)
 {
     ASSERT(this->panelGroupManager);
@@ -4482,7 +4483,7 @@ void Network::cfgParsePanelComment(const char* comment)
 // Find a node with a specific name and return its instance number
 // as well as its position in the list.
 //
-Node *Network::findNode(const char* name, int* startPos, boolean byLabel)
+Node *Network::findNode(const char* name, int* startPos, bool byLabel)
 {
     ListIterator li(this->nodeList);
     Node        *n;
@@ -4506,7 +4507,7 @@ Node *Network::findNode(const char* name, int* startPos, boolean byLabel)
 }
 
 //
-// Search the network for a node of the given class and return TRUE
+// Search the network for a node of the given class and return true
 // if found.
 //
 
@@ -4536,27 +4537,27 @@ void Network::postSaveAsDialog(Command *cmd)
 }
 
 
-boolean Network::isMacro()
+bool Network::isMacro()
 {
     return this->definition != NULL;
 }
 // FIX me
-boolean Network::canBeMacro()
+bool Network::canBeMacro()
 {
     Node *n;
     ListIterator li;
     FOR_EACH_NETWORK_NODE(this, n, li)
 	if (!n->isAllowedInMacro())
-	    return FALSE;
+	    return false;
     
-    return TRUE;
+    return true;
 }
-boolean Network::makeMacro(boolean make)
+bool Network::makeMacro(bool make)
 {
     if (make && !this->canBeMacro())
-	return FALSE;
+	return false;
     else if (make && this->isMacro())
-	return TRUE;
+	return true;
     // FIXME: be sure to return false if (!make && I have inputs)
 
     if (make)
@@ -4576,7 +4577,7 @@ boolean Network::makeMacro(boolean make)
 	this->definition = NULL;
     }
     
-    return TRUE;
+    return true;
 }
 
 //
@@ -4632,7 +4633,7 @@ int Network::findFreeNodeIndex(const char *nodename)
     return retindex;
 }
 
-boolean Network::moveInputPosition(MacroParameterNode *n, int index)
+bool Network::moveInputPosition(MacroParameterNode *n, int index)
 {
     ASSERT(this->isMacro());
     ParameterDefinition *pd = n->getParameterDefinition();
@@ -4650,9 +4651,9 @@ boolean Network::moveInputPosition(MacroParameterNode *n, int index)
     ASSERT(oldPos != 0);
 
     if (oldPos == index)
-	return TRUE;
+	return true;
 
-    boolean return_val = TRUE;
+    bool return_val = true;
     this->deferrableSendNetwork->deferAction();
     //
     // At this point, oldPos is where the parameter was, and index is where
@@ -4667,7 +4668,7 @@ boolean Network::moveInputPosition(MacroParameterNode *n, int index)
     else
     {
 	ParameterDefinition *dummy = new ParameterDefinition(-1);
-        dummy->setDummy(TRUE);
+        dummy->setDummy(true);
 	dummy->setName("input");
 	dummy->markAsInput();
 	dummy->setDefaultVisibility();
@@ -4679,7 +4680,7 @@ boolean Network::moveInputPosition(MacroParameterNode *n, int index)
 	for (int i = inputCount + 1; i < index; ++i)
 	{
 	    ParameterDefinition *dummy = new ParameterDefinition(-1);
-            dummy->setDummy(TRUE);
+            dummy->setDummy(true);
 	    dummy->setName("input");
 	    dummy->markAsInput();
 	    dummy->setDefaultVisibility();
@@ -4721,7 +4722,7 @@ boolean Network::moveInputPosition(MacroParameterNode *n, int index)
 		this->definition->replaceInput(pd, dummyPd);
 		delete dummyPd;
 	    }
-	    return_val =  FALSE;
+	    return_val =  false;
 	}
     }
 
@@ -4732,7 +4733,7 @@ boolean Network::moveInputPosition(MacroParameterNode *n, int index)
 
     return return_val;
 }
-boolean Network::moveOutputPosition(MacroParameterNode *n, int index)
+bool Network::moveOutputPosition(MacroParameterNode *n, int index)
 {
     ASSERT(this->isMacro());
     ParameterDefinition *pd = n->getParameterDefinition();
@@ -4750,10 +4751,10 @@ boolean Network::moveOutputPosition(MacroParameterNode *n, int index)
     ASSERT(oldPos != 0);
 
     if (oldPos == index)
-	return TRUE;
+	return true;
 
     this->deferrableSendNetwork->deferAction();
-    boolean return_val = TRUE;
+    bool return_val = true;
 
     if (oldPos == outputCount)
     {
@@ -4763,7 +4764,7 @@ boolean Network::moveOutputPosition(MacroParameterNode *n, int index)
     else
     {
 	ParameterDefinition *dummy = new ParameterDefinition(-1);
-        dummy->setDummy(TRUE);
+        dummy->setDummy(true);
 	dummy->setName("output");
 	dummy->markAsOutput();
 	dummy->setDefaultVisibility();
@@ -4776,7 +4777,7 @@ boolean Network::moveOutputPosition(MacroParameterNode *n, int index)
 	for (int i = outputCount + 1; i < index; ++i)
 	{
 	    ParameterDefinition *dummy = new ParameterDefinition(-1);
-            dummy->setDummy(TRUE);
+            dummy->setDummy(true);
 	    dummy->setName("output");
 	    dummy->markAsOutput();
 	    dummy->setDefaultVisibility();
@@ -4818,7 +4819,7 @@ boolean Network::moveOutputPosition(MacroParameterNode *n, int index)
 		this->definition->replaceOutput(pd, dummyPd);
 		delete dummyPd;
 	    }
-	    return_val = FALSE;
+	    return_val = false;
 	}
     }
     if (return_val)
@@ -4884,7 +4885,7 @@ int Network::getOutputCount()
     return count;
 }
 
-void Network::openColormap(boolean openAll)
+void Network::openColormap(bool openAll)
 {
     ColormapNode        *n;
     ListIterator              li;
@@ -4907,7 +4908,7 @@ void Network::openColormap(boolean openAll)
     delete cmaps;
 }
 
-void Network::setDescription(const char *description, boolean markDirty)
+void Network::setDescription(const char *description, bool markDirty)
 {
     if (this->description)
 	delete this->description;
@@ -4915,7 +4916,7 @@ void Network::setDescription(const char *description, boolean markDirty)
     if (markDirty)
 	this->setFileDirty();
 }
-Symbol Network::setCategory(const char *cat, boolean markDirty)
+Symbol Network::setCategory(const char *cat, bool markDirty)
 {
     if ((cat) && (cat[0]))
 	this->category = theSymbolManager->registerSymbol(cat);
@@ -4931,7 +4932,7 @@ const char *Network::getDescriptionString()
     return this->description;
 }
 
-boolean Network::postNameDialog()
+bool Network::postNameDialog()
 {
     if (!this->setNameDialog)
     {
@@ -4940,7 +4941,7 @@ boolean Network::postNameDialog()
 	this->setNameDialog = new SetMacroNameDialog(this);
     }
     this->setNameDialog->post();
-    return TRUE;
+    return true;
 }
 
 Node *Network::getNode(const char *name, int instance)
@@ -4954,7 +4955,7 @@ void Network::editNetworkComment()
 {
      if (!this->setCommentDialog) {
         this->setCommentDialog = new SetNetworkCommentDialog(
-                                FALSE, this);
+                                false, this);
      }
      this->setCommentDialog->post();
 }
@@ -4999,28 +5000,28 @@ void Network::resetImageCount()
 // Returns true if the caller is the last element of the image list.
 // It is assumed that each member of this list will determine, during
 // Node::prepareToSendNode, will call this to see if it's the last one.
-boolean Network::isLastImage()
+bool Network::isLastImage()
 {
     return ++this->imageCount == this->imageList.getSize();
 }
 Symbol Network::setName(const char *n) 
 {
     Symbol newName = theSymbolManager->registerSymbol(n);
-    boolean needsValues = this->name != newName && this->prefix != NULL;
+    bool needsValues = this->name != newName && this->prefix != NULL;
     this->setDirty();
     if (this->prefix)
 	delete this->prefix;
     this->prefix = NULL;
     this->name = newName;
     if (needsValues && theDXApplication->getPacketIF() != NULL)
-	this->sendValues(TRUE);
+	this->sendValues(true);
     return this->name;
 }
 //
 // Given lists of old and new NodeDefinitions, redefine any nodes
 // in the current network.
 //
-boolean Network::redefineNodes(Dictionary *newdefs, Dictionary *olddefs)
+bool Network::redefineNodes(Dictionary *newdefs, Dictionary *olddefs)
 {
     Node *node;
     ListIterator l;
@@ -5036,7 +5037,7 @@ boolean Network::redefineNodes(Dictionary *newdefs, Dictionary *olddefs)
 	    }
 	}
     }
-    return TRUE;
+    return true;
 }
 
 int Network::getNodeCount()
@@ -5060,7 +5061,7 @@ void Network::fillPanelCascade(CascadeMenu *menu, PanelAccessManager *pam)
     char *name;
     char buttonName[32];
     int i, size;
-    boolean hasChildren = FALSE;
+    bool hasChildren = false;
 
 
     if ((size = this->getPanelCount()) != 0) {
@@ -5096,7 +5097,7 @@ void Network::fillPanelCascade(CascadeMenu *menu, PanelAccessManager *pam)
             bi->setLabel(name);
             bi->setLocalData((void*)inst);
             menu->appendComponent(bi);
-            hasChildren = TRUE;
+            hasChildren = true;
         }
 
         //
@@ -5108,7 +5109,7 @@ void Network::fillPanelCascade(CascadeMenu *menu, PanelAccessManager *pam)
             for (i=1; i<=size; i++) {
                 name = (char*)pgm->getPanelGroup(i, NULL);
                 if (pam && pam->isAccessibleGroup(name)) {
-                    hasChildren = TRUE;
+                    hasChildren = true;
 	    	    sprintf(buttonName,"group%d",i);
                     bi = new ButtonInterface(buttonName,
                                         this->openPanelGroupByIndexCmd);
@@ -5157,7 +5158,7 @@ int Network::countNodesByName(const char *nodename)
 // Return true if the network is different from that on disk, and the
 // application allows saving of .net and .cfg files.
 //
-boolean Network::saveToFileRequired()
+bool Network::saveToFileRequired()
 {
     int count = this->getNodeCount() + this->decoratorList.getSize();
 #if WORKSPACE_PAGES
@@ -5175,7 +5176,7 @@ boolean Network::saveToFileRequired()
 //
 // Merge the new network into this network.
 //
-boolean Network::mergeNetworks(Network *new_net, List *panels, boolean allNodes, boolean stitch)
+bool Network::mergeNetworks(Network *new_net, List *panels, bool allNodes, bool stitch)
 {
 Node		*cur_node;
 Node		*new_node;
@@ -5198,7 +5199,7 @@ List		swapToNodes;	  // transferred to this network.
     if (this->getEditor() && new_net->wasNetFileEncoded()) {
 	ErrorMessage("Encoded visual programs are not viewable.\n"
 		     "Attempt to merge encoded program aborted.");
-	return FALSE;
+	return false;
     }
 
     //
@@ -5264,7 +5265,7 @@ List		swapToNodes;	  // transferred to this network.
     {
 	if (!new_node->canSwitchNetwork(new_net,this))
 	{
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -5296,7 +5297,7 @@ List		swapToNodes;	  // transferred to this network.
 	// The following check on allNodes assumes that the incoming network
 	// originated in a single page.  See EditorWindow::macroify...
 	//
-	if ((gmgr->survivesMerging() == FALSE) || (allNodes == FALSE)) {
+	if ((gmgr->survivesMerging() == false) || (allNodes == false)) {
 	    for (new_l.setList(removedNodes); (new_node = (Node*)new_l.getNext()); ) {
 		const char* group_name = new_node->getGroupName(gmgr_sym);
 		if (group_name) {
@@ -5327,7 +5328,7 @@ List		swapToNodes;	  // transferred to this network.
 			new_node->setGroupName(NUL(GroupRecord*), gmgr_sym);
 		    } else {
 			if (grec == NUL(GroupRecord*)) {
-			    boolean group_created = 
+			    bool group_created = 
 				local_gmgr->createGroup (group_name, this);
 			    if (!group_created)
 				new_node->setGroupName(NUL(GroupRecord*), gmgr_sym);
@@ -5356,7 +5357,7 @@ List		swapToNodes;	  // transferred to this network.
 			vpea->setGroupName(NUL(GroupRecord*), gmgr_sym);
 		    } else {
 			if (grec == NUL(GroupRecord*)) {
-			    boolean group_created = 
+			    bool group_created = 
 				local_gmgr->createGroup (group_name, this);
 			    if (!group_created)
 				vpea->setGroupName(NUL(GroupRecord*), gmgr_sym);
@@ -5380,12 +5381,12 @@ List		swapToNodes;	  // transferred to this network.
     this->deferrableAddNode->deferAction();
     for (new_l.setList(removedNodes); (new_node = (Node*)new_l.getNext()); )
     {
-	boolean silently = FALSE;
+	bool silently = false;
 	if (stitch) {
 	    // don't complain about problems with nodes that are
 	    // about to go away.
 	    if (swapFromNodes.isMember(new_node))
-		silently = TRUE;
+		silently = true;
 	}
 	new_node->switchNetwork(new_net,this,silently);
 	new_net->nodeList.removeElement(new_node);
@@ -5400,8 +5401,8 @@ List		swapToNodes;	  // transferred to this network.
     // the existing counter part to the member of deleteNodes.
     //
     if (stitch) {
-	boolean input_tab_problem_detected = FALSE;
-	boolean output_tab_problem_detected = FALSE;
+	bool input_tab_problem_detected = false;
+	bool output_tab_problem_detected = false;
 	int missing_tab_count = 0;
 	int swap_count = swapFromNodes.getSize();
 	for (int i=1; i<=swap_count; i++) {
@@ -5426,7 +5427,7 @@ List		swapToNodes;	  // transferred to this network.
 			if (toNode->isInputConnected(input)) {
 			    // can't create the arc because someone else
 			    // already wired the input we wanted to use.
-			    input_tab_problem_detected = TRUE;
+			    input_tab_problem_detected = true;
 			    missing_tab_count++;
 			} else {
 			    StandIn* si = toNode->getStandIn();
@@ -5436,7 +5437,7 @@ List		swapToNodes;	  // transferred to this network.
 			}
 		    } else {
 			// the tab was missing
-			input_tab_problem_detected = TRUE;
+			input_tab_problem_detected = true;
 			missing_tab_count++;
 		    }
 		}
@@ -5457,7 +5458,7 @@ List		swapToNodes;	  // transferred to this network.
 			if (dest->isInputConnected(input)) {
 			    // can't create the arc because someone else
 			    // already wired the input we wanted to use.
-			    output_tab_problem_detected = TRUE;
+			    output_tab_problem_detected = true;
 			    missing_tab_count++;
 			} else {
 			    StandIn* si = toNode->getStandIn();
@@ -5467,7 +5468,7 @@ List		swapToNodes;	  // transferred to this network.
 			}
 		    } else {
 			// the tab was missing
-			output_tab_problem_detected = TRUE;
+			output_tab_problem_detected = true;
 			missing_tab_count++;
 		    }
 		}
@@ -5493,7 +5494,7 @@ List		swapToNodes;	  // transferred to this network.
 
     for (new_l.setList(swapFromNodes); (new_node = (Node*)new_l.getNext()); )
     {
-	this->deleteNode(new_node, FALSE);
+	this->deleteNode(new_node, false);
     }
     swapFromNodes.clear();
 
@@ -5544,7 +5545,7 @@ List		swapToNodes;	  // transferred to this network.
 #if WORKSPACE_PAGES
     if (this->editor) this->editor->endPageChange();
 #endif
-    return TRUE;
+    return true;
 }
 
 //
@@ -5594,7 +5595,7 @@ void Network::getBoundingBox (int *x1, int *y1, int *x2, int *y2)
 {
 int x,y;    // minima
 int mx,my;  // maxima
-boolean emptyNet = TRUE;
+bool emptyNet = true;
 Node		*n;
 ListIterator	l;
 
@@ -5605,7 +5606,7 @@ ListIterator	l;
         y = MIN(y, n->getVpeY());
         mx = MAX(mx, n->getVpeX());
         my = MAX(my, n->getVpeY());
-        emptyNet = FALSE;
+        emptyNet = false;
     }
     if (emptyNet) {
 	*x1 = *y1 = *x2 = *y2 = 0;
@@ -5738,7 +5739,7 @@ void Network::closeNetworkFILE(FILE *f)
 {
     this->CloseNetworkFILE(f,this->wasNetFileEncoded());
 }
-void Network::CloseNetworkFILE(FILE *f, boolean wasEncoded)
+void Network::CloseNetworkFILE(FILE *f, bool wasEncoded)
 {
 #ifndef DXD_LACKS_POPEN
     if (wasEncoded)
@@ -5754,7 +5755,7 @@ FILE *Network::openNetworkFILE(const char *netFileName,
     return this->OpenNetworkFILE(netFileName, &this->netFileWasEncoded, errmsg);
 }
 FILE *Network::OpenNetworkFILE(const char *netFileName, 
-					boolean *wasEncoded,
+					bool *wasEncoded,
 					char **errmsg)
 {
 
@@ -5762,16 +5763,16 @@ FILE *Network::OpenNetworkFILE(const char *netFileName,
     char errbuf[1024];
 #if ! DXD_HAS_CRYPT             //CRYPTKEY
     char *netfile = DuplicateString(netFileName);
-    *wasEncoded = FALSE;
+    *wasEncoded = false;
 #else
     char buf[1024];
     char cmd[1024];
     const char *key = theDXApplication->getCryptKey();
-    boolean forceEncryption = theDXApplication->appForcesNetFileEncryption(); 
+    bool forceEncryption = theDXApplication->appForcesNetFileEncryption(); 
     char *netfile = DuplicateString(netFileName);
 
     ASSERT(wasEncoded);
-    *wasEncoded = FALSE;
+    *wasEncoded = false;
     errbuf[0] = '\0';
 
     if (!key && forceEncryption) { 
@@ -5822,7 +5823,7 @@ FILE *Network::OpenNetworkFILE(const char *netFileName,
 	    f = OpenForDecoding(netfile, key); 
 		
 	    if (f)
-		*wasEncoded = TRUE;
+		*wasEncoded = true;
         } else if (forceEncryption) {
 	    SPRINTF(errbuf,"Network file %s must be encoded", netfile);
 	    goto error;
@@ -5860,7 +5861,7 @@ error:
 // If the filename does not have a '.c' extension, one is added.
 // An error message is printed if there was an error.
 //
-boolean Network::saveAsCCode(const char *filename)
+bool Network::saveAsCCode(const char *filename)
 {
     const char *p = strrstr(filename,".c");
     char *nf;
@@ -5875,7 +5876,7 @@ boolean Network::saveAsCCode(const char *filename)
     }
 
     FILE *f = fopen(nf,"w");
-    boolean rcode; 
+    bool rcode; 
     if (f) {
 	rcode = this->printAsCCode(f);
 	fclose(f);
@@ -5885,7 +5886,7 @@ boolean Network::saveAsCCode(const char *filename)
 	} 
     } else {
 	ErrorMessage("Could not open file %s for writing\n",nf);
-	rcode = FALSE;
+	rcode = false;
     }
     if (nf != filename) delete nf;
 
@@ -5895,7 +5896,7 @@ boolean Network::saveAsCCode(const char *filename)
 // Print the visual program as a .c file that uses libDX calls.
 // An error message is printed if there was an error.
 //
-boolean Network::printAsCCode(FILE *f)
+bool Network::printAsCCode(FILE *f)
 {
     Node *n;
     ListIterator l;
@@ -5906,7 +5907,7 @@ boolean Network::printAsCCode(FILE *f)
     
     if (this->isMacro()) {
 	ErrorMessage("Can not generate C code from macros");
-	return FALSE;
+	return false;
     }
 
     for (p = unsup_tools ; *p ; p++) {
@@ -5915,7 +5916,7 @@ boolean Network::printAsCCode(FILE *f)
 	    ErrorMessage("Can not generate C code from programs containing"
 			" %s tools",*p);
 	    delete list;
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -5926,7 +5927,7 @@ boolean Network::printAsCCode(FILE *f)
 	    ErrorMessage("Can not generate C code from programs containing"
 			" %s tools",n->getNameString());
 	    delete list;
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -5939,12 +5940,12 @@ boolean Network::printAsCCode(FILE *f)
 		  "%s()\n{\n"
 		  "\n",
 		this->getNameString()) <= 0)
-	return FALSE;
+	return false;
 
     FOR_EACH_NETWORK_NODE(this, n, l)
     {
 	if (!n->beginDXCallModule(f))
-	    return FALSE;
+	    return false;
     }
 
     fprintf(f, "\n    DXInitModules();\n\n");
@@ -5952,23 +5953,23 @@ boolean Network::printAsCCode(FILE *f)
     FOR_EACH_NETWORK_NODE(this, n, l)
     {
 	if (!n->callDXCallModule(f))
-	    return FALSE;
+	    return false;
     }
 
     // Include a semi-colon statement incase no statements follow
     if (fprintf(f,"\n\nerror: ;\n\n") <= 0)
-	return FALSE;
+	return false;
 
     FOR_EACH_NETWORK_NODE(this, n, l)
     {
 	if (!n->endDXCallModule(f))
-	    return FALSE;
+	    return false;
     }
 
     if (fprintf(f,"\n}\n") <= 0)
-	return FALSE;
+	return false;
 
-    return TRUE;
+    return true;
 
 }
 #endif	// DXUI_DEVKIT
@@ -5984,7 +5985,7 @@ boolean Network::printAsCCode(FILE *f)
 // case, the user should delete the returned list.
 //
 List *Network::GetDestinationNodes(Node *src, int output_index, 
-				List *destList, boolean recvrsOk)
+				List *destList, bool recvrsOk)
 {
     Ark *a;
  
@@ -6002,7 +6003,7 @@ List *Network::GetDestinationNodes(Node *src, int output_index,
 	    //
 	    // This is a Transmitter, so get a list of all the Receivers.
 	    //
-	    List *recvrs = Network::GetDestinationNodes(dest,1,NULL, TRUE);
+	    List *recvrs = Network::GetDestinationNodes(dest,1,NULL, true);
 	    if (recvrs) {
 		//
 		// For each Receiver, find the connected nodes.
@@ -6045,7 +6046,7 @@ void Network::optimizeNodeOutputCacheability()
     while ( (src = (Node*)iterator.getNext()) ) {
 	int i, ocnt = src->getOutputCount();
  	if (editor)
-	    editor->selectNode(src,FALSE,FALSE);
+	    editor->selectNode(src,false,false);
 	//
 	// Don't bother with Transmitters or Receivers 
 	//
@@ -6058,8 +6059,8 @@ void Network::optimizeNodeOutputCacheability()
 	// Follow each output arc to see if we need to cache this output
 	//
 	for (i=1 ; i<=ocnt ; i++) {		// For each node output
-	    boolean cache_output = FALSE; 
-	    if (src->isOutputCacheabilityWriteable(i) == FALSE) continue;
+	    bool cache_output = false; 
+	    if (src->isOutputCacheabilityWriteable(i) == false) continue;
 
 	    if (src->isOutputConnected(i)) { // If the output is connected 
 		Node *dest; 
@@ -6076,7 +6077,7 @@ void Network::optimizeNodeOutputCacheability()
 		    if ((dest->getOutputCount() == 0) ||
 			EqualString(dest->getClassName(), ClassImageNode) || 	
 			dest->getDefinition()->isMDFFlagSIDE_EFFECT()) {
-			cache_output = TRUE;
+			cache_output = true;
 			break;
 		    }
 		    //
@@ -6085,7 +6086,7 @@ void Network::optimizeNodeOutputCacheability()
 		    // thru the loop.
 		    //
 		    if (dest->getDefinition()->isMDFFlagLOOP()) {
-			cache_output = TRUE;
+			cache_output = true;
 			break;
 		    }
 
@@ -6096,7 +6097,7 @@ void Network::optimizeNodeOutputCacheability()
 		    // which are side-effect but we don't have that information.
 		    //
 		    if (dest->isA(ClassMacroNode)) {
-			cache_output = TRUE;
+			cache_output = true;
 			break;
 		    }
 
@@ -6110,7 +6111,7 @@ void Network::optimizeNodeOutputCacheability()
 		    // node?  And what does caching on Receivers mean?
 		    //
 		    if (dest->isA(driven_sym)) {
-			cache_output = TRUE;
+			cache_output = true;
 			break;
 		    }
 
@@ -6151,7 +6152,7 @@ void Network::optimizeNodeOutputCacheability()
 	    if (cache_output) {
 		src->setOutputCacheability(i,OutputFullyCached);
 		if (editor)
-		    editor->selectNode(src,TRUE,FALSE);
+		    editor->selectNode(src,true,false);
 	    } else 
 		src->setOutputCacheability(i,OutputNotCached);
 	}
@@ -6168,7 +6169,7 @@ Decorator* Network::lastObjectParsed = NUL(Decorator*);
 // each DynamicResource must belong to a decorator or interactor and it will
 // always be the most recently parsed decorator or interactor.
 //
-boolean Network::parseDecoratorComment (const char *comment,
+bool Network::parseDecoratorComment (const char *comment,
 				const char *filename, int lineno)
 {
 int items_parsed;
@@ -6181,18 +6182,18 @@ char stylename[128];
 	(strncmp(" resource",comment,9))&&
 	(strncmp(" annotation",comment,11))&&
 	(!strstr(comment, " group:")))
-	return FALSE;
+	return false;
  
     // The following is a special case for stateful resource comments.
     // Currently they are associated only with Decorators but that
     // will change.
     if (!strncmp(" resource",comment,9)) {
 	if (!lastObjectParsed)
-	    return FALSE;
+	    return false;
 	return lastObjectParsed->parseResourceComment (comment, filename, lineno);
     } else if (!strncmp(" annotation", comment, 11)) {
 	if (!lastObjectParsed)
-	    return FALSE;
+	    return false;
 	return lastObjectParsed->parseComment (comment, filename, lineno);
     }
 
@@ -6200,7 +6201,7 @@ char stylename[128];
     if (strstr(comment, " group:"))   {
 	int i;
 	int count = this->groupManagers->getSize();
-	boolean group_comment = FALSE;
+	bool group_comment = false;
 	GroupManager *gmgr = NUL(GroupManager*);
 	for (i=1; i<=count; i++) {
 	    gmgr = (GroupManager*)this->groupManagers->getDefinition(i);
@@ -6208,7 +6209,7 @@ char stylename[128];
 	    char buf[128];
 	    sprintf (buf, " %s group:", mgr_name);
 	    if (EqualSubstring (buf, comment, strlen(buf))) {
-		group_comment = TRUE;
+		group_comment = true;
 		break;
 	    }
 	}
@@ -6226,12 +6227,12 @@ char stylename[128];
     // was only 1 style for each type.
     //
     int junk;
-    boolean parsed = FALSE;
+    bool parsed = false;
     items_parsed =
 	sscanf (comment, " decorator %[^\t]\tpos=(%d,%d) size=%dx%d style(%[^)])",
 	    stylename, &junk,&junk,&junk,&junk, decoType);
     if (items_parsed == 6) {
-	parsed = TRUE;
+	parsed = true;
     } else {
 	items_parsed =
 
@@ -6242,11 +6243,11 @@ char stylename[128];
 	    0;
 #endif
 	if (items_parsed == 2) {
-	    parsed = TRUE;
+	    parsed = true;
 	} else {
 	    items_parsed = sscanf(comment, " decorator %[^\t]", stylename);
 	    if (items_parsed == 1)
-		parsed = TRUE;
+		parsed = true;
 	}
     }
 
@@ -6256,7 +6257,7 @@ char stylename[128];
     if (!parsed) {
 	ErrorMessage("Unrecognized 'decorator' comment (file %s, line %d)",
 					    filename, lineno);
-	return FALSE;
+	return false;
     } else {
 	dict = DecoratorStyle::GetDecoratorStyleDictionary (stylename);
 	DictionaryIterator di(*dict);
@@ -6266,7 +6267,7 @@ char stylename[128];
 	    if (!ds) {
 		ErrorMessage("Unrecognized 'decorator' type (file %s, line %d)",
 					filename, lineno);
-		return FALSE;
+		return false;
 	    }
 	} else {
 	    while ( (ds = (DecoratorStyle*)di.getNextDefinition()) ) {
@@ -6280,14 +6281,14 @@ char stylename[128];
 
 		di.setList(*dict);
 		ds = (DecoratorStyle*)di.getNextDefinition();
-		if (!ds) return FALSE;
+		if (!ds) return false;
 	    }
 	}
     }
  
     ASSERT(ds);
     Decorator *d;
-    d = ds->createDecorator (TRUE);
+    d = ds->createDecorator (true);
     d->setStyle (ds);
     DecoratorInfo* dnd = new DecoratorInfo (this, (void*)this,
 	(DragInfoFuncPtr)Network::SetOwner,
@@ -6302,7 +6303,7 @@ char stylename[128];
     this->addDecoratorToList ((void *)d);
     lastObjectParsed = d;
  
-    return TRUE;
+    return true;
 }
 
 void Network::SetOwner(void *b)
@@ -6334,16 +6335,16 @@ Network *netw = (Network*)b;
 //
 void Network::getReferencedMacros(List *macros, List *visited)
 {
-    List *l = this->makeClassifiedNodeList(ClassMacroNode, FALSE);
+    List *l = this->makeClassifiedNodeList(ClassMacroNode, false);
 
     if (l) {
 	MacroNode *mn;
-	boolean wasVisitNull;  
+	bool wasVisitNull;  
 	if (!visited) {
 	    visited = new List();
-	    wasVisitNull = TRUE;  
+	    wasVisitNull = true;  
 	} else
-	    wasVisitNull = FALSE;  
+	    wasVisitNull = false;  
 
 	ListIterator iter(*l);
 	while ( (mn = (MacroNode*)iter.getNext()) ) {
@@ -6373,10 +6374,10 @@ void Network::getReferencedMacros(List *macros, List *visited)
 }
 //
 // Print comments and 'include' statements for the macros that are 
-// referenced in this network.  If nested is TRUE, then we don't print
-// the 'include' statements.  Return TRUE on sucess or FALSE on failure.
+// referenced in this network.  If nested is true, then we don't print
+// the 'include' statements.  Return true on sucess or false on failure.
 //
-boolean Network::printMacroReferences(FILE *f, boolean inline_define,
+bool Network::printMacroReferences(FILE *f, bool inline_define,
 			PacketIFCallback echoCallback, void *echoClientData)
 			
 {
@@ -6407,7 +6408,7 @@ boolean Network::printMacroReferences(FILE *f, boolean inline_define,
 
 	iter.setList(refMacros);	
 	while ( (md = (MacroDefinition*)iter.getNext()) ) {
-	    boolean top;
+	    bool top;
     	    char s[1024];
 	    md->loadNetworkBody();
 	    Network *md_net = md->getNetwork();
@@ -6418,9 +6419,9 @@ boolean Network::printMacroReferences(FILE *f, boolean inline_define,
 	    ASSERT(name && path);
 
 	    if (topLevelMacros.isMember((void*)md)) 
-		top = TRUE;
+		top = true;
 	    else
-		top = FALSE;
+		top = false;
 
 	    if (inline_define) 
 		comment_type = "definition";
@@ -6463,12 +6464,12 @@ boolean Network::printMacroReferences(FILE *f, boolean inline_define,
 	    goto error; 
     }
 
-    return TRUE;
+    return true;
 
 error:
     if (l)
 	delete l;
-    return FALSE;
+    return false;
 }
 
 //
@@ -6497,7 +6498,7 @@ const char * Network::nameConflictExists (UniqueNameNode *passed_in, const char 
     // Do the loop over again in order to account for DXLOutputs.  They aren't
     // ClassUniqueNameNodes because they're DrivenNodes.
     //
-    cnl = this->makeClassifiedNodeList (ClassDXLOutputNode, FALSE);
+    cnl = this->makeClassifiedNodeList (ClassDXLOutputNode, false);
     if (cnl) {
 	ListIterator it(*cnl);
 	Node* existing;
@@ -6624,7 +6625,7 @@ void Network::showEditorMessages ()
 {
     if (!this->editorMessages) return ;
 
-    boolean notify = theDXApplication->appAllowsSavingNetFile(this); 
+    bool notify = theDXApplication->appAllowsSavingNetFile(this); 
 
     ListIterator it(*this->editorMessages);
     char* msg;
@@ -6639,15 +6640,15 @@ void Network::addDecoratorToList (void* e)
 {
     this->decoratorList.appendElement(e);
     this->setFileDirty();
-    if (this->readingNetwork == FALSE);
-	this->changeExistanceWork(NUL(Node*), TRUE);
+    if (this->readingNetwork == false);
+	this->changeExistanceWork(NUL(Node*), true);
 }
 
 void Network::removeDecoratorFromList (void* e)
 {
     this->decoratorList.removeElement(e);
     this->setFileDirty();
-    this->changeExistanceWork(NUL(Node*), FALSE);
+    this->changeExistanceWork(NUL(Node*), false);
 }
 
 void Network::copyGroupInfo (Node* src, Node* dest)
@@ -6680,7 +6681,7 @@ void Network::copyGroupInfo (Node* src, List* destList)
 // If any Node in the list has an arc to any Node not in the list,
 // then break the arc, replacing it with Transmitter,Receiver.
 //
-boolean Network::chopArks(List* selected, Dictionary* tmits, Dictionary* rcvrs)
+bool Network::chopArks(List* selected, Dictionary* tmits, Dictionary* rcvrs)
 {
 int i,j;
 
@@ -6700,7 +6701,7 @@ int i,j;
 	    Ark* a = (Ark*)conns->getElement(1);
 	    int pno;
 	    Node* src = a->getSourceNode(pno);
-	    if (selected->isMember(src) == FALSE) 
+	    if (selected->isMember(src) == false) 
 		this->chopInputArk (seln, i, tmits, rcvrs);
 	    delete conns;
 	}
@@ -6718,7 +6719,7 @@ int i,j;
 		Ark* a = (Ark*)conns->getElement(j);
 		int pno;
 		Node* dest = a->getDestinationNode(pno);
-		if (selected->isMember(dest) == FALSE) 
+		if (selected->isMember(dest) == false) 
 		    this->chopInputArk (dest, pno, tmits, rcvrs);
 	    }
 	    delete conns;
@@ -6730,10 +6731,10 @@ int i,j;
     while ( (n = (Node*)di.getNextDefinition()) )
        this->addNode(n);
 
-    return TRUE;
+    return true;
 }
 
-boolean Network::chopInputArk (Node* n, int pno, Dictionary* tmits, Dictionary* rcvrs)
+bool Network::chopInputArk (Node* n, int pno, Dictionary* tmits, Dictionary* rcvrs)
 {
 int vpex_src, vpey_src;
 int vpex_dest, vpey_dest;
@@ -6747,7 +6748,7 @@ int dummy;
     // likewise aren't visible so we don't chop them either.
     //
     if ((n->isA(ClassReceiverNode)) && (pno == 1))
-	return TRUE;
+	return true;
 
     NodeDefinition* tmit_nd = (NodeDefinition*)
 	theNodeDefinitionDictionary->findDefinition("Transmitter");
@@ -6758,7 +6759,7 @@ int dummy;
 
     ASSERT (pno <= n->getInputCount());
     List* orig = (List*)n->getInputArks(pno);
-    if ((orig == NUL(List*)) || (orig->getSize()==0)) return TRUE;
+    if ((orig == NUL(List*)) || (orig->getSize()==0)) return true;
     int acnt = orig->getSize();
     ASSERT (acnt <= 1);
 
@@ -6791,7 +6792,7 @@ int dummy;
 	    Ark* a;
 	    while ( (a = (Ark*)oi.getNext()) ) {
 		Node* dest = a->getDestinationNode(dummy);
-		if (dest->isA(ClassTransmitterNode) == FALSE) continue;
+		if (dest->isA(ClassTransmitterNode) == false) continue;
 		tmit = dest;
 		break;
 	    }
@@ -6836,7 +6837,7 @@ int dummy;
 
     new Ark (rcvr, 1, n, pno);
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -6845,7 +6846,7 @@ int dummy;
 //    the source of the arc is found by looking at a 
 //    matching transmitter.
 //
-boolean Network::replaceInputArks(List* selected, List* )
+bool Network::replaceInputArks(List* selected, List* )
 {
 
 //
@@ -6853,8 +6854,8 @@ boolean Network::replaceInputArks(List* selected, List* )
 //
 List nodes_to_delete;
 
-    if (!selected) return TRUE;
-    if (selected->getSize() == 0) return TRUE;
+    if (!selected) return true;
+    if (selected->getSize() == 0) return true;
     Dictionary erased_rcvrs;
     Dictionary* group_mgrs = this->getGroupManagers();
     GroupManager* gmgr = (GroupManager*)group_mgrs->findDefinition (PAGE_GROUP);
@@ -6866,7 +6867,7 @@ List nodes_to_delete;
 	//
 	// Pay attention only to Receiver nodes
 	//
-	if (no->isA(ClassReceiverNode) == FALSE) continue;
+	if (no->isA(ClassReceiverNode) == false) continue;
 	ReceiverNode* rcvr = (ReceiverNode*)no;
 
 	//
@@ -6887,13 +6888,13 @@ List nodes_to_delete;
 	const char* src_page = NUL(char*);
 	const char* rcvr_page = rcvr->getGroupName(gmgr_sym);
 	if (ultimate_src) src_page = ultimate_src->getGroupName(gmgr_sym);
-	boolean same_page = FALSE;
+	bool same_page = false;
 	if ((rcvr_page == NUL(char*)) && (src_page == NUL(char*)) && (ultimate_src)) {
-	    same_page = TRUE;
+	    same_page = true;
 	} else if ((rcvr_page) && (src_page) && (EqualString(rcvr_page,src_page))) {
-	    same_page = TRUE;
+	    same_page = true;
 	}
-	if (same_page == FALSE) {
+	if (same_page == false) {
 	    List* ia = (List*)rcvr->getInputArks(1);
 	    if ((!ia) || (ia->getSize() < 1)) continue;
 
@@ -6930,11 +6931,11 @@ List nodes_to_delete;
 	    // If the page group of ultimate source is the same as the
 	    // page group for dest, then we can reconnect.
 	    //
-	    boolean same_page = FALSE;
+	    bool same_page = false;
 	    if ((dest_page == NUL(char*)) && (src_page == NUL(char*))) {
-		same_page = TRUE;
+		same_page = true;
 	    } else if ((dest_page) && (src_page) && (EqualString(dest_page,src_page))) {
-		same_page = TRUE;
+		same_page = true;
 	    }
 	    if (same_page) 
 		delete_arcs.appendElement((void*)rcvr_arc);
@@ -6950,8 +6951,8 @@ List nodes_to_delete;
 	    Node* dest = a->getDestinationNode(out_pno);
 	    //Node* src = a->getSourceNode(in_pno);
 	    delete a;
-	    ASSERT (ultimate_src->isA(ClassTransmitterNode) == FALSE);
-	    ASSERT (dest->isA(ClassReceiverNode) == FALSE);
+	    ASSERT (ultimate_src->isA(ClassTransmitterNode) == false);
+	    ASSERT (dest->isA(ClassReceiverNode) == false);
 	    Ark* new_arc = new Ark (ultimate_src, pno, dest, out_pno);
 	    if (this->editor)
 		this->editor->notifyArk(new_arc);
@@ -6987,7 +6988,7 @@ List nodes_to_delete;
     int size = erased_rcvrs.getSize();
     List* tmits = NUL(List*);
     if (size > 0)
-	tmits = this->makeClassifiedNodeList(ClassTransmitterNode, FALSE);
+	tmits = this->makeClassifiedNodeList(ClassTransmitterNode, false);
     if (tmits) {
 	while (i<=size) {
 	    const char* key = erased_rcvrs.getStringKey(i);
@@ -7018,6 +7019,6 @@ List nodes_to_delete;
 	nodes_to_delete.clear();
     }
 
-    return TRUE;
+    return true;
 }
 

@@ -33,7 +33,7 @@ class RepeatingToggle : public ToggleButtonInterface
     // Constructor:
     //
     RepeatingToggle(char*    name,
-	      Command* command, boolean  state, const char *bubbleHelp = NULL);
+	      Command* command, bool  state, const char *bubbleHelp = NULL);
 
     //
     // Destructor:

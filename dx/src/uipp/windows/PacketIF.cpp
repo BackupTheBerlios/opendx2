@@ -9,9 +9,8 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-#if defined(_AIX41)
-#include <strings.h>
-#endif
+#include <windows.h>
+#include <winsock.h>
 
 #include "DXStrings.h"
 
@@ -303,7 +302,7 @@ void PacketIF::_sendPacket(int type, int packetId, const char *data, int length)
 //
 static int pif_count = 0;
 
-PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
+PacketIF::PacketIF(const char *host, int port, bool local, bool asClient)
 {
     ASSERT(host);
 
@@ -324,8 +323,8 @@ PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
 #endif
 
     this->socket = -1;
-    this->error = FALSE;
-    this->deferPacketHandling = FALSE;
+    this->error = false;
+    this->deferPacketHandling = false;
     this->stream = NULL;
 //    this->inputHandlerId = 0;
 //    this->workProcTimerId = 0;  
@@ -336,7 +335,7 @@ PacketIF::PacketIF(const char *host, int port, boolean local, boolean asClient)
 
     this->echoCallback = NULL;
     this->echoClientData = NULL;
-    this->endReceiving = TRUE;
+    this->endReceiving = true;
 
     this->linkHandler = NULL;
     this->stallingWorker = NULL;
@@ -522,11 +521,11 @@ void PacketIF::removeWorkProc()
     //    this->workProcId = 0;
     //}
 }
-boolean PacketIF::sendQueuedPackets()
+bool PacketIF::sendQueuedPackets()
 {
     if (this->output_queue.getSize() == 0) {
 	this->output_queue_wpid = 0;
-	return TRUE;// Yes, remove me from the list
+	return true;// Yes, remove me from the list
     }
 
     QueuedPacket* qp = (QueuedPacket*)this->output_queue.getElement(1);
@@ -534,7 +533,7 @@ boolean PacketIF::sendQueuedPackets()
     qp->send(this);
     delete qp;
 
-    return FALSE; //No, don't remove me.  Keep on calling me.
+    return false; //No, don't remove me.  Keep on calling me.
 }
 
 //Boolean PacketIF_QueuedPacketWP(XtPointer clientData)
@@ -558,13 +557,13 @@ boolean PacketIF::sendQueuedPackets()
 //	ASSERT(p->deferPacketHandling);
 //	if (p->stallingWorker(p->stallingWorkerData)) {
 //	    p->stallingWorker = NULL;
-//	    p->deferPacketHandling = FALSE;
-//	    p->packetReceive(FALSE); // Process read()'d but unhandled packets 
+//	    p->deferPacketHandling = false;
+//	    p->packetReceive(false); // Process read()'d but unhandled packets 
 //	} 
 //    } else
-//	p->deferPacketHandling = FALSE;
+//	p->deferPacketHandling = false;
 //
-//    boolean r = !p->deferPacketHandling;
+//    bool r = !p->deferPacketHandling;
 //
 //    if (r)
 //        p->workProcId = 0;   // Xt will be removing it.
@@ -656,11 +655,11 @@ boolean PacketIF::sendQueuedPackets()
 //    if (p->error)
 //    {
 //	p->handleStreamError(errno,"(XtInputCallbackProc)PacketIF_ProcessSocketInputICB"); 
-//	p->deferPacketHandling = FALSE;
+//	p->deferPacketHandling = false;
 //    }
 //    else
 //    {
-//	p->deferPacketHandling = TRUE;
+//	p->deferPacketHandling = true;
 //	p->installWorkProc();
 //    }
 //}
@@ -704,7 +703,7 @@ PacketIF::setHandler(int                     type,
     }
     else
     {
-	PacketHandler *h = new PacketHandler(TRUE,
+	PacketHandler *h = new PacketHandler(true,
 						 type,
 						 0,
 						 callback,
@@ -720,7 +719,7 @@ PacketIF::setHandler(int                     type,
     }
 }
 
-boolean PacketIF::isSocketInputReady()
+bool PacketIF::isSocketInputReady()
 {
     //
     // If messages are waiting to be read from the socket, then
@@ -730,11 +729,11 @@ boolean PacketIF::isSocketInputReady()
 	    u_long rc;
 
 	if (ioctlsocket(this->socket, FIONREAD, (u_long *) &rc)<0)
-		return FALSE;
+		return false;
 	else if (rc > 0)
-		return FALSE;
+		return false;
 	else
-		return TRUE;
+		return true;
 #else
     int fd = fileno(this->stream);
     fd_set read_fds;
@@ -865,7 +864,7 @@ void PacketIF::handleStreamError(int errnum, const char *msg)
     else
 	fprintf(stderr, "Connection to the server has been broken.\n");
 
-    this->error = TRUE;
+    this->error = true;
 
     if (errnum != EPIPE && errnum != 0) {
 	errno = errnum;
@@ -1130,7 +1129,7 @@ PacketIF::parsePacket()
 /*****************************************************************************/
 
 void
-PacketIF::packetReceive(boolean readSocket)
+PacketIF::packetReceive(bool readSocket)
 {
     int  buflen, length;
     int  i;
@@ -1146,7 +1145,7 @@ PacketIF::packetReceive(boolean readSocket)
 	buflen = read(this->socket, buffer, 4096);
 	if (buflen <= 0)
 	{
-	    this->error = TRUE;
+	    this->error = true;
 	    return;
 	}
 	buffer[buflen] = NUL(char);
@@ -1265,11 +1264,11 @@ PacketIFCallback PacketIF::getEchoCallback(void **clientData)
     return this->echoCallback;
 }
 
-boolean PacketIF::receiveContinuous(void **data)
+bool PacketIF::receiveContinuous(void **data)
 {
-    boolean noerr = TRUE;
+    bool noerr = true;
 
-    this->endReceiving = FALSE;
+    this->endReceiving = false;
     this->endReceiveData = NULL;
     while (!this->endReceiving)
     {
@@ -1278,7 +1277,7 @@ boolean PacketIF::receiveContinuous(void **data)
 	if (this->error)
 	{
 	    this->handleStreamError(errno,"PacketIF::receiveContinuous"); 
-	    noerr = FALSE;
+	    noerr = false;
 	    break;
 	}
     }
@@ -1289,7 +1288,7 @@ boolean PacketIF::receiveContinuous(void **data)
 
 void PacketIF::endReceiveContinuous(void *data)
 {
-    this->endReceiving = TRUE;
+    this->endReceiving = true;
     this->endReceiveData = data;
 }
 
@@ -1407,7 +1406,7 @@ setSockBufSize(int sock)
 //
 //
 //
-void PacketIF::connectAsClient(const char *host, int port, boolean local) 
+void PacketIF::connectAsClient(const char *host, int port, bool local) 
 {
     struct sockaddr_in server;
 #if defined(HAVE_SYS_UN_H)
@@ -1433,7 +1432,7 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
 	this->socket = ::socket(AF_UNIX, SOCK_STREAM, 0);
 	if (this->socket < 0)
 	{
-	    this->error = TRUE;
+	    this->error = true;
 	    return;
 	}
 	
@@ -1449,7 +1448,7 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
 	     if (! setSockBufSize(this->socket))
 	     {
 		close(this->socket);
-		this->error = TRUE;
+		this->error = true;
 	     }
 	     return;
 	}
@@ -1459,7 +1458,7 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
 	    if (strcmp(host, "unix") == 0)
 	    {
 		this->socket = -1;
-		this->error = TRUE;
+		this->error = true;
 		return;
 	    }
 	}
@@ -1497,7 +1496,7 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
 	    hostp = gethostbyname((char*)host);
 	    if (hostp == NUL(struct hostent*))
 	    {
-		this->error = TRUE;
+		this->error = true;
 		return;
 	    }
 	    memcpy((void*)&server.sin_addr, hostp->h_addr, hostp->h_length);
@@ -1506,7 +1505,7 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
 	hostp = gethostbyname((char*)host);
 	if (hostp == NUL(struct hostent*))
 	{
-	    this->error = TRUE;
+	    this->error = true;
 	    return;
 	}
 	memcpy((void*)&server.sin_addr, hostp->h_addr, hostp->h_length);
@@ -1516,7 +1515,7 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
     this->socket = ::socket(AF_INET, SOCK_STREAM, 0);
     if (this->socket < 0)
     {
-	this->error = TRUE;
+	this->error = true;
 	return;
     }
 
@@ -1527,26 +1526,26 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
     {
 	close(this->socket);
 	this->socket = -1;
-	this->error = TRUE;
+	this->error = true;
 	return;
     }
 
     if (! setSockBufSize(this->socket))
     {
 	close(this->socket);
-	this->error = TRUE;
+	this->error = true;
     }
 
 #if  defined(DXD_IBM_OS2_SOCKETS)
     int dontblock = 1;
     if (ioctl(this->socket, FIONBIO, (char *) &dontblock, sizeof(dontblock))<0)
     {
-	this->error = TRUE;
+	this->error = true;
 	return;
     }
     if (select((int *)&this->socket,0,1,0,-1)<=0)
     {
-      this->error = TRUE;
+      this->error = true;
       return;
     }
 #endif
@@ -1793,9 +1792,9 @@ error:
         close (sock);
 
     if (fd < 0) {
-	this->error = TRUE;
+	this->error = true;
     } else {
-	this->error = FALSE; 
+	this->error = false; 
 	this->socket = fd;
     }
     return; 
@@ -1825,28 +1824,28 @@ void PacketIF::removeInputHandler()
 //
 // Return true if packet handling is currently stalled.
 //
-boolean PacketIF::isPacketHandlingStalled()
+bool PacketIF::isPacketHandlingStalled()
 {
-    return this->stallingWorker == NULL ? FALSE : TRUE;
+    return this->stallingWorker == NULL ? false : true;
 }
 //
 // Defer handing of messages until the function h is called (periodically) 
-// and returns TRUE.  At that point handling is reenabled.
+// and returns true.  At that point handling is reenabled.
 // If stalling was not already enabled and there are no other problems,
-// then we return TRUE, otherwise FALSE. 
+// then we return true, otherwise false. 
 // Use isPacketHandlingStalled() to determine if handling is currently stalled.
 //
-boolean PacketIF::stallPacketHandling(StallingHandler h, void *data)
+bool PacketIF::stallPacketHandling(StallingHandler h, void *data)
 {
     if (this->isPacketHandlingStalled())
-	return FALSE;
+	return false;
 
-    this->deferPacketHandling = TRUE;
+    this->deferPacketHandling = true;
 
     this->stallingWorker = h;
     this->stallingWorkerData = data;
 
-    return TRUE;
+    return true;
 }
 
 #if defined(USING_WINSOCKS)

@@ -43,22 +43,22 @@ void NodeList::clear()
 }
 
 
-boolean NodeList::insertElement(const void* element, const int position)
+bool NodeList::insertElement(const void* element, const int position)
 {
-    boolean status = this->List::insertElement(element, position);
-    if (status == FALSE) return FALSE;
+    bool status = this->List::insertElement(element, position);
+    if (status == false) return false;
 
     //
     // If the Node wants special treatment, then add him
     //
     Node* n = (Node*)element;
-    if (n->needsFastSort() == TRUE) {
+    if (n->needsFastSort() == true) {
 	List* nl = this->getSubList(n);
-	ASSERT (nl->isMember((void*)n) == FALSE);
+	ASSERT (nl->isMember((void*)n) == false);
 	nl->appendElement((void*)n);
     }
 
-    return TRUE;
+    return true;
 }
 
 List* NodeList::getSubList(Node* n)
@@ -73,23 +73,23 @@ List* NodeList::getSubList(Node* n)
     return (List*)def;
 }
 
-boolean NodeList::replaceElement(const void* element, const int position)
+bool NodeList::replaceElement(const void* element, const int position)
 {
     void* old_element = (void*)this->getElement(position);
-    boolean status = this->List::replaceElement(element, position);
-    if (status == FALSE) return FALSE;
+    bool status = this->List::replaceElement(element, position);
+    if (status == false) return false;
 
     Node* n = (Node*)old_element;
-    if (n->needsFastSort() == TRUE) {
+    if (n->needsFastSort() == true) {
 	List* nl = getSubList(n);
-	ASSERT (nl->isMember((void*)n) == TRUE);
+	ASSERT (nl->isMember((void*)n) == true);
 	nl->removeElement((void*)n);
     }
 
     n = (Node*)element;
-    if (n->needsFastSort() == TRUE) {
+    if (n->needsFastSort() == true) {
 	List* nl = getSubList(n);
-	ASSERT (nl->isMember((void*)n) == FALSE);
+	ASSERT (nl->isMember((void*)n) == false);
 	nl->appendElement((void*)n);
     }
 
@@ -97,16 +97,16 @@ boolean NodeList::replaceElement(const void* element, const int position)
 }
 
 
-boolean NodeList::deleteElement(const int position)
+bool NodeList::deleteElement(const int position)
 {
     void* old_element = (void*)this->getElement(position);
-    boolean status = this->List::deleteElement(position);
-    if (status == FALSE) return FALSE;
+    bool status = this->List::deleteElement(position);
+    if (status == false) return false;
 
     Node* n = (Node*)old_element;
-    if (n->needsFastSort() == TRUE) {
+    if (n->needsFastSort() == true) {
 	List* nl = getSubList(n);
-	ASSERT(nl->isMember((void*)n) == TRUE);
+	ASSERT(nl->isMember((void*)n) == true);
 	nl->removeElement((void*)n);
     }
 
@@ -135,7 +135,7 @@ List* NodeList::makeClassifiedNodeList(const char* classname)
     int i;
     for (i=1; i<=size; i++) {
 	const char* cn = this->nodeDict.getStringKey(i);
-	if (EqualString(cn, classname) == FALSE) continue;
+	if (EqualString(cn, classname) == false) continue;
 
 	List* nl = (List*)this->nodeDict.getDefinition(i);
 	return nl->dup();
@@ -144,7 +144,7 @@ List* NodeList::makeClassifiedNodeList(const char* classname)
     Node* n;
     List* l = NUL(List*);
     while ( (n = (Node*)it.getNext()) ) {
-	if (EqualString(classname, n->getClassName()) == TRUE) {
+	if (EqualString(classname, n->getClassName()) == true) {
 	    if (!l) l = new List;
 	    l->appendElement((void*)n);
 	}

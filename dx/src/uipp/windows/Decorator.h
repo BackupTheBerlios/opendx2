@@ -43,7 +43,7 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
     // 
     DecoratorInfo* dndInfo;
 
-    static 	boolean 	 DecoratorClassInitialized;
+    static 	bool 	 DecoratorClassInitialized;
     static      const char *	 ColorNames[];
     static      const char *	 ColorValues[];
 
@@ -83,14 +83,14 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
     // functionality.  This makes sense for placing arbitrary widgets 
     // which may/may not provide a hunk of data.
     //
- //   virtual boolean decodeDragType (int, char *, XtPointer *, unsigned long *, long )
-	//{ return FALSE; }
+ //   virtual bool decodeDragType (int, char *, XtPointer *, unsigned long *, long )
+	//{ return false; }
     virtual Dictionary* getDragDictionary() { return NUL(Dictionary*); }
  
     //
     // Constructor
     //
-    Decorator(void *wClass, const char * name, boolean developerStyle = TRUE);
+    Decorator(void *wClass, const char * name, bool developerStyle = true);
 
     //
     // When decorators are in the vpe we always want them to get a new size when
@@ -99,7 +99,7 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
     // be equal, so I don't want to keep changing widths for them.  That's never
     // the case in the vpe.
     //
-    virtual boolean resizeOnUpdate() { return FALSE; }
+    virtual bool resizeOnUpdate() { return false; }
 
     //
     // this is for java support. It chops strings up into their individual
@@ -115,12 +115,12 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
   public:
     virtual   void	     openDefaultWindow();
     virtual   Dialog*	     getDialog() { return NUL(Dialog*); }
-    virtual   void	     setAppearance (boolean developerStyle);
+    virtual   void	     setAppearance (bool developerStyle);
 	      void           setStyle (DecoratorStyle *ds) {this->style = ds; }
 	      DecoratorStyle *getStyle () { return this->style; }
-    virtual   boolean	     hasDefaultWindow() { return FALSE; }
+    virtual   bool	     hasDefaultWindow() { return false; }
     virtual   void	     uncreateDecorator();
-    virtual   void	     setSelected (boolean state);
+    virtual   void	     setSelected (bool state);
 
 
     // G E O M E T R Y   G E O M E T R Y   G E O M E T R Y   
@@ -132,7 +132,7 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
 
     // D Y N A M I C   R E S O U R C E S
     // D Y N A M I C   R E S O U R C E S
-    virtual boolean parseResourceComment (const char *comment,
+    virtual bool parseResourceComment (const char *comment,
     const   char    *filename, int line);
     virtual void    setResource (const char *, const char *);
     const char **getSupportedColorNames() { return Decorator::ColorNames; }
@@ -140,19 +140,19 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
 
     // C O N T R O L   P A N E L   C O M M E N T   F U N C T I O N S
     // C O N T R O L   P A N E L   C O M M E N T   F U N C T I O N S
-    virtual   boolean	     printComment (FILE *f);
-    virtual   boolean	     parseComment (const char *comment, 
+    virtual   bool	     printComment (FILE *f);
+    virtual   bool	     parseComment (const char *comment, 
 					      const char *filename, int line);
 
     virtual   Network*       getNetwork();
               void           setDecoratorInfo(DecoratorInfo *); 
               DecoratorInfo* getDecoratorInfo() { return this->dndInfo; }
-              boolean        createNetFiles (Network*, FILE*, char *);
+              bool        createNetFiles (Network*, FILE*, char *);
 
     // J A V A     J A V A     J A V A     J A V A     J A V A
     // J A V A     J A V A     J A V A     J A V A     J A V A
-    virtual boolean printAsJava (FILE*, const char*, int) { return TRUE; }
-    virtual boolean printJavaResources (FILE*, const char*, const char*);
+    virtual bool printAsJava (FILE*, const char*, int) { return true; }
+    virtual bool printJavaResources (FILE*, const char*, const char*);
 
 
     // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
@@ -162,7 +162,7 @@ class Decorator : public WorkSpaceComponent, public DXDragSource
     virtual   void manage(WorkSpace *workSpace);
     ~Decorator(); 
     const    char* getClassName() { return ClassDecorator; }
-    virtual  boolean isA(Symbol classname);
+    virtual  bool isA(Symbol classname);
 };
 
 

@@ -26,7 +26,7 @@
 
 class PacketIF;
 class CmdEntry;
-//typedef boolean (*CmdEntryFunction)(const char *, int, void *);
+//typedef bool (*CmdEntryFunction)(const char *, int, void *);
 
 class LinkHandler : public Base
 {
@@ -54,7 +54,7 @@ class LinkHandler : public Base
 	void addSubCommand(const char *, const char *, CmdEntryFunction f);
 	void addSubCommand(const char *, const char *, Command *);
 	
-	boolean executeLinkCommand(const char *, int);
+	bool executeLinkCommand(const char *, int);
 
 	PacketIF *getPacketIF() {return this->packetIF;}
 

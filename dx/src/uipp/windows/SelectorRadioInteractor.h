@@ -50,7 +50,7 @@ class SelectorRadioInteractor : public Interactor
     //Widget      toggleRadio;
     List	toggleWidgets;
 
-    static boolean SelectorRadioInteractorClassInitialized;
+    static bool SelectorRadioInteractorClassInitialized;
 
     //static String DefaultResources[];
 
@@ -64,7 +64,7 @@ class SelectorRadioInteractor : public Interactor
 		//{ ASSERT(i>0); 
 		//  return (Widget)this->toggleWidgets.getElement(i); 
 		//}
-  //  boolean appendOptionWidget(Widget w) 
+  //  bool appendOptionWidget(Widget w) 
 		//{ return this->toggleWidgets.appendElement((const void*) w); }
 
     //
@@ -117,7 +117,7 @@ class SelectorRadioInteractor : public Interactor
     // Make sure the attributes match the resources for the widgets. 
     //
     void handleInteractivePartStateChange(InteractorInstance *src_ii,
-						boolean major_change);
+						bool major_change);
 
     //
     // One time initialize for the class.

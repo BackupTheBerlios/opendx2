@@ -42,18 +42,18 @@ class TextSelector: public UIComponent {
     //Widget		diag_button;
     //Widget		popupMenu;
     //Widget		popupList;
-    boolean		is_grabbed;
+    bool		is_grabbed;
     //XtActionHookId	action_hook;
     int			starting_button;
     //Widget		vsb, hsb;
     //Widget		textField;
-    boolean		is_button_release_grabbed;
+    bool		is_button_release_grabbed;
     //XEvent*		old_event;
     //XtWorkProcId	remove_hook_wpid;
     //XtWorkProcId	auto_fill_wpid;
 
     //static 	String		DefaultResources[];
-    static	boolean		ClassInitialized;
+    static	bool		ClassInitialized;
     static	TextSelector*	GrabOwner;
 
     List	item_list;
@@ -96,15 +96,15 @@ class TextSelector: public UIComponent {
     //
     //static char *GetTextWidgetToken(Widget textWidget);
 
-    //void enableModifyCB(boolean enab = TRUE);
-    //virtual boolean autoFill(boolean any_match=FALSE);
-    //virtual boolean autoFill(boolean any_match, boolean& unique_match);
+    //void enableModifyCB(bool enab = true);
+    //virtual bool autoFill(bool any_match=false);
+    //virtual bool autoFill(bool any_match, bool& unique_match);
 
     //Widget getTextField() { return this->textField; }
 
-    boolean case_sensitive;
-    boolean equalString(const char*, const char*);
-    boolean equalSubstring(const char*, const char*, int n);
+    bool case_sensitive;
+    bool equalString(const char*, const char*);
+    bool equalSubstring(const char*, const char*, int n);
 
   public:
 
@@ -112,7 +112,7 @@ class TextSelector: public UIComponent {
 
     ~TextSelector();
 
-    //void createTextSelector (Widget,XtCallbackProc,XtPointer,boolean use_button=TRUE);
+    //void createTextSelector (Widget,XtCallbackProc,XtPointer,bool use_button=true);
     void setItems (char* items[], int nitems);
     void setSelectedItem (int );
     int  getSelectedItem(char* item = NUL(char*));
@@ -124,7 +124,7 @@ class TextSelector: public UIComponent {
     //
     //void setMenuColors (Arg[], int);
 
-    void setCaseSensitive(boolean cs=TRUE) { this->case_sensitive = cs; }
+    void setCaseSensitive(bool cs=true) { this->case_sensitive = cs; }
 
     //
     // Returns a pointer to the class name.

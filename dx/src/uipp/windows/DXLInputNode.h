@@ -36,7 +36,7 @@ class DXLInputNode : public UniqueNameNode
     //
     // Private member data:
     //
-    static boolean Initializing;
+    static bool Initializing;
 
   protected:
     //
@@ -44,7 +44,7 @@ class DXLInputNode : public UniqueNameNode
     //
     virtual char *netNodeString(const char *prefix);
 
-    virtual boolean initialize();
+    virtual bool initialize();
 
     virtual char        *valuesString(const char *prefix);
 
@@ -59,13 +59,13 @@ class DXLInputNode : public UniqueNameNode
     //
     ~DXLInputNode();
 
-    virtual boolean     sendValues(boolean     ignoreDirty = TRUE);
+    virtual bool     sendValues(bool     ignoreDirty = true);
 
     //
     // This is the same as the super-class except that we restrict the
     // label with this->verifyRestrictedLabel().
     //
-    virtual boolean setLabelString(const char *label);
+    virtual bool setLabelString(const char *label);
 
     //
     // In addition to the superclass' work, make a new label string if our
@@ -76,13 +76,13 @@ class DXLInputNode : public UniqueNameNode
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Java Beans
     //
-    virtual boolean printAsBean(FILE*);
-    virtual boolean printAsBeanInitCall(FILE*);
+    virtual bool printAsBean(FILE*);
+    virtual bool printAsBeanInitCall(FILE*);
 
 
     //

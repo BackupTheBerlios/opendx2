@@ -11,7 +11,7 @@
 
 #include "ImageFormatPSGreyEnc.h"
 
-boolean ImageFormatPSGreyEnc::ClassInitialized = FALSE;
+bool ImageFormatPSGreyEnc::ClassInitialized = false;
 
 //String ImageFormatPSGreyEnc::DefaultResources[] = {
 //    NUL(char*)
@@ -38,15 +38,15 @@ void ImageFormatPSGreyEnc::initialize()
 	//    PostScriptImageFormat::DefaultResources);
 	//this->setDefaultResources (theApplication->getRootWidget(),
 	//    ImageFormatPSGreyEnc::DefaultResources);
-	ImageFormatPSGreyEnc::ClassInitialized = TRUE;
+	ImageFormatPSGreyEnc::ClassInitialized = true;
     }
 }
 
-boolean ImageFormatPSGreyEnc::isA (Symbol classname)
+bool ImageFormatPSGreyEnc::isA (Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassImageFormatPSGreyEnc);
     if (s == classname)
-        return TRUE;
+        return true;
     else
         return PostScriptImageFormat::isA(classname);
 }

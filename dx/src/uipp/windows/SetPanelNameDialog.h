@@ -34,7 +34,7 @@ class SetPanelNameDialog : public SetNameDialog
     // Private member data:
     //
     ControlPanel	*controlPanel;
-    static boolean 	ClassInitialized;
+    static bool 	ClassInitialized;
 
   protected:
     //
@@ -44,7 +44,7 @@ class SetPanelNameDialog : public SetNameDialog
     //static String DefaultResources[];
 
     virtual const char *getText();
-    virtual boolean saveText(const char *s);
+    virtual bool saveText(const char *s);
 
     //
     // Install the default resources for this class and then call the

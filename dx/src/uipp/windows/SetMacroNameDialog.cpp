@@ -21,7 +21,7 @@
 #include "NodeDefinition.h"
 #include "DictionaryIterator.h"
 
-boolean SetMacroNameDialog::ClassInitialized = FALSE;
+bool SetMacroNameDialog::ClassInitialized = false;
 
 //String SetMacroNameDialog::DefaultResources[] =
 //{
@@ -52,7 +52,7 @@ SetMacroNameDialog::SetMacroNameDialog(Network *n):
     this->network = n;
     if (NOT SetMacroNameDialog::ClassInitialized)
     {
-        SetMacroNameDialog::ClassInitialized = TRUE;
+        SetMacroNameDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -73,11 +73,11 @@ SetMacroNameDialog::~SetMacroNameDialog()
 
 //
 // Check the given name to see if it is a valid macro name.
-// If realMacro is TRUE, then don't allow the name to be 'main'.
-// If it is return TRUE, othewise return FALSE and issue an error
+// If realMacro is true, then don't allow the name to be 'main'.
+// If it is return true, othewise return false and issue an error
 // message.
 //
-boolean SetMacroNameDialog::verifyMacroName(const char *name, boolean realMacro)
+bool SetMacroNameDialog::verifyMacroName(const char *name, bool realMacro)
 {
     int i = 0;
     if (realMacro && IsToken(name,"main",i) &&
@@ -85,7 +85,7 @@ boolean SetMacroNameDialog::verifyMacroName(const char *name, boolean realMacro)
     {
 	ModalErrorMessage(
 		"Macro name cannot be \"main\".");
-	return FALSE;
+	return false;
     }
     i = 0;
     if (!IsRestrictedIdentifier(name, i) )
@@ -93,7 +93,7 @@ boolean SetMacroNameDialog::verifyMacroName(const char *name, boolean realMacro)
 	ModalErrorMessage(
 		"Macro name `%s' must start with a letter and consist "
 		     "of only letters and numbers", name);
-	return FALSE;
+	return false;
     }
     SkipWhiteSpace(name, i);
     if (name[i] != '\0')
@@ -101,12 +101,12 @@ boolean SetMacroNameDialog::verifyMacroName(const char *name, boolean realMacro)
 	ModalErrorMessage(
 		"Macro name `%s' must start with a letter and consist "
 		     "of only letters and numbers", name);
-	return FALSE;
+	return false;
     }
 
     if (IsReservedScriptingWord(name)) {
         ErrorMessage("Macro name \"%s\" is a reserved word", name);
-        return FALSE;
+        return false;
     }
 
 
@@ -123,7 +123,7 @@ boolean SetMacroNameDialog::verifyMacroName(const char *name, boolean realMacro)
                     "Macro name `%s' is the name of a Data Explorer module.\n"
                     "Macro names must not be the same as a module name.",
                          name);
-                return FALSE;
+                return false;
             } 
 	    else if (this->network->getDefinition() != 
 				(MacroDefinition*)nd) // && is Macro 
@@ -131,12 +131,12 @@ boolean SetMacroNameDialog::verifyMacroName(const char *name, boolean realMacro)
                 ModalErrorMessage(
                     "Macro name `%s' is the name of an already loaded macro.",
                          name);
-                return FALSE;
+                return false;
             }
 	}
     }
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -165,7 +165,7 @@ boolean SetMacroNameDialog::verifyMacroName(const char *name, boolean realMacro)
 //
 //}
 
-boolean SetMacroNameDialog::okCallback(Dialog *d)
+bool SetMacroNameDialog::okCallback(Dialog *d)
 {
     //char *name = SetMacroNameDialog::GetTextWidgetToken(this->macroName);
 
@@ -176,7 +176,7 @@ boolean SetMacroNameDialog::okCallback(Dialog *d)
  //   if (!EqualString(name, this->network->getNameString())) {
 	//if (!this->verifyMacroName(name, this->network->isMacro())) {
 	//    delete name;
-	//    return FALSE;
+	//    return false;
 	//}
 
 	//this->network->setName(name);
@@ -325,7 +325,7 @@ void SetMacroNameDialog::manage()
     //XmTextSetString(this->macroName, (char *)n->getNameString());
     //XmTextSetString(this->description, (char *)n->getDescriptionString());
 
-    //boolean sens = (this->network == theDXApplication->network);
+    //bool sens = (this->network == theDXApplication->network);
     //Pixel color = sens ? theDXApplication->getForeground()
 		  //     : theDXApplication->getInsensitiveColor();
     //SetTextSensitive(this->macroName, sens, color); 

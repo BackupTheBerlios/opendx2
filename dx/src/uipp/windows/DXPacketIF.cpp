@@ -28,7 +28,7 @@
 #include <errno.h>
 
 DXPacketIF::DXPacketIF(const char *server, int port, int local) 
-			: PacketIF(server, port, local, TRUE) 
+			: PacketIF(server, port, local, true) 
 {
     this->id = 0;
 }
@@ -351,7 +351,7 @@ DXPacketIF::setWaiter(int                     type,
 {
     PacketHandler* p;
 
-    p = new PacketHandler(FALSE, type, number, callback, clientData);
+    p = new PacketHandler(false, type, number, callback, clientData);
     this->handlers.insertElement((void*)p, 1);
 }
 

@@ -48,11 +48,11 @@ class WorkSpacePage : public Base
   
     const char* getClassName() { return ClassWorkSpacePage; }
 
-    virtual boolean isA (Symbol classname) {
+    virtual bool isA (Symbol classname) {
 	Symbol s = theSymbolManager->registerSymbol(ClassWorkSpacePage);
 	return (s == classname);
     }
-    boolean isA (const char* classname) {
+    bool isA (const char* classname) {
 	Symbol s = theSymbolManager->registerSymbol(classname);
 	return this->isA(s);
     }

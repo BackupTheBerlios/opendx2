@@ -39,7 +39,7 @@ class TickLabel : public UIComponent
 {
   private:
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String DefaultResources[];
 
     //Widget 	number;
@@ -50,8 +50,8 @@ class TickLabel : public UIComponent
     int 	dirty;
     double 	dval;
     int 	pos;
-    boolean 	selected;
-    boolean	ignoreVerifyCallback;
+    bool 	selected;
+    bool	ignoreVerifyCallback;
 
     TickSelectCB tscb;
     void*	clientData;
@@ -69,16 +69,16 @@ class TickLabel : public UIComponent
     void setNumber() { this->dirty&= ~DIRTY_TICK_NUMBER; };
     void setNumber (double dval);
     double getNumber() { return this->dval; };
-    void setSelected (boolean set = TRUE, boolean callCallback = TRUE);
-    boolean isSelected () { return this->selected; };
+    void setSelected (bool set = true, bool callCallback = true);
+    bool isSelected () { return this->selected; };
 
     void setText () { this->dirty&= ~DIRTY_TICK_TEXT; };
     void setText (const char *str);
     const char *getText();
 
-    boolean isModified() { return (boolean)this->dirty; };
-    boolean isNumberModified() { return this->dirty & DIRTY_TICK_NUMBER; };
-    boolean isTextModified() { return this->dirty & DIRTY_TICK_TEXT; };
+    bool isModified() { return (bool)this->dirty; };
+    bool isNumberModified() { return this->dirty & DIRTY_TICK_NUMBER; };
+    bool isTextModified() { return this->dirty & DIRTY_TICK_TEXT; };
 
     virtual void initialize();
     void createLine();

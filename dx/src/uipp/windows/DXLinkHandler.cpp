@@ -48,7 +48,7 @@
 #define QUALIFIER_TITLE  2
 
 static List *MakeQualifiedNodeList(const char *classname, char *p, 
-					boolean includeSubclasses)
+					bool includeSubclasses)
 {
     int   qualifierType;
     char *qualifier=NULL;
@@ -144,13 +144,13 @@ static List *MakeQualifiedNodeList(const char *classname, char *p,
     return result;
 }
 
-boolean DXLinkHandler::OpenColormapEditor(const char *c, int id, void *va)
+bool DXLinkHandler::OpenColormapEditor(const char *c, int id, void *va)
 {
     char *p;
 
     for (p = (char *)c; p && *p && isspace(*p); p++);
 
-    List *list = MakeQualifiedNodeList(ClassColormapNode, p, FALSE);
+    List *list = MakeQualifiedNodeList(ClassColormapNode, p, false);
 
     if (!list)
     {
@@ -158,7 +158,7 @@ boolean DXLinkHandler::OpenColormapEditor(const char *c, int id, void *va)
 	char buffer[1024];
 	sprintf(buffer,"OpenColormapEditor: invalid qualifier (%s)", p);
 	a->sendPacket(DXPacketIF::PKTERROR,id,buffer);
-	return FALSE;
+	return false;
     }
 
     ListIterator it(*list);
@@ -174,16 +174,16 @@ boolean DXLinkHandler::OpenColormapEditor(const char *c, int id, void *va)
 
     delete list;
 							
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::CloseColormapEditor(const char *c, int id, void *va)
+bool DXLinkHandler::CloseColormapEditor(const char *c, int id, void *va)
 {
     char *p;
 
     for (p = (char *)c; p && *p && isspace(*p); p++);
 
-    List *list = MakeQualifiedNodeList(ClassColormapNode, p, FALSE);
+    List *list = MakeQualifiedNodeList(ClassColormapNode, p, false);
 
     if (!list)
     {
@@ -191,7 +191,7 @@ boolean DXLinkHandler::CloseColormapEditor(const char *c, int id, void *va)
 	char buffer[1024];
 	sprintf(buffer,"CloseColormapEditor: invalid qualifier (%s)", p);
 	a->sendPacket(DXPacketIF::PKTERROR,id,buffer);
-	return FALSE;
+	return false;
     }
 
     ListIterator it(*list);
@@ -206,27 +206,27 @@ boolean DXLinkHandler::CloseColormapEditor(const char *c, int id, void *va)
 
     delete list;
 							
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::SetHWRendering(const char *c, int id, void *va)
+bool DXLinkHandler::SetHWRendering(const char *c, int id, void *va)
 {
     DXLinkHandler *dxlh = (DXLinkHandler*)va;
-    return dxlh->setRenderMode(c, id,FALSE);
+    return dxlh->setRenderMode(c, id,false);
 }
-boolean DXLinkHandler::SetSWRendering(const char *c, int id, void *va)
+bool DXLinkHandler::SetSWRendering(const char *c, int id, void *va)
 {
     DXLinkHandler *dxlh = (DXLinkHandler*)va;
-    return dxlh->setRenderMode(c, id, TRUE);
+    return dxlh->setRenderMode(c, id, true);
 }
-boolean DXLinkHandler::setRenderMode(const char *msg, int id, boolean swmode)
+bool DXLinkHandler::setRenderMode(const char *msg, int id, bool swmode)
 {
     char *p;
     ImageNode *node;
 
     for (p = (char *)msg; p && *p && isspace(*p); p++);
 
-    List *list = MakeQualifiedNodeList(ClassImageNode, p, FALSE);
+    List *list = MakeQualifiedNodeList(ClassImageNode, p, false);
 
     if (! list)
     {
@@ -234,7 +234,7 @@ boolean DXLinkHandler::setRenderMode(const char *msg, int id, boolean swmode)
 	sprintf(buffer, "SetRenderMode: "
 			"unable to set Image render mode (%s)", msg);
 	this->sendPacket(DXPacketIF::PKTERROR,id,buffer);
-	return FALSE;
+	return false;
     }
 
     ListIterator it(*list);
@@ -245,18 +245,18 @@ boolean DXLinkHandler::setRenderMode(const char *msg, int id, boolean swmode)
 	    win->setSoftware(swmode);
     }
     delete list;
-    return TRUE;
+    return true;
 
 }
 
-boolean DXLinkHandler::OpenImage(const char *c, int id, void *va)
+bool DXLinkHandler::OpenImage(const char *c, int id, void *va)
 {
     char *p;
     Node *node;
 
     for (p = (char *)c; p && *p && isspace(*p); p++);
 
-    List *list = MakeQualifiedNodeList(ClassDisplayNode, p, TRUE);
+    List *list = MakeQualifiedNodeList(ClassDisplayNode, p, true);
 
     if (! list)
     {
@@ -264,7 +264,7 @@ boolean DXLinkHandler::OpenImage(const char *c, int id, void *va)
 	char buffer[1024];
 	sprintf(buffer, "OpenImage: unable to open image (%s)", c);
 	a->sendPacket(DXPacketIF::PKTERROR,id,buffer);
-	return FALSE;
+	return false;
     }
 
     ListIterator it(*list);
@@ -280,17 +280,17 @@ boolean DXLinkHandler::OpenImage(const char *c, int id, void *va)
 
     delete list;
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::CloseImage(const char *c, int id, void *va)
+bool DXLinkHandler::CloseImage(const char *c, int id, void *va)
 {
     char *p;
     Node *node;
 
     for (p = (char *)c; p && *p && isspace(*p); p++);
 
-    List *list = MakeQualifiedNodeList(ClassDisplayNode, p, TRUE);
+    List *list = MakeQualifiedNodeList(ClassDisplayNode, p, true);
 
     if (! list)
     {
@@ -298,7 +298,7 @@ boolean DXLinkHandler::CloseImage(const char *c, int id, void *va)
 	char buffer[1024];
 	sprintf(buffer, "OpenImage: unable to open image (%s)", c);
 	a->sendPacket(DXPacketIF::PKTERROR,id, buffer);
-	return FALSE;
+	return false;
     }
 
     ListIterator it(*list);
@@ -312,10 +312,10 @@ boolean DXLinkHandler::CloseImage(const char *c, int id, void *va)
 
     delete list;
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::OpenSequencer(const char *c, int id, void *va)
+bool DXLinkHandler::OpenSequencer(const char *c, int id, void *va)
 {
     SequencerNode *seq = theDXApplication->network->sequencer;
 
@@ -327,10 +327,10 @@ boolean DXLinkHandler::OpenSequencer(const char *c, int id, void *va)
 	    win->manage();
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::CloseSequencer(const char *c, int id, void *va)
+bool DXLinkHandler::CloseSequencer(const char *c, int id, void *va)
 {
     SequencerNode *seq = theDXApplication->network->sequencer;
 
@@ -341,11 +341,11 @@ boolean DXLinkHandler::CloseSequencer(const char *c, int id, void *va)
 	    win->unmanage();
     }
 
-    return TRUE;
+    return true;
 }
 
 
-boolean DXLinkHandler::OpenVPE(const char *c, int id, void *va)
+bool DXLinkHandler::OpenVPE(const char *c, int id, void *va)
 {
     EditorWindow *editor = theDXApplication->network->getEditor();
 
@@ -357,7 +357,7 @@ boolean DXLinkHandler::OpenVPE(const char *c, int id, void *va)
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	a->sendPacket(DXPacketIF::PKTERROR, id, 
 					"cannot create editor");
-	return FALSE;
+	return false;
     }
 
     if (!editor->isManaged()) {
@@ -367,20 +367,20 @@ boolean DXLinkHandler::OpenVPE(const char *c, int id, void *va)
 	//	   XtWindow(editor->getRootWidget()));
     }
 
-    return TRUE;
+    return true;
 
 }
 
-boolean DXLinkHandler::CloseVPE(const char *c, int id, void *va)
+bool DXLinkHandler::CloseVPE(const char *c, int id, void *va)
 {
     EditorWindow *editor = theDXApplication->network->getEditor();
 
     if (! editor)
-	return TRUE;
+	return true;
 
     editor->unmanage();
 
-    return TRUE;
+    return true;
 
 }
 
@@ -401,14 +401,14 @@ boolean DXLinkHandler::CloseVPE(const char *c, int id, void *va)
     I will rewrite it to look to see if two files are being passed in (for
     a .net and a .cfg); if not, then just remove leading and trailing spaces.
 */
-boolean DXLinkHandler::OpenNetwork(const char *c, int id, void *va)
+bool DXLinkHandler::OpenNetwork(const char *c, int id, void *va)
 {
     char *buf = new char[strlen(c)+1];
     char *d, *e, *cfg, *net;
 	int len=0;
 
 	if( !c ) 
-	  return TRUE;
+	  return true;
 
 	e = buf;
 	strcpy(buf, c);
@@ -418,7 +418,7 @@ boolean DXLinkHandler::OpenNetwork(const char *c, int id, void *va)
 	while (isspace(*e++));
 	
 	if(! *e)
-	  return TRUE;
+	  return true;
 	
 	/* remove trailing spaces */
 	
@@ -460,28 +460,28 @@ boolean DXLinkHandler::OpenNetwork(const char *c, int id, void *va)
 		cfg = NULL;
 	}
 	
-    theDXApplication->setBusyCursor(TRUE);
+    theDXApplication->setBusyCursor(true);
 
-    boolean r;
+    bool r;
     if (!theDXApplication->openFile(net, cfg))
     {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "Error opening network file %s", c);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
-	r = FALSE;
+	r = false;
     }
     else
     {
-	r = TRUE;
+	r = true;
     }
-    theDXApplication->setBusyCursor(FALSE);
+    theDXApplication->setBusyCursor(false);
 
     delete buf;
     return r;
 }
 
-boolean DXLinkHandler::SaveNetwork(const char *c, int id, void *va)
+bool DXLinkHandler::SaveNetwork(const char *c, int id, void *va)
 {
     char *buf = new char[strlen(c)+1];
     char *d, *net;
@@ -516,9 +516,9 @@ boolean DXLinkHandler::SaveNetwork(const char *c, int id, void *va)
 	    cfg = NULL;*/
     }
 
-    theDXApplication->setBusyCursor(TRUE);
-    boolean r;
-    if (!theDXApplication->saveFile(net, FALSE))
+    theDXApplication->setBusyCursor(true);
+    bool r;
+    if (!theDXApplication->saveFile(net, false))
     {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
@@ -528,19 +528,19 @@ boolean DXLinkHandler::SaveNetwork(const char *c, int id, void *va)
 	    sprintf(buffer, "Error saving network file %s",
 		theDXApplication->network->getFileName());
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
-	r = FALSE;
+	r = false;
     }
     else
     {
-	r = TRUE;
+	r = true;
     }
-    theDXApplication->setBusyCursor(FALSE);
+    theDXApplication->setBusyCursor(false);
 
     delete buf;
     return r;
 }
 
-boolean DXLinkHandler::OpenNetworkNoReset(const char *c, int id, void *va)
+bool DXLinkHandler::OpenNetworkNoReset(const char *c, int id, void *va)
 {
     char *buf = new char[strlen(c)+1];
     char *d, *cfg, *net;
@@ -549,7 +549,7 @@ boolean DXLinkHandler::OpenNetworkNoReset(const char *c, int id, void *va)
 	while (isspace(*c++));
 
     if (! *c)
-	return TRUE;
+	return true;
 
     d = net = buf;
     do {
@@ -573,54 +573,54 @@ boolean DXLinkHandler::OpenNetworkNoReset(const char *c, int id, void *va)
 	*d = '0';
     }
 
-    boolean r;
+    bool r;
     if (!theDXApplication->openFile(net, cfg, 0))
     {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "Error opening network file %s", c);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
-	r = FALSE;
+	r = false;
     }
     else
     {
-	r = TRUE;
+	r = true;
     }
 
     delete buf;
     return r;
 }
 
-boolean DXLinkHandler::OpenConfig(const char *c, int id, void *va)
+bool DXLinkHandler::OpenConfig(const char *c, int id, void *va)
 {
-    boolean r;
+    bool r;
 
-    theDXApplication->setBusyCursor(TRUE);
-    if (!theDXApplication->network->openCfgFile(c, TRUE))
+    theDXApplication->setBusyCursor(true);
+    if (!theDXApplication->network->openCfgFile(c, true))
     {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "Error openning configuration file %s", c);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
-	r = FALSE;
+	r = false;
     }
     else
-	r = TRUE;
-    theDXApplication->setBusyCursor(FALSE);
+	r = true;
+    theDXApplication->setBusyCursor(false);
 
     return r;
 }
 
-boolean DXLinkHandler::StallUntil(const char *c, int id, void *va)
+bool DXLinkHandler::StallUntil(const char *c, int id, void *va)
 {
     DXLinkHandler *a = (DXLinkHandler*)va;
     PacketIF *pif = a->getPacketIF();
 
     if (getenv("DX_STALL") != NULL)
-	return FALSE;
+	return false;
 
     if (pif->isPacketHandlingStalled())
-	return FALSE;
+	return false;
 
     if (strstr(c, "idle"))  {
 	pif->stallPacketHandling(DXLinkHandler::DestallOnNoExecution,
@@ -632,27 +632,27 @@ boolean DXLinkHandler::StallUntil(const char *c, int id, void *va)
 	    pif->stallPacketHandling(DXLinkHandler::StallNTimes,a);
 	}
     }
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::StallNTimes(void *data)
+bool DXLinkHandler::StallNTimes(void *data)
 {
     DXLinkHandler *dlh = (DXLinkHandler*)data; 
 
     if (getenv("DX_STALL") != NULL)
-	return TRUE;
+	return true;
 
     ASSERT(dlh->stallCount > 0);
     dlh->stallCount--;
     return dlh->stallCount == 0;
 }
 
-boolean DXLinkHandler::DestallOnNoExecution(void *data)
+bool DXLinkHandler::DestallOnNoExecution(void *data)
 {
     DXExecCtl *ctl  = (DXExecCtl*)data;
 
     if (getenv("DX_STALL") != NULL)
-	return TRUE;
+	return true;
 
     return !ctl->isExecuting();
 }
@@ -676,21 +676,21 @@ void DXLinkHandler::stallForExecutionIfRequired()
 }
 
 
-boolean DXLinkHandler::SaveConfig(const char *c, int id, void *va)
+bool DXLinkHandler::SaveConfig(const char *c, int id, void *va)
 {
-    boolean r;
-    theDXApplication->setBusyCursor(TRUE);
+    bool r;
+    theDXApplication->setBusyCursor(true);
     if (!theDXApplication->network->saveCfgFile(c))
     {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "Error saving configuration file %s", c);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
-	r = FALSE;
+	r = false;
     }
     else
-	r = TRUE;
-    theDXApplication->setBusyCursor(FALSE);
+	r = true;
+    theDXApplication->setBusyCursor(false);
     return r;
 }
 //
@@ -699,7 +699,7 @@ boolean DXLinkHandler::SaveConfig(const char *c, int id, void *va)
 // same label, then set its input (and send it), otherwise, just send
 // the assigment to the executive.
 //
-boolean DXLinkHandler::SetGlobalValue(const char *c, int id, void *va)
+bool DXLinkHandler::SetGlobalValue(const char *c, int id, void *va)
 {
     Network *n = theDXApplication->network;
     Node *node = NULL;
@@ -714,7 +714,7 @@ boolean DXLinkHandler::SetGlobalValue(const char *c, int id, void *va)
     // then set its 1st input (which is passed to its output).
     //
     List *l;
-    if ( (l = n->makeClassifiedNodeList(ClassDXLInputNode,FALSE)) ) {
+    if ( (l = n->makeClassifiedNodeList(ClassDXLInputNode,false)) ) {
         ListIterator iter(*l);
 	while ( (node = (Node*)iter.getNext()) ) {
 	    if (EqualString(node->getLabelString(),label)) {
@@ -756,7 +756,7 @@ boolean DXLinkHandler::SetGlobalValue(const char *c, int id, void *va)
 	a->stallForExecutionIfRequired();
 #endif
 
-    return TRUE;
+    return true;
     
 }
 
@@ -764,7 +764,7 @@ boolean DXLinkHandler::SetGlobalValue(const char *c, int id, void *va)
 // This method is probably never used, as it is not required by the
 // currently exposed functions in libDXL.a.
 //
-boolean DXLinkHandler::SetTabValue(const char *c, int id, void *va)
+bool DXLinkHandler::SetTabValue(const char *c, int id, void *va)
 {
     char macro[100];
     char module[100];
@@ -789,7 +789,7 @@ boolean DXLinkHandler::SetTabValue(const char *c, int id, void *va)
 	sprintf(buffer, "Macro %s not found", macro);
 	ErrorMessage(buffer);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
-	return FALSE;
+	return false;
     }
 
     Node *node = n->getNode(module, inst);
@@ -798,7 +798,7 @@ boolean DXLinkHandler::SetTabValue(const char *c, int id, void *va)
 	sprintf(buffer,"Module %s:%d not found", module, inst);
 	ErrorMessage(buffer);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
-	return FALSE;
+	return false;
     }
     if ((EqualString(inout, "in") &&
 	    node->setInputValue(paramInd, value) == DXType::UndefinedType) ||
@@ -809,7 +809,7 @@ boolean DXLinkHandler::SetTabValue(const char *c, int id, void *va)
 	    value, inout, paramInd, module);
 	ErrorMessage(buffer);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
-	return FALSE;
+	return false;
     }
 
     //
@@ -820,24 +820,24 @@ boolean DXLinkHandler::SetTabValue(const char *c, int id, void *va)
     if (theDXApplication->getExecCtl()->inExecOnChange())
 	a->stallForExecutionIfRequired();
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::Terminate(const char *, int, void *)
+bool DXLinkHandler::Terminate(const char *, int, void *)
 {
-    theDXApplication->disconnectFromApplication(TRUE);
+    theDXApplication->disconnectFromApplication(true);
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::Disconnect(const char *, int , void *)
+bool DXLinkHandler::Disconnect(const char *, int , void *)
 {
-    theDXApplication->disconnectFromApplication(FALSE);
+    theDXApplication->disconnectFromApplication(false);
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::QueryValue(const char *c, int id, void *va)
+bool DXLinkHandler::QueryValue(const char *c, int id, void *va)
 {
     char macro[100];
     char module[100];
@@ -860,7 +860,7 @@ boolean DXLinkHandler::QueryValue(const char *c, int id, void *va)
 	sprintf(buffer,"Macro %s not found", macro);
 	ErrorMessage(buffer);
 	a->sendPacket(DXPacketIF::PKTERROR,id, buffer); 
-	return FALSE;
+	return false;
     }
 
     Node *node = n->getNode(module, inst);
@@ -869,7 +869,7 @@ boolean DXLinkHandler::QueryValue(const char *c, int id, void *va)
 	sprintf(buffer,"Module %s:%d not found", module, inst);
 	ErrorMessage(buffer);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
-	return FALSE;
+	return false;
     }
     const char *value;
     if (EqualString(inout, "in"))
@@ -883,32 +883,32 @@ boolean DXLinkHandler::QueryValue(const char *c, int id, void *va)
 	value = node->getOutputValueString(paramInd);
 
     a->sendPacket(DXPacketIF::LRESPONSE, id, value);
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::ConnectToServer(const char *c, int id, void *va)
+bool DXLinkHandler::ConnectToServer(const char *c, int id, void *va)
 {
     int port;
 
     sscanf(c, "%d", &port);
     theDXApplication->connectToServer(port);
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::StartServer(const char *c, int id, void *va)
+bool DXLinkHandler::StartServer(const char *c, int id, void *va)
 {
-    theDXApplication->setBusyCursor(TRUE);
+    theDXApplication->setBusyCursor(true);
     theDXApplication->startServer();
-    theDXApplication->setBusyCursor(FALSE);
-    return TRUE;
+    theDXApplication->setBusyCursor(false);
+    return true;
 }
 
-boolean DXLinkHandler::Sync(const char *c, int id, void *va)
+bool DXLinkHandler::Sync(const char *c, int id, void *va)
 {
     DXLinkHandler *a = (DXLinkHandler*)va;
     a->sendPacket(DXPacketIF::LRESPONSE,id);
-    return TRUE;
+    return true;
 }
 class SyncData {
    public:
@@ -923,7 +923,7 @@ void DXLinkHandler::SyncCB(void *clientData, int id, void *line)
     delete sd;
 }
 
-boolean DXLinkHandler::SyncExec(const char *, int id, void *va)
+bool DXLinkHandler::SyncExec(const char *, int id, void *va)
 {
     DXPacketIF *pif = theDXApplication->getPacketIF();
     DXLinkHandler *a = (DXLinkHandler*)va;
@@ -938,10 +938,10 @@ boolean DXLinkHandler::SyncExec(const char *, int id, void *va)
     } else
 	a->sendPacket(DXPacketIF::PKTERROR, id, "no ui-executive connection");
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::OpenControlPanel(const char *c, int id, void *va)
+bool DXLinkHandler::OpenControlPanel(const char *c, int id, void *va)
 {
     List *l;
 
@@ -959,10 +959,10 @@ boolean DXLinkHandler::OpenControlPanel(const char *c, int id, void *va)
     }
     
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::CloseControlPanel(const char *c, int id, void *va)
+bool DXLinkHandler::CloseControlPanel(const char *c, int id, void *va)
 {
 	List *l;
 
@@ -980,25 +980,25 @@ boolean DXLinkHandler::CloseControlPanel(const char *c, int id, void *va)
 
 	delete l;
 
-	return TRUE;
+	return true;
 }
 
-boolean DXLinkHandler::ResetServer(const char *c, int id, void *va)
+bool DXLinkHandler::ResetServer(const char *c, int id, void *va)
 {
     // DXLinkHandler *a = (DXLinkHandler*)va;
     theDXApplication->resetServer(); 
-    return TRUE;
+    return true;
 }
-boolean DXLinkHandler::Version(const char *c, int id, void *va)
+bool DXLinkHandler::Version(const char *c, int id, void *va)
 {
     DXLinkHandler *a = (DXLinkHandler*)va;
     char buffer[1024];
     sprintf(buffer,"UI version: %d %d %d\n",
 		DX_MAJOR_VERSION, DX_MINOR_VERSION, DX_MICRO_VERSION);
     a->sendPacket(DXPacketIF::INFORMATION, id, buffer); 
-    return TRUE;
+    return true;
 }
-boolean DXLinkHandler::ResendParameters(const char *c, int id, void *va)
+bool DXLinkHandler::ResendParameters(const char *c, int id, void *va)
 {
     List *l;
     DXLinkHandler *a = (DXLinkHandler*)va;
@@ -1007,7 +1007,7 @@ boolean DXLinkHandler::ResendParameters(const char *c, int id, void *va)
     if (! l)
     {
 	a->sendPacket(DXPacketIF::PKTERROR, id, "no network?");
-	return FALSE;
+	return false;
     }
 
     Node *node;
@@ -1028,15 +1028,15 @@ boolean DXLinkHandler::ResendParameters(const char *c, int id, void *va)
 	char buffer[1024];
 	sprintf(buffer, "no nodes with label %s found", c);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
-	return FALSE;
+	return false;
     }
 
     theDXApplication->network->setDirty();
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::SetProbePoint(const char *c, int id, void *va)
+bool DXLinkHandler::SetProbePoint(const char *c, int id, void *va)
 {
     List *l;
     DXLinkHandler *a = (DXLinkHandler*)va;
@@ -1044,11 +1044,11 @@ boolean DXLinkHandler::SetProbePoint(const char *c, int id, void *va)
     float x, y, z;
     int n;
 
-    l = theDXApplication->network->makeClassifiedNodeList(ClassProbeNode,FALSE);
+    l = theDXApplication->network->makeClassifiedNodeList(ClassProbeNode,false);
     if (! l)
     {
 	a->sendPacket(DXPacketIF::PKTERROR, id, "no probes?");
-	return FALSE;
+	return false;
     }
 
     sscanf(c, "%s %d [%f, %f, %f]", probeName, &n, &x, &y, &z);
@@ -1073,10 +1073,10 @@ boolean DXLinkHandler::SetProbePoint(const char *c, int id, void *va)
     if (theDXApplication->getExecCtl()->inExecOnChange())
 	a->stallForExecutionIfRequired();
     
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::SelectProbe(const char *c, int id, void *va)
+bool DXLinkHandler::SelectProbe(const char *c, int id, void *va)
 {
     List *images = NUL(List *);
     List *probes = NUL(List *);
@@ -1090,28 +1090,28 @@ boolean DXLinkHandler::SelectProbe(const char *c, int id, void *va)
     {
 	a->sendPacket(DXPacketIF::PKTERROR, 
 				id, "missing probe name"); 
-	return FALSE;
+	return false;
     }
 
     if (EqualSubstring(arg0, "probe=", 6))
-	probes = MakeQualifiedNodeList(ClassProbeNode, arg0+6, FALSE);
+	probes = MakeQualifiedNodeList(ClassProbeNode, arg0+6, false);
     else
-	probes = MakeQualifiedNodeList(ClassProbeNode, arg0, FALSE);
+	probes = MakeQualifiedNodeList(ClassProbeNode, arg0, false);
     
     if (! probes || 0 == probes->getSize())
     {
 	a->sendPacket(DXPacketIF::PKTERROR, id,
 		"SelectProbe: no probes in network");
 	if (probes) delete probes;
-	return FALSE;
+	return false;
     }
     
     if (n == 2)
     {
 	if (EqualSubstring(arg0, "image", 5))
-	    images = MakeQualifiedNodeList(ClassImageNode, arg1+6, FALSE);
+	    images = MakeQualifiedNodeList(ClassImageNode, arg1+6, false);
 	else
-	    images = MakeQualifiedNodeList(ClassImageNode, arg1, FALSE);
+	    images = MakeQualifiedNodeList(ClassImageNode, arg1, false);
     }
     else
 	images =
@@ -1130,7 +1130,7 @@ boolean DXLinkHandler::SelectProbe(const char *c, int id, void *va)
 	}
 	if (images) delete images;
 	if (probes) delete probes;
-	return FALSE;
+	return false;
     }
 
     ListIterator itp(*probes);
@@ -1160,10 +1160,10 @@ boolean DXLinkHandler::SelectProbe(const char *c, int id, void *va)
     if (theDXApplication->getExecCtl()->inExecOnChange())
 	a->stallForExecutionIfRequired();
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
+bool DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 {
     List *l = NUL(List *);
     char qualifier0[256];
@@ -1177,9 +1177,9 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
     if (n >= 2)
     {
 	if (EqualSubstring(qualifier0, "image", 5))
-	    l = MakeQualifiedNodeList(ClassImageNode, qualifier0+6, FALSE);
+	    l = MakeQualifiedNodeList(ClassImageNode, qualifier0+6, false);
 	else
-	    l = MakeQualifiedNodeList(ClassImageNode, qualifier0, FALSE);
+	    l = MakeQualifiedNodeList(ClassImageNode, qualifier0, false);
 	
 	if (!l || l->getSize() == 0)
 	{
@@ -1189,7 +1189,7 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 		 	qualifier0);
 	    a->sendPacket(DXPacketIF::PKTERROR,id, buffer);
 	    if (l) delete l;
-	    return FALSE;
+	    return false;
 	}
     }
     else
@@ -1202,7 +1202,7 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 	    a->sendPacket(DXPacketIF::PKTERROR,id, 
 			"SetInteractionMode: no images in network");
 	    if (l) delete l;
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -1248,7 +1248,7 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 	else
 	    q = qualifier1;
 
-	pl = MakeQualifiedNodeList(clss, q, FALSE);
+	pl = MakeQualifiedNodeList(clss, q, false);
 	
 	if (!pl || pl->getSize() == 0)
 	{
@@ -1258,7 +1258,7 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
 		   (dim == PICK) ? "pick node" : "probe or probe list node", q);
 	    a->sendPacket(DXPacketIF::PKTERROR,id, buffer);
 	    if (l) delete l;
-	    return FALSE;
+	    return false;
 	}
 
 	ListIterator plit(*pl);
@@ -1290,10 +1290,10 @@ boolean DXLinkHandler::SetInteractionMode(const char *c, int id, void *va)
     //
     if (theDXApplication->getExecCtl()->inExecOnChange())
 	a->stallForExecutionIfRequired();
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::LoadMacroFile(const char *c, int id, void *va)
+bool DXLinkHandler::LoadMacroFile(const char *c, int id, void *va)
 {
     char *msg;
 
@@ -1304,47 +1304,47 @@ boolean DXLinkHandler::LoadMacroFile(const char *c, int id, void *va)
 	sprintf(buffer, "LoadMacroFile: %s", msg);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	delete msg;
-	return FALSE;
+	return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 
-boolean DXLinkHandler::LoadMacroDirectory(const char *c, int id, void *va)
+bool DXLinkHandler::LoadMacroDirectory(const char *c, int id, void *va)
 {
     char *msg;
 
-    if (! MacroDefinition::LoadMacroDirectories(c, TRUE, &msg))
+    if (! MacroDefinition::LoadMacroDirectories(c, true, &msg))
     {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	char buffer[1024];
 	sprintf(buffer, "LoadMacroDirectory: %s", msg);
 	a->sendPacket(DXPacketIF::PKTERROR, id, buffer);
 	delete msg;
-	return FALSE;
+	return false;
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::ExecOnce(const char *c, int id, void *va)
+bool DXLinkHandler::ExecOnce(const char *c, int id, void *va)
 {
     theDXApplication->getExecCtl()->executeOnce();
     DXLinkHandler *a = (DXLinkHandler*)va;
     a->stallForExecutionIfRequired();
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::ExecOnChange(const char *c, int id, void *va)
+bool DXLinkHandler::ExecOnChange(const char *c, int id, void *va)
 {
     theDXApplication->getExecCtl()->enableExecOnChange();
     DXLinkHandler *a = (DXLinkHandler*)va;
     a->stallForExecutionIfRequired();
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::EndExecution(const char *c, int id, void *va)
+bool DXLinkHandler::EndExecution(const char *c, int id, void *va)
 {
     DXExecCtl *ctl = theDXApplication->getExecCtl();
     DXLinkHandler *a = (DXLinkHandler*)va;
@@ -1353,10 +1353,10 @@ boolean DXLinkHandler::EndExecution(const char *c, int id, void *va)
     ctl->terminateExecution();
     a->stallForExecutionIfRequired();
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::EndExecOnChange(const char *c, int id, void *va)
+bool DXLinkHandler::EndExecOnChange(const char *c, int id, void *va)
 {
     DXExecCtl *ctl = theDXApplication->getExecCtl();
     DXLinkHandler *a = (DXLinkHandler*)va;
@@ -1366,10 +1366,10 @@ boolean DXLinkHandler::EndExecOnChange(const char *c, int id, void *va)
     ctl->endExecOnChange();
     a->stallForExecutionIfRequired();
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLinkHandler::QueryExecution(const char *c, int id, void *va)
+bool DXLinkHandler::QueryExecution(const char *c, int id, void *va)
 {
     int execState;
     DXLinkHandler *a = (DXLinkHandler*)va;
@@ -1383,86 +1383,86 @@ boolean DXLinkHandler::QueryExecution(const char *c, int id, void *va)
     sprintf(buffer, "execution state: %d", execState);
     a->sendPacket(DXPacketIF::LRESPONSE, id, buffer);
     
-    return TRUE;
+    return true;
 }
 
 
-boolean DXLinkHandler::PopupVCR(const char *c, int id, void *va)
+bool DXLinkHandler::PopupVCR(const char *c, int id, void *va)
 {
     fprintf(stderr, "PopupVCR not implemented\n");
-    return TRUE;
+    return true;
 }
 
 
-boolean DXLinkHandler::SequencerPlay(const char *line, int id, void *va)
+bool DXLinkHandler::SequencerPlay(const char *line, int id, void *va)
 {
     SequencerNode *s  = theDXApplication->network->sequencer;
     if (s) {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	DXExecCtl *ctl = theDXApplication->getExecCtl();    
-	boolean forward = strstr(line,"forward") != NULL;
+	bool forward = strstr(line,"forward") != NULL;
 	ctl->vcrExecute(forward);
 	if (!s->isLoopMode())
 	    a->stallForExecutionIfRequired();
     }
-    return TRUE;
+    return true;
 }
-boolean DXLinkHandler::SequencerPause(const char  *line, int id, void *va)
+bool DXLinkHandler::SequencerPause(const char  *line, int id, void *va)
 {
     SequencerNode *s  = theDXApplication->network->sequencer;
     if (s) {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	DXExecCtl *ctl = theDXApplication->getExecCtl();    
-	ctl->vcrCommand(VCR_PAUSE, FALSE);
+	ctl->vcrCommand(VCR_PAUSE, false);
 	a->stallForExecutionIfRequired();
     }
-    return TRUE;
+    return true;
 }
-boolean DXLinkHandler::SequencerStep(const char  *line, int id, void *va)
+bool DXLinkHandler::SequencerStep(const char  *line, int id, void *va)
 {
     SequencerNode *s  = theDXApplication->network->sequencer;
     if (s) {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	DXExecCtl *ctl = theDXApplication->getExecCtl();    
-	ctl->vcrCommand(VCR_STEP, FALSE);
+	ctl->vcrCommand(VCR_STEP, false);
 	a->stallForExecutionIfRequired();
     }
-    return TRUE;
+    return true;
 }
-boolean  DXLinkHandler::SequencerStop(const char  *line, int id, void *va)
+bool  DXLinkHandler::SequencerStop(const char  *line, int id, void *va)
 {
     SequencerNode *s  = theDXApplication->network->sequencer;
     if (s) {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	DXExecCtl *ctl = theDXApplication->getExecCtl();    
-	ctl->vcrCommand(VCR_STOP, FALSE);
+	ctl->vcrCommand(VCR_STOP, false);
 	a->stallForExecutionIfRequired();
     }
-    return TRUE;
+    return true;
 }
-boolean  DXLinkHandler::SequencerPalindrome(const char  *line, int id, void *va)
+bool  DXLinkHandler::SequencerPalindrome(const char  *line, int id, void *va)
 {
     SequencerNode *s  = theDXApplication->network->sequencer;
     if (s) {
 	DXLinkHandler *a = (DXLinkHandler*)va;
 	DXExecCtl *ctl = theDXApplication->getExecCtl();    
-	boolean set = strstr(line,"off") == NULL;
+	bool set = strstr(line,"off") == NULL;
 	ctl->vcrCommand(VCR_PALINDROME, set);
 	a->stallForExecutionIfRequired();
     }
-    return TRUE;
+    return true;
 }
-boolean  DXLinkHandler::SequencerLoop(const char  *line, int id, void *va)
+bool  DXLinkHandler::SequencerLoop(const char  *line, int id, void *va)
 {
     SequencerNode *s  = theDXApplication->network->sequencer;
     if (s) {
 	DXExecCtl *ctl = theDXApplication->getExecCtl();    
 	DXLinkHandler *a = (DXLinkHandler*)va;
-	boolean set = strstr(line,"off") == NULL;
+	bool set = strstr(line,"off") == NULL;
 	ctl->vcrCommand(VCR_LOOP, set);
 	a->stallForExecutionIfRequired();
     }
-    return TRUE;
+    return true;
 }
 
 

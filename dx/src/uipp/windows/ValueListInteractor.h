@@ -38,7 +38,7 @@ class ValueListInteractor : public ValueInteractor, public ListEditor
     //
     // Private member data:
     // 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
     //
@@ -100,7 +100,7 @@ class ValueListInteractor : public ValueInteractor, public ListEditor
     //
     // Read the displayed values and set the output from them.
     //
-    boolean updateOutputFromDisplay();
+    bool updateOutputFromDisplay();
 
     //
     // Determine if the text in the ValueEditor can be added to the current
@@ -135,7 +135,7 @@ class ValueListInteractor : public ValueInteractor, public ListEditor
 
     virtual void handleInteractivePartStateChange(
 				InteractorInstance *src_ii,
-				boolean major_change);
+				bool major_change);
 
     //
     // Update the display values for an interactor; 

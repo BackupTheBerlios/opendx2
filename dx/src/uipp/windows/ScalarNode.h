@@ -34,15 +34,15 @@ class ScalarNode : public InteractorNode
     //
     // Private member data:
     //
-    boolean	vectorType;
-    boolean	needsRangeCheck;
+    bool	vectorType;
+    bool	needsRangeCheck;
     int		rangeCheckDeferrals;
 
     //
     // Adjusts the dimensionality of all attribute components for
     // this->doDimensionalityChange().
     //
-    boolean adjustAttributeDimensions(int old_dim, int new_dim);
+    bool adjustAttributeDimensions(int old_dim, int new_dim);
 
   protected:
     //
@@ -52,34 +52,34 @@ class ScalarNode : public InteractorNode
     //
     // If we're parsing input #4 (which is now REFRESH and was at one point REMAP)
     // and the net version is older than 3.1.0 (which is compiled in by DXVersion.h),
-    // then set the defaulting status = TRUE.  Reason:  the older ui was setting
-    // the defaulting status of this unused param to FALSE.  Now that we want to use
+    // then set the defaulting status = true.  Reason:  the older ui was setting
+    // the defaulting status of this unused param to false.  Now that we want to use
     // the param again, old nets believe the param is set.
     //
-    virtual boolean parseIOComment(boolean input, const char* comment,
-		const char* filename, int lineno, boolean valueOnly = FALSE);
+    virtual bool parseIOComment(bool input, const char* comment,
+		const char* filename, int lineno, bool valueOnly = false);
 
     //
     // Make sure the number of inputs is the number expected.
     //
-    boolean verifyInputCount();
+    bool verifyInputCount();
 
     //
     // Adjusts the dimensionality of all outputs for
     // this->doDimensionalityChange().
     //
-    virtual boolean adjustOutputDimensions(int old_dim, int new_dim);
+    virtual bool adjustOutputDimensions(int old_dim, int new_dim);
 
     //
     // Global flag for all interactor instances indicating whether or not to 
     // do continuous updates to the exec.
     //
-    boolean	isContinuousUpdate;	
+    bool	isContinuousUpdate;	
 
 
-    boolean cfgParseComponentComment(const char *comment,
+    bool cfgParseComponentComment(const char *comment,
 					const char *filename, int lineno);
-    boolean cfgParseInstanceComment(const char *comment,
+    bool cfgParseInstanceComment(const char *comment,
 					const char *filename, int lineno);
 
     //
@@ -87,17 +87,17 @@ class ScalarNode : public InteractorNode
     // We override the parent's method so that we can print num_components
     // correctly.
     //
-    virtual boolean cfgPrintInteractorComment(FILE *f);
+    virtual bool cfgPrintInteractorComment(FILE *f);
     //
     // Print auxiliary info for this interactor, which includes all global
     // information about each component.
     //
-    virtual boolean cfgPrintInteractorAuxInfo(FILE *f);
+    virtual bool cfgPrintInteractorAuxInfo(FILE *f);
     //
     // Print auxiliary info for the interactor instance,  which includes
     // all local information about each component.
     //
-    virtual boolean cfgPrintInstanceAuxInfo(FILE *f, InteractorInstance *ii);
+    virtual bool cfgPrintInstanceAuxInfo(FILE *f, InteractorInstance *ii);
 
     //
     // Get a ScalarInstance instead of an InteractorInstance.
@@ -107,13 +107,13 @@ class ScalarNode : public InteractorNode
     //
     // Parse comments the 'local increment' comment. 
     //
-    boolean cfgParseLocalIncrementComment(const char *comment,
+    bool cfgParseLocalIncrementComment(const char *comment,
 					const char *filename, int lineno);
 
     //
     // Parse comments the 'local increment' comment. 
     //
-    boolean cfgParseLocalContinuousComment(const char *comment,
+    bool cfgParseLocalContinuousComment(const char *comment,
 					const char *filename, int lineno);
 
     // The messages we deal with can contain one or more of the following...
@@ -144,7 +144,7 @@ class ScalarNode : public InteractorNode
     // Set the interactor's default attributes (attributes that can
     // be shared by derived classes).
     //
-    virtual boolean setDefaultAttributes();
+    virtual bool setDefaultAttributes();
 
     //
     // Get and set the USUALLY global component values.  In some cases
@@ -152,7 +152,7 @@ class ScalarNode : public InteractorNode
     // InteractorInstance.  So we make these protected and only allow
     // the ScalarInstance class to access them.
     //
-    boolean setComponentValue(int component, double value);
+    bool setComponentValue(int component, double value);
     double getComponentValue(int component);
     friend class ScalarInstance;
 
@@ -177,7 +177,7 @@ class ScalarNode : public InteractorNode
     //
     // Provide methods to delay doRangeCheckComponentValue().
     //
-    boolean isRangeCheckingDeferred()
+    bool isRangeCheckingDeferred()
                         { return this->rangeCheckDeferrals != 0;}
     void deferRangeChecking()   {this->rangeCheckDeferrals++;}
     void undeferRangeChecking()
@@ -191,19 +191,19 @@ class ScalarNode : public InteractorNode
     //
     // Initialize the attributes with the give string values.
     //
-    boolean initMinimumAttribute(const char *val);
-    boolean setMinimumAttribute(const char *val);
-    boolean initMaximumAttribute(const char *val);
-    boolean setMaximumAttribute(const char *val);
-    boolean initDeltaAttribute(const char *val);
-    boolean setDeltaAttribute(const char *val);
-    boolean initDecimalsAttribute(const char *val);
-    boolean setDecimalsAttribute(const char *val);
+    bool initMinimumAttribute(const char *val);
+    bool setMinimumAttribute(const char *val);
+    bool initMaximumAttribute(const char *val);
+    bool setMaximumAttribute(const char *val);
+    bool initDeltaAttribute(const char *val);
+    bool setDeltaAttribute(const char *val);
+    bool initDecimalsAttribute(const char *val);
+    bool setDecimalsAttribute(const char *val);
 
     //
     // Change the dimensionality of a Vector interactor.
     //
-    virtual boolean doDimensionalityChange(int new_dim);
+    virtual bool doDimensionalityChange(int new_dim);
 
 
   public:
@@ -211,7 +211,7 @@ class ScalarNode : public InteractorNode
     // Constructor:
     //
     ScalarNode(NodeDefinition *nd, Network *net, int instnc, 
-				boolean isVector = FALSE, int dimensions = 1); 
+				bool isVector = false, int dimensions = 1); 
 
     //
     // Destructor:
@@ -222,14 +222,14 @@ class ScalarNode : public InteractorNode
     // Set the attributes for the given component of the given instance
     // of an interactor.
     //
-    boolean setAllComponentRanges(double *min, double *max);
-    boolean setComponentMinimum(int component, double min);
-    boolean setComponentMaximum(int component, double max);
-    boolean setComponentDelta(int component, double delta);
-    boolean setComponentDecimals(int component, int decimals); 
-    void setContinuous(boolean val) { isContinuousUpdate = val; }
-    void setContinuous() { isContinuousUpdate = TRUE; }
-    void clrContinuous() { isContinuousUpdate = FALSE; }
+    bool setAllComponentRanges(double *min, double *max);
+    bool setComponentMinimum(int component, double min);
+    bool setComponentMaximum(int component, double max);
+    bool setComponentDelta(int component, double delta);
+    bool setComponentDecimals(int component, int decimals); 
+    void setContinuous(bool val) { isContinuousUpdate = val; }
+    void setContinuous() { isContinuousUpdate = true; }
+    void clrContinuous() { isContinuousUpdate = false; }
 
     //
     // Get the global attributes for the given component of an interactor.
@@ -238,21 +238,21 @@ class ScalarNode : public InteractorNode
     double getComponentMaximum(int component);
     double getComponentDelta(int component);
     int    getComponentDecimals(int component);
-    boolean isIntegerTypeComponent(); 
-    boolean isContinuous()  { return isContinuousUpdate; }
+    bool isIntegerTypeComponent(); 
+    bool isContinuous()  { return isContinuousUpdate; }
 
-    boolean isVectorType() { return this->vectorType; }
+    bool isVectorType() { return this->vectorType; }
 
     //
     // Called once for each instance 
     //
-    virtual boolean initialize();
+    virtual bool initialize();
 
     //
     // Indicates whether this node has outputs that can be remapped by the
     // server.
     //
-    virtual boolean hasRemappableOutput() { return TRUE; }
+    virtual bool hasRemappableOutput() { return true; }
 
     //
     // Call the super class method, but then catch the output comment 
@@ -261,32 +261,32 @@ class ScalarNode : public InteractorNode
     // tell us so.  We then get numComponent==3, but all the parameter
     // values are 2d, which results in an ASSERTion failure.
     //
-    virtual boolean     netParseComment(const char* comment,
+    virtual bool     netParseComment(const char* comment,
 					    const char *file, int lineno);
 
     //
     // Parse comments found in the .cfg that the InteractorNode knows how to
     // parse plus ones that it does not.
     //
-    virtual boolean cfgParseComment(const char *comment,
+    virtual bool cfgParseComment(const char *comment,
 					const char *filename, int lineno);
 
     //
     // Does this node implement doDimensionalityChange();
     //
-    virtual boolean hasDynamicDimensionality(boolean ignoreDataDriven = FALSE);
+    virtual bool hasDynamicDimensionality(bool ignoreDataDriven = false);
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
-    boolean isMinimumVisuallyWriteable();
-    boolean isMaximumVisuallyWriteable();
-    boolean isDecimalsVisuallyWriteable();
-    boolean isDeltaVisuallyWriteable();
+    bool isMinimumVisuallyWriteable();
+    bool isMaximumVisuallyWriteable();
+    bool isDecimalsVisuallyWriteable();
+    bool isDeltaVisuallyWriteable();
 
-    virtual boolean printJavaValue(FILE*);
+    virtual bool printJavaValue(FILE*);
     virtual const char* getJavaNodeName() { return "ScalarNode"; }
 
 

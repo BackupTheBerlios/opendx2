@@ -43,13 +43,13 @@ class PanelGroupManager;
 //				
 class ControlPanelGroupDialog : public Dialog
 {
-  friend  void EditorWindow::notifyCPChange(boolean);
+  friend  void EditorWindow::notifyCPChange(bool);
 
   private:
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     int    lastIndex;

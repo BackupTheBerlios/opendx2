@@ -40,7 +40,7 @@ class ConfirmedExitCommand : public OptionalPreActionCommand
     //
     // Implements the command:
 
-    virtual boolean needsConfirmation();
+    virtual bool needsConfirmation();
     virtual void    doPreAction();
 
   public:
@@ -49,7 +49,7 @@ class ConfirmedExitCommand : public OptionalPreActionCommand
     //
     ConfirmedExitCommand(const char*   name,
                         CommandScope* scope,
-                        boolean       active,
+                        bool       active,
 			DXApplication *app);
 
     //
@@ -57,7 +57,7 @@ class ConfirmedExitCommand : public OptionalPreActionCommand
     //
     ~ConfirmedExitCommand(){}
 
-    boolean doIt(CommandInterface*);
+    bool doIt(CommandInterface*);
 
     //
     // Returns a pointer to the class name.

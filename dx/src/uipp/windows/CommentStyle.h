@@ -38,15 +38,15 @@ class CommentStyle: public Base {
     static void InitParseBuffer(int);
     static void AppendParseBuffer(const char*);
 
-    boolean parseComment (const char*, const char*, int);
-    boolean printComment (FILE*);
+    bool parseComment (const char*, const char*, int);
+    bool printComment (FILE*);
 
     virtual const char* getPrintableText()=0;
     virtual void        setPrintableText(const char*)=0;
 
   public:
-    virtual boolean parseComment (LabelDecorator*, const char*, const char*, int)=0;
-    virtual boolean printComment (LabelDecorator*, FILE*)=0;
+    virtual bool parseComment (LabelDecorator*, const char*, const char*, int)=0;
+    virtual bool printComment (LabelDecorator*, FILE*)=0;
     virtual const char* getKeyword()=0;
 
     const char* getClassName() { return ClassCommentStyle; }

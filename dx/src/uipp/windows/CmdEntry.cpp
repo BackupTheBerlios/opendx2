@@ -60,7 +60,7 @@ CmdEntry::~CmdEntry()
 //
 // Function to handle a character string (a command) with this CmdEntry
 //
-boolean CmdEntry::parse(const char *c, int id)
+bool CmdEntry::parse(const char *c, int id)
 {
     if (this->function)
 	return (*this->function)(c, id, this->clientData);
@@ -82,11 +82,11 @@ boolean CmdEntry::parse(const char *c, int id)
 	if (e)
 	    return e->parse(next,id);
 	else
-	    return FALSE;
+	    return false;
     }
     else
 	ASSERT(0);
-    return FALSE;
+    return false;
 }
 
 Dictionary *

@@ -40,7 +40,7 @@ ImageFormat::~ImageFormat()
 {
 }
 
-boolean ImageFormat::isMetric()
+bool ImageFormat::isMetric()
 {
     return this->dialog->isMetric();
 }
@@ -65,20 +65,20 @@ const char *cp = this->paramString();
     return formstr;
 }
 
-boolean ImageFormat::useLocalFormat()
+bool ImageFormat::useLocalFormat()
 {
 ImageNode *node = this->dialog->getNode();
-    boolean formcon = node->isRecordFormatConnected();
-    if (formcon) return FALSE;
+    bool formcon = node->isRecordFormatConnected();
+    if (formcon) return false;
 
-    if (this->dialog->dirtyGamma()) return TRUE;
+    if (this->dialog->dirtyGamma()) return true;
     return this->dialog->dirtyFormat();
 }
 
 //
 // This only works for widgets whose normal foreground color is black.
 //
-void ImageFormat::setTextSensitive (boolean sens)
+void ImageFormat::setTextSensitive (bool sens)
 {
  //   ASSERT ((XtClass(w) == xmTextWidgetClass) || (XtClass(w) == xmTextFieldWidgetClass));
  //   if (sens) {
@@ -100,7 +100,7 @@ void ImageFormat::eraseOutputFile (const char *fname)
 }
 
 
-boolean ImageFormat::isA(Symbol classname)
+bool ImageFormat::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassImageFormat);
     return (s == classname);

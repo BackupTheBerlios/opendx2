@@ -64,19 +64,19 @@ class Server : virtual public Base
 
     //
     // Registers client.
-    // Returns TRUE if the client has been registered.
-    // Returns FALSE if the client has already been registered or
+    // Returns true if the client has been registered.
+    // Returns false if the client has already been registered or
     // if the client cannot be registered.
     //
-    virtual boolean registerClient(Client* client);
+    virtual bool registerClient(Client* client);
 	
     //
     // Unregisters client.
-    // Returns TRUE if the client has been unregistered.
-    // Returns FALSE if the client has already been unregistered or
+    // Returns true if the client has been unregistered.
+    // Returns false if the client has already been unregistered or
     // if the client cannot be unregistered.
     //
-    virtual boolean unregisterClient(Client* client);
+    virtual bool unregisterClient(Client* client);
 
     //
     // Returns a pointer to the class name.

@@ -50,11 +50,11 @@ class ProcessGroupAssignDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
-    boolean dirty;
-    boolean i_caused_it;
+    bool dirty;
+    bool i_caused_it;
 
     DXApplication *app;
     ProcessGroupOptionsDialog *pgod;
@@ -70,7 +70,7 @@ class ProcessGroupAssignDialog : public Dialog
     void   makeList(int item);
     void   addCallbacks();
 
-    virtual boolean okCallback(Dialog*);
+    virtual bool okCallback(Dialog*);
  
   protected:
     //

@@ -44,7 +44,7 @@ class ToggleAttrDialog : public SetAttrDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
 
   protected:
@@ -71,7 +71,7 @@ class ToggleAttrDialog : public SetAttrDialog
     virtual void setAttributeSensitivity();
 
     virtual void loadAttributes();
-    virtual boolean storeAttributes();
+    virtual bool storeAttributes();
     virtual void updateDisplayedAttributes();
 
     //

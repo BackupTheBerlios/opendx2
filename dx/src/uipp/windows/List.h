@@ -9,8 +9,6 @@
 #include <dxconfig.h>
 #include "defines.h"
 
-
-
 #ifndef _List_h
 #define _List_h
 
@@ -31,7 +29,7 @@ class Link;
 class ListIterator;
 
 //  A function to compare element values.
-typedef boolean (*isElementEqual)(const void*, const void*);
+typedef bool (*isElementEqual)(const void*, const void*);
 
 //  A function to make a copy of an element. 
 typedef void* (*dupElement)(const void *);
@@ -92,10 +90,10 @@ class List : virtual public Base
     }
 
     //
-    // Returns TRUE if the specified element is a member of the list;
-    // FALSE, otherwise.
+    // Returns true if the specified element is a member of the list;
+    // false, otherwise.
     //
-    boolean isMember(const void* element);
+    bool isMember(const void* element);
 
     //
     // Returns the element in the specified position within the list;
@@ -112,29 +110,29 @@ class List : virtual public Base
     //
     // Inserts an element in the specified position within the list.
     // Note that an element cannot be a NULL value.
-    // Returns TRUE if the element has been successfully inserted.
+    // Returns true if the element has been successfully inserted.
     //
-    virtual boolean insertElement(const void* element,
+    virtual bool insertElement(const void* element,
 			  const int   position);
 
     //
     // Replaces an element in the specified position within the list.
-    // Returns TRUE if the element has been successfully replaced.
+    // Returns true if the element has been successfully replaced.
     //
-    virtual boolean replaceElement(const void* element,
+    virtual bool replaceElement(const void* element,
 			   const int   position);
 
     //
     // Appends an element to the end of the list.
-    // Returns TRUE if the element has been successfully appended.
+    // Returns true if the element has been successfully appended.
     //
-    boolean appendElement(const void* element);
+    bool appendElement(const void* element);
 
     //
     // Finds the element with the specified position in the list.
-    // Returns TRUE if the specified element is found. 
+    // Returns true if the specified element is found. 
     //
-    boolean findElementValue(const void *element,isElementEqual f,int& index);
+    bool findElementValue(const void *element,isElementEqual f,int& index);
 
     //
     // Adds the given element to the list if it is not already on the list
@@ -142,24 +140,24 @@ class List : virtual public Base
     // elements on the list and the new element.   If the element value is not
     // already on the list, then it is added to the list.  If 'dup' is not
     // NULL, then a copy of the element is made before adding to the list.
-    // Returns TRUE if the specified element is added to the list and sets
+    // Returns true if the specified element is added to the list and sets
     // index to the position in the list. 
     //
-    boolean mergeElementValue(const void *element, isElementEqual cmp, 
+    bool mergeElementValue(const void *element, isElementEqual cmp, 
 			 dupElement dup, int& index);
 
 
     //
     // Deletes the element with the specified position in the list.
-    // Returns TRUE if the specified element is successfully deleted.
+    // Returns true if the specified element is successfully deleted.
     //
-    virtual boolean deleteElement(const int position);
+    virtual bool deleteElement(const int position);
 
     //
     // Deletes the element if it exists in the list. 
-    // Returns TRUE if the specified element is successfully deleted.
+    // Returns true if the specified element is successfully deleted.
     //
-    boolean removeElement(const void *element);
+    bool removeElement(const void *element);
 
     //
     // Create a duplicate list with the same list items.

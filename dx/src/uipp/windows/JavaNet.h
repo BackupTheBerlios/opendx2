@@ -62,8 +62,8 @@ class JavaNet : public Network
     FILE*	applet_f;
     FILE*	bean_f;
 
-    boolean	setOutputName (const char*);
-    boolean	netToApplet();
+    bool	setOutputName (const char*);
+    bool	netToApplet();
 
     Command*	saveWebPageCmd;
     Command*	saveAppletCmd;
@@ -73,10 +73,10 @@ class JavaNet : public Network
     // In addition to the work done in Network, we need to print references to
     // special macros used in exporting gifs and wrls
     //
-    virtual boolean printMacroReferences(FILE *f, boolean inline_define,
+    virtual bool printMacroReferences(FILE *f, bool inline_define,
 	    PacketIFCallback echoCallback, void *echoClientData);
 
-    boolean requires(const char* format);
+    bool requires(const char* format);
 
 
   public:
@@ -86,19 +86,19 @@ class JavaNet : public Network
     //
     ~JavaNet();
 
-    virtual boolean saveWebPage();
-    virtual boolean saveApplet();
-    virtual boolean saveBean();
+    virtual bool saveWebPage();
+    virtual bool saveApplet();
+    virtual bool saveBean();
 
     virtual Command* getSaveWebPageCommand() { return this->saveWebPageCmd; }
     virtual Command* getSaveAppletCommand() { return this->saveAppletCmd; }
     virtual Command* getSaveBeanCommand();
 
-    virtual boolean isJavified();
+    virtual bool isJavified();
 
-    virtual boolean saveNetwork(const char *name, boolean force = FALSE);
+    virtual bool saveNetwork(const char *name, bool force = false);
 
-    virtual void changeExistanceWork(Node *n, boolean adding);
+    virtual void changeExistanceWork(Node *n, bool adding);
 
     //
     // Returns a pointer to the class name.

@@ -65,7 +65,7 @@ class DXLOutputDefinition : public DrivenDefinition
     static NodeDefinition *AllocateDefinition();
 
 
-    virtual boolean isAllowedInMacro() { return FALSE; }
+    virtual bool isAllowedInMacro() { return false; }
 
     //
     // Returns a pointer to the class name.

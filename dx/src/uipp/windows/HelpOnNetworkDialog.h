@@ -34,7 +34,7 @@ class HelpOnNetworkDialog : public SetNetworkCommentDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
     //

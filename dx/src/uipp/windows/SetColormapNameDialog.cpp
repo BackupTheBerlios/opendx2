@@ -16,7 +16,7 @@
 #include "Network.h"
 #include "ErrorDialogManager.h"
 
-boolean SetColormapNameDialog::ClassInitialized = FALSE;
+bool SetColormapNameDialog::ClassInitialized = false;
 
 //String SetColormapNameDialog::DefaultResources[] =
 //{
@@ -33,7 +33,7 @@ SetColormapNameDialog::SetColormapNameDialog(ColormapNode *cn) :
 
     if (NOT SetColormapNameDialog::ClassInitialized)
     {
-        SetColormapNameDialog::ClassInitialized = TRUE;
+        SetColormapNameDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -57,18 +57,18 @@ const char *SetColormapNameDialog::getText()
     return this->colormapNode->getTitle();
 }
 
-boolean SetColormapNameDialog::saveText(const char *s)
+bool SetColormapNameDialog::saveText(const char *s)
 {
     if (IsBlankString(s)) {
 	ModalErrorMessage(
 		"The name string cannot be blank.");
-        return FALSE;
+        return false;
     } else {
 	ColormapNode *node = this->colormapNode;
     	node->setTitle(s);
     	node->getNetwork()->setFileDirty();
     }
 
-    return TRUE;
+    return true;
 }
 

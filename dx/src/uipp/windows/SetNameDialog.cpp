@@ -19,8 +19,8 @@
 
 
 SetNameDialog::SetNameDialog(const char *name,
-			boolean has_apply ) :
-    				TextEditDialog((char*)name, FALSE)
+			bool has_apply ) :
+    				TextEditDialog((char*)name, false)
 {
     this->hasApply = has_apply;
 }

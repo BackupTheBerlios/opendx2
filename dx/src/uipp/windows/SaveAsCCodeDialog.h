@@ -37,7 +37,7 @@ class Command;
 //				
 class SaveAsCCodeDialog : public SaveFileDialog
 {
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     static String  DefaultResources[];
 
   protected:

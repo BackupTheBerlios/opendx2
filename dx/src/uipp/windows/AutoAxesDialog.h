@@ -64,7 +64,7 @@ class AutoAxesDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
     static int MinWidths[];
 
@@ -141,9 +141,9 @@ class AutoAxesDialog : public Dialog
     //void layoutButtons(Widget parent);
  
     int    dirtyBits;
-    boolean isDirty();
-    boolean isDirty(int member);
-    boolean deferNotify;
+    bool isDirty();
+    bool isDirty(int member);
+    bool deferNotify;
 
     static void TLLModifyCB (TickLabelList *, void*);
 
@@ -167,16 +167,16 @@ class AutoAxesDialog : public Dialog
     //friend void AutoAxesDialog_TickLabelToggleCB(Widget, XtPointer, XtPointer);
 
     void   installValues();
-    void   flipAllTabsUp(boolean send);
+    void   flipAllTabsUp(bool send);
 
     //
     // W I D G E T     S E N S I T I V I T Y
     // W I D G E T     S E N S I T I V I T Y
     //
-    void setColorsSensitivity (boolean clear);
-    void setCornersSensitivity (boolean button_set);
-    void setCursorSensitivity (boolean button_set);
-    void setTicksSensitivity (boolean button_set);
+    void setColorsSensitivity (bool clear);
+    void setCornersSensitivity (bool button_set);
+    void setCursorSensitivity (bool button_set);
+    void setTicksSensitivity (bool button_set);
     void setLabelsSensitivity ();
     void setGridSensitivity ();
     void setAdjustSensitivity ();
@@ -195,7 +195,7 @@ class AutoAxesDialog : public Dialog
     // This is a workaround for an MWM bug on aix 312.  You can't have minWidth
     // set for an unmanaged dialog box.  If you do, then you'll never be able
     // to unset minWidth.  FIXME: make this a method in Dialog?
-    void setMinWidth(boolean );
+    void setMinWidth(bool );
 
   public:
 

@@ -18,7 +18,7 @@
 #include "DecoratorInfo.h"
 #include "ListIterator.h"
 
-boolean Decorator::DecoratorClassInitialized = FALSE;
+bool Decorator::DecoratorClassInitialized = false;
 
 //String Decorator::DefaultResources[] =
 //{
@@ -64,7 +64,7 @@ int Decorator::HiLites = OFFSET + 1;
 // now, or later through the manage function.
 //
 Decorator::Decorator(void *wClass, const char *name, 
-	boolean developerStyle) : WorkSpaceComponent(name, developerStyle),
+	bool developerStyle) : WorkSpaceComponent(name, developerStyle),
 	DXDragSource(PrintCPBuffer)
 {
 //    this->workSpace = NUL(WorkSpace*);
@@ -76,7 +76,7 @@ Decorator::Decorator(void *wClass, const char *name,
 //
 //    if (NOT Decorator::DecoratorClassInitialized)
 //    {
-//	Decorator::DecoratorClassInitialized = TRUE;
+//	Decorator::DecoratorClassInitialized = true;
 //
 //	Decorator::HiLites = OFFSET + 1;
 //#if NEED_TO_GO_OVERBOARD
@@ -121,7 +121,7 @@ void Decorator::uncreateDecorator()
     //XtDestroyWidget (this->getRootWidget());
     //this->customPart = NUL(Widget);
     //this->workSpace = NUL(WorkSpace*);
-    //this->selected = FALSE;
+    //this->selected = false;
 }
 
 //
@@ -141,7 +141,7 @@ void Decorator::createDecorator()
 	//{ XtSetArg (args[n], XmNx, this->x); n++; }
  //   if ((this->y)&&(this->y != UIComponent::UnspecifiedPosition)) 
 	//{ XtSetArg (args[n], XmNy, this->y); n++; }
- //   if (this->resizeOnUpdate()==FALSE) {
+ //   if (this->resizeOnUpdate()==false) {
 	//if ((this->width)&&(this->width != UIComponent::UnspecifiedDimension)) 
 	//    { XtSetArg (args[n], XmNwidth, this->width); n++; }
 	//if ((this->height)&&(this->height != UIComponent::UnspecifiedDimension)) 
@@ -156,7 +156,7 @@ void Decorator::createDecorator()
  //   XmWorkspaceAddCallback (form, XmNselectionCallback,
 	// (XtCallbackProc)Component_SelectWorkSpaceComponentCB, (void *)this);
 
- //   if ((this->width) && (this->height) && (this->resizeOnUpdate()==FALSE) &&
+ //   if ((this->width) && (this->height) && (this->resizeOnUpdate()==false) &&
 	//(this->width  != UIComponent::UnspecifiedDimension) && 
 	//(this->height != UIComponent::UnspecifiedDimension))  {
 	//this->setXYSize(this->width, this->height);
@@ -171,7 +171,7 @@ void Decorator::createDecorator()
  //   XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM); n++;
  //   this->setArgs (args, &n);
  //   //this->customPart = XtCreateManagedWidget ("decorator", this->widgetClass,form,args,n);
- //   //this->passEvents (this->customPart, FALSE);
+ //   //this->passEvents (this->customPart, false);
 
  //   //
  //   // this loop must be run before calling setAppearance because setAppearance
@@ -182,7 +182,7 @@ void Decorator::createDecorator()
 	//DynamicResource* dr;
 	//while ( (dr = (DynamicResource*)it.getNext()) ) {
 	//    // don't bother checking return value from setRootWidget because it will
-	//    // always return FALSE for resources belonging to xmLabelWidgetClass if
+	//    // always return false for resources belonging to xmLabelWidgetClass if
 	//    // there is no XmLabel widget already in its list.  Not a problem.
 	//    dr->setRootWidget(this->getRootWidget());
 	//}
@@ -194,7 +194,7 @@ void Decorator::createDecorator()
 }
 
 
-boolean Decorator::printComment (FILE *f)
+bool Decorator::printComment (FILE *f)
 {
 int x,y,w,h;
 
@@ -202,17 +202,17 @@ int x,y,w,h;
     this->getXYSize (&w,&h);
     if (fprintf (f, "    //\n    // decorator %s\tpos=(%d,%d) size=%dx%d style(%s)", 
 	this->style->getKeyString(), x,y,w,h, this->style->getNameString()) < 0)
-	return FALSE;
-    return TRUE;
+	return false;
+    return true;
 }
 
-boolean Decorator::parseComment (const char *comment, const char *file, int line)
+bool Decorator::parseComment (const char *comment, const char *file, int line)
 {
 //int items_parsed;
 //char decoStyle[128];
 //char stylename[128];
 //int x,y,w,h;
-//boolean parsed = FALSE;
+//bool parsed = false;
 //
 //    this->x = UIComponent::UnspecifiedPosition;
 //    this->y = UIComponent::UnspecifiedPosition; 
@@ -222,12 +222,12 @@ boolean Decorator::parseComment (const char *comment, const char *file, int line
 //    items_parsed = 
 //	sscanf (comment, " decorator %[^\t]\tpos=(%d,%d) size=%dx%d style(%[^)])",
 //	    stylename, &x,&y,&w,&h, decoStyle);
-//    if (items_parsed == 6) parsed = TRUE;
+//    if (items_parsed == 6) parsed = true;
 //
 //    if (!parsed)
 //	items_parsed = sscanf (comment, " decorator %[^\t]\tpos=(%d,%d) size=%dx%d",
 //	    stylename, &x,&y,&w,&h);
-//    if (items_parsed == 5) parsed = TRUE;
+//    if (items_parsed == 5) parsed = true;
 //
 //    //
 //    // For 3 weeks I made dxui print comments in the following format.  Now
@@ -240,35 +240,35 @@ boolean Decorator::parseComment (const char *comment, const char *file, int line
 //	items_parsed = 
 //	    sscanf (comment, " decorator %[^\t]\tstyle(%[^)]) pos=(%d,%d) size=%dx%d",
 //		stylename, decoStyle, &x,&y,&w,&h);
-//    if (items_parsed == 6) parsed = TRUE;
+//    if (items_parsed == 6) parsed = true;
 //#endif
 //
 //    if (!parsed) {
 //	WarningMessage ("Unrecognized Decorator Comment (file %s, line %d)... continuing",
 //		file, line);
-//	return TRUE;
+//	return true;
 //    }
 //
 //    if (strcmp (stylename, this->style->getKeyString()) != 0) {
 //	WarningMessage ("Unrecognized Decorator Comment (file %s, line %d)... continuing",
 //		file, line);
-//	return TRUE;
+//	return true;
 //    }
 //
 //    this->x = x; this->y = y;
 //    this->width = w; this->height = h;
 //
-//    return TRUE;
+//    return true;
 	return false;
 }
 
 //
 // Determine if this Component is of the given class.
 //
-boolean Decorator::isA(Symbol classname)
+bool Decorator::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassDecorator);
-    if (s == classname) return TRUE;
+    if (s == classname) return true;
     return this->WorkSpaceComponent::isA(classname);
 }
 
@@ -289,10 +289,10 @@ void Decorator::setXYSize (int w, int h)
     //if (this->customPart) this->WorkSpaceComponent::setXYSize (w,h);
 }
 
-void Decorator::setAppearance (boolean developerStyle)
+void Decorator::setAppearance (bool developerStyle)
 {
     // Let WorkSpaceComponent provide the visuals
-    this->WorkSpaceComponent::setAppearance (FALSE);
+    this->WorkSpaceComponent::setAppearance (false);
 
     // Then go back and adjust internal values
     this->developerStyle = developerStyle;
@@ -343,16 +343,16 @@ void Decorator::dropFinish (long operation, int tag, unsigned char status)
 // The header (which will not end up being part of the files) says
 // "hostname:pid, net length = %d, cfg length = %d\n"
 //
-boolean Decorator::createNetFiles(Network *netw, FILE *netf, char *cfgfile)
+bool Decorator::createNetFiles(Network *netw, FILE *netf, char *cfgfile)
 {
     if (this->dndInfo) {
 	DecoratorInfo *dnd = this->dndInfo;
 	dnd->dragPrep (dnd->ownerObj);
     }
-    return (boolean)this->DXDragSource::createNetFiles (netw, netf, cfgfile);
+    return (bool)this->DXDragSource::createNetFiles (netw, netf, cfgfile);
 }
 
-void Decorator::setSelected(boolean state)
+void Decorator::setSelected(bool state)
 {
     this->WorkSpaceComponent::setSelected(state);
     if ((this->dndInfo) && (this->dndInfo->select)) {
@@ -411,7 +411,7 @@ void Decorator::setDecoratorInfo(DecoratorInfo *oi)
     this->dndInfo = oi; 
 }
 
-boolean Decorator::parseResourceComment (const char *comment, const char *f, int l)
+bool Decorator::parseResourceComment (const char *comment, const char *f, int l)
 {
 //DynamicResource *dr;
 // 
@@ -432,10 +432,10 @@ boolean Decorator::parseResourceComment (const char *comment, const char *f, int
 //	    this->setResourceList = new List;
 //	}
 //	this->setResourceList->appendElement((void *)dr);
-//	return TRUE;
+//	return true;
 //    } 
 //    delete dr;
-    return FALSE;
+    return false;
 }
 
 //
@@ -459,7 +459,7 @@ Decorator::setResource (const char *res, const char *val)
 //	}
 //    }
 // 
-//    boolean applyOK=TRUE;
+//    bool applyOK=true;
 //    if (!dr) {
 //	if ((!val)||(!val[0])) return ;
 //	dr = new DynamicResource (res, this->getRootWidget());
@@ -470,7 +470,7 @@ Decorator::setResource (const char *res, const char *val)
 //	if (applyOK)
 //	    applyOK = dr->setData (val);
 //    } else {
-//	applyOK = FALSE;
+//	applyOK = false;
 //    }
 // 
 //    if (!applyOK) {
@@ -525,7 +525,7 @@ const char* Decorator::FetchLine (const char* str, int line)
 }
 
 
-boolean Decorator::printJavaResources (FILE* jf, const char* indent, const char* var)
+bool Decorator::printJavaResources (FILE* jf, const char* indent, const char* var)
 {
  //   //
  //   // Make an attempt at reflecting resource settings in java
@@ -536,7 +536,7 @@ boolean Decorator::printJavaResources (FILE* jf, const char* indent, const char*
 	//while ( (dr = (DynamicResource*)it.getNext()) ) {
 	//    if ((EqualString(dr->getResourceName(), XmNforeground)) ||
 	//	(EqualString(dr->getResourceName(), XmNbackground))) {
-	//	boolean ok_to_set = FALSE;
+	//	bool ok_to_set = false;
 	//	const char* clr = dr->getStringRepresentation();
 	//	if ((!clr) || (!clr[0])) continue;
 	//	clr++;
@@ -551,25 +551,25 @@ boolean Decorator::printJavaResources (FILE* jf, const char* indent, const char*
 	//		red[0] = red[1] = clr[0]; 
 	//		green[0] = green[1] = clr[1]; 
 	//		blue[0] = blue[1] = clr[2]; 
-	//		ok_to_set = TRUE;
+	//		ok_to_set = true;
 	//		break;
 	//	    case 2:
 	//		red[0] = clr[0]; red[1] = clr[1];
 	//		green[0] = clr[2];  green[1] = clr[3];
 	//		blue[0] = clr[4]; blue[1] = clr[5];
-	//		ok_to_set = TRUE;
+	//		ok_to_set = true;
 	//		break;
 	//	    case 3:
 	//		red[0] = clr[0]; red[1] = clr[1];
 	//		green[0] = clr[3];  green[1] = clr[4];
 	//		blue[0] = clr[6]; blue[1] = clr[7];
-	//		ok_to_set = TRUE;
+	//		ok_to_set = true;
 	//		break;
 	//	    case 4:
 	//		red[0] = clr[0]; red[1] = clr[1];
 	//		green[0] = clr[4];  green[1] = clr[5];
 	//		blue[0] = clr[8]; blue[1] = clr[9];
-	//		ok_to_set = TRUE;
+	//		ok_to_set = true;
 	//		break;
 	//	    default:
 	//		break;
@@ -588,5 +588,5 @@ boolean Decorator::printJavaResources (FILE* jf, const char* indent, const char*
 	//    }
 	//}
  //   }
-    return TRUE;
+    return true;
 }

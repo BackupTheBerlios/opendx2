@@ -34,7 +34,7 @@ class SetPanelCommentDialog : public TextEditDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
     //
@@ -51,7 +51,7 @@ class SetPanelCommentDialog : public TextEditDialog
     //
     // Save the text in the text window 
     //
-    virtual boolean saveText(const char *);
+    virtual bool saveText(const char *);
 
     //
     // The title to be applied the newly managed dialog.
@@ -63,7 +63,7 @@ class SetPanelCommentDialog : public TextEditDialog
     // Constructor (for derived classes) 
     //
     SetPanelCommentDialog(const char *name,
-			boolean readonly, ControlPanel *cp);
+			bool readonly, ControlPanel *cp);
 
     //
     // Install the default resources for this class and then call the
@@ -77,7 +77,7 @@ class SetPanelCommentDialog : public TextEditDialog
     //
     // Constructor (for instances of THIS class):
     //
-    SetPanelCommentDialog(boolean readonly, ControlPanel *cp);
+    SetPanelCommentDialog(bool readonly, ControlPanel *cp);
 
     //
     // Destructor:

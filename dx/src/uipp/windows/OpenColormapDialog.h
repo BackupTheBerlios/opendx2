@@ -32,10 +32,10 @@ class OpenColormapDialog : public dxui::FileDialog
 {
   private:
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
     ColormapEditor *editor;
-    boolean	   opening;
+    bool	   opening;
 
   protected:
     virtual void okFileWork(const char *string);
@@ -61,7 +61,7 @@ class OpenColormapDialog : public dxui::FileDialog
     //
     ~OpenColormapDialog(){}
 
-    void setMode(boolean openMode);
+    void setMode(bool openMode);
 
     //
     // Set the correct title 'Open/Close Colormap...'

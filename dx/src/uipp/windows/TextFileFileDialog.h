@@ -32,7 +32,7 @@ class TextFile;
 //				
 class TextFileFileDialog : public dxui::FileDialog
 {
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
 

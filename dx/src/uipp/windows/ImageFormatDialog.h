@@ -41,7 +41,7 @@ class ImageFormatDialog : public Dialog, public NoOpCommand
 {
   private:
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
     //static Cursor  WatchCursor;
 
@@ -70,7 +70,7 @@ class ImageFormatDialog : public Dialog, public NoOpCommand
 //
     int 		dirty;
     int			busyCursors;
-    boolean		resetting;
+    bool		resetting;
 
   protected:
 
@@ -85,14 +85,14 @@ class ImageFormatDialog : public Dialog, public NoOpCommand
 
     virtual void createDialog();
 
-    virtual boolean 		okCallback(Dialog *);
+    virtual bool 		okCallback(Dialog *);
     virtual void 		cancelCallback(Dialog *);
     virtual void		restoreCallback();
 
     virtual const char*		getOutputFile() = 0;
 
 
-    virtual boolean		isPrinting() = 0;
+    virtual bool		isPrinting() = 0;
     //virtual Widget		createControls(Widget parent) = 0;
 
     //
@@ -121,7 +121,7 @@ class ImageFormatDialog : public Dialog, public NoOpCommand
 	DirtyDelayed	= 16
     };
 
-    boolean 			isMetric();
+    bool 			isMetric();
     void			setChoice(ImageFormat*);
     virtual void		parseRecordFormat (const char *);
     virtual int			getRequiredWidth() { return 455; }
@@ -138,23 +138,23 @@ class ImageFormatDialog : public Dialog, public NoOpCommand
     virtual void 		manage();
     virtual void		currentImage();
     virtual void    		update();
-    virtual boolean 		postFileSelectionDialog() { return TRUE; }
+    virtual bool 		postFileSelectionDialog() { return true; }
 
     void associateNode(ImageNode* node) { this->node = node; }
-    boolean makeExecOutputImage(const char *, int , float , const char *, const char *);
-    boolean makeExecOutputImage(const char *, const char *, const char *);
+    bool makeExecOutputImage(const char *, int , float , const char *, const char *);
+    bool makeExecOutputImage(const char *, const char *, const char *);
 
-    boolean 	allowRerender();
-    boolean	isRerenderAllowed();
-    boolean	dirtyGamma() { return (this->dirty & ImageFormatDialog::DirtyGamma); }
-    boolean	delayedColors();
+    bool 	allowRerender();
+    bool	isRerenderAllowed();
+    bool	dirtyGamma() { return (this->dirty & ImageFormatDialog::DirtyGamma); }
+    bool	delayedColors();
     double	getGamma();
     void	setGamma(double gamma);
     ImageNode* 	getNode() { return this->node; }
-    boolean	getDelayedColors();
-    boolean     dirtyFormat() { return (this->dirty & ImageFormatDialog::DirtyFormat); }
-    void	setBusyCursor(boolean busy);
-    boolean	isResetting() { return this->resetting; }
+    bool	getDelayedColors();
+    bool     dirtyFormat() { return (this->dirty & ImageFormatDialog::DirtyFormat); }
+    void	setBusyCursor(bool busy);
+    bool	isResetting() { return this->resetting; }
 
     //
     // Destructor:

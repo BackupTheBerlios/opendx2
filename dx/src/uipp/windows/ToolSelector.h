@@ -55,11 +55,11 @@ class ToolSelector : public UIComponent
     dxui::TreeView* treeView;
 
     const void			*activeData;
-    boolean			lockedData;
-    boolean			toolListDirty;
+    bool			lockedData;
+    bool			toolListDirty;
     int				lastToolIndex;
 
-    static boolean ToolSelectorClassInitialized;
+    static bool ToolSelectorClassInitialized;
 
     //static String DefaultResources[]; 
 
@@ -86,20 +86,20 @@ class ToolSelector : public UIComponent
     //
     //  Add tools in the given dictionary to the category/tool lists.
     //
-    boolean augmentLists(Dictionary *d);
+    bool augmentLists(Dictionary *d);
 
     //
     // Add the Node named 'tool' that is in category 'cat' and defined by 'nd'
     // to the table of category/tool pairings.
     // The widgets are not updated.
     //
-    boolean addTool(Symbol cat, Symbol tool, void *ptr);
-    boolean removeTool(Symbol cat, Symbol tool);
+    bool addTool(Symbol cat, Symbol tool, void *ptr);
+    bool removeTool(Symbol cat, Symbol tool);
 
     //
     // Build a new Category list and install it in the categoryList.
     //
-    boolean updateCategoryListWidget();
+    bool updateCategoryListWidget();
 
     virtual void toolSelect(Symbol s);
     virtual void lockSelect(Symbol s);
@@ -132,29 +132,29 @@ class ToolSelector : public UIComponent
     //
     // These perform addTool and removeTool to all tool selectors.
     //
-    static boolean AddTool(Symbol cat, Symbol tool, void *ptr);
-    static boolean RemoveTool(Symbol cat, Symbol tool);
+    static bool AddTool(Symbol cat, Symbol tool, void *ptr);
+    static bool RemoveTool(Symbol cat, Symbol tool);
 
-    static boolean UpdateCategoryListWidget();
+    static bool UpdateCategoryListWidget();
 
     //
     // Merge new tools definitions into all tool selectors from a dictionary 
     // of NodeDefinitions.
     //
-    static boolean MergeNewTools(Dictionary *d);
+    static bool MergeNewTools(Dictionary *d);
 
     //
     // Get the current Selection. 
     // 
     virtual NodeDefinition *getCurrentSelection() {return (NodeDefinition*)activeData;}
 
-    boolean  isSelectionLocked()	{ return this->lockedData; }
+    bool  isSelectionLocked()	{ return this->lockedData; }
 
     //
     // Build two list widgets and initialize the lists from the items in
     // the dictionary.
     //
-    virtual boolean initialize(Dictionary *d);
+    virtual bool initialize(Dictionary *d);
 
     //
     // Unhighlight any selected tools in the tool list. 
@@ -165,7 +165,7 @@ class ToolSelector : public UIComponent
     // is the object in the anchor window. At this level we know nothing
     // of windows.  EditorToolSelector has this knowledge.
     //
-    virtual boolean inAnchor(){ return TRUE; }
+    virtual bool inAnchor(){ return true; }
 
     virtual void componentHelp() { this->help(); }
 
@@ -189,15 +189,15 @@ class ToolSelector : public UIComponent
 #if defined(TOOL_SELECTOR_PRIVATE)
     class ToolCategoryNode : public CategoryNode {
 	private:
-	    boolean sorted;
+	    bool sorted;
 	protected:
 	    ToolSelector* toolSelector;
 	    ToolCategoryNode(Symbol s, dxui::TreeNode* parent, ToolSelector* ts); 
 	    friend class ToolSelector;
 	public:
-	    void setExpanded(boolean e=TRUE);
-	    boolean isSorted() {
-		if (this->sorted) return TRUE;
+	    void setExpanded(bool e=true);
+	    bool isSorted() {
+		if (this->sorted) return true;
 		return this->CategoryNode::isSorted();
 	    }
     };
@@ -217,7 +217,7 @@ class ToolSelector : public UIComponent
 	private:
 	    ToolSelector* toolSelector;
 	protected:
-	    void select(dxui::TreeNode* node, boolean repaint=TRUE);
+	    void select(dxui::TreeNode* node, bool repaint=true);
 	    void multiClick(dxui::TreeNode* node);
 	    friend class ToolSelector;
 	    void adjustVisibility(int, int, int, int);

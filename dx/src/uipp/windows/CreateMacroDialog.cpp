@@ -27,7 +27,7 @@
 #include "NodeDefinition.h"
 #include "DictionaryIterator.h"
 
-boolean CreateMacroDialog::ClassInitialized = FALSE;
+bool CreateMacroDialog::ClassInitialized = false;
 
 //String CreateMacroDialog::DefaultResources[] =
 //{
@@ -56,7 +56,7 @@ CreateMacroDialog::CreateMacroDialog(
     this->editor = e;
     if (NOT CreateMacroDialog::ClassInitialized)
     {
-        CreateMacroDialog::ClassInitialized = TRUE;
+        CreateMacroDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
     this->textFile = new TextFile();
@@ -90,15 +90,15 @@ void CreateMacroDialog::ConfirmationOk(void *data)
 }
 
 
-boolean CreateMacroDialog::okCallback(Dialog *d)
+bool CreateMacroDialog::okCallback(Dialog *d)
 {
 
     /*CreateMacroDialog *cmd = (CreateMacroDialog*)d;*/
 
     //char *name = SetMacroNameDialog::GetTextWidgetToken(this->macroName); 
 
- //   if (!this->verifyMacroName(name, TRUE)) {
-	//return FALSE;
+ //   if (!this->verifyMacroName(name, true)) {
+	//return false;
 	//delete name;
  //   }
 
@@ -107,7 +107,7 @@ boolean CreateMacroDialog::okCallback(Dialog *d)
 	ModalErrorMessage("A file name must be given");
 	delete name;
 	//XtFree(filename);
-	return FALSE;
+	return false;
     }
 
     char *newname = Network::FilenameToNetname(filename);
@@ -126,10 +126,10 @@ boolean CreateMacroDialog::okCallback(Dialog *d)
 	delete name;
         delete newname; 
 
-	return TRUE;
+	return true;
     }
 
-    boolean worked = this->createMacro();
+    bool worked = this->createMacro();
 
     delete name;
     delete newname; 
@@ -140,7 +140,7 @@ boolean CreateMacroDialog::okCallback(Dialog *d)
 
 
 
-boolean CreateMacroDialog::createMacro()
+bool CreateMacroDialog::createMacro()
 {
    
 
@@ -149,7 +149,7 @@ boolean CreateMacroDialog::createMacro()
     //char *cat = SetMacroNameDialog::GetTextWidgetToken(this->category);
     //char *desc = XmTextGetString(this->description);
 
- /*   boolean worked = this->editor->macroifySelectedNodes(name, cat, desc,
+ /*   bool worked = this->editor->macroifySelectedNodes(name, cat, desc,
 								 filename);*/
     //delete name;
     //delete cat;
@@ -317,7 +317,7 @@ void CreateMacroDialog::createDialog()
 //        XmNbottomOffset    , 5,
 //	NULL);
 //
-//    this->textFile->enableCallbacks(TRUE);
+//    this->textFile->enableCallbacks(true);
 //
 //    return dialog;
 }

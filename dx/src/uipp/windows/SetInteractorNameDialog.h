@@ -35,7 +35,7 @@ class SetInteractorNameDialog : public SetNameDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     ControlPanel *panel;
@@ -45,7 +45,7 @@ class SetInteractorNameDialog : public SetNameDialog
     // Protected member data:
     //
 
-    virtual boolean saveText(const char *s);
+    virtual bool saveText(const char *s);
     virtual const char *getText();
 
     //

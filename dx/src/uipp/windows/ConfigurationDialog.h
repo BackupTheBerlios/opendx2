@@ -60,7 +60,7 @@ class ConfigurationDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //
     // Various X Callbacks.  Apply and Restore are called upon pressing
@@ -161,20 +161,20 @@ class ConfigurationDialog : public Dialog
 
     //
     // widgetChanged is called to allow the CDB to update the Node's Parameter
-    // based on new stuff.  Returns FALSE if there's an error.
-    virtual boolean   widgetChanged(int i, boolean send = TRUE);
+    // based on new stuff.  Returns false if there's an error.
+    virtual bool   widgetChanged(int i, bool send = true);
 
     //
     // redraw all inputs, and make them visible either based on the parameter's
     // visiblility (!force), or force them all to be visible.
-    virtual void   remanageInputs(boolean force);
+    virtual void   remanageInputs(bool force);
 
     //
     // These are called by pushing the various buttons.
-    // OK and Apply return FALSE on error indicating not to unmanage
+    // OK and Apply return false on error indicating not to unmanage
     // the dialog (a non-sequitor for apply).
-    virtual boolean okCallback(Dialog *d);
-    virtual boolean applyCallback(Dialog *d);
+    virtual bool okCallback(Dialog *d);
+    virtual bool applyCallback(Dialog *d);
     virtual void helpCallback(Dialog *d);
     virtual void cancelCallback(Dialog *d);
     virtual void restoreCallback(Dialog *d);

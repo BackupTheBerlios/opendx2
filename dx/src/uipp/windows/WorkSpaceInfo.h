@@ -45,7 +45,7 @@ class WorkSpaceInfo : public Base
     int 	width; 
     int		height;
     WorkSpace	*workSpace;	// Set when referenced by a WorkSpace
-    boolean	prevent_overlap;
+    bool	prevent_overlap;
 
   protected:
     //
@@ -54,10 +54,10 @@ class WorkSpaceInfo : public Base
 
     void setWidth(int val)    { this->width = val; }
     void setHeight(int val)   { this->height = val; }
-    void setGridActive(boolean val = TRUE) { this->grid.setActive(val); }
+    void setGridActive(bool val = true) { this->grid.setActive(val); }
     void setGridSpacing(int w, int h) { this->grid.setSpacing(w, h); }
     void setGridAlignment(int x, int y) { this->grid.setAlignment(x,y); }
-    void setPreventOverlap(boolean val=TRUE) { this->prevent_overlap = val; }
+    void setPreventOverlap(bool val=true) { this->prevent_overlap = val; }
     void associateWorkSpace(WorkSpace *ws) { this->workSpace = ws; }
     void disassociateWorkSpace() { this->workSpace = NULL; }
 
@@ -77,15 +77,15 @@ class WorkSpaceInfo : public Base
     //
     ~WorkSpaceInfo(){}
 
-    boolean printComments(FILE *f);
-    boolean parseComment(const char *comment, const char *filename,int lineno);
+    bool printComments(FILE *f);
+    bool parseComment(const char *comment, const char *filename,int lineno);
     
     int getWidth()    { return this->width; }
     int getHeight()   { return this->height; }
 
-    boolean isGridActive() { return this->grid.isActive(); }
+    bool isGridActive() { return this->grid.isActive(); }
     void    getGridSpacing(int& w, int& h) { this->grid.getSpacing(w,h); }
-    boolean getPreventOverlap() { return this->prevent_overlap; }
+    bool getPreventOverlap() { return this->prevent_overlap; }
 
     //
     // Returns one of XmALIGNMENT_BEGINNING, XmALIGNMENT_CENTER or

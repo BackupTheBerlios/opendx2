@@ -22,7 +22,7 @@ class PanelGroupManager;
 
 NoUndoEditorCommand::NoUndoEditorCommand(const char*   name,
 				       CommandScope* scope,
-				       boolean       active,
+				       bool       active,
 				       EditorWindow  *editor,
 				       EditorCommandType comType,
        				       EditorUndoType undoType) :
@@ -34,12 +34,12 @@ NoUndoEditorCommand::NoUndoEditorCommand(const char*   name,
 }
 
 
-boolean NoUndoEditorCommand::doIt(CommandInterface *ci)
+bool NoUndoEditorCommand::doIt(CommandInterface *ci)
 {
     EditorWindow *editor = this->editor;
     Network *n = editor->getNetwork();
     ControlPanel *panel;
-    boolean     ret = TRUE;
+    bool     ret = true;
 
     ASSERT(editor);
 
@@ -62,7 +62,7 @@ boolean NoUndoEditorCommand::doIt(CommandInterface *ci)
 	    editor->openSelectedINodes();  
 	    break;
 	case NoUndoEditorCommand::OpenSelectedColormaps:
-	    editor->network->openColormap(FALSE);
+	    editor->network->openColormap(false);
 	    break;
 	case NoUndoEditorCommand::OpenSelectedMacros:
 	    editor->openSelectedMacros();
@@ -72,22 +72,22 @@ boolean NoUndoEditorCommand::doIt(CommandInterface *ci)
 	    break;
 
 	case NoUndoEditorCommand::RemoveInputTab:// Remove repeatable tabs 
-	    ret = editor->editSelectedNodeTabs(FALSE,TRUE);
+	    ret = editor->editSelectedNodeTabs(false,true);
 	    break;
 	case NoUndoEditorCommand::AddInputTab:
-	    ret = editor->editSelectedNodeTabs(TRUE,TRUE);
+	    ret = editor->editSelectedNodeTabs(true,true);
 	    break;
 	case NoUndoEditorCommand::RemoveOutputTab:// Remove repeatable tabs 
-	    ret = editor->editSelectedNodeTabs(FALSE, FALSE);
+	    ret = editor->editSelectedNodeTabs(false, false);
 	    break;
 	case NoUndoEditorCommand::AddOutputTab:
-	    ret = editor->editSelectedNodeTabs(TRUE, FALSE);
+	    ret = editor->editSelectedNodeTabs(true, false);
 	    break;
 	case NoUndoEditorCommand::HideAllTabs:
-	    ret = editor->setSelectedNodeTabVisibility(FALSE);
+	    ret = editor->setSelectedNodeTabVisibility(false);
 	    break;
 	case NoUndoEditorCommand::RevealAllTabs:
-	    ret = editor->setSelectedNodeTabVisibility(TRUE);
+	    ret = editor->setSelectedNodeTabVisibility(true);
 	    break;
 	case NoUndoEditorCommand::SelectDownward:// Select all down stream nodes
 	    ret = editor->selectDownwardNodes();
@@ -133,7 +133,7 @@ boolean NoUndoEditorCommand::doIt(CommandInterface *ci)
 	    if (this->editor->areSelectedNodesMacrofiable())
 		editor->postCreateMacroDialog();
 	    else
-		ret = FALSE;
+		ret = false;
 	    break;
 	case NoUndoEditorCommand::SetOutputsNotCached:
 	    editor->setSelectedNodesOutputCacheability(OutputNotCached);
@@ -168,10 +168,10 @@ boolean NoUndoEditorCommand::doIt(CommandInterface *ci)
 	    EditorWindow::ConvertToGlobal();
 	    break;
 	case NoUndoEditorCommand::SelectedToGlobal:
-	    editor->convertToGlobal(TRUE);
+	    editor->convertToGlobal(true);
 	    break;
 	case NoUndoEditorCommand::SelectedToLocal:
-	    editor->convertToGlobal(FALSE);
+	    editor->convertToGlobal(false);
 	    break;
 	case NoUndoEditorCommand::PostGetSet:
 	    editor->postGetSetConversionDialog();
@@ -182,10 +182,10 @@ boolean NoUndoEditorCommand::doIt(CommandInterface *ci)
 	    break;
 #if WORKSPACE_PAGES
 	case NoUndoEditorCommand::Pagify:
-	    editor->pagifySelectedNodes((boolean)FALSE);
+	    editor->pagifySelectedNodes((bool)false);
 	    break;
 	case NoUndoEditorCommand::PagifySelected:
-	    editor->pagifySelectedNodes((boolean)TRUE);
+	    editor->pagifySelectedNodes((bool)true);
 	    break;
 	case NoUndoEditorCommand::AutoChopSelected:
 	    editor->autoChopSelectedNodes();

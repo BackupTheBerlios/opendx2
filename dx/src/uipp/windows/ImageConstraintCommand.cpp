@@ -17,7 +17,7 @@
 
 ImageConstraintCommand::ImageConstraintCommand(const char   *name,
 						 CommandScope *scope,
-						 boolean       active,
+						 bool       active,
 						 ImageWindow  *w,
 						 ConstraintDirection dir):
     NoUndoCommand(name, scope, active)
@@ -26,7 +26,7 @@ ImageConstraintCommand::ImageConstraintCommand(const char   *name,
     this->direction = dir;
 }
 
-boolean ImageConstraintCommand::doIt(CommandInterface *ci)
+bool ImageConstraintCommand::doIt(CommandInterface *ci)
 {
     return this->imageWindow->setConstraint(this->direction);
 }

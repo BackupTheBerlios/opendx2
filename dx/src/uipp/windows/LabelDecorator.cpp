@@ -44,7 +44,7 @@
 extern "C" int gethostname(char *address, int address_len);
 #endif
 
-boolean LabelDecorator::LabelDecoratorClassInitialized = FALSE;
+bool LabelDecorator::LabelDecoratorClassInitialized = false;
 
 Dictionary* LabelDecorator::CommentStyleDictionary = NUL(Dictionary*);
 
@@ -124,7 +124,7 @@ Dictionary* LabelDecorator::DragTypeDictionary = new Dictionary;
 //	the label is bigger than the space available.
 #define LLOYDS_SAFETY_MARGIN 4
 
-LabelDecorator::LabelDecorator(boolean developerStyle, const char *name) : 
+LabelDecorator::LabelDecorator(bool developerStyle, const char *name) : 
 	Decorator (NULL, name, developerStyle)
 {
     //this->labelString = 0;
@@ -133,7 +133,7 @@ LabelDecorator::LabelDecorator(boolean developerStyle, const char *name) :
     //this->otherStrings = NUL(Dictionary*);
     //LabelDecorator::BuildTheCommentStyleDictionary();
 }
-LabelDecorator::LabelDecorator(boolean developerStyle) : 
+LabelDecorator::LabelDecorator(bool developerStyle) : 
 	Decorator (NULL, "LabelDecorator", developerStyle)
 {
     //this->labelString = 0;
@@ -219,14 +219,14 @@ void LabelDecorator::initialize()
  //                                       Decorator::DefaultResources);
 	//this->setDefaultResources(theApplication->getRootWidget(),
  //                                       WorkSpaceComponent::DefaultResources);
-        LabelDecorator::LabelDecoratorClassInitialized = TRUE;
+        LabelDecorator::LabelDecoratorClassInitialized = true;
 
 	//LabelDecorator::DragIcon = this->createDragIcon 
 	// (ntractor_width,ntractor_height,(char *)ntractor_bits,(char *)ntractormask_bits);
-	this->addSupportedType (Decorator::Modules, DXINTERACTORS, TRUE);
-	this->addSupportedType (Decorator::Trash, DXTRASH, FALSE);
+	this->addSupportedType (Decorator::Modules, DXINTERACTORS, true);
+	this->addSupportedType (Decorator::Trash, DXTRASH, false);
 	// Don't use text because Shift+drag breaks
-	//this->addSupportedType (Decorator::Text, "TEXT", FALSE);
+	//this->addSupportedType (Decorator::Text, "TEXT", false);
     }
 }
 
@@ -249,10 +249,10 @@ void LabelDecorator::initialize()
 //	// decorator LabelDecorator\tpos=(%d,%d), size=%dx%d, font=%s, value = %s
 //	// decorator LabelDecorator\tpos=(%d,%d), size=%dx%d, value = %s
 //
-boolean LabelDecorator::printComment (FILE *f)
+bool LabelDecorator::printComment (FILE *f)
 {
-    if (!this->Decorator::printComment (f)) return FALSE;
-    boolean printOK=TRUE;
+    if (!this->Decorator::printComment (f)) return false;
+    bool printOK=true;
 
     //
     // Starting in 3.1.4, print out just config info, then put the actual text
@@ -262,10 +262,10 @@ boolean LabelDecorator::printComment (FILE *f)
     if ((!cp) || (!cp[0])) cp = NO_TEXT_SYMBOL;
     if (this->font[0]) {
 	if (fprintf (f, ", font=%s, value = %s\n", this->font, cp) < 0) 
-	    return FALSE;
+	    return false;
     } else {
 	if (fprintf (f, ", value = %s\n", cp) < 0) 
-	    return FALSE;
+	    return false;
     }
 
     Dictionary* csty_dict = this->getCommentStyleDictionary();
@@ -289,7 +289,7 @@ boolean LabelDecorator::printComment (FILE *f)
 // The 3.0 beta used "alignment = %d" on this comment line.  It was removed when
 // DynamicResource came into being.  All such settings were moved to separate lines.
 //
-boolean LabelDecorator::parseComment (const char *comment, const char *file, int l)
+bool LabelDecorator::parseComment (const char *comment, const char *file, int l)
 {
 int items_parsed;
 char text[1024];
@@ -302,7 +302,7 @@ char font[64];
     //
     if (EqualSubstring(" annotation",comment,11)) {
 	char keyword[64];
-	boolean parsed = FALSE;
+	bool parsed = false;
 	items_parsed = sscanf (comment, " annotation %[^:]", keyword);
 	if (items_parsed == 1) {
 	    Dictionary* csty_dict = this->getCommentStyleDictionary();
@@ -310,7 +310,7 @@ char font[64];
 	    CommentStyle* csty;
 	    while ( (csty = (CommentStyle*)di.getNextDefinition()) ) {
 		if (csty->parseComment(this, comment, file, l)) {
-		    parsed = TRUE;
+		    parsed = true;
 		    break;
 		}
 	    }
@@ -318,18 +318,18 @@ char font[64];
 	if (!parsed) 
 	    WarningMessage ("Unrecognized text in LabelDecorator "
 			    "Comment (file %s, line %d)", file, l);
-	return TRUE;
+	return true;
     }
 
 
 
-    if (!this->Decorator::parseComment (comment, file, l)) return FALSE;
+    if (!this->Decorator::parseComment (comment, file, l)) return false;
 
     const char *cp = strstr (comment, ", value =");
     if (!cp) {
 	WarningMessage ("Unrecognized text in LabelDecorator Comment (file %s, line %d)",
 		file, l);
-	return TRUE;
+	return true;
     }
 
     items_parsed = sscanf(cp, ", value = %[^\n]", text);
@@ -337,7 +337,7 @@ char font[64];
     if (items_parsed != 1) {
 	WarningMessage ("Unrecognized text in LabelDecorator Comment (file %s, line %d)",
 		file, l);
-	return TRUE;
+	return true;
     }
 
     if (EqualString(text, NO_TEXT_SYMBOL))
@@ -349,7 +349,7 @@ char font[64];
 	if (items_parsed != 1) {
 	    WarningMessage 
 	     ("Unrecognized text in LabelDecorator Comment (file %s, line %d)", file, l);
-	    return TRUE;
+	    return true;
 	}
 	this->setFont(font);
     }
@@ -358,7 +358,7 @@ char font[64];
     if (text[0])
 	this->setLabel(text); 
 
-    return TRUE;
+    return true;
 }
 
 
@@ -394,7 +394,7 @@ LabelDecorator::uncreateDecorator()
 }
 
 Decorator*
-LabelDecorator::AllocateDecorator (boolean devStyle)
+LabelDecorator::AllocateDecorator (bool devStyle)
 {
     return new LabelDecorator (devStyle);
 }
@@ -402,10 +402,10 @@ LabelDecorator::AllocateDecorator (boolean devStyle)
 //
 // Determine if this Component is of the given class.
 //
-boolean LabelDecorator::isA(Symbol classname)
+bool LabelDecorator::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassLabelDecorator);
-    if (s == classname) return TRUE;
+    if (s == classname) return true;
     return this->Decorator::isA(classname);
 }
 
@@ -453,7 +453,7 @@ LabelDecorator::setFont (const char *font)
 //    }
 }
 
-void LabelDecorator::setLabel (const char *newStr, boolean)
+void LabelDecorator::setLabel (const char *newStr, bool)
 { 
 //XmStringContext cxt;
 //char *text, *tag;
@@ -503,7 +503,7 @@ void LabelDecorator::setLabel (const char *newStr, boolean)
 //    // Compares linesNew > 1 because we're going to disable the alignment resource
 //    // setting for single line decorators and we want them to be shrink-wrapped.
 //    XtVaGetValues (this->getRootWidget(), XmNresizePolicy, &rp, NULL);
-//    if ((linesNew == linesOld) && (linesNew > 1) && (this->resizeOnUpdate() == FALSE)) {
+//    if ((linesNew == linesOld) && (linesNew > 1) && (this->resizeOnUpdate() == false)) {
 //        XtVaSetValues (this->getRootWidget(), XmNresizePolicy, XmRESIZE_GROW, NULL);
 //    } else {
 //        XtVaSetValues (this->getRootWidget(), XmNresizePolicy, XmRESIZE_ANY, NULL);
@@ -550,7 +550,7 @@ void LabelDecorator::setLabel (const char *newStr, boolean)
 //	}
 //
 //	// automatically checks for set contains before adding to set.
-//	boolean applyOK;
+//	bool applyOK;
 //	if (applyOK = dr->addWidgetToNameList (this->customPart)) {
 //	    applyOK = dr->setData(line2); 
 //	}
@@ -723,17 +723,17 @@ void LabelDecorator::openDefaultWindow()
  //   if (!this->setTextDialog) {
 	//Widget parent = XtParent(this->getRootWidget());
 	//this->setTextDialog = 
-	//    new SetDecoratorTextDialog (parent, FALSE, this);
+	//    new SetDecoratorTextDialog (parent, false, this);
  //   }
 
  //   this->setTextDialog->post();
 }
 
 
-//boolean LabelDecorator::decodeDragType (int tag,
+//bool LabelDecorator::decodeDragType (int tag,
 //	char * a, XtPointer *value, unsigned long *length, long operation)
 //{
-//boolean retVal;
+//bool retVal;
 //const char *cp;
 //
 //    switch (tag) {
@@ -742,14 +742,14 @@ void LabelDecorator::openDefaultWindow()
 //	    break;
 //
 //	case Decorator::Trash:
-//	    retVal = TRUE;
+//	    retVal = true;
 //	    // dummy pointer
 //	    *value = (XtPointer)malloc(4);
 //	    *length = 4;
 //	    break;
 //
 //	case Decorator::Text:
-//	    retVal = TRUE;
+//	    retVal = true;
 //	    cp = this->getLabelValue();
 //	    *length = strlen(cp);
 //	    *value = (XtPointer)malloc(1+*length);
@@ -765,7 +765,7 @@ void LabelDecorator::openDefaultWindow()
 //	    int len;
 //	    hostname = new char[MAXHOSTNAMELEN + 16];
 //	    if (gethostname (hostname, MAXHOSTNAMELEN) == -1) {
-//		retVal = FALSE;
+//		retVal = false;
 //		break;
 //	    }
 //	    len = strlen(hostname);
@@ -773,11 +773,11 @@ void LabelDecorator::openDefaultWindow()
 // 
 //	    *value = hostname;
 //	    *length = strlen(hostname);
-//	    retVal = TRUE;
+//	    retVal = true;
 //	    break;
 // 
 //	default:
-//	    retVal = FALSE;
+//	    retVal = false;
 //	    break;
 //    }
 //
@@ -795,7 +795,7 @@ void LabelDecorator::openDefaultWindow()
 // might agree.  Want to prevent that because changing one of vertical,horizontal
 // dimensions shouldn't affect the other.
 //
-void LabelDecorator::setAppearance (boolean developerStyle)
+void LabelDecorator::setAppearance (bool developerStyle)
 {
 //int n = 0;
 //Arg args[5];
@@ -896,7 +896,7 @@ void LabelDecorator::associateDialog (Dialog* diag)
 //    return xmfl;
 //}
 
-boolean LabelDecorator::printAsJava (FILE* jf, const char* var_name, int instance_no)
+bool LabelDecorator::printAsJava (FILE* jf, const char* var_name, int instance_no)
 {
     const char* indent = "        ";
     int x,y,w,h;
@@ -916,21 +916,21 @@ boolean LabelDecorator::printAsJava (FILE* jf, const char* var_name, int instanc
 	const char* cp = Decorator::FetchLine(labtext,i);
 	fprintf (jf, "%s%s.setText(\"%s\");\n", indent, lvar, cp);
     }
-    if (this->printJavaResources(jf, indent, lvar) == FALSE)
-	return FALSE;
+    if (this->printJavaResources(jf, indent, lvar) == false)
+	return false;
     fprintf (jf, "%s%s.init();\n", indent, lvar);
     if (fprintf (jf, "%s%s.reshape (%d,%d,%d,%d);\n", indent,lvar,x,y,w,h) <= 0)
-	return FALSE;
+	return false;
     fprintf (jf, "%s%s.addDecorator(%s);\n", indent, var_name, lvar);
 
 
-    return TRUE;
+    return true;
 }
 
-boolean LabelDecorator::printJavaResources(FILE* jf, const char* indent, const char* var)
+bool LabelDecorator::printJavaResources(FILE* jf, const char* indent, const char* var)
 {
- //   if (this->Decorator::printJavaResources(jf, indent, var) == FALSE)
-	//return FALSE;
+ //   if (this->Decorator::printJavaResources(jf, indent, var) == false)
+	//return false;
 
  //   if (this->setResourceList) {
 	//ListIterator it(*this->setResourceList);
@@ -978,7 +978,7 @@ boolean LabelDecorator::printJavaResources(FILE* jf, const char* indent, const c
 	//	indent, var, font_str, size_str);
  //   }
 
-    return TRUE;
+    return true;
 }
 
 
@@ -1000,7 +1000,7 @@ LabelDecorator::getLabel()
 //XmStringDirection dir;
 //Boolean sep;
 //int os;
-//boolean separator_needed;
+//bool separator_needed;
 //
 //    if (!this->labelString) return "";
 //    if (!XmStringInitContext (&cxt, this->labelString)) {
@@ -1018,7 +1018,7 @@ LabelDecorator::getLabel()
 //    }
 //
 //
-//    separator_needed = FALSE;
+//    separator_needed = false;
 //    os = 0;
 //    while (XmStringGetNextSegment (cxt, &text, &tag, &dir, &sep)) {
 //	if (separator_needed) {
@@ -1031,7 +1031,7 @@ LabelDecorator::getLabel()
 //	// unsure about this line. The motif manual doesn't do this
 //	// but purify complains about memory loss
 //	if (tag) XtFree(tag);
-//	separator_needed = TRUE;
+//	separator_needed = true;
 //    }
 //    label_buf[os] = '\0';
 //    ASSERT(os < label_max_size);

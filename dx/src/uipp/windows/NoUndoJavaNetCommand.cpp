@@ -14,7 +14,7 @@
 
 NoUndoJavaNetCommand::NoUndoJavaNetCommand(const char*   name,
 				       CommandScope* scope,
-				       boolean       active,
+				       bool       active,
 				       JavaNet	*net,
 				       JavaNetCommandType comType ) :
 	NoUndoCommand(name, scope, active)
@@ -24,7 +24,7 @@ NoUndoJavaNetCommand::NoUndoJavaNetCommand(const char*   name,
 }
 
 
-boolean NoUndoJavaNetCommand::doIt(CommandInterface *ci)
+bool NoUndoJavaNetCommand::doIt(CommandInterface *ci)
 {
     JavaNet *net = this->network;
 
@@ -44,7 +44,7 @@ boolean NoUndoJavaNetCommand::doIt(CommandInterface *ci)
 	    ASSERT(0);
     }
 
-    return TRUE;
+    return true;
 }
 
 

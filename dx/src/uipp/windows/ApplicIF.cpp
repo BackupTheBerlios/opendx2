@@ -24,7 +24,7 @@
 
 
 ApplicIF::ApplicIF(const char *server, int port, int local)
-                        : PacketIF(server, port, local, FALSE) 
+                        : PacketIF(server, port, local, false) 
 {
     DXPacketIF *pif = theDXApplication->getPacketIF();
     if (pif)
@@ -94,7 +94,7 @@ void ApplicIF::HandleApplicationError(void *clientData, char *message)
     if (app)
     {
 	ErrorMessage(message);
-	app->disconnectFromApplication(TRUE);
+	app->disconnectFromApplication(true);
     }
 }
 

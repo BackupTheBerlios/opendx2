@@ -21,7 +21,7 @@
 #include "DXStrings.h"
 #include "ListIterator.h"
 
-boolean WizardDialog::ClassInitialized = FALSE;
+bool WizardDialog::ClassInitialized = false;
 
 List* WizardDialog::AlreadyWizzered = NUL(List*);
 
@@ -39,16 +39,16 @@ List* WizardDialog::AlreadyWizzered = NUL(List*);
 //};
 
 WizardDialog::WizardDialog(const char* parent_name)
-			: TextEditDialog("wizard", TRUE, TRUE)
+			: TextEditDialog("wizard", true, true)
 {
     this->parent_name = DuplicateString(parent_name);
     this->text = NUL(char*);
-    this->file_read = FALSE;
+    this->file_read = false;
     //this->closeToggle = NUL(Widget);
 
  //   if (NOT WizardDialog::ClassInitialized)
  //   {
- //       WizardDialog::ClassInitialized = TRUE;
+ //       WizardDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
  //   }
 }
@@ -68,7 +68,7 @@ WizardDialog::~WizardDialog()
 //    this->TextEditDialog::installDefaultResources( baseWidget);
 //}
 
-boolean WizardDialog::okCallback(Dialog* dialog)
+bool WizardDialog::okCallback(Dialog* dialog)
 {
     //
     // Check the state of the toggle
@@ -121,7 +121,7 @@ struct STATSTRUCT statb;
 
     if (this->text) return this->text;
     if (this->file_read) return NUL(char*);
-    this->file_read = TRUE;
+    this->file_read = true;
 
     const char* uiroot = theIBMApplication->getUIRoot();
     ASSERT(uiroot);
@@ -151,14 +151,14 @@ struct STATSTRUCT statb;
 //
 void WizardDialog::post()
 {
-    boolean found = FALSE;
+    bool found = false;
 
     if (WizardDialog::AlreadyWizzered) {
 	ListIterator it(*WizardDialog::AlreadyWizzered);
 	char *wizzed;
 	while ( (wizzed = (char*)it.getNext()) ) {
 	    if (EqualString (wizzed, this->parent_name)) {
-		found = TRUE;
+		found = true;
 		break;
 	    }
 	}

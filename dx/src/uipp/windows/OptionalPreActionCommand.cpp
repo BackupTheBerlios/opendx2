@@ -14,7 +14,7 @@
 
 OptionalPreActionCommand::OptionalPreActionCommand(const char*   name,
 				   CommandScope* scope,
-				   boolean       active,
+				   bool       active,
 				   char*         dialogTitle,
 				   char*         dialogQuestion):
 	PreActionCommand(name, scope, active, 
@@ -23,7 +23,7 @@ OptionalPreActionCommand::OptionalPreActionCommand(const char*   name,
 }
 
 
-boolean OptionalPreActionCommand::execute(CommandInterface *ci)
+bool OptionalPreActionCommand::execute(CommandInterface *ci)
 {
     //
     // First post the confirmation dialog.
@@ -32,5 +32,5 @@ boolean OptionalPreActionCommand::execute(CommandInterface *ci)
 	this->PreActionCommand::execute(ci);
     else
 	this->NoUndoCommand::execute(ci);
-    return FALSE;
+    return false;
 }

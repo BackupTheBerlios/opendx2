@@ -55,7 +55,7 @@ class StepperInteractor : public ScalarInteractor
     //Widget	componentForm;	// Holds the steppers for a vector interactor
 
 
-    static boolean StepperInteractorClassInitialized;
+    static bool StepperInteractorClassInitialized;
 
     // Call the virtual callback for value changes. 
     //
@@ -79,7 +79,7 @@ class StepperInteractor : public ScalarInteractor
 		//{ ASSERT(i>0); 
 		//  return (Widget)this->componentWidgets.getElement(i); 
 		//}
-  //  boolean appendComponentWidget(Widget w) 
+  //  bool appendComponentWidget(Widget w) 
 		//{ return this->componentWidgets.appendElement((const void*) w);
 	 //	}
 
@@ -130,7 +130,7 @@ class StepperInteractor : public ScalarInteractor
     //
     virtual void handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change);
+					bool major_change);
 
     //
     // Need special handling for laying out because it must

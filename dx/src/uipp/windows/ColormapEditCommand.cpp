@@ -24,7 +24,7 @@
 
 ColormapEditCommand::ColormapEditCommand(const char*   name,
                          CommandScope* scope,
-                         boolean       active,
+                         bool       active,
                          ColormapEditor* editor,
 			 int option):NoUndoCommand(name,scope,active)
 {
@@ -32,14 +32,14 @@ ColormapEditCommand::ColormapEditCommand(const char*   name,
 	this->option = option;	
 }
 
-boolean ColormapEditCommand::doIt(CommandInterface *ci)
+bool ColormapEditCommand::doIt(CommandInterface *ci)
 {
 //    Arg      	   wargs[8];
     ColormapEditor *editor = this->editor;
     ColormapNode   *cmnode = editor->colormapNode;
 //    Widget         colormap = this->editor->workArea;
     ToggleButtonInterface *tbi;
-    boolean	   set;
+    bool	   set;
 
     switch (this->option)
     {
@@ -184,37 +184,37 @@ boolean ColormapEditCommand::doIt(CommandInterface *ci)
 
 	case ColormapEditCommand::ResetAll:
 	    if (cmnode->hasDefaultHSVMap())
-		cmnode->installCurrentDefaultHSVMap(FALSE);
+		cmnode->installCurrentDefaultHSVMap(false);
 	    if (cmnode->hasDefaultOpacityMap())
-		cmnode->installCurrentDefaultOpacityMap(FALSE);
+		cmnode->installCurrentDefaultOpacityMap(false);
 	    if (cmnode->hasDefaultMin())
-		cmnode->installCurrentDefaultMin(FALSE);
+		cmnode->installCurrentDefaultMin(false);
 	    if (cmnode->hasDefaultMax())
-		cmnode->installCurrentDefaultMax(FALSE);
-	    cmnode->sendValues(FALSE);
+		cmnode->installCurrentDefaultMax(false);
+	    cmnode->sendValues(false);
 	    break;
 	case ColormapEditCommand::ResetMinMax:
-	    cmnode->installCurrentDefaultMinAndMax(TRUE);
+	    cmnode->installCurrentDefaultMinAndMax(true);
 	    break;
 	case ColormapEditCommand::ResetMin:
-	    cmnode->installCurrentDefaultMin(TRUE);
+	    cmnode->installCurrentDefaultMin(true);
 	    break;
 	case ColormapEditCommand::ResetMax:
-	    cmnode->installCurrentDefaultMax(TRUE);
+	    cmnode->installCurrentDefaultMax(true);
 	    break;
 	case ColormapEditCommand::ResetHSV:
-	    cmnode->installCurrentDefaultHSVMap(TRUE);
+	    cmnode->installCurrentDefaultHSVMap(true);
 	    break;
 	case ColormapEditCommand::ResetOpacity:
-	    cmnode->installCurrentDefaultOpacityMap(TRUE);
+	    cmnode->installCurrentDefaultOpacityMap(true);
 	    break;
 
 	default:
 
-	     ASSERT(FALSE);
+	     ASSERT(false);
     }
 
-    return TRUE;
+    return true;
 }
 
 

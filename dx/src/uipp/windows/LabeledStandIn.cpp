@@ -15,7 +15,7 @@
 #include "DXApplication.h"
 
 
-boolean LabeledStandIn::ClassInitialized = FALSE;
+bool LabeledStandIn::ClassInitialized = false;
 
 //String LabeledStandIn::DefaultResources[]  =  {
 //	NULL
@@ -48,7 +48,7 @@ LabeledStandIn::~LabeledStandIn()
 void LabeledStandIn::initialize()
 {
     if (!LabeledStandIn::ClassInitialized) {
-        LabeledStandIn::ClassInitialized = TRUE;
+        LabeledStandIn::ClassInitialized = true;
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          LabeledStandIn::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),

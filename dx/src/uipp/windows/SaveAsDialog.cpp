@@ -17,7 +17,7 @@
 
 #include <sys/stat.h>
 
-boolean SaveAsDialog::ClassInitialized = FALSE;
+bool SaveAsDialog::ClassInitialized = false;
 
 //String SaveAsDialog::DefaultResources[] =
 //{
@@ -29,7 +29,7 @@ boolean SaveAsDialog::ClassInitialized = FALSE;
 
 void SaveAsDialog::saveFile(const char *filename)
 {
-    boolean success;
+    bool success;
     success = this->network->saveNetwork(filename);
 
     if(success AND this->postCmd)
@@ -44,7 +44,7 @@ SaveAsDialog::SaveAsDialog(Network *network) :
 
     if (NOT SaveAsDialog::ClassInitialized)
     {
-        SaveAsDialog::ClassInitialized = TRUE;
+        SaveAsDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

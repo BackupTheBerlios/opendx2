@@ -57,14 +57,14 @@ class UniqueNameNode : public Node
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     virtual const char*		getUniqueName() { return this->getLabelString(); }
 
-    virtual boolean		namesConflict
+    virtual bool		namesConflict
 	(const char* his_label, const char* my_label, const char* his_classname);
 
-    virtual boolean needsFastSort() { return TRUE; }
+    virtual bool needsFastSort() { return true; }
 
     //
     // Returns a pointer to the class name.

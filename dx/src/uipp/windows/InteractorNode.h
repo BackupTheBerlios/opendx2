@@ -72,7 +72,7 @@
 // output.  Input to Output shadowing is defined in the virtual function
 // this->getShadowingInput().  A one to one mapping of input to output is
 // assumed in the overall architecture and by default output 1 is shadowed
-// by input 3 when this->isDataDriven() returns TRUE.
+// by input 3 when this->isDataDriven() returns true.
 //
 //
 //
@@ -130,26 +130,26 @@ class InteractorNode : public ShadowedOutputNode
 
     List	instanceList;	// List of InteractorInstances for this node.
 
-    virtual boolean cfgParseInteractorComment(const char* comment,
+    virtual bool cfgParseInteractorComment(const char* comment,
                 		const char* filename, int lineno);
-    virtual boolean cfgParseInstanceComment(const char* comment,
+    virtual bool cfgParseInstanceComment(const char* comment,
                 		const char* filename, int lineno);
-    virtual boolean cfgParseLabelComment(const char* comment,
+    virtual bool cfgParseLabelComment(const char* comment,
                 		const char* filename, int lineno);
 
-    virtual boolean cfgPrintInteractor(FILE *f);
-    virtual boolean cfgPrintInteractorComment(FILE *f);
-    virtual boolean cfgPrintInteractorAuxInfo(FILE * /* f */) { return TRUE; };
-    virtual boolean cfgPrintInteractorInstances(FILE *f, PrintType dest);
-    virtual boolean cfgPrintInstanceComment(FILE *f,
+    virtual bool cfgPrintInteractor(FILE *f);
+    virtual bool cfgPrintInteractorComment(FILE *f);
+    virtual bool cfgPrintInteractorAuxInfo(FILE * /* f */) { return true; };
+    virtual bool cfgPrintInteractorInstances(FILE *f, PrintType dest);
+    virtual bool cfgPrintInstanceComment(FILE *f,
 						 InteractorInstance *ii);
-    virtual boolean cfgPrintInstanceLabelComment(FILE *f, 
+    virtual bool cfgPrintInstanceLabelComment(FILE *f, 
 						 InteractorInstance *ii);
-    virtual boolean cfgPrintInstanceAuxInfo(FILE * /* f */, 
+    virtual bool cfgPrintInstanceAuxInfo(FILE * /* f */, 
 						InteractorInstance * /* ii */)
-			{ return TRUE; }
+			{ return true; }
     
-    boolean	appendInstance(InteractorInstance *ii)
+    bool	appendInstance(InteractorInstance *ii)
 		  { return this->instanceList.appendElement((void*)ii); }
     //
     // Get a new interactor instance for this class.
@@ -165,7 +165,7 @@ class InteractorNode : public ShadowedOutputNode
     // Delete and free an instance from the list of instances.
     // This may be called by a ControlPanel.
     //
-    boolean	deleteInstance(InteractorInstance *ii);
+    bool	deleteInstance(InteractorInstance *ii);
 
     // 
     // Create a new interactor instance (using newInteractorInstance()) 
@@ -216,7 +216,7 @@ class InteractorNode : public ShadowedOutputNode
     // node.   Among other times, this is called after receiving a message
     // from the executive.
     //
-    virtual void reflectStateChange(boolean unmanage);
+    virtual void reflectStateChange(bool unmanage);
 
     //
     // Define the mapping of inputs that shadow outputs.
@@ -239,7 +239,7 @@ class InteractorNode : public ShadowedOutputNode
 
     // (which sets the shadowing inputs).
     //
-    void setShadowingInputsDefaulting(boolean send = FALSE);
+    void setShadowingInputsDefaulting(bool send = false);
 
     //
     // Notify anybody that needs to know that a parameter has changed its arcs.
@@ -248,7 +248,7 @@ class InteractorNode : public ShadowedOutputNode
     // changed the label, then we notify all instances with 
     // notifyVisualsOfStateChange().
     //
-    virtual void ioParameterStatusChanged(boolean input, int index, 
+    virtual void ioParameterStatusChanged(bool input, int index, 
 				NodeParameterStatusChange status);
 
     //
@@ -266,16 +266,16 @@ class InteractorNode : public ShadowedOutputNode
     //
     // Change the dimensionality of the vector;
     // At this level, we don't allow dimensionality changes so we always
-    // return FALSE;
+    // return false;
     //
-    boolean changeDimensionality(int new_dim);
-    virtual boolean doDimensionalityChange(int new_dim);
+    bool changeDimensionality(int new_dim);
+    virtual bool doDimensionalityChange(int new_dim);
 
 #if 0	// 8/9/93
     //
     // Determine if the given input parameter is writeable as an attribute.
     //
-    virtual boolean isAttributeVisuallyWriteable(int input_index);
+    virtual bool isAttributeVisuallyWriteable(int input_index);
 #endif
 
   public:
@@ -304,10 +304,10 @@ class InteractorNode : public ShadowedOutputNode
     //
     // Set the global label for all instances of this interactor node.
     // DrivenInteractors keep their labels in the label parameter.
-    // If strip_quotes is TRUE, then remove leading and trail double quotes
+    // If strip_quotes is true, then remove leading and trail double quotes
     // which are expected to be present.
     //
-    void saveInteractorLabel(const char *label, boolean strip_quotes = FALSE);
+    void saveInteractorLabel(const char *label, bool strip_quotes = false);
 
 
     //
@@ -324,16 +324,16 @@ class InteractorNode : public ShadowedOutputNode
     // check for the input comment for the label parameter value (if we have
     // one).  If we see the label parameter value then save it.
     //
-    virtual boolean netParseComment(const char* comment,
+    virtual bool netParseComment(const char* comment,
                                 const char *file, int lineno);
 
-    virtual boolean cfgParseComment(const char* comment,
+    virtual bool cfgParseComment(const char* comment,
                 		const char* filename, int lineno);
 
     //
     // Routine for printing the .cfg file contents for this interactor.
     //
-    virtual boolean cfgPrintNode(FILE *f, PrintType dest); 
+    virtual bool cfgPrintNode(FILE *f, PrintType dest); 
 
     
     //
@@ -350,19 +350,19 @@ class InteractorNode : public ShadowedOutputNode
     virtual Type setOutputValue(int index,
                                 const char *value,
                                 Type t = DXType::UndefinedType,
-                                boolean send = TRUE);
+                                bool send = true);
 
 
     //
     // Indicates whether this node has outputs that can be remapped by the
     // server.
     //
-    virtual boolean hasRemappableOutput();
+    virtual bool hasRemappableOutput();
     //
     // Do what ever is necessary to enable/disable remapping of output values
     // by the server.
     //
-    virtual void setOutputRemapping(boolean val);
+    virtual void setOutputRemapping(bool val);
 
     //
     // The default action for interactors is to open the control panels
@@ -378,8 +378,8 @@ class InteractorNode : public ShadowedOutputNode
     // A name describing the type of window can be written into window_name in order
     // to enable nicer warning messages.
     //
-    virtual boolean defaultWindowIsCDB(char* window_name = NULL)
-	{ if (window_name) strcpy (window_name, "Interactor"); return FALSE; }
+    virtual bool defaultWindowIsCDB(char* window_name = NULL)
+	{ if (window_name) strcpy (window_name, "Interactor"); return false; }
     //
     // If the node does not currently have any InteractorInstances, then
     // add them to the editor's/network's notion of the current control panel.
@@ -390,26 +390,26 @@ class InteractorNode : public ShadowedOutputNode
     // Does this node support dimensionality changes.
     // By default all interactors do NOT support this.
     //
-    virtual boolean hasDynamicDimensionality(boolean ignoreDataDriven = FALSE);
+    virtual bool hasDynamicDimensionality(bool ignoreDataDriven = false);
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
 
     //
     // just like deleteInstance except don't delete ii, just remove it from the list.
     //
-    boolean removeInstance (InteractorInstance *ii);
+    bool removeInstance (InteractorInstance *ii);
 
     //
-    // Return TRUE if this node has state that will be saved in a .cfg file.
+    // Return true if this node has state that will be saved in a .cfg file.
     //
-    virtual boolean hasCfgState();
+    virtual bool hasCfgState();
 
-    virtual boolean printAsJava(FILE* );
-    virtual boolean printJavaValue(FILE*);
+    virtual bool printAsJava(FILE* );
+    virtual bool printJavaValue(FILE*);
     virtual const char* getJavaVariable();
     virtual const char* getJavaNodeName() { return "ValueNode"; }
 

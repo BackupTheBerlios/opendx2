@@ -23,7 +23,7 @@
 #define TY_TENSOR		2
 
 
-boolean IsEndOfString(const char* string,
+bool IsEndOfString(const char* string,
 		      int&        index)
 {
     int i;
@@ -34,16 +34,16 @@ boolean IsEndOfString(const char* string,
     if (string[i] == '\0')
     {
 	index = i;
-	return TRUE;
+	return true;
     }
     else
     {
-	return FALSE;
+	return false;
     }
 }
 
 
-boolean IsInteger(const char* string,
+bool IsInteger(const char* string,
 		  int&        index)
 {
     int i;
@@ -54,7 +54,7 @@ boolean IsInteger(const char* string,
     //
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
     
     ASSERT(index >= 0 AND index <= STRLEN(string) + 1);
@@ -84,18 +84,18 @@ boolean IsInteger(const char* string,
     //
     if (j == i)
     {
-	return FALSE;
+	return false;
     }
 
     //
     // Return successfully.
     //
     index = j;
-    return TRUE;
+    return true;
 }
 
 
-boolean IsFlag(const char* string,
+bool IsFlag(const char* string,
 	       int&        index)
 {
     int i;
@@ -105,7 +105,7 @@ boolean IsFlag(const char* string,
     //
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
     
     ASSERT(index >= 0 AND index <= STRLEN(string) + 1);
@@ -132,18 +132,18 @@ boolean IsFlag(const char* string,
 	//
 	// No match; return unsuccessfully.
 	//
-	return FALSE;
+	return false;
     }
 
     //
     // Return successfully.
     //
     index = i;
-    return TRUE;
+    return true;
 }
 
 
-boolean IsScalar(const char* string,
+bool IsScalar(const char* string,
 		 int&        index)
 {
     int i;
@@ -154,7 +154,7 @@ boolean IsScalar(const char* string,
     //
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
     
     ASSERT(index >= 0 AND index <= STRLEN(string) + 1);
@@ -184,7 +184,7 @@ boolean IsScalar(const char* string,
     //
     if (string[j] == '.')
     {
-	boolean is_integer = (j > i);
+	bool is_integer = (j > i);
 	
 	i = j + 1;
 
@@ -196,7 +196,7 @@ boolean IsScalar(const char* string,
 
 	if (j == i AND NOT is_integer)
 	{
-	    return FALSE;
+	    return false;
 	}
 
 	if (string[j] != 'e' && string[j] != 'E')
@@ -205,7 +205,7 @@ boolean IsScalar(const char* string,
 	    // Return successfully.
 	    //
 	    index = j;
-	    return TRUE;
+	    return true;
 	}
     }
     else if (j == i)
@@ -213,7 +213,7 @@ boolean IsScalar(const char* string,
 	//
 	// No digits... return unsuccessfully.
 	//
-	return FALSE;
+	return false;
     }
     else if (string[j] != 'e' && string[j] != 'E')
     {
@@ -221,7 +221,7 @@ boolean IsScalar(const char* string,
 	// No decimal point: an integer.  Return successfully.
 	//
 	index = j;
-	return TRUE;
+	return true;
     }
 
     //
@@ -248,18 +248,18 @@ boolean IsScalar(const char* string,
     //
     if (j == i)
     {
-	return FALSE;
+	return false;
     }
 
     /*
      * Return successfully.
      */
     index = j;
-    return TRUE;
+    return true;
 }
 
 
-boolean IsString(const char* string,
+bool IsString(const char* string,
 		 int&        index)
 {
     int i;
@@ -269,7 +269,7 @@ boolean IsString(const char* string,
     //
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
     
     ASSERT(index >= 0 AND index <= STRLEN(string) + 1);
@@ -285,13 +285,13 @@ boolean IsString(const char* string,
     //
     if (string[i] != '"')
     {
-	return FALSE;
+	return false;
     }
 
     //
     // Find the matching end quote.
     //
-    while (TRUE)
+    while (true)
     {
 	i++;
 	if ((string[i] == '\0') OR
@@ -304,17 +304,17 @@ boolean IsString(const char* string,
     //
     if (string[i] != '"')
     {
-	return FALSE;
+	return false;
     }
 
     //
     // Return successfully.
     //
     index = i + 1;
-    return TRUE;
+    return true;
 }
 
-boolean IsIdentifier(const char* string)
+bool IsIdentifier(const char* string)
 {
     int i = 0;
 
@@ -323,14 +323,14 @@ boolean IsIdentifier(const char* string)
     //
     SkipWhiteSpace(string,i);
     if (i != 0)
-	return FALSE;
+	return false;
 
     if (string && IsIdentifier(string,i) && (i == STRLEN(string)-1)) 
-	return TRUE;
-    return FALSE;
+	return true;
+    return false;
 }
 
-boolean IsIdentifier(const char* string,
+bool IsIdentifier(const char* string,
 		     int&        index)
 {
     int i;
@@ -340,7 +340,7 @@ boolean IsIdentifier(const char* string,
     //
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
     
     ASSERT(index >= 0 AND index <= STRLEN(string) + 1);
@@ -360,7 +360,7 @@ boolean IsIdentifier(const char* string,
 	string[i] != '_' AND
 	string[i] != '@')
     {
-	return FALSE;
+	return false;
     }
 
     //
@@ -379,11 +379,11 @@ boolean IsIdentifier(const char* string,
     // Return successfully.
     //
     index = i;
-    return TRUE;
+    return true;
 }
 
 
-boolean IsRestrictedIdentifier(const char* string,
+bool IsRestrictedIdentifier(const char* string,
 			       int&        index)
 {
     int i;
@@ -393,7 +393,7 @@ boolean IsRestrictedIdentifier(const char* string,
     //
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
     
     ASSERT(index >= 0 AND index <= STRLEN(string) + 1);
@@ -411,7 +411,7 @@ boolean IsRestrictedIdentifier(const char* string,
     if ((string[i] < 'a' OR string[i] > 'z') AND
 	(string[i] < 'A' OR string[i] > 'Z'))
     {
-	return FALSE;
+	return false;
     }
 
     //
@@ -428,11 +428,11 @@ boolean IsRestrictedIdentifier(const char* string,
     // Return successfully.
     //
     index = i;
-    return TRUE;
+    return true;
 }
 
 
-boolean IsToken(const char* string,
+bool IsToken(const char* string,
 		const char* token,
 		int&        index)
 {
@@ -444,7 +444,7 @@ boolean IsToken(const char* string,
     //
     if (string == NUL(char*))
     {
-	return FALSE;
+	return false;
     }
     
     ASSERT(index >= 0 AND index <= STRLEN(string) + 1);
@@ -465,17 +465,17 @@ boolean IsToken(const char* string,
     }
     else
     {
-	return FALSE;
+	return false;
     }
 
     //
     // Return successfully.
     //
     index = i;
-    return TRUE;
+    return true;
 }
 
-boolean IsAllWhiteSpace(const char *string)
+bool IsAllWhiteSpace(const char *string)
 {
     int ndx;
     ndx = 0;
@@ -484,7 +484,7 @@ boolean IsAllWhiteSpace(const char *string)
 }
 
 
-boolean IsReservedScriptingWord(const char *word)
+bool IsReservedScriptingWord(const char *word)
 {
     static char *ReservedScriptingWords[] = {
 	// Reserved key words
@@ -522,10 +522,10 @@ boolean IsReservedScriptingWord(const char *word)
 
     while ( (w = *p) ) {
         if (EqualString(w,word))
-            return TRUE;
+            return true;
 	p++;
     }
-    return FALSE;
+    return false;
 
 }
 
@@ -535,16 +535,16 @@ boolean IsReservedScriptingWord(const char *word)
 // Thus something which is typed incorrectly for being a real Where param would
 // still be accepted and the Display module would barf when the net executes.
 //
-boolean IsWhere (const char* string, int& index)
+bool IsWhere (const char* string, int& index)
 {
 #if defined(DONT_DEFINE_WINDOW_TYPE)
     return IsString(string, index);
 #else
     int junk = index;
     if (!IsString(string, junk))
-	return FALSE;
+	return false;
 
-    boolean retVal = FALSE;
+    bool retVal = false;
 
     const char* dupstring = &string[1];
 
@@ -552,61 +552,61 @@ boolean IsWhere (const char* string, int& index)
 	index = 5;
 	if (dupstring[index] == '"') {
 	    index++;
-	    retVal = TRUE;
+	    retVal = true;
 	}
     } else if (strncmp (dupstring, "x8,,", 4) == 0) {
 	index = 5;
 	if (dupstring[index] == '"') {
 	    index++;
-	    retVal = TRUE;
+	    retVal = true;
 	}
     } else if (strncmp (dupstring, "X12,,", 5) == 0) {
 	index = 6;
 	if (dupstring[index] == '"') {
 	    index++;
-	    retVal = TRUE;
+	    retVal = true;
 	}
     } else if (strncmp (dupstring, "x12,,", 5) == 0) {
 	index = 6;
 	if (dupstring[index] == '"') {
 	    index++;
-	    retVal = TRUE;
+	    retVal = true;
 	}
     } else if (strncmp (dupstring, "X16,,", 5) == 0) {
       index = 6;
       if (dupstring[index] == '"') {
           index++;
-          retVal = TRUE;
+          retVal = true;
       }
     } else if (strncmp (dupstring, "x16,,", 5) == 0) {
       index = 6;
       if (dupstring[index] == '"') {
           index++;
-          retVal = TRUE;
+          retVal = true;
       }
     } else if (strncmp (dupstring, "X24,,", 5) == 0) {
 	index = 6;
 	if (dupstring[index] == '"') {
 	    index++;
-	    retVal = TRUE;
+	    retVal = true;
 	}
     } else if (strncmp (dupstring, "x24,,", 5) == 0) {
 	index = 6;
 	if (dupstring[index] == '"') {
 	    index++;
-	    retVal = TRUE;
+	    retVal = true;
 	}
     } else if (strncmp (dupstring, "X32,,", 5) == 0) {
 	index = 6;
 	if (dupstring[index] == '"') {
 	    index++;
-	    retVal = TRUE;
+	    retVal = true;
 	}
     } else if (strncmp (dupstring, "x32,,", 5) == 0) {
 	index = 6;
 	if (dupstring[index] == '"') {
 	    index++;
-	    retVal = TRUE;
+	    retVal = true;
 	}
     } else {
 	int depth;
@@ -632,7 +632,7 @@ boolean IsWhere (const char* string, int& index)
 	    if ((depth == 8) || (depth == 12) || (depth == 16) || (depth == 24)
 			|| (depth == 32)) {
 		index = strlen(string);
-		retVal = TRUE;
+		retVal = true;
 	    }
 	}
     }

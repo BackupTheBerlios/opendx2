@@ -35,14 +35,14 @@ namespace dxui {
 		//
 		// Private member data:
 		//
-		static boolean ClassInitialized;
+		static bool ClassInitialized;
 
 	protected:
 		//
 		// Protected member data:
 		//
 		//static String  DefaultResources[];
-		boolean 	hasCommentButton;
+		bool 	hasCommentButton;
 		char	*readOnlyDirectory;
 
 		//Widget shell;
@@ -50,7 +50,7 @@ namespace dxui {
 
 		virtual void createDialog();
 
-		virtual boolean okCallback(Dialog *d);
+		virtual bool okCallback(Dialog *d);
 
 		//
 		// Create the file selection box (i.e. the part with the filter, directory
@@ -70,7 +70,7 @@ namespace dxui {
 		// limited mode, that is, the user can only select file from the 
 		// current directory specified by XmNdirectory.
 		//
-		virtual void displayLimitedMode(boolean limit);
+		virtual void displayLimitedMode(bool limit);
 
 		//
 		// Set the name of the current file.

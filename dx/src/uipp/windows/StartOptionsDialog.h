@@ -40,7 +40,7 @@ class StartOptionsDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
     //
@@ -50,7 +50,7 @@ class StartOptionsDialog : public Dialog
     //friend void StartOptionsDialog_ToggleCB(Widget w, XtPointer clientData, XtPointer);
     //friend void StartOptionsDialog_NumberTextCB(Widget w, XtPointer clientData, XtPointer);
 
-    virtual boolean okCallback(Dialog *clientData);
+    virtual bool okCallback(Dialog *clientData);
 
     virtual void createDialog();
     //Widget execText;

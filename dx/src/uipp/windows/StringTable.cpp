@@ -74,7 +74,7 @@ void StringTable::clear()
 }
 
 #if 0
-static boolean _EqualString(const void *s1, const void *s2)
+static bool _EqualString(const void *s1, const void *s2)
 {
 	return EqualString((const char*)s1,(const char*)s2);
 }
@@ -85,7 +85,7 @@ static void *_DuplicateString(const void *s)
 }
 #endif
 
-boolean StringTable::addString(const char* string, long& index)
+bool StringTable::addString(const char* string, long& index)
 {
     int key = hash(string); 
     List *l = &this->lists[key];
@@ -94,7 +94,7 @@ boolean StringTable::addString(const char* string, long& index)
 
     while ( (s = (char*) li.getNext()) ) {
 	if (EqualString(s,string))
-	   return FALSE;
+	   return false;
     }
  
 #if  DEBUG_HASH_FUNC
@@ -117,7 +117,7 @@ boolean StringTable::addString(const char* string, long& index)
     l->appendElement((const void*)s);
     index = LISTINDEX_TO_ID(key,l->getSize());
     this->size++;
-    return TRUE;
+    return true;
 }
 
 const char *StringTable::getString(int id)

@@ -15,7 +15,7 @@
 #include "ImageNode.h"
 #include "ImageDefinition.h"
 
-boolean ImageCDB::ClassInitialized = FALSE;
+bool ImageCDB::ClassInitialized = false;
 
 //String ImageCDB::DefaultResources[] =
 //{
@@ -48,7 +48,7 @@ ImageCDB::ImageCDB(Node *node):
     if (NOT ImageCDB::ClassInitialized)
     {
 	ASSERT(theApplication);
-        ImageCDB::ClassInitialized = TRUE;
+        ImageCDB::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
     //this->imageCacheOM = NUL(Widget);

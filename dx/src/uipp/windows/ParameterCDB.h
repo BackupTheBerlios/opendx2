@@ -39,7 +39,7 @@ class ParameterCDB : public ConfigurationDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
   protected:
@@ -62,9 +62,9 @@ class ParameterCDB : public ConfigurationDialog
     char   *initialValue;
     char   *initialDescription;
     char   *initialOptionValues;
-    boolean initialRequired;
-    boolean initialDescriptive;
-    boolean initialHidden;
+    bool initialRequired;
+    bool initialDescriptive;
+    bool initialHidden;
 
     //
     // Protected functions
@@ -77,12 +77,12 @@ class ParameterCDB : public ConfigurationDialog
     // field), and the expression itself.
     //virtual Widget createInputs(Widget parent, Widget top);
     //virtual Widget createOutputs(Widget parent, Widget top);
-    //virtual boolean applyCallback(Dialog *d);
+    //virtual bool applyCallback(Dialog *d);
     //virtual void restoreCallback(Dialog *d);
 
     virtual void saveInitialValues();
     virtual void restoreInitialValues();
-    virtual boolean applyValues();
+    virtual bool applyValues();
 
 
     //

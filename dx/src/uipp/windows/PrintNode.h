@@ -54,7 +54,7 @@ class PrintNode : public ModuleMessagingNode
     //
     // Returns a string that is used to register
     // this->ExecModuleMessageHandler() when this->hasModuleMessageProtocol()
-    // return TRUE.  This version, returns an id that is unique to this
+    // return true.  This version, returns an id that is unique to this
     // instance of this node.
     //
     virtual const char *getModuleMessageIdString();
@@ -74,7 +74,7 @@ class PrintNode : public ModuleMessagingNode
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

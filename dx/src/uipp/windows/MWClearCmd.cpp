@@ -19,7 +19,7 @@
 //
 MWClearCmd::MWClearCmd(const char *name,
 	   CommandScope *scope,
-	   boolean active,
+	   bool active,
 	   MsgWin *win):
     NoUndoCommand(name, scope, active)
 {
@@ -27,9 +27,9 @@ MWClearCmd::MWClearCmd(const char *name,
 }
 
 
-boolean MWClearCmd::doIt(CommandInterface *ci)
+bool MWClearCmd::doIt(CommandInterface *ci)
 {
     this->messageWindow->clear();
 
-    return TRUE;
+    return true;
 }

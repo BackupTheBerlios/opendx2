@@ -17,7 +17,7 @@
 
 ImageSetViewCommand::ImageSetViewCommand(const char   *name,
 						 CommandScope *scope,
-						 boolean       active,
+						 bool       active,
 						 ImageWindow  *w,
 						 ViewDirection dir):
     NoUndoCommand(name, scope, active)
@@ -26,7 +26,7 @@ ImageSetViewCommand::ImageSetViewCommand(const char   *name,
     this->direction = dir;
 }
 
-boolean ImageSetViewCommand::doIt(CommandInterface *ci)
+bool ImageSetViewCommand::doIt(CommandInterface *ci)
 {
     return this->imageWindow->setView(this->direction);
 }

@@ -12,7 +12,7 @@
 #include "SetNetworkCommentDialog.h"
 #include "Network.h"
 
-boolean SetNetworkCommentDialog::ClassInitialized = FALSE;
+bool SetNetworkCommentDialog::ClassInitialized = false;
 
 //String SetNetworkCommentDialog::DefaultResources[] =
 //{
@@ -27,20 +27,20 @@ boolean SetNetworkCommentDialog::ClassInitialized = FALSE;
 //};
 
 SetNetworkCommentDialog::SetNetworkCommentDialog(const char *name,
-				boolean readonly, Network *n) : 
+				bool readonly, Network *n) : 
 			TextEditDialog(name, readonly)
 {
     this->network = n;
 }
 SetNetworkCommentDialog::SetNetworkCommentDialog(
-				boolean readonly, Network *n) : 
+				bool readonly, Network *n) : 
 			TextEditDialog("setNetworkComment", readonly)
 {
     this->network = n;
 
     if (NOT SetNetworkCommentDialog::ClassInitialized)
     {
-        SetNetworkCommentDialog::ClassInitialized = TRUE;
+        SetNetworkCommentDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -69,9 +69,9 @@ const char *SetNetworkCommentDialog::getText()
 //
 // Save the given text. 
 //
-boolean SetNetworkCommentDialog::saveText(const char *s)
+bool SetNetworkCommentDialog::saveText(const char *s)
 {
     this->network->setNetworkComment(s);
-    return TRUE;
+    return true;
 }
 

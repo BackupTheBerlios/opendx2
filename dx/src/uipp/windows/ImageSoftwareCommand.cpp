@@ -17,17 +17,17 @@
 
 ImageSoftwareCommand::ImageSoftwareCommand(const char   *name,
 						 CommandScope *scope,
-						 boolean       active,
+						 bool       active,
 						 ImageWindow  *w):
     NoUndoCommand(name, scope, active)
 {
     this->imageWindow = w;
 }
 
-boolean ImageSoftwareCommand::doIt(CommandInterface *ci)
+bool ImageSoftwareCommand::doIt(CommandInterface *ci)
 {
     //Boolean set;
     //XtVaGetValues(ci->getRootWidget(), XmNset, &set, NULL);
     //this->imageWindow->setSoftware(set);
-    return TRUE;
+    return true;
 }

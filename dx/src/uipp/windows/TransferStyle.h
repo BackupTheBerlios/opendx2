@@ -36,7 +36,7 @@ class TransferStyle: public Base {
     // P R I V A T E   P R I V A T E   P R I V A T E   P R I V A T E   
     private:
 	Symbol			atomName;
-	boolean			preferred;
+	bool			preferred;
 //	Atom			atom;
 	char 			*name;
 	int			tag;
@@ -49,13 +49,13 @@ class TransferStyle: public Base {
     // P U B L I C   P U B L I C   P U B L I C   P U B L I C   
     // P U B L I C   P U B L I C   P U B L I C   P U B L I C   
     public:
-	boolean			isPreferred() { return preferred; }
+	bool			isPreferred() { return preferred; }
 //	Atom			getAtom() { return this->atom; }
 	int			getTag() { return this->tag; }
 
 	const char		*getClassName() { return ClassTransferStyle; }
 
-	TransferStyle (int ,const char *, boolean); 
+	TransferStyle (int ,const char *, bool); 
 	~TransferStyle();
 };
 

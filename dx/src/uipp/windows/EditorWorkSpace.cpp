@@ -33,7 +33,7 @@
 #endif
 
 
-boolean EditorWorkSpace::EditorWorkSpaceClassInitialized = false;
+bool EditorWorkSpace::EditorWorkSpaceClassInitialized = false;
 
 //static XtTranslations pageTranslations = 0;
 //static String pageTable = "\
@@ -112,9 +112,9 @@ EditorWorkSpace::EditorWorkSpace( const char* name,
 {
 
     this->editor = editor;
-    this->members_initialized = FALSE;
-    this->included_in_ps = TRUE;
-    this->recorded_positions = FALSE;
+    this->members_initialized = false;
+    this->included_in_ps = true;
+    this->recorded_positions = false;
     this->record_positions = theDXApplication->getAutoScrollInitialValue();
 }
 
@@ -124,7 +124,7 @@ EditorWorkSpace::~EditorWorkSpace()
 }
 
 void EditorWorkSpace::initializeRootWidget(
-		boolean fromFirstIntanceOfADerivedClass)
+		bool fromFirstIntanceOfADerivedClass)
 {
     //XGCValues        values;
     //int              n;
@@ -141,24 +141,24 @@ void EditorWorkSpace::initializeRootWidget(
         //                          EditorWorkSpace::DefaultResources);
 
 	// ...and force the parents default resources to be loaded.
-	fromFirstIntanceOfADerivedClass = TRUE;
+	fromFirstIntanceOfADerivedClass = true;
 
-        EditorWorkSpace::EditorWorkSpaceClassInitialized = TRUE;
+        EditorWorkSpace::EditorWorkSpaceClassInitialized = true;
 
 	//if (!pageTranslations) {
 	//    pageTranslations = XtParseTranslationTable(pageTable);
 	//}
 
-	this->addSupportedType (EditorWorkSpace::Modules, DXMODULES, TRUE);
-	this->addSupportedType (EditorWorkSpace::ToolName, DXTOOLNAME, FALSE);
+	this->addSupportedType (EditorWorkSpace::Modules, DXMODULES, true);
+	this->addSupportedType (EditorWorkSpace::ToolName, DXTOOLNAME, false);
 #if COSE_ACTUALLY_WORKS 
 	// This should be the type used by the file manager in COSE.   The only
 	// example of COSE I have is aix 4.1.  It understands this type, but the
 	// drop happens the only data I get is the path name of my home directory.
-	this->addSupportedType (EditorWorkSpace::File, "FILE", FALSE);
+	this->addSupportedType (EditorWorkSpace::File, "FILE", false);
 #endif
 #if  COMPOUND_TEXT_TRANSFER
-	this->addSupportedType (EditorWorkSpace::Text, "COMPOUND_TEXT", FALSE);
+	this->addSupportedType (EditorWorkSpace::Text, "COMPOUND_TEXT", false);
 #endif
     }
     
@@ -208,7 +208,7 @@ void EditorWorkSpace::initializeRootWidget(
 				//		XC_sb_down_arrow);
 
 }
-//void EditorWorkSpace::setRootWidget(Widget w, boolean standardDestroy)
+//void EditorWorkSpace::setRootWidget(Widget w, bool standardDestroy)
 //{
 //    //
 //    // Call the superclass method
@@ -218,9 +218,9 @@ void EditorWorkSpace::initializeRootWidget(
 
 
 
-boolean EditorWorkSpace::mergeNetElements (Network *tmpnet, List *tmppanels, int x, int y)
+bool EditorWorkSpace::mergeNetElements (Network *tmpnet, List *tmppanels, int x, int y)
 {
-boolean retval;
+bool retval;
 int x2use = x;
 int y2use = y;
 
@@ -258,7 +258,7 @@ int y2use = y;
 	//}
 
 	//tmpnet->setTopLeftPos(x2use, y2use);
-	//retval = this->editor->getNetwork()->mergeNetworks(tmpnet, tmppanels, TRUE);
+	//retval = this->editor->getNetwork()->mergeNetworks(tmpnet, tmppanels, true);
  //   } else
 	retval = false;
 
@@ -266,15 +266,15 @@ int y2use = y;
 }
 
 
-//boolean EditorWorkSpace::decodeDropType (int tag,
+//bool EditorWorkSpace::decodeDropType (int tag,
 //	char *type, XtPointer value, unsigned long len, int x, int y)
 //{
-//boolean retVal;
+//bool retVal;
 //ToolSelector *ts;
 //char *category, *toolname;
 //NodeDefinition *nd;
 //
-//    if (!theDXApplication->appAllowsEditorAccess())  return FALSE;
+//    if (!theDXApplication->appAllowsEditorAccess())  return false;
 //
 //    switch (tag) {
 //	case EditorWorkSpace::Modules:
@@ -294,9 +294,9 @@ int y2use = y;
 //	    nd = ts->definitionOf (category, toolname);
 //	    if (nd) {
 //		this->editor->addNode(nd, x,y, this);
-//		retVal = TRUE;
+//		retVal = true;
 //	    } else {
-//		retVal = FALSE;
+//		retVal = false;
 //	    }
 //
 //	    delete category;
@@ -316,7 +316,7 @@ int y2use = y;
 //	//
 //	case EditorWorkSpace::File:
 //	    if (this->editor->getNetwork()->isFileDirty())
-//		retVal = FALSE;
+//		retVal = false;
 //	    else
 //		retVal = 
 //		    theDXApplication->openFile ((const char *)value, NUL(const char *));
@@ -324,13 +324,13 @@ int y2use = y;
 //
 //
 //	default:
-//	    retVal = FALSE;
+//	    retVal = false;
 //	    break;
 //    }
 //    return retVal;
 //}
 
-//boolean EditorWorkSpace::compoundTextTransfer
+//bool EditorWorkSpace::compoundTextTransfer
 //	(char *, XtPointer value, unsigned long len, int x, int y)
 //{
 //#if  COMPOUND_TEXT_TRANSFER
@@ -368,7 +368,7 @@ int y2use = y;
 //	ds = (DecoratorStyle*)di.getNextDefinition();
 //    }
 //    ASSERT(ds);
-//    d = ds->createDecorator(TRUE);
+//    d = ds->createDecorator(true);
 //    ASSERT(d);
 //    d->setStyle (ds);
 //
@@ -475,20 +475,20 @@ void EditorWorkSpace::restorePosition ()
 //    XtPointer udata;
 //    XtVaGetValues (child, XmNuserData, &udata, NULL);
 //    UIComponent* uic = (UIComponent*)udata;
-//    boolean mouse_type = FALSE;
-//    boolean same_event = FALSE;
+//    bool mouse_type = false;
+//    bool same_event = false;
 //    if (cbs->event) {
 //	switch (cbs->event->xany.type) {
 //	    case ButtonPress:
 //	    case ButtonRelease:
 //		same_event = (cbs->event->xbutton.time == previous_time_stamp);
 //		previous_time_stamp = cbs->event->xbutton.time;
-//		mouse_type = TRUE;
+//		mouse_type = true;
 //		break;
 //	    case MotionNotify:
 //		same_event = (cbs->event->xmotion.time == previous_time_stamp);
 //		previous_time_stamp = cbs->event->xmotion.time;
-//		mouse_type = TRUE;
+//		mouse_type = true;
 //		break;
 //	    case KeyPress:
 //	    case KeyRelease:

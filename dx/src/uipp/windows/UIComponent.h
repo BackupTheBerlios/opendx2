@@ -56,7 +56,7 @@ class UIComponent : virtual public Base
 #   define DXD_NO_STIPPLE 1
     //XtTranslations  xtt;
     //Pixel           fg;
-    boolean         deactivated;
+    bool         deactivated;
 #endif 
 
     char*	help_msg;
@@ -70,7 +70,7 @@ class UIComponent : virtual public Base
     //
 
     char*   name;	// component name
-    boolean active;	// is component active?
+    bool active;	// is component active?
 
     //
     // Constructor:
@@ -79,9 +79,9 @@ class UIComponent : virtual public Base
     UIComponent(const char* name);
 
     void clearRootWidget();
-//    virtual void setRootWidget(Widget root, boolean standardDestroy = TRUE);
+//    virtual void setRootWidget(Widget root, bool standardDestroy = true);
 
-//    void setBubbleHelp (const char *msg, Widget w = NULL, boolean active_help = TRUE);
+//    void setBubbleHelp (const char *msg, Widget w = NULL, bool active_help = true);
     void showBubbleHelp();
     void eraseBubbleHelp();
 
@@ -138,20 +138,20 @@ class UIComponent : virtual public Base
     // is optional and defaults to "window".  It is prepended to the
     // comment (i.e. "// <tag>:...").
     //
-    static boolean PrintGeometryComment(FILE *f, int xpos, int ypos,
+    static bool PrintGeometryComment(FILE *f, int xpos, int ypos,
 				int xsize, int ysize, 
 				const char *tag=NULL,
 				const char *indent=NULL);
-    static boolean ParseGeometryComment(const char *line, const char *file,
+    static bool ParseGeometryComment(const char *line, const char *file,
 				int lineno, int *xpos, int *ypos, 
 				int *xsize, int *ysize, const char *tag=NULL) ;
 
 
     //
     // Determines if the the component widget is managed.
-    // Return FALSE if the widget is not built yet.
+    // Return false if the widget is not built yet.
     //
-    virtual boolean isManaged();
+    virtual bool isManaged();
 
     //
     // Manages the the component widget tree.
@@ -201,9 +201,9 @@ class UIComponent : virtual public Base
     virtual void setGeometry(int  x, int  y, int  width, int  height);
     //
     // Get the size and dimensions.
-    // Return TRUE if all return values are valid.
+    // Return true if all return values are valid.
     //
-    virtual boolean getGeometry(int *x, int *y, int *width, int *height);
+    virtual bool getGeometry(int *x, int *y, int *width, int *height);
 
     //
     // S/Get data saved locally with this UIComponent.
@@ -221,7 +221,7 @@ class UIComponent : virtual public Base
     virtual void componentHelp();
 
 
-    boolean isActivated() { return this->active; }
+    bool isActivated() { return this->active; }
 
     //
     // Returns a pointer to the class name.

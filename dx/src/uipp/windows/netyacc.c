@@ -154,8 +154,8 @@
 #define A_TIMES 272
 #define A_EXP 273
 #define U_MINUS 274
-#define V_TRUE 275
-#define V_FALSE 276
+#define V_true 275
+#define V_false 276
 #define T_BAR 277
 #define T_LPAR 278
 #define T_RPAR 279
@@ -243,7 +243,7 @@
 /*****************************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/windows/netyacc.c,v 1.1 2004/10/16 00:03:10 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/windows/netyacc.c,v 1.2 2004/11/19 19:20:02 davidt Exp $
  */
 
 #include "Parse.h"
@@ -519,7 +519,7 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "L_OR", "L_AND", "L_NOT", "L_NEQ", "L_EQ", 
   "L_GEQ", "L_LEQ", "L_GT", "L_LT", "A_MINUS", "A_PLUS", "A_MOD", 
-  "A_IDIV", "A_DIV", "A_TIMES", "A_EXP", "U_MINUS", "V_TRUE", "V_FALSE", 
+  "A_IDIV", "A_DIV", "A_TIMES", "A_EXP", "U_MINUS", "V_true", "V_false", 
   "T_BAR", "T_LPAR", "T_RPAR", "T_LBRA", "T_RBRA", "T_LSQB", "T_RSQB", 
   "T_ASSIGN", "T_COMMA", "T_COLON", "T_SEMI", "T_PP", "T_MM", "T_RA", 
   "T_DOTDOT", "T_COMMENT", "T_ID", "T_EXID", "T_INT", "T_STRING", 

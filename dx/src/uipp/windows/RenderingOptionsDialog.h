@@ -50,7 +50,7 @@ class RenderingOptionsDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //friend void RenderingOptionsDialog_NumberCB(Widget	 widget,
 		  //       XtPointer clientData,
 		  //       XtPointer callData);
@@ -104,11 +104,11 @@ class RenderingOptionsDialog : public Dialog
     virtual void manage();
     virtual void resetApproximations();
 
-    void sensitizeRenderMode(boolean flag);
-    void sensitizeButtonUpApprox(boolean flag);
-    void sensitizeButtonDownApprox(boolean flag);
-    void sensitizeButtonUpDensity(boolean flag);
-    void sensitizeButtonDownDensity(boolean flag);
+    void sensitizeRenderMode(bool flag);
+    void sensitizeButtonUpApprox(bool flag);
+    void sensitizeButtonDownApprox(bool flag);
+    void sensitizeButtonUpDensity(bool flag);
+    void sensitizeButtonDownDensity(bool flag);
 
     void update();
 

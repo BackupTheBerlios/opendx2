@@ -60,12 +60,12 @@ class WorkSpaceComponent : public UIComponent
     // Private member data:
     // 
 
-    static boolean WorkSpaceComponentClassInitialized;
+    static bool WorkSpaceComponentClassInitialized;
 
     //
-    // developerStyle should really be an enum instead of a boolean.
+    // developerStyle should really be an enum instead of a bool.
     //
-    boolean visualsInited;
+    bool visualsInited;
 
     //
     // the user specified a size using ctrl-mouse.  ...gets reset
@@ -93,8 +93,8 @@ class WorkSpaceComponent : public UIComponent
     // Protected member data:
     //
     //static String DefaultResources[]; 
-    boolean developerStyle;
-    boolean selected;
+    bool developerStyle;
+    bool selected;
     WorkSpace *workSpace;
 
     // Unset means that the value is known but the widgets haven't been laid out
@@ -118,7 +118,7 @@ class WorkSpaceComponent : public UIComponent
     //Widget			customPart;
 
     // Make sure that the Workspace widget gets certain events.
-    //virtual void passEvents (Widget , boolean);
+    //virtual void passEvents (Widget , bool);
 
     //
     // Change '\' 'n' to an actual newline, etc.
@@ -143,7 +143,7 @@ class WorkSpaceComponent : public UIComponent
     //
     // Constructor:
     //
-    WorkSpaceComponent(const char * name, boolean developerStyle);
+    WorkSpaceComponent(const char * name, bool developerStyle);
 
     //
     // In addition to superclass work, put null into root inthe objects in
@@ -155,7 +155,7 @@ class WorkSpaceComponent : public UIComponent
     // Set XmNuserData on the root widget so that we can track movement
     // in the workspace for the purpose of implementing undo
     //
-    //virtual void setRootWidget(Widget root, boolean standardDestroy = TRUE);
+    //virtual void setRootWidget(Widget root, bool standardDestroy = true);
 
   public:
     //
@@ -171,7 +171,7 @@ class WorkSpaceComponent : public UIComponent
     void resetUserDimensions ()
 	{this->userAssignedWidth = this->userAssignedHeight = 0; }
     virtual void getXYSize (int *width, int *height);
-    boolean isUserSizeSet() 
+    bool isUserSizeSet() 
 	{ return (this->userAssignedHeight && this->userAssignedWidth); }
 
 
@@ -179,9 +179,9 @@ class WorkSpaceComponent : public UIComponent
     // V E R T I C A L / H O R I Z O N T A L   L A Y O U T
     // V E R T I C A L / H O R I Z O N T A L   L A Y O U T
     //
-    virtual void setVerticalLayout (boolean vertical);
-    boolean verticallyLaidOut();
-    virtual boolean acceptsLayoutChanges() { return TRUE; }
+    virtual void setVerticalLayout (bool vertical);
+    bool verticallyLaidOut();
+    virtual bool acceptsLayoutChanges() { return true; }
 
     //
     // DynamicResource's
@@ -190,10 +190,10 @@ class WorkSpaceComponent : public UIComponent
     // burden everybody.  The necessary routines are just stuck into LabelDecorator
     // which is the only class which needs them.
     //
-    virtual boolean parseResourceComment (const char *,
-	const char *, int ) { return FALSE; }
+    virtual bool parseResourceComment (const char *,
+	const char *, int ) { return false; }
     //const char *getResourceString (const char *);
-    boolean isResourceSet (const char *);
+    bool isResourceSet (const char *);
     void transferResources (WorkSpaceComponent* );
 
 
@@ -201,8 +201,8 @@ class WorkSpaceComponent : public UIComponent
     //
     // Flatten out the parent change the color, and turn off selectibility.
     //
-    virtual void setAppearance(boolean developerStyle);
-    virtual boolean getAppearance () { return this->developerStyle; }
+    virtual void setAppearance(bool developerStyle);
+    virtual bool getAppearance () { return this->developerStyle; }
 
     //
     // Open the window for the default action (a double click) of this 
@@ -218,9 +218,9 @@ class WorkSpaceComponent : public UIComponent
     // care of highlighting.  This can be called if the root widget
     // has not yet been created, but the selection may not be reflected.
     // 
-    void indicateSelect(boolean selected);
-    virtual void setSelected (boolean state);
-    boolean isSelected() { return this->selected; }
+    void indicateSelect(bool selected);
+    virtual void setSelected (bool state);
+    bool isSelected() { return this->selected; }
 
     //
     // Provide the ability to set the contents of XmNlabelString in 
@@ -229,14 +229,14 @@ class WorkSpaceComponent : public UIComponent
     //
     //static void SetLabelResource(Widget w, const char *labelString);
     virtual const char * getLabel() { return NULL; };
-    virtual void setLabel (const char *, boolean re_layout=TRUE){};
+    virtual void setLabel (const char *, bool re_layout=true){};
 
 
     //
     // Used primarily inside ControlPanel.C
     //
-    boolean isA (const char *classname);
-    virtual boolean isA(Symbol classname);
+    bool isA (const char *classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Interactor has one thru InteractorInstance.  Decorator gets one by

@@ -64,7 +64,7 @@ class SequencerDefinition : public ShadowedOutputDefinition
     static NodeDefinition *AllocateDefinition();
 
 #if 0 // Moved to DrivenNode 6/30/93
-    virtual boolean isAllowedInMacro() { return FALSE; }
+    virtual bool isAllowedInMacro() { return false; }
 #endif
 
     //

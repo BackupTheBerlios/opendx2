@@ -49,7 +49,7 @@ UndoStandInMove::UndoStandInMove(EditorWindow* editor, StandIn* standIn, const c
     this->instance_number = instance;
 }
 
-void UndoStandInMove::undo(boolean first_in_list)
+void UndoStandInMove::undo(bool first_in_list)
 {
     int i;
     Node* n = UndoNode::LookupNode(this->editor, this->className, this->instance_number);
@@ -85,15 +85,15 @@ void UndoStandInMove::undo(boolean first_in_list)
 	    si->addArk(this->editor, arc);
 	}
     }
-    if (first_in_list) this->editor->selectNode (n, TRUE, TRUE);
+    if (first_in_list) this->editor->selectNode (n, true, true);
 }
 
-boolean UndoStandInMove::canUndo()
+bool UndoStandInMove::canUndo()
 {
     Node* n = UndoNode::LookupNode (this->editor, this->className, this->instance_number);
-    if (!n) return FALSE;
+    if (!n) return false;
     StandIn* si = n->getStandIn();
-    if (!si) return FALSE;
+    if (!si) return false;
 
     // determine if the destination location is empty
     int w,h;
@@ -133,13 +133,13 @@ UndoDecoratorMove::~UndoDecoratorMove()
 {
 }
 
-void UndoDecoratorMove::undo(boolean first_in_list)
+void UndoDecoratorMove::undo(bool first_in_list)
 {
     VPEAnnotator* dec = this->lookupDecorator();
     if (dec) {
 	dec->manage();
 	dec->setXYPosition (this->x, this->y);
-	if (first_in_list) this->editor->selectDecorator (dec, TRUE, TRUE);
+	if (first_in_list) this->editor->selectDecorator (dec, true, true);
     }
 }
 
@@ -157,10 +157,10 @@ VPEAnnotator* UndoDecoratorMove::lookupDecorator()
     }
 }
 
-boolean UndoDecoratorMove::canUndo()
+bool UndoDecoratorMove::canUndo()
 {
     VPEAnnotator* dec = this->lookupDecorator();
-    if (!dec) return FALSE;
+    if (!dec) return false;
     int w,h;
     dec->getXYSize(&w,&h);
     WorkSpace* ews = dec->getWorkSpace();

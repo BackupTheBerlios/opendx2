@@ -28,13 +28,13 @@ class ImageFormatIM : public PixelImageFormat
   private:
 
     //static String  DefaultResources[];
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
 
     virtual void	initialize();
 
-    virtual boolean		supportsPrinting() { return TRUE; }
+    virtual bool		supportsPrinting() { return true; }
 
   public:
 
@@ -60,7 +60,7 @@ class ImageFormatIM : public PixelImageFormat
     // Returns a pointer to the class name.
     //
     const char* getClassName() { return ClassImageFormatIM; }
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 };
 
 

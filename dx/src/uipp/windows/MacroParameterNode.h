@@ -47,7 +47,7 @@ class MacroParameterNode : public UniqueNameNode
     //
     void setTypeSafeOptions(Ark* pref=NULL);
 
-    boolean canCoerceValue (const char* option, List* types);
+    bool canCoerceValue (const char* option, List* types);
 
   protected:
     //
@@ -55,15 +55,15 @@ class MacroParameterNode : public UniqueNameNode
     //
     int index;		// Which (1-based) of the networks parameters are we?
 
-    virtual boolean  netParseAuxComment(const char* comment,
+    virtual bool  netParseAuxComment(const char* comment,
 						const char *file,
 						int lineno);
 
     virtual char *netNodeString(const char *prefix);
-    virtual boolean netPrintAuxComment(FILE *f);
+    virtual bool netPrintAuxComment(FILE *f);
 
-    virtual boolean addIOArk(List *io, int index, Ark *a);
-    virtual boolean removeIOArk(List *io, int index, Ark *a);
+    virtual bool addIOArk(List *io, int index, Ark *a);
+    virtual bool removeIOArk(List *io, int index, Ark *a);
 
   public:
     //
@@ -76,41 +76,41 @@ class MacroParameterNode : public UniqueNameNode
     //
     ~MacroParameterNode();
 
-    virtual boolean initialize();
+    virtual bool initialize();
 
     //
-    // Match output_index of this node to input_index of n.  Returns TRUE
+    // Match output_index of this node to input_index of n.  Returns true
     // if they can connect.
     //
-    virtual boolean typeMatchOutputToInput(
+    virtual bool typeMatchOutputToInput(
 	int output_index,
 	Node *n,
 	int input_index);
 
     virtual const char *getParameterNameString();
     virtual ParameterDefinition *getParameterDefinition(
-			boolean includeDummies = TRUE);
+			bool includeDummies = true);
 
     virtual void setIndex(int index);
     virtual int getIndex() { return this->index; }
-    virtual boolean moveIndex(int index, boolean issue_error = TRUE);
+    virtual bool moveIndex(int index, bool issue_error = true);
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Determine if this node an input or output
     // Should not be called until after initialization.
     //
-    boolean isInput();
+    bool isInput();
 
     //
     // Switch the node's net from 'from' to 'to'
     //
-    virtual void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
-    virtual boolean canSwitchNetwork(Network *from, Network *to);
+    virtual void switchNetwork(Network *from, Network *to, bool silently=false);
+    virtual bool canSwitchNetwork(Network *from, Network *to);
 
     //
     // Pure virtual from UniqueNameNode so that Network can watch for name

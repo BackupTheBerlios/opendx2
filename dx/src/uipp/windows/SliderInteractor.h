@@ -49,7 +49,7 @@ class SliderInteractor : public ScalarInteractor
     //Widget	componentForm;	// Holds the steppers for a vector interactor
     //Widget	sliderWidget;
 
-    static boolean SliderInteractorClassInitialized;
+    static bool SliderInteractorClassInitialized;
 
     // Call the virtual callback for value changes. 
     //
@@ -112,7 +112,7 @@ class SliderInteractor : public ScalarInteractor
     //
     virtual void handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change);
+					bool major_change);
 
     //
     // One time initialize for the class.

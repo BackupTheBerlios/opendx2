@@ -48,7 +48,7 @@ class IBMMainWindow : public MainWindow
     //
     // XmNhelpCallback callback routine for this class:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     Command	     	*helpOnContextCmd;
     Command		*helpOnWindowCmd;
@@ -84,12 +84,12 @@ class IBMMainWindow : public MainWindow
     // Create the help pulldown and add the standard menu options.
     //
     //virtual void createBaseHelpMenu(Widget parent, 
-				//boolean add_standard_options = TRUE,
-				//boolean addAboutApp = FALSE);
+				//bool add_standard_options = true,
+				//bool addAboutApp = false);
     //
     // Constructor for the subclasses:
     //
-    IBMMainWindow(const char* name, boolean hasMenuBar = TRUE);
+    IBMMainWindow(const char* name, bool hasMenuBar = true);
 
     //
     // Install the default resources for this class and then call the

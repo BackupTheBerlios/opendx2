@@ -14,7 +14,7 @@
 #include "MacroDefinition.h"
 
 
-boolean LoadMDFDialog::ClassInitialized = FALSE;
+bool LoadMDFDialog::ClassInitialized = false;
 
 //String LoadMDFDialog::DefaultResources[] =
 //{
@@ -27,19 +27,19 @@ boolean LoadMDFDialog::ClassInitialized = FALSE;
 LoadMDFDialog::LoadMDFDialog(DXApplication *ap) : 
                        FileDialog("loadMDFDialog")
 {
-    this->hasCommentButton = FALSE;
+    this->hasCommentButton = false;
     this->dxApp = ap;
 
     if (NOT LoadMDFDialog::ClassInitialized)
     {
-        LoadMDFDialog::ClassInitialized = TRUE;
+        LoadMDFDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 LoadMDFDialog::LoadMDFDialog(char *name, DXApplication *ap) : 
                        FileDialog(name)
 {
-    this->hasCommentButton = FALSE;
+    this->hasCommentButton = false;
     this->dxApp = ap;
 }
 
@@ -60,6 +60,6 @@ void LoadMDFDialog::helpCallback(Dialog* dialog)
 void LoadMDFDialog::okFileWork(const char *string)
 {
     Dictionary d;
-    this->dxApp->loadUDF(string, &d, TRUE);
+    this->dxApp->loadUDF(string, &d, true);
 }
 

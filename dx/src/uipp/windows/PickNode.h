@@ -57,10 +57,10 @@ class PickNode : public ProbeNode
     //
     ~PickNode();
 
-    virtual boolean initialize();
+    virtual bool initialize();
     virtual void initializeAfterNetworkMember();
 
-    virtual boolean setLabelString(const char *label);
+    virtual bool setLabelString(const char *label);
 
     virtual void setCursorValue(int cursor, double x, double y, double z = 0.0);
     virtual void resetCursor();
@@ -70,9 +70,9 @@ class PickNode : public ProbeNode
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
-    virtual boolean hasJavaRepresentation() { return TRUE; }
+    virtual bool hasJavaRepresentation() { return true; }
     virtual const char* getJavaNodeName() { return "PickNode"; }
 
     //

@@ -75,8 +75,8 @@ class PacketHandler : public Base
     int getType() {return this->type;}
     int getNumber() {return this->number;}
     const char *getMatch() {return this->matchString;}
-    boolean match(const char *s);
-    boolean matchFirst(const char *s);
+    bool match(const char *s);
+    bool matchFirst(const char *s);
 
     //
     // Returns a pointer to the class name.

@@ -45,7 +45,7 @@ class SaveMacroCommand : public NoUndoCommand
     //
     // Protected member data:
     //
-    virtual  boolean doIt(CommandInterface*);
+    virtual  bool doIt(CommandInterface*);
 
     //
     // Used by saving confirmation dialog.
@@ -57,7 +57,7 @@ class SaveMacroCommand : public NoUndoCommand
 
     SaveMacroCommand(const char*   name,
                      CommandScope* scope,
-                     boolean       active,
+                     bool       active,
                      MacroDefinition *md);
 
     ~SaveMacroCommand();

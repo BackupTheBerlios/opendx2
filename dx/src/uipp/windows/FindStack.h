@@ -37,7 +37,7 @@ class FindStack : protected Stack
 
     void push(char* name, int instance, char *label);
 
-    boolean pop(char* name, int* instance, char *label);
+    bool pop(char* name, int* instance, char *label);
     
     void clear();
 

@@ -41,20 +41,20 @@ class ComputeNode : public Node
     //
     // Protected member data:
     //
-    boolean	 exposedExpression;
+    bool	 exposedExpression;
     char	*expression;
     List	 nameList;
 
     char *resolveExpression();
 
-    virtual boolean netPrintAuxComment(FILE *f);
+    virtual bool netPrintAuxComment(FILE *f);
     //
     // Add/remove a set of repeatable input or output parameters to the
     // this node.   An error  ocurrs if the parameter list indicated does
     // not have repeatable parameters.
     //
-    virtual boolean addRepeats(boolean input);
-    virtual boolean removeRepeats(boolean input);
+    virtual bool addRepeats(bool input);
+    virtual bool removeRepeats(bool input);
 
   public:
     //
@@ -67,13 +67,13 @@ class ComputeNode : public Node
     //
     ~ComputeNode();
 
-    virtual boolean initialize();
+    virtual bool initialize();
 
-    void setExpression(const char *expr, boolean send = TRUE);
+    void setExpression(const char *expr, bool send = true);
     const char *getExpression();
-    void setName(const char *name, int i, boolean send = TRUE);
+    void setName(const char *name, int i, bool send = true);
     const char *getName(int i);
-    virtual boolean netParseAuxComment(const char *comment,
+    virtual bool netParseAuxComment(const char *comment,
 			 const char *file,
 			 int lineno);
 
@@ -87,7 +87,7 @@ class ComputeNode : public Node
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

@@ -36,7 +36,7 @@ class FileSelectorInstance;
 //				
 class FileSelectorDialog : public ApplyFileDialog
 {
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
   protected:

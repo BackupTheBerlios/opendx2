@@ -33,7 +33,7 @@ class ImageFileDialog : public dxui::FileDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     SaveImageDialog* sid;
 

@@ -14,17 +14,17 @@
 #include "SelectorListInstance.h"
 
 
-boolean SelectorListInstance::printAsJava (FILE* jf)
+bool SelectorListInstance::printAsJava (FILE* jf)
 {
     const char* indent = "        ";
-    if (this->style->hasJavaStyle() == FALSE)
+    if (this->style->hasJavaStyle() == false)
 	return InteractorInstance::printAsJava(jf);
 
     int x,y,w,h;
     this->getXYPosition (&x, &y);
     this->getXYSize (&w,&h);
     ControlPanel* cpan = this->getControlPanel();
-    boolean devstyle = cpan->isDeveloperStyle();
+    bool devstyle = cpan->isDeveloperStyle();
     const char* ilab = this->getInteractorLabel();
     int line_count = CountLines(ilab);
 
@@ -63,6 +63,6 @@ boolean SelectorListInstance::printAsJava (FILE* jf)
 
     fprintf(jf, "        %s.addInteractor(%s);\n", cpan->getJavaVariableName(), var_name);
 
-    return TRUE;
+    return true;
 }
 

@@ -45,7 +45,7 @@ class ScalarListInteractor : public StepperInteractor
     // Private member data:
     //
 
-    static boolean ScalarListInteractorClassInitialized;
+    static bool ScalarListInteractorClassInitialized;
 
 
     //friend void ScalarListInteractor_ListCB(Widget w, XtPointer clientData, XtPointer callData);
@@ -140,7 +140,7 @@ class ScalarListInteractor : public StepperInteractor
     //
     virtual void handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change);
+					bool major_change);
  
     //
     // One time initialize for the class.

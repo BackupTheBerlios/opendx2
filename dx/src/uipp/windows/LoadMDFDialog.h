@@ -32,7 +32,7 @@ class DXApplication;
 //				
 class LoadMDFDialog : public dxui::FileDialog
 {
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
   protected:

@@ -86,7 +86,7 @@ class ControlPanel : public DXWindow
     //
     // Private class data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
     //friend void ControlPanel_EditMenuMapCB(Widget, XtPointer, XtPointer);
     //friend void ControlPanel_SetStyleCB(Widget, XtPointer, XtPointer);
@@ -107,9 +107,9 @@ class ControlPanel : public DXWindow
     enum StyleEnum {
 	NeverSet, Developer, User
     };
-    boolean     developerStyle;
+    bool     developerStyle;
     StyleEnum	displayedStyle;
-    boolean	allowOverlap;   // save old setting
+    bool	allowOverlap;   // save old setting
     int		xpos, ypos;	// Positions saved in .cfg file.
     char	*comment;	// The comment for this control panel.
     List	instanceList;	// List of interactor instances.
@@ -127,8 +127,8 @@ class ControlPanel : public DXWindow
     PanelAccessManager		*panelAccessManager; 
     //Dimension	develModeDiagWidth; // for toggling between user/developer mode
     //Dimension   develModeDiagHeight; 
-    boolean     develModeGridding;  // true if gridding was on before switching to user
-    boolean	hit_detection;
+    bool     develModeGridding;  // true if gridding was on before switching to user
+    bool	hit_detection;
 
     //
     // called by MainWindow::PopdownCallback().
@@ -145,7 +145,7 @@ class ControlPanel : public DXWindow
     //
     // Do we allow the user to toggle between developer and dialog style
     //
-    boolean allowDeveloperStyleChange();
+    bool allowDeveloperStyleChange();
 
     char* java_variable;
 
@@ -282,44 +282,44 @@ class ControlPanel : public DXWindow
     //
     // Parse/Print the 'panel comment in the .cfg file. 
     //
-    virtual boolean cfgParsePanelComment(const char *comment, 
+    virtual bool cfgParsePanelComment(const char *comment, 
 				const char *filename, int lineno);
-    virtual boolean cfgPrintPanelComment(FILE *f, PrintType dest=PrintFile); 
+    virtual bool cfgPrintPanelComment(FILE *f, PrintType dest=PrintFile); 
 
     // Parse/Print decorator comments in the .cfg file.
-    virtual boolean cfgParseDecoratorComment (const char *comment,
+    virtual bool cfgParseDecoratorComment (const char *comment,
 				const char *filename, int lineno);
-    virtual boolean cfgPrintDecoratorComment(FILE *f, PrintType dest=PrintFile); 
+    virtual bool cfgPrintDecoratorComment(FILE *f, PrintType dest=PrintFile); 
 
     //
     // Parse/Print the comment comment in the .cfg file. 
     //
-    virtual boolean cfgParseCommentComment(const char *comment, 
+    virtual bool cfgParseCommentComment(const char *comment, 
 				const char *filename, int lineno);
-    virtual boolean cfgPrintCommentComment(FILE *f, PrintType dest=PrintFile); 
+    virtual bool cfgPrintCommentComment(FILE *f, PrintType dest=PrintFile); 
 
     //
     // Parse/Print a control panel's 'title' comment.
     //
-    virtual boolean cfgParseTitleComment(const char *comment,
+    virtual bool cfgParseTitleComment(const char *comment,
                                 const char *filename, int lineno);
-    virtual boolean cfgPrintTitleComment(FILE *f, PrintType dest=PrintFile); 
+    virtual bool cfgPrintTitleComment(FILE *f, PrintType dest=PrintFile); 
 
 
     //
     // Find THE selected InteractorInstance.
-    // Return TRUE if a single interactor is selected 
-    // Return FALSE if none or more than one selected interactor were found 
+    // Return true if a single interactor is selected 
+    // Return false if none or more than one selected interactor were found 
     // Always set *selected to the first selected InteractorInstance that was
-    // found.  If FALSE is return *selected may be set to NULL if no selected
+    // found.  If false is return *selected may be set to NULL if no selected
     // InteractorInstances were found.
     // 
-    boolean findTheSelectedInteractorInstance(InteractorInstance **selected);
+    bool findTheSelectedInteractorInstance(InteractorInstance **selected);
 
     //
     // Same as findTheSelectedInteractorInstance... only for WorkSpaceComponent
     //
-    boolean findTheSelectedComponent(WorkSpaceComponent **selected);
+    bool findTheSelectedComponent(WorkSpaceComponent **selected);
 
     //
     // Determine the number of selected Interactors
@@ -420,19 +420,19 @@ class ControlPanel : public DXWindow
     //
     // Add/Remove an instance of an interactor. 
     //
-    boolean addInteractorInstance(InteractorInstance *ii);
-    boolean removeInteractorInstance(InteractorInstance *ii);
+    bool addInteractorInstance(InteractorInstance *ii);
+    bool removeInteractorInstance(InteractorInstance *ii);
 
     //
     // Parse the comments in the .cfg file. 
     //
-    virtual boolean cfgParseComment(const char *comment, 
+    virtual bool cfgParseComment(const char *comment, 
 				const char *filename, int lineno);
 
     //
     // Print the information about the control panel in the .cfg file 
     //
-    virtual boolean cfgPrintPanel(FILE *f, PrintType dest=PrintFile); 
+    virtual bool cfgPrintPanel(FILE *f, PrintType dest=PrintFile); 
 
     //
     // Take the first item on this->selectedNodes list and place
@@ -500,8 +500,8 @@ class ControlPanel : public DXWindow
     //
     // User / Developer styles
     //
-    void setPanelStyle(boolean developerStyle);
-    boolean isDeveloperStyle() { return this->developerStyle; }
+    void setPanelStyle(bool developerStyle);
+    bool isDeveloperStyle() { return this->developerStyle; }
 
     //
     // The decorators are held in this->componentList (no interactors in the list)
@@ -521,7 +521,7 @@ class ControlPanel : public DXWindow
     // Use createAndPlaceInteractor for the job.  This happens due to a dnd
     // operation from the vpe to the ControlPanel.
     //
-    boolean dndPlacement (int x, int y);
+    bool dndPlacement (int x, int y);
  
     //
     // Initialize for selected interactor node placement.  Should be called
@@ -542,7 +542,7 @@ class ControlPanel : public DXWindow
     //
     // Change the layout of all selected interactors.
     //
-    void setVerticalLayout(boolean vertical = TRUE);
+    void setVerticalLayout(bool vertical = true);
 
     //
     // Do any work that is required when a Node's state has changed.
@@ -588,17 +588,17 @@ class ControlPanel : public DXWindow
     //
     // Same as the super class, but also sets the icon name.
     //
-    void setWindowTitle(const char *name, boolean check_geometry=FALSE);
+    void setWindowTitle(const char *name, bool check_geometry=false);
 
     //
     // Change the dimensionality of the selected interactor.
     //
-    boolean changeInteractorDimensionality(int new_dim);
+    bool changeInteractorDimensionality(int new_dim);
 
     //
     // De/Select all instances in the control panel.
     //
-    void selectAllInstances(boolean select);
+    void selectAllInstances(bool select);
 
     //
     // Get the next x,y position of an interactor being placed during a
@@ -613,7 +613,7 @@ class ControlPanel : public DXWindow
     // && that interactor is selected.  Used by Network::cfgPrintSelection 
     // because he wants to visit only certain nodes.
     //
-    boolean nodeIsInInstanceList (Node *n);
+    bool nodeIsInInstanceList (Node *n);
 
     //
     // Supply the Position of the the NW most interactor.
@@ -628,7 +628,7 @@ class ControlPanel : public DXWindow
     //
     // J A V A     J A V A     J A V A
     //
-    boolean printAsJava(FILE*);
+    bool printAsJava(FILE*);
     const char* getJavaVariableName();
     void getWorkSpaceSize(int* w, int *h);
 
@@ -636,7 +636,7 @@ class ControlPanel : public DXWindow
     // Change a resource in the Workspace widget that lets the user know
     // if things will overlap - during the course of moving
     //
-    boolean toggleHitDetection();
+    bool toggleHitDetection();
 
 
     //

@@ -74,7 +74,7 @@ class ImageDefinition : public NodeDefinition
 
     virtual void finishDefinition();
 
-    virtual boolean isAllowedInMacro() { return FALSE; }
+    virtual bool isAllowedInMacro() { return false; }
 
     //
     // Returns a pointer to the class name.

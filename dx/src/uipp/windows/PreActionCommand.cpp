@@ -21,7 +21,7 @@ struct PreActionData {
 
 PreActionCommand::PreActionCommand(const char*   name,
 				   CommandScope* scope,
-				   boolean       active,
+				   bool       active,
 				   char*         dialogTitle,
 				   char*         dialogQuestion) :
 	NoUndoCommand(name, scope, active)
@@ -74,7 +74,7 @@ void PreActionCommand::CancelDCB(void* clientData)
 
 
 
-boolean PreActionCommand::execute(CommandInterface *ci)
+bool PreActionCommand::execute(CommandInterface *ci)
 {
 
 //    Widget parent = this->dialogParent;
@@ -106,7 +106,7 @@ boolean PreActionCommand::execute(CommandInterface *ci)
 				   3);
     
 
-    return FALSE;
+    return false;
 }
 
 

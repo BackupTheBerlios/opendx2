@@ -30,9 +30,9 @@ NondrivenInteractorNode::NondrivenInteractorNode(NodeDefinition *nd,
 //
 //
 //
-boolean NondrivenInteractorNode::isDataDriven()
+bool NondrivenInteractorNode::isDataDriven()
 {
-    return FALSE;
+    return false;
 }
 //
 // Define the mapping of inputs that shadow outputs.
@@ -59,11 +59,11 @@ int  NondrivenInteractorNode::handleInteractorMsgInfo(const char *line)
 //
 // Determine if this node is of the given class.
 //
-boolean NondrivenInteractorNode::isA(Symbol classname)
+bool NondrivenInteractorNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassNondrivenInteractorNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->InteractorNode::isA(classname);
 }

@@ -49,11 +49,11 @@ class DynamicResource : public Base
 //    Widget root;
 
     //
-    // TRUE if this->setting.default_addr contains a value legal for XtSetValues.
-    // storedData is set to FALSE when a new value is supplied and set to TRUE
+    // true if this->setting.default_addr contains a value legal for XtSetValues.
+    // storedData is set to false when a new value is supplied and set to true
     // after the Intrinsics' type converter has been invoked.
     //
-    boolean storedData;
+    bool storedData;
 
     //
     // ... holds the name, type, value we're working with.
@@ -63,7 +63,7 @@ class DynamicResource : public Base
     //
     // Perform the type conversion then stick the data into the widget.
     //
-    boolean applySetting (const char *name);
+    bool applySetting (const char *name);
 
     //
     // widgetNames[i] is a the widget name part of an Xt resource spec of the
@@ -74,10 +74,10 @@ class DynamicResource : public Base
     int nameCnt;
 
     //
-    // TRUE if this->setting.resource_name exists every widget in widgetNames.
-    // The object should be destroyed if it's created with valid_resource==FALSE.
+    // true if this->setting.resource_name exists every widget in widgetNames.
+    // The object should be destroyed if it's created with valid_resource==false.
     //
-    boolean valid_resource;
+    bool valid_resource;
 
     //
     // Hang onto the resource name because the resource might not be found until
@@ -87,7 +87,7 @@ class DynamicResource : public Base
     char *resourceName;
     char *stringRepresentation;
 
-    //static boolean VerifyPresence (const char *, Widget, XtResource*);
+    //static bool VerifyPresence (const char *, Widget, XtResource*);
     //static char *QualifiedWidgetName (Widget, Widget);
     //static char* *GrowNameList (char**, int *, const char *);
     //static void CopyResource (XtResource *, XtResource *);
@@ -105,9 +105,9 @@ class DynamicResource : public Base
     // Supply a new string representation of the resource's value.  Will use
     // installed converters to get the real value.
     //
-    boolean setData (const char *);
+    bool setData (const char *);
     // Update the settings using XtSetValues using the existing data.
-    boolean setData ();
+    bool setData ();
 
     //
     // Query functions
@@ -119,34 +119,34 @@ class DynamicResource : public Base
     const char *getResourceName() { return this->resourceName; }
     const char *getStringRepresentation() 
 	{ return (const char *)this->stringRepresentation; }
-    //boolean inWidgetList (Widget w);
+    //bool inWidgetList (Widget w);
 
     //
     // Supply the real value.  Don't do any conversion.
     //
-    boolean setDataDirectly (void *);
+    bool setDataDirectly (void *);
 
     //
     // The root widget is changeable.  Whenever it is set, run thru the list of
     // names, verifying that a widget has a resource and then setting the resource.
     //
-    //boolean setRootWidget(Widget);
+    //bool setRootWidget(Widget);
 
 
-    boolean isValidResource() { return this->valid_resource; }
+    bool isValidResource() { return this->valid_resource; }
 
     //
     // When adding a widget to the list, verify that this->setting.resource_name is
     // in the set of resources held by the widget of interest.  The name used will
     // be ...XtName(XtParent(dest)).XtName(dest)
     //
-    // If allIntermediates is set to TRUE, then automatically include all widgets
+    // If allIntermediates is set to true, then automatically include all widgets
     // which are both children of root and ancestors of dest.  This facilitates
     // setting colors resources in objects made of several widgets.
     //
-    //boolean addWidgetToNameList (Widget dest, boolean allIntermediates=FALSE);
+    //bool addWidgetToNameList (Widget dest, bool allIntermediates=false);
     // Add dest and all decendants thereof.
-    //boolean addWidgetsToNameList (Widget dest, boolean allIntermediates=FALSE);
+    //bool addWidgetsToNameList (Widget dest, bool allIntermediates=false);
 
     //
     // print and parse functions called by someone in WorkSpaceComponent
@@ -154,8 +154,8 @@ class DynamicResource : public Base
     // to have a Widget in order to accept a resource name, but we'll assume that
     // the resource is valid because it could only have been written by me.
     //
-    boolean printComment (FILE *);
-    boolean parseComment (const char *comment, const char *file, int line);
+    bool printComment (FILE *);
+    bool parseComment (const char *comment, const char *file, int line);
 
     //
     // Constructor:

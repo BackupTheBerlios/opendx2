@@ -53,7 +53,7 @@ class ProcessGroupRecord : public GroupRecord
     }
 
   public:
-    virtual boolean  changesWhere () { return TRUE; }
+    virtual bool  changesWhere () { return true; }
 };
 
 //
@@ -66,7 +66,7 @@ class ProcessHostRecord
   private:
    
     char *args;
-    boolean dirty;
+    bool dirty;
 
     ProcessHostRecord(const char* args)
     {
@@ -75,7 +75,7 @@ class ProcessHostRecord
 	else
 	    this->args  = NULL;
 
-	this->dirty = FALSE;
+	this->dirty = false;
     };
 
     ~ProcessHostRecord()
@@ -115,10 +115,10 @@ class ProcessGroupManager : public GroupManager
 
     //
     // Update the assignment dictionary.
-    // Return FALSE if given host does not exist.
+    // Return false if given host does not exist.
     //
-    boolean addGroupAssignment(const char* host, const char *group);
-    boolean removeGroupAssignment(const char *group);
+    bool addGroupAssignment(const char* host, const char *group);
+    bool removeGroupAssignment(const char *group);
 
     virtual GroupRecord* recordAllocator (Network *net, const char *name) {
 	return  new ProcessGroupRecord (net, name);
@@ -135,7 +135,7 @@ class ProcessGroupManager : public GroupManager
     //
     ~ProcessGroupManager();
 
-    static boolean SupportsMacros() { return FALSE; }
+    static bool SupportsMacros() { return false; }
 
     enum {
 		ATTACH,
@@ -151,15 +151,15 @@ class ProcessGroupManager : public GroupManager
     const char *getGroupHost(int n);
     const char *getGroupNewHost(const char* name);
     const char *getGroupNewHost(int n);
-    boolean getGroupHostDirty(const char* name);
+    bool getGroupHostDirty(const char* name);
     void clearGroupHostDirty(const char* name);
 
     //
     // Assign a host name to a group
-    // Return FALSE if the given group doesn't exist
+    // Return false if the given group doesn't exist
     //
-    boolean	assignHost(const char *groupname,const char *hostname);
-    boolean	assignHost(int n,const char *hostname);
+    bool	assignHost(const char *groupname,const char *hostname);
+    bool	assignHost(int n,const char *hostname);
 
     //
     // Really change host names when OK is pressed.
@@ -175,7 +175,7 @@ class ProcessGroupManager : public GroupManager
     // Access the host's arguments.
     //
     const char *getArgument(const char* host);
-    boolean getArgumentDirty(const char* host);
+    bool getArgumentDirty(const char* host);
     void clearArgumentDirty(const char* host);
     void assignArgument(const char *host,const char *args);
     void clearArgument();
@@ -183,7 +183,7 @@ class ProcessGroupManager : public GroupManager
     //
     // Remove modules from the existing group.
     //
-    virtual boolean     removeGroup(const char *name, Network *net);
+    virtual bool     removeGroup(const char *name, Network *net);
 
 
     //
@@ -209,12 +209,12 @@ class ProcessGroupManager : public GroupManager
     //
     // Parse/Print the  group assignment comment.
     //
-    virtual boolean parseComment(const char *comment, 
+    virtual bool parseComment(const char *comment, 
 			const char *filename, 
 			int lineno,
 			Network *net);
-    virtual boolean printComment(FILE *f);
-    virtual boolean printAssignment(FILE *f);
+    virtual bool printComment(FILE *f);
+    virtual bool printAssignment(FILE *f);
 
 
     //

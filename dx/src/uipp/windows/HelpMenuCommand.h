@@ -38,7 +38,7 @@ class HelpMenuCommand : public NoUndoCommand
     //
     HelpMenuCommandType commandType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -46,7 +46,7 @@ class HelpMenuCommand : public NoUndoCommand
     //
     HelpMenuCommand(const char*   name,
                    CommandScope  *scope,
-                   boolean       active,
+                   bool       active,
 		   HelpMenuCommandType comType);
 
     //

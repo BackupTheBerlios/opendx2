@@ -11,7 +11,7 @@
 
 #include "OpenNetCommentDialog.h"
 
-boolean OpenNetCommentDialog::ClassInitialized = FALSE;
+bool OpenNetCommentDialog::ClassInitialized = false;
 
 //String OpenNetCommentDialog::DefaultResources[] =
 //{
@@ -27,13 +27,13 @@ boolean OpenNetCommentDialog::ClassInitialized = FALSE;
 //};
 
 OpenNetCommentDialog::OpenNetCommentDialog()
-			: TextEditDialog("openNetComment", TRUE)
+			: TextEditDialog("openNetComment", true)
 {
     //this->dialogModality = XmDIALOG_APPLICATION_MODAL;
 
     if (NOT OpenNetCommentDialog::ClassInitialized)
     {
-        OpenNetCommentDialog::ClassInitialized = TRUE;
+        OpenNetCommentDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

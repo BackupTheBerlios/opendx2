@@ -37,7 +37,7 @@ class DisconnectFromServerCommand : public ConfirmedCommand
     //   If affirmatively confirmed, the command terminates
     //   the application program.
     //
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -45,7 +45,7 @@ class DisconnectFromServerCommand : public ConfirmedCommand
     //
     DisconnectFromServerCommand(const char*   name,
 		CommandScope* scope,
-		boolean       active);
+		bool       active);
 
     //
     // Destructor:

@@ -13,7 +13,7 @@
 #include "HelpOnPanelDialog.h"
 #include "ControlPanel.h"
 
-boolean HelpOnPanelDialog::ClassInitialized = FALSE;
+bool HelpOnPanelDialog::ClassInitialized = false;
 
 //String HelpOnPanelDialog::DefaultResources[] =
 //{
@@ -22,11 +22,11 @@ boolean HelpOnPanelDialog::ClassInitialized = FALSE;
 //};
 
 HelpOnPanelDialog::HelpOnPanelDialog(ControlPanel *cp) : 
-				SetPanelCommentDialog("helpOnPanel", TRUE, cp)
+				SetPanelCommentDialog("helpOnPanel", true, cp)
 {
     if (NOT HelpOnPanelDialog::ClassInitialized)
     {
-        HelpOnPanelDialog::ClassInitialized = TRUE;
+        HelpOnPanelDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

@@ -108,7 +108,7 @@ void ToggleInteractor::completeInteractivePart()
 InteractorInstance *ii = this->interactorInstance;
 
     this->setLabel (ii->getInteractorLabel(), true);
-    this->Interactor::setLabel("",FALSE);
+    this->Interactor::setLabel("",false);
 
     //
     // ::passEvents is not applied to the widget(s) in the interactor
@@ -127,7 +127,7 @@ InteractorInstance *ii = this->interactorInstance;
  //   XtOverrideTranslations (this->toggleButton, ToggleInteractor::WWTranslations);
 }
 void ToggleInteractor::handleInteractivePartStateChange(InteractorInstance *ii,
-						boolean major_change)
+						bool major_change)
 {
     this->updateDisplayedInteractorValue();
 }
@@ -138,7 +138,7 @@ void ToggleInteractor::handleInteractivePartStateChange(InteractorInstance *ii,
 // and set the interactor label to "".
 //
 void ToggleInteractor::setLabel(
-        const char *labelString, boolean re_layout)
+        const char *labelString, bool re_layout)
 {
 //XmStringContext cxt;
 //char *text, *tag;

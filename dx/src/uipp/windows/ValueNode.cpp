@@ -32,10 +32,10 @@ ValueNode::~ValueNode()
 {
 }
 
-boolean ValueNode::initialize()
+bool ValueNode::initialize()
 {
-    Type t = this->setOutputValue(1,"NULL", DXType::UndefinedType, FALSE);
-    return t == DXType::UndefinedType ? FALSE : TRUE;
+    Type t = this->setOutputValue(1,"NULL", DXType::UndefinedType, false);
+    return t == DXType::UndefinedType ? false : true;
 }
 
 InteractorInstance* ValueNode::newInteractorInstance()
@@ -49,11 +49,11 @@ InteractorInstance* ValueNode::newInteractorInstance()
 //
 // Determine if this node is of the given class.
 //
-boolean ValueNode::isA(Symbol classname)
+bool ValueNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassValueNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->NondrivenInteractorNode::isA(classname);
 }

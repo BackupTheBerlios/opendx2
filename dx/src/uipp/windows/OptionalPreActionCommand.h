@@ -35,11 +35,11 @@ class OptionalPreActionCommand : public PreActionCommand
     //
     OptionalPreActionCommand(const char*   name,
 		     CommandScope* scope,
-		     boolean       active,
+		     bool       active,
 		     char*         dialogTitle,
 		     char*         dialogQuestion);
 
-    virtual boolean needsConfirmation() = 0;
+    virtual bool needsConfirmation() = 0;
 
   public:
     //
@@ -52,7 +52,7 @@ class OptionalPreActionCommand : public PreActionCommand
     //   First posts a dialog to ask for user confirmation before
     //   actually executing the command.
     //
-    virtual boolean execute(CommandInterface *ci = NULL);
+    virtual bool execute(CommandInterface *ci = NULL);
 
     //
     // Returns a pointer to the class name.

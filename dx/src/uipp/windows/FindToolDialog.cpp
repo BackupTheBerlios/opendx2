@@ -21,7 +21,7 @@
 #include "FindStack.h"
 #include "WarningDialogManager.h"
 
-boolean FindToolDialog::ClassInitialized = FALSE;
+bool FindToolDialog::ClassInitialized = false;
 
 //String  FindToolDialog::DefaultResources[] = {
 //    //
@@ -63,7 +63,7 @@ FindToolDialog::FindToolDialog(EditorWindow* editor)
 
     if (NOT FindToolDialog::ClassInitialized)
     {
-        FindToolDialog::ClassInitialized = TRUE;
+        FindToolDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -122,7 +122,7 @@ void FindToolDialog::createDialog(void)
 //        XmNleftOffset,        5,
 //        XmNbottomAttachment,  XmATTACH_FORM,
 //        XmNbottomOffset,      7,
-//	XmNsensitive,	      FALSE,
+//	XmNsensitive,	      false,
 //        NULL);
 //
 //    separator1 = XtVaCreateManagedWidget("separator",
@@ -165,7 +165,7 @@ void FindToolDialog::createDialog(void)
 //        XmNbottomAttachment,  XmATTACH_WIDGET,
 //        XmNbottomWidget,      separator1,
 //        XmNbottomOffset,      7,
-//	XmNsensitive,	      FALSE,
+//	XmNsensitive,	      false,
 //        NULL);
 //
 //    this->undobtn = XtVaCreateManagedWidget("undoButton",
@@ -176,7 +176,7 @@ void FindToolDialog::createDialog(void)
 //        XmNbottomAttachment,  XmATTACH_WIDGET,
 //        XmNbottomWidget,      separator1,
 //        XmNbottomOffset,      7,
-//	XmNsensitive,	      FALSE,
+//	XmNsensitive,	      false,
 //        NULL);
 //
 //
@@ -502,29 +502,29 @@ void FindToolDialog::manage()
 //
 //    ASSERT(clientData);
 //    FindToolDialog *data = (FindToolDialog*) clientData;
-//    boolean stop = FALSE;
+//    bool stop = false;
 //    int result;
 //
 //    while (NOT stop)
 //    {
 //        (data->redoStack)->pop(name, &instance, label);
-//        if ((result = data->selectNode(name, instance, FALSE)) == 0)
+//        if ((result = data->selectNode(name, instance, false)) == 0)
 //        {
 //	    WarningMessage("Cannot find tool %s in the visual program.",
 //		name);
-//            stop = TRUE;
+//            stop = true;
 //        }
 //        else
 //        {
 //            data->undoSens(True);
 //            (data->undoStack)->push(name,instance,label);
 //            if(result > 0)
-//                stop = TRUE;
+//                stop = true;
 //        }
 //
 //        if ((data->redoStack)->getSize() == 0)
 //        {
-//            stop = TRUE;
+//            stop = true;
 //            data->redoSens(False);
 //        }
 //    }
@@ -542,29 +542,29 @@ void FindToolDialog::manage()
 //
 //    ASSERT(clientData);
 //    FindToolDialog *data = (FindToolDialog*) clientData;
-//    boolean stop = FALSE;
+//    bool stop = false;
 //    int result;
 //
 //    while (NOT stop)
 //    {
 //        (data->undoStack)->pop(name, &instance, label);
-//        if ((result = data->selectNode(name, instance, FALSE)) == 0)
+//        if ((result = data->selectNode(name, instance, false)) == 0)
 //        {
 //	    WarningMessage("Cannot find tool %s in the visual program.",
 //		name);
-//            stop = TRUE;
+//            stop = true;
 //        }
 //        else
 //        {
 //            data->redoSens(True);
 //            (data->redoStack)->push(name,instance,label);
 //            if(result > 0)
-//                stop = TRUE;
+//                stop = true;
 //        }
 //
 //        if ((data->undoStack)->getSize() == 0)
 //        {
-//            stop = TRUE;
+//            stop = true;
 //            data->undoSens(False);
 //        }
 //    }
@@ -656,7 +656,7 @@ void FindToolDialog::manage()
 //
 //    if (nextInstance == INT_MAX)
 //	while((theNode = data->editor->getNetwork()->
-//			findNode(name,&data->lastPos,TRUE))
+//			findNode(name,&data->lastPos,true))
 //	      AND EqualString(theNode->getNameString(),
 //			      theNode->getLabelString()));
 //
@@ -700,7 +700,7 @@ void FindToolDialog::manage()
 //	XtFree(name);
 //}
 
-int FindToolDialog::selectNode(char* name, int instance, boolean newNode)
+int FindToolDialog::selectNode(char* name, int instance, bool newNode)
 {
     int result = 1;
     List *nlist;
@@ -732,20 +732,20 @@ int FindToolDialog::selectNode(char* name, int instance, boolean newNode)
 }
 
 
-void FindToolDialog::restoreSens(boolean sensitive)
+void FindToolDialog::restoreSens(bool sensitive)
 {
  //   if (XtIsSensitive(this->restorebtn) != sensitive) {
 	//XtSetSensitive(this->restorebtn,sensitive);
  //   }
 }
 
-void FindToolDialog::redoSens(boolean sensitive)
+void FindToolDialog::redoSens(bool sensitive)
 {
      //if (XtIsSensitive(this->redobtn) != sensitive)
      //	XtSetSensitive(this->redobtn,sensitive);
 }
 
-void FindToolDialog::undoSens(boolean sensitive)
+void FindToolDialog::undoSens(bool sensitive)
 {
      //if (XtIsSensitive(this->undobtn) != sensitive)
      //	XtSetSensitive(this->undobtn,sensitive);

@@ -14,7 +14,7 @@
 #include "SelectorInstance.h"
 
 
-void SelectorInstance::setSelectedOptionIndex(int index, boolean update_outputs)
+void SelectorInstance::setSelectedOptionIndex(int index, bool update_outputs)
 {
     SelectorNode *n = (SelectorNode*)this->getNode();
     n->setSelectedOptionIndex(index, update_outputs);
@@ -26,17 +26,17 @@ int  SelectorInstance::getSelectedOptionIndex()
     return n->getSelectedOptionIndex();
 }
 
-boolean SelectorInstance::printAsJava (FILE* jf)
+bool SelectorInstance::printAsJava (FILE* jf)
 {
     const char* indent = "        ";
-    if (this->style->hasJavaStyle() == FALSE)
+    if (this->style->hasJavaStyle() == false)
 	return InteractorInstance::printAsJava(jf);
 
     int x,y,w,h;
     this->getXYPosition (&x, &y);
     this->getXYSize (&w,&h);
     ControlPanel* cpan = this->getControlPanel();
-    boolean devstyle = cpan->isDeveloperStyle();
+    bool devstyle = cpan->isDeveloperStyle();
 
     InteractorNode* ino = (InteractorNode*)this->node;
     const char* node_var_name = ino->getJavaVariable();
@@ -76,6 +76,6 @@ boolean SelectorInstance::printAsJava (FILE* jf)
 
     fprintf(jf, "%s%s.addInteractor(%s);\n", indent,cpan->getJavaVariableName(),var_name);
 
-    return TRUE;
+    return true;
 }
 

@@ -16,7 +16,7 @@
 
 ImageFormatCommand::ImageFormatCommand(const char   *name,
 						 CommandScope *scope,
-						 boolean       active,
+						 bool       active,
 						 ImageFormatDialog  *dialog,
 						 int commandType):
     NoUndoCommand(name, scope, active)
@@ -25,12 +25,12 @@ ImageFormatCommand::ImageFormatCommand(const char   *name,
     this->commandType = commandType;
 }
 
-boolean ImageFormatCommand::doIt(CommandInterface *ci)
+bool ImageFormatCommand::doIt(CommandInterface *ci)
 {
 SaveImageDialog* sid = NUL(SaveImageDialog*);
 
-    this->dialog->setBusyCursor(TRUE);
-    boolean retval = FALSE;
+    this->dialog->setBusyCursor(true);
+    bool retval = false;
     switch (this->commandType) {
 	case ImageFormatCommand::AllowRerender:
 	    retval = this->dialog->allowRerender();
@@ -53,6 +53,6 @@ SaveImageDialog* sid = NUL(SaveImageDialog*);
 	    ASSERT(0);
 	    break;
     }
-    this->dialog->setBusyCursor(FALSE);
+    this->dialog->setBusyCursor(false);
     return retval;
 }

@@ -32,7 +32,7 @@ GlobalLocalNode::~GlobalLocalNode()
 }
 void GlobalLocalNode::setAsLocalNode() 
 { 
-    this->isGlobal = FALSE; 
+    this->isGlobal = false; 
     this->clearMyNodeName();
     if (this->getStandIn())
 	this->getStandIn()->notifyLabelChange();
@@ -40,14 +40,14 @@ void GlobalLocalNode::setAsLocalNode()
 }
 void GlobalLocalNode::setAsGlobalNode() 
 { 
-    this->isGlobal = TRUE; 
+    this->isGlobal = true; 
     this->clearMyNodeName(); 
     if (this->getStandIn())
 	this->getStandIn()->notifyLabelChange();
     this->markForResend();
 } 
-boolean GlobalLocalNode::isLocalNode() { return this->isGlobal == FALSE; }
-boolean GlobalLocalNode::isGlobalNode() { return this->isGlobal == TRUE; }
+bool GlobalLocalNode::isLocalNode() { return this->isGlobal == false; }
+bool GlobalLocalNode::isGlobalNode() { return this->isGlobal == true; }
 
 //
 // Mark the net dirty so that it will a) be sent prior to the next execution,
@@ -63,7 +63,7 @@ void GlobalLocalNode::markForResend()
     int i;
     for (i=1; i<=cnt; i++) {
 	Parameter* prm = this->getInputParameter(i);
-	if ((prm->isConnected() == FALSE) && (prm->isDefaulting() == FALSE))
+	if ((prm->isConnected() == false) && (prm->isDefaulting() == false))
 	    prm->setDirty();
     }
 }
@@ -118,11 +118,11 @@ Symbol GlobalLocalNode::getNameSymbol()
 //
 // Determine if this node is of the given class.
 //
-boolean GlobalLocalNode::isA(Symbol classname)
+bool GlobalLocalNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassGlobalLocalNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->Node::isA(classname);
 }

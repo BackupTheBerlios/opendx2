@@ -63,7 +63,7 @@ class EditorToolSelector : public ToolSelector
     // is the object in the anchor window. At this level we know nothing
     // of windows.  EditorToolSelector has this knowledge.
     //
-    virtual boolean inAnchor();
+    virtual bool inAnchor();
 
     //
     // Returns a pointer to the class name.

@@ -58,7 +58,7 @@ class ArkStandIn : public Base
     ~ArkStandIn()
     {
         //XmDestroyWorkspaceLine((XmWorkspaceWidget) this->parent, 
-        //                       this->line, FALSE);
+        //                       this->line, false);
     }
     void setWorkSpaceLine()
     {
@@ -75,7 +75,7 @@ class ArkStandIn : public Base
     // of this uicomponent (i.e. we send the current geometry to the 
     // PostScript output file).  
     //
-    boolean printAsPostScript(FILE *f);
+    bool printAsPostScript(FILE *f);
 
     //
     // Returns a pointer to the class name.

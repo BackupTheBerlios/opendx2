@@ -45,12 +45,12 @@ using namespace dxui;
 //        NULL
 //};
 
-boolean FileDialog::ClassInitialized = FALSE;
+bool FileDialog::ClassInitialized = false;
 
 FileDialog::FileDialog(const char *name) :
                        Dialog(name)
 {
-    this->hasCommentButton = FALSE;
+    this->hasCommentButton = false;
     this->readOnlyDirectory = NULL;
 }
 
@@ -70,7 +70,7 @@ void FileDialog::post()
 {
  //   Widget text;
 
- //   theApplication->setBusyCursor(TRUE);
+ //   theApplication->setBusyCursor(true);
  //   if (this->getRootWidget() == NULL)
  //   {
 	//this->initialize();
@@ -110,7 +110,7 @@ void FileDialog::post()
 
  //   }
  //   this->manage();
- //   theApplication->setBusyCursor(FALSE);
+ //   theApplication->setBusyCursor(false);
 }
 
 //
@@ -219,7 +219,7 @@ char *FileDialog::getCurrentDirectory()
 	return NULL;
 }
 
-boolean FileDialog::okCallback(Dialog *d)
+bool FileDialog::okCallback(Dialog *d)
 {
  //   char *string;
 
@@ -227,15 +227,15 @@ boolean FileDialog::okCallback(Dialog *d)
 
  //   if (!string) {
 	//ModalErrorMessage(this->getRootWidget(),"A filename must be given");
-	//return FALSE;
+	//return false;
  //   }
 
  //   this->unmanage();
- //   theApplication->setBusyCursor(TRUE);
+ //   theApplication->setBusyCursor(true);
  //   this->okFileWork(string);
- //   theApplication->setBusyCursor(FALSE);
+ //   theApplication->setBusyCursor(false);
  //   XtFree(string);
- //   return FALSE;	// Already unmanaged above
+ //   return false;	// Already unmanaged above
 	return false;
 }
 
@@ -351,7 +351,7 @@ void FileDialog::setReadOnlyDirectory(const char *dirname)
 	//					XmSTRING_DEFAULT_CHARSET);
 	//XtVaSetValues(this->fsb, XmNdirectory,string, NULL);
 	//XmStringFree(string);
-	//this->displayLimitedMode(TRUE);
+	//this->displayLimitedMode(true);
  //   }
 	//
 }
@@ -361,7 +361,7 @@ void FileDialog::setReadOnlyDirectory(const char *dirname)
 // limited mode, that is, the user can only select file from the 
 // current directory specified by XmNdirectory. 
 //
-void FileDialog::displayLimitedMode(boolean limit)
+void FileDialog::displayLimitedMode(bool limit)
 {
  //   Widget w[10]; 
  //   int	n = 0;

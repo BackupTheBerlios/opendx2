@@ -39,7 +39,7 @@ class VPEPage : public EditorWorkSpace, public WorkSpacePage
 
   protected:
 
-    virtual boolean isRoot() { return FALSE; }
+    virtual bool isRoot() { return false; }
 
     virtual void saveWorkSpaceParams(WorkSpace*);
 
@@ -55,8 +55,8 @@ class VPEPage : public EditorWorkSpace, public WorkSpacePage
     virtual void resize() {}
 
     const char* getClassName() { return ClassVPEPage; }
-    virtual boolean isA (Symbol classname);
-    boolean isA (const char* classname);
+    virtual bool isA (Symbol classname);
+    bool isA (const char* classname);
 };
 
 

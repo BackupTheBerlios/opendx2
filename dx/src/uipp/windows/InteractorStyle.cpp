@@ -178,7 +178,7 @@ InteractorStyle::InteractorStyle(InteractorStyleEnum s, const char *n,
     this->style = s;
     this->name = theSymbolManager->registerSymbol(n);
     this->allocateInteractor = ia;
-    this->isDefault = FALSE;
+    this->isDefault = false;
     this->interactorName = NULL;
     if (javaStyle)
 	this->javaStyle = DuplicateString(javaStyle);
@@ -276,7 +276,7 @@ InteractorStyle *InteractorStyle::GetInteractorStyle(const char* interactor,
 // Added supported style/name/interactorbuild group to the list
 // of supported styles for the given named interactor (node name). 
 //
-boolean	InteractorStyle::AddSupportedStyle(const char *interactor, 
+bool	InteractorStyle::AddSupportedStyle(const char *interactor, 
 		InteractorStyleEnum style,  
 		const char *stylename, 
 		InteractorAllocator ia)
@@ -284,7 +284,7 @@ boolean	InteractorStyle::AddSupportedStyle(const char *interactor,
     return InteractorStyle::AddSupportedStyle 
 	(interactor, style, stylename, NUL(char*), ia);
 }
-boolean	InteractorStyle::AddSupportedStyle(const char *interactor, 
+bool	InteractorStyle::AddSupportedStyle(const char *interactor, 
 		InteractorStyleEnum style,  
 		const char *stylename, 
 		const char *javaStyle,
@@ -307,7 +307,7 @@ boolean	InteractorStyle::AddSupportedStyle(const char *interactor,
     
     is = new InteractorStyle(style, stylename, javaStyle, ia);
 
-    boolean ret = styledict->addDefinition(stylename,(const void*)is); 
+    bool ret = styledict->addDefinition(stylename,(const void*)is); 
     ASSERT(ret);
     return ret;
 }

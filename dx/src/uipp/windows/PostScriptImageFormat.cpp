@@ -28,7 +28,7 @@
 //    NUL(char*)
 //};
 
-boolean PostScriptImageFormat::FmtConnectionWarning = FALSE;
+bool PostScriptImageFormat::FmtConnectionWarning = false;
 
 //
 // FIXME: What is a metric version of 8.5x11.0?
@@ -64,7 +64,7 @@ PostScriptImageFormat::PostScriptImageFormat (const char *name, ImageFormatDialo
     this->pixel_size_val = NUL(char*);
     //this->size_timer = 0;
     //this->page_size_timer = 0;
-    this->entered_dims_valid = FALSE;
+    this->entered_dims_valid = false;
     this->parsePageSize(RESET_PAGE);
 }
 
@@ -297,31 +297,31 @@ PostScriptImageFormat::~PostScriptImageFormat()
 //    return body;
 //}
 
-boolean PostScriptImageFormat::useLocalFormat()
+bool PostScriptImageFormat::useLocalFormat()
 {
-    if (this->ImageFormat::useLocalFormat()) return TRUE;
-    if (this->dirty & PostScriptImageFormat::DirtyDpi) return TRUE;
-    return FALSE;
+    if (this->ImageFormat::useLocalFormat()) return true;
+    if (this->dirty & PostScriptImageFormat::DirtyDpi) return true;
+    return false;
 }
 
-boolean PostScriptImageFormat::useLocalResolution()
+bool PostScriptImageFormat::useLocalResolution()
 {
 ImageNode *node = this->dialog->getNode();
-    boolean rescon = node->isRecordResolutionConnected();
-    boolean rerender = this->dialog->isRerenderAllowed();
+    bool rescon = node->isRecordResolutionConnected();
+    bool rerender = this->dialog->isRerenderAllowed();
 
-    if ((rescon) || (!rerender)) return FALSE;
-    return ((this->dirty & PostScriptImageFormat::DirtyResolution)?TRUE:FALSE) ;
+    if ((rescon) || (!rerender)) return false;
+    return ((this->dirty & PostScriptImageFormat::DirtyResolution)?true:false) ;
 }
 
-boolean PostScriptImageFormat::useLocalAspect()
+bool PostScriptImageFormat::useLocalAspect()
 {
 ImageNode *node = this->dialog->getNode();
-    boolean aspcon = node->isRecordAspectConnected();
-    boolean rerender = this->dialog->isRerenderAllowed();
+    bool aspcon = node->isRecordAspectConnected();
+    bool rerender = this->dialog->isRerenderAllowed();
 
-    if ((aspcon) || (!rerender)) return FALSE;
-    return ((this->dirty & PostScriptImageFormat::DirtyAspect)?TRUE:FALSE) ;
+    if ((aspcon) || (!rerender)) return false;
+    return ((this->dirty & PostScriptImageFormat::DirtyAspect)?true:false) ;
 }
 
 void PostScriptImageFormat::setCommandActivation()
@@ -336,35 +336,35 @@ void PostScriptImageFormat::setCommandActivation()
 	////
 	//// Flags which will tell use what to do...
 	////
-	//boolean rescon = node->isRecordResolutionConnected();
-	//boolean resset = rescon || node->isRecordResolutionSet();
-	//boolean aspcon = node->isRecordAspectConnected();
-	//boolean aspset = aspcon || node->isRecordAspectSet();
-	//boolean dirty_res = (this->dirty & PostScriptImageFormat::DirtyResolution);
-	//boolean dirty_asp = (this->dirty & PostScriptImageFormat::DirtyAspect);
-	//boolean rerender = this->dialog->isRerenderAllowed();
-	//boolean fmtcon = node->isRecordFormatConnected();
+	//bool rescon = node->isRecordResolutionConnected();
+	//bool resset = rescon || node->isRecordResolutionSet();
+	//bool aspcon = node->isRecordAspectConnected();
+	//bool aspset = aspcon || node->isRecordAspectSet();
+	//bool dirty_res = (this->dirty & PostScriptImageFormat::DirtyResolution);
+	//bool dirty_asp = (this->dirty & PostScriptImageFormat::DirtyAspect);
+	//bool rerender = this->dialog->isRerenderAllowed();
+	//bool fmtcon = node->isRecordFormatConnected();
 
 	////
 	//// What are the node's values?
 	////
-	//boolean resfetched = FALSE;
-	//boolean aspfetched = FALSE;
+	//bool resfetched = false;
+	//bool aspfetched = false;
 	//if (rescon) {
 	//	node->getRecordResolution(x,y);
-	//	resfetched = TRUE;
+	//	resfetched = true;
 	//} 
 	//if (aspcon) {
 	//	node->getRecordAspect(aspect);
-	//	aspfetched = TRUE;
+	//	aspfetched = true;
 	//} 
 	//if ((rerender) && (!resfetched) && (resset)) {
 	//	node->getRecordResolution(x,y);
-	//	resfetched = TRUE;
+	//	resfetched = true;
 	//}
 	//if ((rerender) && (!aspfetched) && (aspset)) {
 	//	node->getRecordAspect(aspect);
-	//	aspfetched = TRUE;
+	//	aspfetched = true;
 	//}
 	//if (!resfetched) 
 	//	node->getResolution(x,y);
@@ -374,28 +374,28 @@ void PostScriptImageFormat::setCommandActivation()
 	////
 	//// Do we use the node's value or our own?
 	////
-	//boolean use_nodes_resolution = (rescon || !rerender || (resset && !dirty_res));
-	//boolean use_nodes_aspect = (aspcon || !rerender || (aspset && !dirty_asp));
+	//bool use_nodes_resolution = (rescon || !rerender || (resset && !dirty_res));
+	//bool use_nodes_aspect = (aspcon || !rerender || (aspset && !dirty_asp));
 
 	////
 	//// If we know we're using the node's value, then disable the text widget so
 	//// that the user sees she can't enter her own value.
 	////
 	//if (((rescon) && (aspcon)) || (!rerender)) {
-	//	this->setTextSensitive (this->pixel_size_text, FALSE);
+	//	this->setTextSensitive (this->pixel_size_text, false);
 	//} else {
-	//	this->setTextSensitive (this->pixel_size_text, TRUE);
+	//	this->setTextSensitive (this->pixel_size_text, true);
 	//}
-	//XtSetSensitive (this->dpi_number, (fmtcon == FALSE));
+	//XtSetSensitive (this->dpi_number, (fmtcon == false));
 
 	////
 	//// If recordFormat is connected (which implies dpi is fixed), and allow-rerendering
 	//// is off, then it's not possible to alter the output image dimensions.
 	////
-	//if ((fmtcon == FALSE) || (this->dialog->isRerenderAllowed() == TRUE)) {
-	//	this->setTextSensitive (this->size_text, TRUE);
+	//if ((fmtcon == false) || (this->dialog->isRerenderAllowed() == true)) {
+	//	this->setTextSensitive (this->size_text, true);
 	//} else {
-	//	this->setTextSensitive (this->size_text, FALSE);
+	//	this->setTextSensitive (this->size_text, false);
 	//}
 
 	////
@@ -449,7 +449,7 @@ void PostScriptImageFormat::setCommandActivation()
 	//Orientation* landscape = NUL(Orientation*);;
 	//Orientation* chosen_orientation = NUL(Orientation*);
 
-	//if ((this->entered_dims_valid == FALSE) ||
+	//if ((this->entered_dims_valid == false) ||
 	//	((this->dirty & PostScriptImageFormat::DirtyImageSize) == 0)) {
 	//		portrait = new Orientation 
 	//			(this->width, height, this->page_width, this->page_height, mrgn2);
@@ -458,11 +458,11 @@ void PostScriptImageFormat::setCommandActivation()
 	//	} else {
 	//		portrait = new RestrictedOrientation (
 	//			this->width, height, this->page_width, this->page_height, mrgn2,
-	//			this->entered_printout_width, this->entered_printout_height, FALSE
+	//			this->entered_printout_width, this->entered_printout_height, false
 	//			);
 	//		landscape = new RestrictedOrientation (
 	//			this->width, height, this->page_height, this->page_width, mrgn2,
-	//			this->entered_printout_width, this->entered_printout_height, FALSE
+	//			this->entered_printout_width, this->entered_printout_height, false
 	//			);
 	//	}
 
@@ -482,12 +482,12 @@ void PostScriptImageFormat::setCommandActivation()
 	//	//
 	//	// Autocompute printer dpi
 	//	//
-	//	if ((fmtcon == FALSE) && ((this->dirty & PostScriptImageFormat::DirtyDpi) == 0)) {
+	//	if ((fmtcon == false) && ((this->dirty & PostScriptImageFormat::DirtyDpi) == 0)) {
 	//		this->dpi = chosen_orientation->dpi;
 	//		XtVaSetValues (this->dpi_number,
 	//			XmNiValue, this->dpi,
 	//			NULL);
-	//	} else if (fmtcon == TRUE) {
+	//	} else if (fmtcon == true) {
 	//		const char* value = NUL(char*); 
 	//		node->getRecordFormat(value);
 	//		char *matchstr = "dpi=";
@@ -583,8 +583,8 @@ void PostScriptImageFormat::applyValues ()
 void PostScriptImageFormat::parseRecordFormat(const char* value)
 {
  //   ImageNode *node = this->dialog->getNode();
- //   boolean fmtcon = node->isRecordFormatConnected();
- //   boolean issue_ubd_warning = FALSE;
+ //   bool fmtcon = node->isRecordFormatConnected();
+ //   bool issue_ubd_warning = false;
 
  //   if ((fmtcon) || ((this->dirty & PostScriptImageFormat::DirtyDpi) == 0)) {
 	//char *matchstr = "dpi=";
@@ -606,17 +606,17 @@ void PostScriptImageFormat::parseRecordFormat(const char* value)
 	//	    XmNiValue, dpi,
 	//	NULL);
 	//    } else if (fmtcon) {
-	//	issue_ubd_warning = TRUE;
+	//	issue_ubd_warning = true;
 	//    }
 	//} else if (fmtcon) {
-	//    issue_ubd_warning = TRUE;
+	//    issue_ubd_warning = true;
 	//}
  //   }
 
  //   if ((fmtcon) || ((this->dirty & PostScriptImageFormat::DirtyOrient) == 0)) {
 	//char *matchstr = "orient=";
 	//const char *cp = strstr (value, matchstr);
-	//boolean correctly_parsed = FALSE;
+	//bool correctly_parsed = false;
 	//Widget new_choice = NUL(Widget);
 	//if (cp) {
 	//    char ori[128];
@@ -626,17 +626,17 @@ void PostScriptImageFormat::parseRecordFormat(const char* value)
 	//	if ((len) && (ori[len-1] == '"'))
 	//	    ori[len-1] = '\0';
 	//	if (EqualString(ori, "landscape")) {
-	//	    correctly_parsed = TRUE;
+	//	    correctly_parsed = true;
 	//	    new_choice = this->landscape_button;
 	//	} else if (EqualString(ori, "portrait")) {
-	//	    correctly_parsed = TRUE;
+	//	    correctly_parsed = true;
 	//	    new_choice = this->portrait_button;
 	//	} 
 	//    } 
 	//}
 	//if ((!correctly_parsed) && (fmtcon)) {
 	//    new_choice = this->autoorient_button;
-	//    issue_ubd_warning = TRUE;
+	//    issue_ubd_warning = true;
 	//}
 	//if ((new_choice) && (new_choice != this->chosen_layout) && 
 	//    ((this->chosen_layout != this->autoorient_button)||(fmtcon))) {
@@ -647,7 +647,7 @@ void PostScriptImageFormat::parseRecordFormat(const char* value)
  //   }
 
  //   if ((this->dirty & PostScriptImageFormat::DirtyPageSize) == 0) {
-	//boolean refreshed = FALSE;
+	//bool refreshed = false;
 	//char *matchstr = "page=";
 	//const char *cp = strstr (value, matchstr);
 	//if (cp) {
@@ -657,7 +657,7 @@ void PostScriptImageFormat::parseRecordFormat(const char* value)
 	//    if (items_parsed == 1) {
 	//	this->parsePageSize(psize);
 	//	this->dirty|= PostScriptImageFormat::DirtyPageSize;
-	//	refreshed = TRUE;
+	//	refreshed = true;
 	//    }
 	//}
 	//if (!refreshed) {
@@ -665,10 +665,10 @@ void PostScriptImageFormat::parseRecordFormat(const char* value)
 	//}
  //   }
 
- //   if ((issue_ubd_warning) && (PostScriptImageFormat::FmtConnectionWarning == FALSE)) {
+ //   if ((issue_ubd_warning) && (PostScriptImageFormat::FmtConnectionWarning == false)) {
 	//PostScriptImageFormat::FmtConnectionWarning = True;
 	//char* cp = NUL(char*);
-	//if (theDXApplication->appAllowsEditorAccess() == FALSE)
+	//if (theDXApplication->appAllowsEditorAccess() == false)
 	//    cp = 
 	//	"The value for the \'recordFormat\' input parameter of your\n"
 	//	"image tool is specified by an incomming connection, and is\n"
@@ -694,7 +694,7 @@ void PostScriptImageFormat::restore()
 //    if (this->page_size_timer) XtRemoveTimeOut (this->page_size_timer);
 //    this->size_timer = 0;
 //    this->page_size_timer = 0;
-//    this->entered_dims_valid = FALSE;
+//    this->entered_dims_valid = false;
 //    this->parsePageSize(RESET_PAGE);
 //
 //    char tbuf[64];
@@ -725,8 +725,8 @@ void PostScriptImageFormat::parseImageSize(const char *str)
 
  //   char *dimstr = DuplicateString(str);
 
- //   boolean width_parsed = FALSE;
- //   boolean height_parsed = FALSE;
+ //   bool width_parsed = false;
+ //   bool height_parsed = false;
  //   double dwidth = 0.0;
  //   double dheight = 0.0;
 
@@ -738,7 +738,7 @@ void PostScriptImageFormat::parseImageSize(const char *str)
  //   if ((!cp) || (cp != dimstr)) {
 	//int items_parsed = sscanf (dimstr, "%lg", &dwidth);
 	//if ((items_parsed == 1) && (dwidth != 0.0))
-	//    width_parsed = TRUE;
+	//    width_parsed = true;
  //   }
  //   delete dimstr;
 
@@ -751,7 +751,7 @@ void PostScriptImageFormat::parseImageSize(const char *str)
 	//if (cp[0]) {
 	//    int items_parsed = sscanf (cp, "%lg", &dheight);
 	//    if ((items_parsed == 1) && (dheight != 0.0))
-	//	height_parsed = TRUE;
+	//	height_parsed = true;
 	//}
  //   }
  //   delete dimstr;
@@ -805,9 +805,9 @@ void PostScriptImageFormat::parseImageSize(const char *str)
 	//int height = (int)hd;
 	//if ((hd - height) >= 0.5) height++;
 	//Orientation portrait(this->width, height, 
-	//    this->entered_printout_width, this->entered_printout_height, 0.0, FALSE);
+	//    this->entered_printout_width, this->entered_printout_height, 0.0, false);
 	//Orientation landscape(height, this->width, 
-	//    this->entered_printout_width, this->entered_printout_height, 0.0, FALSE);
+	//    this->entered_printout_width, this->entered_printout_height, 0.0, false);
 	//Orientation *chosen_orientation = NUL(Orientation*);
 	//if (this->chosen_layout == this->autoorient_button) {
 	//    if (landscape.misfit <= portrait.misfit)
@@ -831,14 +831,14 @@ void PostScriptImageFormat::parseImageSize(const char *str)
 void PostScriptImageFormat::parsePictureSize(const char *str)
 {
  //   if ((!str) || (!str[0])) {
-	//this->entered_dims_valid = FALSE;
+	//this->entered_dims_valid = false;
 	//return ;
  //   }
 
  //   char *dimstr = DuplicateString(str);
 
- //   boolean width_parsed = FALSE;
- //   boolean height_parsed = FALSE;
+ //   bool width_parsed = false;
+ //   bool height_parsed = false;
  //   double dwidth = 0.0;
  //   double dheight = 0.0;
 
@@ -850,7 +850,7 @@ void PostScriptImageFormat::parsePictureSize(const char *str)
  //   if ((!cp) || (cp != dimstr)) {
 	//int items_parsed = sscanf (dimstr, "%lg", &dwidth);
 	//if ((items_parsed == 1) && (dwidth != 0.0))
-	//    width_parsed = TRUE;
+	//    width_parsed = true;
  //   }
  //   delete dimstr;
 
@@ -863,7 +863,7 @@ void PostScriptImageFormat::parsePictureSize(const char *str)
 	//if (cp[0]) {
 	//    int items_parsed = sscanf (cp, "%lg", &dheight);
 	//    if ((items_parsed == 1) && (dheight != 0.0))
-	//	height_parsed = TRUE;
+	//	height_parsed = true;
 	//}
  //   }
  //   delete dimstr;
@@ -907,7 +907,7 @@ void PostScriptImageFormat::parsePictureSize(const char *str)
  //   }
 
  //   ImageNode *node = this->dialog->getNode();
- //   if (node->isRecordFormatConnected() == FALSE) {
+ //   if (node->isRecordFormatConnected() == false) {
 	////
 	//// change pixel image size to match dpi and output image size
 	////
@@ -935,21 +935,21 @@ void PostScriptImageFormat::parsePictureSize(const char *str)
  //   //
  //   if (width_parsed) {
 	//this->entered_printout_width = dwidth;
-	//this->entered_dims_valid = TRUE;
+	//this->entered_dims_valid = true;
  //   } else {
 	//ASSERT(height_parsed);
 	//this->entered_printout_width = dheight / this->aspect;
  //   }
  //   if (height_parsed) {
 	//this->entered_printout_height = dheight;
-	//this->entered_dims_valid = TRUE;
+	//this->entered_dims_valid = true;
  //   } else {
 	//ASSERT(width_parsed);
 	//this->entered_printout_height = dwidth * this->aspect;
  //   }
 
 
- //   if ((node->isRecordFormatConnected() == TRUE) && (width_parsed)) {
+ //   if ((node->isRecordFormatConnected() == true) && (width_parsed)) {
 	//this->dirty|= PostScriptImageFormat::DirtyResolution;
 	//this->width = (int)(dwidth * this->dpi);
  //   }
@@ -964,8 +964,8 @@ void PostScriptImageFormat::parsePageSize(const char *str)
 //
 //    char *dimstr = DuplicateString(str);
 //
-//    boolean width_parsed = FALSE;
-//    boolean height_parsed = FALSE;
+//    bool width_parsed = false;
+//    bool height_parsed = false;
 //    double width, height;
 //
 //    char *cp = strchr(dimstr, (int)'x');
@@ -975,7 +975,7 @@ void PostScriptImageFormat::parsePageSize(const char *str)
 //    }
 //    if ((!cp) || (cp != dimstr)) {
 //	int items_parsed = sscanf (dimstr, "%lg", &width);
-//	if (items_parsed == 1) width_parsed = TRUE;
+//	if (items_parsed == 1) width_parsed = true;
 //    }
 //    delete dimstr;
 //
@@ -987,7 +987,7 @@ void PostScriptImageFormat::parsePageSize(const char *str)
 //	cp++;
 //	if (cp[0]) {
 //	    int items_parsed = sscanf (cp, "%lg", &height);
-//	    if (items_parsed == 1) height_parsed = TRUE;
+//	    if (items_parsed == 1) height_parsed = true;
 //	}
 //    }
 //    delete dimstr;
@@ -1113,7 +1113,7 @@ const char* PostScriptImageFormat::getRecordFormat()
 }
 
 
-boolean PostScriptImageFormat::setVerifiedSizeTextString (double width, double height)
+bool PostScriptImageFormat::setVerifiedSizeTextString (double width, double height)
 {
  //   char tbuf[64];
 
@@ -1142,14 +1142,14 @@ boolean PostScriptImageFormat::setVerifiedSizeTextString (double width, double h
  //   }
  //   ASSERT(chosen_orientation);
 
- //   boolean size_valid = TRUE;
+ //   bool size_valid = true;
  //   if (chosen_orientation == &landscape) {
-	//if ((width + mrgn) > this->page_height) size_valid = FALSE;
-	//else if ((height + mrgn) > this->page_width) size_valid = FALSE;
+	//if ((width + mrgn) > this->page_height) size_valid = false;
+	//else if ((height + mrgn) > this->page_width) size_valid = false;
  //   } else {
 	//ASSERT (chosen_orientation == &portrait);
-	//if ((height + mrgn) > this->page_height) size_valid = FALSE;
-	//else if ((width + mrgn) > this->page_width) size_valid = FALSE;
+	//if ((height + mrgn) > this->page_height) size_valid = false;
+	//else if ((width + mrgn) > this->page_width) size_valid = false;
  //   }
 
  //   if (size_valid) {
@@ -1218,11 +1218,11 @@ void PostScriptImageFormat::shareSettings (ImageFormat *imgfmt)
 //    }
 //}
 
-boolean PostScriptImageFormat::isA(Symbol classname)
+bool PostScriptImageFormat::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassPostScriptImageFormat);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ImageFormat::isA(classname);
 }
@@ -1234,8 +1234,8 @@ boolean PostScriptImageFormat::isA(Symbol classname)
 //    PostScriptImageFormat* pif = (PostScriptImageFormat*)clientData;
 //    ASSERT(pif);
 //    ImageNode* node = pif->dialog->getNode();
-//    boolean fmtcon = node->isRecordFormatConnected();
-//    if (fmtcon == FALSE)
+//    bool fmtcon = node->isRecordFormatConnected();
+//    if (fmtcon == false)
 //	pif->dirty&= ~PostScriptImageFormat::DirtyDpi;
 //    pif->setCommandActivation();
 //}
@@ -1246,14 +1246,14 @@ boolean PostScriptImageFormat::isA(Symbol classname)
 //    ASSERT(pif);
 //
 //    ImageNode* node = pif->dialog->getNode();
-//    boolean fmtcon = node->isRecordFormatConnected();
+//    bool fmtcon = node->isRecordFormatConnected();
 //
 //    //
 //    // Mark dpi as not dirty so that it can be set automatically.
 //    //
 //    if (w != pif->chosen_layout) {
 //	//if (pif->dialog->isRerenderAllowed())
-//	if (fmtcon == FALSE)
+//	if (fmtcon == false)
 //	    pif->dirty&= ~PostScriptImageFormat::DirtyDpi;
 //	if (w == pif->autoorient_button) 
 //	    pif->dirty&= ~PostScriptImageFormat::DirtyOrient;
@@ -1283,14 +1283,14 @@ boolean PostScriptImageFormat::isA(Symbol classname)
 //	pif->dpi = dots_per;
 //    }
 //
-//    boolean need_reset = TRUE;
+//    bool need_reset = true;
 //    if (pif->dialog->isRerenderAllowed()) {
 //	//
 //	// if rerender is allowed then just reset image dimensions ...
 //	//
-//	if ((pif->entered_dims_valid == FALSE) || 
+//	if ((pif->entered_dims_valid == false) || 
 //	    ((pif->dirty & PostScriptImageFormat::DirtyImageSize) == 0)) {
-//	    need_reset = FALSE;
+//	    need_reset = false;
 //	    double width = (double)pif->width / (double)pif->dpi;
 //	    double height = width * pif->aspect;
 //	    if (pif->isMetric()) {
@@ -1299,7 +1299,7 @@ boolean PostScriptImageFormat::isA(Symbol classname)
 //	    } 
 //
 //	    if (!pif->setVerifiedSizeTextString (width, height)) 
-//		need_reset = TRUE;
+//		need_reset = true;
 //	
 //	//
 //	// ...else change the input image size in pixels.
@@ -1311,7 +1311,7 @@ boolean PostScriptImageFormat::isA(Symbol classname)
 //	    pif->dirty&= ~PostScriptImageFormat::DirtyResolution;
 //	}
 //    } else {
-//	pif->entered_dims_valid = FALSE;
+//	pif->entered_dims_valid = false;
 //    }
 //    if (need_reset) pif->setCommandActivation();
 //}

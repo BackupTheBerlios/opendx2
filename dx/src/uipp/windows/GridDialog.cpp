@@ -16,7 +16,7 @@
 #include "WorkSpaceInfo.h"
 #include "WorkSpaceGrid.h"
 
-boolean GridDialog::ClassInitialized = FALSE;
+bool GridDialog::ClassInitialized = false;
 
 //String  GridDialog::DefaultResources[] = {
 //	"*cancelButton.labelString:	Cancel",
@@ -55,7 +55,7 @@ GridDialog::GridDialog(WorkSpace *workSpace)
 
     if (NOT GridDialog::ClassInitialized)
     {
-        GridDialog::ClassInitialized = TRUE;
+        GridDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -764,7 +764,7 @@ void GridDialog::manage()
 //}
 //
 
-boolean GridDialog::okCallback(Dialog *d)
+bool GridDialog::okCallback(Dialog *d)
 {
  //   int   width, height;
  //   Boolean  upper_left, upper_right, center, lower_left, lower_right;
@@ -828,7 +828,7 @@ boolean GridDialog::okCallback(Dialog *d)
 
  //   this->workSpace->installInfo(NULL);
 
-    return TRUE;
+    return true;
 }
 
 void GridDialog::resetToggleBtn()

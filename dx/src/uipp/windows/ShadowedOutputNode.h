@@ -57,7 +57,7 @@ class ShadowedOutputNode : public DrivenNode
     // FIXME: this really belongs in an OptionalExecuteNode class between
     //	DrivenNode and this class.
     //
-    virtual void ioParameterStatusChanged(boolean input, int index,
+    virtual void ioParameterStatusChanged(bool input, int index,
 				NodeParameterStatusChange status);
 
     //
@@ -93,11 +93,11 @@ class ShadowedOutputNode : public DrivenNode
     //
     Type setOutputValue(int index, const char *value,
 				    Type t = DXType::UndefinedType,
-				    boolean send = TRUE);
+				    bool send = true);
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

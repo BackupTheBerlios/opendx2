@@ -27,7 +27,7 @@
 //				
 class ApplyFileDialog : public dxui::FileDialog
 {
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
 

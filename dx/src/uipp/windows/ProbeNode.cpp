@@ -34,12 +34,12 @@ ProbeNode::~ProbeNode()
     	iw->deleteProbe(this);
 }
 
-boolean ProbeNode::initialize()
+bool ProbeNode::initialize()
 {
     char string[20];
     sprintf(string, "%s_%d", this->getNameString(), this->getInstanceNumber());
     this->setLabelString((const char *) string);
-    return TRUE;
+    return true;
 }
 
 void ProbeNode::initializeAfterNetworkMember()
@@ -55,9 +55,9 @@ void ProbeNode::initializeAfterNetworkMember()
     	iw->addProbe(this);
 }
 
-boolean ProbeNode::setLabelString(const char *label)
+bool ProbeNode::setLabelString(const char *label)
 {
-    boolean result = this->Node::setLabelString(label);
+    bool result = this->Node::setLabelString(label);
     ImageWindow *iw;
     List *l = this->getNetwork()->getImageList();
     ListIterator iterator(*l);
@@ -88,10 +88,10 @@ void ProbeNode::setCursorValue(int cursor, double x, double y, double z)
 	// Since each cursor creation callback is followed by a MOVE
 	// callback, don't send value on creation.
 	this->setOutputValue(1,string, DXType::VectorType,
-				cursor == -1 ? FALSE : TRUE);
+				cursor == -1 ? false : true);
     }
     else
-	this->resetValueList(cursor, FALSE, x, y, z);
+	this->resetValueList(cursor, false, x, y, z);
 
 }
 
@@ -100,7 +100,7 @@ void ProbeNode::setCursorValue(int cursor, double x, double y, double z)
 // Cursor numbers are 0 based, -1 numbered cursor implies a new cursor
 // appended to the current list.
 //
-void ProbeNode::resetValueList(int cursor, boolean toDelete, 
+void ProbeNode::resetValueList(int cursor, bool toDelete, 
 				double x, double y, double z)
 {
 	char *newList, list[10];
@@ -138,7 +138,7 @@ void ProbeNode::resetValueList(int cursor, boolean toDelete,
 	else
 	    this->setOutputValue(1,	newList,
 				DXType::VectorListType,
-				cursor == -1 ? FALSE : TRUE);
+				cursor == -1 ? false : true);
  
 	if (newList) delete newList;
 }
@@ -184,11 +184,11 @@ char *ProbeNode::netNodeString(const char *prefix)
 //
 // Determine if this node is of the given class.
 //
-boolean ProbeNode::isA(Symbol classname)
+bool ProbeNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassProbeNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->Node::isA(classname);
 }
@@ -201,9 +201,9 @@ boolean ProbeNode::isA(Symbol classname)
 // that can be called from any of the subclasses.  I won't bother right
 // before the 3.1 release.  dawood - 9/15/95
 //
-void ProbeNode::switchNetwork(Network *from, Network *to, boolean silently)
+void ProbeNode::switchNetwork(Network *from, Network *to, bool silently)
 {
-    boolean change_label = FALSE; 
+    bool change_label = false; 
     const char *nodename = this->getNameString();
     const char *curr_label = this->getLabelString();
     char name[128];
@@ -217,20 +217,20 @@ void ProbeNode::switchNetwork(Network *from, Network *to, boolean silently)
     if ((sscanf("%s_%d",curr_label,name,&instance) == 2) &&
 	EqualString(name,nodename) && 
 	(instance != this->getInstanceNumber()))  {
-	    change_label = TRUE;
+	    change_label = true;
     }
 
     //
     // Look for tools that have the same label.
     //
     if (!change_label) {
-	List *curr = to->makeClassifiedNodeList(this->getClassName(), FALSE);
+	List *curr = to->makeClassifiedNodeList(this->getClassName(), false);
 	if (curr) {
 	    ListIterator iter(*curr);
 	    Node *node;
 	    while (!change_label && (node = (Node*)iter.getNext())) {
 		if (EqualString(node->getLabelString(), curr_label))
-		    change_label = TRUE;
+		    change_label = true;
 	    }
 	    delete curr;
 	}

@@ -56,15 +56,15 @@ class ProbeNode : public Node
     //
     ~ProbeNode();
 
-    virtual boolean initialize();
+    virtual bool initialize();
     virtual void initializeAfterNetworkMember();
-    virtual boolean setLabelString(const char *label);
+    virtual bool setLabelString(const char *label);
 
     Parameter* getOutput();
     virtual void    setCursorValue(int, double, double, double = 0.0);
     virtual void    deleteCursor(int);
     virtual void    resetValueList(int cursor,
-			   boolean toDelete = TRUE,
+			   bool toDelete = true,
 			   double x = 0.0, 
 			   double y = 0.0, 
 			   double z = 0.0); 
@@ -73,12 +73,12 @@ class ProbeNode : public Node
     // Switch the node from one net to another.  
     // Resolve any name space collisions.
     //
-    virtual void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
+    virtual void switchNetwork(Network *from, Network *to, bool silently=false);
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

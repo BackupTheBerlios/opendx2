@@ -9,6 +9,9 @@
 #include <dxconfig.h>
 #include "defines.h"
 
+#include <windows.h>
+#include <winsock.h>
+
 #include <sys/types.h>
 
 #if defined(HAVE_SYS_UTSNAME_H)
@@ -86,12 +89,12 @@ extern "C" int gethostname(char *,int);
 // Defines for the where parameter
 #define FB_WHERE_SWAP	0x00000001
 
-boolean ImageWindow::NeedsSyncForResize = FALSE;
+bool ImageWindow::NeedsSyncForResize = false;
 
-boolean ImageWindow::ClassInitialized = FALSE;
+bool ImageWindow::ClassInitialized = false;
 
 
-ImageWindow::ImageWindow(boolean  isAnchor, Network* network) : 
+ImageWindow::ImageWindow(bool  isAnchor, Network* network) : 
 			DXWindow("imageWindow", isAnchor,
 				theDXApplication->appAllowsImageMenus())
 {
@@ -176,23 +179,23 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 //    //this->state.pixmap			= XtUnspecifiedPixmap;
 //    this->state.gc			= NULL;
 //    this->state.hardwareWindow		= 0;
-//    this->state.hardwareRender		= FALSE;
-//    this->state.hardwareRenderExists 	= FALSE;
-//    this->state.resizeFromServer	= FALSE;
-//    this->state.frameBuffer		= FALSE;
-//    this->state.globeDisplayed		= FALSE;
-//    this->state.degenerateBox		= FALSE;
+//    this->state.hardwareRender		= false;
+//    this->state.hardwareRenderExists 	= false;
+//    this->state.resizeFromServer	= false;
+//    this->state.frameBuffer		= false;
+//    this->state.globeDisplayed		= false;
+//    this->state.degenerateBox		= false;
 //    this->state.imageCount		= 0;
 //    this->state.parent.window		= 0;
-//    this->state.resizeCausesExecution   = TRUE;
+//    this->state.resizeCausesExecution   = true;
 //
-//    this->state.hardwareCamera.undoable = FALSE;
-//    this->state.hardwareCamera.redoable = FALSE;
+//    this->state.hardwareCamera.undoable = false;
+//    this->state.hardwareCamera.redoable = false;
 //
 //    this->node = NULL;
-//    this->directInteraction = FALSE;
-//    this->switchingSoftware = FALSE;
-//    this->pushedSinceExec   = FALSE;
+//    this->directInteraction = false;
+//    this->switchingSoftware = false;
+//    this->pushedSinceExec   = false;
 //    this->currentInteractionMode = NONE;
 //    this->pendingInteractionMode = NONE;
 //    //
@@ -200,228 +203,228 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 //    //
 //    this->renderingOptionsCmd =
 //	new NoUndoImageCommand("renderingOptions", this->commandScope,
-//			  FALSE, this, NoUndoImageCommand::RenderingOptions);
+//			  false, this, NoUndoImageCommand::RenderingOptions);
 //    this->softwareCmd = new ImageSoftwareCommand("software", this->commandScope,
-//			    FALSE, this);
+//			    false, this);
 //    this->hardwareCmd = new ImageHardwareCommand("hardware", this->commandScope,
-//			    FALSE, this);
+//			    false, this);
 //    this->upNoneCmd = new ImageApproxCommand("upNone",
 //	this->commandScope,
-//	FALSE, this, TRUE, APPROX_NONE);
+//	false, this, true, APPROX_NONE);
 //    this->upWireframeCmd = new ImageApproxCommand("upWireframe",
 //	this->commandScope,
-//	FALSE, this, TRUE, APPROX_WIREFRAME);
+//	false, this, true, APPROX_WIREFRAME);
 //    this->upDotsCmd = new ImageApproxCommand("upDots",
 //	this->commandScope,
-//	FALSE, this, TRUE, APPROX_DOTS);
+//	false, this, true, APPROX_DOTS);
 //    this->upBoxCmd = new ImageApproxCommand("upBox",
 //	this->commandScope,
-//	FALSE, this, TRUE, APPROX_BOX);
+//	false, this, true, APPROX_BOX);
 //    this->downNoneCmd = new ImageApproxCommand("downNone",
 //	this->commandScope,
-//	FALSE, this, FALSE, APPROX_NONE);
+//	false, this, false, APPROX_NONE);
 //    this->downWireframeCmd = new ImageApproxCommand("downWireframe",
 //	this->commandScope,
-//	FALSE, this, FALSE, APPROX_WIREFRAME);
+//	false, this, false, APPROX_WIREFRAME);
 //    this->downDotsCmd = new ImageApproxCommand("downDots",
 //	this->commandScope,
-//	FALSE, this, FALSE, APPROX_DOTS);
+//	false, this, false, APPROX_DOTS);
 //    this->downBoxCmd = new ImageApproxCommand("downBox",
 //	this->commandScope,
-//	FALSE, this, FALSE, APPROX_BOX);
+//	false, this, false, APPROX_BOX);
 //
 //    this->autoAxesCmd =
 //	new NoUndoImageCommand("autoAxes", this->commandScope,
-//			  FALSE, this,
+//			  false, this,
 //			  NoUndoImageCommand::AutoAxes);
 //
 //    this->throttleCmd =
 //	new NoUndoImageCommand("throttle", this->commandScope,
-//			  FALSE, this, NoUndoImageCommand::Throttle);
+//			  false, this, NoUndoImageCommand::Throttle);
 //    this->viewControlCmd =
 //	new NoUndoImageCommand("viewControl", this->commandScope,
-//			  FALSE, this,
+//			  false, this,
 //			  NoUndoImageCommand::ViewControl);
 //    this->modeNoneCmd = 
-//	new ImageSetModeCommand("modeNone", this->commandScope, FALSE,
+//	new ImageSetModeCommand("modeNone", this->commandScope, false,
 //				this, NONE);
 //    this->modeCameraCmd = 
-//	new ImageSetModeCommand("modeCamera", this->commandScope, FALSE,
+//	new ImageSetModeCommand("modeCamera", this->commandScope, false,
 //				this, CAMERA);
 //    this->modeCursorsCmd = 
-//	new ImageSetModeCommand("modeCursors", this->commandScope, FALSE,
+//	new ImageSetModeCommand("modeCursors", this->commandScope, false,
 //				this, CURSORS);
 //    this->modePickCmd = 
-//	new ImageSetModeCommand("modePick", this->commandScope, FALSE,
+//	new ImageSetModeCommand("modePick", this->commandScope, false,
 //				this, PICK);
 //    this->modeNavigateCmd = 
-//	new ImageSetModeCommand("modeNavigate", this->commandScope, FALSE,
+//	new ImageSetModeCommand("modeNavigate", this->commandScope, false,
 //				this, NAVIGATE);
 //    this->modePanZoomCmd = 
-//	new ImageSetModeCommand("modePanZoom", this->commandScope, FALSE,
+//	new ImageSetModeCommand("modePanZoom", this->commandScope, false,
 //				this, PANZOOM);
 //    this->modeRoamCmd = 
-//	new ImageSetModeCommand("modeRoam", this->commandScope, FALSE,
+//	new ImageSetModeCommand("modeRoam", this->commandScope, false,
 //				this, ROAM);
 //    this->modeRotateCmd = 
-//	new ImageSetModeCommand("modeRotate", this->commandScope, FALSE,
+//	new ImageSetModeCommand("modeRotate", this->commandScope, false,
 //				this, ROTATE);
 //    this->modeZoomCmd = 
-//	new ImageSetModeCommand("modeZoom", this->commandScope, FALSE,
+//	new ImageSetModeCommand("modeZoom", this->commandScope, false,
 //				this, ZOOM);
 //
 //    this->setViewNoneCmd = 
-//	new ImageSetViewCommand("setViewNone", this->commandScope, FALSE,
+//	new ImageSetViewCommand("setViewNone", this->commandScope, false,
 //				this, VIEW_NONE);
 //    this->setViewTopCmd = 
-//	new ImageSetViewCommand("setViewTop", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewTop", this->commandScope, true,
 //				this, VIEW_TOP);
 //    this->setViewBottomCmd = 
-//	new ImageSetViewCommand("setViewBottom", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewBottom", this->commandScope, true,
 //				this, VIEW_BOTTOM);
 //    this->setViewFrontCmd = 
-//	new ImageSetViewCommand("setViewFront", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewFront", this->commandScope, true,
 //				this, VIEW_FRONT);
 //    this->setViewBackCmd = 
-//	new ImageSetViewCommand("setViewBack", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewBack", this->commandScope, true,
 //				this, VIEW_BACK);
 //    this->setViewLeftCmd = 
-//	new ImageSetViewCommand("setViewLeft", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewLeft", this->commandScope, true,
 //				this, VIEW_LEFT);
 //    this->setViewRightCmd =
-//	new ImageSetViewCommand("setViewRight", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewRight", this->commandScope, true,
 //				this, VIEW_RIGHT);
 //    this->setViewDiagonalCmd = 
-//	new ImageSetViewCommand("setViewDiagonal", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewDiagonal", this->commandScope, true,
 //				this, VIEW_DIAGONAL);
 //    this->setViewOffTopCmd = 
-//	new ImageSetViewCommand("setViewOffTop", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewOffTop", this->commandScope, true,
 //				this, VIEW_OFF_TOP);
 //    this->setViewOffBottomCmd = 
-//	new ImageSetViewCommand("setViewOffBottom", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewOffBottom", this->commandScope, true,
 //				this, VIEW_OFF_BOTTOM);
 //    this->setViewOffFrontCmd = 
-//	new ImageSetViewCommand("setViewOffFront", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewOffFront", this->commandScope, true,
 //				this, VIEW_OFF_FRONT);
 //    this->setViewOffBackCmd = 
-//	new ImageSetViewCommand("setViewOffBack", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewOffBack", this->commandScope, true,
 //				this, VIEW_OFF_BACK);
 //    this->setViewOffLeftCmd = 
-//	new ImageSetViewCommand("setViewOffLeft", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewOffLeft", this->commandScope, true,
 //				this, VIEW_OFF_LEFT);
 //    this->setViewOffRightCmd =
-//	new ImageSetViewCommand("setViewOffRight", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewOffRight", this->commandScope, true,
 //				this, VIEW_OFF_RIGHT);
 //    this->setViewOffDiagonalCmd = 
-//	new ImageSetViewCommand("setViewOffDiagonal", this->commandScope, TRUE,
+//	new ImageSetViewCommand("setViewOffDiagonal", this->commandScope, true,
 //				this, VIEW_OFF_DIAGONAL);
 //
 //    this->perspectiveCmd = 
 //	new ImagePerspectiveCommand("perspective", this->commandScope,
-//				    TRUE, this, TRUE);
+//				    true, this, true);
 //    this->parallelCmd = 
 //	new ImagePerspectiveCommand("parallel", this->commandScope,
-//				    TRUE, this, FALSE);
+//				    true, this, false);
 //    this->constrainNoneCmd = 
-//	new ImageConstraintCommand("constrainNone", this->commandScope, TRUE,
+//	new ImageConstraintCommand("constrainNone", this->commandScope, true,
 //				    this, CONSTRAINT_NONE);
 //    this->constrainXCmd = 
-//	new ImageConstraintCommand("constrainX", this->commandScope, TRUE,
+//	new ImageConstraintCommand("constrainX", this->commandScope, true,
 //				    this, CONSTRAINT_X);
 //    this->constrainYCmd = 
-//	new ImageConstraintCommand("constrainY", this->commandScope, TRUE,
+//	new ImageConstraintCommand("constrainY", this->commandScope, true,
 //				    this, CONSTRAINT_Y);
 //    this->constrainZCmd = 
-//	new ImageConstraintCommand("constrainZ", this->commandScope, TRUE,
+//	new ImageConstraintCommand("constrainZ", this->commandScope, true,
 //				    this, CONSTRAINT_Z);
 //
 //    this->lookForwardCmd =
-//	new ImageLookCommand("lookForwardCmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookForwardCmd", this->commandScope, true,
 //			     this, LOOK_FORWARD);
 //    this->lookLeft45Cmd =
-//	new ImageLookCommand("lookLeft45Cmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookLeft45Cmd", this->commandScope, true,
 //			     this, LOOK_LEFT45);
 //    this->lookRight45Cmd =
-//	new ImageLookCommand("lookRight45Cmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookRight45Cmd", this->commandScope, true,
 //			     this, LOOK_RIGHT45);
 //    this->lookUp45Cmd =
-//	new ImageLookCommand("lookUp45Cmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookUp45Cmd", this->commandScope, true,
 //			     this, LOOK_UP45);
 //    this->lookDown45Cmd =
-//	new ImageLookCommand("lookDown45Cmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookDown45Cmd", this->commandScope, true,
 //			     this, LOOK_DOWN45);
 //    this->lookLeft90Cmd =
-//	new ImageLookCommand("lookLeft90Cmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookLeft90Cmd", this->commandScope, true,
 //			     this, LOOK_LEFT90);
 //    this->lookRight90Cmd =
-//	new ImageLookCommand("lookRight90Cmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookRight90Cmd", this->commandScope, true,
 //			     this, LOOK_RIGHT90);
 //    this->lookUp90Cmd =
-//	new ImageLookCommand("lookUp90Cmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookUp90Cmd", this->commandScope, true,
 //			     this, LOOK_UP90);
 //    this->lookDown90Cmd =
-//	new ImageLookCommand("lookDown90Cmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookDown90Cmd", this->commandScope, true,
 //			     this, LOOK_DOWN90);
 //    this->lookBackwardCmd =
-//	new ImageLookCommand("lookBackwardCmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookBackwardCmd", this->commandScope, true,
 //			     this, LOOK_BACKWARD);
 //    this->lookAlignCmd =
-//	new ImageLookCommand("lookAlignCmd", this->commandScope, TRUE,
+//	new ImageLookCommand("lookAlignCmd", this->commandScope, true,
 //			     this, LOOK_ALIGN);
 //
 //
 //    this->undoCmd =
-//	new ImageUndoCommand("undo", this->commandScope, FALSE, this);
+//	new ImageUndoCommand("undo", this->commandScope, false, this);
 //    this->redoCmd =
-//	new ImageRedoCommand("redo", this->commandScope, FALSE, this);
+//	new ImageRedoCommand("redo", this->commandScope, false, this);
 //    this->resetCmd =
 //	new ImageResetCommand("reset", this->commandScope,
 //			  this->directInteractionAllowed(), this);
 //
 //    // FIXME: this should be DXApplication command
 //    this->openVPECmd =
-//	    new NoUndoImageCommand("openVPE", this->commandScope, TRUE,
+//	    new NoUndoImageCommand("openVPE", this->commandScope, true,
 //				   this, NoUndoImageCommand::OpenVPE);
 //    this->displayRotationGlobeCmd =
 //	new NoUndoImageCommand("displayRotationGlobe", this->commandScope,
-//			  FALSE, this, NoUndoImageCommand::DisplayGlobe);
+//			  false, this, NoUndoImageCommand::DisplayGlobe);
 //
 //    this->backgroundColorCmd =
 //	new NoUndoImageCommand("setBackgroundColor", this->commandScope,
-//			       FALSE, this, NoUndoImageCommand::SetBGColor);
+//			       false, this, NoUndoImageCommand::SetBGColor);
 // 
 //    if (!theDXApplication->appLimitsImageOptions()) {
 //	this->imageDepth8Cmd =
 //	    new NoUndoImageCommand("imageDepth8", this->commandScope,
-//	       FALSE, this, NoUndoImageCommand::Depth8);
+//	       false, this, NoUndoImageCommand::Depth8);
 //
 //	this->imageDepth12Cmd =
 //	    new NoUndoImageCommand("imageDepth12", this->commandScope,
-//	       FALSE, this, NoUndoImageCommand::Depth12);
+//	       false, this, NoUndoImageCommand::Depth12);
 //
 //	this->imageDepth15Cmd =
 //	    new NoUndoImageCommand("imageDepth15", this->commandScope,
-//	       FALSE, this, NoUndoImageCommand::Depth15);
+//	       false, this, NoUndoImageCommand::Depth15);
 //
 //	this->imageDepth16Cmd =
 //	    new NoUndoImageCommand("imageDepth16", this->commandScope,
-//	       FALSE, this, NoUndoImageCommand::Depth16);
+//	       false, this, NoUndoImageCommand::Depth16);
 //
 //	this->imageDepth24Cmd =
 //	    new NoUndoImageCommand("imageDepth24", this->commandScope,
-//	       FALSE, this, NoUndoImageCommand::Depth24);
+//	       false, this, NoUndoImageCommand::Depth24);
 //
 //	this->imageDepth32Cmd =
 //	    new NoUndoImageCommand("imageDepth32", this->commandScope,
-//	       FALSE, this, NoUndoImageCommand::Depth32);
+//	       false, this, NoUndoImageCommand::Depth32);
 //
 //	this->changeImageNameCmd =
 //	    new NoUndoImageCommand("changeImageName", this->commandScope, 
-//		FALSE, this, NoUndoImageCommand::ChangeImageName);
+//		false, this, NoUndoImageCommand::ChangeImageName);
 //	// FIXME: this should be DXApplication command
 //	this->setPanelAccessCmd =
 //		new NoUndoImageCommand("setPanelAccess", this->commandScope,
-//		   FALSE, this, NoUndoImageCommand::SetCPAccess);
+//		   false, this, NoUndoImageCommand::SetCPAccess);
 //    } else {
 //	this->changeImageNameCmd = NULL;
 //	this->setPanelAccessCmd = NULL;
@@ -437,7 +440,7 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 //    if (theDXApplication->appAllowsImageSaving())
 //	this->saveImageCmd =
 //	    new NoUndoImageCommand("saveImage", this->commandScope,
-//	       FALSE, this, NoUndoImageCommand::SaveAsImage);
+//	       false, this, NoUndoImageCommand::SaveAsImage);
 //    else
 //	this->saveImageCmd = NULL;
 //
@@ -445,14 +448,14 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 //    if (theDXApplication->appAllowsImagePrinting())
 //	this->printImageCmd =
 //	    new NoUndoImageCommand("printImage", this->commandScope,
-//	       FALSE, this, NoUndoImageCommand::PrintImage);
+//	       false, this, NoUndoImageCommand::PrintImage);
 //    else
 //	this->printImageCmd = NULL;
 //
 //    this->closeCmd =
-//        new CloseWindowCommand("close",this->commandScope,TRUE,this);
+//        new CloseWindowCommand("close",this->commandScope,true,this);
 //
-//    this->allowDirectInteraction(FALSE);
+//    this->allowDirectInteraction(false);
 //
 //    //this->currentProbeNode = NULL;
 //    this->currentProbeInstance = -1;
@@ -484,7 +487,7 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
 //    if (NOT ImageWindow::ClassInitialized)
 //    {
 //	ASSERT(theApplication);
-//        ImageWindow::ClassInitialized = TRUE;
+//        ImageWindow::ClassInitialized = true;
 //	this->installDefaultResources(theApplication->getRootWidget());
 //    }
 }
@@ -704,7 +707,7 @@ void ImageWindow::initialize()
 
     //
     // Make sure that this window is resizable.
-    this->allowResize(TRUE);
+    this->allowResize(true);
 
     //XtRealizeWidget(this->getRootWidget());
 
@@ -1324,47 +1327,47 @@ void ImageWindow::unmanage()
 //
 //    ASSERT(this->modeNoneCmd);
 //    this->modeNoneOption = tbm = new ToggleButtonInterface(mitem_parent,
-//		"imageNoneOption", this->modeNoneCmd, TRUE);
+//		"imageNoneOption", this->modeNoneCmd, true);
 //    cmm->appendComponent(tbm);
 //
 //    ASSERT(this->modeCameraCmd);
 //    this->modeCameraOption = tbm = new ToggleButtonInterface(mitem_parent,
-//		"imageCameraOption", this->modeCameraCmd, FALSE);
+//		"imageCameraOption", this->modeCameraCmd, false);
 //    cmm->appendComponent(tbm);
 //
 //    ASSERT(this->modeCursorsCmd);
 //    this->modeCursorsOption = tbm = new ToggleButtonInterface(mitem_parent,
-//		"imageCursorsOption", this->modeCursorsCmd, FALSE);
+//		"imageCursorsOption", this->modeCursorsCmd, false);
 //    cmm->appendComponent(tbm);
 //
 //    ASSERT(this->modePickCmd);
 //    this->modePickOption = tbm = new ToggleButtonInterface(mitem_parent,
-//		"imagePickOption", this->modePickCmd, FALSE);
+//		"imagePickOption", this->modePickCmd, false);
 //    cmm->appendComponent(tbm);
 //
 //    ASSERT(this->modeNavigateCmd);
 //    this->modeNavigateOption = tbm = new ToggleButtonInterface(mitem_parent,
-//		"imageNavigateOption", this->modeNavigateCmd, FALSE);
+//		"imageNavigateOption", this->modeNavigateCmd, false);
 //    cmm->appendComponent(tbm);
 //
 //    ASSERT(this->modePanZoomCmd);
 //    this->modePanZoomOption = tbm = new ToggleButtonInterface(mitem_parent,
-//		"imagePanZoomOption", this->modePanZoomCmd, FALSE);
+//		"imagePanZoomOption", this->modePanZoomCmd, false);
 //    cmm->appendComponent(tbm);
 //
 //    ASSERT(this->modeRoamCmd);
 //    this->modeRoamOption = tbm = new ToggleButtonInterface(mitem_parent,
-//		"imageRoamOption", this->modeRoamCmd, FALSE);
+//		"imageRoamOption", this->modeRoamCmd, false);
 //    cmm->appendComponent(tbm);
 //
 //    ASSERT(this->modeRotateCmd);
 //    this->modeRotateOption = tbm = new ToggleButtonInterface(mitem_parent,
-//		"imageRotateOption", this->modeRotateCmd, FALSE);
+//		"imageRotateOption", this->modeRotateCmd, false);
 //    cmm->appendComponent(tbm);
 //
 //    ASSERT(this->modeZoomCmd);
 //    this->modeZoomOption = tbm = new ToggleButtonInterface(mitem_parent,
-//		"imageZoomOption", this->modeZoomCmd, FALSE);
+//		"imageZoomOption", this->modeZoomCmd, false);
 //    cmm->appendComponent(tbm);    
 //
 //    XtVaCreateManagedWidget
@@ -1397,7 +1400,7 @@ void ImageWindow::unmanage()
 //    this->displayRotationGlobeOption =
 //	new ToggleButtonInterface
 //	    (pulldown, "imageDisplayRotationGlobeOption",
-//			    this->displayRotationGlobeCmd, FALSE);
+//			    this->displayRotationGlobeCmd, false);
 //    //
 //    // Execution options/modes 
 //    //
@@ -1419,32 +1422,32 @@ void ImageWindow::unmanage()
 //
 //	ASSERT(this->imageDepth8Cmd);
 //	this->imageDepth8Option = tbi = new ToggleButtonInterface(item_parent,
-//		"8", this->imageDepth8Cmd, FALSE);
+//		"8", this->imageDepth8Cmd, false);
 //	cm->appendComponent(tbi);
 //
 //	ASSERT(this->imageDepth12Cmd);
 //	this->imageDepth12Option = tbi = new ToggleButtonInterface(item_parent,
-//		"12", this->imageDepth12Cmd, FALSE);
+//		"12", this->imageDepth12Cmd, false);
 //	cm->appendComponent(tbi);
 //
 //	ASSERT(this->imageDepth15Cmd);
 //	this->imageDepth15Option = tbi = new ToggleButtonInterface(item_parent,
-//		"15", this->imageDepth15Cmd, FALSE);
+//		"15", this->imageDepth15Cmd, false);
 //	cm->appendComponent(tbi);
 //
 //	ASSERT(this->imageDepth16Cmd);
 //	this->imageDepth16Option = tbi = new ToggleButtonInterface(item_parent,
-//		"16", this->imageDepth16Cmd, FALSE);
+//		"16", this->imageDepth16Cmd, false);
 //	cm->appendComponent(tbi);
 //
 //	ASSERT(this->imageDepth24Cmd);
 //	this->imageDepth24Option = tbi = new ToggleButtonInterface(item_parent,
-//		"24", this->imageDepth24Cmd, FALSE);
+//		"24", this->imageDepth24Cmd, false);
 //	cm->appendComponent(tbi);
 //
 //	ASSERT(this->imageDepth32Cmd);
 //	this->imageDepth32Option = tbi = new ToggleButtonInterface(item_parent,
-//		"32", this->imageDepth32Cmd, FALSE);
+//		"32", this->imageDepth32Cmd, false);
 //	cm->appendComponent(tbi);
 //
 //	this->throttleOption =
@@ -1576,7 +1579,7 @@ char *ImageWindow::getDisplayString()
 //#endif   
 //    Window    window;
 //    Window    child;
-//    boolean   frame_buffer;
+//    bool   frame_buffer;
 //    int       x;
 //    int       y;
 //    char*     display;
@@ -1596,7 +1599,7 @@ char *ImageWindow::getDisplayString()
 //	this->reset_eor_wp = 0;
 //	this->setGeometry(this->pending_resize_x, this->pending_resize_y,
 //	    this->pending_resize_width, this->pending_resize_height);
-//	this->setExecuteOnResize(TRUE);
+//	this->setExecuteOnResize(true);
 //    }
 //
 //    /*
@@ -1781,7 +1784,7 @@ char *ImageWindow::getDisplayString()
 //	 obj->atoms.dx_pixmap_id,
 //	 0,
 //	 1,
-//	 FALSE,
+//	 false,
 //	 XA_PIXMAP,
 //	 &actual_type,
 //	 &actual_format,
@@ -1863,7 +1866,7 @@ char *ImageWindow::getDisplayString()
 //
 //void ImageWindow::zoomImage(XmPictureCallbackStruct* pictureData)
 //{
-//    boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+//    bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
 //
 //
 //    /*
@@ -1881,22 +1884,22 @@ char *ImageWindow::getDisplayString()
 //	double w;
 //	in->getWidth(w);
 //	w *= pictureData->zoom_factor;
-//	in->setWidth(w, FALSE);
+//	in->setWidth(w, false);
 //    }
 //    else if(pictureData->projection == 1)
 //    {
-//	in->setViewAngle(pictureData->view_angle, FALSE);
+//	in->setViewAngle(pictureData->view_angle, false);
 //    }
 //
 //    double v[3];
 //    v[0] = pictureData->x;
 //    v[1] = pictureData->y;
 //    v[2] = pictureData->z;
-//    in->setTo(v, FALSE);
+//    in->setTo(v, false);
 //    v[0] = pictureData->from_x;
 //    v[1] = pictureData->from_y;
 //    v[2] = pictureData->from_z;
-//    in->setFrom(v, TRUE);
+//    in->setFrom(v, true);
 //
 //    if (!execOnChange)
 //	theDXApplication->getExecCtl()->executeOnce();
@@ -1915,7 +1918,7 @@ char *ImageWindow::getDisplayString()
 //    ViewControlDialog	       *viewCtl = this->viewControlDialog;
 //    ImageCamera    	       *camera = &this->state.hardwareCamera;
 //    ImageNode 		       *in = (ImageNode *)this->node;
-//    boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+//    bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
 //
 //
 //    if (calldata->reason != XmPCR_MOVE)
@@ -1937,7 +1940,7 @@ char *ImageWindow::getDisplayString()
 //    v[0] = calldata->x;
 //    v[1] = calldata->y;
 //    v[2] = calldata->z;
-//    in->setTo(v, FALSE);
+//    in->setTo(v, false);
 //
 //    if(NOT this->getPerspective()) 
 //    {
@@ -1948,7 +1951,7 @@ char *ImageWindow::getDisplayString()
 //    else
 //    	in->getFrom(v);
 //
-//    in->setFrom(v, TRUE);
+//    in->setFrom(v, true);
 //
 //    if (!execOnChange)
 //	theDXApplication->getExecCtl()->executeOnce();
@@ -1968,7 +1971,7 @@ char *ImageWindow::getDisplayString()
 //
 //    if (pictureData->reason == XmPCR_SELECT)
 //    {
-//	in->setButtonUp(FALSE, FALSE);
+//	in->setButtonUp(false, false);
 //    }
 //
 //    if (pictureData->reason == XmPCR_DRAG || 
@@ -1987,11 +1990,11 @@ char *ImageWindow::getDisplayString()
 //	     * Update the option menu to indicate we are in perspective.
 //	     * The autocamera param assignment happens in _uipNavigateImage.
 //	     */
-//	    boolean p;
+//	    bool p;
 //	    in->getProjection(p);
 //	    if (!p)
 //	    {
-//		in->setProjection(TRUE, FALSE);
+//		in->setProjection(true, false);
 //		if (this->viewControlDialog)
 //		    this->viewControlDialog->resetProjection();
 //	    }
@@ -2001,15 +2004,15 @@ char *ImageWindow::getDisplayString()
 //	v[0] = pictureData->x;
 //	v[1] = pictureData->y;
 //	v[2] = pictureData->z;
-//	in->setTo(v, FALSE);
+//	in->setTo(v, false);
 //	v[0] = pictureData->up_x;
 //	v[1] = pictureData->up_y;
 //	v[2] = pictureData->up_z;
-//	in->setUp(v, FALSE);
+//	in->setUp(v, false);
 //	v[0] = pictureData->from_x;
 //	v[1] = pictureData->from_y;
 //	v[2] = pictureData->from_z;
-//	in->setFrom(v, TRUE);
+//	in->setFrom(v, true);
 //
 //	theDXApplication->getExecCtl()->enableExecOnChange();
 //    }
@@ -2023,7 +2026,7 @@ char *ImageWindow::getDisplayString()
 //    }
 //    if (pictureData->reason == XmPCR_MOVE)
 //    {
-//	in->setButtonUp(TRUE);
+//	in->setButtonUp(true);
 //    }
 //}
 //
@@ -2037,7 +2040,7 @@ char *ImageWindow::getDisplayString()
 
 //void ImageWindow::rotateImage(XmPictureCallbackStruct* pictureData)
 //{
-//    boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+//    bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
 //
 //    /*
 //     * NOP if we have not recieved an image from the server.
@@ -2058,7 +2061,7 @@ char *ImageWindow::getDisplayString()
 //    {
 //	double v[3];
 //	in->getFrom(v);
-//	in->setButtonUp(FALSE, TRUE);
+//	in->setButtonUp(false, true);
 //	return;
 //    }
 //
@@ -2072,17 +2075,17 @@ char *ImageWindow::getDisplayString()
 //    }
 //
 //    if (pictureData->reason == XmPCR_MOVE)
-//	in->setButtonUp(TRUE, FALSE);
+//	in->setButtonUp(true, false);
 //
 //    double v[3];
 //    v[0] = pictureData->from_x;
 //    v[1] = pictureData->from_y;
 //    v[2] = pictureData->from_z;
-//    in->setFrom(v, FALSE);
+//    in->setFrom(v, false);
 //    v[0] = pictureData->up_x;
 //    v[1] = pictureData->up_y;
 //    v[2] = pictureData->up_z;
-//    in->setUp(v, TRUE);
+//    in->setUp(v, true);
 //
 //    if (!execOnChange)
 //	theDXApplication->getExecCtl()->executeOnce();
@@ -2121,7 +2124,7 @@ void ImageWindow::handleCursor(int reason, int cursor_num,
  //   switch(reason)
  //   {
  //   case XmPCR_SELECT:
-	//in->setButtonUp(FALSE, TRUE);
+	//in->setButtonUp(false, true);
 	//break;
 
  //   case XmPCR_CREATE:
@@ -2173,7 +2176,7 @@ void ImageWindow::handleCursor(int reason, int cursor_num,
 	//break;
 
  //   case XmPCR_MOVE:
-	//in->setButtonUp(TRUE, TRUE);
+	//in->setButtonUp(true, true);
 	//probe->setCursorValue(cursor_num, x, y, z);
 	//break;
 
@@ -2255,7 +2258,7 @@ void ImageWindow::pickImage(double x, double y)
 //	    this->modeNavigateCmd->execute();
 //	break;
 //    default:
-//	ASSERT(FALSE);
+//	ASSERT(false);
 //    }
 //}
 //
@@ -2293,7 +2296,7 @@ void ImageWindow::pickImage(double x, double y)
 //	break;
 //
 //    default:
-//	ASSERT(FALSE);
+//	ASSERT(false);
 //    }
 //}
 //extern "C" void ImageWindow_UndoCB(Widget	 	drawingArea,
@@ -2347,9 +2350,9 @@ void ImageWindow::pickImage(double x, double y)
 //
 // The XmPictureCallbackStruct may be NULL
 //
-void ImageWindow::resizeImage(boolean ok_to_send)
+void ImageWindow::resizeImage(bool ok_to_send)
 {
- //   boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+ //   bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
  //   Widget canvas = this->getCanvas();
 
  //   //
@@ -2359,7 +2362,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
  //   // ignore this request.
  //   //
  //   if (this->node == NUL(Node*)) return ;
- //   if (this->node->isA(ClassImageNode) == FALSE) return ;
+ //   if (this->node->isA(ClassImageNode) == false) return ;
  //   if (this->state.resizeFromServer) return ;
 
  //   ImageNode *in = (ImageNode *)this->node;
@@ -2372,7 +2375,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
  //   Dimension width, height;
  //   XtVaGetValues(canvas, XmNwidth,  &width, XmNheight, &height, NULL);
  //   if (width > 0) {
-	//in->setResolution(width, height, FALSE);
+	//in->setResolution(width, height, false);
 	//double aspect = (height + 0.5) / width;
 	//if (ok_to_send) {
 	//    in->setAspect(aspect, this->isManaged());
@@ -2380,14 +2383,14 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 	//    //
 	//    // Prevent an execution if the image window is unmanaged.
 	//    //
-	//    boolean force = ((this->isExecuteOnResize()) && (!execOnChange));
+	//    bool force = ((this->isExecuteOnResize()) && (!execOnChange));
 	//    if ((this->isManaged()) && (force))
 	//	theDXApplication->getExecCtl()->executeOnce();
 
 	//    if (this->viewControlDialog && this->directInteractionAllowed()) 
 	//	this->viewControlDialog->setSensitivity(in->useVector());
 	//} else {
-	//    in->setAspect(aspect, FALSE);
+	//    in->setAspect(aspect, false);
 	//}
  //   }
 }
@@ -2447,7 +2450,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //         event->xproperty.atom,
 //         0,
 //         1,
-//         FALSE,
+//         false,
 //         required_type,
 //         &actual_type,
 //         &actual_format,
@@ -2550,7 +2553,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //    }
 //    else if (event->xclient.message_type == obj->atoms.undoable)
 //    {
-//	obj->state.hardwareCamera.undoable = (boolean)event->xclient.data.l[0];
+//	obj->state.hardwareCamera.undoable = (bool)event->xclient.data.l[0];
 //	if (obj->state.hardwareCamera.undoable)
 //	    obj->undoCmd->activate();
 //	else
@@ -2558,7 +2561,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //    }
 //    else if (event->xclient.message_type == obj->atoms.redoable)
 //    {
-//	obj->state.hardwareCamera.redoable = (boolean)event->xclient.data.l[0];
+//	obj->state.hardwareCamera.redoable = (bool)event->xclient.data.l[0];
 //	if (obj->state.hardwareCamera.redoable)
 //	    obj->redoCmd->activate();
 //	else
@@ -2586,11 +2589,11 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //
 //	if(in)
 //	{
-//	    in->setFrom(obj->state.hardwareCamera.from, FALSE);
+//	    in->setFrom(obj->state.hardwareCamera.from, false);
 //	    in->setUp(v);
 //	}
 //
-//	boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+//	bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
 //	if (!execOnChange)
 //	    theDXApplication->getExecCtl()->executeOnce();
 //    }
@@ -2630,7 +2633,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //		from[0] = dir_x + x;
 //		from[1] = dir_y + y;
 //		from[2] = dir_z + z;
-//		in->setFrom(from, FALSE);
+//		in->setFrom(from, false);
 //	    }
 //	}
 //
@@ -2640,10 +2643,10 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //	    to[0] = x;
 //	    to[1] = y;
 //	    to[2] = z;
-//	    in->setTo(to, TRUE);
+//	    in->setTo(to, true);
 //	}
 //
-//	boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+//	bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
 //	if (!execOnChange)
 //	    theDXApplication->getExecCtl()->executeOnce();
 //    }
@@ -2699,11 +2702,11 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //		double w;
 //		in->getWidth(w);
 //		w *= obj->state.hardwareCamera.zoomFactor;
-//		in->setWidth(w, FALSE);
+//		in->setWidth(w, false);
 //	    }
 //	    else
 //	    {
-//		in->setViewAngle(obj->state.hardwareCamera.viewAngle, FALSE);
+//		in->setViewAngle(obj->state.hardwareCamera.viewAngle, false);
 //	    }
 //	}
 //	float temp;
@@ -2718,8 +2721,8 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //
 //	if(in)
 //	{
-//	    in->setTo(obj->state.hardwareCamera.to, FALSE);
-//	    in->setFrom(obj->state.hardwareCamera.from, TRUE);
+//	    in->setTo(obj->state.hardwareCamera.to, false);
+//	    in->setFrom(obj->state.hardwareCamera.from, true);
 //	}
 //
 //	if (!theDXApplication->getExecCtl()->inExecOnChange())
@@ -2762,8 +2765,8 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //	/*
 //	 * Save the info.
 //	 */
-//	obj->state.hardwareRender = TRUE;
-//	obj->state.hardwareRenderExists = TRUE;
+//	obj->state.hardwareRender = true;
+//	obj->state.hardwareRenderExists = true;
 //	obj->state.hardwareWindow = event->xclient.data.l[0];
 //	float temp;
 //	memcpy(&temp, &event->xclient.data.l[1], sizeof(float));
@@ -2797,7 +2800,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //    else if ( (event->xclient.message_type == obj->atoms.gl_window2) ||
 //	      (event->xclient.message_type == obj->atoms.gl_window2_execute) )
 //    {
-//	obj->pushedSinceExec = FALSE;
+//	obj->pushedSinceExec = false;
 //
 //	float temp;
 //	memcpy(&temp, &event->xclient.data.l[0], sizeof(float));
@@ -2845,15 +2848,15 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //	
 //	if(in)
 //	{
-//	    in->setWidth(obj->state.hardwareCamera.width, FALSE);
+//	    in->setWidth(obj->state.hardwareCamera.width, false);
 //	    in->setResolution(obj->state.hardwareCamera.windowWidth,
-//			      obj->state.hardwareCamera.windowHeight, FALSE);
-//	    in->setAspect(obj->state.hardwareCamera.aspect, FALSE);
-//	    in->setTo(obj->state.hardwareCamera.to, FALSE);
-//	    in->setUp(obj->state.hardwareCamera.up, FALSE);
-//	    in->setFrom(obj->state.hardwareCamera.from, FALSE);
-//	    in->setViewAngle(obj->state.hardwareCamera.viewAngle, FALSE);
-//	    in->setProjection(obj->state.hardwareCamera.projection, FALSE);
+//			      obj->state.hardwareCamera.windowHeight, false);
+//	    in->setAspect(obj->state.hardwareCamera.aspect, false);
+//	    in->setTo(obj->state.hardwareCamera.to, false);
+//	    in->setUp(obj->state.hardwareCamera.up, false);
+//	    in->setFrom(obj->state.hardwareCamera.from, false);
+//	    in->setViewAngle(obj->state.hardwareCamera.viewAngle, false);
+//	    in->setProjection(obj->state.hardwareCamera.projection, false);
 //	}
 //	if (obj->viewControlDialog)
 //	{
@@ -2862,13 +2865,13 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //	}
 //
 //	if(in)
-//	    in->enableVector(TRUE, FALSE);
+//	    in->enableVector(true, false);
 //	    
 //	if (event->xclient.message_type == obj->atoms.gl_window2_execute)
 //	{
 //	    if(in)
-//		in->sendValues(FALSE);
-//	    boolean execOnChange =
+//		in->sendValues(false);
+//	    bool execOnChange =
 //		theDXApplication->getExecCtl()->inExecOnChange();
 //	    if (!execOnChange)
 //		theDXApplication->getExecCtl()->executeOnce();
@@ -2887,7 +2890,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //	if(!obj->isManaged()) obj->DXWindow::manage();
 //
 //	obj->newCanvasImage();
-//	obj->allowDirectInteraction(in == NULL ? FALSE : TRUE);
+//	obj->allowDirectInteraction(in == NULL ? false : true);
 //    }   
 //    else if (event->xclient.message_type == obj->atoms.execute_on_change)
 //    {
@@ -2917,7 +2920,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //     */
 //    else
 //    {
-//	obj->state.hardwareRender = FALSE;
+//	obj->state.hardwareRender = false;
 //	/*
 //	 * Resize the image.
 //	 */
@@ -2945,11 +2948,11 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //	// in the resize callback.
 //	//
 //
-//	obj->state.resizeFromServer = TRUE;
+//	obj->state.resizeFromServer = true;
 //	XtVaSetValues(obj->getCanvas(), 
 //	    XmNwidth,  width,
 //	    XmNheight, height, NULL);
-//	obj->state.resizeFromServer = FALSE;
+//	obj->state.resizeFromServer = false;
 //	obj->state.width  = width;
 //	obj->state.height = height;
 //
@@ -2968,7 +2971,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //	     obj->atoms.dx_pixmap_id,
 //	     0,
 //	     1,
-//	     FALSE,
+//	     false,
 //	     XA_PIXMAP,
 //	     &actual_type,
 //	     &actual_format,
@@ -3053,7 +3056,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //
 //	// put the system back into rotate mode if that's the mode it was
 //	// in before.
-//	boolean sw;
+//	bool sw;
 //	obj->getSoftware(sw);
 //	if (obj->switchingSoftware && sw)
 //	{
@@ -3066,7 +3069,7 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //	    obj->setInteractionMode(m);
 //	    obj->undoCmd->deactivate();
 //	    obj->redoCmd->deactivate();
-//	    obj->switchingSoftware = FALSE;
+//	    obj->switchingSoftware = false;
 //	}
 //    
 //	//
@@ -3083,9 +3086,9 @@ void ImageWindow::resizeImage(boolean ok_to_send)
 //}
 
 //
-// Return TRUE/FALSE if the window is/isn't associated with a node.
+// Return true/false if the window is/isn't associated with a node.
 //
-boolean ImageWindow::isAssociatedWithNode()
+bool ImageWindow::isAssociatedWithNode()
 {
     return this->node != NULL;
 }
@@ -3095,19 +3098,19 @@ boolean ImageWindow::isAssociatedWithNode()
 // Otherwise, if it's already associated with a node, it returns false.
 // Otherwise, it associates itself, setting up commands, ....
 //
-boolean ImageWindow::associateNode(Node *n)
+bool ImageWindow::associateNode(Node *n)
 {
-    boolean ret;
+    bool ret;
 
     if (n == NULL)
     {
 	if (this->node == NULL)	// Stop recursion with DisplayNode::associateImage()
-	    return TRUE;
+	    return true;
 
 	DisplayNode *n = (DisplayNode*)this->node;
 	this->node = NULL;
 	n->associateImage(NULL);
-	this->allowDirectInteraction(FALSE);
+	this->allowDirectInteraction(false);
 	this->setInteractionMode(NONE);
 
 	//
@@ -3220,7 +3223,7 @@ boolean ImageWindow::associateNode(Node *n)
 	    this->wait4GLAcknowledge();
 	}
 
-	ret = TRUE;
+	ret = true;
     }
     else
     {
@@ -3289,7 +3292,7 @@ boolean ImageWindow::associateNode(Node *n)
 
 
 		List *l = this->network->makeClassifiedNodeList(ClassProbeNode,
-					FALSE);
+					false);
 		if (l) {
 		    delete l;
 		    this->modeCursorsCmd->activate();
@@ -3304,11 +3307,11 @@ boolean ImageWindow::associateNode(Node *n)
 		    this->modePickCmd->deactivate();
 	    }
 
-	    ret = TRUE;
+	    ret = true;
 	}
 	else
 	{
-	    ret = FALSE;
+	    ret = false;
 	}
     }
 
@@ -3351,7 +3354,7 @@ void ImageWindow::resetWindowTitle()
     if (t) delete t;
 }
 
-void ImageWindow::allowDirectInteraction(boolean allow)
+void ImageWindow::allowDirectInteraction(bool allow)
 {
     if (this->directInteraction == allow)
 	return;
@@ -3365,7 +3368,7 @@ void ImageWindow::allowDirectInteraction(boolean allow)
 
 	ImageNode *in = (ImageNode*)this->node;
 
-	boolean sw;
+	bool sw;
 	this->getSoftware(sw);
 	if (sw)
 	{
@@ -3384,8 +3387,8 @@ void ImageWindow::allowDirectInteraction(boolean allow)
 	if (this->viewControlDialog)
 	{
 	    this->viewControlDialog->setSensitivity(in->useVector());
-	    this->viewControlDialog->sensitizePickOptionMenu(TRUE);
-	    this->viewControlDialog->sensitizeProbeOptionMenu(TRUE);
+	    this->viewControlDialog->sensitizePickOptionMenu(true);
+	    this->viewControlDialog->sensitizeProbeOptionMenu(true);
 	}
 
 
@@ -3426,15 +3429,15 @@ void ImageWindow::allowDirectInteraction(boolean allow)
 	this->modeZoomCmd->deactivate();
 	if(this->viewControlDialog)
 	{
-	    this->viewControlDialog->setSensitivity(FALSE);
-	    this->viewControlDialog->sensitizePickOptionMenu(FALSE);
-	    this->viewControlDialog->sensitizeProbeOptionMenu(FALSE);
+	    this->viewControlDialog->setSensitivity(false);
+	    this->viewControlDialog->sensitizePickOptionMenu(false);
+	    this->viewControlDialog->sensitizeProbeOptionMenu(false);
 	}
     }
         this->configureModeMenu();
 }
 
-boolean ImageWindow::postRenderingOptionsDialog()
+bool ImageWindow::postRenderingOptionsDialog()
 {
     if (this->renderingOptionsDialog == NULL)
 	this->renderingOptionsDialog = new RenderingOptionsDialog(this);
@@ -3485,9 +3488,9 @@ boolean ImageWindow::postRenderingOptionsDialog()
     //TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
     //		this->modeZoomOption->getRootWidget(), "ArmAndActivate");
 
-    return TRUE;
+    return true;
 }
-boolean ImageWindow::postAutoAxesDialog()
+bool ImageWindow::postAutoAxesDialog()
 {
     if (this->autoAxesDialog == NULL)
 	this->autoAxesDialog = new AutoAxesDialog(this);
@@ -3539,13 +3542,13 @@ boolean ImageWindow::postAutoAxesDialog()
     //TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
     //		this->modeZoomOption->getRootWidget(), "ArmAndActivate");
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::postVPE()
+bool ImageWindow::postVPE()
 {
     if(NOT this->network)
-	    return FALSE;
+	    return false;
 
     EditorWindow* editor = this->network->getEditor();
 
@@ -3558,10 +3561,10 @@ boolean ImageWindow::postVPE()
 	//	   XtWindow(editor->getRootWidget()));
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::postThrottleDialog()
+bool ImageWindow::postThrottleDialog()
 {
     if (this->throttleDialog == NULL)
 	this->throttleDialog = new ThrottleDialog(
@@ -3616,20 +3619,20 @@ boolean ImageWindow::postThrottleDialog()
     //		this->modeZoomOption->getRootWidget(), "ArmAndActivate");
 
 
-    return TRUE;
+    return true;
 }
-boolean ImageWindow::postViewControlDialog()
+bool ImageWindow::postViewControlDialog()
 {
-    boolean newDialog = FALSE;
+    bool newDialog = false;
     if (this->viewControlDialog == NULL)
     {
 	this->viewControlDialog = new ViewControlDialog(
 							this);
-	newDialog = TRUE;
+	newDialog = true;
     }
 
     if (this->viewControlDialog->isManaged())
-	return TRUE;
+	return true;
 
     this->viewControlDialog->post();
     // Force Image's Translations onto ViewControlDialog here.
@@ -3674,30 +3677,30 @@ boolean ImageWindow::postViewControlDialog()
 	}
     }
     else
-	this->viewControlDialog->setSensitivity(FALSE);
+	this->viewControlDialog->setSensitivity(false);
 
-    return TRUE;
+    return true;
 }
-boolean ImageWindow::postChangeImageNameDialog()
+bool ImageWindow::postChangeImageNameDialog()
 {
     if (NOT this->changeImageNameDialog)
 	this->changeImageNameDialog = new SetImageNameDialog(this); 
     this->changeImageNameDialog->post();
     
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::enablePerspective(boolean enable)
+bool ImageWindow::enablePerspective(bool enable)
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
 
     ImageNode *in = (ImageNode*)this->node;
 
-    boolean oldProj;
+    bool oldProj;
     in->getProjection(oldProj);
     if (oldProj == enable)
-	return TRUE;
+	return true;
     
 
     /*
@@ -3709,7 +3712,7 @@ boolean ImageWindow::enablePerspective(boolean enable)
 	//    this->sendClientMessage(this->atoms.push_camera);
 	//else
 	//    XmPicturePushUndoCamera((XmPictureWidget)this->getCanvas());
-	this->pushedSinceExec = TRUE;
+	this->pushedSinceExec = true;
     }
 
     /*
@@ -3733,13 +3736,13 @@ boolean ImageWindow::enablePerspective(boolean enable)
 	    double viewAngle = this->state.hardwareCamera.viewAngle;
 	    
 	    double width = 2*length*tan((viewAngle/2.0)*3.14159/180.0);
-	    in->setWidth(width, FALSE);
+	    in->setWidth(width, false);
 	}
 	else
 	{
 	    double width = this->state.hardwareCamera.width;
 	    double viewAngle = 2*atan((width/2)/length)*180.0 / 3.14159;
-	    in->setViewAngle(viewAngle, FALSE);
+	    in->setViewAngle(viewAngle, false);
 	}
     }
     else
@@ -3757,33 +3760,33 @@ boolean ImageWindow::enablePerspective(boolean enable)
 	    double viewAngle;
 	    in->getViewAngle(viewAngle);
 	    double width = 2*length*tan((viewAngle/2.0)*3.14159/180.0);
-	    in->setWidth(width, FALSE);
+	    in->setWidth(width, false);
 	}
 	else
 	{
 	    double width;
 	    in->getWidth(width);
 	    double viewAngle = 2*atan((width/2)/length)*180.0 / 3.14159;
-	    in->setViewAngle(viewAngle, FALSE);
+	    in->setViewAngle(viewAngle, false);
 	}
     }
-    in->setProjection(enable, TRUE);
+    in->setProjection(enable, true);
 
     if (this->viewControlDialog)
     {
 	this->viewControlDialog->resetProjection();
     }
 
-    return TRUE;
+    return true;
 }
-boolean ImageWindow::getPerspective()
+bool ImageWindow::getPerspective()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
 
     ImageNode *in = (ImageNode*)this->node;
     
-    boolean persp;
+    bool persp;
     in->getProjection(persp);
 
     return persp;
@@ -3808,7 +3811,7 @@ void ImageWindow::setViewAngle(double viewAngle)
 	//    this->sendClientMessage(this->atoms.push_camera);
 	//else
 	//    XmPicturePushUndoCamera((XmPictureWidget)this->getCanvas());
-	this->pushedSinceExec = TRUE;
+	this->pushedSinceExec = true;
     }
     
     //
@@ -3846,10 +3849,10 @@ void ImageWindow::setViewAngle(double viewAngle)
 	from[1] = to[1] + y;
 	from[2] = to[2] + z;
 
-	in->setFrom(from, FALSE);
+	in->setFrom(from, false);
     }
 
-    in->setViewAngle(viewAngle, TRUE);
+    in->setViewAngle(viewAngle, true);
 }
 void ImageWindow::setResolution(int x, int y)
 {
@@ -3861,13 +3864,13 @@ void ImageWindow::setResolution(int x, int y)
     /*
      * Otherwise, get the new width and height.
      */
-    in->setResolution(x, y, FALSE);
+    in->setResolution(x, y, false);
     if (x == 0)
 	return;
     double aspect = (y + 0.5) / x;
-    in->setAspect(aspect, FALSE);
+    in->setAspect(aspect, false);
 
-    in->notifyWhereChange(TRUE);
+    in->notifyWhereChange(true);
 }
 
 void ImageWindow::getResolution(int &x, int &y)
@@ -3893,217 +3896,217 @@ void ImageWindow::getThrottle(double &w)
     ((ImageNode*)this->node)->getThrottle(w);
 }
 
-boolean ImageWindow::isAutoAxesCornersSet ()
+bool ImageWindow::isAutoAxesCornersSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesCornersSet();
 }
 
-boolean ImageWindow::isAutoAxesLabelScaleSet ()
+bool ImageWindow::isAutoAxesLabelScaleSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesLabelScaleSet();
 }
 
-boolean ImageWindow::isAutoAxesAnnotationSet ()
+bool ImageWindow::isAutoAxesAnnotationSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesAnnotationSet();
 }
 
-boolean ImageWindow::isAutoAxesLabelsSet ()
+bool ImageWindow::isAutoAxesLabelsSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesLabelsSet();
 }
 
-boolean ImageWindow::isAutoAxesColorsSet ()
+bool ImageWindow::isAutoAxesColorsSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesColorsSet();
 }
 
-boolean ImageWindow::isAutoAxesFontSet ()
+bool ImageWindow::isAutoAxesFontSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesFontSet();
 }
 
-boolean ImageWindow::isAutoAxesCursorSet ()
+bool ImageWindow::isAutoAxesCursorSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesCursorSet();
 }
 
-boolean ImageWindow::isSetAutoAxesFrame ()
+bool ImageWindow::isSetAutoAxesFrame ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isSetAutoAxesFrame();
 }
 
-boolean ImageWindow::isSetAutoAxesGrid ()
+bool ImageWindow::isSetAutoAxesGrid ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isSetAutoAxesGrid();
 }
 
-boolean ImageWindow::isSetAutoAxesAdjust ()
+bool ImageWindow::isSetAutoAxesAdjust ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isSetAutoAxesAdjust();
 }
 
-boolean ImageWindow::isAutoAxesTicksSet ()
+bool ImageWindow::isAutoAxesTicksSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesTicksSet();
 }
 
-boolean ImageWindow::isAutoAxesXTickLocsSet ()
+bool ImageWindow::isAutoAxesXTickLocsSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesXTickLocsSet();
 }
 
-boolean ImageWindow::isAutoAxesYTickLocsSet ()
+bool ImageWindow::isAutoAxesYTickLocsSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesYTickLocsSet();
 }
 
-boolean ImageWindow::isAutoAxesZTickLocsSet ()
+bool ImageWindow::isAutoAxesZTickLocsSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesZTickLocsSet();
 }
 
-boolean ImageWindow::isAutoAxesXTickLabelsSet ()
+bool ImageWindow::isAutoAxesXTickLabelsSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesXTickLabelsSet();
 }
 
-boolean ImageWindow::isAutoAxesYTickLabelsSet ()
+bool ImageWindow::isAutoAxesYTickLabelsSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesYTickLabelsSet();
 }
 
-boolean ImageWindow::isAutoAxesZTickLabelsSet ()
+bool ImageWindow::isAutoAxesZTickLabelsSet ()
 {
     if (!this->node->isA(ClassImageNode))
-	return FALSE;
+	return false;
     return ((ImageNode*)this->node)->isAutoAxesZTickLabelsSet();
 }
 
-void ImageWindow::unsetAutoAxesTicks (boolean send)
+void ImageWindow::unsetAutoAxesTicks (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesTicks(send);
 }
 
-void ImageWindow::unsetAutoAxesXTickLocs (boolean send)
+void ImageWindow::unsetAutoAxesXTickLocs (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesXTickLocs(send);
 }
 
-void ImageWindow::unsetAutoAxesYTickLocs (boolean send)
+void ImageWindow::unsetAutoAxesYTickLocs (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesYTickLocs(send);
 }
 
-void ImageWindow::unsetAutoAxesZTickLocs (boolean send)
+void ImageWindow::unsetAutoAxesZTickLocs (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesZTickLocs(send);
 }
 
-void ImageWindow::unsetAutoAxesXTickLabels (boolean send)
+void ImageWindow::unsetAutoAxesXTickLabels (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesXTickLabels(send);
 }
 
-void ImageWindow::unsetAutoAxesYTickLabels (boolean send)
+void ImageWindow::unsetAutoAxesYTickLabels (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesYTickLabels(send);
 }
 
-void ImageWindow::unsetAutoAxesZTickLabels (boolean send)
+void ImageWindow::unsetAutoAxesZTickLabels (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesZTickLabels(send);
 }
 
-void ImageWindow::unsetAutoAxesLabels (boolean send)
+void ImageWindow::unsetAutoAxesLabels (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesLabels(send);
 }
 
-void ImageWindow::unsetAutoAxesLabelScale (boolean send)
+void ImageWindow::unsetAutoAxesLabelScale (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesLabelScale(send);
 }
 
-void ImageWindow::unsetAutoAxesFont (boolean send)
+void ImageWindow::unsetAutoAxesFont (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesFont(send);
 }
 
-void ImageWindow::unsetAutoAxesEnable (boolean send)
+void ImageWindow::unsetAutoAxesEnable (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesEnable(send);
 }
 
-void ImageWindow::unsetAutoAxesFrame (boolean send)
+void ImageWindow::unsetAutoAxesFrame (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesFrame(send);
 }
 
-void ImageWindow::unsetAutoAxesGrid (boolean send)
+void ImageWindow::unsetAutoAxesGrid (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesGrid(send);
 }
 
-void ImageWindow::unsetAutoAxesAdjust (boolean send)
+void ImageWindow::unsetAutoAxesAdjust (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
@@ -4124,126 +4127,126 @@ void ImageWindow::getAutoAxesCorners (double dval[])
     ((ImageNode*)this->node)->getAutoAxesCorners(dval);
 }
 
-void ImageWindow::unsetAutoAxesCursor (boolean send)
+void ImageWindow::unsetAutoAxesCursor (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesCursor(send);
 }
 
-void ImageWindow::unsetAutoAxesAnnotation (boolean send)
+void ImageWindow::unsetAutoAxesAnnotation (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesAnnotation(send);
 }
 
-void ImageWindow::unsetAutoAxesColors (boolean send)
+void ImageWindow::unsetAutoAxesColors (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesColors(send);
 }
 
-void ImageWindow::setAutoAxesCursor (double x, double  y, double  z, boolean send)
+void ImageWindow::setAutoAxesCursor (double x, double  y, double  z, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesCursor(x, y, z, send);
 }
 
-void ImageWindow::unsetAutoAxesCorners (boolean send)
+void ImageWindow::unsetAutoAxesCorners (bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->unsetAutoAxesCorners(send);
 }
 
-void ImageWindow::setAutoAxesCorners (double dval[], boolean send)
+void ImageWindow::setAutoAxesCorners (double dval[], bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesCorners(dval, send);
 }
 
-void ImageWindow::setAutoAxesTicks (int t1, int t2, int t3, boolean send)
+void ImageWindow::setAutoAxesTicks (int t1, int t2, int t3, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesTicks (t1, t2, t3, send);
 }
 
-void ImageWindow::setAutoAxesTicks (int t, boolean send)
+void ImageWindow::setAutoAxesTicks (int t, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesTicks (t, send);
 }
 
-void ImageWindow::setAutoAxesXTickLocs (double *t, int size, boolean send)
+void ImageWindow::setAutoAxesXTickLocs (double *t, int size, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesXTickLocs (t, size, send);
 }
 
-void ImageWindow::setAutoAxesYTickLocs (double *t, int size, boolean send)
+void ImageWindow::setAutoAxesYTickLocs (double *t, int size, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesYTickLocs (t, size, send);
 }
 
-void ImageWindow::setAutoAxesZTickLocs (double *t, int size, boolean send)
+void ImageWindow::setAutoAxesZTickLocs (double *t, int size, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesZTickLocs (t, size, send);
 }
 
-void ImageWindow::setAutoAxesXTickLabels (char *value, boolean send)
+void ImageWindow::setAutoAxesXTickLabels (char *value, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesXTickLabels (value, send);
 }
 
-void ImageWindow::setAutoAxesYTickLabels (char *value, boolean send)
+void ImageWindow::setAutoAxesYTickLabels (char *value, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesYTickLabels (value, send);
 }
 
-void ImageWindow::setAutoAxesZTickLabels (char *value, boolean send)
+void ImageWindow::setAutoAxesZTickLabels (char *value, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesZTickLabels (value, send);
 }
 
-void ImageWindow::setAutoAxesAnnotation(char *value, boolean send)
+void ImageWindow::setAutoAxesAnnotation(char *value, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesAnnotation(value, send);
 }
 
-void ImageWindow::setAutoAxesLabels (char *value, boolean send)
+void ImageWindow::setAutoAxesLabels (char *value, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesLabels(value, send);
 }
 
-void ImageWindow::setAutoAxesColors (char *value, boolean send)
+void ImageWindow::setAutoAxesColors (char *value, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesColors(value, send);
 }
 
-void ImageWindow::setAutoAxesFont (char *value, boolean send)
+void ImageWindow::setAutoAxesFont (char *value, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
@@ -4355,35 +4358,35 @@ int ImageWindow::getAutoAxesTicksCount ()
     return ((ImageNode*)this->node)->getAutoAxesTicksCount ();
 }
 
-void ImageWindow::setAutoAxesFrame (boolean state, boolean send)
+void ImageWindow::setAutoAxesFrame (bool state, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesFrame(state, send);
 }
 
-void ImageWindow::setAutoAxesGrid (boolean state, boolean send)
+void ImageWindow::setAutoAxesGrid (bool state, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesGrid(state, send);
 }
 
-void ImageWindow::setAutoAxesAdjust (boolean state, boolean send)
+void ImageWindow::setAutoAxesAdjust (bool state, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesAdjust(state, send);
 }
 
-void ImageWindow::setAutoAxesEnable (int d, boolean send)
+void ImageWindow::setAutoAxesEnable (int d, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
     ((ImageNode*)this->node)->setAutoAxesEnable(d, send);
 }
 
-void ImageWindow::setAutoAxesLabelScale (double d, boolean send)
+void ImageWindow::setAutoAxesLabelScale (double d, bool send)
 {
     if (!this->node->isA(ClassImageNode))
 	return ;
@@ -4402,7 +4405,7 @@ void ImageWindow::setWidth(double w)
 	//    this->sendClientMessage(this->atoms.push_camera);
 	//else
 	//    XmPicturePushUndoCamera((XmPictureWidget)this->getCanvas());
-	this->pushedSinceExec = TRUE;
+	this->pushedSinceExec = true;
     }
     
     ImageNode *in = (ImageNode*)this->node;
@@ -4428,7 +4431,7 @@ void ImageWindow::setTo(double *v)
 	//    this->sendClientMessage(this->atoms.push_camera);
 	//else
 	//    XmPicturePushUndoCamera((XmPictureWidget)this->getCanvas());
-	this->pushedSinceExec = TRUE;
+	this->pushedSinceExec = true;
     }
  
     ImageNode *in = (ImageNode*)this->node;
@@ -4445,7 +4448,7 @@ void ImageWindow::setFrom(double *v)
 	//    this->sendClientMessage(this->atoms.push_camera);
 	//else
 	//    XmPicturePushUndoCamera((XmPictureWidget)this->getCanvas());
-	this->pushedSinceExec = TRUE;
+	this->pushedSinceExec = true;
     }
  
     ImageNode *in = (ImageNode*)this->node;
@@ -4462,7 +4465,7 @@ void ImageWindow::setUp(double *v)
 	//    this->sendClientMessage(this->atoms.push_camera);
 	//else
 	//    XmPicturePushUndoCamera((XmPictureWidget)this->getCanvas());
-	this->pushedSinceExec = TRUE;
+	this->pushedSinceExec = true;
     }
  
     ImageNode *in = (ImageNode*)this->node;
@@ -4496,44 +4499,44 @@ void ImageWindow::getUp(double *v)
     in->getUp(v);
 }
 
-boolean ImageWindow::setInteractionMode(DirectInteractionMode mode)
+bool ImageWindow::setInteractionMode(DirectInteractionMode mode)
 {
-    return this->setInteractionMode(mode,FALSE);
+    return this->setInteractionMode(mode,false);
 }
-boolean ImageWindow::applyPendingInteractionMode()
+bool ImageWindow::applyPendingInteractionMode()
 {
     DirectInteractionMode mode = this->pendingInteractionMode;
     if (mode != NONE)
 	return this->setInteractionMode(mode);
     else 
-	return TRUE;
+	return true;
 }
 #if 00
-boolean ImageWindow::activateInteractionMode()
+bool ImageWindow::activateInteractionMode()
 {
     DirectInteractionMode mode = this->pendingInteractionMode;
     if (mode == NONE)
 	mode = this->currentInteractionMode;
-    return this->setInteractionMode(mode,TRUE);
+    return this->setInteractionMode(mode,true);
 }
 #endif
 
-boolean ImageWindow::setInteractionMode(DirectInteractionMode mode, 
-			boolean ignoreMatchingModes)
+bool ImageWindow::setInteractionMode(DirectInteractionMode mode, 
+			bool ignoreMatchingModes)
 {
     ImageNode *in = NUL(ImageNode*);
     if ((this->node) && (this->node->isA(ClassImageNode))) 
 	in = (ImageNode*)this->node;
-    boolean success = TRUE;
+    bool success = true;
 
     if (!ignoreMatchingModes && (this->currentInteractionMode == mode))
-	return TRUE;
+	return true;
 
     if( ((mode == CURSORS) || (mode == ROAM)) && this->state.degenerateBox )
     {
 	WarningMessage("Degenerate bounding box.  "
 			"Can't enter Cursor or Roam modes");
-	success = FALSE;
+	success = false;
 	mode = NONE;
     }
 
@@ -4654,7 +4657,7 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 
 	if (!this->selectProbeByInstance(this->currentProbeInstance <= 0 ? 0 : 
 	                            this->currentProbeInstance)) {
-	    success = FALSE;
+	    success = false;
 	    this->setInteractionMode(NONE);
 	    if (in) in->setInteractionModeParameter(NONE);
 	} else 
@@ -4665,7 +4668,7 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	if (!this->selectPickByInstance(this->currentPickInstance <= 0 ? 0 : 
 					this->currentPickInstance)) {
 	    this->setInteractionMode(NONE);
-	    success = FALSE;
+	    success = false;
 	    break;
 	}
 
@@ -4679,7 +4682,7 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	//    // We didn't install it, so save it away and apply it later.
 	//    this->pendingInteractionMode = this->currentInteractionMode;	
 	//    this->currentInteractionMode = NONE;	
-	//    success = FALSE;
+	//    success = false;
 	//}
 	//else
 	{
@@ -4736,7 +4739,7 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	//    // We didn't install it, so save it away and apply it later.
 	//    this->pendingInteractionMode = this->currentInteractionMode;	
 	//    this->currentInteractionMode = NONE;	
-	//    success = FALSE;
+	//    success = false;
 	//}
 	//else
 	{
@@ -4819,7 +4822,7 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	    //// We didn't install it, so save it away and apply it later.
 	    //this->pendingInteractionMode = this->currentInteractionMode;	
 	    //this->currentInteractionMode = NONE;	
-	    //success = FALSE;
+	    //success = false;
      //   }
      //   else
         {
@@ -4856,7 +4859,7 @@ boolean ImageWindow::setInteractionMode(DirectInteractionMode mode,
 	//    // We didn't install it, so save it away and apply it later.
 	//    this->pendingInteractionMode = this->currentInteractionMode;	
 	//    this->currentInteractionMode = NONE;	
-	//    success = FALSE;
+	//    success = false;
 	//}
 	//else
 	{
@@ -4900,7 +4903,7 @@ DirectInteractionMode ImageWindow::getInteractionMode()
 void ImageWindow::beginExecution()
 {
     this->DXWindow::beginExecution();
-    boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+    bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
     if (execOnChange)
 	//XmPictureExecutionState((XmPictureWidget)this->getCanvas(), True);
 
@@ -4921,7 +4924,7 @@ void ImageWindow::standBy()
 {
     this->DXWindow::standBy();
 
-    boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+    bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
     if (this->state.hardwareRender)
     {
 	long l = execOnChange? 1: 0;
@@ -4941,7 +4944,7 @@ void ImageWindow::endExecution()
 {
     this->DXWindow::endExecution();
 
-    boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+    bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
     if (this->state.hardwareRender)
     {
 	long l = execOnChange? 1: 0;
@@ -4963,7 +4966,7 @@ void ImageWindow::newCamera(int image_width, int image_height)
     this->state.width = image_width;
     this->state.height = image_height;
 
-    this->pushedSinceExec = FALSE;
+    this->pushedSinceExec = false;
 
     this->newCanvasImage();
 }
@@ -4971,7 +4974,7 @@ void ImageWindow::newCamera(int image_width, int image_height)
 void ImageWindow::newCamera(double box[4][3], double aamat[4][4],
 							double *from, double *to, double *up,
 							int image_width, int image_height, double width,
-							boolean perspective, double viewAngle)
+							bool perspective, double viewAngle)
 {
 	this->newCamera(image_width, image_height);
 
@@ -5017,7 +5020,7 @@ void ImageWindow::newCamera(double box[4][3], double aamat[4][4],
 	//	image_width, image_height, width,
 	//	in->useAutoAxes(), perspective, viewAngle))
 	//{
-	//	this->state.degenerateBox = TRUE;
+	//	this->state.degenerateBox = true;
 	//	/*
 	//	* See if we are in Roam or Cursor mode, and, if we are, kick out.
 	//	*/
@@ -5038,9 +5041,9 @@ void ImageWindow::newCamera(double box[4][3], double aamat[4][4],
 	//}
 	//else
 	{
-		this->cameraInitialized = TRUE;
+		this->cameraInitialized = true;
 
-		this->state.degenerateBox = FALSE;
+		this->state.degenerateBox = false;
 		if (this->viewControlDialog)
 			this->viewControlDialog->newCamera(
 			from, to, up,
@@ -5072,7 +5075,7 @@ void ImageWindow::undoCamera()
 	double from[3];
 	double up[3];
 	double width;
-	boolean projection;
+	bool projection;
 	double viewAngle;
 
 	int tmp;
@@ -5084,16 +5087,16 @@ void ImageWindow::undoCamera()
 	//    &viewAngle))
 	//    return;
 
-	// pc build changed boolean from int to unsigned char
+	// pc build changed bool from int to unsigned char
 	projection = tmp;
 	
 	ImageNode *in = (ImageNode *)this->node;
-	in->setTo(to, FALSE);
-	in->setFrom(from, FALSE);
-	in->setUp(up, FALSE);
-	in->setWidth(width, FALSE);
-	in->setProjection(projection, FALSE);
-	in->setViewAngle(viewAngle, FALSE);
+	in->setTo(to, false);
+	in->setFrom(from, false);
+	in->setUp(up, false);
+	in->setWidth(width, false);
+	in->setProjection(projection, false);
+	in->setViewAngle(viewAngle, false);
 
 	int image_width;
 	int image_height;
@@ -5108,9 +5111,9 @@ void ImageWindow::undoCamera()
 		projection, viewAngle);
 	}
 
-	in->sendValues(FALSE);
+	in->sendValues(false);
 
-	boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+	bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
 	if (!execOnChange)
 	    theDXApplication->getExecCtl()->executeOnce();
     }
@@ -5146,7 +5149,7 @@ void ImageWindow::redoCamera()
 	double from[3];
 	double up[3];
 	double width;
-	boolean projection;
+	bool projection;
 	double viewAngle;
 
 	int tmp;
@@ -5160,12 +5163,12 @@ void ImageWindow::redoCamera()
 	projection = tmp;
 	
 	ImageNode *in = (ImageNode *)this->node;
-	in->setTo(to, FALSE);
-	in->setFrom(from, FALSE);
-	in->setUp(up, FALSE);
-	in->setWidth(width, FALSE);
-	in->setProjection(projection, FALSE);
-	in->setViewAngle(viewAngle, FALSE);
+	in->setTo(to, false);
+	in->setFrom(from, false);
+	in->setUp(up, false);
+	in->setWidth(width, false);
+	in->setProjection(projection, false);
+	in->setViewAngle(viewAngle, false);
 
 	int image_width;
 	int image_height;
@@ -5180,9 +5183,9 @@ void ImageWindow::redoCamera()
 		projection, viewAngle);
 	}
 
-	in->sendValues(FALSE);
+	in->sendValues(false);
 
-	boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+	bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
 	if (!execOnChange)
 	    theDXApplication->getExecCtl()->executeOnce();
     }
@@ -5197,7 +5200,7 @@ void ImageWindow::resetCamera()
 	if (!this->pushedSinceExec)
 	{
 	    this->sendClientMessage(this->atoms.push_camera);
-	    this->pushedSinceExec = TRUE;
+	    this->pushedSinceExec = true;
 	}
 	this->sendClientMessage(this->atoms.image_reset);
     }
@@ -5214,7 +5217,7 @@ void ImageWindow::resetCamera()
 	//    if (!this->pushedSinceExec)
 	//    {
 	//	XmPicturePushUndoCamera((XmPictureWidget)this->getCanvas());
-	//	this->pushedSinceExec = TRUE;
+	//	this->pushedSinceExec = true;
 	//    }
 	//}
     }
@@ -5240,9 +5243,9 @@ void ImageWindow::resetCamera()
     ImageNode *in = (ImageNode *)this->node;
     double v[3];
     v[0] = 0; v[1] = 1; v[2] = 0;
-    in->setUp(v, FALSE);
-    in->enableVector(FALSE,FALSE);// This will not result in a sendValues().
-    in->sendValues(FALSE);
+    in->setUp(v, false);
+    in->enableVector(false,false);// This will not result in a sendValues().
+    in->sendValues(false);
 
     DXExecCtl *ctl = theDXApplication->getExecCtl();
 #if NOT_YET
@@ -5256,16 +5259,16 @@ void ImageWindow::resetCamera()
 	ctl->executeOnce();
 }
 
-boolean ImageWindow::setView(ViewDirection dir)
+bool ImageWindow::setView(ViewDirection dir)
 {
     if (!this->directInteractionAllowed())
-	return FALSE;
+	return false;
 
     //long widgetsDirection = TOP;
 
     switch (dir) {
     case VIEW_NONE:
-	return TRUE;
+	return true;
 
  //   case VIEW_TOP:
 	//widgetsDirection = TOP;
@@ -5316,7 +5319,7 @@ boolean ImageWindow::setView(ViewDirection dir)
 	if (!this->pushedSinceExec)
 	{
 	    this->sendClientMessage(this->atoms.push_camera);
-	    this->pushedSinceExec = TRUE;
+	    this->pushedSinceExec = true;
 	}
 	//this->sendClientMessage(this->atoms.set_view, widgetsDirection);
     }
@@ -5325,7 +5328,7 @@ boolean ImageWindow::setView(ViewDirection dir)
 	if (!this->pushedSinceExec)
 	{
 	    //XmPicturePushUndoCamera((XmPictureWidget)this->getCanvas());
-	    this->pushedSinceExec = TRUE;
+	    this->pushedSinceExec = true;
 	}
 	double from[3];
 	double up[3];
@@ -5334,8 +5337,8 @@ boolean ImageWindow::setView(ViewDirection dir)
 	//    &up[0], &up[1], &up[2]);
 
 	ImageNode *in = (ImageNode*)this->node;
-	in->setUp(up, FALSE);
-	in->setFrom(from, TRUE);
+	in->setUp(up, false);
+	in->setFrom(from, true);
         if (theDXApplication->getExecCtl()->assignmentRequiresExecution())
 	    theDXApplication->getExecCtl()->executeOnce();
 #if NOT_YET
@@ -5343,13 +5346,13 @@ boolean ImageWindow::setView(ViewDirection dir)
 #endif
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::setLook(LookDirection dir)
+bool ImageWindow::setLook(LookDirection dir)
 {
     if (!this->directInteractionAllowed())
-	return FALSE;
+	return false;
     //int mdir = XmLOOK_FORWARD;
     double angle = 0;
     const double OurPI = 3.14159;
@@ -5401,7 +5404,7 @@ boolean ImageWindow::setLook(LookDirection dir)
 	if (this->viewControlDialog)
 	    this->viewControlDialog->resetLookDirection();
 
-	return TRUE;
+	return true;
     }
 
     if (!this->pushedSinceExec)
@@ -5410,7 +5413,7 @@ boolean ImageWindow::setLook(LookDirection dir)
 	    this->sendClientMessage(this->atoms.push_camera);
 	//else
 	//    XmPicturePushUndoCamera((XmPictureWidget)this->getCanvas());
-	this->pushedSinceExec = TRUE;
+	this->pushedSinceExec = true;
     }
 
     if (this->state.hardwareRender)
@@ -5434,25 +5437,25 @@ boolean ImageWindow::setLook(LookDirection dir)
     ImageNode *in = (ImageNode*)this->node;
     if (!this->state.hardwareRender)
     {
-	in->setTo(to, FALSE);
-	in->setFrom(from, FALSE);
-	in->setUp(up, TRUE);
+	in->setTo(to, false);
+	in->setFrom(from, false);
+	in->setUp(up, true);
     }
     else
     {
-	in->setTo(to, FALSE);
-	in->setFrom(from, FALSE);
-	in->setUp(up, FALSE);
+	in->setTo(to, false);
+	in->setFrom(from, false);
+	in->setUp(up, false);
 	in->sendValuesQuietly();
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::setConstraint(ConstraintDirection dir)
+bool ImageWindow::setConstraint(ConstraintDirection dir)
 {
     if (!this->directInteractionAllowed())
-	return FALSE;
+	return false;
     int hwconstraint = 0;	// Hardware constraint
     int pwconstraint = 0;	// picture widget constraint
 
@@ -5484,7 +5487,7 @@ boolean ImageWindow::setConstraint(ConstraintDirection dir)
  //   XtVaSetValues(this->getCanvas(),
 	//XmNconstrainCursor, pwconstraint, NULL);
 
-    return TRUE;
+    return true;
 }
 
 ConstraintDirection ImageWindow::getConstraint()
@@ -5512,7 +5515,7 @@ ConstraintDirection ImageWindow::getConstraint()
     return dir;
 }
 
-void ImageWindow::setSoftware(boolean sw)
+void ImageWindow::setSoftware(bool sw)
 {
     long glob;
     //Pixel p[4];
@@ -5521,10 +5524,10 @@ void ImageWindow::setSoftware(boolean sw)
     if (!this->node->isA(ClassImageNode))
 	return;
 
-    boolean oldSw;
+    bool oldSw;
     this->getSoftware(oldSw);
     if (oldSw != sw)
-	this->switchingSoftware = TRUE;
+	this->switchingSoftware = true;
 
     if (!sw)
     {
@@ -5587,17 +5590,17 @@ void ImageWindow::setSoftware(boolean sw)
 	//
 	// Reset the approx mode back to none if it was wireframe.  Use
 	// this->node->setApprox, not this->setApproximation so that we can
-	// set send to FALSE.
+	// set send to false.
 	ImageNode *in = (ImageNode *)this->node;
 	ApproxMode mode;
-	this->getApproximation(TRUE, mode);
+	this->getApproximation(true, mode);
 	if(mode == APPROX_WIREFRAME)
-	    in->setApprox(TRUE, "\"none\"", FALSE);
+	    in->setApprox(true, "\"none\"", false);
 	this->upWireframeCmd->deactivate();
 
-	this->getApproximation(FALSE, mode);
+	this->getApproximation(false, mode);
 	if(mode == APPROX_WIREFRAME)
-	    in->setApprox(FALSE, "\"none\"", FALSE);
+	    in->setApprox(false, "\"none\"", false);
 	this->downWireframeCmd->deactivate();
     }
 
@@ -5609,14 +5612,14 @@ void ImageWindow::setSoftware(boolean sw)
     if (this->renderingOptionsDialog)
 	this->renderingOptionsDialog->resetApproximations();
 }
-void ImageWindow::getSoftware(boolean &sw)
+void ImageWindow::getSoftware(bool &sw)
 {
     DisplayNode *n = (DisplayNode*)this->node;
     ASSERT(n);
     ASSERT(((Node*)n)->isA(ClassDisplayNode));
     sw = n->useSoftwareRendering();
 }
-void ImageWindow::setApproximation(boolean up, ApproxMode mode)
+void ImageWindow::setApproximation(bool up, ApproxMode mode)
 {
     if (!this->node->isA(ClassImageNode))
 	return;
@@ -5636,7 +5639,7 @@ void ImageWindow::setApproximation(boolean up, ApproxMode mode)
 	break;
     }
 }
-void ImageWindow::getApproximation(boolean up, ApproxMode &mode)
+void ImageWindow::getApproximation(bool up, ApproxMode &mode)
 {
     if (!this->node->isA(ClassImageNode))
 	return;
@@ -5654,14 +5657,14 @@ void ImageWindow::getApproximation(boolean up, ApproxMode &mode)
     else
 	mode = (ApproxMode)-9999;
 }
-void ImageWindow::setDensity(boolean up, int density)
+void ImageWindow::setDensity(bool up, int density)
 {
     if (!this->node->isA(ClassImageNode))
 	return;
     ImageNode *in = (ImageNode *)this->node;
-    in->setDensity(up, density, TRUE);
+    in->setDensity(up, density, true);
 }
-void ImageWindow::getDensity(boolean up, int &density)
+void ImageWindow::getDensity(bool up, int &density)
 {
     if (!this->node->isA(ClassImageNode))
 	return;
@@ -5669,26 +5672,26 @@ void ImageWindow::getDensity(boolean up, int &density)
     in->getDensity(up, density);
 }
 
- boolean ImageWindow::setCurrentProbe(int i)
+ bool ImageWindow::setCurrentProbe(int i)
 {
     if (! this->selectProbeByInstance(i))
-      return FALSE;
+      return false;
     
     if (this->viewControlDialog)
       this->viewControlDialog->setCurrentProbeByInstance(i);
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::setCurrentPick(int i)
+bool ImageWindow::setCurrentPick(int i)
 {
     if (! this->selectPickByInstance(i))
-      return FALSE;
+      return false;
     
     if (this->viewControlDialog)
       this->viewControlDialog->setCurrentPickByInstance(i);
 
-    return TRUE;
+    return true;
 }
 
 void ImageWindow::wait4GLAcknowledge()
@@ -5704,7 +5707,7 @@ void ImageWindow::wait4GLAcknowledge()
 	//		       ClientMessage, 
 	//		       &e);
  //   }
-    this->state.hardwareRenderExists = FALSE;
+    this->state.hardwareRenderExists = false;
 }
 
 void ImageWindow::sendClientMessage(unsigned long atom, int num, float  *floats)
@@ -5833,7 +5836,7 @@ ProbeNode *ImageWindow::getCurrentProbeNode()
 }
 
 
-boolean ImageWindow::selectProbeByInstance(int i)
+bool ImageWindow::selectProbeByInstance(int i)
 {
 
     long       l[5];
@@ -5849,7 +5852,7 @@ boolean ImageWindow::selectProbeByInstance(int i)
 	probe = (ProbeNode*)this->getNodeByInstance(ClassProbeNode,"ProbeList",
 							i);
     if (!probe)
-	return FALSE;
+	return false;
 
     Parameter  *param = probe->getOutput();
 
@@ -5946,7 +5949,7 @@ boolean ImageWindow::selectProbeByInstance(int i)
 	}
     }
 
-    return TRUE;
+    return true;
 }
 
 void ImageWindow::addPick(Node* pick)
@@ -6001,7 +6004,7 @@ Node *ImageWindow::getNodeByInstance(const char *classname, const char *name,
 	//
 	// Find the pick with the lowest instance number.
 	//
-	List *l = this->network->makeClassifiedNodeList(classname, FALSE);
+	List *l = this->network->makeClassifiedNodeList(classname, false);
 	if (l) {
 	    int mininst = 0;
 	    Node *first=NULL;
@@ -6022,14 +6025,14 @@ Node *ImageWindow::getNodeByInstance(const char *classname, const char *name,
     return node;
 }
 
-boolean ImageWindow::selectPickByInstance(int i)
+bool ImageWindow::selectPickByInstance(int i)
 {
     PickNode *pick;
     PickNode *curr_pick = this->getCurrentPickNode();
 
     pick = (PickNode*)this->getNodeByInstance(ClassPickNode,"Pick",i);
     if (!pick)
-	return FALSE;
+	return false;
 
     if (curr_pick && curr_pick != pick)
 	curr_pick->pickFrom(NULL);
@@ -6045,30 +6048,30 @@ boolean ImageWindow::selectPickByInstance(int i)
 
     pick->pickFrom(this->node);
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::setBackgroundColor(const char *color)
+bool ImageWindow::setBackgroundColor(const char *color)
 {
     ASSERT(this->node->isA(ClassImageNode));
     ImageNode *n = (ImageNode*)this->node;
     n->setBackgroundColor(color);
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::updateBGColorDialog(const char *color)
+bool ImageWindow::updateBGColorDialog(const char *color)
 {
     if (this->backgroundColorDialog)
 	this->backgroundColorDialog->installEditorText(color);
-    return TRUE;
+    return true;
 }
 
 
-boolean ImageWindow::updateThrottleDialog(double v)
+bool ImageWindow::updateThrottleDialog(double v)
 {
     if (this->throttleDialog)
 	this->throttleDialog->installThrottleValue(v);
-    return TRUE;
+    return true;
 }
 
 const char *ImageWindow::getBackgroundColor()
@@ -6080,35 +6083,35 @@ const char *ImageWindow::getBackgroundColor()
     return c;
 }
 
-boolean ImageWindow::postBackgroundColorDialog()
+bool ImageWindow::postBackgroundColorDialog()
 {
     if (!this->backgroundColorDialog)
 	this->backgroundColorDialog = new SetBGColorDialog(this);
     this->backgroundColorDialog->post();
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::enableRecord(boolean enable)
+bool ImageWindow::enableRecord(bool enable)
 {
     ASSERT(this->node->isA(ClassImageNode));
     ImageNode *n = (ImageNode*)this->node;
     n->setRecordEnable (RECORD_ENABLE_NO_RERENDER);
-    return TRUE;
+    return true;
 }
-boolean ImageWindow::setRecordFile(const char *file)
+bool ImageWindow::setRecordFile(const char *file)
 {
     ASSERT(this->node->isA(ClassImageNode));
     ImageNode *n = (ImageNode*)this->node;
     n->setRecordFile(file);
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::setRecordFormat(const char *format)
+bool ImageWindow::setRecordFormat(const char *format)
 {
     ASSERT(this->node->isA(ClassImageNode));
     ImageNode *n = (ImageNode*)this->node;
     n->setRecordFormat(format);
-    return TRUE;
+    return true;
 }
 
 const char *ImageWindow::getRecordFile()
@@ -6151,7 +6154,7 @@ double ImageWindow::getRecordAspect()
     return aspect;
 }
 
-boolean ImageWindow::useRecord()
+bool ImageWindow::useRecord()
 {
     int recenab;
     ASSERT(this->node->isA(ClassImageNode));
@@ -6215,9 +6218,9 @@ void ImageWindow::newCanvasImage()
 
     //Dimension w = this->state.width;
     //Dimension h = this->state.height;
-    this->state.resizeFromServer = TRUE;
+    this->state.resizeFromServer = true;
     //XtVaSetValues(this->getCanvas(), XmNwidth, w, XmNheight, h, NULL);
-    this->state.resizeFromServer = FALSE;
+    this->state.resizeFromServer = false;
 
     if (this->state.frameBuffer)
     {
@@ -6231,7 +6234,7 @@ void ImageWindow::newCanvasImage()
 	//if (new_x != x || new_y != y)
 	//{
 	//    DisplayNode *dn = (DisplayNode*)this->node;
-	//    dn->notifyWhereChange(TRUE);
+	//    dn->notifyWhereChange(true);
 	//}
     }
 
@@ -6243,7 +6246,7 @@ void ImageWindow::newCanvasImage()
 	    n->resetCursor();
     }
 
-    boolean sw;
+    bool sw;
     this->getSoftware(sw);
     if (this->switchingSoftware && !sw)
     {
@@ -6256,7 +6259,7 @@ void ImageWindow::newCanvasImage()
 	this->setConstraint(this->getConstraint());
 	this->undoCmd->deactivate();
 	this->redoCmd->deactivate();
-	this->switchingSoftware = FALSE;
+	this->switchingSoftware = false;
     } else {
 	this->applyPendingInteractionMode();
     }
@@ -6276,7 +6279,7 @@ void ImageWindow::newCanvasImage()
 //void ImageWindow::trackFrameBuffer(XEvent *event, Boolean *continue_to_dispatch)
 //{
 //    XWindowAttributes attributes;
-//    boolean execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
+//    bool execOnChange = theDXApplication->getExecCtl()->inExecOnChange();
 //    DisplayNode *dn = (DisplayNode*)this->node;
 //
 //    *continue_to_dispatch = True;
@@ -6310,7 +6313,7 @@ void ImageWindow::newCanvasImage()
 //	 * If connected, assign a new display string and cause another
 //	 * execution of the network to occur.
 //	 */
-//	dn->notifyWhereChange(TRUE);
+//	dn->notifyWhereChange(true);
 //
 //	if (!execOnChange)
 //	    theDXApplication->getExecCtl()->executeOnce();
@@ -6437,7 +6440,7 @@ void ImageWindow::newCanvasImage()
 //	 * If connected, assign a new display string and cause another
 //	 * execution of the network to occur.
 //	 */
-//	dn->notifyWhereChange(TRUE);
+//	dn->notifyWhereChange(true);
 //
 //	if (!execOnChange)
 //	    theDXApplication->getExecCtl()->executeOnce();
@@ -6450,18 +6453,18 @@ void ImageWindow::newCanvasImage()
 //    }
 //}
 
-//boolean ImageWindow::HandleExposures(XEvent *event, void *clientData)
+//bool ImageWindow::HandleExposures(XEvent *event, void *clientData)
 //{
 //    ImageWindow *iw = (ImageWindow *)clientData;
 //    return iw->handleExposures(event);
 //}
 
-//boolean ImageWindow::handleExposures(XEvent*event)
+//bool ImageWindow::handleExposures(XEvent*event)
 //{
 //    XtVaSetValues(this->getCanvas(), 
 //	XmNoverlayExposure, True,
 //	NULL);
-//    return TRUE;
+//    return true;
 //}
 
 void ImageWindow::setTranslateSpeed(double s)
@@ -6533,7 +6536,7 @@ void ImageWindow::resetWindow()
     
     this->setInteractionMode(NONE);
     if (this->viewControlDialog)
-	this->viewControlDialog->setSensitivity(FALSE);
+	this->viewControlDialog->setSensitivity(false);
 
     //XmPictureReset((XmPictureWidget)this->getCanvas());
 
@@ -6573,13 +6576,13 @@ void ImageWindow::resetWindow()
 	//    XtWindow(this->getCanvas()),
 	//    this->atoms.dx_pixmap_id);
  //   this->state.pixmap = XtUnspecifiedPixmap;
-    this->state.hardwareRender = FALSE;
-    this->state.hardwareRenderExists = FALSE;
+    this->state.hardwareRender = false;
+    this->state.hardwareRenderExists = false;
     //XSync(XtDisplay(this->getCanvas()), False);
 
     DisplayNode *in = (DisplayNode*)this->node;
     if (in)
-	in->notifyWhereChange(FALSE);
+	in->notifyWhereChange(false);
 }
 
 void ImageWindow::changeDepth(int depth)
@@ -6588,8 +6591,8 @@ int 	  canvas_depth;
 ImageNode *in = (ImageNode*)this->node;
 //Dimension width, height;
 int new_depth = depth;
-boolean frame_buffer;
-boolean sw;
+bool frame_buffer;
+bool sw;
 
     //
     // If we have a HW renderer, we need to get rid of it now, while we
@@ -6602,7 +6605,7 @@ boolean sw;
     }
     this->getSoftware(sw);
     if(sw)
-	this->allowDirectInteraction(FALSE);
+	this->allowDirectInteraction(false);
 
     //XtVaGetValues(this->getCanvas(), 
 		  //XmNdepth, &canvas_depth, 
@@ -6709,10 +6712,10 @@ boolean sw;
     this->configureImageDepthMenu();
 
 }
-boolean ImageWindow::adjustDepth(int &depth)
+bool ImageWindow::adjustDepth(int &depth)
 {
 ImageNode *in = (ImageNode*)this->node;
-boolean sup8, sup12, sup15, sup16, sup24, sup32;
+bool sup8, sup12, sup15, sup16, sup24, sup32;
 int new_depth;
 
     //XtVaGetValues(this->getCanvas(),
@@ -6748,9 +6751,9 @@ int new_depth;
 	if(in)
 	    in->setDepth(new_depth);
 	depth = new_depth;
-	return TRUE;
+	return true;
     }
-    return FALSE;
+    return false;
 }
 
 //
@@ -6762,7 +6765,7 @@ void ImageWindow::saveImage()
 
 }
 
-boolean ImageWindow::postSaveImageDialog()
+bool ImageWindow::postSaveImageDialog()
 {
     if(NOT this->saveImageDialog)
 	this->saveImageDialog = new SaveImageDialog
@@ -6815,10 +6818,10 @@ boolean ImageWindow::postSaveImageDialog()
     //TransferAccelerator(this->saveImageDialog->getRootWidget(), 
     //		this->modeZoomOption->getRootWidget(), "ArmAndActivate");
 
-    return TRUE;
+    return true;
 }
 
-boolean ImageWindow::postPrintImageDialog()
+bool ImageWindow::postPrintImageDialog()
 {
     if(NOT this->printImageDialog)
 	this->printImageDialog = new PrintImageDialog
@@ -6871,7 +6874,7 @@ boolean ImageWindow::postPrintImageDialog()
     //TransferAccelerator(this->printImageDialog->getRootWidget(), 
     //		this->modeZoomOption->getRootWidget(), "ArmAndActivate");
 
-    return TRUE;
+    return true;
 }
 
 
@@ -6883,13 +6886,13 @@ boolean ImageWindow::postPrintImageDialog()
 void ImageWindow::toggleWindowStartup()
 {
 	List *images = this->network->getImageList();
-	int doit = FALSE;
+	int doit = false;
 	ImageWindow *iw;
 	ListIterator iterator(*images);
 
 	while ( (iw = (ImageWindow*)iterator.getNext()) )  {
 		if ((iw != this) && iw->isStartup())  {
-			doit = TRUE;
+			doit = true;
 			break;
 		}
 	}
@@ -6923,7 +6926,7 @@ void ImageWindow::configureImageDepthMenu()
 			this->imageDepth24Cmd->deactivate();
 			this->imageDepth32Cmd->deactivate();
 		} else {
-			boolean sw;
+			bool sw;
 			this->getSoftware(sw);
 			if (sw) {
 				this->imageDepthCascade->activate();
@@ -7138,217 +7141,217 @@ void ImageWindow::setAutoAxesDialogEnable()
         this->autoAxesDialog->setAutoAxesDialogEnable();
 }
 
-boolean ImageWindow::isBGColorConnected()
+bool ImageWindow::isBGColorConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isBGColorConnected();
 }
 
-boolean ImageWindow::isThrottleConnected()
+bool ImageWindow::isThrottleConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isThrottleConnected();
 }
 
-boolean ImageWindow::isRecordEnableConnected()
+bool ImageWindow::isRecordEnableConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isRecordEnableConnected();
 }
 
-boolean ImageWindow::isRecordFileConnected()
+bool ImageWindow::isRecordFileConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isRecordFileConnected();
 }
 
-boolean ImageWindow::isRecordFormatConnected()
+bool ImageWindow::isRecordFormatConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isRecordFormatConnected();
 }
 
-boolean ImageWindow::isRecordResolutionConnected()
+bool ImageWindow::isRecordResolutionConnected()
 {
     if (!this->node->isA(ClassImageNode))
       return false;
     return ((ImageNode*)this->node)->isRecordResolutionConnected();
 }
 
-boolean ImageWindow::isRecordAspectConnected()
+bool ImageWindow::isRecordAspectConnected()
 {
     if (!this->node->isA(ClassImageNode))
       return false;
     return ((ImageNode*)this->node)->isRecordAspectConnected();
 }
 
-boolean ImageWindow::isAutoAxesEnableConnected()
+bool ImageWindow::isAutoAxesEnableConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesEnableConnected();
 }
 
-boolean ImageWindow::isAutoAxesCornersConnected()
+bool ImageWindow::isAutoAxesCornersConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesCornersConnected();
 }
 
-boolean ImageWindow::isAutoAxesCursorConnected()
+bool ImageWindow::isAutoAxesCursorConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesCursorConnected();
 }
 
-boolean ImageWindow::isAutoAxesFrameConnected()
+bool ImageWindow::isAutoAxesFrameConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesFrameConnected();
 }
 
-boolean ImageWindow::isAutoAxesGridConnected()
+bool ImageWindow::isAutoAxesGridConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesGridConnected();
 }
 
-boolean ImageWindow::isAutoAxesAdjustConnected()
+bool ImageWindow::isAutoAxesAdjustConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesAdjustConnected();
 }
 
-boolean ImageWindow::isAutoAxesAnnotationConnected()
+bool ImageWindow::isAutoAxesAnnotationConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesAnnotationConnected();
 }
 
-boolean ImageWindow::isAutoAxesLabelsConnected()
+bool ImageWindow::isAutoAxesLabelsConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesLabelsConnected();
 }
 
-boolean ImageWindow::isAutoAxesColorsConnected()
+bool ImageWindow::isAutoAxesColorsConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesColorsConnected();
 }
 
-boolean ImageWindow::isAutoAxesFontConnected()
+bool ImageWindow::isAutoAxesFontConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesFontConnected();
 }
 
-boolean ImageWindow::isAutoAxesTicksConnected()
+bool ImageWindow::isAutoAxesTicksConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesTicksConnected();
 }
 
-boolean ImageWindow::isAutoAxesXTickLocsConnected()
+bool ImageWindow::isAutoAxesXTickLocsConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesXTickLocsConnected();
 }
 
-boolean ImageWindow::isAutoAxesYTickLocsConnected()
+bool ImageWindow::isAutoAxesYTickLocsConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesYTickLocsConnected();
 }
 
-boolean ImageWindow::isAutoAxesZTickLocsConnected()
+bool ImageWindow::isAutoAxesZTickLocsConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesZTickLocsConnected();
 }
 
-boolean ImageWindow::isAutoAxesXTickLabelsConnected()
+bool ImageWindow::isAutoAxesXTickLabelsConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesXTickLabelsConnected();
 }
 
-boolean ImageWindow::isAutoAxesYTickLabelsConnected()
+bool ImageWindow::isAutoAxesYTickLabelsConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesYTickLabelsConnected();
 }
 
-boolean ImageWindow::isAutoAxesZTickLabelsConnected()
+bool ImageWindow::isAutoAxesZTickLabelsConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesZTickLabelsConnected();
 }
 
-boolean ImageWindow::isAutoAxesLabelScaleConnected()
+bool ImageWindow::isAutoAxesLabelScaleConnected()
 {
     if (!this->node->isA(ClassImageNode))
 	return false;
     return ((ImageNode*)this->node)->isAutoAxesLabelScaleConnected();
 }
 
-boolean ImageWindow::isRenderModeConnected()
+bool ImageWindow::isRenderModeConnected()
 {
     if (!this->node->isA(ClassImageNode))
       return false;
     return ((ImageNode*)this->node)->isRenderModeConnected();
 }
 
-boolean ImageWindow::isButtonUpApproxConnected()
+bool ImageWindow::isButtonUpApproxConnected()
 {
     if (!this->node->isA(ClassImageNode))
       return false;
     return ((ImageNode*)this->node)->isButtonUpApproxConnected();
 }
 
-boolean ImageWindow::isButtonDownApproxConnected()
+bool ImageWindow::isButtonDownApproxConnected()
 {
     if (!this->node->isA(ClassImageNode))
       return false;
     return ((ImageNode*)this->node)->isButtonDownApproxConnected();
 }
 
-boolean ImageWindow::isButtonUpDensityConnected()
+bool ImageWindow::isButtonUpDensityConnected()
 {
     if (!this->node->isA(ClassImageNode))
       return false;
     return ((ImageNode*)this->node)->isButtonUpDensityConnected();
 }
 
-boolean ImageWindow::isButtonDownDensityConnected()
+bool ImageWindow::isButtonDownDensityConnected()
 {
     if (!this->node->isA(ClassImageNode))
       return false;
     return ((ImageNode*)this->node)->isButtonDownDensityConnected();
 }
 
-void ImageWindow::sensitizePrintImageDialog(boolean flag)
+void ImageWindow::sensitizePrintImageDialog(bool flag)
 {
     if (this->printImageCmd)
 	this->printImageCmd->activate();
@@ -7357,7 +7360,7 @@ void ImageWindow::sensitizePrintImageDialog(boolean flag)
 	this->printImageDialog->setCommandActivation();
 }
 
-void ImageWindow::sensitizeSaveImageDialog(boolean flag)
+void ImageWindow::sensitizeSaveImageDialog(bool flag)
 {
     if (this->saveImageCmd)
 	this->saveImageCmd->activate();
@@ -7366,7 +7369,7 @@ void ImageWindow::sensitizeSaveImageDialog(boolean flag)
 	this->saveImageDialog->setCommandActivation();
 }
 
-void ImageWindow::sensitizeThrottleDialog(boolean flag)
+void ImageWindow::sensitizeThrottleDialog(bool flag)
 {
     if (flag == false)
     {
@@ -7385,7 +7388,7 @@ void ImageWindow::sensitizeThrottleDialog(boolean flag)
     }
 }
 
-void ImageWindow::sensitizeBackgroundColorDialog(boolean flag)
+void ImageWindow::sensitizeBackgroundColorDialog(bool flag)
 {
     if (flag == false)
     {
@@ -7411,11 +7414,11 @@ void ImageWindow::updateAutoAxesDialog()
 	this->autoAxesDialog->update();
 }
 
-void ImageWindow::sensitizeViewControl(boolean flag)
+void ImageWindow::sensitizeViewControl(bool flag)
 {
     if (flag)
     {
-	List *l = this->network->makeClassifiedNodeList(ClassProbeNode, FALSE);
+	List *l = this->network->makeClassifiedNodeList(ClassProbeNode, false);
 	if (l) {
 	    delete l;
 	    this->modeCursorsCmd->activate();
@@ -7435,8 +7438,8 @@ void ImageWindow::sensitizeViewControl(boolean flag)
 	this->modeZoomCmd->activate();
 	if (this->viewControlDialog)
 	{
-	    this->viewControlDialog->sensitizeProbeOptionMenu(TRUE);
-	    this->viewControlDialog->sensitizePickOptionMenu(TRUE);
+	    this->viewControlDialog->sensitizeProbeOptionMenu(true);
+	    this->viewControlDialog->sensitizePickOptionMenu(true);
 	}
     }
     else
@@ -7453,14 +7456,14 @@ void ImageWindow::sensitizeViewControl(boolean flag)
 	if (this->viewControlDialog)
 	{
 	    this->viewControlDialog->resetMode();
-	    this->viewControlDialog->sensitizeProbeOptionMenu(FALSE);
-	    this->viewControlDialog->sensitizePickOptionMenu(FALSE);
+	    this->viewControlDialog->sensitizeProbeOptionMenu(false);
+	    this->viewControlDialog->sensitizePickOptionMenu(false);
 	}
     }
     this->configureModeMenu();
 }
 
-void ImageWindow::sensitizeChangeImageName(boolean flag)
+void ImageWindow::sensitizeChangeImageName(bool flag)
 {
     if (flag)
     {
@@ -7478,31 +7481,31 @@ void ImageWindow::sensitizeChangeImageName(boolean flag)
     }
 }
 
-void ImageWindow::sensitizeRenderMode(boolean flag)
+void ImageWindow::sensitizeRenderMode(bool flag)
 {
     if (this->renderingOptionsDialog)
        this->renderingOptionsDialog->sensitizeRenderMode(flag);
 }
 
-void ImageWindow::sensitizeButtonUpApprox(boolean flag)
+void ImageWindow::sensitizeButtonUpApprox(bool flag)
 {
     if (this->renderingOptionsDialog)
        this->renderingOptionsDialog->sensitizeButtonUpApprox(flag);
 }
 
-void ImageWindow::sensitizeButtonDownApprox(boolean flag)
+void ImageWindow::sensitizeButtonDownApprox(bool flag)
 {
     if (this->renderingOptionsDialog)
        this->renderingOptionsDialog->sensitizeButtonDownApprox(flag);
 }
 
-void ImageWindow::sensitizeButtonUpDensity(boolean flag)
+void ImageWindow::sensitizeButtonUpDensity(bool flag)
 {
     if (this->renderingOptionsDialog)
        this->renderingOptionsDialog->sensitizeButtonUpDensity(flag);
 }
 
-void ImageWindow::sensitizeButtonDownDensity(boolean flag)
+void ImageWindow::sensitizeButtonDownDensity(bool flag)
 {
     if (this->renderingOptionsDialog)
        this->renderingOptionsDialog->sensitizeButtonDownDensity(flag);
@@ -7532,11 +7535,11 @@ void ImageWindow::setGeometry(int  x, int  y, int  width, int  height)
     // go away and reappear in the same spot - a result of applying
     // window placment info twice.  
     //
-    boolean resettable_eoc_mode = FALSE;
+    bool resettable_eoc_mode = false;
     if ((this->isExecuteOnResize()) && (this->network->isReadingNetwork()))
-	resettable_eoc_mode = TRUE;
+	resettable_eoc_mode = true;
     if (resettable_eoc_mode) 
-	this->setExecuteOnResize(FALSE);
+	this->setExecuteOnResize(false);
 
     DisplayNode* dn = (DisplayNode*)this->node;
     if (dn) {
@@ -7549,7 +7552,7 @@ void ImageWindow::setGeometry(int  x, int  y, int  width, int  height)
 	//this->pending_resize_y = y;
 	//this->pending_resize_width = width;
 	//this->pending_resize_height = height;
- //       if (dn) dn->notifyWhereChange(FALSE);
+ //       if (dn) dn->notifyWhereChange(false);
  //   } else 
 	{
 	//
@@ -7574,14 +7577,14 @@ void ImageWindow::setGeometry(int  x, int  y, int  width, int  height)
 	//
 	this->DXWindow::setGeometry(x, y, width, height);
 	//XSync (XtDisplay(theApplication->getRootWidget()), False);
-	this->resizeImage(FALSE);
+	this->resizeImage(false);
     }
  
     //Window newWindow = XtWindow(canvas);
  
  //   if ((oldWindow != newWindow) && (dn)) {
- //       dn->notifyWhereChange(FALSE);
-	//this->allowDirectInteraction(FALSE);
+ //       dn->notifyWhereChange(false);
+	//this->allowDirectInteraction(false);
  //   }
 
     if (resettable_eoc_mode)
@@ -7602,14 +7605,14 @@ void ImageWindow::closeWindow()
 
 void ImageWindow::postWizard()
 {
-    if (theDXApplication->inWizardMode() == FALSE) return;
+    if (theDXApplication->inWizardMode() == false) return;
 
-    boolean keep_trying = TRUE;
+    bool keep_trying = true;
     if (theDXApplication->isWizardWindow(this->UIComponent::name)) {
 	Command *cmd = this->network->getHelpOnNetworkCommand();
 	if (cmd->isActive()) {
 	    cmd->execute();
-	    keep_trying = FALSE;
+	    keep_trying = false;
 	} 
     }
 
@@ -7620,7 +7623,7 @@ void ImageWindow::postWizard()
 //
 // Use a workproc to turn execute-on-resize back on.  This is done on behalf
 // of DisplayNode::parseCommonComments() which is triggering an execution.
-// It calls setGeometry(), setExecuteOnResize(TRUE) in an attempt to prevent an
+// It calls setGeometry(), setExecuteOnResize(true) in an attempt to prevent an
 // execution following parsing/setting geometry, but it doesn't work, because
 // the resize happens async.
 //
@@ -7631,7 +7634,7 @@ void ImageWindow::resetExecuteOnResizeWhenAble()
  //   XtAppContext apcxt = theApplication->getApplicationContext();
  //   this->reset_eor_wp = XtAppAddWorkProc (apcxt, (XtWorkProc)
 	//ImageWindow_ResetEORWP, (XtPointer)this);
- //   ImageWindow::NeedsSyncForResize = TRUE;
+ //   ImageWindow::NeedsSyncForResize = true;
 }
 
 //extern "C" Boolean ImageWindow_ResetEORWP (XtPointer clientData)
@@ -7640,15 +7643,15 @@ void ImageWindow::resetExecuteOnResizeWhenAble()
 //    ASSERT(iw);
 //    if (ImageWindow::NeedsSyncForResize) {
 //	XSync (XtDisplay(iw->getRootWidget()), False);
-//	ImageWindow::NeedsSyncForResize = FALSE;
+//	ImageWindow::NeedsSyncForResize = false;
 //	return False;
 //    }
 //
 //    iw->reset_eor_wp = NUL(XtWorkProcId);
 //    iw->setGeometry( iw->pending_resize_x, iw->pending_resize_y,
 //	iw->pending_resize_width, iw->pending_resize_height);
-//    iw->setExecuteOnResize(TRUE);
-//    return TRUE;
+//    iw->setExecuteOnResize(true);
+//    return true;
 //}
 
 
@@ -7670,7 +7673,7 @@ void ImageWindow::getGeometryAlternateNames(char** names, int* count, int max)
     this->DXWindow::getGeometryAlternateNames(names, count, max);
 }
 
-void ImageWindow::setWindowTitle(const char* name, boolean check_geometry)
+void ImageWindow::setWindowTitle(const char* name, bool check_geometry)
 {
     DXPacketIF* p = theDXApplication->getPacketIF();
     //

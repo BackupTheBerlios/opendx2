@@ -37,14 +37,14 @@ class Command;
 class MacroDefinition : public NodeDefinition
 {
   friend class SaveMacroCommand;
-  friend boolean Network::saveNetwork(const char*, boolean);
+  friend bool Network::saveNetwork(const char*, bool);
 
   private:
     //
     // Private member data:
     //
     Command  *saveCmd;
-    boolean  systemMacro;	// Is this an internal only system macro
+    bool  systemMacro;	// Is this an internal only system macro
 
     //
     // Find the first available spot to place a new parameter in the given
@@ -64,21 +64,21 @@ class MacroDefinition : public NodeDefinition
 
     List referencingNodes;		// a list of Nodes.
 
-    boolean initialRead;
-    boolean updatingServer;	// Are we calling DXExecCtl::updateMacros()
+    bool initialRead;
+    bool updatingServer;	// Are we calling DXExecCtl::updateMacros()
 
     void setFileName(const char*);
     
-    static boolean LoadMacroFile(FILE *f,
+    static bool LoadMacroFile(FILE *f,
 				 const char *fileName,
-				 boolean replace,
-				 boolean *wasMacro = NULL,
-				 boolean asSystemMacro = FALSE);
-    virtual boolean removeIODef(List *l,
+				 bool replace,
+				 bool *wasMacro = NULL,
+				 bool asSystemMacro = false);
+    virtual bool removeIODef(List *l,
 				ParameterDefinition *pd);
-    virtual boolean addIODef(List *l,
+    virtual bool addIODef(List *l,
 			     ParameterDefinition *pd);
-    virtual boolean replaceIODef(List *l,
+    virtual bool replaceIODef(List *l,
 				 ParameterDefinition *newPd,
 				 ParameterDefinition *pd);
 
@@ -100,27 +100,27 @@ class MacroDefinition : public NodeDefinition
     // message that would have been posted and returned.  The returned
     // string must be freed by the caller.
     //
-    static boolean LoadMacro(const char *fileName, char **errmsg = NULL,
-				 boolean asSystemMacro = FALSE);
+    static bool LoadMacro(const char *fileName, char **errmsg = NULL,
+				 bool asSystemMacro = false);
 
     //
     // Load all .net files in the given directory that are macros.
-    // If replace is TRUE, then replace any current definitions with the
+    // If replace is true, then replace any current definitions with the
     // new one, otherwise ignore the .net file.
     // If errmsg is not NULL and an error occurs then, no error messages are
     // posted, and instead a string buffer is allocated to hold the error
     // message that would have been posted and returned.  The returned
     // string must be freed by the caller.
     //
-    static boolean LoadMacroDirectories(const char *path, 
-					boolean replace = FALSE, 
+    static bool LoadMacroDirectories(const char *path, 
+					bool replace = false, 
 					char **errmsg = NULL,
-				 boolean asSystemMacro = FALSE);
+				 bool asSystemMacro = false);
 
     //
     // Constructor:
     //
-    MacroDefinition(boolean systemMacro = FALSE);
+    MacroDefinition(bool systemMacro = false);
 
     //
     // Destructor:
@@ -129,7 +129,7 @@ class MacroDefinition : public NodeDefinition
 
     Command *getSaveCmd() { return this->saveCmd; }
 
-    virtual boolean isDerivedFromMacro() { return TRUE; } 
+    virtual bool isDerivedFromMacro() { return true; } 
 
     virtual void finishDefinition();
 
@@ -142,17 +142,17 @@ class MacroDefinition : public NodeDefinition
     // isn't the main network.  It should really only be called by 
     // Network::makeMacro().
     //
-    virtual boolean updateServer();
-    virtual boolean setNetwork(Network *net);
-    virtual boolean setNodeDefinitions(MacroDefinition *newDef);
+    virtual bool updateServer();
+    virtual bool setNetwork(Network *net);
+    virtual bool setNodeDefinitions(MacroDefinition *newDef);
 
-    boolean removeInput(ParameterDefinition *pd)
+    bool removeInput(ParameterDefinition *pd)
 		{ return this->removeIODef(&this->inputDefs, pd); }
-    boolean removeOutput(ParameterDefinition *pd)
+    bool removeOutput(ParameterDefinition *pd)
 		{ return this->removeIODef(&this->outputDefs, pd); }
-    boolean replaceInput(ParameterDefinition *newPd, ParameterDefinition *pd)
+    bool replaceInput(ParameterDefinition *newPd, ParameterDefinition *pd)
 		{ return this->replaceIODef(&this->inputDefs, newPd, pd); }
-    boolean replaceOutput(ParameterDefinition *newPd, ParameterDefinition *pd)
+    bool replaceOutput(ParameterDefinition *newPd, ParameterDefinition *pd)
 		{ return this->replaceIODef(&this->outputDefs, newPd, pd); }
 
     ParameterDefinition *getNonDummyInputDefinition(int n)
@@ -174,10 +174,10 @@ class MacroDefinition : public NodeDefinition
 
     virtual void openMacro();
 
-    boolean isReadingNet() { return this->initialRead; }
+    bool isReadingNet() { return this->initialRead; }
 
-    boolean printNetworkBody(FILE *f, PrintType ptype);
-    boolean loadNetworkBody();
+    bool printNetworkBody(FILE *f, PrintType ptype);
+    bool loadNetworkBody();
     Network *getNetwork() { return this->body; }
 
     //

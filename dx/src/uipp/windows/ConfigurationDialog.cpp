@@ -70,7 +70,7 @@
 //
 
 char* ConfigurationDialog::HelpText = 0;
-boolean ConfigurationDialog::ClassInitialized = FALSE;
+bool ConfigurationDialog::ClassInitialized = false;
 //String ConfigurationDialog::DefaultResources[] =
 //{
 //    "*configNotationLabel.labelString:		Notation:",
@@ -149,7 +149,7 @@ ConfigurationDialog::AllocateConfigurationDialog(
     return new ConfigurationDialog(node);
 }
 
-boolean ConfigurationDialog::okCallback(Dialog *d)
+bool ConfigurationDialog::okCallback(Dialog *d)
 {
     return this->applyCallback(d);
 }
@@ -180,23 +180,23 @@ void ConfigurationDialog::cancelCallback(Dialog *d)
 //    dialog->applyCallback(dialog);
 //}
     
-boolean ConfigurationDialog::applyCallback(Dialog *)
+bool ConfigurationDialog::applyCallback(Dialog *)
 {
  //   ListIterator li(this->inputList);
  //   int i;
  //   CDBInput *input;
  //   Node     *n = this->node;
- //   boolean anySet = FALSE;
- //   boolean retval = TRUE;
+ //   bool anySet = false;
+ //   bool retval = true;
 
  //   for (i = 1; NULL != (input = (CDBInput*)li.getNext()); ++i)
  //   {
 	//if (input->valueChanged)
 	//{
-	//    if (this->widgetChanged(i, FALSE))
-	//	anySet = TRUE;
+	//    if (this->widgetChanged(i, false))
+	//	anySet = true;
 	//    else
-	//	retval = FALSE;
+	//	retval = false;
 	//}
 
 	//const char *valueString;
@@ -215,7 +215,7 @@ boolean ConfigurationDialog::applyCallback(Dialog *)
  //   }
 
  //   if (anySet)
-	//n->sendValues(FALSE);
+	//n->sendValues(false);
 
  //   const char *oldlabel = n->getLabelString();
  //   char *s = XmTextGetString(this->notation);
@@ -225,7 +225,7 @@ boolean ConfigurationDialog::applyCallback(Dialog *)
 	//	delete this->initialNotation;
 	//    this->initialNotation = DuplicateString(s);
 	//} else {
-	//    retval = FALSE;
+	//    retval = false;
 	//}
  //   }
  //   XtFree(s);
@@ -267,14 +267,14 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
  //   int i;
  //   CDBInput *input;
  //   Node *n = this->node;
- //   boolean anySet = FALSE;
- //   boolean callbacksWereEnabled;
+ //   bool anySet = false;
+ //   bool callbacksWereEnabled;
 
  //   for (i = 1; NULL != (input = (CDBInput*)li.getNext()); ++i)
  //   {
 	//const char *defstr = n->getInputDefaultValueString(i);
 	//const char *inpstr = n->getInputValueString(i);
-	//boolean isdefing = n->isInputDefaulting(i);
+	//bool isdefing = n->isInputDefaulting(i);
 
  // 	if (!n->isInputViewable(i) || n->isInputConnected(i))
 	//    continue;
@@ -285,8 +285,8 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
 	//{
 	//    if (!n->isInputDefaulting(i))
 	//    {
-	//	anySet = TRUE;
-	//	n->useDefaultInputValue(i, FALSE);
+	//	anySet = true;
+	//	n->useDefaultInputValue(i, false);
 	//    }
 	//    else
 	//	input->valueTextPopup->setText(defstr);
@@ -299,14 +299,14 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
 	//	    input->setInitialValue (defstr);
 	//	    input->valueTextPopup->setText(defstr);
 	//	} else {
-	//	    n->setInputValue(i,input->initialValue,DXType::UndefinedType,FALSE);
+	//	    n->setInputValue(i,input->initialValue,DXType::UndefinedType,false);
 	//	    input->valueTextPopup->setText(input->initialValue);
 	//	}
-	//	anySet = TRUE;
+	//	anySet = true;
 	//    } else {
 	//	if (isdefing) {
-	//	    n->setInputValue(i,input->initialValue,DXType::UndefinedType,FALSE);
-	//	    anySet = TRUE;
+	//	    n->setInputValue(i,input->initialValue,DXType::UndefinedType,false);
+	//	    anySet = true;
 	//	}
 	//	input->valueTextPopup->setText(input->initialValue);
 	//    }
@@ -318,12 +318,12 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
 	//if (callbacksWereEnabled)
 	//    input->valueTextPopup->enableCallbacks();
 
-	//input->valueChanged = FALSE;
+	//input->valueChanged = false;
 	//input->modified = 0;
  //   }
 
  //   if (anySet)
-	//n->sendValues(FALSE);
+	//n->sendValues(false);
 
  //   char *s = XmTextGetString(this->notation);
  //   if (!EqualString(s,this->initialNotation)) {
@@ -363,7 +363,7 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
 //	if (input->valueTextPopup == tp)
 //	{
 //	    input->modified = 1;
-//	    input->valueChanged = TRUE;
+//	    input->valueChanged = true;
 //	    break;
 //	}
 //    }
@@ -422,7 +422,7 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
 //		// widget.
 //		const char *defstr = dialog->node->getInputDefaultValueString(i);
 //		const char *setstr = dialog->node->getInputSetValueString(i);
-//		boolean isset = (
+//		bool isset = (
 //		    (!EqualString (defstr, setstr)) && 
 //		    (!EqualString (setstr, "NULL"))
 //		);
@@ -439,7 +439,7 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
 //		{
 //		    n->setInputValue(i, "NULL");
 //		}
-//		input->valueChanged = FALSE;
+//		input->valueChanged = false;
 //	    }
 //	    else if (!set && !n->isInputDefaulting(i))
 //	    {
@@ -450,7 +450,7 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
 //		    if (!EqualString(s, n->getInputDefaultValueString(i)) &&
 //		        *s != '\0')
 //		    {
-//			if (n->setInputValue(i, s, DXType::UndefinedType, FALSE)				== DXType::UndefinedType)
+//			if (n->setInputValue(i, s, DXType::UndefinedType, false)				== DXType::UndefinedType)
 //			{
 //			    ErrorMessage(
 //				"String `%s' is not a valid value for "
@@ -464,7 +464,7 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
 //		dialog->node->useDefaultInputValue(i);
 //		input->valueTextPopup->setText(
 //		    dialog->node->getInputDefaultValueString(i));
-//		input->valueChanged = FALSE;
+//		input->valueChanged = false;
 //	    }
 //	    break;
 //	}
@@ -485,7 +485,7 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
 //	    input->modified = 1;
 //	    Boolean set;
 //	    XtVaGetValues(widget, XmNset, &set, NULL);
-//	    dialog->node->setInputVisibility(i, (boolean)!set);
+//	    dialog->node->setInputVisibility(i, (bool)!set);
 //	    if (set)
 //		XtSetSensitive(dialog->collapse, True);
 //	    break;
@@ -495,11 +495,11 @@ void ConfigurationDialog::restoreCallback(Dialog *clientData)
 
 void ConfigurationDialog::expandCallback(Dialog *clientData)
 {
-    this->remanageInputs(TRUE);
+    this->remanageInputs(true);
 }
 void ConfigurationDialog::collapseCallback(Dialog *clientData)
 {
-    this->remanageInputs(FALSE);
+    this->remanageInputs(false);
 }
 
 //extern "C" void ConfigurationDialog_ResizeCB(Widget widget,
@@ -947,7 +947,7 @@ ConfigurationDialog::ConfigurationDialog( Node *node):
 
     if (NOT ConfigurationDialog::ClassInitialized)
     {
-        ConfigurationDialog::ClassInitialized = TRUE;
+        ConfigurationDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -1011,10 +1011,10 @@ void ConfigurationDialog::post()
 
     for (i = 1; NULL != (input = (CDBInput*)li.getNext()); ++i)
     {
-        input->valueChanged = FALSE;
+        input->valueChanged = false;
     }
 
-    //boolean firstTime = this->getRootWidget() == NULL;
+    //bool firstTime = this->getRootWidget() == NULL;
 
     this->Dialog::post();
 
@@ -1040,7 +1040,7 @@ void ConfigurationDialog::post()
 
 void ConfigurationDialog::changeInput(int i)
 {
-	//boolean callbacksWereEnabled;
+	//bool callbacksWereEnabled;
 	Node *n = this->node;
 
 
@@ -1064,9 +1064,9 @@ void ConfigurationDialog::changeInput(int i)
 	//if (input->nameWidget != NULL)
 	//{
 	//	char pname[128];
-	//	boolean connected  = n->isInputConnected(i);
-	//	boolean defaulting = n->isInputDefaulting(i);
-	//	boolean visible = n->isInputVisible(i);
+	//	bool connected  = n->isInputConnected(i);
+	//	bool defaulting = n->isInputDefaulting(i);
+	//	bool visible = n->isInputVisible(i);
 	//	int  nin = n->getInputCount();
 
 		// Temporarily disable callbacks.
@@ -1165,7 +1165,7 @@ void ConfigurationDialog::changeInput(int i)
 	//		char *oldValueString = input->valueTextPopup->getText();
 	//		if  (!EqualString(oldValueString, valueString)) {
 	//			input->valueTextPopup->setText(valueString);
-	//			input->valueChanged = FALSE;
+	//			input->valueChanged = false;
 	//		}
 	//		XtFree(oldValueString);
 	//	}
@@ -1184,7 +1184,7 @@ void ConfigurationDialog::changeInput(int i)
 	//	{
 	//		Widget top = NULL;
 	//		if (!XtIsManaged(this->inputNameLabel))
-	//			this->remanageInputs(FALSE);
+	//			this->remanageInputs(false);
 	//		else
 	//		{
 	//			Widget managed[10];
@@ -1963,11 +1963,11 @@ void ConfigurationDialog::deleteOutput(int i)
  //   delete output;
 }
 
-boolean ConfigurationDialog::widgetChanged(int i, boolean send)
+bool ConfigurationDialog::widgetChanged(int i, bool send)
 {
  //   CDBInput *input = (CDBInput*)this->inputList.getElement(i);
  //   const char *s = input->valueTextPopup->getText();
- //   boolean retval = TRUE;
+ //   bool retval = true;
  //   char pname[128];
 
  //   if (*s == '\0')
@@ -1989,7 +1989,7 @@ boolean ConfigurationDialog::widgetChanged(int i, boolean send)
 	//ErrorMessage("String `%s' is not a valid value for %s parameter '%s'",
 	//    s, this->node->getNameString(), 
 	//	this->node->getInputNameString(i,pname));
-	//retval = FALSE;
+	//retval = false;
  //   }
  //   XtFree((char *)s);
 
@@ -2004,7 +2004,7 @@ void ConfigurationDialog::changeLabel()
     //XmTextSetString(this->notation, (char *)l);
 }
 
-void ConfigurationDialog::remanageInputs(boolean force)
+void ConfigurationDialog::remanageInputs(bool force)
 {
  //   int count = this->node->getInputCount();
  //   int visible = 0;	// Are any input lines visible?
@@ -2054,7 +2054,7 @@ void ConfigurationDialog::remanageInputs(boolean force)
 	//    managed[nmanaged++] = input->connectedToWidget;
 	//    input->valueTextPopup->manage();
 	//    lastName = input->nameWidget;
-	//    input->lineIsHidden=FALSE;
+	//    input->lineIsHidden=false;
 	//}
 	//else
 	//{
@@ -2064,7 +2064,7 @@ void ConfigurationDialog::remanageInputs(boolean force)
 	//    unmanaged[nunmanaged++] = input->typeWidget;
 	//    unmanaged[nunmanaged++] = input->connectedToWidget;
 	//    input->valueTextPopup->unmanage();
-	//    input->lineIsHidden=TRUE;
+	//    input->lineIsHidden=true;
 	//}
  //   }
  //   XtManageChildren(managed, nmanaged); nmanaged = 0;

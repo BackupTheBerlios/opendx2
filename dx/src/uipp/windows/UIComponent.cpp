@@ -86,11 +86,11 @@ UIComponent::UIComponent(const char* name)
     }
 //    this->root   = NUL(Widget);
     this->name   = DuplicateString(name);
-    this->active = TRUE;
+    this->active = true;
     this->help_msg = NUL(char*);
     this->inactive_help_msg = NUL(char*);
 //    this->help_widget = NUL(Widget);
-    this->deactivated = FALSE;
+    this->deactivated = false;
 //    this->xtt = NULL;
 //    this->fg = ((Pixel)-1);
 }
@@ -135,7 +135,7 @@ void UIComponent::clearRootWidget()
 {
 //    this->root = NULL;
 }
-//void UIComponent::setRootWidget(Widget root, boolean standardDestroy)
+//void UIComponent::setRootWidget(Widget root, bool standardDestroy)
 //{
  /*   if (this->root)
     {
@@ -158,7 +158,7 @@ void UIComponent::clearRootWidget()
 //    this->installComponentHelpCallback();
 //}
 
-//void UIComponent::setBubbleHelp (const char *msg, Widget w, boolean active_help)
+//void UIComponent::setBubbleHelp (const char *msg, Widget w, bool active_help)
 //{
 //    if (active_help) {
 //	if (this->help_msg) delete[] this->help_msg;
@@ -273,12 +273,12 @@ void UIComponent::manage()
 }
 
 
-boolean UIComponent::isManaged()
+bool UIComponent::isManaged()
 {
 //    if (!this->root)
-//	return FALSE;
+//	return false;
 //    return XtIsManaged(this->root); 
-	return TRUE;
+	return true;
 }
 
 void UIComponent::unmanage()
@@ -293,18 +293,18 @@ void UIComponent::activate()
  //   if (this->root)
  //   {
 	//if (!theApplication->bubbleHelpEnabled())
-	//    XtSetSensitive(this->root, TRUE);
+	//    XtSetSensitive(this->root, true);
 	//else {
 	//    if(deactivated)
 	//    {
 	//	if(xtt)
 	//	    XtAugmentTranslations(this->root, xtt);
 	//	XtVaSetValues(this->root, XmNforeground, this->fg, NULL);
-	//	deactivated = FALSE;
+	//	deactivated = false;
 	//    }
 	//}
  //   }
- //   this->active = TRUE;
+ //   this->active = true;
  //   if (this->inactive_help_msg) {
 	//delete[] this->inactive_help_msg;
 	//this->inactive_help_msg = NUL(char*);
@@ -317,7 +317,7 @@ void UIComponent::deactivate(const char * inactive_help)
  //   if (this->root)
  //   {
 	//if (!theApplication->bubbleHelpEnabled())
-	//    XtSetSensitive(this->root, FALSE);
+	//    XtSetSensitive(this->root, false);
 	//else {
 	//    if(!deactivated)
 	//    {
@@ -326,13 +326,13 @@ void UIComponent::deactivate(const char * inactive_help)
 	//	XtUninstallTranslations(this->root);
 	//	XtVaSetValues(this->root, 
 	//	    RES_CONVERT(XmNforeground, "gray50"), NULL);
-	//	deactivated = TRUE;
+	//	deactivated = true;
 	//    }
 	//}
  //   }
- //   this->active = FALSE;
+ //   this->active = false;
  //   if ((this->inactive_help_msg) || (inactive_help))
-	//this->setBubbleHelp (inactive_help, this->help_widget, FALSE);
+	//this->setBubbleHelp (inactive_help, this->help_widget, false);
 }
 
 //
@@ -371,9 +371,9 @@ void UIComponent::setXYPosition(int x, int y)
 
 //
 // Get the size and dimensions. 
-// Return TRUE if all return values are valid.
+// Return true if all return values are valid.
 //
-boolean UIComponent::getGeometry(int *x, int *y, int *width, int *height)
+bool UIComponent::getGeometry(int *x, int *y, int *width, int *height)
 {
     //Position a,b;
     //Dimension w,h;
@@ -392,7 +392,7 @@ boolean UIComponent::getGeometry(int *x, int *y, int *width, int *height)
    //*width = w;
    //*height = h;
 
-   return TRUE;
+   return true;
 }
 //
 // Set the size and dimensions. 
@@ -496,7 +496,7 @@ void *UIComponent::getLocalData()
 	return NULL;
 }
 
-boolean UIComponent::PrintGeometryComment(FILE *f, int xpos, int ypos,
+bool UIComponent::PrintGeometryComment(FILE *f, int xpos, int ypos,
                                 int xsize, int ysize, const char *tag,
                                 const char *indent)
 {
@@ -518,11 +518,11 @@ boolean UIComponent::PrintGeometryComment(FILE *f, int xpos, int ypos,
     //if (fprintf(f,
     //      "%s// %s: position = (%6.4f,%6.4f), size = %6.4fx%6.4f\n",
     //            indent, tag, norm_xpos,norm_ypos,norm_xsize,norm_ysize) < 0)
-    //    return FALSE;
+    //    return false;
 
-    return TRUE;
+    return true;
 }
-boolean UIComponent::ParseGeometryComment(const char *line, const char *file,
+bool UIComponent::ParseGeometryComment(const char *line, const char *file,
                                 int lineno, int *xpos, int *ypos,
                                 int *xsize, int *ysize, const char *tag)
 {
@@ -546,13 +546,13 @@ boolean UIComponent::ParseGeometryComment(const char *line, const char *file,
               "the offending line. \n"
               "(Customers should never get this message)", file,lineno);
         }
-        return FALSE;
+        return false;
     }
 #endif
 
     // 15 = strlen(" ") + strlen(": position = (")
     if (!EqualSubstring(line,format,taglen+15))
-        return FALSE;
+        return false;
 
     items = sscanf(line,format,&norm_xpos,&norm_ypos,&norm_xsize,&norm_ysize);
 
@@ -578,7 +578,7 @@ boolean UIComponent::ParseGeometryComment(const char *line, const char *file,
     //                                    file,lineno);
     //}
 
-    return TRUE;
+    return true;
 }
 
 //extern "C" void

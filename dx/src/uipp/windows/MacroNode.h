@@ -56,18 +56,18 @@ class MacroNode : public Node
 
     virtual void updateDefinition();
 
-    virtual boolean initialize();
+    virtual bool initialize();
 
-    virtual boolean     sendValues(boolean     ignoreDirty = TRUE);
+    virtual bool     sendValues(bool     ignoreDirty = true);
 
     virtual void openMacro();
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
-    virtual boolean needsFastSort() { return TRUE; }
+    virtual bool needsFastSort() { return true; }
 
     //
     // WebOptions is a macro.  I would like to represent it with its own
@@ -77,9 +77,9 @@ class MacroNode : public Node
     // only be called from printAsJava and only in the case where the
     // macro is WebOptions
     //
-    virtual boolean hasJavaRepresentation();
+    virtual bool hasJavaRepresentation();
     virtual const char* getJavaNodeName() { return "WebOptionsNode"; }
-    virtual boolean printInputAsJava(int input);
+    virtual bool printInputAsJava(int input);
 
 
     //

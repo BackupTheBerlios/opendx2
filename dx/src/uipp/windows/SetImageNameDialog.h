@@ -36,7 +36,7 @@ class SetImageNameDialog : public SetNameDialog
     // Private member data:
     //
     ImageWindow		*imageWindow;
-    static boolean 	ClassInitialized;
+    static bool 	ClassInitialized;
 
   protected:
     //
@@ -46,7 +46,7 @@ class SetImageNameDialog : public SetNameDialog
     //static String DefaultResources[];
 
     virtual const char *getText();
-    virtual boolean saveText(const char *s);
+    virtual bool saveText(const char *s);
 
     //
     // Install the default resources for this class and then call the

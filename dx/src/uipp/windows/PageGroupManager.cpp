@@ -27,7 +27,7 @@ PageGroupManager::PageGroupManager(Network *net) :
 }
 
 
-boolean PageGroupManager::printComment(FILE *f)
+bool PageGroupManager::printComment(FILE *f)
 {
     int count = this->groups.getSize();
     int i;
@@ -39,17 +39,17 @@ boolean PageGroupManager::printComment(FILE *f)
 	PageGroupRecord *prec = (PageGroupRecord*)this->groups.getDefinition(i);
 	if (fprintf (f, "// page assignment: %s\torder=%d, windowed=%d, showing=%d\n",
 	    group_name, prec->order_in_list, prec->windowed, prec->showing) <= 0)
-	    return FALSE;
+	    return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 
 //
 // Parse the group information from the cfg file.
 //
-boolean PageGroupManager::parseComment(const char *comment,
+bool PageGroupManager::parseComment(const char *comment,
                                 const char *filename, int lineno,Network *net)
 {
     int order, windowed, showing;
@@ -57,25 +57,25 @@ boolean PageGroupManager::parseComment(const char *comment,
     char *cp = " page assignment:";
 
     if (!EqualSubstring(cp, comment,strlen(cp)))
-	return FALSE;
+	return false;
 
     int items_parsed = 
 	sscanf (comment, " page assignment: %[^\t]\torder=%d, windowed=%d, showing=%d", 
 	    name, &order, &windowed, &showing);
     if (items_parsed != 4) {
 	WarningMessage ("Unrecognized page (file %s, line %d)", filename, lineno);
-	return FALSE;
+	return false;
     }
 
     if (!this->createGroup (name, net))
-	return FALSE;
+	return false;
 
     PageGroupRecord *prec = (PageGroupRecord*)this->getGroup(name);
     prec->order_in_list = order;
     prec->windowed = windowed;
     prec->showing = showing;
 
-    return TRUE;
+    return true;
 }
 
 

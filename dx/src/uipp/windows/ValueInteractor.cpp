@@ -17,7 +17,7 @@
 #include "ScalarListNode.h"	// For XmNcolumns below
 #include "ErrorDialogManager.h"
 
-boolean ValueInteractor::ClassInitialized = FALSE;
+bool ValueInteractor::ClassInitialized = false;
 
 //String ValueInteractor::DefaultResources[] =
 //{
@@ -55,7 +55,7 @@ void ValueInteractor::initialize()
         //                          ValueInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          Interactor::DefaultResources);
-        ValueInteractor::ClassInitialized = TRUE;
+        ValueInteractor::ClassInitialized = true;
     }
 }
 
@@ -129,7 +129,7 @@ Interactor *ValueInteractor::AllocateInteractor(const char *name,
 //    char *reason;
 //
 //    char *string = this->getDisplayedText(); 
-//    if (!ii->setAndVerifyOutput(1,string, DXType::UndefinedType,TRUE,&reason)) {
+//    if (!ii->setAndVerifyOutput(1,string, DXType::UndefinedType,true,&reason)) {
 //	if (!reason) {
 //	    ErrorMessage("'%s' is not a valid value for a %s interactor.",
 //			string, vnode->getNameString());
@@ -193,7 +193,7 @@ const char *ValueInteractor::getCurrentTextValue()
 //
 void ValueInteractor::handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change)
+					bool major_change)
 {
     this->updateDisplayedInteractorValue();
 }

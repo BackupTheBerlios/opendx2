@@ -28,7 +28,7 @@ class VPEPostIt : public VPEAnnotator
   // P R I V A T E   P R I V A T E   P R I V A T E
   // P R I V A T E   P R I V A T E   P R I V A T E
   private:
-    static boolean VPEPostItClassInitialized;
+    static bool VPEPostItClassInitialized;
     //Pixmap         bg_pixmap;
     void	   makePixmap();
 
@@ -38,26 +38,26 @@ class VPEPostIt : public VPEAnnotator
     //static  String 	   DefaultResources[]; 
     virtual void           completeDecorativePart();
 
-    virtual boolean requiresLineReroutingOnResize() { return FALSE; }
+    virtual bool requiresLineReroutingOnResize() { return false; }
 
   // P U B L I C   P U B L I C   P U B L I C
   // P U B L I C   P U B L I C   P U B L I C
   public:
-    static    Decorator*     AllocateDecorator (boolean devStyle);
+    static    Decorator*     AllocateDecorator (bool devStyle);
 
-    virtual   void	     setLabel(const char *newStr, boolean);
+    virtual   void	     setLabel(const char *newStr, bool);
     virtual   void           setFont(const char *);
-    virtual   boolean        printPostScriptPage(FILE *f);
+    virtual   bool        printPostScriptPage(FILE *f);
     virtual   void           setResource (const char *, const char *);
 
     // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
     // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
     // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
     virtual  void  initialize();
-    	  	   VPEPostIt(boolean developerStyle =TRUE);
+    	  	   VPEPostIt(bool developerStyle =true);
     	  	  ~VPEPostIt(); 
     const    char* getClassName() { return ClassVPEPostIt; }
-    virtual  boolean isA(Symbol classname);
+    virtual  bool isA(Symbol classname);
 };
 
 

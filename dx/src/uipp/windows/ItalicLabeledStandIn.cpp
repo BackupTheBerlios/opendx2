@@ -14,7 +14,7 @@
 #include "DXApplication.h"
 
 
-boolean ItalicLabeledStandIn::ClassInitialized = FALSE;
+bool ItalicLabeledStandIn::ClassInitialized = false;
 
 //String ItalicLabeledStandIn::DefaultResources[] = {
 // 	NULL
@@ -47,7 +47,7 @@ ItalicLabeledStandIn::~ItalicLabeledStandIn()
 void ItalicLabeledStandIn::initialize()
 {
     if (!ItalicLabeledStandIn::ClassInitialized) {
-        ItalicLabeledStandIn::ClassInitialized = TRUE;
+        ItalicLabeledStandIn::ClassInitialized = true;
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          ItalicLabeledStandIn::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),

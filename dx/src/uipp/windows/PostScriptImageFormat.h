@@ -79,8 +79,8 @@ class PostScriptImageFormat : public ImageFormat
 {
   private:
 
-    static boolean 	ClassInitialized;
-    static boolean	FmtConnectionWarning;
+    static bool 	ClassInitialized;
+    static bool	FmtConnectionWarning;
     int			dirty;
     char*		pixel_size_val;
     int			dpi;
@@ -88,7 +88,7 @@ class PostScriptImageFormat : public ImageFormat
     double		page_height;
     double		entered_printout_width;
     double		entered_printout_height;
-    boolean		entered_dims_valid;
+    bool		entered_dims_valid;
     //Widget		size_text;
     //Widget		pixel_size_text;
     //Widget		page_size_text;
@@ -105,7 +105,7 @@ class PostScriptImageFormat : public ImageFormat
 
     //void		setTextString (Widget, char *, void*);
     //void		setSizeTextString (Widget, char *);
-    boolean		setVerifiedSizeTextString (double, double);
+    bool		setVerifiedSizeTextString (double, double);
 
     //
     // a fifo queue of dirty bits.  The user has 3 fields in which to enter data.
@@ -164,11 +164,11 @@ class PostScriptImageFormat : public ImageFormat
     virtual void		parseRecordFormat(const char *);
     virtual int			getRecordResolution() { return this->width; }
     virtual double		getRecordAspect() { return this->aspect; }
-    virtual boolean		supportsPrinting() { return TRUE; }
+    virtual bool		supportsPrinting() { return true; }
     virtual void		changeUnits();
-    virtual boolean		useLocalResolution();
-    virtual boolean		useLocalAspect();
-    virtual boolean		useLocalFormat();
+    virtual bool		useLocalResolution();
+    virtual bool		useLocalAspect();
+    virtual bool		useLocalFormat();
     virtual const char*		getRecordFormat();
     virtual int			getRequiredHeight() { return 105; }
     virtual void		applyValues();
@@ -178,7 +178,7 @@ class PostScriptImageFormat : public ImageFormat
     // Returns a pointer to the class name.
     //
     const char* getClassName() { return ClassPostScriptImageFormat; }
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 };
 
 
@@ -199,7 +199,7 @@ class Orientation {
 	int dpi;
 
     protected:
-	boolean valid;
+	bool valid;
 	int misfit;
 
 	//
@@ -208,9 +208,9 @@ class Orientation {
 	// printout and we might be trying to fit it onto a page.
 	//
 	Orientation (int w, int h, double page_w, double page_h, 
-		    double margin, boolean rnd_up=TRUE) 
+		    double margin, bool rnd_up=true) 
 	{
-	    valid = TRUE;
+	    valid = true;
 
 	    int vertical_dpi, horizontal_dpi;
 	    double round_threshold = (rnd_up ? 0.0 : 0.5);
@@ -242,7 +242,7 @@ class Orientation {
 		    dpi = vertical_dpi;
 		}
 	    } else {
-		valid = FALSE;
+		valid = false;
 		misfit = 9999999;
 	    }
 	}
@@ -257,11 +257,11 @@ class RestrictedOrientation: public Orientation {
 
     protected:
 	RestrictedOrientation (int w, int h, double page_w, double page_h,
-		double margin, double image_w, double image_h, boolean rnd_up=TRUE):
+		double margin, double image_w, double image_h, bool rnd_up=true):
 	    Orientation (w,h,image_w, image_h, 0.0, rnd_up)
 	{
-	    if ((page_w-margin) < image_w) valid = FALSE;
-	    if ((page_h-margin) < image_h) valid = FALSE;
+	    if ((page_w-margin) < image_w) valid = false;
+	    if ((page_h-margin) < image_h) valid = false;
 	    if (!valid) misfit = 9999999;
 	}
 

@@ -13,7 +13,7 @@
 #include "SetBGColorDialog.h"
 #include "ImageWindow.h"
 
-boolean SetBGColorDialog::ClassInitialized = FALSE;
+bool SetBGColorDialog::ClassInitialized = false;
 //String  SetBGColorDialog::DefaultResources[] =
 //{
 //    "*dialogTitle:                      Change Background Color...",
@@ -27,7 +27,7 @@ SetBGColorDialog::SetBGColorDialog(ImageWindow *image) :
 
     if (NOT SetBGColorDialog::ClassInitialized)
     {
-        SetBGColorDialog::ClassInitialized = TRUE;
+        SetBGColorDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -45,14 +45,14 @@ SetBGColorDialog::~SetBGColorDialog()
 //    this->setDefaultResources(baseWidget, SetBGColorDialog::DefaultResources);
 //    this->SetNameDialog::installDefaultResources( baseWidget);
 //}
-boolean SetBGColorDialog::saveText(const char *s)
+bool SetBGColorDialog::saveText(const char *s)
 {
     if (s && !IsBlankString(s))
 	this->imageWindow->setBackgroundColor(s);
     else
 	this->imageWindow->setBackgroundColor(NULL);
 
-    return TRUE;
+    return true;
 }
 
 const char *SetBGColorDialog::getText()

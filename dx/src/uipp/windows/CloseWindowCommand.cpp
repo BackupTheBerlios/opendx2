@@ -16,7 +16,7 @@
 
 CloseWindowCommand::CloseWindowCommand(const char*   name,
 				       CommandScope* scope,
-				       boolean       active,
+				       bool       active,
 				       MainWindow*   window):
 	NoUndoCommand(name, scope, active)
 {
@@ -29,11 +29,11 @@ CloseWindowCommand::CloseWindowCommand(const char*   name,
 }
 
 
-boolean CloseWindowCommand::doIt(CommandInterface *ci)
+bool CloseWindowCommand::doIt(CommandInterface *ci)
 {
     this->window->closeWindow();
 
-    return TRUE;
+    return true;
 }
 
 

@@ -16,7 +16,7 @@
 
 
 
-boolean FileSelectorDialog::ClassInitialized = FALSE;
+bool FileSelectorDialog::ClassInitialized = false;
 
 //String FileSelectorDialog::DefaultResources[] =
 //{
@@ -36,7 +36,7 @@ FileSelectorDialog::FileSelectorDialog(
 
     if (NOT FileSelectorDialog::ClassInitialized)
     {
-        FileSelectorDialog::ClassInitialized = TRUE;
+        FileSelectorDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

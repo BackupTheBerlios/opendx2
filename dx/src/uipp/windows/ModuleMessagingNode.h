@@ -44,17 +44,17 @@ class ModuleMessagingNode : public Node
     //
 
     //
-    // Return TRUE/FALSE, indicating whether or not we support a message
+    // Return true/false, indicating whether or not we support a message
     // protocol between the executive module that runs for this node and the
     // UI.  
     //
-    virtual boolean hasModuleMessageProtocol() { return TRUE; }
+    virtual bool hasModuleMessageProtocol() { return true; }
 
     //
-    // Return TRUE/FALSE, indicating whether or not we expect to receive
+    // Return true/false, indicating whether or not we expect to receive
     // a message from the UI when our module executes in the executive.
     //
-    virtual boolean expectingModuleMessage() { return TRUE; }
+    virtual bool expectingModuleMessage() { return true; }
 
     //
     // Called when a message is received from the executive after
@@ -87,7 +87,7 @@ class ModuleMessagingNode : public Node
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

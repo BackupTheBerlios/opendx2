@@ -31,17 +31,17 @@ ParameterDefinition::ParameterDefinition(Symbol key) :
 { 
     this->description = NUL(const char*); 
     this->typeStrings = NUL(const char**);
-    this->descriptive_default = FALSE;
+    this->descriptive_default = false;
     this->default_value = defaultNULL; 
-    this->is_input = FALSE;
-    this->required = FALSE;
-    this->default_visibility = TRUE;
-    this->viewable = TRUE;
+    this->is_input = false;
+    this->required = false;
+    this->default_visibility = true;
+    this->viewable = true;
     ASSERT(OutputFullyCached == InputDerivesOutputCacheTag);
     this->defaultCacheability = OutputFullyCached;
-    this->writeableCacheability = TRUE;
+    this->writeableCacheability = true;
     this->rerouteOutput = -1;
-    this->dummy = FALSE;
+    this->dummy = false;
     this->valueOptions = NULL;
 
     // IMPORTANT: if you add new data here, be sure to add it in duplicate()
@@ -124,7 +124,7 @@ ParameterDefinition *ParameterDefinition::duplicate(ParameterDefinition *newpd)
 // parameter definition.  The given type is then owned by the 
 // ParameterDefinition and will be deleted when it is deleted.
 //
-boolean
+bool
 ParameterDefinition::addType(DXType *t)
 {
     if (this->typeStrings)
@@ -138,9 +138,9 @@ ParameterDefinition::addType(DXType *t)
     }
 
     if (!this->types.appendElement(t))
-	    return FALSE;
+	    return false;
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -166,7 +166,7 @@ void ParameterDefinition::buildTypeStrings()
 		
 }
 
-boolean
+bool
 ParameterDefinition::removeType(DXType *t)
 {
     ListIterator iterator(this->types);
@@ -187,15 +187,15 @@ ParameterDefinition::removeType(DXType *t)
     //
     while( (dxtype = (DXType*)iterator.getNext()) )
 	if (dxtype->getType() == t->getType()) {
-	    boolean r = this->types.deleteElement(
+	    bool r = this->types.deleteElement(
 				this->types.getPosition(dxtype));
 	    ASSERT(r);
 	    delete dxtype;
-	    return TRUE;
+	    return true;
 	}
 
     	
-    return FALSE;
+    return false;
 }
 
 //
@@ -230,7 +230,7 @@ void ParameterDefinition::removeValueOptions()
 // success, otherwise the given value was not in this parameter's type
 // list and so we fail.
 //
-boolean
+bool
 ParameterDefinition::setDefaultValue(const char *value)
 {
     List	typelist;
@@ -239,14 +239,14 @@ ParameterDefinition::setDefaultValue(const char *value)
     // Make sure the value provided is recognized as one of the supported types.
     //
     if (value != NULL && DXType::ValueToType(value, typelist) == 0)
-	return FALSE;		// Unrecognized value
+	return false;		// Unrecognized value
 
     if (DEFAULT_VALUE_NEEDS_DELETING(this))
 	delete[] this->default_value;
 
-    this->descriptive_default = FALSE; 
+    this->descriptive_default = false; 
     this->default_value = DuplicateString(value);
-    return TRUE;
+    return true;
 
 }
 
@@ -279,7 +279,7 @@ char *ParameterDefinition::getMDFString()
     if (!this->isViewable()) {
         sprintf(p,"visible:2 ");
     	p += STRLEN(p);
-    } else if (this->getDefaultVisibility() == FALSE) {
+    } else if (this->getDefaultVisibility() == false) {
         sprintf(p,"visible:0 ");
     	p += STRLEN(p);
     }
@@ -333,7 +333,7 @@ void ParameterDefinition::setDescriptiveValue(const char *d)
         delete[] (char*)this->default_value;
 
     this->default_value = DuplicateString(d);
-    this->descriptive_default = TRUE;
+    this->descriptive_default = true;
 }
 
 //
@@ -349,7 +349,7 @@ const char *ParameterDefinition::getDescription()
 //
 // Change whether or not this is a (macro's) dummy parameter 
 //
-void  ParameterDefinition::setDummy(boolean b)
+void  ParameterDefinition::setDummy(bool b)
 {
     this->dummy = b;
 }
@@ -357,7 +357,7 @@ void  ParameterDefinition::setDummy(boolean b)
 //
 // Is this a (macro's) dummy parameter. 
 //
-boolean ParameterDefinition::isDummy()
+bool ParameterDefinition::isDummy()
 {
     return this->dummy; 
 }
@@ -375,7 +375,7 @@ const char* const *ParameterDefinition::getValueOptions()
 //
 // Add the given value to the list of suggested values for this parameter 
 //
-boolean ParameterDefinition::addValueOption(const char *value)
+bool ParameterDefinition::addValueOption(const char *value)
 {
     int position;
 
@@ -410,9 +410,9 @@ boolean ParameterDefinition::addValueOption(const char *value)
     }
     if (position >= 0) {
 	this->valueOptions[position] = DuplicateString(value);
-	return TRUE;
+	return true;
     } else {
-	return FALSE;
+	return false;
     }
 
 }

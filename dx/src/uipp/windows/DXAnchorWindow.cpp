@@ -20,7 +20,7 @@
 #include "NoUndoAnchorCommand.h"
 #include "DXStrings.h"
 
-boolean DXAnchorWindow::ClassInitialized = FALSE;
+bool DXAnchorWindow::ClassInitialized = false;
 
 #define MENU_BAR_HEIGHT 32
 
@@ -115,7 +115,7 @@ boolean DXAnchorWindow::ClassInitialized = FALSE;
 //    NULL
 //};
 
-DXAnchorWindow::DXAnchorWindow(const char *name, boolean isAnchor, boolean usesMenuBar):
+DXAnchorWindow::DXAnchorWindow(const char *name, bool isAnchor, bool usesMenuBar):
 	DXWindow (name, isAnchor, usesMenuBar)
 {
     //
@@ -136,12 +136,12 @@ DXAnchorWindow::DXAnchorWindow(const char *name, boolean isAnchor, boolean usesM
     this->openCfgOption      = NUL(CommandInterface*);
 
     this->closeCmd =
-	new CloseWindowCommand("close",this->commandScope,TRUE,this);
+	new CloseWindowCommand("close",this->commandScope,true,this);
 
 
     if (theDXApplication->appAllowsEditorAccess()) {
 	this->openVPECmd = new NoUndoAnchorCommand ("openVPE",
-		this->commandScope, TRUE, this, NoUndoAnchorCommand::OpenVPE);
+		this->commandScope, true, this, NoUndoAnchorCommand::OpenVPE);
     } else {
 	this->openVPECmd = NUL(Command*);
     }
@@ -167,7 +167,7 @@ DXAnchorWindow::DXAnchorWindow(const char *name, boolean isAnchor, boolean usesM
     if (NOT DXAnchorWindow::ClassInitialized)
     {
 	ASSERT(theApplication);
-        DXAnchorWindow::ClassInitialized = TRUE;
+        DXAnchorWindow::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -478,12 +478,12 @@ void DXAnchorWindow::createFileHistoryMenu()
 //}
  
 
-boolean DXAnchorWindow::postVPE()
+bool DXAnchorWindow::postVPE()
 {
 Network *net = theDXApplication->network;
 
     if(NOT net)
-	return FALSE;
+	return false;
  
     DXWindow* editor = (DXWindow*)net->getEditor();
  
@@ -496,7 +496,7 @@ Network *net = theDXApplication->network;
 	//    XtWindow(editor->getRootWidget()));
     }
  
-     return TRUE;
+     return true;
 }
  
 
@@ -576,7 +576,7 @@ void DXAnchorWindow::postCopyrightNotice()
 //    const char *c = theDXApplication->getCopyrightNotice();
 //    if (!c) return;
 //
-//    Pixmap logo_pmap = theDXApplication->getLogoPixmap(TRUE);
+//    Pixmap logo_pmap = theDXApplication->getLogoPixmap(true);
 //
 //    Dimension diagWidth;
 //    XtVaGetValues (this->getRootWidget(),

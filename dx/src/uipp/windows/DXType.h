@@ -33,7 +33,7 @@ class List;
 //
 typedef struct _DXTypeName
 {
-    boolean		userDefined;
+    bool		userDefined;
     char*		name;
     Type		type;
 
@@ -56,7 +56,7 @@ class DXType : public Base
     // Protected class data:
     //
     static List*	TypeList;		// global type list
-    static boolean	DXTypeClassInitialized;	// is class initialized?
+    static bool	DXTypeClassInitialized;	// is class initialized?
 
     //
     // Protected member data:
@@ -138,29 +138,29 @@ class DXType : public Base
 
     //
     // Adds a user-defined type to the class type list.
-    // Returns TRUE if successful; otherwise, FALSE.
+    // Returns true if successful; otherwise, false.
     // Note: The name string is copied by the function.
     //
-    static boolean AddUserType(const Type  type,
+    static bool AddUserType(const Type  type,
 			       const char* name);
 
     //
     // Deletes a type (by type) from the class type list.
-    // Returns TRUE if successful; otherwise, FALSE.
+    // Returns true if successful; otherwise, false.
     //
-    static boolean DeleteType(const Type type);
+    static bool DeleteType(const Type type);
 
     //
     // Given a string containing a value, determine its type. 
     //
-    static boolean ValueToType(const char *value, List& typelist);
+    static bool ValueToType(const char *value, List& typelist);
 
 
     //
     // Deletes a type (by name) from the class type list.
-    // Returns TRUE if successful; otherwise, FALSE.
+    // Returns true if successful; otherwise, false.
     //
-    static boolean DeleteType(const char* name);
+    static bool DeleteType(const char* name);
 
     //
     // Returns a name string of the specified type.
@@ -183,21 +183,21 @@ class DXType : public Base
     static Type FindTypeMatch(const char *value, List *typelist);
 
     //
-    // Returns TRUE if the source and destination types match;
-    // FALSE, otherwise.
+    // Returns true if the source and destination types match;
+    // false, otherwise.
     //
-    static boolean MatchType(DXType& source,
+    static bool MatchType(DXType& source,
 			     DXType& destination);
 
-    static boolean MatchType(const Type source,
+    static bool MatchType(const Type source,
 			     const Type destination);
 
     //
-    // Returns TRUE if there exists a matching type in both lists.
-    // Returns FALSE otherwise.  Note that the source list is
+    // Returns true if there exists a matching type in both lists.
+    // Returns false otherwise.  Note that the source list is
     // semantically different from the destination list.
     //
-    static boolean MatchTypeLists(List& source,
+    static bool MatchTypeLists(List& source,
 				  List& destination);
 
     //
@@ -221,9 +221,9 @@ class DXType : public Base
 
     //
     // Sets the type value IFF the type is a base or user-defined type.
-    // Returns TRUE if successful; FALSE, otherwise.
+    // Returns true if successful; false, otherwise.
     //
-    boolean setType(const Type type);
+    bool setType(const Type type);
 
     //
     // Returns a pointer to the type name string.
@@ -244,7 +244,7 @@ class DXType : public Base
     //
     // DXType comparison equality operator.
     //
-    boolean operator==(DXType type)
+    bool operator==(DXType type)
     {
 	return this->type == type.type;
     }
@@ -252,7 +252,7 @@ class DXType : public Base
     //
     // Type bitwise AND operator.
     //
-    boolean operator&(DXType type)
+    bool operator&(DXType type)
     {
 		if((this->type & type.type)==0)
 			return false;

@@ -14,7 +14,7 @@
 #include "ListEditor.h"
 
 
-boolean ListEditor::ClassInitialized = FALSE;
+bool ListEditor::ClassInitialized = false;
 //String  ListEditor::DefaultResources[] =
 //{
 //    "*accelerators:		#augment\n"
@@ -112,20 +112,20 @@ char *ListEditor::buildDXList()
 
 //
 // Set the currently selected item.
-// Return FALSE if index is out of range (i.e 0 < index <= list item count).
+// Return false if index is out of range (i.e 0 < index <= list item count).
 //
-boolean ListEditor::setSelectedItemIndex(int index)
+bool ListEditor::setSelectedItemIndex(int index)
 {
      ASSERT(index >= 0);
 
      if (index > this->getListItemCount())
-	return FALSE;
+	return false;
 
      //XmListDeselectAllItems(this->valueList);
      //this->listSelection = UNSELECTED_INDEX;
      //XmListSelectPos(this->valueList,index, True); 
 
-     return TRUE;
+     return true;
 }
 //
 // Get the currently selected item.
@@ -276,7 +276,7 @@ char *ListEditor::getListItem(int index)
 //    } else {
 //        position = 0;
 //    }
-//    this->editListItem(NULL, position, FALSE, (position != 0));
+//    this->editListItem(NULL, position, false, (position != 0));
 //
 //    int count = this->getListItemCount();
 //    int visible;
@@ -390,11 +390,11 @@ void ListEditor::replaceListItems(const char **items, int nitems)
 
 //
 // Insert or replace the given text at the given position.
-// If replace is FALSE...
+// If replace is false...
 //     If position is given as 0, then the item is added at the end of the
 //     list.  If position is greater than 0, then the text is inserted at
 //     the given position.
-// If replace is TRUE...
+// If replace is true...
 //     If position is given as 0, then the item at the end of the
 //     list is replaced.  If position is greater than 0, then the text 
 //     is replaced at the given position.
@@ -402,7 +402,7 @@ void ListEditor::replaceListItems(const char **items, int nitems)
 // If there is an error, no items are left selected.
 //
 void ListEditor::editListItem(const char *text, int position, 
-					boolean replace, boolean select)
+					bool replace, bool select)
 {
  //   XmString string;
  //
@@ -457,7 +457,7 @@ void ListEditor::insertAndSelectListItem(const char *text)
     if (position != UNSELECTED_INDEX) {
 	this->replaceAndSelectSelectedListItem(text);
     } else {
-	this->editListItem(text,0, FALSE, TRUE);
+	this->editListItem(text,0, false, true);
     }
 
     
@@ -473,7 +473,7 @@ void ListEditor::replaceAndSelectSelectedListItem(const char *text)
 
     ASSERT(position != UNSELECTED_INDEX);
 
-    this->editListItem(text,position,TRUE, TRUE);
+    this->editListItem(text,position,true, true);
 }
 
 

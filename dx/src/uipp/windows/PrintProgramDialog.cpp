@@ -28,7 +28,7 @@
 #include "QuestionDialogManager.h"
 #include "ErrorDialogManager.h"
 
-boolean PrintProgramDialog::ClassInitialized = FALSE;
+bool PrintProgramDialog::ClassInitialized = false;
 
 //
 //String PrintProgramDialog::DefaultResources[] =
@@ -55,7 +55,7 @@ PrintProgramDialog::PrintProgramDialog(EditorWindow *e) :
 
     if (NOT PrintProgramDialog::ClassInitialized)
     {
-        PrintProgramDialog::ClassInitialized = TRUE;
+        PrintProgramDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -266,7 +266,7 @@ void PrintProgramDialog::manage()
    this->setSensitivity();
 }
 
-boolean PrintProgramDialog::okCallback(Dialog *d)
+bool PrintProgramDialog::okCallback(Dialog *d)
 {
 
 
@@ -276,7 +276,7 @@ boolean PrintProgramDialog::okCallback(Dialog *d)
 	//    ModalErrorMessage(
 	//		"A filename must be given");
 	//    //XtFree(filename);
-	//    return FALSE;
+	//    return false;
 	//}
 
 	//struct STATSTRUCT buffer;
@@ -290,7 +290,7 @@ boolean PrintProgramDialog::okCallback(Dialog *d)
 	//	PrintProgramDialog::ConfirmationCancel,
 	//	NULL);
 	//    //XtFree(filename);
-	//    return TRUE;
+	//    return true;
 	//} 
 	////XtFree(filename);
  //   } 
@@ -299,9 +299,9 @@ boolean PrintProgramDialog::okCallback(Dialog *d)
 	return false;
 }
 
-boolean PrintProgramDialog::printProgram()
+bool PrintProgramDialog::printProgram()
 {
-    boolean toFile = this->isPrintingToFile();
+    bool toFile = this->isPrintingToFile();
     //char *filename;
 
     //if (toFile) {
@@ -323,7 +323,7 @@ boolean PrintProgramDialog::printProgram()
 //		//XtFree(filename);
 //		ModalErrorMessage(
 //				"A valid file name must be given.");
-//		return FALSE;
+//		return false;
 //	    }
 //	}
 //#define FORCE_PS_EXT 0
@@ -349,7 +349,7 @@ boolean PrintProgramDialog::printProgram()
 //	if (!filename) {
 //	    ModalErrorMessage(
 //				"Could not create temporary file");
-//	    return FALSE;
+//	    return false;
 //	}
 //    }
 //
@@ -380,7 +380,7 @@ boolean PrintProgramDialog::printProgram()
 //    else
 //#endif
 //	delete filename;
-//    return TRUE;
+//    return true;
 //
 //error:
 //#if !FORCE_PS_EXT 
@@ -389,7 +389,7 @@ boolean PrintProgramDialog::printProgram()
 //    else
 //#endif
 //	delete filename;
-//    return FALSE;
+//    return false;
 	return false;
 }
 //
@@ -408,7 +408,7 @@ boolean PrintProgramDialog::printProgram()
 //
 void PrintProgramDialog::setSensitivity()
 {
-    boolean toFile = this->isPrintingToFile() ? true : false;
+    bool toFile = this->isPrintingToFile() ? true : false;
 
     //SetTextSensitive(this->printerName, !toFile,
     //                 !toFile ? theDXApplication->getForeground()
@@ -419,10 +419,10 @@ void PrintProgramDialog::setSensitivity()
     //XtSetSensitive(this->fileSelectButton, toFile);
 }
 //
-// Return TRUE if the labelParamsToggle is set indicating that we
+// Return true if the labelParamsToggle is set indicating that we
 // should include parameter labels. 
 //
-boolean PrintProgramDialog::isLabelingParams()
+bool PrintProgramDialog::isLabelingParams()
 {
     //Boolean set;
     //Arg wargs[2];
@@ -431,14 +431,14 @@ boolean PrintProgramDialog::isLabelingParams()
 
     //XtSetArg(wargs[0], XmNset, &set); 
     //XtGetValues(this->labelParamsToggle, wargs, 1);
-    //return (set == True ? TRUE : FALSE);
+    //return (set == True ? true : false);
 	return false;
 }
 //
-// Return TRUE if the toFileToggle is set indicating that we
+// Return true if the toFileToggle is set indicating that we
 // should print to a file instead of the printer.
 //
-boolean PrintProgramDialog::isPrintingToFile()
+bool PrintProgramDialog::isPrintingToFile()
 {
     //Boolean set;
     //Arg wargs[2];
@@ -447,7 +447,7 @@ boolean PrintProgramDialog::isPrintingToFile()
 
     //XtSetArg(wargs[0], XmNset, &set); 
     //XtGetValues(this->toFileToggle, wargs, 1);
-    //return (set == True ? TRUE : FALSE);
+    //return (set == True ? true : false);
 	return false;
 }
 

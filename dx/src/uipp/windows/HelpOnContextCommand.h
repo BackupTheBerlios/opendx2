@@ -40,7 +40,7 @@ class HelpOnContextCommand : public NoUndoCommand
     //
     // Private class data:
     //
-   static boolean	HelpOnContextCommandClassInitialized;
+   static bool	HelpOnContextCommandClassInitialized;
 
   protected:
     //
@@ -56,7 +56,7 @@ class HelpOnContextCommand : public NoUndoCommand
     //
     // Does nothing;
     //
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -64,7 +64,7 @@ class HelpOnContextCommand : public NoUndoCommand
     //
     HelpOnContextCommand(const char*   name,
 			 CommandScope* scope,
-			 boolean       active,
+			 bool       active,
 			 MainWindow*   window);
 
     //

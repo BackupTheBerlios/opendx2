@@ -38,7 +38,7 @@ class ColormapEditCommand : public NoUndoCommand
     int     option;
 
   protected:
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -46,7 +46,7 @@ class ColormapEditCommand : public NoUndoCommand
     //
     ColormapEditCommand(const char*,
 		CommandScope*,
-		boolean active,
+		bool active,
                 ColormapEditor*,
 		int option);
 

@@ -40,8 +40,8 @@ class SetPageNameDialog : public Dialog
     //
     // Private member data:
     //
-    boolean incl;
-    boolean auto_scroll;
+    bool incl;
+    bool auto_scroll;
     char* page_name;
     int position;
     int max;
@@ -52,13 +52,13 @@ class SetPageNameDialog : public Dialog
     //Widget position_number;
     //Widget apply;
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     EditorWorkSpace* workspace;
     PageSelector* selector;
 
-    boolean stop_updates;
-    boolean applyCallback(Dialog *d);
+    bool stop_updates;
+    bool applyCallback(Dialog *d);
 
   protected:
     //
@@ -68,7 +68,7 @@ class SetPageNameDialog : public Dialog
 
     //static String DefaultResources[];
 
-    virtual boolean okCallback(Dialog *d);
+    virtual bool okCallback(Dialog *d);
     virtual void createDialog(void);
 
     //
@@ -80,10 +80,10 @@ class SetPageNameDialog : public Dialog
 
     //
     // Check the given name to see if it is a valid page name.
-    // If it is return TRUE, othewise return FALSE and issue an error
+    // If it is return true, othewise return false and issue an error
     // message.
     //
-    boolean verifyPageName(const char *name);
+    bool verifyPageName(const char *name);
 
     void update();
 

@@ -114,7 +114,7 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
     // The frame is in this->root
     //Widget		label;
 
-    static boolean InteractorClassInitialized;
+    static bool InteractorClassInitialized;
     //static Widget DragIcon;
 
     // 1 dictionary for the class... Holds the type which can be dragged from
@@ -155,7 +155,7 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
     // 
     // To the parent's version add dnd participation.
     //
-    //virtual void passEvents(Widget w, boolean dnd);
+    //virtual void passEvents(Widget w, bool dnd);
 
     //
     // Build the complete interactor.  Make a form and a label and
@@ -195,9 +195,9 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
     //
     //virtual int decideToDrag (XEvent *);
     virtual void dropFinish (long, int, unsigned char);
-    boolean createNetFiles (Network *, FILE *netf, char *cfgFile);
+    bool createNetFiles (Network *, FILE *netf, char *cfgFile);
     virtual Dictionary *getDragDictionary() { return Interactor::DragTypeDictionary; }
-    //virtual boolean decodeDragType (int, char *, XtPointer *, unsigned long *, long );
+    //virtual bool decodeDragType (int, char *, XtPointer *, unsigned long *, long );
 
     //
     // Constructor:
@@ -216,7 +216,7 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
     // Set the displayed label of the interactor and do a layout if
     // indicated to handle a significant change in label width.
     //
-    virtual void setLabel(const char *labelString, boolean re_layout = TRUE);
+    virtual void setLabel(const char *labelString, bool re_layout = true);
 
     //
     // The following are used to notify a control panel when an Interactor's
@@ -228,7 +228,7 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
                 InteractorSelected   = 1, // Interactor was just selected.
                 InteractorDeselected = 2 // Interactor was just unselected.
     };
-    virtual void setSelected(boolean state);
+    virtual void setSelected(bool state);
 
     //
     // Default routines for determining the height and width of the 
@@ -250,16 +250,16 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
     // per interactor ones) may be ignored if the attribute change is 
     // initiated by a src_ii such that this->instance != src_ii. 
     // This should also include updating the displayed value.
-    // If major_change is TRUE, then the subclass may choose to unmanage
+    // If major_change is true, then the subclass may choose to unmanage
     // itself while changes (presumably major) are made to it.
     // handleInteractorStateChange() remanages the interactor root widget
     // if it was unmanaged by handleInteractivePartStateChange().
     //
     virtual void handleInteractorStateChange(InteractorInstance *src_ii,
-					boolean major_change);
+					bool major_change);
     virtual void handleInteractivePartStateChange(
 				InteractorInstance *src_ii,
-			 	boolean major_change) = 0;
+			 	bool major_change) = 0;
 
     //
     // Update the display values for an interactor; 
@@ -270,9 +270,9 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
     //
     // Change the layout between horizontal and vertical.
     //
-    void setVerticalLayout(boolean vertical = TRUE);
-    void setBlankLabelLayout(boolean blank_label = TRUE);
-    virtual boolean acceptsLayoutChanges() 
+    void setVerticalLayout(bool vertical = true);
+    void setBlankLabelLayout(bool blank_label = true);
+    virtual bool acceptsLayoutChanges() 
 	{ return ((this->currentLayout & WorkSpaceComponent::BlankLabel) == 0); }
 
     //
@@ -282,7 +282,7 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
     // care of highlighting.  This can be called if the root widget
     // has not yet been created, but the selection may not be reflected.
     // 
-    void indicateSelect(boolean selected);
+    void indicateSelect(bool selected);
 
     Network		*getNetwork();
     Node		*getNode();
@@ -301,7 +301,7 @@ class Interactor : public WorkSpaceComponent, public DXDragSource
 	return ClassInteractor;
     }
 
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 };
 
 

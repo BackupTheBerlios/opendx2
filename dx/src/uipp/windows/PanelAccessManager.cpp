@@ -26,7 +26,7 @@ PanelAccessManager::PanelAccessManager(Network *n, ControlPanel *cp)
 {
     this->network = n;
     this->cp = cp;
-    this->isActive = FALSE;
+    this->isActive = false;
 }
 PanelAccessManager::~PanelAccessManager()
 {
@@ -43,38 +43,38 @@ void PanelAccessManager::clear()
 //
 // Determine if the given panel (specified by instance number) is accessible 
 //
-boolean PanelAccessManager::isAccessiblePanel(int instanceNumber)
+bool PanelAccessManager::isAccessiblePanel(int instanceNumber)
 {
     return !this->isActivated() ||
  	   !this->inaccessiblePanels.isMember((void*)instanceNumber);
 }
-boolean PanelAccessManager::isActivated()
+bool PanelAccessManager::isActivated()
 {
     return this->isActive;
 }
 void PanelAccessManager::activate()
 {
-    this->isActive = TRUE;
+    this->isActive = true;
 }
 void PanelAccessManager::deactivate()
 {
-    this->isActive = FALSE;
+    this->isActive = false;
 }
 //
 // Determine if the given panel group  is accessible 
 //
-boolean     PanelAccessManager::isAccessibleGroup(const char *name)
+bool     PanelAccessManager::isAccessibleGroup(const char *name)
 {
     if (!this->isActivated())
-	return TRUE;
+	return true;
 
     ListIterator li(this->inaccessibleGroups);
     char *gname;
     while ( (gname = (char*)li.getNext()) )
         if (EqualString(gname, name))
-            return FALSE;
+            return false;
 
-    return TRUE;
+    return true;
 }
 //
 // Get the index'th (1 based) inaccessible panel. 
@@ -213,9 +213,9 @@ void        PanelAccessManager::addInaccessibleGroup(const char *name)
     this->activate();
 }
 //
-// Return TRUE if cfgPrintInaccessibleComment needs to be called.
+// Return true if cfgPrintInaccessibleComment needs to be called.
 //
-boolean PanelAccessManager::hasCfgComment()
+bool PanelAccessManager::hasCfgComment()
 {
 #if 0
     return (this->isActivated() &&
@@ -233,46 +233,46 @@ boolean PanelAccessManager::hasCfgComment()
 // NOTE: instance numbers in the file are 0 based, while internally they
 // 	are 1 based.
 //
-boolean PanelAccessManager::cfgPrintInaccessibleComment(FILE *f)
+bool PanelAccessManager::cfgPrintInaccessibleComment(FILE *f)
 {
     ControlPanel *cp;
     int	i;
     const char *name;
 
     if (!this->isActivated())
-	return TRUE;
+	return true;
 
 
     //
     // Print inaccessible panels 
     //
     if (fprintf(f, "// inaccessible panels:") < 0)
-	return FALSE;
+	return false;
     cp = this->getInaccessiblePanel(1); 
     for (i=1 ; (cp=this->getInaccessiblePanel(i)) ; i++)  
     { 
     	if (fprintf(f, " %d",cp->getInstanceNumber()-1) < 0)
-	   return FALSE; 
+	   return false; 
    
     }
     if (fprintf(f, "\n") < 0)
-       return FALSE;
+       return false;
 
     //
     // Print inaccessible groups
     //
     if (fprintf(f, "// inaccessible groups:") < 0)
-	return FALSE;
+	return false;
 
     for (i=1 ; (name = this->getInaccessibleGroup(i)) ; i++) 
     {
 	if (fprintf(f, " \"%s\"",name) < 0)
-	    return FALSE; 
+	    return false; 
     }
     if (fprintf(f, "\n") < 0)
-	return FALSE;
+	return false;
 
-    return TRUE;
+    return true;
 }
 //
 // Parse a control panel's 'inaccessible' comment, which indicates
@@ -280,17 +280,17 @@ boolean PanelAccessManager::cfgPrintInaccessibleComment(FILE *f)
 // 	Format = '// inaccessible: %d %d...'
 // where the numbers printed are the panel instance numbers.
 //
-boolean PanelAccessManager::cfgParseInaccessibleComment(const char *comment,
+bool PanelAccessManager::cfgParseInaccessibleComment(const char *comment,
                                 const char *filename, int lineno)
 {
     char gname[64], name[32];
 
     if (strncmp(comment," inaccessible",STRLEN(" inaccessible"))) 
-	return FALSE;
+	return false;
 
     char* p = (char *) strchr(comment,':');
     if (!p)
-	return FALSE;
+	return false;
 
     p++;
 
@@ -303,13 +303,13 @@ boolean PanelAccessManager::cfgParseInaccessibleComment(const char *comment,
 	if (!IsInteger(p, index)) {
 	    ErrorMessage("Non-integer panel instance number (file %s, line %d)",
 					filename, lineno);
-	    return TRUE;
+	    return true;
 	}
 	int instance = atoi(p);
 	if (instance < 0) {
 	    ErrorMessage("Negative panel instance number (file %s, line %d)",
 					filename, lineno);
-	    return TRUE;
+	    return true;
 	}
 	instance++;		// instances are 1 based internally
 	this->addInaccessiblePanel(instance);
@@ -327,7 +327,7 @@ boolean PanelAccessManager::cfgParseInaccessibleComment(const char *comment,
 	    if (!*p) {
 		ErrorMessage("Panel group name format error (file %s, line %d)",
 						filename, lineno);
-		return TRUE;
+		return true;
 	    }
 	    int i;
 	    for (i=0 ; *p && *p != '"'; p++, i++)
@@ -335,7 +335,7 @@ boolean PanelAccessManager::cfgParseInaccessibleComment(const char *comment,
 	    if (!*p) {
 	        ErrorMessage("Panel group name format error (file %s, line %d)",
 					    filename, lineno);
-    		return TRUE;
+    		return true;
 	    }
 	    gname[i] = '\0';
 	    this->addInaccessibleGroup(gname);
@@ -351,10 +351,10 @@ boolean PanelAccessManager::cfgParseInaccessibleComment(const char *comment,
     } 
     else 
     {
-	return FALSE;
+	return false;
     }
 
-    return TRUE;
+    return true;
 
 }
 

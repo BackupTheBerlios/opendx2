@@ -39,7 +39,7 @@ extern "C" void EditorWindow_WindowMenuMapCB(Widget, XtPointer, XtPointer);
 extern "C" void EditorWindow_FileMenuMapCB(Widget, XtPointer, XtPointer);
 extern "C" void EditorWindow_OptionsMenuMapCB(Widget, XtPointer, XtPointer);
 extern "C" void EditorWindow_SetDecoratorStyleCB(Widget, XtPointer, XtPointer);
-extern "C" boolean EditorWindow_ConvertSelectionCB(Widget, Atom *, Atom *, Atom *,
+extern "C" bool EditorWindow_ConvertSelectionCB(Widget, Atom *, Atom *, Atom *,
 	XtPointer *, unsigned long *, int *);
 extern "C" void EditorWindow_LoseSelectionCB(Widget, Atom *);
 extern "C" void EditorWindow_SelectionDoneCB(Widget, Atom *, Atom *);
@@ -112,7 +112,7 @@ class EditorWindow : public DXWindow
     //
     // Private class data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String DefaultResources[];
     static char* SequenceNet[];
 /*
@@ -121,19 +121,19 @@ class EditorWindow : public DXWindow
     friend void EditorWindow_WindowMenuMapCB(Widget, XtPointer, XtPointer);
     friend void EditorWindow_EditMenuMapCB(Widget, XtPointer, XtPointer);
     friend void EditorWindow_SetDecoratorStyleCB(Widget, XtPointer, XtPointer);
-    friend boolean EditorWindow_ConvertSelectionCB(Widget, Atom *, Atom *, Atom *,
+    friend bool EditorWindow_ConvertSelectionCB(Widget, Atom *, Atom *, Atom *,
 	XtPointer *, unsigned long *, int *);
     friend void EditorWindow_LoseSelectionCB(Widget, Atom *);
     friend void EditorWindow_SelectionDoneCB(Widget, Atom *, Atom *);
     friend void EditorWindow_SelectionReadyCB (Widget , XtPointer , Atom *,
 	Atom *, XtPointer , unsigned long *, int *);
-    static boolean KeyHandler(XEvent *event, void *clientData);
+    static bool KeyHandler(XEvent *event, void *clientData);
 */
     static void SetOwner(void*);
     static void DeleteSelections(void*);
     static void Select(void*);
 
-    boolean	   initialNetwork;
+    bool	   initialNetwork;
     FindToolDialog *findToolDialog;
     Dialog 	   *printProgramDialog;
     Dialog 	   *saveAsCCodeDialog;
@@ -188,12 +188,12 @@ class EditorWindow : public DXWindow
     //
     // This is a helper method for this->areSelectedNodesMacrofiable().
     // It recursively descends the connections from the given node to determine
-    // if it connected to a selected node.  If ignoreDirectConnect is TRUE,
+    // if it connected to a selected node.  If ignoreDirectConnect is true,
     // then we do not care about selected nodes that are directly connected
     // to selected nodes.
-    // Returns TRUE if there is a downstream selected node, otherwise FALSE.
+    // Returns true if there is a downstream selected node, otherwise false.
     //
-    boolean isSelectedNodeDownstream(Node *srcNode,boolean ignoreDirectConnect);
+    bool isSelectedNodeDownstream(Node *srcNode,bool ignoreDirectConnect);
 
     //
     // Just call Network's method to optimize output cacheability.
@@ -207,9 +207,9 @@ class EditorWindow : public DXWindow
     //
            void postGetSetConversionDialog();
     static void ConvertToLocal();
-    static void ConvertToGlobal(boolean global = TRUE);
+    static void ConvertToGlobal(bool global = true);
 
-    void convertToGlobal(boolean global);
+    void convertToGlobal(bool global);
 
     static Command*  SelectedToGlobalCmd;
     static Command*  SelectedToLocalCmd;
@@ -234,7 +234,7 @@ class EditorWindow : public DXWindow
     // Record each node as it's highlighted during and execution.  Later on we
     // can change the label colors to show what executed.  The list should be
     // cleared whenever the net gets marked dirty.
-    // set transmitters_added to TRUE after examining executed_nodes for connections
+    // set transmitters_added to true after examining executed_nodes for connections
     // to transmitters/receivers.  It would be possible to add transmitters/recievers
     // as the executed_nodes list is built up, however it saves time to do it only
     // if the user requests the operation, so transmitters_added tells us if we've
@@ -250,9 +250,9 @@ class EditorWindow : public DXWindow
     List* executed_nodes;
     List* errored_standins;
     Node* executing_node;
-    boolean transmitters_added;
+    bool transmitters_added;
     void resetExecutionList();
-    void resetErrorList(boolean reset_all=TRUE);
+    void resetErrorList(bool reset_all=true);
     void resetColorList() { this->resetExecutionList(); this->resetErrorList(); }
 
     //
@@ -265,9 +265,9 @@ class EditorWindow : public DXWindow
     // can be undone. ...on behalf of the new graph layout operation.
     //
     Stack undo_list;
-    boolean moving_many_standins;
-    boolean performing_undo;
-    boolean creating_new_network;
+    bool moving_many_standins;
+    bool performing_undo;
+    bool creating_new_network;
     void clearUndoList();
 
   protected:
@@ -276,8 +276,8 @@ class EditorWindow : public DXWindow
     //
     Network*			network;
     ControlPanel		*currentPanel;
-    boolean			panelVisible;
-    boolean			hit_detection;
+    bool			panelVisible;
+    bool			hit_detection;
 
     //
     // Used to defer the calls to setCommandActivation(). 
@@ -488,20 +488,20 @@ class EditorWindow : public DXWindow
     //
     // Perform various command functions.
     //
-    boolean selectDownwardNodes();
-    boolean selectUpwardNodes();
-    boolean selectConnectedNodes();
-    boolean selectUnconnectedNodes();
-    boolean setSelectedNodeTabVisibility(boolean v);
-    boolean selectConnection(int direction, boolean connected);
+    bool selectDownwardNodes();
+    bool selectUpwardNodes();
+    bool selectConnectedNodes();
+    bool selectUnconnectedNodes();
+    bool setSelectedNodeTabVisibility(bool v);
+    bool selectConnection(int direction, bool connected);
     //
     // Implements the 'Add/Remove Input/Output Tab' commands.
-    // If 'adding' is TRUE, we ADD either inputs or outputs, otherwise
+    // If 'adding' is true, we ADD either inputs or outputs, otherwise
     // REMOVE.
     // If 'input' is true, we operate on the input parameters, otherwise
     // the outputs.
     //
-    boolean editSelectedNodeTabs(boolean adding, boolean input);
+    bool editSelectedNodeTabs(bool adding, bool input);
 
     //
     // Methods that are used by the DeleteCommand to help implement
@@ -518,12 +518,12 @@ class EditorWindow : public DXWindow
     //
     // Edit/{Cut,Copy,Paste} operations
     //
-    boolean	cutSelectedNodes();
-    boolean	copySelectedNodes(boolean delete_property = FALSE);
-    boolean	pasteCopiedNodes();
+    bool	cutSelectedNodes();
+    bool	copySelectedNodes(bool delete_property = false);
+    bool	pasteCopiedNodes();
     char*       createNetFileFromSelection(int& net_len, char** cfg_out, int& cfg_len);
-    boolean     setPendingPaste (const char* net_file_name,
-	    const char* cfg_file_name, boolean ignoreUndefinedModules=FALSE);
+    bool     setPendingPaste (const char* net_file_name,
+	    const char* cfg_file_name, bool ignoreUndefinedModules=false);
 
     //
     // When the user clicks the Edit/Add Decorator option, we create a new
@@ -544,7 +544,7 @@ class EditorWindow : public DXWindow
     //  SUBCLASSES CONSTRUCTOR SHOULD ONLY BE CALLED FROM A VIRTUAL
     //  REPLACEMENT OF DXApplication::newNetworkEditor.
     //
-    EditorWindow(boolean  isAnchor, Network* network);
+    EditorWindow(bool  isAnchor, Network* network);
 
     //
     // Install the default resources for this class and then call the
@@ -573,12 +573,12 @@ class EditorWindow : public DXWindow
     //
     // Put up a little dialog with page configuration options
     //
-    boolean configurePage();
+    bool configurePage();
 
     //
     // Prepare to place a new decorator (vpe annotation)
     //
-    boolean placeDecorator();
+    bool placeDecorator();
 
     //
     // In addition to setting command activation based on undo_list size,
@@ -589,7 +589,7 @@ class EditorWindow : public DXWindow
     // work around for a motif bug - hitting pg up,down in the vpe crashes dxui
     //XHandler* pgKeyHandler;
 
-    //boolean keyHandler(XEvent* event);
+    //bool keyHandler(XEvent* event);
 
   public:
 
@@ -648,9 +648,9 @@ class EditorWindow : public DXWindow
     void highlightNodes(int flag, List *l = NULL);
     void highlightNode(Node *n, int flag);
     void highlightNode(const char* name, int instance, int flag);
-    boolean selectNode(Node *node, boolean select, boolean moveto = TRUE);
-    boolean selectNode(char* name, int instance, boolean select);
-    boolean selectDecorator (VPEAnnotator* dec, boolean select, boolean moveto=TRUE);
+    bool selectNode(Node *node, bool select, bool moveto = true);
+    bool selectNode(char* name, int instance, bool select);
+    bool selectDecorator (VPEAnnotator* dec, bool select, bool moveto=true);
     void selectUnselectedNodes();
     void deselectAllNodes(); 
     void selectAllNodes();
@@ -663,7 +663,7 @@ class EditorWindow : public DXWindow
     void resetGroup(const char* name, Symbol groupID);
     void selectGroup(const char* name, Symbol groupID);
     void clearGroup(const char* name, Symbol groupID);
-    boolean changeGroup (const char* old_group, const char* new_name, Symbol groupID);
+    bool changeGroup (const char* old_group, const char* new_name, Symbol groupID);
 #else
     void setProcessGroup(const char* name);
     void resetProcessGroup(const char* name);
@@ -688,7 +688,7 @@ class EditorWindow : public DXWindow
     // Change the label color of standins whose nodes ran in the most recent
     // execution
     //
-    boolean showExecutedNodes();
+    bool showExecutedNodes();
 
     //
     // look through the network list for selected nodes
@@ -708,14 +708,14 @@ class EditorWindow : public DXWindow
 
     //
     // add the node selected in the toolList to the vpe at x,y
-    // Added stitch 11/8/02.  When it's set to TRUE, we're going to handle
+    // Added stitch 11/8/02.  When it's set to true, we're going to handle
     // conflicts of node type/inst # by replacing the copy in the merging
     // network with the copy in the real network.  This is useful in 
     // implemented Undo of Cut/Delete.  For this we need to copy not only
     // selected nodes, but also nodes they're wired to so that we can
     // restore the wires that were broken as a result of the cut.
     //
-    void addCurrentNode(int x, int y, EditorWorkSpace *where, boolean stitch=FALSE);
+    void addCurrentNode(int x, int y, EditorWorkSpace *where, bool stitch=false);
     void addNode (NodeDefinition *, int x, int y, EditorWorkSpace *where);
 
     //
@@ -726,10 +726,10 @@ class EditorWindow : public DXWindow
     //
     // Move the workSpace inside the scrolled window so that the given x,y
     // position is at the upper left corner of the scrolled window unless
-    // centered is TRUE in which case x,y is the center of the scrolled
-    // window.  Currently only implmented for x=y=0 && centered == FALSE.
+    // centered is true in which case x,y is the center of the scrolled
+    // window.  Currently only implmented for x=y=0 && centered == false.
     //
-    void moveWorkspaceWindow(int x, int y, boolean centered = TRUE);
+    void moveWorkspaceWindow(int x, int y, bool centered = true);
 
     //
     // Supply scrollbar positions so that they can be recorded/reset when
@@ -766,7 +766,7 @@ class EditorWindow : public DXWindow
 	//return this->scrolledWindow;
  //   }
 
-    boolean isPanelVisible()
+    bool isPanelVisible()
     {
 	return this->panelVisible;
     }
@@ -777,7 +777,7 @@ class EditorWindow : public DXWindow
     //
     // notify the a standIn that an arc has been added/deleted to/from the node
     //
-    void notifyArk(Ark *a, boolean added=TRUE);
+    void notifyArk(Ark *a, bool added=true);
 
     FindToolDialog* getFindDialog()
     {
@@ -807,7 +807,7 @@ class EditorWindow : public DXWindow
     //
     // Notify control panel related dialogs of the change of panel list.
     //
-    void notifyCPChange(boolean newList = TRUE);
+    void notifyCPChange(bool newList = true);
 
     //
     // Adjust the name of the editor window based on the current network
@@ -817,15 +817,15 @@ class EditorWindow : public DXWindow
 
     void    openSelectedMacros();
     void    openSelectedImageWindows();
-    boolean anySelectedNodes(const char *classname);
-    boolean anySelectedColormaps();
-    boolean anySelectedMacros();
-    boolean anySelectedDisplayNodes();
+    bool anySelectedNodes(const char *classname);
+    bool anySelectedColormaps();
+    bool anySelectedMacros();
+    bool anySelectedDisplayNodes();
 
     //
     // Turn selected nodes into a macro
     //
-    virtual boolean macroifySelectedNodes(const char *name,
+    virtual bool macroifySelectedNodes(const char *name,
 					  const char *cat,
 					  const char *desc,
 					  const char *fileName);
@@ -834,15 +834,15 @@ class EditorWindow : public DXWindow
     // Turn selected nodes into a vpe page
     //
 #if WORKSPACE_PAGES
-    virtual boolean pagifySelectedNodes(boolean require_selected_nodes=FALSE);
-    virtual boolean pagifySelectedNodes(EditorWorkSpace* );
-    virtual boolean postMoveSelectedDialog();
-    virtual boolean autoChopSelectedNodes();
-    virtual boolean autoFuseSelectedNodes();
+    virtual bool pagifySelectedNodes(bool require_selected_nodes=false);
+    virtual bool pagifySelectedNodes(EditorWorkSpace* );
+    virtual bool postMoveSelectedDialog();
+    virtual bool autoChopSelectedNodes();
+    virtual bool autoFuseSelectedNodes();
 	    Command *getMoveSelectedCmd() { return this->moveSelectedCmd; }
-	    boolean pagifyNetNodes
-		(Network* tmpnet, EditorWorkSpace*, boolean try_current_page = FALSE );
-    virtual boolean deletePage(const char* page_name=NUL(char*));
+	    bool pagifyNetNodes
+		(Network* tmpnet, EditorWorkSpace*, bool try_current_page = false );
+    virtual bool deletePage(const char* page_name=NUL(char*));
     void moveStandIns 
 	(EditorWorkSpace *page, List *selectedNodes, int xoff, int yoff, List *dl);
     void moveDecorators 
@@ -866,13 +866,13 @@ class EditorWindow : public DXWindow
     // and then as the StandIns and ArkStandIns to print themselves.  
     // If the scale allows and the label_parameters arg is set, then 
     // label the parameters and display the values.
-    // We return FALSE and issue and error message if an error occurs.
+    // We return false and issue and error message if an error occurs.
     //
-    boolean printVisualProgramAsPS(const char *filename,
+    bool printVisualProgramAsPS(const char *filename,
 				    float x_pagesize, float y_pagesize,
-				    boolean label_parameters);
-    boolean printVisualProgramAsPS(FILE*, const char* filename, float x_pagesize, 
-	float y_pagesize, boolean label_parameters, EditorWorkSpace*, int, int);
+				    bool label_parameters);
+    bool printVisualProgramAsPS(FILE*, const char* filename, float x_pagesize, 
+	float y_pagesize, bool label_parameters, EditorWorkSpace*, int, int);
 
     //
     // Set the cacheability of all outputs of the selected tools to one of
@@ -895,10 +895,10 @@ class EditorWindow : public DXWindow
     // we look at each selected node and determine if its immediate downstream
     // unselected nodes are connected (possibly through intermediate nodes)
     // to another of the selected nodes.
-    // Returns TRUE if macrofiable, else returns FALSE and issues and error
+    // Returns true if macrofiable, else returns false and issues and error
     // message.
     //
-    boolean areSelectedNodesMacrofiable();
+    bool areSelectedNodesMacrofiable();
 
 #if WORKSPACE_PAGES
     //
@@ -908,7 +908,7 @@ class EditorWindow : public DXWindow
     // Transmitter, Receiver nodes.
     // The report flag tells if we should report failure to the user via
     // an ErrorMessage.
-    boolean areSelectedNodesPagifiable(boolean report=FALSE);
+    bool areSelectedNodesPagifiable(bool report=false);
 
     void    populatePage(EditorWorkSpace* ews);
     PageSelector* getPageSelector() { return this->pageSelector; }
@@ -939,26 +939,26 @@ class EditorWindow : public DXWindow
     // Change a resource in the Workspace widget that lets the user know
     // if things will overlap - during the course of moving
     //
-    boolean toggleHitDetection();
+    bool toggleHitDetection();
 
     //
     // Create a special java page and fill it up.
     //
-    boolean javifyNetwork();
-    boolean unjavifyNetwork();
+    bool javifyNetwork();
+    bool unjavifyNetwork();
 
     //
     // Use GraphLayout to modify the flow of the graph.
     //
-    boolean reflowEntireGraph();
+    bool reflowEntireGraph();
 
     //
     // register undo information
     //
-    void  saveLocationForUndo (UIComponent* uic, boolean mouse=FALSE, boolean same_event=FALSE);
+    void  saveLocationForUndo (UIComponent* uic, bool mouse=false, bool same_event=false);
     void  saveAllLocationsForUndo (UndoableAction* gridding);
     void  beginMultipleCanvasMovements();
-    void  endMultipleCanvasMovements() { this->moving_many_standins = FALSE; }
+    void  endMultipleCanvasMovements() { this->moving_many_standins = false; }
 
     //
     // a mechanism for Node to notify us that his definition has changed.  We
@@ -971,7 +971,7 @@ class EditorWindow : public DXWindow
     //
     // perform undo operation
     //
-    boolean undo();
+    bool undo();
 
     //
     // Receive a notification that the net has been saved and marked clean

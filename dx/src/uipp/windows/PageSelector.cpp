@@ -87,11 +87,11 @@
 //    NUL(char*)
 //};
 
-boolean PageSelector::ClassInitialized = FALSE;
+bool PageSelector::ClassInitialized = false;
 
 PageSelector::PageSelector 
     (EditorWindow* editor, Network* net) : 
-    UIComponent ("pageSelector"),  Dictionary (FALSE, FALSE)
+    UIComponent ("pageSelector"),  Dictionary (false, false)
 {
     this->editor = editor;
     //this->parent = parent;
@@ -99,13 +99,13 @@ PageSelector::PageSelector
     this->root = NUL(VPERoot*);
     //this->page_name_prompt = NUL(Widget);
     this->page_buttons = new List;
-    this->selecting_page = FALSE;
+    this->selecting_page = false;
     this->num_pages_when_empty = 0;
     //this->button_release_timer = 0;
     //this->diag_button = NUL(Widget);
     //this->popupMenu = NUL(Widget);
     //this->popupList = NUL(Widget);
-    this->is_grabbed = FALSE;
+    this->is_grabbed = false;
     this->starting_button = 1;
     //this->action_hook = 0;
     //this->vsb = this->hsb = NUL(Widget);
@@ -115,7 +115,7 @@ PageSelector::PageSelector
     //this->remove_hook_wpid = NUL(XtWorkProcId);
 
     if (!PageSelector::ClassInitialized) {
-	PageSelector::ClassInitialized = TRUE;
+	PageSelector::ClassInitialized = true;
 	//this->setDefaultResources(theDXApplication->getRootWidget(), 
 	//    PageSelector::DefaultResources);
 
@@ -260,7 +260,7 @@ void PageSelector::resizeCallback()
 //    //
 //    // Attempt to make the selected button in the set of managed buttons.
 //    //
-//    boolean reset_top = FALSE;
+//    bool reset_top = false;
 //    for (i=1; i<=tot_buttons; i++) {
 //	pbut = (PageTab*)this->page_buttons->getElement(i);
 //	if (pbut->getState()) {
@@ -270,9 +270,9 @@ void PageSelector::resizeCallback()
 //	    // If the selected button is outside the set of visible buttons
 //	    //
 //	    if (i < this->starting_button)  {
-//		reset_top = TRUE;
+//		reset_top = true;
 //	    } else if ((this->starting_button + max_buttons) <= i) {
-//		reset_top = TRUE;
+//		reset_top = true;
 //	    } 
 //	    break;
 //	}
@@ -293,15 +293,15 @@ void PageSelector::resizeCallback()
 //    this->starting_button = MIN(this->starting_button, 1+(tot_buttons - max_buttons));
 //    this->starting_button = MAX(1,this->starting_button);
 //
-//    boolean need_diag_button = FALSE;
+//    bool need_diag_button = false;
 //    for (i=1; i<this->starting_button; i++) {
 //	pbut = (PageTab*)this->page_buttons->getElement(i);
 //	pbut->unmanage();
-//	need_diag_button = TRUE;
+//	need_diag_button = true;
 //    }
 //    int ending_button = this->starting_button + max_buttons;
 //
-//    boolean first = TRUE;
+//    bool first = true;
 //    for (i=this->starting_button; i<ending_button; i++) {
 //	pbut = (PageTab*)this->page_buttons->getElement(i);
 //	ASSERT(pbut);
@@ -311,7 +311,7 @@ void PageSelector::resizeCallback()
 //	NULL);
 //	pbut->manage();
 //	prev = pbut;
-//	first = FALSE;
+//	first = false;
 //    }
 //
 //    //
@@ -321,11 +321,11 @@ void PageSelector::resizeCallback()
 //    for (i=ending_button; i<=tot_buttons; i++) {
 //	pbut = (PageTab*)this->page_buttons->getElement(i);
 //	pbut->unmanage();
-//	need_diag_button = TRUE;
+//	need_diag_button = true;
 //    }
 //
 //    ASSERT (need_diag_button == (max_buttons<tot_buttons));
-//    boolean have_diag_button = (this->diag_button?XtIsManaged (this->diag_button):FALSE);
+//    bool have_diag_button = (this->diag_button?XtIsManaged (this->diag_button):false);
 //    if (need_diag_button) {
 //	if (!this->diag_button) {
 //	    this->diag_button = XtVaCreateWidget ("diagButton",
@@ -356,7 +356,7 @@ void PageSelector::resizeCallback()
 void PageSelector::addButton (const char* name, const void* definition)
 {
  //   int size = this->page_buttons->getSize();
- //   boolean first = (boolean)(size == 0);
+ //   bool first = (bool)(size == 0);
 
  //   PageTab* new_button = new PageTab (this, (WorkSpace*)definition, name);
 
@@ -419,7 +419,7 @@ void PageSelector::appendButton (PageTab *button)
     // Now compare button_num with the same peice of info for the
     // other buttons already in the list.
     //
-    boolean position_found = FALSE;
+    bool position_found = false;
     if (button->hasDesiredPosition()) {
 	int bpos = button->getDesiredPosition();
 	ListIterator it(*this->page_buttons);
@@ -429,7 +429,7 @@ void PageSelector::appendButton (PageTab *button)
 	    int rove_pos = (pbut->hasDesiredPosition()?
 		pbut->getDesiredPosition():pbut->getPosition());
 	    if (bpos < rove_pos) {
-		position_found = TRUE;
+		position_found = true;
 		button->setPosition(this->page_buttons->getPosition((void*)pbut));
 		break;
 	    }
@@ -467,7 +467,7 @@ void PageSelector::removeButton (const char* name)
 	//}
  //   }
  //   ASSERT(destroy_me);
- //   boolean was_set = destroy_me->getState();
+ //   bool was_set = destroy_me->getState();
  //   this->page_buttons->removeElement((const void*)destroy_me);
  //   destroy_me->unmanage();
 
@@ -502,7 +502,7 @@ void PageSelector::removeButton (const char* name)
 void PageSelector::selectPage (PageTab* tab)
 {
     if (this->selecting_page) return ;
-    this->selecting_page = TRUE;
+    this->selecting_page = true;
 
     this->editor->deselectAllNodes();
     this->hidePageNamePrompt();
@@ -526,14 +526,14 @@ void PageSelector::selectPage (PageTab* tab)
 	PageTab* pbut;
 	while ( (pbut = (PageTab*)it.getNext()) ) {
 	    if (pbut != tab) {
-		pbut->setState(FALSE);
+		pbut->setState(false);
 	    }
 	}
     } else {
 	this->root->showRoot();
     }
     this->root->resize();
-    this->selecting_page = FALSE;
+    this->selecting_page = false;
     this->updateDialogs();
 
     //
@@ -562,9 +562,9 @@ void PageSelector::selectPage (EditorWorkSpace* ews)
     while ( (pbut = (PageTab*)it.getNext()) ) {
 	if (pbut->getState() == (pbut->getWorkSpace() == ews)) continue;
 	if (pbut->getWorkSpace() == ews) {
-	    pbut->setState(TRUE);
+	    pbut->setState(true);
 	    this->selectPage(pbut);
-	    if (pbut->isManaged() == FALSE)
+	    if (pbut->isManaged() == false)
 		this->resizeCallback();
 	}
     }
@@ -682,7 +682,7 @@ void PageSelector::postPageNamePrompt(PageTab* pt)
  //   NULL);
 
  //   this->name_change_in_progress = (EditorWorkSpace*)pt->getWorkSpace();
- //   this->mouse_inside_name_prompt = FALSE;
+ //   this->mouse_inside_name_prompt = false;
  //   XtAppContext apcxt = theApplication->getApplicationContext();
  //   XSync (XtDisplay(this->page_name_prompt), False);
  //   XtAppAddWorkProc (apcxt, PageSelector_PostNamePromptWP, (XtPointer)this);
@@ -747,7 +747,7 @@ void PageSelector::highlightTab (EditorWorkSpace* ews, int flag)
     //
     // Locate the tab for the referenced workspace.
     //
-    boolean is_root = (ews == this->root);
+    bool is_root = (ews == this->root);
     ListIterator it(*this->page_buttons);
     PageTab* pbut;
     PageTab* found_but = NUL(PageTab*);
@@ -780,7 +780,7 @@ void PageSelector::highlightTab (EditorWorkSpace* ews, int flag)
  //   found_but->setColor(color);
 }
 
-boolean PageSelector::verifyPageName (const char* new_name, char* errMsg)
+bool PageSelector::verifyPageName (const char* new_name, char* errMsg)
 {
     //
     // There is no need to check for a string containing only spaces because we
@@ -788,7 +788,7 @@ boolean PageSelector::verifyPageName (const char* new_name, char* errMsg)
     //
     if ((!new_name) || (!new_name[0])) {
 	sprintf (errMsg, "Page names cannot be blank");
-	return FALSE;
+	return false;
     }
 
     Dictionary* dict = this->net->getGroupManagers();
@@ -796,14 +796,14 @@ boolean PageSelector::verifyPageName (const char* new_name, char* errMsg)
     GroupRecord* grec = page_mgr->getGroup(new_name);
     if (grec) {
 	sprintf (errMsg, "Page name %s is already in use.", new_name);
-	return FALSE;
+	return false;
     }
 
     if (EqualString(new_name, "Untitled")) {
 	sprintf (errMsg, "The name \'Untitled\' is reserved.");
-	return FALSE;
+	return false;
     }
-    return TRUE;
+    return true;
 }
 
 
@@ -816,12 +816,12 @@ void PageSelector::changePageName(EditorWorkSpace* ews, const char* new_name)
     EditorWorkSpace* def;
     int dsize = this->getSize();
     int i;
-    boolean found = FALSE;;
+    bool found = false;;
     for (i=1; i<=dsize; i++) {
 	def = (EditorWorkSpace*)this->getDefinition(i);
 	if (def == ews) {
 	    old_name = this->getStringKey(i);
-	    found = TRUE;
+	    found = true;
 	    break;
 	}
     }
@@ -841,11 +841,11 @@ void PageSelector::changePageName(EditorWorkSpace* ews, const char* new_name)
 	ASSERT(grec);
 	ListIterator it(*this->page_buttons);
 	PageTab* pbut;
-	found = FALSE;
+	found = false;
 	while ( (pbut = (PageTab*)it.getNext()) ) {
 	    if (ews == pbut->getWorkSpace()) {
 		pbut->setGroup ((PageGroupRecord*)grec);
-		found = TRUE;
+		found = true;
 		break;
 	    }
 	}
@@ -859,10 +859,10 @@ PageTab* PageSelector::getPageTabOf(const char* name)
     ASSERT(this->page_buttons);
     ListIterator it(*this->page_buttons);
     PageTab* pt;
-    boolean found = FALSE;
+    bool found = false;
     while ( (pt = (PageTab*)it.getNext()) ) {
 	if (EqualString(name, pt->getGroupName())) {
-	    found = TRUE;
+	    found = true;
 	    break;
 	}
     }
@@ -873,25 +873,25 @@ PageTab* PageSelector::getPageTabOf(const char* name)
 //
 // Find the PageTab corresponding to move_name.  If it's currently earlier than
 // fixed, make it 1 later.  If it's currently later, make it 1 earlier.
-// Added the boolean dnd_op so that this method could be available for the page_dialog
+// Added the bool dnd_op so that this method could be available for the page_dialog
 // to call without having to force a redraw of 2 buttons.
 //
-boolean
-PageSelector::changeOrdering (PageTab* fixed, const char* move_name, boolean dnd_op)
+bool
+PageSelector::changeOrdering (PageTab* fixed, const char* move_name, bool dnd_op)
 {
 	PageTab* pt = this->getPageTabOf(move_name);
-	if (!pt) return FALSE;
+	if (!pt) return false;
 
 	int fixed_position = this->page_buttons->getPosition ((void*)fixed);
 	int move_position = this->page_buttons->getPosition ((void*)pt);
 	if ((fixed_position == 0)||(move_position == 0))
-		return FALSE;
+		return false;
 
 	PageTab* mover = pt;
 
-	boolean retVal = TRUE;
+	bool retVal = true;
 	if (fixed_position == move_position) {
-		retVal = FALSE;
+		retVal = false;
 	} else {
 		const void* def = this->page_buttons->getElement(move_position);
 		ASSERT(def == (void*)pt);
@@ -1015,7 +1015,7 @@ void PageSelector::updateList()
 //        Dimension strWidth = XmStringWidth(xmf, strTable[next]);
 //	maxWidth = (maxWidth>strWidth?maxWidth:strWidth);
 //	next++;
-//	if (pt->getState() == TRUE) select_this_item = next;
+//	if (pt->getState() == true) select_this_item = next;
 //    }
 //    maxWidth = (maxWidth>30?maxWidth:30);
 //
@@ -1078,7 +1078,7 @@ void PageSelector::ungrab()
 	//delete this->old_event;
 	//this->old_event = NUL(XEvent*);
  //   }
- //   this->is_grabbed = FALSE;
+ //   this->is_grabbed = false;
 }
 //void PageSelector::grab(XEvent* e)
 //{
@@ -1095,7 +1095,7 @@ void PageSelector::ungrab()
 	//ButtonPressMask | ButtonReleaseMask , GrabModeAsync, 
 	//GrabModeAsync, None, PageSelector::GrabCursor, e->xbutton.time);
 
- //   this->is_button_release_grabbed = FALSE;
+ //   this->is_button_release_grabbed = false;
  //   if (this->button_release_timer)
 	//XtRemoveTimeOut (this->button_release_timer);
 
@@ -1114,7 +1114,7 @@ void PageSelector::ungrab()
  //   this->old_event = new XEvent;
  //   memcpy (this->old_event, e, sizeof(XEvent));
 
- //   this->is_grabbed = TRUE;
+ //   this->is_grabbed = true;
 //}
 
 //
@@ -1175,13 +1175,13 @@ void PageSelector::togglePage(PageTab* pt)
 //    //
 //    XmListCallbackStruct *lcs = (XmListCallbackStruct*)cbs;
 //    XEvent* xev = lcs->event;
-//    boolean inside = TRUE;
+//    bool inside = true;
 //    if ((xev->type == ButtonPress) || (xev->type == ButtonRelease)) {
 //	XButtonEvent* xbe = (XButtonEvent*)xev;
 //	Dimension width, height;
 //	XtVaGetValues (psel->popupList, XmNwidth, &width, XmNheight, &height, NULL);
 //	if ((xbe->x < 0) || (xbe->y < 0) || (xbe->x > width) || (xbe->y > height))
-//	    inside = FALSE;
+//	    inside = false;
 //    }
 //
 //    //
@@ -1194,7 +1194,7 @@ void PageSelector::togglePage(PageTab* pt)
 //	    if (pt) {
 //		EditorWorkSpace* ews = (EditorWorkSpace*)pt->getWorkSpace();
 //		psel->selectPage(ews);
-//		if (pt->isManaged() == FALSE)
+//		if (pt->isManaged() == false)
 //		    psel->resizeCallback();
 //	    }
 //	}
@@ -1213,7 +1213,7 @@ void PageSelector::togglePage(PageTab* pt)
 //{
 //    PageSelector* psel = (PageSelector*)clientData;
 //    ASSERT(psel);
-//    psel->is_button_release_grabbed = TRUE;
+//    psel->is_button_release_grabbed = true;
 //    psel->button_release_timer = 0;
 //}
 //
@@ -1244,17 +1244,17 @@ void PageSelector::togglePage(PageTab* pt)
 //    PageSelector* psel = (PageSelector*)clientData;
 //    ASSERT(psel);
 //    XmTextVerifyCallbackStruct *tvcs = (XmTextVerifyCallbackStruct*)cbs;
-//    boolean good_chars = TRUE;
+//    bool good_chars = true;
 //    XmTextBlock tbrec = tvcs->text;
 //    int i;
 //    for (i=0; i<tbrec->length; i++) {
 //	if ((tbrec->ptr[i] != '_') && 
 //	    (tbrec->ptr[i] != ' ') && 
 //	    (!isalnum((int)tbrec->ptr[i]))) {
-//	    good_chars = FALSE;
+//	    good_chars = false;
 //	    break;
 //	} else if ((i == 0) && (tvcs->startPos == 0) && (tbrec->ptr[i] == ' ')) {
-//	    good_chars = FALSE;
+//	    good_chars = false;
 //	    break;
 //	}
 //    }
@@ -1304,7 +1304,7 @@ void PageSelector::togglePage(PageTab* pt)
 //	psel->button_release_timer = 0;
 //    }
 //    
-//    psel->is_button_release_grabbed = TRUE;
+//    psel->is_button_release_grabbed = true;
 //}
 //void PageSelector_EllipsisEH(Widget , XtPointer clientData, XEvent *e, Boolean *)
 //{
@@ -1380,7 +1380,7 @@ void PageSelector::togglePage(PageTab* pt)
 //	XtRemoveActionHook (psel->action_hook);
 //    psel->action_hook = 0;
 //    psel->remove_hook_wpid = NUL(XtWorkProcId);
-//    return TRUE;
+//    return true;
 //}
 //
 //} // extern "C"
@@ -1397,20 +1397,20 @@ void PageSelector::togglePage(PageTab* pt)
 // these as a means of ensuring that the selector is always in sync with
 // the dictionary.
 //
-boolean PageSelector::addDefinition(const char *name, const void *definition)
+bool PageSelector::addDefinition(const char *name, const void *definition)
 {
     if (!this->Dictionary::addDefinition(name, definition))
-	return FALSE;
+	return false;
     this->addButton(name, definition);
-    return TRUE;
+    return true;
 }
-boolean PageSelector::addDefinition(Symbol key, const void *definition)
+bool PageSelector::addDefinition(Symbol key, const void *definition)
 {
     if (!this->Dictionary::addDefinition(key, definition))
-	return FALSE;
+	return false;
     SymbolManager* sm = this->getSymbolManager();
     this->addButton(sm->getSymbolString(key), definition);
-    return TRUE;
+    return true;
 }
 void *PageSelector::removeDefinition(Symbol findkey)
 {
@@ -1426,11 +1426,11 @@ void *PageSelector::removeDefinition(const void * def)
     EditorWorkSpace* ews;
     EditorWorkSpace* remove_ews = (EditorWorkSpace*) def;
     int i,dsize = this->getSize();
-    boolean found = FALSE;
+    bool found = false;
     for (i=1; i<=dsize; i++) {
 	ews = (EditorWorkSpace*)this->getDefinition(i);
 	if (ews == remove_ews) {
-	    found = TRUE;
+	    found = true;
 	    break;
 	}
     }
@@ -1488,7 +1488,7 @@ Dialog* PageSelector::getMoveNodesDialog()
 //    PageSelector* psel;
 //    XtVaGetValues (w, XmNuserData, &psel, NULL);
 //    ASSERT(psel);
-//    psel->mouse_inside_name_prompt = TRUE;
+//    psel->mouse_inside_name_prompt = true;
 //}
 //
 //void PageSelector_LosingAP (Widget w, XEvent*, String*, Cardinal* )
@@ -1496,7 +1496,7 @@ Dialog* PageSelector::getMoveNodesDialog()
 //    PageSelector* psel;
 //    XtVaGetValues (w, XmNuserData, &psel, NULL);
 //    ASSERT(psel);
-//    psel->mouse_inside_name_prompt = FALSE;
+//    psel->mouse_inside_name_prompt = false;
 //}
 //
 //void PageSelector_MonitoringAP (Widget w, XEvent* xev, String*, Cardinal* )
@@ -1504,7 +1504,7 @@ Dialog* PageSelector::getMoveNodesDialog()
 //    PageSelector* psel;
 //    XtVaGetValues (w, XmNuserData, &psel, NULL);
 //    ASSERT(psel);
-//    if (psel->mouse_inside_name_prompt == FALSE)
+//    if (psel->mouse_inside_name_prompt == false)
 //	psel->hidePageNamePrompt();
 //}
 //

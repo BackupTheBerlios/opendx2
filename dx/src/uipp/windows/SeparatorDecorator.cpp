@@ -18,7 +18,7 @@
 
 #define WANT_DND_IN_DECORATORS 1
 
-boolean SeparatorDecorator::SeparatorDecoratorClassInitialized = FALSE;
+bool SeparatorDecorator::SeparatorDecoratorClassInitialized = false;
 
 Dictionary* SeparatorDecorator::DragTypeDictionary = new Dictionary;
 //Widget SeparatorDecorator::DragIcon;
@@ -33,7 +33,7 @@ Dictionary* SeparatorDecorator::DragTypeDictionary = new Dictionary;
 //};
 
 
-SeparatorDecorator::SeparatorDecorator(boolean developerStyle) : 
+SeparatorDecorator::SeparatorDecorator(bool developerStyle) : 
 	Decorator (0, "SeparatorDecorator", developerStyle)
 {
     this->setAttrDialog = NUL(SetSeparatorAttrDlg*);
@@ -58,13 +58,13 @@ void SeparatorDecorator::initialize()
  //                                       Decorator::DefaultResources);
 	//this->setDefaultResources(theApplication->getRootWidget(),
  //                                       WorkSpaceComponent::DefaultResources);
-        SeparatorDecorator::SeparatorDecoratorClassInitialized = TRUE;
+        SeparatorDecorator::SeparatorDecoratorClassInitialized = true;
 
 //#if WANT_DND_IN_DECORATORS
 //	SeparatorDecorator::DragIcon = this->createDragIcon
 //	 (ntractor_width,ntractor_height,(char *)ntractor_bits,(char *)ntractormask_bits);
-//	this->addSupportedType (Decorator::Modules, DXINTERACTORS, TRUE);
-//	this->addSupportedType (Decorator::Trash, DXTRASH, FALSE);
+//	this->addSupportedType (Decorator::Modules, DXINTERACTORS, true);
+//	this->addSupportedType (Decorator::Trash, DXTRASH, false);
 //#endif
     }
 }
@@ -96,17 +96,17 @@ int w,h;
 //#endif
 }
 
-void SeparatorDecorator::setVerticalLayout (boolean vertical)
+void SeparatorDecorator::setVerticalLayout (bool vertical)
 {
 //int x,y,w,h;
-//boolean swap_dimensions = FALSE;
+//bool swap_dimensions = false;
 //
 //    if (!this->customPart) return ;
 //
 //    if ((vertical) && (this->currentLayout & WorkSpaceComponent::Horizontal)) {
-//	swap_dimensions = TRUE;
+//	swap_dimensions = true;
 //    } else if ((!vertical) && (this->currentLayout & WorkSpaceComponent::Vertical)) {
-//	swap_dimensions = TRUE;
+//	swap_dimensions = true;
 //    }
 //    if (swap_dimensions) {
 //	this->getXYSize (&w,&h);
@@ -133,12 +133,12 @@ void SeparatorDecorator::setVerticalLayout (boolean vertical)
 //  // decorator Separator pos=(%d,%d), size=%dx%d
 //
 //
-boolean SeparatorDecorator::printComment (FILE *f)
+bool SeparatorDecorator::printComment (FILE *f)
 {
-    if (!this->Decorator::printComment (f)) return FALSE;
+    if (!this->Decorator::printComment (f)) return false;
     if (fprintf (f, "\n") < 0) 
-	return FALSE;
-    boolean printOK=TRUE;
+	return false;
+    bool printOK=true;
     if (this->setResourceList) {
         ListIterator it(*this->setResourceList);
         DynamicResource *dr;
@@ -147,10 +147,10 @@ boolean SeparatorDecorator::printComment (FILE *f)
         }
     }
  
-    return TRUE;
+    return true;
 }
 
-boolean SeparatorDecorator::parseComment (const char *comment, const char *f, int l)
+bool SeparatorDecorator::parseComment (const char *comment, const char *f, int l)
 {
     return this->Decorator::parseComment(comment, f, l);
 }
@@ -193,25 +193,25 @@ void SeparatorDecorator::resizeCB ()
 }
 
 Decorator*
-SeparatorDecorator::AllocateDecorator (boolean devStyle)
+SeparatorDecorator::AllocateDecorator (bool devStyle)
 {
     return new SeparatorDecorator (devStyle);
 }
 
 
-boolean
+bool
 SeparatorDecorator::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassSeparatorDecorator);
-    if (s == classname) return TRUE;
+    if (s == classname) return true;
     return this->Decorator::isA(classname);
 }
 
 
-//boolean SeparatorDecorator::decodeDragType (int tag,
+//bool SeparatorDecorator::decodeDragType (int tag,
 //	char * a, XtPointer *value, unsigned long *length, long operation)
 //{
-//boolean retVal;
+//bool retVal;
 //
 //    switch (tag) {
 //	case Decorator::Modules:
@@ -219,14 +219,14 @@ SeparatorDecorator::isA(Symbol classname)
 //	    break;
 // 
 //	case Decorator::Trash:
-//	    retVal = TRUE;
+//	    retVal = true;
 //	    // dummy pointer
 //	    *value = (XtPointer)malloc(4);
 //	    *length = 4;
 //	    break;
 // 
 //	default:
-//	    retVal = FALSE;
+//	    retVal = false;
 //	    break;
 //    }
 // 
@@ -239,7 +239,7 @@ SeparatorDecorator::openDefaultWindow()
     //ASSERT(this->getRootWidget());
     //if (!this->setAttrDialog) {
     //    this->setAttrDialog = 
-	   // new SetSeparatorAttrDlg (this->getRootWidget(), FALSE, this);
+	   // new SetSeparatorAttrDlg (this->getRootWidget(), false, this);
     //}
  
     //this->setAttrDialog->post();
@@ -250,7 +250,7 @@ SeparatorDecorator::openDefaultWindow()
 // dialog box is half.
 //
 void
-SeparatorDecorator::setAppearance (boolean developerStyle)
+SeparatorDecorator::setAppearance (bool developerStyle)
 {
 //int hilite = (developerStyle? Decorator::HiLites : 0);
 //
@@ -262,7 +262,7 @@ SeparatorDecorator::setAppearance (boolean developerStyle)
 //    this->Decorator::setAppearance (developerStyle);
 }
 
-boolean SeparatorDecorator::printAsJava (FILE* jf, const char* var_name, int instance_no)
+bool SeparatorDecorator::printAsJava (FILE* jf, const char* var_name, int instance_no)
 {
     const char* indent = "        ";
     int x,y,w,h;
@@ -283,19 +283,19 @@ boolean SeparatorDecorator::printAsJava (FILE* jf, const char* var_name, int ins
     else if ((this->currentLayout & WorkSpaceComponent::NotSet) && (w <= h)) 
 	fprintf (jf, "%s%s.setVertical();\n", indent, svar);
 	
-    if (this->printJavaResources(jf, indent, svar) == FALSE)
-	return FALSE;
+    if (this->printJavaResources(jf, indent, svar) == false)
+	return false;
 
     fprintf (jf, "%s%s.reshape(%d,%d,%d,%d);\n", indent,svar, x,y,w,h);
     fprintf (jf, "%s%s.addDecorator(%s);\n", indent, var_name, svar);
 
-    return TRUE;
+    return true;
 }
 
 //
 // convert line style resource into something java will recognize
 //
-boolean SeparatorDecorator::printJavaResources
+bool SeparatorDecorator::printJavaResources
     (FILE* jf, const char* indent, const char* var)
 {
     return this->Decorator::printJavaResources (jf, indent, var);

@@ -36,7 +36,7 @@ using namespace dxui;
 //
 // Determine if two symbol values entries have the same name.  
 //
-static boolean _EqualName(const void *sv1, const void *sv2)
+static bool _EqualName(const void *sv1, const void *sv2)
 {
 	return ((DictionaryEntry*)sv1)->name == ((DictionaryEntry*)sv2)->name;
 }
@@ -45,13 +45,13 @@ static boolean _EqualName(const void *sv1, const void *sv2)
 //
 // Determine if two symbol values entries have the same name.  
 //
-static boolean _EqualValue(const void *sv1, const void *sv2)
+static bool _EqualValue(const void *sv1, const void *sv2)
 {
 	return ((DictionaryEntry*)sv1)->definition == 
 			((DictionaryEntry*)sv2)->definition;
 }
 
-Dictionary::Dictionary(boolean sorted, boolean privateSymbols )
+Dictionary::Dictionary(bool sorted, bool privateSymbols )
 {
     this->isSorted = sorted;
     if (privateSymbols)
@@ -140,7 +140,7 @@ int Dictionary::getPosition(Symbol s)
 // If a definition already exists for the given name then fail.
 // FIXME: should we be adding a copy of definition instead of definition.
 //
-boolean Dictionary::addDefinition(const char *name, const void *def)
+bool Dictionary::addDefinition(const char *name, const void *def)
 {
 	const char *str;
 	int	r, pos;
@@ -157,7 +157,7 @@ boolean Dictionary::addDefinition(const char *name, const void *def)
 		    ASSERT(str);
 		    r = STRCMP(str, name);
 		    if (r == 0)
-			return FALSE;
+			return false;
 		    else if (r >= 0)
 			break;
 		    pos++;
@@ -172,37 +172,37 @@ boolean Dictionary::addDefinition(const char *name, const void *def)
 	else
 	    return this->insertElement(newde, pos);
 }
-boolean Dictionary::addDefinition(Symbol name, const void *def)
+bool Dictionary::addDefinition(Symbol name, const void *def)
 {
 	const char *str;
 	SymbolManager *sm = this->getSymbolManager();
 
 	str = sm->getSymbolString(name);
 	if (!str)
-	    return FALSE;
+	    return false;
 
 	return this->addDefinition(str, def);
 }
 //
 // Replace the current element by the new one.
 //
-boolean Dictionary::replaceDefinition(const char *name, 
+bool Dictionary::replaceDefinition(const char *name, 
 					const void *def, void **v)
 {
 	void *old_def = this->removeDefinition(name);
 	if (v)
 	    *v = old_def; 
 	this->addDefinition(name, def);
-	return TRUE;
+	return true;
 }
-boolean Dictionary::replaceDefinition(Symbol name, const void *def, void **v)
+bool Dictionary::replaceDefinition(Symbol name, const void *def, void **v)
 {
 	const char *str;
 	SymbolManager *sm = this->getSymbolManager();
 
 	str = sm->getSymbolString(name);
 	if (!str)
-	    return FALSE;
+	    return false;
 
 	return this->replaceDefinition(str, def, v);
 }
@@ -210,7 +210,7 @@ boolean Dictionary::replaceDefinition(Symbol name, const void *def, void **v)
 // Replace the current elements with those in the given dictionary. 
 // If olddefList is not NULL, the return a list containing the old definitions. 
 //
-boolean Dictionary::replaceDefinitions(Dictionary *d, Dictionary *olddefDict)
+bool Dictionary::replaceDefinitions(Dictionary *d, Dictionary *olddefDict)
 {
     DictionaryEntry *de;
     ListIterator iterator(*d);
@@ -220,13 +220,13 @@ boolean Dictionary::replaceDefinitions(Dictionary *d, Dictionary *olddefDict)
 	void *olddef;
 	void *def = de->definition;
 	if (!this->replaceDefinition(sym,def, &olddef))
-	    return FALSE;
+	    return false;
 	if (olddefDict && olddef)
 	    olddefDict->addDefinition(sym,olddef);
 	    
     }
     
-   return TRUE;
+   return true;
 }
 //
 // Find the Dictionary Element that has the give key value.
@@ -245,7 +245,7 @@ DictionaryEntry* Dictionary::getDictionaryEntry(Symbol findkey)
 
 //
 // Find the Definition associated with the given symbol. 
-// If the symbol is not found return FALSE, otherwise TRUE.
+// If the symbol is not found return false, otherwise true.
 //
 void *Dictionary::findDefinition(Symbol findkey)
 {
@@ -277,7 +277,7 @@ void *Dictionary::findDefinition(const char *n)
 }
 //
 // Find the definition associated with the given symbol. 
-// If the symbol is not found return FALSE, otherwise TRUE.
+// If the symbol is not found return false, otherwise true.
 //
 void *Dictionary::removeDefinition(Symbol findkey)
 {
@@ -335,7 +335,7 @@ void *Dictionary::removeDefinition(const void *def)
 	index = this->List::getPosition(d);
 	ASSERT(index);
 
-	boolean r = this->deleteElement(index);
+	bool r = this->deleteElement(index);
 	ASSERT(r);
 
 	delete d;

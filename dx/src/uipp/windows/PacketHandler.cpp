@@ -34,20 +34,20 @@ PacketHandler::~PacketHandler()
     if (this->matchString)
 	delete this->matchString;
 }
-boolean PacketHandler::match(const char *s)
+bool PacketHandler::match(const char *s)
 {
     if (s == NULL)
 	return this->matchString == NULL;
     if (this->matchString == NULL)
-	return FALSE;
+	return false;
     return EqualString(this->matchString, s);
 }
-boolean PacketHandler::matchFirst(const char *s)
+bool PacketHandler::matchFirst(const char *s)
 {
     if (this->matchString == NULL)
-	return TRUE;
+	return true;
     if (s == NULL)
-	return FALSE;
+	return false;
     return EqualSubstring(this->matchString, s, this->matchLen);
 }
 

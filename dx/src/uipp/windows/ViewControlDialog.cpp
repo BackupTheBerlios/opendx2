@@ -20,7 +20,7 @@
 #include "PickNode.h"
 #include "ProbeNode.h"
 
-boolean ViewControlDialog::ClassInitialized = FALSE;
+bool ViewControlDialog::ClassInitialized = false;
 
 ViewControlDialog::ViewControlDialog(
 				     ImageWindow *w):
@@ -29,7 +29,7 @@ ViewControlDialog::ViewControlDialog(
 
     if (NOT ViewControlDialog::ClassInitialized)
     {
-        ViewControlDialog::ClassInitialized = TRUE;
+        ViewControlDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
     this->imageWindow = w;
@@ -96,16 +96,16 @@ ViewControlDialog::ViewControlDialog(
     this->resetButton = NULL;
 
     this->cameraToVectorCmd = new ViewControlWhichCameraCommand(
-	"cameraToVectorCommand", w->getCommandScope(), TRUE, this);
+	"cameraToVectorCommand", w->getCommandScope(), true, this);
     this->cameraFromVectorCmd = new ViewControlWhichCameraCommand(
-	"cameraFromVectorCommand", w->getCommandScope(), TRUE, this);
+	"cameraFromVectorCommand", w->getCommandScope(), true, this);
     this->cameraUpVectorCmd = new ViewControlWhichCameraCommand(
-	"cameraUpVectorCommand", w->getCommandScope(), TRUE, this);
+	"cameraUpVectorCommand", w->getCommandScope(), true, this);
     
     this->cameraFormManaged = 
 	this->cursorFormManaged = 
 	this->roamFormManaged = 
-	this->navigateFormManaged = FALSE;
+	this->navigateFormManaged = false;
 
     //this->probeOptionMenu = NUL(Widget);
     //this->pickOptionMenu  = NUL(Widget);
@@ -298,9 +298,9 @@ void ViewControlDialog::createProbePulldown()
 //	this->probeWidgetList.clear();			
 //    }
 //
-//    // FALSE = don't include PickNodes which are a subclass of Probe.
+//    // false = don't include PickNodes which are a subclass of Probe.
 //    List *l = this->imageWindow->getNetwork()->makeClassifiedNodeList(
-//							ClassProbeNode, FALSE);
+//							ClassProbeNode, false);
 //    if (!l) 
 //    {
 //	if (!this->probeWidgetList.findDefinition("noProbes")) {
@@ -1198,14 +1198,14 @@ void ViewControlDialog::manageCursorForm()
 
  //   XtVaSetValues(this->buttonForm, XmNtopWidget, this->cursorForm, NULL);
 
- //   this->cursorFormManaged = TRUE;
+ //   this->cursorFormManaged = true;
 }
 void ViewControlDialog::unmanageCursorForm()
 {
     //XtUnmanageChild(this->cursorForm);
     //if(!this->isExpanding())
     //	XtVaSetValues(this->buttonForm, XmNtopWidget, this->mainForm, NULL);
-    //this->cursorFormManaged = FALSE;
+    //this->cursorFormManaged = false;
 }
 void ViewControlDialog::manageRoamForm()
 {
@@ -1232,7 +1232,7 @@ void ViewControlDialog::manageRoamForm()
  //   height += y;
  //   XtVaSetValues(this->cursorForm, XmNheight, height, NULL);
 
- //   this->roamFormManaged = TRUE;
+ //   this->roamFormManaged = true;
 }
 void ViewControlDialog::unmanageRoamForm()
 {
@@ -1240,7 +1240,7 @@ void ViewControlDialog::unmanageRoamForm()
     //if(!this->isExpanding())
     //	XtVaSetValues(this->buttonForm, XmNtopWidget, this->mainForm, NULL);
 
-    //this->roamFormManaged = FALSE;
+    //this->roamFormManaged = false;
 }
 void ViewControlDialog::managePickForm()
 {
@@ -1248,21 +1248,21 @@ void ViewControlDialog::managePickForm()
 
     //XtManageChild(this->pickForm);
     //XtVaSetValues(this->buttonForm, XmNtopWidget, this->pickForm, NULL);
-    //this->pickFormManaged = TRUE;
+    //this->pickFormManaged = true;
 }
 void ViewControlDialog::unmanagePickForm()
 {
     //XtUnmanageChild(this->pickForm);
     //if(!this->isExpanding())
     //	XtVaSetValues(this->buttonForm, XmNtopWidget, this->mainForm, NULL);
-    //this->pickFormManaged = FALSE;
+    //this->pickFormManaged = false;
 }
 
 void ViewControlDialog::manageCameraForm()
 {
     //XtManageChild(this->cameraForm);
     //XtVaSetValues(this->buttonForm, XmNtopWidget, this->cameraForm, NULL);
-    //this->cameraFormManaged = TRUE;
+    //this->cameraFormManaged = true;
     //this->setWhichCameraVector();
 }
 void ViewControlDialog::unmanageCameraForm()
@@ -1270,20 +1270,20 @@ void ViewControlDialog::unmanageCameraForm()
     //XtUnmanageChild(this->cameraForm);
     //if(!this->isExpanding())
     //	XtVaSetValues(this->buttonForm, XmNtopWidget, this->mainForm, NULL);
-    //this->cameraFormManaged = FALSE;
+    //this->cameraFormManaged = false;
 }
 void ViewControlDialog::manageNavigationForm()
 {
     //XtManageChild(this->navigateForm);
     //XtVaSetValues(this->buttonForm, XmNtopWidget, this->navigateForm, NULL);
-    //this->navigateFormManaged = TRUE;
+    //this->navigateFormManaged = true;
 }
 void ViewControlDialog::unmanageNavigationForm()
 {
     //XtUnmanageChild(this->navigateForm);
     //if(!this->isExpanding())
     //	XtVaSetValues(this->buttonForm, XmNtopWidget, this->mainForm, NULL);
-    //this->navigateFormManaged = FALSE;
+    //this->navigateFormManaged = false;
 }
 
 void ViewControlDialog::manage()
@@ -1334,7 +1334,7 @@ void ViewControlDialog::manage()
  //   this->Dialog::manage();
 }
 
-boolean ViewControlDialog::isExpanding()
+bool ViewControlDialog::isExpanding()
 {
     switch (this->imageWindow->getInteractionMode()) 
     {
@@ -1343,13 +1343,13 @@ boolean ViewControlDialog::isExpanding()
         case PICK:
         case NAVIGATE:
         case ROAM:
-             return TRUE;
+             return true;
              break;
 	default:
 	     break;
     }
 
-    return FALSE;
+    return false;
 }
 
 void ViewControlDialog::resetMode()
@@ -1427,15 +1427,15 @@ void ViewControlDialog::resetProjection()
 //    {
 //	XtVaSetValues(this->projectionOptionMenu,
 //	    XmNmenuHistory, this->perspective->getRootWidget(), NULL);
-//	XtSetSensitive(this->viewAngleStepper, TRUE);
-//	XtSetSensitive(this->cameraWidthNumber, FALSE);
+//	XtSetSensitive(this->viewAngleStepper, true);
+//	XtSetSensitive(this->cameraWidthNumber, false);
 //    }
 //    else
 //    {
 //	XtVaSetValues(this->projectionOptionMenu,
 //	    XmNmenuHistory, this->orthographic->getRootWidget(), NULL);
-//	XtSetSensitive(this->viewAngleStepper, FALSE);
-//	XtSetSensitive(this->cameraWidthNumber, TRUE);
+//	XtSetSensitive(this->viewAngleStepper, false);
+//	XtSetSensitive(this->cameraWidthNumber, true);
 //    }
 }
 
@@ -1450,7 +1450,7 @@ void ViewControlDialog::setNavigatePivot(double s)
 
 void ViewControlDialog::newCamera(double *from, double *to, double *up,
 	int image_width, int image_height, double width,
-	boolean perspective, double viewAngle)
+	bool perspective, double viewAngle)
 {
 //#ifdef PASSDOUBLEVALUE
 //    XtArgVal dx_l1, dx_l2, dx_l3;
@@ -1482,10 +1482,10 @@ void ViewControlDialog::newCamera(double *from, double *to, double *up,
 //    XtVaSetValues(this->cameraYNumber, XmNdValue, DoubleVal(v[1], dx_l2), NULL);
 //    XtVaSetValues(this->cameraZNumber, XmNdValue, DoubleVal(v[2], dx_l3), NULL);
 //
-//    this->setSensitivity(TRUE);
+//    this->setSensitivity(true);
 }
 
-void ViewControlDialog::setSensitivity(boolean s)
+void ViewControlDialog::setSensitivity(bool s)
 {
  //   int b = s? True: False;
  //   XtSetSensitive(this->modeOptionMenu, b);
@@ -1645,7 +1645,7 @@ void ViewControlDialog::setWhichCameraVector()
 //	if (w == button)
 //	{
 //	    const char *label = vc->probeWidgetList.getStringKey(i);
-//	    Node *node = vc->imageWindow->getNetwork()->findNode(label,NULL,TRUE);
+//	    Node *node = vc->imageWindow->getNetwork()->findNode(label,NULL,true);
 //	    ASSERT(node);
 //	    vc->imageWindow->selectProbeByInstance(node->getInstanceNumber());
 //	    break;
@@ -1667,7 +1667,7 @@ void ViewControlDialog::setWhichCameraVector()
 //	if (w == button)
 //	{
 //            const char *label = vc->pickWidgetList.getStringKey(i);
-//            Node *node = vc->imageWindow->getNetwork()->findNode(label,NULL,TRUE);
+//            Node *node = vc->imageWindow->getNetwork()->findNode(label,NULL,true);
 //            ASSERT(node);
 //            vc->imageWindow->selectPickByInstance(node->getInstanceNumber());
 //	    break;
@@ -1724,13 +1724,13 @@ void ViewControlDialog::setCurrentPickByInstance(int i)
     //                NULL);
 }
 
-void ViewControlDialog::sensitizeProbeOptionMenu(boolean sensitize)
+void ViewControlDialog::sensitizeProbeOptionMenu(bool sensitize)
 {
     //if (this->probeOptionMenu)
     //  XtSetSensitive(this->probeOptionMenu, sensitize);
 }
 
-void ViewControlDialog::sensitizePickOptionMenu(boolean sensitize)
+void ViewControlDialog::sensitizePickOptionMenu(bool sensitize)
 {
     //if (this->pickOptionMenu)
     //  XtSetSensitive(this->pickOptionMenu, sensitize);

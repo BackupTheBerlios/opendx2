@@ -52,12 +52,12 @@ MacroParameterNode::~MacroParameterNode()
 		if (this->index != net->getInputCount())
 		{
 		    int newIndex = net->getInputCount()+1;
-		    this->moveIndex(newIndex, FALSE);
+		    this->moveIndex(newIndex, false);
 		}
 		else
 		{
 		    for (int i = this->index; i > 1; --i)
-			if (!this->moveIndex(i - 1, FALSE))
+			if (!this->moveIndex(i - 1, false))
 			    break;
 		    // this->index = i;
 		}
@@ -76,12 +76,12 @@ MacroParameterNode::~MacroParameterNode()
 		if (this->index != net->getOutputCount())
 		{
 		    int newIndex = net->getOutputCount()+1;
-		    this->moveIndex(newIndex, FALSE);
+		    this->moveIndex(newIndex, false);
 		}
 		else
 		{
 		    for (int i = this->index; i > 1; --i)
-			if (!this->moveIndex(i - 1, FALSE))
+			if (!this->moveIndex(i - 1, false))
 			    break;
 		}
 	    }
@@ -96,21 +96,21 @@ MacroParameterNode::~MacroParameterNode()
     if (net == theDXApplication->network)
     {
 	if (md && md->getInputCount() == 0 && md->getOutputCount() == 0)
-	    net->makeMacro(FALSE);
+	    net->makeMacro(false);
     }
 }
 
-boolean
+bool
 MacroParameterNode::initialize()
 {
     this->UniqueNameNode::initialize();
     Network *net = this->getNetwork();
     if (!net->isMacro())
-	net->makeMacro(TRUE);
+	net->makeMacro(true);
     MacroDefinition *md = net->getDefinition();
     ParameterDefinition *param=NULL;
 
-    boolean input = this->isInput();
+    bool input = this->isInput();
     if (!md->isReadingNet()) {
 	param = new ParameterDefinition(-1);
 	param->addType(new DXType(DXType::ObjectType));
@@ -219,7 +219,7 @@ MacroParameterNode::initialize()
 #endif
 	p->setDefinition(newpd);
     }
-    return TRUE;
+    return true;
 }
 
 const char *MacroParameterNode::getParameterNameString()
@@ -230,7 +230,7 @@ const char *MacroParameterNode::getParameterNameString()
 }
 
 ParameterDefinition *MacroParameterNode::getParameterDefinition(
-				boolean includeDummies)
+				bool includeDummies)
 {
     MacroDefinition *md = this->getNetwork()->getDefinition();
 
@@ -246,11 +246,11 @@ ParameterDefinition *MacroParameterNode::getParameterDefinition(
 	return NULL;
 
     if (this->isInput()) {
-	ASSERT(this->isInputRepeatable() == FALSE);
+	ASSERT(this->isInputRepeatable() == false);
  	if (idx > md->getInputCount())
 	    return NULL;
     } else {
-	ASSERT(this->isOutputRepeatable() == FALSE);
+	ASSERT(this->isOutputRepeatable() == false);
 	if (idx > md->getOutputCount())
 	    return NULL;
     }
@@ -296,7 +296,7 @@ char *MacroParameterNode::netNodeString(const char *prefix)
     return string;
 }
 
-boolean  MacroParameterNode::netParseAuxComment(const char* comment,
+bool  MacroParameterNode::netParseAuxComment(const char* comment,
 							const char *file,
 							int lineno)
 {
@@ -332,10 +332,10 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 				 &required);
 	    if (itemsParsed != 6)
 	        return this->UniqueNameNode::netParseAuxComment(comment,file,lineno);
-	    visible = TRUE;
+	    visible = true;
 	}
 	if (!this->getNetwork()->isMacro())
-	    this->getNetwork()->makeMacro(TRUE);
+	    this->getNetwork()->makeMacro(true);
 	if (this->isInput())
 	{
 	    this->moveIndex(pos);
@@ -350,7 +350,7 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 		pd->setDefaultValue("(no default)");
 	    else
 		pd->setDefaultValue(value);
-	    pd->setDefaultVisibility((boolean)visible);
+	    pd->setDefaultVisibility((bool)visible);
 	}
 	else
 	{
@@ -358,9 +358,9 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 	    ParameterDefinition *pd = this->getParameterDefinition();
 	    pd->setName(name);
 	    pd->setDescription(description);
-	    pd->setDefaultVisibility((boolean)visible);
+	    pd->setDefaultVisibility((bool)visible);
 	}
-	return TRUE;
+	return true;
     }
     else
 	return this->UniqueNameNode::netParseAuxComment(comment,file,lineno);
@@ -393,7 +393,7 @@ void MacroParameterNode::setTypeSafeOptions (Ark* preferred)
     const char *const *options = macroPd->getValueOptions();
     List *types = macroPd->getTypes();
     if (options && options[0]) {
-	boolean can_coerce = TRUE;
+	bool can_coerce = true;
 	for (int i=0; options[i] && can_coerce; i++) {
 	    const char* option = options[i];
 	    can_coerce&= this->canCoerceValue (option, types);
@@ -421,7 +421,7 @@ void MacroParameterNode::setTypeSafeOptions (Ark* preferred)
     // option values.  option strings are stored as a null-terminated
     // array of char*.
     const char *const *dest_option_values = NULL;
-    boolean can_coerce = TRUE;
+    bool can_coerce = true;
     if (preferred) {
 	destination = preferred->getDestinationNode(paramIndex);
 	destinationDef = destination->getDefinition();
@@ -466,7 +466,7 @@ void MacroParameterNode::setTypeSafeOptions (Ark* preferred)
 	    dest_option_values = destinationParamDef->getValueOptions();
 	    if ((!dest_option_values) || (!dest_option_values[0])) continue;
 
-	    can_coerce = TRUE;
+	    can_coerce = true;
 	    for (int i=0; dest_option_values[i]&&can_coerce; i++) {
 		can_coerce&= this->canCoerceValue (dest_option_values[i], types);
 	    }
@@ -493,16 +493,16 @@ void MacroParameterNode::setTypeSafeOptions (Ark* preferred)
     }
 }
 
-boolean
+bool
 MacroParameterNode::canCoerceValue (const char* option, List* types)
 {
     ListIterator iter;
-    boolean coerced = FALSE;
+    bool coerced = false;
     DXType* dxtype;
     for (iter.setList(*types) ; (dxtype = (DXType*)iter.getNext()) ; ) {
 	char* s = DXValue::CoerceValue (option, dxtype->getType());
 	if (s) {
-	    coerced = TRUE;
+	    coerced = true;
 	    delete s;
 	    break;
 	}
@@ -510,7 +510,7 @@ MacroParameterNode::canCoerceValue (const char* option, List* types)
     return coerced;
 }
 	
-boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
+bool MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 {
     List *newTypesList = NULL;
     if (this->isInput())
@@ -602,7 +602,7 @@ boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 	
     return this->UniqueNameNode::addIOArk(io, index, a);
 }
-boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
+bool MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 {
     int destIndex;
     int srcIndex;
@@ -610,7 +610,7 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
     Node* sourceNode = a->getSourceNode(srcIndex);
     NodeDefinition* destinationDefinition = destinationNode->getDefinition();
     if (!this->UniqueNameNode::removeIOArk(io, index, a))
-	return FALSE;
+	return false;
 
     ParameterDefinition *macroPd = this->getParameterDefinition();
 
@@ -619,7 +619,7 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
     // for this node and therefore no ParameterDefinition.  So just return.
     //
     if (!macroPd)
-	return TRUE;
+	return true;
 
     Parameter *pout;
     if (this->isInput())
@@ -699,7 +699,7 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 	// values at the other end of the ark that we're disconnecting,
 	// then assume that our option values came over this ark, and
 	// toss ours out.  This prevents us from discarding a user's input.
-	boolean we_disconnected_the_one = FALSE;
+	bool we_disconnected_the_one = false;
 
 	ParameterDefinition *dpd = destinationDefinition->getInputDefinition(destIndex);
 	dest_option_vals = dpd->getValueOptions();
@@ -714,7 +714,7 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 		i++;
 	    }
 	    if ((dest_option_vals[i] == NULL) && (src_option_vals[i] == NULL))
-		we_disconnected_the_one = TRUE;
+		we_disconnected_the_one = true;
 	}
 
 	if (we_disconnected_the_one) {
@@ -732,24 +732,24 @@ boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 	if (this->getConfigurationDialog())
 	    this->getConfigurationDialog()->changeOutput(1);
     }
-    return TRUE;
+    return true;
 }
 
 void MacroParameterNode::setIndex(int index)
 {
     this->index = index;
 }
-boolean MacroParameterNode::moveIndex(int index, boolean issue_error)
+bool MacroParameterNode::moveIndex(int index, bool issue_error)
 {
     if (index == this->index)
-	return TRUE;
+	return true;
     if (this->index == -1)
     {
 	this->setIndex(index);
-	return TRUE;
+	return true;
     }
     //ParameterDefinition *macroPd = this->getParameterDefinition();
-    boolean result;
+    bool result;
     if (this->isInput())
 	result = this->getNetwork()->moveInputPosition(this, index);
     else
@@ -771,10 +771,10 @@ boolean MacroParameterNode::moveIndex(int index, boolean issue_error)
     return result;
 }
 
-boolean MacroParameterNode::netPrintAuxComment(FILE *f)
+bool MacroParameterNode::netPrintAuxComment(FILE *f)
 {
     if (!this->UniqueNameNode::netPrintAuxComment(f))
-	return FALSE;
+	return false;
 
     ParameterDefinition *pd = this->getParameterDefinition();
 #define PARAM_OFMT " parameter: position = %d, name = '%s', value = '%s'"\
@@ -796,14 +796,14 @@ boolean MacroParameterNode::netPrintAuxComment(FILE *f)
 	desc,
 	pd->isRequired(),
 	pd->getDefaultVisibility()) < 0)
-	return FALSE;
-    return TRUE;
+	return false;
+    return true;
 }
 //
 // Determine if this node an input or output 
 // Should not be called until after initialization.
 //
-boolean MacroParameterNode::isInput()
+bool MacroParameterNode::isInput()
 { 
     return this->getDefinition()->getInputCount() == 0;
 }
@@ -811,20 +811,20 @@ boolean MacroParameterNode::isInput()
 //
 // Determine if this node is of the given class.
 //
-boolean MacroParameterNode::isA(Symbol classname)
+bool MacroParameterNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassMacroParameterNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->UniqueNameNode::isA(classname);
 }
 
 //
-// Match output_index of this node to input_index of n.  Returns TRUE
+// Match output_index of this node to input_index of n.  Returns true
 // if they can connect.
 //
-boolean MacroParameterNode::typeMatchOutputToInput(
+bool MacroParameterNode::typeMatchOutputToInput(
     int output_index,
     Node *n,
     int input_index)
@@ -837,7 +837,7 @@ boolean MacroParameterNode::typeMatchOutputToInput(
     ASSERT(tin && tout);
 
     List *newTypesList = DXType::IntersectTypeLists(*tin, *tout);
-    boolean result = (newTypesList != NULL && newTypesList->getSize() != 0);
+    bool result = (newTypesList != NULL && newTypesList->getSize() != 0);
     if (newTypesList != NULL) 
 	// FIXME: don't you have to delete the items in the list first?
 	delete newTypesList;
@@ -851,7 +851,7 @@ const char* MacroParameterNode::getUniqueName()
     return pd->getNameString();
 }
 
-boolean MacroParameterNode::canSwitchNetwork(Network *from, Network *to)
+bool MacroParameterNode::canSwitchNetwork(Network *from, Network *to)
 {
 
     if (!to->canBeMacro()) {
@@ -860,13 +860,13 @@ boolean MacroParameterNode::canSwitchNetwork(Network *from, Network *to)
 		"network a macro, but the network contains tools which will\n"
 		"not allow it to become a macro.\n"
 		"Attempt ignored.", this->getNameString());
-	return FALSE; 
+	return false; 
     }
 
     return this->UniqueNameNode::canSwitchNetwork(from,to);
 }
 
-void MacroParameterNode::switchNetwork(Network *from, Network *to, boolean silently)
+void MacroParameterNode::switchNetwork(Network *from, Network *to, bool silently)
 {
     MacroDefinition *md = from->getDefinition();
     ParameterDefinition *pd = this->getParameterDefinition();
@@ -874,7 +874,7 @@ void MacroParameterNode::switchNetwork(Network *from, Network *to, boolean silen
     int n;
 
     dummyPd = new ParameterDefinition(-1);
-    dummyPd->setDummy(TRUE);
+    dummyPd->setDummy(true);
     dummyPd->addType(new DXType(DXType::ObjectType));
 
     if(this->isInput())
@@ -890,7 +890,7 @@ void MacroParameterNode::switchNetwork(Network *from, Network *to, boolean silen
     //
     // Make sure we are a macro
     //
-    to->makeMacro(TRUE);
+    to->makeMacro(true);
 
     md = to->getDefinition();
 
@@ -935,7 +935,7 @@ void MacroParameterNode::switchNetwork(Network *from, Network *to, boolean silen
     int buflen = strlen(buf);
     const char* current_name = pd->getNameString();
     const char* new_name = NUL(char*);
-    boolean name_reset = FALSE;
+    bool name_reset = false;
     if (EqualSubstring(current_name, buf, buflen)) {
 	int endint = 0;
 	const char *end = &current_name[strlen(current_name)];
@@ -943,7 +943,7 @@ void MacroParameterNode::switchNetwork(Network *from, Network *to, boolean silen
 	    ((current_name+buflen+endint) == end)) {
 		sprintf(buf+buflen,"%d",this->getIndex());
 		pd->setName(buf);
-		name_reset = TRUE;
+		name_reset = true;
 	}
     }
 
@@ -987,7 +987,7 @@ void MacroParameterNode::switchNetwork(Network *from, Network *to, boolean silen
 		    new_name
 		);
 	    pd->setName(name_buf);
-	    name_reset = TRUE;
+	    name_reset = true;
 	}
     }
 
@@ -1010,7 +1010,7 @@ void MacroParameterNode::switchNetwork(Network *from, Network *to, boolean silen
 		    name_buf
 		);
 	    pd->setName(name_buf);
-	    name_reset = TRUE;
+	    name_reset = true;
 	}
     }
 }

@@ -177,7 +177,7 @@ static standInDefaultsStruct standInDefaults;
 //        return standInDefaults.bboard.foreground;
 //}
 
-boolean StandIn::ClassInitialized = FALSE;
+bool StandIn::ClassInitialized = false;
 //Widget  StandIn::DragIcon = NULL;
 Dictionary* StandIn::DragTypeDictionary = new Dictionary;
 
@@ -225,7 +225,7 @@ StandIn::~StandIn()
 }
 
 void StandIn::drawTab(int         paramIndex,
-                      boolean     outputTab)
+                      bool     outputTab)
 {
 //    //XtWidgetGeometry geometry;
 //    int              x,x2;
@@ -236,7 +236,7 @@ void StandIn::drawTab(int         paramIndex,
 //    //Widget           line;
 //    Node*            node;
 //    int              inputTab;
-//    int              in = FALSE;
+//    int              in = false;
 //
 //
 //    inputTab = !outputTab;
@@ -244,7 +244,7 @@ void StandIn::drawTab(int         paramIndex,
 //    node = this->node;
 //
 //
-//    if ((node->isParameterVisible(paramIndex,inputTab) == FALSE) ||
+//    if ((node->isParameterVisible(paramIndex,inputTab) == false) ||
 //        (inputTab && node->getInputCount() == 0))
 //	return;
 //
@@ -253,28 +253,28 @@ void StandIn::drawTab(int         paramIndex,
 //
 //    tab = this->getParameterTab(paramIndex,inputTab);
 //    //y = tab->getTabY();
-//    boolean is_connected = node->isParameterConnected(paramIndex,inputTab);
+//    bool is_connected = node->isParameterConnected(paramIndex,inputTab);
 //
 //    if  (is_connected OR (inputTab && !node->isInputDefaulting(paramIndex)))
 //        {
 //            /*
 //             * Move the tab in.
 //             */
-//            in = TRUE;
+//            in = true;
 //            int new_y = y + (outputTab ? - standInDefaults.io.height
 //                             : standInDefaults.io.height);
 //            tab->setBackground(standInDefaults.io.background);
-//	    tab->moveTabY(new_y, FALSE);
+//	    tab->moveTabY(new_y, false);
 //        }
 //        else
 //        {
 //            /*
 //             * Move the tab out.
 //             */
-//            in = FALSE;
+//            in = false;
 //            if (inputTab && node->isInputRequired(paramIndex))
 //		tab->setBackground(standInDefaults.io.required_background);
-//	    tab->moveTabY(y, FALSE);
+//	    tab->moveTabY(y, false);
 //        }
 //
 //    /*
@@ -395,11 +395,11 @@ void StandIn::initialize()
 	//if ((theDXApplication->appAllowsSavingNetFile()) &&
 	//    (theDXApplication->appAllowsSavingCfgFile()) &&
 	//    (theDXApplication->appAllowsEditorAccess())) {
-	//    this->addSupportedType (StandIn::Modules, DXMODULES, TRUE);
-	//    this->addSupportedType (StandIn::Interactors, DXINTERACTOR_NODES,FALSE);
+	//    this->addSupportedType (StandIn::Modules, DXMODULES, true);
+	//    this->addSupportedType (StandIn::Interactors, DXINTERACTOR_NODES,false);
 	//}
 	//if (theDXApplication->appAllowsEditorAccess())
-	//    this->addSupportedType (StandIn::Trash, DXTRASH, FALSE);
+	//    this->addSupportedType (StandIn::Trash, DXTRASH, false);
 
 	//
 	// Delete the atoms set up when starting the drag
@@ -513,7 +513,7 @@ int StandIn::getOutputParameterTabY(int i)
 
 
 
-void StandIn::displayTabLabel(int index, boolean outputTab)
+void StandIn::displayTabLabel(int index, bool outputTab)
 {
 //char             str1[64];
 //char             str2[64];
@@ -677,7 +677,7 @@ void StandIn::clearTabLabel()
 
 void StandIn::ToggleHotSpots(EditorWindow* editor,
                     Node*    destnode,
-                    boolean  on)
+                    bool  on)
 {
     Node*  srcnode;
     ListIterator iterator;
@@ -823,7 +823,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 //
 //    if (workspace->first)
 //    {
-//        workspace->first = FALSE;
+//        workspace->first = false;
 //    }
 //    else
 //    {
@@ -856,7 +856,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 //        if (workspace->hot_spot)
 //        {
 //            ToggleHotSpots
-//                (editor, workspace->hot_spot_node , FALSE);
+//                (editor, workspace->hot_spot_node , false);
 //                 workspace->hot_spot = NUL(Widget);
 //        }
 //	if(workspace->labeled_tab)
@@ -890,7 +890,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 		//workspace->hot_spot)
 	 //   {
 		//ToggleHotSpots
-		//    (editor, nodePtr, FALSE);
+		//    (editor, nodePtr, false);
 		//workspace->hot_spot = NUL(Widget);
 	 //   }
 
@@ -906,7 +906,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 		//workspace->hot_spot_node = nodePtr;
 
 		//ToggleHotSpots
-		//    (editor, nodePtr, TRUE);
+		//    (editor, nodePtr, true);
   //          }
   //      }
 	/*
@@ -932,9 +932,9 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 	//{
 	//    Tab *tab;
 	//    int i;
-	//    boolean found;
+	//    bool found;
 
-	//    found = FALSE;
+	//    found = false;
 	//    int count = curNodeStandInPtr->node->getInputCount();
 	//    for (i = 1; i <= count ; i++ ) 
 	//    {
@@ -945,9 +945,9 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 	//	//    {
 	//	//	workspace->labeled_tab = labeled_tab;
 	//	//	workspace->labeled_si = curNodeStandInPtr;
-	//	//	curNodeStandInPtr->displayTabLabel(i, FALSE);
+	//	//	curNodeStandInPtr->displayTabLabel(i, false);
 	//	//    }
-	//	//    found = TRUE;
+	//	//    found = true;
 	//	//    break;
 	//	//}
 	//    }
@@ -963,9 +963,9 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 	//			//	{
 	//			//		workspace->labeled_tab = labeled_tab;
 	//			//		workspace->labeled_si = curNodeStandInPtr;
-	//			//		curNodeStandInPtr->displayTabLabel(i, TRUE);
+	//			//		curNodeStandInPtr->displayTabLabel(i, true);
 	//			//	}
-	//			//	found = TRUE;
+	//			//	found = true;
 	//			//	break;
 	//			//}
 	//		}
@@ -1067,7 +1067,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 //    // Display the parameter name
 //    workspace->labeled_tab = widget;
 //    workspace->labeled_si = this;
-//    this->displayTabLabel(i, FALSE);
+//    this->displayTabLabel(i, false);
 //
 //    /*
 //     * If this input parameter is "pressed in" (in use),
@@ -1101,7 +1101,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 //    workspace->tracker     = (XtEventHandler)StandIn_TrackArkEH;
 //    workspace->io_tab      = widget;
 //    workspace->source_spot = standInRoot;
-//    workspace->first       = TRUE;
+//    workspace->first       = true;
 //
 //    /*
 //     * Get current node and param location.
@@ -1209,7 +1209,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 //     */
 //    XGrabPointer(workspace->display,
 //                 XtWindow(widget),
-//                 FALSE,
+//                 false,
 //                 ButtonPressMask | ButtonMotionMask | ButtonReleaseMask,
 //                 GrabModeAsync,
 //                 GrabModeAsync,
@@ -1230,14 +1230,14 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 //              workspace->last_x  + workspace->start_x,
 //              workspace->last_y  + workspace->start_y);
 //
-//    workspace->first = FALSE;
+//    workspace->first = false;
 //
 //    /*
 //     * Add cursor tracking handler.
 //     */
 //    XtAddEventHandler(widget,
 //                      ButtonMotionMask,
-//                      FALSE,
+//                      false,
 //                      workspace->tracker,
 //                      (XtPointer)node);
 //}
@@ -1298,7 +1298,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 //    // Display the parameter name
 //    workspace->labeled_tab = widget;
 //    workspace->labeled_si = this;
-//    this->displayTabLabel(i, TRUE);
+//    this->displayTabLabel(i, true);
 //
 //    /*
 //     * Remember the source (output) end of the arc (no destination yet).
@@ -1330,7 +1330,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 //    workspace->tracker     = (XtEventHandler)StandIn_TrackArkEH;
 //    workspace->io_tab      = widget;
 //    workspace->source_spot = standInRoot;
-//    workspace->first       = TRUE;
+//    workspace->first       = true;
 //
 //    workspace->origin = ORG_SOURCE;
 //
@@ -1352,7 +1352,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 //     */
 //    XGrabPointer(workspace->display,
 //                 XtWindow(widget),
-//                 FALSE,
+//                 false,
 //                 ButtonPressMask | ButtonMotionMask | ButtonReleaseMask,
 //                 GrabModeAsync,
 //                 GrabModeAsync,
@@ -1364,7 +1364,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 //     */
 //    XtAddEventHandler(widget,
 //                      ButtonMotionMask,
-//                      FALSE,
+//                      false,
 //                      workspace->tracker,
 //                      (XtPointer)node);
 //}
@@ -1372,7 +1372,7 @@ void StandIn::ToggleHotSpots(EditorWindow* editor,
 void StandIn::deleteArk(Ark *a)
 {
     EditorWindow* editor = this->node->getNetwork()->getEditor();
-    if (editor) editor->notifyArk(a,FALSE);
+    if (editor) editor->notifyArk(a,false);
     delete a;
 }
 
@@ -1442,7 +1442,7 @@ void StandIn::deleteArk(Ark *a)
 //    {
 //        XtRemoveEventHandler(workspace->io_tab,
 //                             ButtonMotionMask,
-//                             FALSE,
+//                             false,
 //                             workspace->tracker,
 //                             (XtPointer)node);
 //        workspace->tracker = NUL(XtEventHandler);
@@ -1680,15 +1680,15 @@ void StandIn::deleteArk(Ark *a)
 //         */
 //        if (workspace->hot_spot && nodePtr != NULL)
 //        {
-//            ToggleHotSpots(editor, nodePtr, FALSE);
+//            ToggleHotSpots(editor, nodePtr, false);
 //            workspace->hot_spot = NUL(Widget);
 //        }
 //
 //        /*
 //         * Delete the old arc, if applicable.
 //         */
-//	if(workspace->io_tab == t_widget) workspace->remove_arcs = FALSE;
-//        /*notified = FALSE;*/
+//	if(workspace->io_tab == t_widget) workspace->remove_arcs = false;
+//        /*notified = false;*/
 //        if (workspace->remove_arcs) {
 //	      if (!standIn) {
 //		  int dummy;
@@ -1702,7 +1702,7 @@ void StandIn::deleteArk(Ark *a)
 //
 //	      node2  = workspace->dst.node;
 //	      param2 = workspace->dst.param;
-//	      node2->setIODefaultingStatus(param2, TRUE, TRUE, FALSE);
+//	      node2->setIODefaultingStatus(param2, true, true, false);
 //        }
 //
 //        /*
@@ -1784,7 +1784,7 @@ void StandIn::deleteArk(Ark *a)
 //    workspace->dst.node  = NULL;
 //    workspace->dst.param = 0;
 //
-//    workspace->first       = TRUE;
+//    workspace->first       = true;
 //    workspace->io_tab      = NUL(Widget);
 //    workspace->source_spot = NUL(Widget);
 //}
@@ -1806,7 +1806,7 @@ void StandIn::deleteArk(Ark *a)
 //    
 //}
 
-void StandIn::handleSelectionChange(boolean select)
+void StandIn::handleSelectionChange(bool select)
 {
     Node *node = this->node;
     ASSERT(node);
@@ -1920,8 +1920,8 @@ void StandIn::adjustParameterLocations(int width)
 
 
  //   for (i = 1; i <= icnt; i++) {
- //       if ( (node->isInputVisible(i) == FALSE) ||
-	//     (node->isInputViewable(i) == FALSE) )
+ //       if ( (node->isInputVisible(i) == false) ||
+	//     (node->isInputViewable(i) == false) )
  //          continue;
 
  //       tab = (Tab *) inputTabList.getElement(i);
@@ -1933,7 +1933,7 @@ void StandIn::adjustParameterLocations(int width)
  //       x = ((2 * (j-1) + 1) * (width)) /
  //           (2 * vi) - (standInDefaults.io.width / 2);
 
-	//tab->moveTabX(x, TRUE);
+	//tab->moveTabX(x, true);
 
  //       x =  (x + standInDefaults.io.width / 2) -
  //             standInDefaults.line.thickness / 2;
@@ -1956,7 +1956,7 @@ void StandIn::adjustParameterLocations(int width)
  //   j = 0;
 
  //   for (i = 1; i <= ocnt; i++) {
- //       if (node->isOutputVisible(i) == FALSE)
+ //       if (node->isOutputVisible(i) == false)
  //          continue;
 
  //       tab = (Tab *) outputTabList.getElement(i);
@@ -1972,7 +1972,7 @@ void StandIn::adjustParameterLocations(int width)
 	////
 	//// Move it and show it
 	////
-	//tab->moveTabX(x, TRUE);
+	//tab->moveTabX(x, true);
 	//tab->manage();
 
  //       if (tab->getLine() != NULL) {
@@ -2023,7 +2023,7 @@ Tab *StandIn::createOutputTab(int ndx, int width)
 //    tab->setBackground(standInDefaults.io.background);
 //
 //    Position y = this->buttonHeight + standInDefaults.io.height;
-//    tab->moveTabXY(x, y, TRUE);
+//    tab->moveTabXY(x, y, true);
 //
 //    Widget tabRoot = tab->getRootWidget();
 //    XtAddCallback(tabRoot,
@@ -2082,7 +2082,7 @@ Tab *StandIn::createInputTab(int ndx, int width)
 //        tab->setBackground(standInDefaults.io.background);
 //    }
 //
-//    tab->moveTabXY(x, 0, TRUE);
+//    tab->moveTabXY(x, 0, true);
 //
 //    XtAddCallback(tab->getRootWidget(),
 //                      XmNarmCallback,
@@ -2176,7 +2176,7 @@ void StandIn::createStandIn()
 //    	this->getResources((XtPointer)&standInDefaults,
 //		       _SIResourceList,
 //		       XtNumber(_SIResourceList));
-//	StandIn::ClassInitialized = TRUE;
+//	StandIn::ClassInitialized = true;
 //    }
 //
 //    XtVaGetValues(parent, XmNlineThickness, &(standInDefaults.line.thickness), NULL);
@@ -2190,7 +2190,7 @@ void StandIn::createStandIn()
 //    /*
 //     * Register selection callback.
 //     */
-//    this->selected = FALSE;   
+//    this->selected = false;   
 //    XmWorkspaceAddCallback
 //        (standInRoot,
 //        XmNselectionCallback,
@@ -2242,7 +2242,7 @@ void StandIn::createStandIn()
 //
 //    n = 0;
 //    XtSetArg(arg[n], XmNheight,        this->buttonHeight); n++;
-//    XtSetArg(arg[n], XmNrecomputeSize, FALSE);  n++;
+//    XtSetArg(arg[n], XmNrecomputeSize, false);  n++;
 //    XtSetValues(button, arg, n);
 //
 //
@@ -2259,7 +2259,7 @@ void StandIn::createStandIn()
 //    XtSetArg(arg[n0], XmNwidth,       standInDefaults.io.width);     n0++;
 //    XtSetArg(arg[n0], XmNheight,      standInDefaults.io.height);    n0++;
 //    XtSetArg(arg[n0], XmNborderWidth, 0);                 n0++;
-//    XtSetArg(arg[n0], XmNfillOnArm,   FALSE);                        n0++;
+//    XtSetArg(arg[n0], XmNfillOnArm,   false);                        n0++;
 //    XtSetArg(arg[n0], XmNy,           y);                            n0++;
 //#endif
 //
@@ -2280,7 +2280,7 @@ void StandIn::createStandIn()
 //	    XtAddEventHandler (tab->getRootWidget(), KeyPressMask, False,
 //		(XtEventHandler)StandIn_TabKeyNavEH, (XtPointer)NULL);
 //	}
-//	tab->moveTabY(0, FALSE);
+//	tab->moveTabY(0, false);
 //	tab->setBackground(standInDefaults.io.background);
 //	inputTabList.appendElement((void *) tab);
 //
@@ -2323,7 +2323,7 @@ void StandIn::createStandIn()
 //		(XtEventHandler)StandIn_TabKeyNavEH, (XtPointer)NULL);
 //	}
 //
-//	tab->moveTabY(y, TRUE);
+//	tab->moveTabY(y, true);
 //	tab->setBackground(standInDefaults.io.background);
 //	outputTabList.appendElement((void *) tab);
 //
@@ -2373,7 +2373,7 @@ void StandIn::createStandIn()
 //#if XmVersion >= 1001
 //// FIXME
 ////    XtAddEventHandler(this->getRootWidget(), ButtonPressMask,
-////                      FALSE, _uinHelpEventHandler, (XtPointer)NULL);
+////                      false, _uinHelpEventHandler, (XtPointer)NULL);
 //#endif
 //
 }
@@ -2401,13 +2401,13 @@ void StandIn::createStandIn()
 //    // Arrange to call XGetWindowAttributes only once.  It's too 
 //    // expensive an unnecessary to do every time we create a StandIn.
 //    //
-//    static boolean getatt_initialized = FALSE;
+//    static bool getatt_initialized = false;
 //    static int your_event_mask = 0;
 //    static int do_not_propagate_mask = 0;
 //
 //    if (!getatt_initialized) {
 //	XGetWindowAttributes(dsp, button_window, &getatt);
-//	//getatt_initialized = TRUE;
+//	//getatt_initialized = true;
 //	your_event_mask = getatt.your_event_mask;
 //	do_not_propagate_mask = getatt.do_not_propagate_mask;
 //    }
@@ -2460,10 +2460,10 @@ void StandIn::addArk(EditorWindow* editor, Ark *a)
  //       dst_standIn = dst_node->getStandIn();
  //   }
 
- //   if (src_node->isParameterVisible(paramInd, FALSE) &&
-	//src_node->isParameterViewable(paramInd,FALSE) &&
-	//dst_node->isParameterVisible(arcIndex, TRUE)  &&
-	//dst_node->isParameterViewable(arcIndex,TRUE))
+ //   if (src_node->isParameterVisible(paramInd, false) &&
+	//src_node->isParameterViewable(paramInd,false) &&
+	//dst_node->isParameterVisible(arcIndex, true)  &&
+	//dst_node->isParameterViewable(arcIndex,true))
  //   {
 	//
 	//l = XmCreateWorkspaceLine((XmWorkspaceWidget)workspace->getRootWidget(),
@@ -2480,8 +2480,8 @@ void StandIn::addArk(EditorWindow* editor, Ark *a)
 
 	//asi = new ArkStandIn((XmWorkspaceWidget) workspace->getRootWidget(), l);
 	//a->setArkStandIn(asi);
-	//src_standIn->drawTab(paramInd, TRUE);
-	//dst_standIn->drawTab(arcIndex, FALSE);
+	//src_standIn->drawTab(paramInd, true);
+	//dst_standIn->drawTab(arcIndex, false);
  //   }
 }
 
@@ -2497,12 +2497,12 @@ void StandIn::addArk(EditorWindow* editor, Ark *a)
 // separated unmanaged window.  The point is to prevent operating of selected nodes
 // you don't know are selected.
 //
-void StandIn::setSelected(boolean s)
+void StandIn::setSelected(bool s)
 {
     WorkSpace* ws = this->getWorkSpace();
-    if (ws->isManaged() == FALSE) return ;
+    if (ws->isManaged() == false) return ;
 
-    boolean old_s = this->selected;
+    bool old_s = this->selected;
 
     this->selected = s;
 
@@ -2512,7 +2512,7 @@ void StandIn::setSelected(boolean s)
     }
 
 }
-void StandIn::indicateSelection(boolean select)
+void StandIn::indicateSelection(bool select)
 {
  //   Arg     arg[1];
 
@@ -2524,7 +2524,7 @@ void StandIn::indicateSelection(boolean select)
 }
 
 
-void StandIn::ioStatusChange(int index, boolean outputTab,
+void StandIn::ioStatusChange(int index, bool outputTab,
 				NodeParameterStatusChange status) 
 {
     if (status == Node::ParameterSetValueChanged)
@@ -2534,7 +2534,7 @@ void StandIn::ioStatusChange(int index, boolean outputTab,
     drawTab(index,outputTab);
 }
 
-boolean StandIn::setMinimumWidth(int &width)
+bool StandIn::setMinimumWidth(int &width)
 {
    // int     min_width, visible_inputs, visible_outputs;
    // int     curr_width, curr_height;
@@ -2562,14 +2562,14 @@ boolean StandIn::setMinimumWidth(int &width)
    // this->getXYSize(&curr_width, &curr_height);
 
    // if (curr_width  == width) 
-   //     return(FALSE);  // no change necessary
+   //     return(false);  // no change necessary
    // 
    // this->setXYSize(width, curr_height);
 
    // XtSetArg(arg[0], XmNwidth, width);
    // XtSetValues(this->buttonWidget, arg, 1);
 
-    //return(TRUE);
+    //return(true);
 	return false;
 }
 
@@ -2589,8 +2589,8 @@ void StandIn::addInput(int index)
 
  //   this->setMinimumWidth(width);
  //   tab = createInputTab(this->getRootWidget(), index, width);
- //   if ((this->node->isInputVisible(index) == FALSE) ||
- //       (this->node->isInputViewable(index) == FALSE))
+ //   if ((this->node->isInputVisible(index) == false) ||
+ //       (this->node->isInputViewable(index) == false))
 	//tab->unmanage();
 
 
@@ -2615,7 +2615,7 @@ void StandIn::removeLastInput()
     this->adjustParameterLocations(width);
 }
 
-void StandIn::setVisibility(int index, boolean outputTab)
+void StandIn::setVisibility(int index, bool outputTab)
 {
     //int width;
     //Tab  *tab;
@@ -2633,7 +2633,7 @@ void StandIn::setVisibility(int index, boolean outputTab)
     ////
     //if (node->isParameterVisible(index,!outputTab) == tab->isManaged()) return;
 
-    //if (node->isParameterVisible(index,!outputTab) == FALSE) {
+    //if (node->isParameterVisible(index,!outputTab) == false) {
     //    if (tab->isManaged())
     //        tab->unmanage();
     //} else {
@@ -2706,7 +2706,7 @@ void StandIn::removeLastOutput()
 // PostScript output file).  We do not print the ArkStandIns, but do
 // print the Tabs.
 //
-boolean StandIn::PrintPostScriptSetup(FILE *f)
+bool StandIn::PrintPostScriptSetup(FILE *f)
 {
 
     if (fprintf(f,"/Box { %% Usage : r g b x y width height\n"
@@ -2726,9 +2726,9 @@ boolean StandIn::PrintPostScriptSetup(FILE *f)
 			"\t1 setlinewidth stroke\n"
 			"\tend			%% end of dictionary\n"
 			"} bind def \n") <= 0)
-	return FALSE;
+	return false;
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -2776,7 +2776,7 @@ const char *StandIn::getPostScriptLabelFont()
 //    *b = xcolor.blue  / 65535.0;
 //}
 
-boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
+bool StandIn::printPostScriptPage(FILE *f, bool label_parameters)
 {
  //   int tab_xpos, tab_ypos, button_xpos, button_ypos, xpos, ypos, xsize, ysize;
  //   int i, standin_xpos, standin_ypos, standin_ysize, standin_xsize;;
@@ -2815,7 +2815,7 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
  //   if (fprintf(f,"%f %f %f %d %d %d %d Box\n", 
 	//		red,green,blue,
 	//		button_xpos,button_ypos, xsize, ysize) < 0)
-	//return FALSE;
+	//return false;
  //   float font_scale = ysize/3;
  //   const char *label = this->getButtonLabel();
  //   char *esc_label;
@@ -2852,13 +2852,13 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	//	   ysize, button_ypos,
 	//	   xsize, button_xpos,
 	//	   esc_label) <=0)
-	//return FALSE;
+	//return false;
 	//	
 
  //   if (esc_label != label)
 	//delete esc_label;
 
- //   boolean param_font_set = FALSE;
+ //   bool param_font_set = false;
  //   font_scale = ysize/7;
  //   //
  //   // Print the input tabs 
@@ -2878,25 +2878,25 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	//    if (fprintf(f,"%f %f %f %d %d %d %d Box\n", 
 	//		red,green,blue,
 	//		xpos + tab_xpos,ypos + tab_ypos, xsize, ysize) < 0)
-	//	return FALSE;
+	//	return false;
 
 	//    if (tnode->isInputConnected(i)) {
 	//	int x =  (int) (xpos + tab_xpos + xsize/2.0);
 	//	int y =  ypos + tab_ypos - ysize;
 	//	if (fprintf(f,"%d %d moveto %d %d lineto stroke\n", 
 	//		    x, y, x, y+ysize) < 0)
-	//	    return FALSE;
+	//	    return false;
 	//	
 	//    } else if (label_parameters && !tnode->isInputDefaulting(i)) {
 	//	int x =  (int) (xpos + tab_xpos + .50*xsize);
 	//	int y =  (int) (ypos + tab_ypos - .20*ysize);
 	//	// Input is set 
 	//	if (!param_font_set) {
-	//	    param_font_set = TRUE;
+	//	    param_font_set = true;
 	//	    if (fprintf(f,"/Helvetica findfont\n"
 	//	      "[ %f 0 0 -%f 0 0 ] makefont setfont\n",
 	//	       font_scale, font_scale) <= 0)
-	//		return FALSE;
+	//		return false;
 	//	} 
 	//	char buf[1024];
 	//	if (tnode->isInputDefaulting(i)) {
@@ -2951,7 +2951,7 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	//	      	"0 0 moveto\n"
 	//		"(%s) show grestore\n",
 	//		x, y, buf) <=0)
-	//		return FALSE;
+	//		return false;
 	//	
 	//    }
 	//}
@@ -2972,13 +2972,13 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	//    if (fprintf(f,"%f %f %f %d %d %d %d Box\n", 
 	//		red,green,blue,
 	//		xpos + tab_xpos,ypos + tab_ypos, xsize, ysize) < 0)
-	//	return FALSE;
+	//	return false;
 	//    if (this->node->isOutputConnected(i)) {
 	//	int x =  (int) (xpos + tab_xpos + xsize/2.0);
 	//	int y =  ypos + tab_ypos + ysize;
 	//	if (fprintf(f,"%d %d moveto %d %d lineto stroke\n", 
 	//		    x, y, x, y+ysize) < 0)
-	//	    return FALSE;
+	//	    return false;
 	//	
 	//    }
 	//}
@@ -3006,24 +3006,24 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	//extra_text = this->node->getExtraPSText();
  //   if (extra_text) {
 
-	//boolean below_box = TRUE;
-	//boolean inside_box = TRUE;
+	//bool below_box = true;
+	//bool inside_box = true;
 	//int i = 1;
 	//iterator.setList(this->outputTabList) ;
 	//Tab* t;
 	//while ( (t = (Tab*)iterator.getNext()) ) {
 	//    if (!t->isManaged()) continue;
-	//    boolean iscon = this->node->isOutputConnected(i);
-	//    if (iscon) inside_box = FALSE;
-	//    else below_box = FALSE;
+	//    bool iscon = this->node->isOutputConnected(i);
+	//    if (iscon) inside_box = false;
+	//    else below_box = false;
 	//    i++;
 	//}
 
 	//if (this->outputTabList.getSize() == 1) {
 	//    if (this->node->isOutputConnected(1))
-	//	below_box = TRUE;
+	//	below_box = true;
 	//    else
-	//	below_box = FALSE;
+	//	below_box = false;
 	//    inside_box = !below_box;
 	//}
 
@@ -3069,11 +3069,11 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	//    
 	//    font_scale = font_scale_height/7;
 	//    if (!param_font_set) {
-	//	param_font_set = TRUE;
+	//	param_font_set = true;
 	//	if (fprintf(f,"/Helvetica findfont\n"
 	//	  "[ %f 0 0 -%f 0 0 ] makefont setfont\n",
 	//	   font_scale, font_scale) <= 0)
-	//	    return FALSE;
+	//	    return false;
 	//    } 
 	//    if (fprintf(f,"(%s) stringwidth pop\n"
 	//		  "0.5 neg mul 0.5 %d mul add %d add  %% x position\n"
@@ -3083,13 +3083,13 @@ boolean StandIn::printPostScriptPage(FILE *f, boolean label_parameters)
 	//		   standin_xsize, standin_xpos,
 	//		   standin_ysize + standin_ypos + box_relative,
 	//		   esc_label) <=0)
-	//	return FALSE;
+	//	return false;
 	//	    
 	//    delete esc_label;
 	//}
  //   }
 
- //   return TRUE;
+ //   return true;
 	return false;
 }
 
@@ -3131,10 +3131,10 @@ void StandIn::dropFinish(long operation, int tag, unsigned char status)
 }
 
 
-//boolean StandIn::decodeDragType (int tag,
+//bool StandIn::decodeDragType (int tag,
 //	char * a, XtPointer *value, unsigned long *length, long operation)
 //{
-//boolean retVal;
+//bool retVal;
 //char *hostname;
 //int len;
 //
@@ -3152,7 +3152,7 @@ void StandIn::dropFinish(long operation, int tag, unsigned char status)
 //	case StandIn::Interactors:
 //	    hostname = new char[MAXHOSTNAMELEN + 16];
 //	    if (gethostname (hostname, MAXHOSTNAMELEN) == -1) {
-//		retVal = FALSE;
+//		retVal = false;
 //		break;
 //	    }
 //	    len = strlen(hostname);
@@ -3160,12 +3160,12 @@ void StandIn::dropFinish(long operation, int tag, unsigned char status)
 //
 //	    *value = hostname;
 //	    *length = strlen(hostname);
-//	    retVal = TRUE;
+//	    retVal = true;
 //	    break;
 //
 //	// this->dropFinish will take care of the delete.  No data is required.
 //	case StandIn::Trash:
-//	    retVal = TRUE;
+//	    retVal = true;
 //
 //	    // dummy pointer. This memory shouldn't be referenced anywhere.
 //	    *value = (XtPointer)malloc(4);
@@ -3173,7 +3173,7 @@ void StandIn::dropFinish(long operation, int tag, unsigned char status)
 //	    break;
 //
 //	default:
-//	    retVal = FALSE;
+//	    retVal = false;
 //	    break;
 //    }
 //    return retVal;
@@ -3260,8 +3260,8 @@ void StandIn::dropFinish(long operation, int tag, unsigned char status)
 //void StandIn_TabKeyNavEH
 //(Widget w, XtPointer , XEvent *xev, Boolean *keep_going)
 //{
-//    *keep_going = TRUE;
-//    boolean is_help_key = FALSE;
+//    *keep_going = true;
+//    bool is_help_key = false;
 //    XKeyEvent* xke = (XKeyEvent*)xev;
 //    KeySym lookedup = XLookupKeysym (xke, 0);
 //
@@ -3269,7 +3269,7 @@ void StandIn::dropFinish(long operation, int tag, unsigned char status)
 //    // problem here is that we don't know for sure that F1 is help.
 //    // What we really want is to compare to osfHelp, not XK_F1.
 //    //
-//    if (lookedup == XK_F1) is_help_key = TRUE;
+//    if (lookedup == XK_F1) is_help_key = true;
 //
 //    // the meaning of False here, is that we have no need for <Key> events
 //    // in the io tabs.  They have always been hooked up and working but
@@ -3297,7 +3297,7 @@ void StandIn::dropFinish(long operation, int tag, unsigned char status)
 //    editor = network->getEditor();
 //    si->drag_drop_wpid = 0;
 //    editor->getDeleteNodeCmd()->execute();
-//    return TRUE;
+//    return true;
 //}
 //} // extern C
 
@@ -3328,7 +3328,7 @@ void StandIn::setXYPosition (int x, int y)
 // Store the this pointer in the widget's XmNuserData so that we
 // can retrieve the Object in a callback in EditorWorkSpace.C
 // 
-//void StandIn::setRootWidget(Widget root, boolean standardDestroy)
+//void StandIn::setRootWidget(Widget root, bool standardDestroy)
 //{
 //    this->UIComponent::setRootWidget(root, standardDestroy);
 //    this->setLocalData(this);

@@ -19,7 +19,7 @@
 
 NoUndoDXWindowCommand::NoUndoDXWindowCommand(const char*   name,
 				       CommandScope* scope,
-				       boolean       active,
+				       bool       active,
 				       DXWindow  *window,
 				       DXWindowCommandType comType ) :
 	NoUndoCommand(name, scope, active)
@@ -29,7 +29,7 @@ NoUndoDXWindowCommand::NoUndoDXWindowCommand(const char*   name,
 }
 
 
-boolean NoUndoDXWindowCommand::doIt(CommandInterface *ci)
+bool NoUndoDXWindowCommand::doIt(CommandInterface *ci)
 {
     DXWindow *window = this->dxWindow;
 
@@ -47,7 +47,7 @@ boolean NoUndoDXWindowCommand::doIt(CommandInterface *ci)
 	    ASSERT(0);
     }
 
-    return TRUE;
+    return true;
 }
 
 

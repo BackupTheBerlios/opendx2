@@ -42,7 +42,7 @@ class NoUndoEditorCommand : public NoUndoCommand
     EditorCommandType 	commandType;
     EditorUndoType	undoType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -50,7 +50,7 @@ class NoUndoEditorCommand : public NoUndoCommand
     //
     NoUndoEditorCommand(const char*   name,
                    CommandScope  *scope,
-                   boolean       active,
+                   bool       active,
 		   EditorWindow  *editor,
 		   EditorCommandType comType,
 		   EditorUndoType undoType=AffectsUndo);

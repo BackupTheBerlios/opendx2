@@ -32,7 +32,7 @@
 class ItalicLabeledStandIn : public LabeledStandIn
 {
   private:
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //
     // Private member data:

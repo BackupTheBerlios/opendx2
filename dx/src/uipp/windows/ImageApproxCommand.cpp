@@ -17,9 +17,9 @@
 
 ImageApproxCommand::ImageApproxCommand(const char   *name,
 						 CommandScope *scope,
-						 boolean       active,
+						 bool       active,
 						 ImageWindow  *w,
-						 boolean    up,
+						 bool    up,
 						 ApproxMode mode):
     NoUndoCommand(name, scope, active)
 {
@@ -28,8 +28,8 @@ ImageApproxCommand::ImageApproxCommand(const char   *name,
     this->mode = mode;
 }
 
-boolean ImageApproxCommand::doIt(CommandInterface *ci)
+bool ImageApproxCommand::doIt(CommandInterface *ci)
 {
     this->imageWindow->setApproximation(this->up, this->mode);
-    return TRUE;
+    return true;
 }

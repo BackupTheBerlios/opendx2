@@ -47,7 +47,7 @@ class GraphLayout;
 //
 class LayoutInfo : public Base {
     private:
-	boolean initialized;
+	bool initialized;
 
     protected:
 	friend class GraphLayout;
@@ -60,11 +60,11 @@ class LayoutInfo : public Base {
 	int orig_x, orig_y;
 
 	// are the values in x,y set?
-	boolean positioned_yet;
+	bool positioned_yet;
 
 	// was the position of the node adjusted (in some
 	// screwy way) because of a collision with another node.
-	boolean collision;
+	bool collision;
 
 	// fetched width and height stored redundantly but
 	// avoids using XtGetValues over and over.
@@ -72,14 +72,14 @@ class LayoutInfo : public Base {
 
 	LayoutInfo () {
 	    this->x = this->y = this->w = this->h = -1;
-	    this->positioned_yet = FALSE;
-	    this->collision = FALSE;
-	    this->initialized = FALSE;
+	    this->positioned_yet = false;
+	    this->collision = false;
+	    this->initialized = false;
 	}
 
 	void initialize (UIComponent* uic);
 
-	virtual boolean isInitialized() { return this->initialized; }
+	virtual bool isInitialized() { return this->initialized; }
 
     public:
 	virtual ~LayoutInfo(){}
@@ -95,16 +95,16 @@ class LayoutInfo : public Base {
 	    w = this->w;
 	    h = this->h;
 	}
-	boolean isPositioned() { return this->positioned_yet; }
-	void reposition() { this->collision = this->positioned_yet = FALSE; }
+	bool isPositioned() { return this->positioned_yet; }
+	void reposition() { this->collision = this->positioned_yet = false; }
 	virtual void setProposedLocation(int x, int y) {
 	    this->x = x;
 	    this->y = y;
-	    this->positioned_yet = TRUE;
+	    this->positioned_yet = true;
 	}
 
-	void setCollided(boolean c=TRUE) { this->collision = c; }
-	boolean collided() { return this->collision; }
+	void setCollided(bool c=true) { this->collision = c; }
+	bool collided() { return this->collision; }
 
 	//
 	// Returns a pointer to the class name.
@@ -124,7 +124,7 @@ class NodeInfo : public LayoutInfo
 	NodeInfo* straightness_destination;
 
 	Ark* straightness_opportunity;
-	boolean straightness_set;
+	bool straightness_set;
 	int offset_for_straightness;
 
     protected:
@@ -135,14 +135,14 @@ class NodeInfo : public LayoutInfo
 	LayoutGroup* group;
 
 	List* connected_nodes;
-	boolean owns_list;
+	bool owns_list;
 
 	NodeInfo () {
 	    this->hops = 0;
 	    this->group = NUL(LayoutGroup*);
 	    this->connected_nodes = NUL(List*);
-	    this->owns_list = FALSE;
-	    this->straightness_set = FALSE;
+	    this->owns_list = false;
+	    this->straightness_set = false;
 	    this->straightness_destination = NUL(NodeInfo*);
 	}
 	void initialize (Node* n, int hops);
@@ -245,7 +245,7 @@ class NodeDistance
 class LayoutGroup : public Base
 {
     private:
-	boolean initialized;
+	bool initialized;
 	int id;
     protected:
 	int orig_x1,orig_y1,orig_x2,orig_y2;
@@ -257,11 +257,11 @@ class LayoutGroup : public Base
 
 	void layout(Node* node, GraphLayout* mgr, List& positioned);
 
-	boolean straightenArcs(LayoutRow* row_array[], int rows);
+	bool straightenArcs(LayoutRow* row_array[], int rows);
 
     public:
 	LayoutGroup(int id) {
-	    this->initialized = FALSE;
+	    this->initialized = false;
 	    this->x1 = this->orig_x1 = 999999;
 	    this->y1 = this->orig_y1 = 999999;
 	    this->x2 = this->orig_x2 = -999999;
@@ -325,7 +325,7 @@ class SlotList : public List
 	}
 	virtual void clear();
 	virtual ~SlotList();
-	int isAvailable (int x, boolean left);
+	int isAvailable (int x, bool left);
 	void occupy (int x, int width);
 	virtual const char* getClassName()
 	{
@@ -345,16 +345,16 @@ class LayoutRow : public Base
 
 	int id;
 
-	boolean sorted_by_x;
-	boolean sorted_by_destination_x;
+	bool sorted_by_x;
+	bool sorted_by_destination_x;
 
     protected:
 	friend class LayoutGroup;
 
 	LayoutRow(int id) { 
 	    this->id = id; 
-	    this->sorted_by_x = FALSE;
-	    this->sorted_by_destination_x = FALSE;
+	    this->sorted_by_x = false;
+	    this->sorted_by_destination_x = false;
 	}
 
 	void addNode(Node* n) { this->nodes.appendElement(n); }
@@ -366,15 +366,15 @@ class LayoutRow : public Base
 	void layout(SlotList* slots, GraphLayout* mgr, int& previous_id);
 
 	void position (Node* n, int& left_edge, int& right_edge, 
-		GraphLayout* mgr, boolean go_left, SlotList* slots,
+		GraphLayout* mgr, bool go_left, SlotList* slots,
 		int previous_rows_hop);
 
 	static int SortByDestinationX(const void* a, const void* b);
 	static int SortByX(const void* a, const void* b);
 
-	boolean favorsLeftShift (Ark* arc, GraphLayout* mgr, boolean default_value);
+	bool favorsLeftShift (Ark* arc, GraphLayout* mgr, bool default_value);
 
-	void straightenArcs(boolean& changes_made);
+	void straightenArcs(bool& changes_made);
 
     public:
 	SlotList* getSlotList() { return &this->slot_list; }
@@ -402,7 +402,7 @@ class GraphLayout : public Base
     //
     EditorWindow* editor;
 
-    boolean adjustHopCounts (Node* reflow[], int reflow_count, int& min);
+    bool adjustHopCounts (Node* reflow[], int reflow_count, int& min);
     void adjustAncestorHops (Node* parent, int new_hop_count, int& min);
     void adjustDescendantHops (Node* parent, int new_hop_count);
     int computeRequiredHopsTo (Node* n);
@@ -410,30 +410,30 @@ class GraphLayout : public Base
     void fixForTooManyReceivers(Node* n, int& min);
 
     //
-    // Return TRUE if the node's standin can move to x,y without
+    // Return true if the node's standin can move to x,y without
     // causing overlap with any other node in the list.
     //
-    boolean nodeCanMoveTo (Node* n, int x, int y); 
+    bool nodeCanMoveTo (Node* n, int x, int y); 
 
     //
-    // return TRUE if the positioning was accomplished but with collision
+    // return true if the positioning was accomplished but with collision
     //
-    boolean positionSourceOverDest(Ark* arc, int& x, int& y);
+    bool positionSourceOverDest(Ark* arc, int& x, int& y);
 
     //
-    // return TRUE if the positioning was accomplished but with collision
+    // return true if the positioning was accomplished but with collision
     //
-    boolean positionDestUnderSource(Ark* arc, int& x, int& y);
+    bool positionDestUnderSource(Ark* arc, int& x, int& y);
 
     //
-    // return TRUE if the positioning was accomplished but with collision
+    // return true if the positioning was accomplished but with collision
     //
-    boolean positionDestBesideSibling(Ark* arc, int& x, int& y, boolean prefer_left, List *unusable_nodes);
+    bool positionDestBesideSibling(Ark* arc, int& x, int& y, bool prefer_left, List *unusable_nodes);
 
     //
-    // return TRUE if the positioning was accomplished but with collision
+    // return true if the positioning was accomplished but with collision
     //
-    boolean positionSource(Ark* arc, int x);
+    bool positionSource(Ark* arc, int x);
 
     void repositionGroups(Node* reflow[], int reflow_count);
 
@@ -452,15 +452,15 @@ class GraphLayout : public Base
 
     void bottomUpTraversal (Node* visit_kids_of, int current_depth, int& min);
 
-    boolean hasConnectedInputs(Node* n);
-    boolean hasConnectedOutputs(Node* n, Node* other_than=NUL(Node*));
+    bool hasConnectedInputs(Node* n);
+    bool hasConnectedOutputs(Node* n, Node* other_than=NUL(Node*));
     void unmarkAllNodes(Node* reflow[], int reflow_count);
 
-    boolean computeBoundingBox (List& nodes, int& minx, int& miny, int& maxx, int& maxy);
-    boolean computeBoundingBox (Node* nodes[], int count, int& minx, int& miny, 
+    bool computeBoundingBox (List& nodes, int& minx, int& miny, int& maxx, int& maxy);
+    bool computeBoundingBox (Node* nodes[], int count, int& minx, int& miny, 
 	    int& maxx, int& maxy, List* decorators=NUL(List*));
 
-    void repositionDecorators (List& decorators, boolean same_event_flag, Node* reflow[], int reflow_count);
+    void repositionDecorators (List& decorators, bool same_event_flag, Node* reflow[], int reflow_count);
 
     void computeHopCounts (Node* reflow[], int reflow_count);
 
@@ -479,14 +479,14 @@ class GraphLayout : public Base
     int countConnectedInputs (Node* n, int input, int& nth_tab);
     int countConnectedOutputs (Node* n, int output, int& nth_tab);
 
-    void repositionNewPlacements (Node* , boolean , List&);
+    void repositionNewPlacements (Node* , bool , List&);
 
-    static boolean CanMoveTo (LayoutInfo* info, int x, int y, Node* reflow[], 
+    static bool CanMoveTo (LayoutInfo* info, int x, int y, Node* reflow[], 
 	int count, List* decorators); 
 
-    boolean spreadOutSpaghettiFrom (Node* n, int& min);
+    bool spreadOutSpaghettiFrom (Node* n, int& min);
 
-    int countConnectionsBetween (Node* source, Node* dest, boolean count_consecutive=TRUE);
+    int countConnectionsBetween (Node* source, Node* dest, bool count_consecutive=true);
 
   public:
     //
@@ -500,17 +500,17 @@ class GraphLayout : public Base
     static const char* SetGroupSpacing(int gs);
     static const char* SetNodeSpacing(int ns);
 
-    boolean entireGraph(WorkSpace* workspace, const List& nodes, const List& decorators);
+    bool entireGraph(WorkSpace* workspace, const List& nodes, const List& decorators);
 
-    static Ark* IsSingleInputNoOutputNode(Node* n, boolean& shares_an_output, boolean positioned=TRUE);
-    static boolean IsSingleOutputNoInputNode(Node* n);
+    static Ark* IsSingleInputNoOutputNode(Node* n, bool& shares_an_output, bool positioned=true);
+    static bool IsSingleOutputNoInputNode(Node* n);
 
     //
     // Destructor:
     //
     ~GraphLayout() { }
 
-    boolean hasNoCloserDescendant (Node* source, Node* dest);
+    bool hasNoCloserDescendant (Node* source, Node* dest);
 
     //
     // append an ancestor node of root to the list if 
@@ -520,7 +520,7 @@ class GraphLayout : public Base
     // For each node appended to the list append the arc that reaches
     // that node.
     //
-    void getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs, boolean last_call=TRUE);
+    void getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs, bool last_call=true);
 
     //
     // Returns a pointer to the class name.

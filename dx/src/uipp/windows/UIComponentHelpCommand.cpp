@@ -16,7 +16,7 @@
 
 UIComponentHelpCommand::UIComponentHelpCommand(const char*   name,
 					   CommandScope* scope,
-					   boolean       active,
+					   bool       active,
 					   UIComponent*   component) :
 	NoUndoCommand(name, scope, active)
 {
@@ -27,9 +27,9 @@ UIComponentHelpCommand::UIComponentHelpCommand(const char*   name,
 }
 
 
-boolean UIComponentHelpCommand::doIt(CommandInterface *ci)
+bool UIComponentHelpCommand::doIt(CommandInterface *ci)
 {
 
     this->component->componentHelp();
-    return TRUE;
+    return true;
 }

@@ -25,8 +25,8 @@ ScalarInstance::ScalarInstance(ScalarNode *n) :
                 InteractorInstance((InteractorNode*)n)
 {
     LocalAttributes *la;
-    this->localContinuous = FALSE;
-    this->usingLocalContinuous = FALSE;
+    this->localContinuous = false;
+    this->usingLocalContinuous = false;
     int ncomp = n->getComponentCount();
     ASSERT(ncomp > 0);
     while (ncomp-- > 0) {
@@ -46,14 +46,14 @@ ScalarInstance::~ScalarInstance()
 //
 // Change the dimensionality of a Vector interactor.
 //
-boolean ScalarInstance::handleNewDimensionality()
+bool ScalarInstance::handleNewDimensionality()
 {
     int i;
     LocalAttributes *la;
     int new_dim = this->node->getComponentCount();
 
     if (!this->isVectorType())
-	return FALSE;
+	return false;
 
     int n_lattr = this->localAttributes.getSize();
 
@@ -61,7 +61,7 @@ boolean ScalarInstance::handleNewDimensionality()
     // Adjust the number of LocalAttributes
     //
     if (n_lattr < new_dim) {
-	boolean isInt = 
+	bool isInt = 
 		((ScalarNode*)this->getNode())->isIntegerTypeComponent();
 	for (i=n_lattr ; i<new_dim ; i++) {
 	    la =  new LocalAttributes(isInt);
@@ -87,7 +87,7 @@ boolean ScalarInstance::handleNewDimensionality()
     }
     //if (this->controlPanel->getRootWidget())
     //    this->createInteractor();
-    return TRUE;
+    return true;
 }
 //
 // S/Get value associated with this interactor instance.
@@ -118,10 +118,10 @@ void ScalarInstance::setComponentValue(int component, double val)
 char *ScalarInstance::buildValueFromComponents()
 {
     int i, components = this->getComponentCount();
-    boolean ints = this->isIntegerTypeComponent();
+    bool ints = this->isIntegerTypeComponent();
     char comp_val[128];
     char *s = new char[components * sizeof(comp_val)];
-    boolean isVector = this->isVectorType();
+    bool isVector = this->isVectorType();
 
     if (isVector)
         strcpy(s,"[ ");
@@ -134,7 +134,7 @@ char *ScalarInstance::buildValueFromComponents()
 	    DXValue::FormatDouble((double)tmp,comp_val, 0);
 	} else if (isVector) {
 	    DXValue::FormatDouble((double)this->getComponentValue(i), 
-						comp_val, 0, TRUE);
+						comp_val, 0, true);
 	} else {
 	    DXValue::FormatDouble((double)this->getComponentValue(i),comp_val);
 	}
@@ -148,12 +148,12 @@ char *ScalarInstance::buildValueFromComponents()
     return s;
 }
 //
-// Return TRUE/FALSE indicating if this class of interactor instance has
+// Return true/false indicating if this class of interactor instance has
 // a set attributes dialog (i.e. this->newSetAttrDialog returns non-NULL).
 //
-boolean ScalarInstance::hasSetAttrDialog()
+bool ScalarInstance::hasSetAttrDialog()
 {
-    return TRUE;
+    return true;
 }
 
 //
@@ -176,15 +176,15 @@ SetAttrDialog *ScalarInstance::newSetAttrDialog()
 // Make sure the given output's current value complies with any attributes.
 // This is called by InteractorInstance::setOutputValue() which is
 // intern intended to be called by the Interactors.
-// If verification fails (returns FALSE), then a reason is expected to
+// If verification fails (returns false), then a reason is expected to
 // placed in *reason.  This string must be freed by the caller.
-// At this level we always return TRUE (assuming that there are no
+// At this level we always return true (assuming that there are no
 // attributes) and set *reason to NULL.
 //
 // This class verifies the dimensionality of vectors and the range
 // of the component values.
 //
-boolean ScalarInstance::verifyValueAgainstAttributes(int output, 
+bool ScalarInstance::verifyValueAgainstAttributes(int output, 
 						const char *val, 
 						Type t,
 						char **reason)
@@ -197,11 +197,11 @@ boolean ScalarInstance::verifyValueAgainstAttributes(int output,
 // Perform the functions of ScalarInstance::verifyValueAgainstAttributes()
 // on a single Vector, Scalar or Integer (VSI) string value.
 //
-boolean ScalarInstance::verifyVSIAgainstAttributes(const char *val,
+bool ScalarInstance::verifyVSIAgainstAttributes(const char *val,
 					Type t, char **reason)
 {
     DXValue dxval;
-    boolean r = TRUE;
+    bool r = true;
     double d, dmin, dmax;
     int ncomp , i, imin, imax;
 
@@ -209,7 +209,7 @@ boolean ScalarInstance::verifyVSIAgainstAttributes(const char *val,
 	*reason = NULL;
 
     if (!dxval.setValue(val,t))
-	return FALSE;
+	return false;
 
     switch (t) {
 	default:
@@ -221,7 +221,7 @@ boolean ScalarInstance::verifyVSIAgainstAttributes(const char *val,
 	    imin = (int)this->getMinimum(1);
 	    imax = (int)this->getMaximum(1);
 	    if ((i < imin) || (i > imax)) {
-		r = FALSE;
+		r = false;
 		if (reason) {
 		    *reason = new char[128];
 		    sprintf(*reason,"Integer values must be greater than or "
@@ -237,7 +237,7 @@ boolean ScalarInstance::verifyVSIAgainstAttributes(const char *val,
 	    dmax = this->getMaximum(1);
 
 	    if ((d < dmin) || (d > dmax)) {
-		r = FALSE;
+		r = false;
 		if (reason) {
 		    *reason = new char[128];
 		    sprintf(*reason,"Scalar values must be greater than or "
@@ -250,7 +250,7 @@ boolean ScalarInstance::verifyVSIAgainstAttributes(const char *val,
 	case DXType::VectorType:
 	    ncomp = this->getComponentCount();
 	    if (dxval.getVectorComponentCount() != ncomp) {
-		r = FALSE;
+		r = false;
 		if (reason) {
 		    *reason = new char[128];
 		    sprintf(*reason,"Vector values must be %d dimensional.",
@@ -262,7 +262,7 @@ boolean ScalarInstance::verifyVSIAgainstAttributes(const char *val,
 		    dmin = this->getMinimum(i);
 		    dmax = this->getMaximum(i);
 		    if ((d < dmin) || (d > dmax)) {
-			r = FALSE;
+			r = false;
 			if (reason) {
 			    *reason = new char[128];
 			    sprintf(*reason,
@@ -279,10 +279,10 @@ boolean ScalarInstance::verifyVSIAgainstAttributes(const char *val,
 }
 
 
-boolean ScalarInstance::printAsJava (FILE* jf)
+bool ScalarInstance::printAsJava (FILE* jf)
 {
     const char* indent = "        ";
-    if (this->style->hasJavaStyle() == FALSE)
+    if (this->style->hasJavaStyle() == false)
 	return InteractorInstance::printAsJava(jf);
 
     ScalarNode* sn = (ScalarNode*)this->node;
@@ -293,7 +293,7 @@ boolean ScalarInstance::printAsJava (FILE* jf)
     this->getXYPosition (&x, &y);
     this->getXYSize (&w,&h);
     ControlPanel* cpan = this->getControlPanel();
-    boolean devstyle = cpan->isDeveloperStyle();
+    bool devstyle = cpan->isDeveloperStyle();
 
     //
     // Count up the lines in the label and split it up since java doesn't
@@ -334,7 +334,7 @@ boolean ScalarInstance::printAsJava (FILE* jf)
 	
     fprintf(jf, "        %s.addInteractor(%s);\n", cpan->getJavaVariableName(), var_name);
 
-    return TRUE;
+    return true;
 }
 
 

@@ -19,7 +19,7 @@
 #include "ListIterator.h"
 #include "ErrorDialogManager.h"
 
-boolean SelectorRadioInteractor::SelectorRadioInteractorClassInitialized = FALSE;
+bool SelectorRadioInteractor::SelectorRadioInteractorClassInitialized = false;
 
 //String SelectorRadioInteractor::DefaultResources[] =  {
 //	"*XmToggleButton.shadowThickness:	0",
@@ -63,7 +63,7 @@ void SelectorRadioInteractor::initialize()
         //                          SelectorRadioInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          Interactor::DefaultResources);
-        SelectorRadioInteractor::SelectorRadioInteractorClassInitialized = TRUE;
+        SelectorRadioInteractor::SelectorRadioInteractorClassInitialized = true;
     }
 }
 
@@ -246,7 +246,7 @@ void SelectorRadioInteractor::reloadMenuOptions()
 //    ASSERT(w);
 //    ASSERT(optnum > 0);
 //
-//    si->setSelectedOptionIndex(optnum, TRUE);
+//    si->setSelectedOptionIndex(optnum, true);
 //
 //#if 0
 //    ListIterator li(this->toggleWidgets);
@@ -307,7 +307,7 @@ void SelectorRadioInteractor::updateDisplayedInteractorValue()
 //
 void SelectorRadioInteractor::handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change)
+					bool major_change)
 {
     if (major_change)
 	this->unmanage();

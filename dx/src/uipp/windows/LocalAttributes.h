@@ -40,33 +40,33 @@ class LocalAttributes : public Base {
 
   protected:
 
-    boolean integerTyped;	 
-    boolean usingLocalDelta;	// Are we using the local delta value 
+    bool integerTyped;	 
+    bool usingLocalDelta;	// Are we using the local delta value 
     double  currentValue; 
     double  delta; 
 
     void setValue(double val)   { this->currentValue = val; }
 
     void useLocalDelta(double delta) 
-	    { this->usingLocalDelta = TRUE; this->setDelta(delta); }
+	    { this->usingLocalDelta = true; this->setDelta(delta); }
 
     void setDelta(double delta) { this->delta = delta; }
 
-    void clrLocalDelta() 	{ this->usingLocalDelta = FALSE; } 
+    void clrLocalDelta() 	{ this->usingLocalDelta = false; } 
 
   public:
-    LocalAttributes(boolean isInteger) 
+    LocalAttributes(bool isInteger) 
 		{  
 		    this->integerTyped = isInteger;
 		    this->delta = 1.00; 
 		    this->currentValue = 0.0;
-		    this->usingLocalDelta = FALSE; 
+		    this->usingLocalDelta = false; 
 		}
 	
     ~LocalAttributes() { } 
 
 
-    boolean isLocalDelta() { return usingLocalDelta; }
+    bool isLocalDelta() { return usingLocalDelta; }
 
 #define ROUND(x) \
         ( (double) ((x > 0.0) ? (int)(x + .5) : (int)(x - .5) ) )

@@ -51,9 +51,9 @@
 //    NULL
 //};
 
-boolean TickLabelList::SortUp = TRUE;
+bool TickLabelList::SortUp = true;
 
-boolean TickLabelList::ClassInitialized = FALSE;
+bool TickLabelList::ClassInitialized = false;
 
 #define DIRTY_APPEND 1
 #define DIRTY_DELETE 2
@@ -84,7 +84,7 @@ void TickLabelList::initialize()
     if (NOT TickLabelList::ClassInitialized) {
 	//this->setDefaultResources(theApplication->getRootWidget(),
 	//    TickLabelList::DefaultResources);
-	TickLabelList::ClassInitialized = TRUE;
+	TickLabelList::ClassInitialized = true;
     }
 }
 
@@ -319,7 +319,7 @@ TickLabelList::SelectCB (TickLabel* tlab, void* clientData)
     TickLabel *nextTL;
     while ( (nextTL = (TickLabel*)it.getNext()) ) {
 	if ((nextTL != tlab) && (nextTL->isSelected())) {
-	    nextTL->setSelected (FALSE, FALSE);
+	    nextTL->setSelected (false, false);
 	}
     }
 
@@ -327,43 +327,43 @@ TickLabelList::SelectCB (TickLabel* tlab, void* clientData)
 	tll->tlmcb (tll, tll->clientData);
 }
 
-boolean
+bool
 TickLabelList::isModified()
 {
-    if (this->dirty) return TRUE;
+    if (this->dirty) return true;
 
     TickLabel *tl;
     ListIterator it(this->ticks);
 
     while ( (tl = (TickLabel*)it.getNext()) )
-	if (tl->isModified()) return TRUE;
-    return FALSE;
+	if (tl->isModified()) return true;
+    return false;
 }
 
-boolean
+bool
 TickLabelList::isNumberModified()
 {
-    if (this->dirty) return TRUE;
+    if (this->dirty) return true;
 
     TickLabel *tl;
     ListIterator it(this->ticks);
 
     while ( (tl = (TickLabel*)it.getNext()) )
-	if (tl->isNumberModified()) return TRUE;
-    return FALSE;
+	if (tl->isNumberModified()) return true;
+    return false;
 }
 
-boolean
+bool
 TickLabelList::isTextModified()
 {
-    if (this->dirty) return TRUE;
+    if (this->dirty) return true;
 
     TickLabel *tl;
     ListIterator it(this->ticks);
 
     while ( (tl = (TickLabel*)it.getNext()) )
-	if (tl->isTextModified()) return TRUE;
-    return FALSE;
+	if (tl->isTextModified()) return true;
+    return false;
 }
 
 //
@@ -408,7 +408,7 @@ TickLabelList::getTickTextString()
 	this->oldString = NULL;
     }
 	
-    boolean is_any_text_set = FALSE;
+    bool is_any_text_set = false;
     ListIterator it(this->ticks);
     TickLabel *tl;
     int len = 0;
@@ -417,8 +417,8 @@ TickLabelList::getTickTextString()
 	cp = tl->getText();
 	if (!cp) continue;
 	len+= strlen(cp);
-	if ((len!=2)&&(len!=0)) is_any_text_set = TRUE;
-	else if ((len == 2) && (strcmp(cp, "\"\""))) is_any_text_set = TRUE;
+	if ((len!=2)&&(len!=0)) is_any_text_set = true;
+	else if ((len == 2) && (strcmp(cp, "\"\""))) is_any_text_set = true;
     }
 
     if (!is_any_text_set) {
@@ -429,8 +429,8 @@ TickLabelList::getTickTextString()
     char *buf = this->oldString = new char[newSize];
     strcpy (buf, "{ ");
     int bufLen = strlen(buf);
-    boolean first_loop = TRUE;
-    boolean add_quotes;
+    bool first_loop = true;
+    bool add_quotes;
     
     it.setList(this->ticks);
     while ( (tl = (TickLabel*)it.getNext()) ) {
@@ -439,13 +439,13 @@ TickLabelList::getTickTextString()
 	}
 	cp = tl->getText();
 	len = strlen(cp);
-	add_quotes = TRUE;
-	if ((cp[0] == '"') && (cp[len-1] == '"')) add_quotes = FALSE;
+	add_quotes = true;
+	if ((cp[0] == '"') && (cp[len-1] == '"')) add_quotes = false;
 	if (add_quotes) buf[bufLen++] = '"';
 	strcpy (&buf[bufLen], cp); bufLen+= len;
 	if (add_quotes) buf[bufLen++] = '"'; 
 
-	first_loop = FALSE;
+	first_loop = false;
     }
 
     ASSERT (newSize > bufLen);
@@ -567,9 +567,9 @@ void TickLabelList::resizeCallback ()
 	//XmNheight, &rch, 
  //   NULL);
 
- //   boolean scrollbar_in_use;
- //   if (rch > height) scrollbar_in_use = TRUE;
- //   else scrollbar_in_use = FALSE;
+ //   bool scrollbar_in_use;
+ //   if (rch > height) scrollbar_in_use = true;
+ //   else scrollbar_in_use = false;
 
  //   if (scrollbar_in_use) {
 	//XtVaSetValues (this->listRC, XmNwidth, width-20, NULL);
@@ -584,7 +584,7 @@ void TickLabelList::resizeCallback ()
 // Using the list of TickLabel objects, create an array.  Sort the array.
 // Then clear the original list and rebuild it using the contents of the array.
 //
-void TickLabelList::sortList (boolean up)
+void TickLabelList::sortList (bool up)
 {
 #if UI_SHOULD_SORT_TICKS
     int size = this->ticks.getSize();
@@ -657,9 +657,9 @@ TickLabelList_SortFunc (const void* e1, const void* e2)
 //    //
 //    TickLabel *tl;
 //    ListIterator it(tlab->ticks);
-//    boolean any_selected = FALSE;
+//    bool any_selected = false;
 //    while ((!any_selected) && (tl = (TickLabel*)it.getNext())) 
-//	if (tl->isSelected()) any_selected = TRUE;
+//	if (tl->isSelected()) any_selected = true;
 //    XtSetSensitive (tlab->aasButton, (Boolean)any_selected);
 //    XtSetSensitive (tlab->iasButton, (Boolean)any_selected);
 //    XtSetSensitive (tlab->dsButton,  (Boolean)any_selected);
@@ -707,9 +707,9 @@ TickLabelList_SortFunc (const void* e1, const void* e2)
 //    //
 //    // Inovke the callback only if adding the first iterm.
 //    //
-//    boolean call_callback = FALSE;
+//    bool call_callback = false;
 //    int size = tll->ticks.getSize();
-//    if (size == 0) call_callback = TRUE;
+//    if (size == 0) call_callback = true;
 //
 //    int newTail;
 //    XtVaGetValues (w, XmNuserData, &newTail, NULL);
@@ -797,14 +797,14 @@ TickLabelList_SortFunc (const void* e1, const void* e2)
 //{
 //    ASSERT(clientData);
 //    TickLabelList *tll = (TickLabelList *)clientData;
-//    tll->sortList(TRUE);
+//    tll->sortList(true);
 //}
 //
 //void TickLabelList_SortDownCB(Widget , XtPointer clientData, XtPointer)
 //{
 //    ASSERT(clientData);
 //    TickLabelList *tll = (TickLabelList *)clientData;
-//    tll->sortList(FALSE);
+//    tll->sortList(false);
 //}
 
 } // extern "C"

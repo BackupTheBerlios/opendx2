@@ -19,7 +19,7 @@
 AccessNetworkPanelsCommand::
     AccessNetworkPanelsCommand(const char*   name,
 				CommandScope* scope,
-				boolean       active,
+				bool       active,
 				Network*      network,
 				AccessPanelType	how) :
 	NoUndoCommand(name, scope, active)
@@ -33,7 +33,7 @@ AccessNetworkPanelsCommand::
 }
 
 
-boolean AccessNetworkPanelsCommand::doIt(CommandInterface *ci)
+bool AccessNetworkPanelsCommand::doIt(CommandInterface *ci)
 {
     Network *network = this->network;
    
@@ -58,7 +58,7 @@ boolean AccessNetworkPanelsCommand::doIt(CommandInterface *ci)
     //
     // Return the result.
     //
-    return TRUE;
+    return true;
 }
 
 

@@ -26,7 +26,7 @@
 //				
 class InsertNetworkDialog: public OpenNetworkDialog 
 {
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
 

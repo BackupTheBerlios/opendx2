@@ -41,7 +41,7 @@ class DXDragSource : public DragSource
 
   private:
 	PrintType printType;
-	static boolean DXDragSourceClassInitialized;
+	static bool DXDragSourceClassInitialized;
 
   protected:
 	//
@@ -49,13 +49,13 @@ class DXDragSource : public DragSource
 	// them.  This operation would have to be duplicated by
 	// any WorkSpace which wanted to ship .net,.cfg across.
 	//
-	boolean convert (Network *, char *, unsigned long*, long);
+	bool convert (Network *, char *, unsigned long*, long);
 
 	//
 	// Create the .net and .cfg files and the header string.
 	// return the names of the files.
 	//
-	virtual boolean createNetFiles (Network *net, FILE *netf, char *cfgFile);
+	virtual bool createNetFiles (Network *net, FILE *netf, char *cfgFile);
 
   public:
 	// The initialize method grabs a chunk of memory for the

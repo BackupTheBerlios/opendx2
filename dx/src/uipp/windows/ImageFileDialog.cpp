@@ -20,7 +20,7 @@
 //    NUL(char*)
 //};
 
-boolean ImageFileDialog::ClassInitialized = FALSE;
+bool ImageFileDialog::ClassInitialized = false;
 
 ImageFileDialog::ImageFileDialog(SaveImageDialog* dialog) :
                        FileDialog("imageFileSelector")
@@ -31,14 +31,14 @@ ImageFileDialog::ImageFileDialog(SaveImageDialog* dialog) :
 //void ImageFileDialog::installDefaultResources(Widget  baseWidget)
 //{
 //    if (ImageFileDialog::ClassInitialized) return ;
-//    ImageFileDialog::ClassInitialized = TRUE;
+//    ImageFileDialog::ClassInitialized = true;
 //    this->setDefaultResources(baseWidget, ImageFileDialog::DefaultResources);
 //    this->FileDialog::installDefaultResources( baseWidget);
 //}
 
 void ImageFileDialog::okFileWork(const char *string)
 {
-    this->sid->setFilename(string, FALSE);
+    this->sid->setFilename(string, false);
     this->sid->setCommandActivation();
 }
 

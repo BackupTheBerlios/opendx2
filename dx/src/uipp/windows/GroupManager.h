@@ -41,22 +41,22 @@ class GroupRecord
   private:
     
     Network *network;
-    boolean dirty;
+    bool dirty;
     char *name;
 
   protected:
 
     GroupRecord(Network *network, const char *name) {
 	this->network = network;
-        this->dirty   = FALSE;
+        this->dirty   = false;
 	this->name    = DuplicateString(name);
     };
 
   public:
-    	    boolean  isDirty () { return this->dirty; }
-    	    void     setDirty (boolean dirty = TRUE) { this->dirty = dirty; }
+    	    bool  isDirty () { return this->dirty; }
+    	    void     setDirty (bool dirty = true) { this->dirty = dirty; }
     	    Network *getNetwork () { return this->network; }
-    virtual boolean  changesWhere () { return FALSE; }
+    virtual bool  changesWhere () { return false; }
 
     const   char    *getName() { return this->name; }
 
@@ -80,7 +80,7 @@ class GroupManager : public Base
     //
     // Protected member data:
     //
-    boolean  dirty;
+    bool  dirty;
     //
     // The host-argument dictionary 
     //
@@ -122,9 +122,9 @@ class GroupManager : public Base
     //
     // Check if the given group exists.
     //
-    boolean hasGroup(const char *name)
+    bool hasGroup(const char *name)
     {
-	return (boolean)
+	return (bool)
 	    ((GroupRecord*)this->groups.findDefinition(name) != NUL(GroupRecord*));
     }
    
@@ -146,29 +146,29 @@ class GroupManager : public Base
 
     //
     // Create a new group of nodes with the given name.
-    // If name is already active, then return FALSE.
+    // If name is already active, then return false.
     //
-    boolean 	createGroup(const char *name, Network *net);
+    bool 	createGroup(const char *name, Network *net);
 
     //
     // Add more modules to the existing group.
     //
-    boolean 	addGroupMember(const char *name, Network *net);
+    bool 	addGroupMember(const char *name, Network *net);
 
     //
     // Remove modules from the existing group.
     //
-    virtual boolean 	removeGroupMember(const char *name, Network *net);
+    virtual bool 	removeGroupMember(const char *name, Network *net);
 
     //
     // Called when reading a network.
     //
-    boolean 	registerGroup(const char *name, Network *net);
+    bool 	registerGroup(const char *name, Network *net);
     //
     // Removes the nodes from the named group.
-    // Return FALSE if the group does not exist. 
+    // Return false if the group does not exist. 
     //
-    boolean 	removeGroup(const char *name,Network *net); 
+    bool 	removeGroup(const char *name,Network *net); 
 
     // 
     // return the network a group resides.
@@ -178,28 +178,28 @@ class GroupManager : public Base
     //
     // Select nodes in the group.
     //
-    boolean selectGroupNodes(const char *name);
+    bool selectGroupNodes(const char *name);
 
     //
     //
     //
-    boolean isDirty() { return this->dirty; }
-    void setDirty(boolean set = TRUE) { this->dirty = set; }
+    bool isDirty() { return this->dirty; }
+    void setDirty(bool set = true) { this->dirty = set; }
 
     //
     // Parse/Print the  group assignment comment.
     //
-    virtual boolean parseComment(const char *, 
+    virtual bool parseComment(const char *, 
 			const char *, 
 			int ,
-			Network *){ return TRUE; }
-    virtual boolean printComment(FILE *){ return TRUE; }
-    virtual boolean printAssignment(FILE *){ return TRUE; }
+			Network *){ return true; }
+    virtual bool printComment(FILE *){ return true; }
+    virtual bool printAssignment(FILE *){ return true; }
 
     const char *getManagerName();
     Symbol getManagerSymbol() { return this->groupID; }
 
-    virtual boolean survivesMerging() { return FALSE; }
+    virtual bool survivesMerging() { return false; }
 
     //
     // Returns a pointer to the class name.

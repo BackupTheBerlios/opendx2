@@ -35,7 +35,7 @@ class DeferrableAction : public Base
     //
     // Private member data:
     //
-    boolean	required;	// flag if the action is required.
+    bool	required;	// flag if the action is required.
     int		deferrals;	// Number of pending action deferrals
     DeferrableActionFunction actionFunction;
     void		*staticData;
@@ -48,7 +48,7 @@ class DeferrableAction : public Base
     //
     // Flag that the action is required. 
     //
-    void    setActionRequired()	{ this->required = TRUE; }
+    void    setActionRequired()	{ this->required = true; }
 
   public:
     //
@@ -85,7 +85,7 @@ class DeferrableAction : public Base
     //
     // See if the action is currently deferred.
     //
-    boolean isActionDeferred() { return this->deferrals != 0;}
+    bool isActionDeferred() { return this->deferrals != 0;}
 
     //
     // Returns a pointer to the class name.

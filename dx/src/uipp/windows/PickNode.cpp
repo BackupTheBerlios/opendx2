@@ -39,15 +39,15 @@ PickNode::~PickNode()
         iw->deletePick(this);
 }
 
-boolean PickNode::initialize()
+bool PickNode::initialize()
 {
     char string[64];
     sprintf(string, "%s_%d", this->getNameString(), this->getInstanceNumber());
     this->setLabelString((const char *) string);
 
     this->setInputValue(PICK_NAME, this->getLabelString(), 
-			DXType::UndefinedType, FALSE);
-    return TRUE;
+			DXType::UndefinedType, false);
+    return true;
 }
 
 void PickNode::initializeAfterNetworkMember()
@@ -73,9 +73,9 @@ char *PickNode::netNodeString(const char *prefix)
     return Node::netNodeString(prefix);
 }
 
-boolean PickNode::setLabelString(const char *label)
+bool PickNode::setLabelString(const char *label)
 {
-    boolean result = this->Node::setLabelString(label);
+    bool result = this->Node::setLabelString(label);
     ImageWindow *iw;
     List *l = this->getNetwork()->getImageList();
     ListIterator iter(*l);
@@ -86,11 +86,11 @@ boolean PickNode::setLabelString(const char *label)
 //
 // Determine if this node is of the given class.
 //
-boolean PickNode::isA(Symbol classname)
+bool PickNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassPickNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ProbeNode::isA(classname);
 }

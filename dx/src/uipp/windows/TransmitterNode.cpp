@@ -26,23 +26,23 @@
 #include "Node.h"
 #include "lex.h"
 
-static boolean initializing = FALSE;
+static bool initializing = false;
 
 TransmitterNode::TransmitterNode(NodeDefinition *nd, Network *net, int instnc) :
     UniqueNameNode(nd, net, instnc)
 {
 }
-boolean TransmitterNode::initialize()
+bool TransmitterNode::initialize()
 {
     char s[100];
 
     sprintf(s, "wireless_%d", this->getInstanceNumber());
 
-    initializing = TRUE;
+    initializing = true;
     this->setLabelString(s);
-    initializing = FALSE;
+    initializing = false;
 
-    return TRUE;
+    return true;
 }
 
 TransmitterNode::~TransmitterNode()
@@ -63,18 +63,18 @@ char *TransmitterNode::netNodeString(const char *prefix)
 
 }
 
-boolean TransmitterNode::setLabelString(const char *label)
+bool TransmitterNode::setLabelString(const char *label)
 {
     List *l;
     ListIterator li;
 
 
     if (EqualString(label, this->getLabelString()))
-	return TRUE;
+	return true;
 
     if (initializing || this->getNetwork()->isReadingNetwork()) {
 
-	if (initializing == FALSE) {
+	if (initializing == false) {
 	    //
 	    // Because of an old bug (hopefully fixed in 3.1.4), we need to scan
 	    // for existing receivers with the same name.  These receivers are supposed
@@ -90,7 +90,7 @@ boolean TransmitterNode::setLabelString(const char *label)
 	    int fixed_version = VERSION_NUMBER(3,1,1);
 	    if (net_version < fixed_version) {
 		// grab up any receivers that already have this name
-		l = this->getNetwork()->makeClassifiedNodeList(ClassReceiverNode, FALSE);
+		l = this->getNetwork()->makeClassifiedNodeList(ClassReceiverNode, false);
 		if (l) {
 		    li.setList(*l);
 		    ReceiverNode *node;
@@ -124,12 +124,12 @@ boolean TransmitterNode::setLabelString(const char *label)
 
 
     if (!this->verifyRestrictedLabel(label))
-	return FALSE;
+	return false;
 
     const char* conflict = this->getNetwork()->nameConflictExists(this, label);
     if (conflict) {
 	ErrorMessage("A %s with name \"%s\" already exists.", conflict, label);
-	return FALSE;
+	return false;
     }
 
     //
@@ -138,8 +138,8 @@ boolean TransmitterNode::setLabelString(const char *label)
     // It's pointless to do this while reading a net file, because the ui doesn't
     // have the ability to write out .net file with a cycle.
     //
-    if (this->getNetwork()->isReadingNetwork() == FALSE) {
-	l = this->getNetwork()->makeClassifiedNodeList(ClassReceiverNode, FALSE);
+    if (this->getNetwork()->isReadingNetwork() == false) {
+	l = this->getNetwork()->makeClassifiedNodeList(ClassReceiverNode, false);
 	if (l) {
 	    li.setList(*l);
 	    ReceiverNode *node;
@@ -154,7 +154,7 @@ boolean TransmitterNode::setLabelString(const char *label)
 			    this->getLabelString(), label
 			);
 			delete l;
-			return FALSE;
+			return false;
 		    }
 		}
 	    }
@@ -163,7 +163,7 @@ boolean TransmitterNode::setLabelString(const char *label)
     }
 
     if (!this->UniqueNameNode::setLabelString(label))
-	return FALSE;
+	return false;
 
     // rename our receivers
     l = (List*)this->getOutputArks(1);
@@ -180,7 +180,7 @@ boolean TransmitterNode::setLabelString(const char *label)
     // grab up any receivers that already have this name
     // We've already done the check for cyclic connections.
     //
-    l = this->getNetwork()->makeClassifiedNodeList(ClassReceiverNode, FALSE);
+    l = this->getNetwork()->makeClassifiedNodeList(ClassReceiverNode, false);
     if (l) {
 	li.setList(*l);
 	ReceiverNode *node;
@@ -195,16 +195,16 @@ boolean TransmitterNode::setLabelString(const char *label)
 	delete l;
     }
 
-    return TRUE;
+    return true;
 }
 //
 // Determine if this node is of the given class.
 //
-boolean TransmitterNode::isA(Symbol classname)
+bool TransmitterNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassTransmitterNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->UniqueNameNode::isA(classname);
 }
@@ -214,22 +214,22 @@ boolean TransmitterNode::isA(Symbol classname)
 //
 // Switch the node from one net to another.  Resolve any name space collisions.
 //
-void TransmitterNode::switchNetwork(Network *from, Network *to, boolean silently)
+void TransmitterNode::switchNetwork(Network *from, Network *to, bool silently)
 {
 
     const char* label = this->getLabelString();
     const char* conflict = to->nameConflictExists(this, label);
     char new_name[100];
-    boolean name_change_required = FALSE;
+    bool name_change_required = false;
     if (conflict) {
 	sprintf(new_name, "wireless_%d", this->getInstanceNumber());
-	name_change_required = TRUE;
+	name_change_required = true;
     }
 
     //
     // If we would create a cyclic connection then reset the name 
     //
-    List* l = to->makeClassifiedNodeList(ClassReceiverNode, FALSE);
+    List* l = to->makeClassifiedNodeList(ClassReceiverNode, false);
     if (l) {
 	ListIterator li;
 	li.setList(*l);
@@ -241,7 +241,7 @@ void TransmitterNode::switchNetwork(Network *from, Network *to, boolean silently
 	    {
 		if (to->checkForCycle(this, node)) {
 		    sprintf (new_name, "cyclic_connection_%d", this->getInstanceNumber());
-		    name_change_required = TRUE;
+		    name_change_required = true;
 		    break;
 		}
 	    }
@@ -260,7 +260,7 @@ void TransmitterNode::switchNetwork(Network *from, Network *to, boolean silently
     // grab up any receivers that already have this name
     // We've already done the check for cyclic connections.
     //
-    l = to->makeClassifiedNodeList(ClassReceiverNode, FALSE);
+    l = to->makeClassifiedNodeList(ClassReceiverNode, false);
     if (l) {
 	ListIterator li;
 	li.setList(*l);
@@ -280,14 +280,14 @@ void TransmitterNode::switchNetwork(Network *from, Network *to, boolean silently
 }
 
 
-boolean TransmitterNode::namesConflict (const char* his_label, const char* my_label,
+bool TransmitterNode::namesConflict (const char* his_label, const char* my_label,
     const char* his_classname)
 {
 
     //
     // You can always match names with other ReceiverNodes.
     //
-    if (EqualString (his_classname, ClassReceiverNode)) return FALSE;
+    if (EqualString (his_classname, ClassReceiverNode)) return false;
 
     return this->UniqueNameNode::namesConflict (his_label, my_label, his_classname);
 }

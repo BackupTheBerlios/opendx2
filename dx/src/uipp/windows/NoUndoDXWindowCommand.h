@@ -40,7 +40,7 @@ class NoUndoDXWindowCommand : public NoUndoCommand
     DXWindow *dxWindow;
     DXWindowCommandType commandType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -48,7 +48,7 @@ class NoUndoDXWindowCommand : public NoUndoCommand
     //
     NoUndoDXWindowCommand(const char*   name,
                    CommandScope  *scope,
-                   boolean       active,
+                   bool       active,
 		   DXWindow  *cp,
 		   DXWindowCommandType comType);
 

@@ -15,7 +15,7 @@
 #include "ScalarInstance.h"
 #include "ScalarNode.h"
 
-boolean SetVectorAttrDialog::ClassInitialized = FALSE;
+bool SetVectorAttrDialog::ClassInitialized = false;
 
 //String  SetVectorAttrDialog::DefaultResources[] = {
 //    "*componentStepper.rightOffset:    10", 
@@ -76,7 +76,7 @@ SetVectorAttrDialog::SetVectorAttrDialog(
 
     if (NOT SetVectorAttrDialog::ClassInitialized)
     {
-        SetVectorAttrDialog::ClassInitialized = TRUE;
+        SetVectorAttrDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 
@@ -201,14 +201,14 @@ int SetVectorAttrDialog::getCurrentComponentNumber()
 //
 // Determine if the 'All Components' selection is active.
 //
-boolean SetVectorAttrDialog::isAllAttributesMode()
+bool SetVectorAttrDialog::isAllAttributesMode()
 {
  //   Widget w;
 
  //   XtVaGetValues(this->componentOptions, XmNmenuHistory, &w, NULL);
  //   if (this->allComponents == w)
-	//return TRUE;
+	//return true;
  //   else
-	//return FALSE;
+	//return false;
 	return false;
 }

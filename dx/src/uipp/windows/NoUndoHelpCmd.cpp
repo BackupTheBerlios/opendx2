@@ -18,7 +18,7 @@
 
 NoUndoHelpCmd::NoUndoHelpCmd(const char   *name,
 			 CommandScope* scope,
-			 boolean       active,
+			 bool       active,
 			 HelpWin      *helpWin,
 			 HelpCmdType     comType):
     NoUndoCommand(name, scope, active)
@@ -28,10 +28,10 @@ NoUndoHelpCmd::NoUndoHelpCmd(const char   *name,
 }
 
 
-boolean NoUndoHelpCmd::doIt(CommandInterface *ci)
+bool NoUndoHelpCmd::doIt(CommandInterface *ci)
 {
     HelpWin *helpWin = this->helpWin;
-    boolean     ret = TRUE;
+    bool     ret = true;
 
     ASSERT(helpWin);
 

@@ -29,7 +29,7 @@ void WorkSpaceInfo::setDefaultConfiguration()
 {
     this->width  = MIN_WIDTH;
     this->height = MIN_HEIGHT;
-    this->prevent_overlap = FALSE;
+    this->prevent_overlap = false;
     this->grid.setDefaultConfiguration();
 
     if (this->workSpace)
@@ -41,7 +41,7 @@ void WorkSpaceInfo::setDefaultConfiguration()
 //
 // Parse a work space comment and return the information within.
 //
-boolean WorkSpaceInfo::printComments(FILE *f)
+bool WorkSpaceInfo::printComments(FILE *f)
 {
     //
     // Print workspace information
@@ -53,7 +53,7 @@ boolean WorkSpaceInfo::printComments(FILE *f)
     else
 	this->getXYSize(&w, &h);
     if (fprintf(f,"// workspace: width = %d, height = %d\n", w,h) < 0)
-	return FALSE;
+	return false;
 
     return this->grid.printComments(f);
 }
@@ -61,7 +61,7 @@ boolean WorkSpaceInfo::printComments(FILE *f)
 //
 // Parse a work space comment and return the information within.
 //
-boolean WorkSpaceInfo::parseComment(const char* comment, 
+bool WorkSpaceInfo::parseComment(const char* comment, 
 						const char *file, int lineno)
 {
     int items_parsed;
@@ -69,16 +69,16 @@ boolean WorkSpaceInfo::parseComment(const char* comment,
     int h;
 
     if (this->grid.parseComment(comment,file,lineno))
-	return TRUE;
+	return true;
 
     if (!EqualSubstring(&comment[1],"workspace:", 10))
-	return FALSE;
+	return false;
 
     items_parsed = 
 	sscanf(comment, " workspace: width = %d, height = %d", &w, &h);
 
     if (items_parsed != 2)
-        return FALSE;
+        return false;
 
     if (w > MIN_WIDTH)		// Don't allow smaller than the default
 	this->width = w;
@@ -86,7 +86,7 @@ boolean WorkSpaceInfo::parseComment(const char* comment,
     if (h > MIN_HEIGHT)		// Don't allow smaller than the default
 	this->height = h;
 
-    return TRUE;
+    return true;
 }
 void WorkSpaceInfo::getXYSize(int *w, int *h)
 {

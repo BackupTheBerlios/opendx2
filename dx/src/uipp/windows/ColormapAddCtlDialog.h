@@ -43,7 +43,7 @@ class ColormapAddCtlDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
     //

@@ -53,7 +53,7 @@ void List::clear()
 }
 
 
-boolean List::isMember(const void* element)
+bool List::isMember(const void* element)
 {
 	Link* link;
 
@@ -62,9 +62,9 @@ boolean List::isMember(const void* element)
 	if (element == NUL(const void*))
 	{
 		//
-		// If element is NULL, return FALSE.
+		// If element is NULL, return false.
 		//
-		return FALSE;
+		return false;
 	}
 	else
 	{
@@ -78,14 +78,14 @@ boolean List::isMember(const void* element)
 		{
 			if (link->element == element)
 			{
-				return TRUE;
+				return true;
 			}
 		}
 
 		//
-		// If no match, return FALSE.
+		// If no match, return false.
 		//
-		return FALSE;
+		return false;
 	}
 }
 
@@ -148,7 +148,7 @@ int List::getPosition(const void* element)
 }
 
 
-boolean List::insertElement(const void* element,
+bool List::insertElement(const void* element,
 			    const int   position)
 {
     Link* link;
@@ -163,7 +163,7 @@ boolean List::insertElement(const void* element,
 	//
 	// Invalid element or bogus position: return unsuccessfully.
 	//
-	return FALSE;
+	return false;
     }
     else
     {
@@ -211,19 +211,19 @@ boolean List::insertElement(const void* element,
 	//
 	// Element inserted into the list successfully...
 	//
-	return TRUE;
+	return true;
     }
 }
 
 
-boolean List::appendElement(const void* element)
+bool List::appendElement(const void* element)
 {
     ASSERT(this);
     return this->insertElement(element, this->size + 1);
 }
 
 
-boolean List::replaceElement(const void* element,
+bool List::replaceElement(const void* element,
 			     const int   position)
 {
     Link* link;
@@ -237,7 +237,7 @@ boolean List::replaceElement(const void* element,
 	//
 	// Invalid element or bogus position: return unsuccessfully.
 	//
-	return FALSE;
+	return false;
     }
     else
     {
@@ -269,12 +269,12 @@ boolean List::replaceElement(const void* element,
 	//
 	// Element replaced successfully...
 	//
-	return TRUE;
+	return true;
     }
 }
 
 
-boolean List::deleteElement(const int position)
+bool List::deleteElement(const int position)
 {
     Link* before;
     Link* to_delete;
@@ -287,7 +287,7 @@ boolean List::deleteElement(const int position)
 	//
 	// Bogus position: return unsuccessfully.
 	//
-	return FALSE;
+	return false;
     }
     else
     {
@@ -331,11 +331,11 @@ boolean List::deleteElement(const int position)
 	//
 	// Element (link) deleted successfully.
 	//
-	return TRUE;
+	return true;
     }
 }
 
-boolean List::findElementValue(const void *element, isElementEqual f,int& index)
+bool List::findElementValue(const void *element, isElementEqual f,int& index)
 {
     ListIterator iterator(*this);
     void *entry;
@@ -349,15 +349,15 @@ boolean List::findElementValue(const void *element, isElementEqual f,int& index)
             //
             // Duplicate found... return successfully.
             //
-            return TRUE;
+            return true;
         }
     }
 
-    return FALSE;
+    return false;
 
 }
 
-boolean List::mergeElementValue(const void *element, isElementEqual cmp,
+bool List::mergeElementValue(const void *element, isElementEqual cmp,
                          dupElement dup, int& index)
 {
 
@@ -367,7 +367,7 @@ boolean List::mergeElementValue(const void *element, isElementEqual cmp,
         //
         // Duplicate string found... return unsuccessfully.
         //
-        return FALSE;
+        return false;
     }
 
     //
@@ -386,15 +386,15 @@ boolean List::mergeElementValue(const void *element, isElementEqual cmp,
     //
     // Return successfully.
     //
-    return TRUE;
+    return true;
 }
 
-boolean List::removeElement(const void *element) 
+bool List::removeElement(const void *element) 
 {
     int pos = this->getPosition(element);
     if (pos > 0) 
 	return this->deleteElement(pos);
-    return FALSE;
+    return false;
 }
 //
 // Create a duplicate list with the same list items.

@@ -43,7 +43,7 @@ class ListEditor : virtual public Base
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //friend void ListEditor_AddCB(Widget	 widget,
 		  //       XtPointer clientData,
@@ -143,11 +143,11 @@ class ListEditor : virtual public Base
     //
     // Insert or replace the given text at the given position.
     // The current selection (if there is one) is deselected.
-    // If replace is FALSE...
+    // If replace is false...
     //     If position is given as 0, then the item is added at the end of the 
     //	   list.  If position is greater than 0, then the text is inserted at 
     //	   the given position.
-    // If replace is TRUE...
+    // If replace is true...
     //     If position is given as 0, then the item at the end of the 
     //	   list is replaced.  If position is greater than 0, then the text 
     //     is replaces at the given position.
@@ -155,7 +155,7 @@ class ListEditor : virtual public Base
     // If there is an error, no items are left selected.
     //
     void editListItem(const char *text, int position, 
-				boolean replace, boolean select);
+				bool replace, bool select);
 
 
     //virtual void addCallback(Widget w, XtPointer callData);
@@ -188,9 +188,9 @@ class ListEditor : virtual public Base
 
     //
     // Set the currently selected item.
-    // Return FALSE if index is out of range (i.e 0 < index <= list item count).
+    // Return false if index is out of range (i.e 0 < index <= list item count).
     //
-    boolean setSelectedItemIndex(int index);
+    bool setSelectedItemIndex(int index);
 
 
     //

@@ -40,7 +40,7 @@ class NoUndoMWCmd : public NoUndoCommand
     MsgWin	*messageWindow;
     MWCmdType 	 commandType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -48,7 +48,7 @@ class NoUndoMWCmd : public NoUndoCommand
     //
     NoUndoMWCmd(const char*   name,
                 CommandScope  *scope,
-                boolean       active,
+                bool       active,
 		MsgWin       *messageWindow,
 		MWCmdType     comType);
 

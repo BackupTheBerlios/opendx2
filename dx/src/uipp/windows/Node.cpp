@@ -82,7 +82,7 @@ Node::Node(NodeDefinition *nd, Network *net, int inst)
     this->moduleMessageId = NULL; 
     this->nodeCacheability = nd->getDefaultCacheability(); 
     this->buildParameterLists();
-    this->marked = FALSE;
+    this->marked = false;
 #if WORKSPACE_PAGES
 #else
     this->groupNameSymbol = 0;
@@ -198,7 +198,7 @@ Node::~Node()
 //
 // Determine if this node is a node of the given class
 //
-boolean Node::isA(const char *classname)
+bool Node::isA(const char *classname)
 {
     Symbol s = theSymbolManager->registerSymbol(classname);
     return this->isA(s);
@@ -206,7 +206,7 @@ boolean Node::isA(const char *classname)
 //
 // Determine if this node is of the given class.
 //
-boolean Node::isA(Symbol classname)
+bool Node::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassNode);
     return (s == classname);
@@ -341,7 +341,7 @@ char *Node::inputParameterNamesString(const char *varprefix, const char *indent)
 // If buf is not provided the returned string must be deleted
 // by the caller.
 //
-char *Node::getNetworkIONameString( int index, boolean input, char *buffer)
+char *Node::getNetworkIONameString( int index, bool input, char *buffer)
 {
     char *buf;
     const char *prefix = this->network->getPrefix();
@@ -436,9 +436,9 @@ char *Node::outputParameterNamesString(const char *varprefix)
 // .net extension).
 // By default, nodes do not have auxiliary files.
 //
-boolean     Node::auxPrintNodeFile()
+bool     Node::auxPrintNodeFile()
 {
-    return TRUE;
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -454,8 +454,8 @@ boolean     Node::auxPrintNodeFile()
 ||  // input[1]: type = 64, value = "network8.dx"
  *  //
 */
-boolean Node::printIOComment(FILE *f, boolean input, int i, 
-				const char *indent, boolean valueOnly)
+bool Node::printIOComment(FILE *f, bool input, int i, 
+				const char *indent, bool valueOnly)
 {
     int status = 1;
     if (!indent)
@@ -573,7 +573,7 @@ boolean Node::printIOComment(FILE *f, boolean input, int i,
 ||  // input[1]: type = 64, value = "network8.dx"
 ||  //
 */
-boolean Node::netPrintCommentHeader(FILE *f)
+bool Node::netPrintCommentHeader(FILE *f)
 {
     int i, status, x, y, num;
     const char *name;
@@ -583,7 +583,7 @@ boolean Node::netPrintCommentHeader(FILE *f)
 
     status = fprintf(f,"%s// \n",__indent);
     if (status < 0)
-	return FALSE;
+	return false;
 
     //
     // Print the node name comment 
@@ -607,15 +607,15 @@ boolean Node::netPrintCommentHeader(FILE *f)
 		    this->getInputCount(),
 		    this->getLabelString());
     if (status < 0)
-	return FALSE;
+	return false;
 
     //
     // Print the inputs that have values
     //
     num = this->getInputCount();
     for (i=1 ; i<=num ; i++) {
-	if (!this->printIOComment(f, TRUE, i,__indent))
-	    return FALSE;
+	if (!this->printIOComment(f, true, i,__indent))
+	    return false;
     }
 
     //
@@ -623,8 +623,8 @@ boolean Node::netPrintCommentHeader(FILE *f)
     //
     num = this->getOutputCount();
     for (i=1 ; i<=num ; i++) {
-	if (!this->printIOComment(f, FALSE, i, __indent))
-	    return FALSE;
+	if (!this->printIOComment(f, false, i, __indent))
+	    return false;
     }
 
 #if WORKSPACE_PAGES
@@ -632,31 +632,31 @@ boolean Node::netPrintCommentHeader(FILE *f)
 #else
     if(NOT this->netPrintPgrpComment(f))
 #endif
-	return FALSE;
+	return false;
 
     if (!this->netPrintAuxComment(f))
-	return FALSE;
+	return false;
 
     status = fprintf(f,"%s//\n",__indent);
     if (status < 0)
-	return FALSE;
+	return false;
 
-    return TRUE; 
+    return true; 
 
 }
 
 #if WORKSPACE_PAGES
 #else
-boolean Node::netPrintPgrpComment(FILE *f)
+bool Node::netPrintPgrpComment(FILE *f)
 {
     const char *gname = this->getGroupName();
     if(NOT gname)
-	return TRUE;
+	return true;
 
     if(fprintf(f,"%s// process group: %s\n",__indent, gname) < 0)
-	return FALSE;
+	return false;
 
-    return TRUE;
+    return true;
 }
 #endif
 
@@ -771,16 +771,16 @@ void Node::prepareToSendValue(int index, Parameter *p)
 {
 }
 
-boolean Node::netPrintNode(FILE *f, PrintType dest, const char *prefix,
+bool Node::netPrintNode(FILE *f, PrintType dest, const char *prefix,
 		PacketIFCallback callback, void *clientdata)
 {
     char *s;
     DXPacketIF *pif = theDXApplication->getPacketIF();
-    boolean r = TRUE;
+    bool r = true;
 
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
         if (!this->netPrintCommentHeader(f))
-	    return FALSE;
+	    return false;
     } else if (pif) {	// We have a connection to the executive/server
   	//
   	// If this node has a message protocol with the executive, then
@@ -800,7 +800,7 @@ boolean Node::netPrintNode(FILE *f, PrintType dest, const char *prefix,
 
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
 	if (fputs(s, f) < 0)
-	    r = FALSE;
+	    r = false;
 	if (callback != NUL(PacketIFCallback))
 	    callback(clientdata,s);
     } else {
@@ -816,7 +816,7 @@ boolean Node::netPrintNode(FILE *f, PrintType dest, const char *prefix,
 
 //
 // Returns a string that is used to register this->ExecModuleMessageHandler() 
-// when this->hasModuleMessageProtocol() return TRUE.
+// when this->hasModuleMessageProtocol() return true.
 // This version, returns an id that is unique to  this instance of this node.
 //
 const char *Node::getModuleMessageIdString()
@@ -859,22 +859,22 @@ void Node::updateModuleMessageProtocol(DXPacketIF *pif)
     }
 }
 //
-// Return TRUE/FALSE, indicating whether or not we support a message protocol 
+// Return true/false, indicating whether or not we support a message protocol 
 // between the executive module that runs for this node and the  UI.
 // Be default Nodes do not have message protocols.
 // 
-boolean Node::hasModuleMessageProtocol()
+bool Node::hasModuleMessageProtocol()
 {
-    return FALSE;
+    return false;
 }
 //
-// Return TRUE/FALSE, indicating whether or not we expect to receive
+// Return true/false, indicating whether or not we expect to receive
 // a message from the UI when our module executes in the executive. 
 // Be default Nodes do not expect messages.
 // 
-boolean Node::expectingModuleMessage()
+bool Node::expectingModuleMessage()
 {
-    return FALSE;
+    return false;
 }
 //
 // This dispatches messages to this->execModuleMessageHandler().
@@ -1022,7 +1022,7 @@ char *Node::valuesString(const char *prefix)
      
     char  *s=NUL(char*), *buf;
     int   size, cnt, i;
-    boolean first = TRUE;;
+    bool first = true;;
 
 #if defined(STATIC_MACROS)
     // 
@@ -1039,7 +1039,7 @@ char *Node::valuesString(const char *prefix)
 	if ( (buf = this->inputValueString(i,prefix)) )
 	{
 	    if (s) 
-		first = FALSE;
+		first = false;
 	    size = STRLEN(buf) + STRLEN(s) + 2;
 	    s = (char*)REALLOC(s,size);
 	    if (first) 
@@ -1062,7 +1062,7 @@ char *Node::valuesString(const char *prefix)
 	if ( (buf = this->outputValueString(i,prefix)) )
 	{
 	    if (s) 
-		first = FALSE;
+		first = false;
 	    size = STRLEN(buf) + STRLEN(s) + 2;
 	    s = (char*)REALLOC(s,size);
 	    if (first) 
@@ -1078,16 +1078,16 @@ char *Node::valuesString(const char *prefix)
 
 }
 
-boolean Node::printValues(FILE *f, const char *prefix, PrintType dest)
+bool Node::printValues(FILE *f, const char *prefix, PrintType dest)
 {
     char *s;
-    boolean r = TRUE;
+    bool r = true;
 
     s = this->valuesString(prefix);
     if (s) {
 	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
 	    if (fputs(s, f) < 0)
-		r = FALSE;
+		r = false;
 	} else {
 	    ASSERT (dest == PrintExec);
 	    DXPacketIF* pif = theDXApplication->getPacketIF();
@@ -1102,12 +1102,12 @@ boolean Node::printValues(FILE *f, const char *prefix, PrintType dest)
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Send all values that are in one expression.
-boolean Node::sendValues(boolean ignoreDirty)
+bool Node::sendValues(bool ignoreDirty)
 {
     DXPacketIF *pif  = theDXApplication->getPacketIF();
 
     if (!pif)
-	return TRUE;
+	return true;
 
     const char *prefix = this->network->getPrefix();
     int i, cnt;
@@ -1219,7 +1219,7 @@ boolean Node::sendValues(boolean ignoreDirty)
 	FREE((void*)values);
     }
 
-    return TRUE;
+    return true;
 }
 
 
@@ -1229,7 +1229,7 @@ boolean Node::sendValues(boolean ignoreDirty)
 //
 // Set the instance number, the x,y position, and its inputs. 
 //
-boolean Node::netParseComment(const char* comment, 
+bool Node::netParseComment(const char* comment, 
 		const char* filename, int lineno)
 {
     ASSERT(comment);
@@ -1238,8 +1238,8 @@ boolean Node::netParseComment(const char* comment,
      * Ignore comments that we do not recognize 
      */
     return this->netParseNodeComment(comment, filename, lineno) ||
-		this->parseIOComment(TRUE, comment, filename, lineno) ||
-		this->parseIOComment(FALSE, comment, filename, lineno) ||
+		this->parseIOComment(true, comment, filename, lineno) ||
+		this->parseIOComment(false, comment, filename, lineno) ||
 #if WORKSPACE_PAGES
 		this->parseGroupComment(comment, filename, lineno) ||
 #else
@@ -1252,38 +1252,38 @@ boolean Node::netParseComment(const char* comment,
 // Empty virtual method to parse comments (if any) that come after the 
 // 'node', 'input', 'ouput' and 'process group' comments in the .net file. 
 //
-boolean Node::netParseAuxComment(const char* comment,
+bool Node::netParseAuxComment(const char* comment,
                 const char* filename, int lineno)
 {
-    return FALSE;
+    return false;
 }
 // 
 // Empty virtual method to be overridden by subclasses that prints out
 // node specific comments after the standard comments in the .net file.
 // 
-boolean Node::netPrintAuxComment(FILE *f)
+bool Node::netPrintAuxComment(FILE *f)
 {
-    return TRUE;
+    return true;
 }
 
 #if WORKSPACE_PAGES
 #else
-boolean Node::netParsePgrpComment(const char* comment,
+bool Node::netParsePgrpComment(const char* comment,
                 		  const char* filename, int lineno)
 {
     char *name;
 
     if (!EqualSubstring(" process group:",comment,15))
-	return FALSE;
+	return false;
 
     name = strchr(comment, ':');
     name++;
     SkipWhiteSpace(name);
 
-    if(NOT name)    return FALSE;
+    if(NOT name)    return false;
 
     this->addToGroup(name);
-    return TRUE;
+    return true;
 }
 #endif
 
@@ -1291,25 +1291,25 @@ boolean Node::netParsePgrpComment(const char* comment,
 //
 // Parse an 'input[i]' or 'output[i]' .net file comment. 
 //
-boolean Node::parseIOComment(boolean input, const char* comment,
-                const char* filename, int lineno, boolean valueOnly)
+bool Node::parseIOComment(bool input, const char* comment,
+                const char* filename, int lineno, bool valueOnly)
 {
     int      defaulting = 0, allowed_params, items_parsed, ionum, r, type_tmp;
-    int  visible = TRUE;
+    int  visible = true;
     Type     type = DXType::UndefinedType;
     char     *value, *ioname;
-    boolean	parse_error = FALSE;
+    bool	parse_error = false;
     
     ASSERT(comment);
 
     if (input) {
 	if (!EqualSubstring(" input[",comment,7))
-	    return FALSE;
+	    return false;
 
 	if (valueOnly) {
 	    if (sscanf(comment, " input[%d]: defaulting = %d", 
 				&ionum, &defaulting) != 2)
-		parse_error = TRUE;
+		parse_error = true;
 	    type = DXType::UndefinedType;
 	} else {
 	    items_parsed = sscanf(comment,
@@ -1333,7 +1333,7 @@ boolean Node::parseIOComment(boolean input, const char* comment,
 					    &ionum, &defaulting, &type_tmp);
 			type = (Type) type_tmp;
 			if (items_parsed != 3) 
-			    parse_error = TRUE;
+			    parse_error = true;
 		    } 
 		}
 		else 
@@ -1347,12 +1347,12 @@ boolean Node::parseIOComment(boolean input, const char* comment,
     } else {	// An output
 
 	if (!EqualSubstring(" output[",comment,8))
-	    return FALSE;
+	    return false;
 
 	if (valueOnly) {
 	    if (sscanf(comment, " output[%d]: defaulting = %d", 
 						&ionum, &defaulting) != 2)
-		parse_error = TRUE;
+		parse_error = true;
 	    type = DXType::UndefinedType;
 	} else {
 	    // Invisibility added 3/30/93
@@ -1371,7 +1371,7 @@ boolean Node::parseIOComment(boolean input, const char* comment,
 		    items_parsed = sscanf(comment, " output[%d]: visible = %d", 
 						    &ionum, &visible);
 		    if (items_parsed != 2)
-			parse_error = TRUE;
+			parse_error = true;
 		}
 	    }
 	}
@@ -1383,7 +1383,7 @@ boolean Node::parseIOComment(boolean input, const char* comment,
     {
 	ErrorMessage ("Can't parse %s comment file %s line %d", 
 				ioname, filename, lineno);
-	return TRUE;
+	return true;
     }
     /*
      * If the input parameter is out of bounds, then something is wrong...
@@ -1392,7 +1392,7 @@ boolean Node::parseIOComment(boolean input, const char* comment,
     {
 	ErrorMessage ("Bad %s number (%d) file %s line %d", 
 		      input? "input": "output", ionum, filename, lineno);
-	return TRUE;
+	return true;
     }
 
  
@@ -1437,50 +1437,50 @@ boolean Node::parseIOComment(boolean input, const char* comment,
 	    //
 	    } else if (defaulting || EqualString(value,"NULL")) {
 #endif
-	        r = this->setInputSetValue(ionum, value, type, FALSE);
+	        r = this->setInputSetValue(ionum, value, type, false);
 		if (r == DXType::UndefinedType && 
 				type != DXType::UndefinedType) 	
 		    r = this->setInputSetValue(ionum, value, 
-					DXType::UndefinedType, FALSE);
+					DXType::UndefinedType, false);
 	    } else {
-	        r = this->setInputValue(ionum, value, type, FALSE);
+	        r = this->setInputValue(ionum, value, type, false);
 		if (r == DXType::UndefinedType && 
 				type != DXType::UndefinedType) 	
 		    r = this->setInputValue(ionum, value, 
-					DXType::UndefinedType, FALSE);
+					DXType::UndefinedType, false);
 	    }
 	} else {
-	    r = this->setOutputValue(ionum, value, type, FALSE);
+	    r = this->setOutputValue(ionum, value, type, false);
 	    if (r == DXType::UndefinedType && 
 			    type != DXType::UndefinedType) 	
 		r = this->setOutputValue(ionum, value, DXType::UndefinedType, 
-								FALSE);
+								false);
 	}
       
 	if (r == DXType::UndefinedType) {
 	    ErrorMessage(
 		"Encountered an erroneous input value (file %s, line %d)",
 			    filename, lineno);
-	    return TRUE;
+	    return true;
 	}
     }
 		
     if (!valueOnly) {
 	if (input) {
-	    this->setInputVisibility(ionum, (boolean)visible);
+	    this->setInputVisibility(ionum, (bool)visible);
 	} else {	// Outputs always use the value found in the file
-	    this->useAssignedOutputValue(ionum, FALSE);
-	    this->setOutputVisibility(ionum, (boolean)visible);
+	    this->useAssignedOutputValue(ionum, false);
+	    this->setOutputVisibility(ionum, (bool)visible);
 	}
     }
     
 
-    return TRUE;
+    return true;
 
 }
 
 
-boolean Node::netParseNodeComment(const char* comment,
+bool Node::netParseNodeComment(const char* comment,
                 const char* filename, int lineno)
 {
     int        items_parsed;
@@ -1499,7 +1499,7 @@ boolean Node::netParseNodeComment(const char* comment,
      */
 
     if (!EqualSubstring(" node ",comment,6))
-	return FALSE;
+	return false;
 
     items_parsed =	// Version DX/6000 2.0 style comments 
 	    sscanf
@@ -1540,13 +1540,13 @@ boolean Node::netParseNodeComment(const char* comment,
 #ifdef NOT_YET
 		ErrorMessage
 		    ("#10001", "node", filename, lineno);
-		_error_occurred = TRUE;
+		_error_occurred = true;
 #else
 		ErrorMessage("Can not parse node comment at "
 				"line %d in file %s",
 				lineno, filename);
 #endif
-		return TRUE;
+		return true;
 	    }
 	}
     }
@@ -1559,7 +1559,7 @@ boolean Node::netParseNodeComment(const char* comment,
     if (!nd) {
 	ErrorMessage("Undefined module %s at line %d in file %s",
 			node_name, lineno, filename); 
-	return FALSE;
+	return false;
     }
 
 //    printf ("Number of inputs found = %d, number defined = %d\n",
@@ -1593,7 +1593,7 @@ boolean Node::netParseNodeComment(const char* comment,
     if (n_inputs != this->getInputCount()) {
         if (this->isInputRepeatable()) {
 	    int delta_inputs = n_inputs - this->getInputCount();
-	    boolean adding = delta_inputs > 0;
+	    bool adding = delta_inputs > 0;
 	    if (!adding) 
 		delta_inputs = -delta_inputs;
 	    int sets; 
@@ -1601,19 +1601,19 @@ boolean Node::netParseNodeComment(const char* comment,
 		ErrorMessage("Number of repeatable input parameters does not "
 			     "divide number of parameters for module %s",
 			     this->getNameString());
-	  	return TRUE;
+	  	return true;
 	    }
 	    sets = delta_inputs/getInputRepeatCount();
 	    for (i=0  ; i<sets ; i++) {
 		if (adding) {
 		    if (!this->addInputRepeats()) {
 			ErrorMessage("Can't add repeated input parameters");
-			return TRUE;
+			return true;
 		    }
 		} else {
 		    if (!this->removeInputRepeats()) {
 			ErrorMessage("Can't remove repeated input parameters");
-			return TRUE;
+			return true;
 		    }
 		}
 	    }
@@ -1625,7 +1625,7 @@ boolean Node::netParseNodeComment(const char* comment,
     if (n_outputs != this->getOutputCount()) {
         if (this->isOutputRepeatable()) {
 	    int delta_outputs = n_outputs - this->getOutputCount();
-	    boolean adding = delta_outputs > 0;
+	    bool adding = delta_outputs > 0;
 	    if (!adding) 
 		delta_outputs = -delta_outputs;
 	    int sets; 
@@ -1633,19 +1633,19 @@ boolean Node::netParseNodeComment(const char* comment,
 		ErrorMessage("Number of repeatable output parameters does "
 			     "not divide number of parameters for module %s",
 			     this->getNameString());
-	  	return TRUE;
+	  	return true;
 	    }
 	    sets = delta_outputs/getOutputRepeatCount();
 	    for (i=0  ; i<sets ; i++) {
 		if (adding) {
 		    if (!this->addOutputRepeats()) {
 			ErrorMessage("Can't add repeated output parameters");
-			return TRUE;
+			return true;
 		    }
 		} else {
 		    if (!this->removeOutputRepeats()) {
 			ErrorMessage("Can't remove repeated output parameters");
-			return TRUE;
+			return true;
 		    }
 		}
 	    }
@@ -1662,7 +1662,7 @@ boolean Node::netParseNodeComment(const char* comment,
     if (instance > this->definition->getCurrentInstance())
 	this->definition->setNextInstance(instance+1);
 
-    return TRUE;
+    return true;
 
 }
 
@@ -1678,10 +1678,10 @@ boolean Node::netParseNodeComment(const char* comment,
 //
 Type Node::setInputSetValue(int index, const char *value, 
 				Type type,
-				boolean send)
+				bool send)
 {
 
-    boolean was_defaulting = this->isInputDefaulting(index);
+    bool was_defaulting = this->isInputDefaulting(index);
 
     //
     // If the parameter is already set (i.e. tab down) then just do
@@ -1695,7 +1695,7 @@ Type Node::setInputSetValue(int index, const char *value,
     // is the same as a normal set except we don't do notification).
     //
     type = this->setIOValue(&this->inputParameters, index, value, 
-						type, FALSE, FALSE);
+						type, false, false);
 
     if (type != DXType::UndefinedType) {
 	//
@@ -1703,7 +1703,7 @@ Type Node::setInputSetValue(int index, const char *value,
 	// do notification (again, this is the same as a normal setting of 
 	// a parameter to defaulting, but no notification).
 	//
-	this->setIODefaultingStatus(index, TRUE, TRUE, FALSE, FALSE);
+	this->setIODefaultingStatus(index, true, true, false, false);
 
 	//
 	// Third, clear the parameter's dirty bit as we are only changing
@@ -1715,7 +1715,7 @@ Type Node::setInputSetValue(int index, const char *value,
 	// Now do the notification that we've jumped through hoops to
 	// get right!
 	//
-	this->notifyIoParameterStatusChanged(TRUE, index, 
+	this->notifyIoParameterStatusChanged(true, index, 
 				Node::ParameterSetValueChanged);
     }
 
@@ -1727,7 +1727,7 @@ Type Node::setInputSetValue(int index, const char *value,
 //
 //  Mark the given parameter as clean.
 //
-void Node::setIODirty(List *io, int index, boolean dirty)
+void Node::setIODirty(List *io, int index, bool dirty)
 {
     ASSERT(index >= 1);
     Parameter *p = (Parameter*)io->getElement(index);
@@ -1759,7 +1759,7 @@ void Node::setIODirty(List *io, int index, boolean dirty)
 // the given type (i.e. by adding "'s, {}'s, []'s and so on). 
 // If send is true (the default), the results will be sent to the server
 // if possible.
-// If notify is TRUE, then call ioParameterStatusChanged() with one of
+// If notify is true, then call ioParameterStatusChanged() with one of
 // Node::ParameterSetValueChanged and Node::ParameterValueChanged.
 // index is 1 based.
 //
@@ -1768,14 +1768,14 @@ Type Node::setIOValue(List *io,
 		      int index,
 		      const char *value,
 		      Type t,
-		      boolean send,
-		      boolean notify)
+		      bool send,
+		      bool notify)
 {
     ASSERT( index >= 1 );
  
     Parameter *p = (Parameter*)io->getElement(index);
     ASSERT(p); 
-    boolean was_set = !p->isDefaulting();
+    bool was_set = !p->isDefaulting();
 
     Type type = DXType::UndefinedType;
     if (t == DXType::UndefinedType)
@@ -1801,7 +1801,7 @@ Type Node::setIOValue(List *io,
 	{
 	    DXPacketIF *pif = theDXApplication->getPacketIF(); 
 	    if (pif != NUL(DXPacketIF*)) 
-		 this->sendValues(FALSE);
+		 this->sendValues(false);
 	}
 
 	if (notify) {
@@ -1827,7 +1827,7 @@ Type Node::setIOValue(List *io,
 //
 Type Node::setIOValueQuietly(List *io, int index, const char *value, Type t)
 {
-    t = this->setIOValue(io, index, value, t, FALSE);
+    t = this->setIOValue(io, index, value, t, false);
     if (t == DXType::UndefinedType)
 	return t;
 
@@ -1863,7 +1863,7 @@ void Node::sendValuesQuietly()
 
     for (i=1 ; i<=this->getInputCount() ; i++) {
         Parameter *p = this->getInputParameter(i);
-        if (p->isNeededValue(FALSE)) {
+        if (p->isNeededValue(false)) {
             (void)this->getNetworkInputNameString(i, varname);
             varval = this->getInputValueString(i);
             sprintf(msg,"Executive(\"assign noexecute\",\"%s\",%s);",
@@ -1874,7 +1874,7 @@ void Node::sendValuesQuietly()
     }
     for (i=1 ; i<=this->getOutputCount() ; i++) {
         Parameter *p = this->getOutputParameter(i);
-        if (p->isNeededValue(FALSE)) {
+        if (p->isNeededValue(false)) {
             (void)this->getNetworkOutputNameString(i, varname);
             varval = this->getOutputValueString(i);
             sprintf(msg ,"Executive(\"assign noexecute\",\"%s\",%s);",
@@ -1891,7 +1891,7 @@ void Node::sendValuesQuietly()
 // Notify anybody that needs to know that a parameter has changed its
 // value.
 //
-void Node::notifyIoParameterStatusChanged(boolean input, int index, 
+void Node::notifyIoParameterStatusChanged(bool input, int index, 
                                 NodeParameterStatusChange status) 
 {
     if (!this->network->isDeleted()) 
@@ -1899,7 +1899,7 @@ void Node::notifyIoParameterStatusChanged(boolean input, int index,
 }
 
 
-void Node::ioParameterStatusChanged(boolean input, int index, 
+void Node::ioParameterStatusChanged(bool input, int index, 
 				NodeParameterStatusChange status)
 {
 
@@ -1925,7 +1925,7 @@ void Node::ioParameterStatusChanged(boolean input, int index,
 	while ( (a = (Ark*)iterator.getNext()) ) {
 	    int in_index;
 	    Node *n = a->getDestinationNode(in_index); 
-	    n->notifyIoParameterStatusChanged(TRUE, in_index, status);
+	    n->notifyIoParameterStatusChanged(true, in_index, status);
 	}
     }
 
@@ -1959,7 +1959,7 @@ void Node::ioParameterStatusChanged(boolean input, int index,
 // Add an Ark to to the index'th parameter of the parameter list given by io. 
 // index is 1 based.
 //
-boolean Node::addIOArk(List *io, int index, Ark *a) 
+bool Node::addIOArk(List *io, int index, Ark *a) 
 {
 
      Parameter *p;
@@ -1969,11 +1969,11 @@ boolean Node::addIOArk(List *io, int index, Ark *a)
 
      ASSERT(p); 
      if (!p->addArk(a))
-	return FALSE;
+	return false;
 
      this->notifyIoParameterStatusChanged(io == &this->inputParameters, index,
 				Node::ParameterArkAdded);
-     return TRUE;
+     return true;
 
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -1981,7 +1981,7 @@ boolean Node::addIOArk(List *io, int index, Ark *a)
 // Determine if the index'th parameter in the give list is connected
 // (i.e. has an arc) to another parameter.
 // 
-boolean Node::isIOConnected(List *io, int index)
+bool Node::isIOConnected(List *io, int index)
 {
 
     Parameter *p;
@@ -1996,7 +1996,7 @@ boolean Node::isIOConnected(List *io, int index)
 // 
 //  is the index'th parameter defaulting?
 // 
-boolean Node::isIODefaulting(List *io, int index)
+bool Node::isIODefaulting(List *io, int index)
 {
 
     Parameter *p;
@@ -2011,7 +2011,7 @@ boolean Node::isIODefaulting(List *io, int index)
 // 
 //  is the index'th parameter defaulting?
 // 
-boolean Node::isIOSet(List *io, int index)
+bool Node::isIOSet(List *io, int index)
 {
 
     Parameter *p;
@@ -2100,7 +2100,7 @@ char *Node::getIONameString(List *io, int index, char *buf)
     int repeat_num;     // The number on the MDF's REPEAT line
     int mdf_params=0;    // The number of in/outputs including the first
 			// set of inputs/outputs 
-    boolean input = (io == &this->inputParameters);
+    bool input = (io == &this->inputParameters);
     char pname[128];
     const char *rval;
  
@@ -2196,10 +2196,10 @@ const List *Node::getIOArks(List *io, int index)
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
-// Return TRUE/FALSE indicating whether or not the give parameter from
+// Return true/false indicating whether or not the give parameter from
 // the given list is set to be visible.
 // 
-boolean Node::isIOVisible(List *io, int index)
+bool Node::isIOVisible(List *io, int index)
 {
     Parameter *p;
     ASSERT( index >= 1 );
@@ -2211,10 +2211,10 @@ boolean Node::isIOVisible(List *io, int index)
 }
 ////////////////////////////////////////////////////////////////////////////////
 // 
-// Set TRUE/FALSE indicating whether or not the give parameter from
+// Set true/false indicating whether or not the give parameter from
 // the given list is set to be visible.
 // 
-void Node::setIOVisibility(List *io, int index, boolean v)
+void Node::setIOVisibility(List *io, int index, bool v)
 {
     Parameter *p;
     ASSERT( index >= 1 );
@@ -2234,7 +2234,7 @@ void Node::setIOVisibility(List *io, int index, boolean v)
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
-// Set TRUE/FALSE indicating whether or not all parameters from
+// Set true/false indicating whether or not all parameters from
 // the given list is set to be visible.
 // 
 // FIXME: 
@@ -2248,12 +2248,12 @@ void Node::setIOVisibility(List *io, int index, boolean v)
 // PerformSpaceWars.  Add a call there to RerouteLines.  Then you can switch back
 // to {un}manage.  Drawback: it's an expensive fix.
 // 
-void Node::setAllIOVisibility(List *io, boolean v)
+void Node::setAllIOVisibility(List *io, bool v)
 {
     Parameter *p;
     ListIterator li(*io);
     int index = 1;
-    boolean isInput = io == &this->inputParameters;
+    bool isInput = io == &this->inputParameters;
  
 //#if 0
 //    this->standin->unmanage();
@@ -2264,8 +2264,8 @@ void Node::setAllIOVisibility(List *io, boolean v)
 //#endif
     while( (p = (Parameter *)li.getNext()) )
     {
-	boolean newv = v || p->isConnected();
-	boolean oldv = p->isVisible();
+	bool newv = v || p->isConnected();
+	bool oldv = p->isVisible();
 	if (newv != oldv) {
 	    p->setVisibility(newv);
 	    this->notifyIoParameterStatusChanged(isInput, index,
@@ -2284,10 +2284,10 @@ void Node::setAllIOVisibility(List *io, boolean v)
 }
 ////////////////////////////////////////////////////////////////////////////////
 // 
-// Return TRUE/FALSE indicating whether or not the give parameter from
+// Return true/false indicating whether or not the give parameter from
 // the given list is viewable. 
 // 
-boolean Node::isIOViewable(List *io, int index)
+bool Node::isIOViewable(List *io, int index)
 {
     Parameter *p;
     ASSERT( index >= 1 );
@@ -2300,10 +2300,10 @@ boolean Node::isIOViewable(List *io, int index)
 
 ////////////////////////////////////////////////////////////////////////////////
 // 
-// Return TRUE/FALSE indicating whether or not the given i/o parameter is
+// Return true/false indicating whether or not the given i/o parameter is
 // a required parameter.  
 // 
-boolean Node::isIORequired(List *io, int index)
+bool Node::isIORequired(List *io, int index)
 {
     Parameter *p;
     ASSERT( index >= 1 );
@@ -2315,34 +2315,34 @@ boolean Node::isIORequired(List *io, int index)
 }
 ////////////////////////////////////////////////////////////////////////////////
 // 
-// Return TRUE/FALSE indicating whether or not the given parameter list 
+// Return true/false indicating whether or not the given parameter list 
 // contains parameters that can be hidden. 
 // 
-boolean Node::hasHideableIO(List *io)
+bool Node::hasHideableIO(List *io)
 {
     ListIterator iterator(*io);
     Parameter *p;
     while ( (p = (Parameter*)iterator.getNext()) ) {
 	if (p->isVisible() && !p->isConnected())
-	    return TRUE;
+	    return true;
     }
-    return FALSE;
+    return false;
 }
 ////////////////////////////////////////////////////////////////////////////////
 // 
-// Return TRUE/FALSE indicating whether or not the given parameter list 
+// Return true/false indicating whether or not the given parameter list 
 // contains parameters that can be exposed. 
 // 
-boolean Node::hasExposableIO(List *io)
+bool Node::hasExposableIO(List *io)
 {
     ListIterator iterator(*io);
     Parameter *p;
 
     while ( (p = (Parameter*)iterator.getNext()) ) {
 	if (p->isViewable() && !p->isVisible())
-	    return TRUE;
+	    return true;
     }
-    return FALSE;
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2361,7 +2361,7 @@ const char *Node::getIODescription(List *io, int index)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-boolean Node::isIOCacheabilityWriteable(List *io, int index)
+bool Node::isIOCacheabilityWriteable(List *io, int index)
 {
     Parameter *p;
     ASSERT( index >= 1 );
@@ -2402,7 +2402,7 @@ void Node::setIOCacheability(List *io, int index, Cacheability c)
 	// failure.  So now, if the cacheability is not writable during
 	// a .net read, then ignore the request.
 	//
-	boolean r = this->isIOCacheabilityWriteable(io, index);
+	bool r = this->isIOCacheabilityWriteable(io, index);
 	if (!r && this->network->isReadingNetwork())
 	   return;
 	else
@@ -2433,7 +2433,7 @@ void Node::setNodeCacheability(Cacheability val)
 // 
 // 
 // 
-boolean Node::typeMatchOutputToInput(int output_index, 
+bool Node::typeMatchOutputToInput(int output_index, 
 				     Node *dest, int input_index)
 {
     Parameter *pin, *pout;
@@ -2456,23 +2456,23 @@ boolean Node::typeMatchOutputToInput(int output_index,
 // found in the definition (the initial number of inputs minus the number of
 // repeats).
 //
-boolean Node::hasRemoveableInput()
+bool Node::hasRemoveableInput()
 {
     NodeDefinition *def = this->definition;
     int icnt = this->getInputCount(); 
 
     if (!def->isInputRepeatable() || (icnt == 0))
-	return FALSE;
+	return false;
 
     return icnt > (def->getInputCount() - def->getInputRepeatCount());
 }
-boolean Node::hasRemoveableOutput()
+bool Node::hasRemoveableOutput()
 {
     NodeDefinition *def = this->definition;
     int icnt = this->getOutputCount(); 
 
     if (!def->isOutputRepeatable() || (icnt == 0))
-	return FALSE;
+	return false;
 
     return icnt > (def->getOutputCount() - def->getOutputRepeatCount());
 }
@@ -2482,7 +2482,7 @@ boolean Node::hasRemoveableOutput()
 // This request may be made by the parse (below) or by the Editor or StandIn. 
 // If we have ConfigurationDialog, let it know about the added parameters.
 //
-boolean Node::addRepeats(boolean input)
+bool Node::addRepeats(bool input)
 {
     int i, iocnt, repeats;
     List *plist;
@@ -2529,7 +2529,7 @@ boolean Node::addRepeats(boolean input)
     }
     
 
-    return TRUE;
+    return true;
 }
 ///////////////////////////////////////////////////////////////////////////////
 // 
@@ -2537,7 +2537,7 @@ boolean Node::addRepeats(boolean input)
 // The parameters that are removed are deleted.
 // NOTE: this is a friend of the Node class.
 //
-boolean Node::removeRepeats(boolean input)
+bool Node::removeRepeats(bool input)
 {
     int i, repeats;
     List *plist;
@@ -2580,22 +2580,22 @@ boolean Node::removeRepeats(boolean input)
     }
     
 
-    return TRUE;
+    return true;
 }
 ///////////////////////////////////////////////////////////////////////////////
 // 
 // Change a parameter from either the assigned or default value to the
 // default or assigned value. 
 // Set the index'th i/o parameter to use either the default value
-// or the assigned valued. if notify is TRUE then call 
+// or the assigned valued. if notify is true then call 
 // ioParameterStatusChanged() with Node::ParameterSetValueToDefaulting.
 // If there is a connection to the executive, then send the change.
 //
 void Node::setIODefaultingStatus(int index,
-				 boolean input,
-				 boolean defaulting,
-				 boolean send,
-				 boolean notify)
+				 bool input,
+				 bool defaulting,
+				 bool send,
+				 bool notify)
 {
     Parameter *p;
     if (input)
@@ -2603,7 +2603,7 @@ void Node::setIODefaultingStatus(int index,
     else
 	p = this->getOutputParameter(index); 
 
-    boolean was_defaulting = p->isDefaulting();
+    bool was_defaulting = p->isDefaulting();
     if (was_defaulting == defaulting)
 	return;
 
@@ -2618,7 +2618,7 @@ void Node::setIODefaultingStatus(int index,
     {
 	DXPacketIF *pif = theDXApplication->getPacketIF(); 
 	if (pif != NUL(DXPacketIF*)) 
-	     this->sendValues(FALSE);
+	     this->sendValues(false);
     }
 
     ASSERT(!p->isConnected());
@@ -2663,9 +2663,9 @@ void Node::openHelpWindow()
 // Print the stuff that goes in a .cfg file. 
 // The default is to succeed without printing anything.
 //
-boolean Node::cfgPrintNode(FILE *f, PrintType)
+bool Node::cfgPrintNode(FILE *f, PrintType)
 {
-   return TRUE;
+   return true;
 }
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -2673,13 +2673,13 @@ boolean Node::cfgPrintNode(FILE *f, PrintType)
 // Be default nodes have lines of the following form
 // '// node %s[%d]:'
 //
-boolean Node::cfgParseComment(const char* comment, 
+bool Node::cfgParseComment(const char* comment, 
 		const char* filename, int lineno)
 {
     return this->cfgParseNodeLeader(comment,filename,lineno);
 }
 
-boolean Node::setLabelString(const char *label)
+bool Node::setLabelString(const char *label)
 {
 
     this->labelSymbol = theSymbolManager->registerSymbol(label);
@@ -2687,7 +2687,7 @@ boolean Node::setLabelString(const char *label)
 	this->cdb->changeLabel();
     if (this->getStandIn())
 	this->getStandIn()->notifyLabelChange();
-    return TRUE;
+    return true;
 }
 const char *Node::getLabelString()
 {
@@ -2697,12 +2697,12 @@ const char *Node::getLabelString()
         return theSymbolManager->getSymbolString(this->labelSymbol);
 }
 
-boolean Node::initialize()
+bool Node::initialize()
 {
-    return TRUE;
+    return true;
 }
 
-boolean Node::deleteArk(Ark *a)
+bool Node::deleteArk(Ark *a)
 {
     Node*      sourceNode;
     Node*      destNode;
@@ -2715,11 +2715,11 @@ boolean Node::deleteArk(Ark *a)
     destNode->removeInputArk(destIndex, a);
     sourceNode->removeOutputArk(sourceIndex, a);
 
-    return TRUE;
+    return true;
 
 }
 
-boolean Node::removeIOArk(List *io, int index, Ark *a)
+bool Node::removeIOArk(List *io, int index, Ark *a)
 {
     Parameter *p = (Parameter*)io->getElement(index);
 
@@ -2728,7 +2728,7 @@ boolean Node::removeIOArk(List *io, int index, Ark *a)
     this->notifyIoParameterStatusChanged(io == &this->inputParameters, index,
 				Node::ParameterArkRemoved);
 
-    return TRUE;
+    return true;
 }
 
 
@@ -2752,7 +2752,7 @@ Node::updateDefinition()
 
 #if 11 	// This is the beginning of an attemp to fix bug DAWOOD91 
 #else
-    boolean hadStandIn = FALSE;
+    bool hadStandIn = false;
 
     //
     // Recreate the standin if need be
@@ -2760,7 +2760,7 @@ Node::updateDefinition()
     if (this->standin) {
 	delete this->standin;
 	this->standin = NULL;
-	hadStandIn = TRUE;
+	hadStandIn = true;
     }
 #endif
 
@@ -2769,23 +2769,23 @@ Node::updateDefinition()
     // disconnect arcs or reset the values to NULL.
 
     int numInputs = this->getInputCount();
-    boolean *defaulting = NULL;
-    boolean *visibilities = NULL;
+    bool *defaulting = NULL;
+    bool *visibilities = NULL;
     char **values = NULL;
     List **inputArks = NULL;
     if (numInputs != 0)
     {
-	defaulting = new boolean[numInputs];
+	defaulting = new bool[numInputs];
 	values = new char *[numInputs];
 	inputArks = new List *[numInputs];
-	visibilities = new boolean[numInputs];
+	visibilities = new bool[numInputs];
     }
     int i;
     for (i = 1; i <= numInputs; ++i)
     {
 	inputArks[i-1] = NULL;
 	values[i-1] = NULL;
-	defaulting[i-1] = FALSE;
+	defaulting[i-1] = false;
 	visibilities[i-1] = this->isInputVisible(i);
 	if (this->isInputConnected(i))
 	{
@@ -2913,7 +2913,7 @@ Node::updateDefinition()
 	    }
 	    delete outputArks[i-1];
 	}
-        this->notifyIoParameterStatusChanged(FALSE, i, Node::ParameterValueChanged);
+        this->notifyIoParameterStatusChanged(false, i, Node::ParameterValueChanged);
     }
 #if 11 
     j = numOutputs;
@@ -2954,7 +2954,7 @@ Node::updateDefinition()
 //
 // Based on a Node's definition, build a parameter list for the given node.
 //
-boolean Node::buildParameterLists()
+bool Node::buildParameterLists()
 {
     int ninputs, noutputs, i;
     Parameter *p; 
@@ -2967,11 +2967,11 @@ boolean Node::buildParameterLists()
 	ASSERT(pd);
         p = nd->newParameter(pd,this,i);
         ASSERT(p);
-	boolean r = this->appendInput(p); // FIXME: handle error 
+	bool r = this->appendInput(p); // FIXME: handle error 
 	ASSERT(r);
     }
     if (nd->isInputRepeatable())
-	this->addRepeats(TRUE);
+	this->addRepeats(true);
 
     noutputs = nd->getOutputCount();
     for (i=1 ; i<=noutputs ; i++) {
@@ -2979,13 +2979,13 @@ boolean Node::buildParameterLists()
 	ASSERT(pd);
         p = nd->newParameter(pd,this,i);
         ASSERT(p);
-	boolean r = this->appendOutput(p);
+	bool r = this->appendOutput(p);
 	ASSERT(r);
     }
     if (nd->isOutputRepeatable())
-	this->addRepeats(FALSE);
+	this->addRepeats(false);
 
-    return TRUE; 
+    return true; 
 }
 
 #if WORKSPACE_PAGES
@@ -3031,21 +3031,21 @@ char *Node::netBeginningOfMacroNodeString(const char *prefix)
 // Print the invocation of any script language that is
 // to occur at the beginning of the containing macro.
 //
-boolean	Node::netPrintBeginningOfMacroNode(FILE *f, 
+bool	Node::netPrintBeginningOfMacroNode(FILE *f, 
 		      PrintType dest, 
 		      const char *prefix,
 		      PacketIFCallback callback,
 		      void *clientdata)
 {
-    boolean r = TRUE;
+    bool r = true;
 
     char *s = netBeginningOfMacroNodeString(prefix);
     if (s == NULL)
-	return TRUE;
+	return true;
 
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
 	if (fputs(s, f) < 0)
-	    r = FALSE;
+	    r = false;
 	if (callback != NUL(PacketIFCallback))
 	    callback(clientdata,s);
     } else {
@@ -3064,21 +3064,21 @@ boolean	Node::netPrintBeginningOfMacroNode(FILE *f,
 // Print the invocation of any script language that is
 // to occur at the end of the containing macro.
 //
-boolean	Node::netPrintEndOfMacroNode(FILE *f, 
+bool	Node::netPrintEndOfMacroNode(FILE *f, 
 		      PrintType dest, 
 		      const char *prefix,
 		      PacketIFCallback callback,
 		      void *clientdata)
 {
-    boolean r = TRUE;
+    bool r = true;
 
     char *s = netEndOfMacroNodeString(prefix);
     if (s == NULL)
-	return TRUE;
+	return true;
 
     if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
 	if (fputs(s, f) < 0)
-	    r = FALSE;
+	    r = false;
 	if (callback != NUL(PacketIFCallback))
 	    callback(clientdata,s);
     } else {
@@ -3091,21 +3091,21 @@ boolean	Node::netPrintEndOfMacroNode(FILE *f,
 
     return r;
 }
-boolean Node::isInputRepeatable()
+bool Node::isInputRepeatable()
 {
     NodeDefinition *def = this->definition;
     if (!def->isInputRepeatable())
-	return FALSE;
+	return false;
     int icnt = this->getInputCount(); 
     int rcnt = icnt - (def->getInputCount() - def->getInputRepeatCount());
     int sets = rcnt / def->getInputRepeatCount();
     return sets < (MAX_INPUT_SETS);
 }
-boolean Node::isOutputRepeatable()
+bool Node::isOutputRepeatable()
 {
     NodeDefinition *def = this->definition;
     if (!def->isOutputRepeatable())
-	return FALSE;
+	return false;
     int icnt = this->getOutputCount(); 
     int rcnt = icnt - (def->getOutputCount() - def->getOutputRepeatCount());
     int sets = rcnt / def->getOutputRepeatCount();
@@ -3120,12 +3120,12 @@ void Node::setDefaultCfgState()
 {
 }
 //
-// Return TRUE if this node has state that will be saved in a .cfg file.
+// Return true if this node has state that will be saved in a .cfg file.
 // At this level, nodes do not have cfg state.
 //
-boolean Node::hasCfgState()
+bool Node::hasCfgState()
 {
-    return FALSE;
+    return false;
 }
 
 
@@ -3170,7 +3170,7 @@ int Node::assignNewInstanceNumber()
 //
 // Disconnect all input and output arcs from this node.
 //
-boolean Node::disconnectArks()
+bool Node::disconnectArks()
 {
     int i;
     ListIterator li;
@@ -3183,7 +3183,7 @@ boolean Node::disconnectArks()
     for (i=1 ; (p = (Parameter*)li.getNext()) ; i++) {
 	if (p->isConnected()) {
 	    p->disconnectArks();
-	    this->notifyIoParameterStatusChanged(TRUE, i, Node::ParameterArkRemoved);
+	    this->notifyIoParameterStatusChanged(true, i, Node::ParameterArkRemoved);
 	}
     }
 
@@ -3194,32 +3194,32 @@ boolean Node::disconnectArks()
     for (i=1 ; (p = (Parameter*)li.getNext()) ; i++) {
 	if (p->isConnected()) {
 	    p->disconnectArks();
-	    this->notifyIoParameterStatusChanged(FALSE, i, Node::ParameterArkRemoved);
+	    this->notifyIoParameterStatusChanged(false, i, Node::ParameterArkRemoved);
 	}
     }
 
 
-    return TRUE;
+    return true;
 }
 //
-// Return TRUE if the node can be switched (pasted/merged/moved) from the 'from'
+// Return true if the node can be switched (pasted/merged/moved) from the 'from'
 // net to the 'to' net.
 //
-boolean Node::canSwitchNetwork(Network *from, Network *to)
+bool Node::canSwitchNetwork(Network *from, Network *to)
 {
     if (to->isMacro() && !this->isAllowedInMacro()) {
 	WarningMessage("%s tools are not allowed in macros.\n"
 			"Attempt to add a %s tool to macro ignored.",
 			this->getNameString(), this->getNameString());
-	return FALSE; 
+	return false; 
     }
 
-    return TRUE;
+    return true;
 }
 //
 // Do whatever is necessary to switch the node to the new Network.
 //
-void Node::switchNetwork(Network *from, Network *to, boolean silently)
+void Node::switchNetwork(Network *from, Network *to, bool silently)
 {
     if (this->cdb) {
 	delete this->cdb;
@@ -3258,7 +3258,7 @@ const char * const *Node::getInputValueOptions(int index)
 #define INDENT "    "
 
 static int phaseNumber = 0;
-boolean Node::beginDXCallModule(FILE *f)
+bool Node::beginDXCallModule(FILE *f)
 {
     const char *name = this->getNameString();
     int i, instance_number = this->getInstanceNumber();
@@ -3279,7 +3279,7 @@ boolean Node::beginDXCallModule(FILE *f)
 			"    /*\n"
 		      	"     * Per module variables follow (if needed)\n"
 		      	"     */\n") <= 0)
-	    return FALSE;
+	    return false;
     }
 	
 		
@@ -3294,7 +3294,7 @@ boolean Node::beginDXCallModule(FILE *f)
 		char *code = p->getObjectCodeDecl(INDENT,oname);
 		if (code) {
 		    if (fprintf(f,code) <= 0)
-			return FALSE;
+			return false;
 		    delete code;
 		}
 	    }
@@ -3309,19 +3309,19 @@ boolean Node::beginDXCallModule(FILE *f)
 		sprintf(oname,OBJVAL_FORMAT,modoutput_name,
 					this->getOutputNameString(i));
 		if (fprintf(f,"%sObject %s = NULL;\n",INDENT,oname) <= 0)
-		    return FALSE;
+		    return false;
 	    }
 	}
     }
 
-    return TRUE;
+    return true;
 
 }
-boolean Node::callDXCallModule(FILE *f)
+bool Node::callDXCallModule(FILE *f)
 {
     const char *name = this->getNameString();
     int objnum, i, instance_number = this->getInstanceNumber();
-    boolean r;
+    bool r;
 
     if (phaseNumber == 1) {
 	phaseNumber = 2;
@@ -3330,13 +3330,13 @@ boolean Node::callDXCallModule(FILE *f)
 			"     */\n"
 			"    for (i=0 ; i<32 ; i++) \n"
 			"        objinput[i] = NULL;\n") <= 0)
-	    return FALSE;
+	    return false;
     }
 
     if (fprintf(f,"\n    /*\n"
 		    "     * %s:%d - setup in/outputs and call module\n"
 		    "     */\n",name,instance_number) <= 0)
-	return FALSE;
+	return false;
 
     char modinput_name[128];
     int ninput = 0;
@@ -3380,14 +3380,14 @@ boolean Node::callDXCallModule(FILE *f)
 	
 	    if (init_code && fprintf(f,init_code) <= 0) {
 		delete init_code;
-		return FALSE;
+		return false;
 	    }
 	    r = fprintf(f,"%sDXModSetObjectInput(minput + %d,\"%s\",%s);\n",
 				    INDENT,ninput++, input_name, input_val) > 0;
 	    if (init_code)
 		delete init_code;
 	    if (!r)
-		return FALSE;
+		return false;
 	}
     }
 
@@ -3416,7 +3416,7 @@ boolean Node::callDXCallModule(FILE *f)
 
 	if (fprintf(f,"%sDXModSetObjectOutput(moutput + %d,\"%s\",%s);\n",
 		      INDENT,noutput++,output_name,output_objptr) <= 0)
-	    return FALSE;
+	    return false;
     }
 
 
@@ -3425,7 +3425,7 @@ boolean Node::callDXCallModule(FILE *f)
     //
     if (fprintf(f,"%srcode = DXCallModule(\"%s\",%d,minput,%d,moutput);\n",
 			INDENT,this->getNameString(),ninput,noutput) <= 0)
-	return FALSE;
+	return false;
 
     
     //
@@ -3441,16 +3441,16 @@ boolean Node::callDXCallModule(FILE *f)
 				    this->getOutputNameString(i));
 
 	    if (fprintf(f,"%sDXReference(%s);\n", INDENT, oname) <= 0)
-		return FALSE;
+		return false;
 	}
 	    
 	    
     if (fprintf(f,"%sif (rcode == ERROR) goto error;\n", INDENT) <= 0)
-	return FALSE;
+	return false;
 
-    return TRUE;
+    return true;
 }
-boolean Node::endDXCallModule(FILE *f)
+bool Node::endDXCallModule(FILE *f)
 {
 
     const char *name = this->getNameString();
@@ -3474,7 +3474,7 @@ boolean Node::endDXCallModule(FILE *f)
 		if (cleanup_code) {
 		    if (fprintf(f,cleanup_code) <= 0) {
 			delete cleanup_code;
-			return FALSE;
+			return false;
 		    }
 		    delete cleanup_code;
 		}
@@ -3491,22 +3491,22 @@ boolean Node::endDXCallModule(FILE *f)
 					this->getOutputNameString(i));
 		if (fprintf(f,"%sif (%s) DXDelete(%s);\n",
 					INDENT,oname,oname) <= 0)
-		    return FALSE;
+		    return false;
 	    }
 	}
     }
 
 
-    return TRUE;
+    return true;
 
 }
 #endif	// DXUI_DEVKIT
 //
 // See if the given string is a viable label to be used as an identifier.
 // Also make sure it is not a reserved script language word.
-// Return TRUE if ok, FALSE otherwise and issue and error message.
+// Return true if ok, false otherwise and issue and error message.
 //
-boolean Node::verifyRestrictedLabel(const char *label)
+bool Node::verifyRestrictedLabel(const char *label)
 {
     int junk = 0;
     if (!IsIdentifier(label, junk) || junk != STRLEN(label))
@@ -3516,42 +3516,42 @@ boolean Node::verifyRestrictedLabel(const char *label)
                      "begin with a letter",
                      this->getNameString(),
                      label);
-        return FALSE;
+        return false;
     }
 
     if (IsReservedScriptingWord(label)) {
         ErrorMessage("%s name \"%s\" is a reserved word",
                      this->getNameString(),
                      label);
-        return FALSE;
+        return false;
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean Node::cfgPrintNodeLeader(FILE *f)
+bool Node::cfgPrintNodeLeader(FILE *f)
 {
 
     if (fprintf(f, "//\n// node %s[%d]:\n",
                 this->getNameString(),
                 this->getInstanceNumber()) < 0)
-        return FALSE;
+        return false;
 
-    return TRUE;
+    return true;
 }
-boolean Node::cfgParseNodeLeader(const char *comment, 
+bool Node::cfgParseNodeLeader(const char *comment, 
 				const char *file, int lineno)
 {
     int d;
     if (sscanf(comment, " node %*[^[][%d]:",&d) != 1)
-        return FALSE;
+        return false;
 
-    return TRUE;
+    return true;
 }
 
-boolean Node::printAsJava(FILE* f)
+bool Node::printAsJava(FILE* f)
 {
-    if (this->hasJavaRepresentation() == FALSE) return TRUE;
+    if (this->hasJavaRepresentation() == false) return true;
 
     const char* indent = "        ";
     const char* nn = this->getJavaNodeName();
@@ -3597,19 +3597,19 @@ boolean Node::printAsJava(FILE* f)
 		    indent, ns, instno, i, src_name, src_out);
 	    }
 	    const char* valstr = this->getJavaInputValueString(i);
-	    if ((valstr) && (EqualString(valstr, "NULL")==FALSE)) {
+	    if ((valstr) && (EqualString(valstr, "NULL")==false)) {
 		if (valstr[0] == '"') {
 		    if (fprintf (f, "%s%s_%d.setInputValueString(%d, %s);\n",
-			indent, ns, instno, i, valstr) == FALSE) return FALSE;
+			indent, ns, instno, i, valstr) == false) return false;
 		} else {
 		    if (fprintf (f, "%s%s_%d.setInputValueString(%d, \"%s\");\n",
-			indent, ns, instno, i, valstr) == FALSE) return FALSE;
+			indent, ns, instno, i, valstr) == false) return false;
 		}
 	    }
 	}
     }
 
-    return TRUE;
+    return true;
 }
 
 void Node::setLayoutInformation(Base* li)

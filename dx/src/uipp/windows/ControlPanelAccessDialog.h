@@ -40,7 +40,7 @@ class ControlPanelAccessDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     //Widget shell;
@@ -57,7 +57,7 @@ class ControlPanelAccessDialog : public Dialog
     // Protected member data:
     //
     virtual void createDialog(void);
-    virtual boolean okCallback(Dialog*);
+    virtual bool okCallback(Dialog*);
 
     //friend void ControlPanelAccessDialog_OpenPanelCB(Widget, XtPointer , XtPointer);
     void   makeToggles();

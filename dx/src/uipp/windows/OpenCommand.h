@@ -38,9 +38,9 @@ class OpenCommand : public OptionalPreActionCommand
     //
     // Implements the command:
 
-    virtual boolean needsConfirmation();
+    virtual bool needsConfirmation();
     virtual void    doPreAction();
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -48,7 +48,7 @@ class OpenCommand : public OptionalPreActionCommand
     //
     OpenCommand(const char*   name,
                         CommandScope* scope,
-                        boolean       active,
+                        bool       active,
 			DXApplication *app);
 
     //

@@ -17,8 +17,8 @@
 #include "Base.h"
 
 
-boolean IsTensor(const char *s, int& index);
-boolean IsVector(const char *s, int& index, int& tuple);
+bool IsTensor(const char *s, int& index);
+bool IsVector(const char *s, int& index, int& tuple);
 
 
 //
@@ -74,8 +74,8 @@ class DXTensor : public Base
     //
     // Set the vector value from a null terminated string. 
     //
-    boolean setValue(const char* string);
-    boolean setValue(const char *s, int& index);
+    bool setValue(const char* string);
+    bool setValue(const char *s, int& index);
 
     //
     // Put the vector value in a null terminated string. 
@@ -111,7 +111,7 @@ class DXTensor : public Base
     // Set the value of the i'th component of a vector. 
     // indexing is one based.
     //
-    boolean setVectorComponentValue(int component, double val);
+    bool setVectorComponentValue(int component, double val);
 
     //
     // Make a copy of this vector. 

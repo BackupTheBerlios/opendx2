@@ -17,7 +17,7 @@
 
 #include <sys/stat.h>
 
-boolean PrintProgramFileDialog::ClassInitialized = FALSE;
+bool PrintProgramFileDialog::ClassInitialized = false;
 
 //String PrintProgramFileDialog::DefaultResources[] =
 //{
@@ -41,7 +41,7 @@ PrintProgramFileDialog::PrintProgramFileDialog( PrintProgramDialog *ppd,
 
     if (NOT PrintProgramFileDialog::ClassInitialized)
     {
-        PrintProgramFileDialog::ClassInitialized = TRUE;
+        PrintProgramFileDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }

@@ -14,9 +14,9 @@
 
 NoUndoCommand::NoUndoCommand(const char*   name,
 			     CommandScope* scope,
-			     boolean       active): Command(name, scope, active)
+			     bool       active): Command(name, scope, active)
 {
-    this->hasUndo = FALSE;
+    this->hasUndo = false;
 }
 
 

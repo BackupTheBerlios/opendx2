@@ -14,7 +14,7 @@
 #include "ToggleButtonInterface.h"
 
 
-boolean MWFileDialog::ClassInitialized = FALSE;
+bool MWFileDialog::ClassInitialized = false;
 
 //String MWFileDialog::DefaultResources[] =
 //{
@@ -35,19 +35,19 @@ void MWFileDialog::cancelCallback(Dialog *d)
 {
     MWFileDialog *fd = (MWFileDialog*)d;
 
-    fd->messageWindow->getLogInterface()->setState(FALSE);
+    fd->messageWindow->getLogInterface()->setState(false);
     this->FileDialog::cancelCallback(d);
 }
 
 MWFileDialog::MWFileDialog(MsgWin *messageWindow):
     FileDialog("mwFileDialog")
 {
-    this->log = TRUE;
+    this->log = true;
     this->messageWindow = messageWindow;
 
     if (NOT MWFileDialog::ClassInitialized)
     {
-        MWFileDialog::ClassInitialized = TRUE;
+        MWFileDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -64,7 +64,7 @@ MWFileDialog::MWFileDialog(MsgWin *messageWindow):
 // True means that this will make a log request next, false means a save
 //
 
-void MWFileDialog::postAs(boolean log)
+void MWFileDialog::postAs(bool log)
 {
     this->log = log;
 

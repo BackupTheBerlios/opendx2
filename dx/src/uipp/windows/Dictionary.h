@@ -55,7 +55,7 @@ class Dictionary : protected List
     //
     // Private member data:
     //
-    boolean isSorted;
+    bool isSorted;
     SymbolManager *symbolManager;
 
   protected:
@@ -73,7 +73,7 @@ class Dictionary : protected List
     //
     // Constructor(s):
     //
-    Dictionary(boolean sorted = TRUE, boolean privateSymbols = FALSE);
+    Dictionary(bool sorted = true, bool privateSymbols = false);
 
     //
     // Destructor:
@@ -116,8 +116,8 @@ class Dictionary : protected List
     //
     // Add the Definition pointed to by *definition to the dictionary;
     //
-	virtual boolean addDefinition(const char *name, const void *definition);
-	virtual boolean addDefinition(Symbol key, const void *definition);
+	virtual bool addDefinition(const char *name, const void *definition);
+	virtual bool addDefinition(Symbol key, const void *definition);
 
     //
     // Replace the Definition pointed to by *definition in the dictionary
@@ -125,10 +125,10 @@ class Dictionary : protected List
     // If a previous existed and olddef is not NULL, then return the old
     // definition in *olddef.
     //
-	virtual boolean replaceDefinition(const char *name,
+	virtual bool replaceDefinition(const char *name,
 				const void *newdef,
 				void **olddef = NULL);
-	virtual boolean replaceDefinition(Symbol key, 
+	virtual bool replaceDefinition(Symbol key, 
 				const void *newdef,
 				void **olddef = NULL);
     //
@@ -136,7 +136,7 @@ class Dictionary : protected List
     // If olddefDict is not NULL, the return a dictionary containing the old 
     // definitions.
     //
-    virtual boolean replaceDefinitions(Dictionary *d, 
+    virtual bool replaceDefinitions(Dictionary *d, 
 					Dictionary *olddefDict = NULL);
 
     //

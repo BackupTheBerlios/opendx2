@@ -47,8 +47,8 @@ class PageGroupRecord : public GroupRecord
 	this->page_window = NUL(UIComponent*);
 	this->workspace = NUL(UIComponent*);
 	this->order_in_list = 0;
-	this->windowed = FALSE;
-	this->showing = FALSE;
+	this->windowed = false;
+	this->showing = false;
      }
 
 
@@ -56,8 +56,8 @@ class PageGroupRecord : public GroupRecord
     UIComponent* workspace;
 
     int order_in_list;
-    boolean windowed;
-    boolean showing;
+    bool windowed;
+    bool showing;
 
   public:
 
@@ -97,18 +97,18 @@ class PageGroupManager : public GroupManager
     //
     PageGroupManager(Network *net); 
 
-    static boolean SupportsMacros() { return TRUE; }
+    static bool SupportsMacros() { return true; }
 
     //
     // Parse/Print the  group assignment comment.
     //
-    virtual boolean parseComment(const char *, 
+    virtual bool parseComment(const char *, 
 			const char *, 
 			int ,
 			Network *);
-    virtual boolean printComment(FILE *);
+    virtual bool printComment(FILE *);
 
-    virtual boolean survivesMerging() { return TRUE; }
+    virtual bool survivesMerging() { return true; }
 
     //
     // Returns a pointer to the class name.

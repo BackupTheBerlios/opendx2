@@ -47,12 +47,12 @@ class SequencerNode : public ShadowedOutputNode
     static void ProcessFrameInterrupt(void *clientData, int id, void *p);
 
     SequencerWindow* seq_window;
-    boolean         step;           /* step mode?                   */
-    boolean         loop;           /* loop mode?                   */
-    boolean         palindrome;     /* palindrome mode?             */
+    bool         step;           /* step mode?                   */
+    bool         loop;           /* loop mode?                   */
+    bool         palindrome;     /* palindrome mode?             */
 
-    boolean         current_defined;/* current frame defined?       */
-    boolean         stop_requested; /* execution stop requested?    */
+    bool         current_defined;/* current frame defined?       */
+    bool         stop_requested; /* execution stop requested?    */
     int		    startValue;	    	// Start frame
     int		    stopValue;		// Stop frame
 
@@ -66,15 +66,15 @@ class SequencerNode : public ShadowedOutputNode
     short           next;           /* current frame                */
     short           previous;       /* previous frame               */
 
-    boolean	    ignoreFirstFrameMsg;
-    boolean         transmitted;    /* frame values transmitted?    */
+    bool	    ignoreFirstFrameMsg;
+    bool         transmitted;    /* frame values transmitted?    */
     //
     // Indicates if this node has ever been executed
     // (even across different executions of the User Interface).  This is
     // used to tell the Sequencer module in the executive when to ignore
     // the frame input (it ignores it if it has never been executed before).
     //
-    boolean	    wasExecuted;    // Has this instance ever been run 
+    bool	    wasExecuted;    // Has this instance ever been run 
 
     //
     // Nov, 1996 - added startup flag to print/parse operation so that you
@@ -83,8 +83,8 @@ class SequencerNode : public ShadowedOutputNode
     // and treat those sequencers for which there was not value parsed as if
     // the vcr is a startup window.
     //
-    boolean startup;
-    void setStartup(boolean on = TRUE) { this->startup = on; }
+    bool startup;
+    void setStartup(bool on = true) { this->startup = on; }
 
     //
     // Disable the Frame control.
@@ -100,15 +100,15 @@ class SequencerNode : public ShadowedOutputNode
     void setPlayDirection(SequencerDirection dir);
     void setForwardPlay();
     void setBackwardPlay();
-    void setStepMode(boolean step = TRUE);
-    void setLoopMode(boolean loop = TRUE);
-    void setPalindromeMode(boolean pal = TRUE);
+    void setStepMode(bool step = true);
+    void setLoopMode(bool loop = true);
+    void setPalindromeMode(bool pal = true);
 
     // 
     //  Print/parse comments that are common to both .nets and .cfgs.
     // 
-    boolean printCommonComments(FILE *f, const char *indent = NULL);
-    boolean parseCommonComments(const char* comment,
+    bool printCommonComments(FILE *f, const char *indent = NULL);
+    bool parseCommonComments(const char* comment,
                                         const char *file,
                                         int lineno);
 
@@ -119,10 +119,10 @@ class SequencerNode : public ShadowedOutputNode
     //
     virtual char *netNodeString(const char *prefix);
     virtual char *valuesString(const char *prefix);
-    virtual boolean cfgPrintNode(FILE *f, PrintType dest);
+    virtual bool cfgPrintNode(FILE *f, PrintType dest);
 
-    virtual boolean     netPrintAuxComment(FILE *f);
-    virtual boolean     netParseAuxComment(const char* comment,
+    virtual bool     netPrintAuxComment(FILE *f);
+    virtual bool     netParseAuxComment(const char* comment,
                                                 const char *file, int lineno);
 
     //
@@ -144,34 +144,34 @@ class SequencerNode : public ShadowedOutputNode
     // node.   Among other times, this is called after receiving a message
     // from the executive.
     //
-    virtual void reflectStateChange(boolean unmanage);
+    virtual void reflectStateChange(bool unmanage);
 
     //
     // Initialize the attributes with the give string values.
     //
-    boolean initMinimumValue(int val);
-    boolean setMinimumValue(int val);
+    bool initMinimumValue(int val);
+    bool setMinimumValue(int val);
 
-    boolean initMaximumValue(int val);
-    boolean setMaximumValue(int val);
+    bool initMaximumValue(int val);
+    bool setMaximumValue(int val);
 
-    boolean initDeltaValue(int val);
-    boolean setDeltaValue(int val);
+    bool initDeltaValue(int val);
+    bool setDeltaValue(int val);
 
-    boolean initStartValue(int val);
-    boolean setStartValue(int val);
+    bool initStartValue(int val);
+    bool setStartValue(int val);
 
-    boolean initStopValue(int val);
-    boolean setStopValue(int val);
+    bool initStopValue(int val);
+    bool setStopValue(int val);
 
 #if 0
-    boolean isAttributeVisuallyWriteable(int input_index);
+    bool isAttributeVisuallyWriteable(int input_index);
 
-    boolean setStartValue(const char *val);
-    boolean setStopValue(const char *val);
-    boolean setDeltaValue(const char *val);
-    boolean setMaximumValue(const char *val);
-    boolean setMinimumValue(const char *val);
+    bool setStartValue(const char *val);
+    bool setStopValue(const char *val);
+    bool setDeltaValue(const char *val);
+    bool setMaximumValue(const char *val);
+    bool setMinimumValue(const char *val);
 #endif
 
     //
@@ -180,7 +180,7 @@ class SequencerNode : public ShadowedOutputNode
     // handler for the 'frame' message here and then call the super class
     // to install the 'Sequencer_%d:' handler.
     //
-    virtual boolean hasModuleMessagingProtocol() { return TRUE; }
+    virtual bool hasModuleMessagingProtocol() { return true; }
     virtual void updateModuleMessageProtocol(DXPacketIF *pif);
 
     //
@@ -188,7 +188,7 @@ class SequencerNode : public ShadowedOutputNode
     // (integer list of min and max) and then call the super class method
     // if the input is not the attribute parameter.
     //
-    virtual void ioParameterStatusChanged(boolean input, int index,
+    virtual void ioParameterStatusChanged(bool input, int index,
                                 NodeParameterStatusChange status);
 
 
@@ -216,9 +216,9 @@ class SequencerNode : public ShadowedOutputNode
 	Directionless		= 3
     };
 
-    virtual boolean initialize();
+    virtual bool initialize();
     void openDefaultWindow();
-    boolean isStartup();
+    bool isStartup();
 
     //
     // Let the caller of openDefaultWindow() know what kind of window she's getting.
@@ -228,20 +228,20 @@ class SequencerNode : public ShadowedOutputNode
     // A name describing the type of window can be written into window_name in order
     // to enable nicer warning messages.
     //
-    virtual boolean defaultWindowIsCDB(char* window_name = NULL)
-	{ if (window_name) strcpy (window_name, "Sequencer"); return FALSE; }
+    virtual bool defaultWindowIsCDB(char* window_name = NULL)
+	{ if (window_name) strcpy (window_name, "Sequencer"); return false; }
 
-    virtual boolean     cfgParseComment(const char* comment,
+    virtual bool     cfgParseComment(const char* comment,
                                         const char *file, 
                                         int lineno);
 
-    boolean isMinimumVisuallyWriteable();
-    boolean isMaximumVisuallyWriteable();
+    bool isMinimumVisuallyWriteable();
+    bool isMaximumVisuallyWriteable();
 #ifdef HAS_START_STOP
-    boolean isStartVisuallyWriteable();
-    boolean isStopVisuallyWriteable();
+    bool isStartVisuallyWriteable();
+    bool isStopVisuallyWriteable();
 #endif
-    boolean isDeltaVisuallyWriteable();
+    bool isDeltaVisuallyWriteable();
 
     int	    getMinimumValue();
     int	    getMaximumValue();
@@ -250,9 +250,9 @@ class SequencerNode : public ShadowedOutputNode
     int	    getStopValue();
 
 
-    boolean isStepMode() { return this->step; }
-    boolean isLoopMode() { return this->loop; }
-    boolean isPalindromeMode() { return this->palindrome; }
+    bool isStepMode() { return this->step; }
+    bool isLoopMode() { return this->loop; }
+    bool isPalindromeMode() { return this->palindrome; }
 
     //
     // Get a string representing the assignment to the global vcr variables, 
@@ -266,17 +266,17 @@ class SequencerNode : public ShadowedOutputNode
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
-    virtual boolean canSwitchNetwork(Network *from, Network *to);
+    virtual bool canSwitchNetwork(Network *from, Network *to);
 
     virtual DXWindow *getDXWindow()
 	{return (DXWindow *)this->seq_window;};
 
     //
-    // Return TRUE if this node has state that will be saved in a .cfg file.
+    // Return true if this node has state that will be saved in a .cfg file.
     //
-    virtual boolean hasCfgState();
+    virtual bool hasCfgState();
 
     //
     // Most nodes' id parameter is number 1 but a few aren't.  This number is
@@ -287,7 +287,7 @@ class SequencerNode : public ShadowedOutputNode
     virtual int getMessageIdParamNumber();
 
     virtual const char* getJavaNodeName() { return "SequencerNode"; }
-    virtual boolean printInputAsJava(int input);
+    virtual bool printInputAsJava(int input);
     virtual const char *getJavaInputValueString(int index);
 
 

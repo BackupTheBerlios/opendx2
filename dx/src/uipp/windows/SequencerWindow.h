@@ -44,12 +44,12 @@ class SequencerWindow : public DXWindow
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     //Widget vcr;
     SequencerNode* node;
-    boolean handlingStateChange;
+    bool handlingStateChange;
 
   protected:
     //
@@ -69,7 +69,7 @@ class SequencerWindow : public DXWindow
     void disableFrameControl();
     void enableFrameControl();
 
-    virtual void handleStateChange(boolean unmanage = FALSE);
+    virtual void handleStateChange(bool unmanage = false);
 
     //
     // Dis/enable frame control and then call the super class method.
@@ -108,7 +108,7 @@ class SequencerWindow : public DXWindow
     //
     virtual void manage();
     virtual void unmanage();
-    virtual void setStartup(boolean set = TRUE);
+    virtual void setStartup(bool set = true);
 
 
     //

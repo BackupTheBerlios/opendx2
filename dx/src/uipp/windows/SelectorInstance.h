@@ -49,9 +49,9 @@ class SelectorInstance : public SelectionInstance {
 
     int 	getSelectedOptionIndex();
 
-    void setSelectedOptionIndex(int index, boolean update_outputs = TRUE);
+    void setSelectedOptionIndex(int index, bool update_outputs = true);
 
-    virtual boolean printAsJava(FILE* );
+    virtual bool printAsJava(FILE* );
 
     const char *getClassName() 
 		{ return ClassSelectorInstance; }

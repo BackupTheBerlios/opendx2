@@ -34,7 +34,7 @@
 extern "C" int gethostname(char *address, int address_len);
 #endif
 
-boolean DXDragSource::DXDragSourceClassInitialized = FALSE;
+bool DXDragSource::DXDragSourceClassInitialized = false;
 
 static char *header_fmt = "%s:%d, net length = %d, cfg length = %d\n";
 
@@ -57,7 +57,7 @@ void
 DXDragSource::initialize()
 {
     if (!DXDragSourceClassInitialized) {
-	DXDragSourceClassInitialized = TRUE;
+	DXDragSourceClassInitialized = true;
     }
 }
 
@@ -73,7 +73,7 @@ DXDragSource::initialize()
 // lengths of .net and .cfg chunks so that DXDropSite can unravel it and
 // put the .net and .cfg portions into files.
 //
-//boolean DXDragSource::convert 
+//bool DXDragSource::convert 
 //	(Network *netw, char *, XtPointer *value, unsigned long *length, long)
 //{
 //FILE            *netf = 0;
@@ -95,7 +95,7 @@ DXDragSource::initialize()
 //    //
 //    tmpdir = theDXApplication->getTmpDirectory();
 //    tmpdirlen = STRLEN(tmpdir);
-//    if (!tmpdirlen) return FALSE;
+//    if (!tmpdirlen) return false;
 //    if (tmpdir[tmpdirlen-1] == '/') {
 //	sprintf(netfilename, "%sdx%d.net", tmpdir, getpid());
 //	sprintf(cfgfilename, "%sdx%d.cfg", tmpdir, getpid());
@@ -110,11 +110,11 @@ DXDragSource::initialize()
 //    if(netf == NULL)
 //    {
 //        WarningMessage("ControlPanel:fopen Drag conversion failed");
-//        return FALSE;
+//        return false;
 //    }
 //
 //    // callee should not write into filenames
-//    if (!this->createNetFiles (netw, netf, cfgfilename)) return FALSE; // no warning;
+//    if (!this->createNetFiles (netw, netf, cfgfilename)) return false; // no warning;
 //    fclose(netf);
 //
 //    // FIXME: I would rather not close the file, then reopen it immediately
@@ -128,7 +128,7 @@ DXDragSource::initialize()
 //#endif
 //    {
 //	WarningMessage("DXDragSource:Drag conversion failed");
-//	return FALSE;
+//	return false;
 //    }
 //
 //#ifdef DXD_OS_NON_UNIX
@@ -150,7 +150,7 @@ DXDragSource::initialize()
 //        {
 //            WarningMessage("DXDragSource:stat Drag conversion failed");
 //	    fclose (netf);
-//            return FALSE;
+//            return false;
 //        }
 //        cfg_len = statb.st_size;
 //    }
@@ -162,7 +162,7 @@ DXDragSource::initialize()
 //    {
 //        WarningMessage("DXDragSource:stat Drag conversion failed");
 //	if (netf) fclose(netf);
-//        return FALSE;
+//        return false;
 //    }
 //    net_len = statb.st_size;
 //
@@ -171,7 +171,7 @@ DXDragSource::initialize()
 //        WarningMessage("DXDragSource:could not find name of current host");
 //	if (netf) fclose(netf);
 //	if (cfgf) fclose(cfgf);
-//        return FALSE;
+//        return false;
 //    }
 //    
 //    sprintf (header, header_fmt, hostname, getpid(), net_len, cfg_len);
@@ -190,7 +190,7 @@ DXDragSource::initialize()
 //        WarningMessage("DXDragSource:fread Drag conversion failed");
 //	if (netf) fclose(netf);
 //	if (cfgf) fclose(cfgf);
-//        return FALSE;
+//        return false;
 //    }
 //    if(cfg_len > 0)
 //    {
@@ -200,7 +200,7 @@ DXDragSource::initialize()
 //            WarningMessage("DXDragSource:fread Drag conversion failed");
 //	    if (netf) fclose(netf);
 //	    if (cfgf) fclose(cfgf);
-//            return FALSE;
+//            return false;
 //        }
 //        fclose(cfgf);
 //	unlink (cfgfilename);
@@ -212,12 +212,12 @@ DXDragSource::initialize()
 //    // Clean up the tmp files
 //    unlink (netfilename);
 //
-//    return TRUE;
+//    return true;
 //}
 
-boolean DXDragSource::createNetFiles (Network *net, FILE *netf, char *cfgfile)
+bool DXDragSource::createNetFiles (Network *net, FILE *netf, char *cfgfile)
 {
     net->printNetwork (netf, this->printType);
     net->cfgPrintNetwork (cfgfile, this->printType);
-    return TRUE;
+    return true;
 }

@@ -40,7 +40,7 @@ class SetSeparatorAttrDlg : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     //
@@ -72,8 +72,8 @@ class SetSeparatorAttrDlg : public Dialog
     //friend void SetSeparatorAttrDlg_ApplyCB(Widget , XtPointer , XtPointer);
     //friend void SetSeparatorAttrDlg_RestoreCB(Widget , XtPointer , XtPointer);
 
-    boolean okCallback (Dialog * );
-    boolean restoreCallback (Dialog * );
+    bool okCallback (Dialog * );
+    bool restoreCallback (Dialog * );
 
     void createDialog ();
 
@@ -89,7 +89,7 @@ class SetSeparatorAttrDlg : public Dialog
     //
     // Constructor:
     //
-    SetSeparatorAttrDlg(boolean readonly, SeparatorDecorator *dec);
+    SetSeparatorAttrDlg(bool readonly, SeparatorDecorator *dec);
 
     //
     // Destructor:

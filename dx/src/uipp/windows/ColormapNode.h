@@ -84,17 +84,17 @@ class ColormapNode : public DrivenNode
                 int s_count,  double  *s_level, double  *s_value,
                 int v_count,  double  *v_level, double  *v_value,
                 int op_count, double *op_level, double *op_value,
-                boolean send_how);
+                bool send_how);
 
     //
     // Save or read a .cm file which contains control point information about
     // the colormap editor.  If an error occurs an error message is generated
-    // and FALSE is returned, otherwise TRUE.  If a failure occurs while reading
-    // the .cm file and useDefaultOnOpenError is TRUE,  then the default map 
+    // and false is returned, otherwise true.  If a failure occurs while reading
+    // the .cm file and useDefaultOnOpenError is true,  then the default map 
     // is installed (without being sent to the executive). 
     //
-    boolean cmAccessFile(const char *cmapfile, boolean opening, 
-					boolean useDefaultOnOpenError=TRUE);
+    bool cmAccessFile(const char *cmapfile, bool opening, 
+					bool useDefaultOnOpenError=true);
 
     //
     // This method implements backwards compatibility for v 2.0.2 nets
@@ -126,13 +126,13 @@ class ColormapNode : public DrivenNode
     // Install the currently defined default min or max and send it
     // to the executive if requested.
     //
-    void installCurrentDefaultMinOrMax(boolean min, boolean send);
+    void installCurrentDefaultMinOrMax(bool min, bool send);
 
     //
     //  Print/parse comments that are common to both .nets and .cfgs.
     //
-    boolean printCommonComments(FILE *f, const char *indent = NULL);
-    boolean parseCommonComments(const char* comment,
+    bool printCommonComments(FILE *f, const char *indent = NULL);
+    bool parseCommonComments(const char* comment,
                                         const char *file,
                                         int lineno);
 
@@ -151,11 +151,11 @@ class ColormapNode : public DrivenNode
     // List of control points fed to us by the module message.
     //
 
-    boolean netParseComment(const char* comment,
+    bool netParseComment(const char* comment,
                                    const char* filename, int lineno);
 
-    virtual boolean netPrintAuxComment(FILE *f);
-    virtual boolean  netParseAuxComment(const char* comment,
+    virtual bool netPrintAuxComment(FILE *f);
+    virtual bool  netParseAuxComment(const char* comment,
                                                 const char *file, 
 						int lineno);
 
@@ -174,20 +174,20 @@ class ColormapNode : public DrivenNode
     // node.   Among other times, this is called after receiving a message
     // from the executive.
     //
-    virtual void reflectStateChange(boolean unmanage /* ignored */);
+    virtual void reflectStateChange(bool unmanage /* ignored */);
 
-    boolean initNBinsValue(const char *val);
-    boolean setNBinsValue(double nbins);
-    boolean initMinimumValue(const char *val);
-    boolean setMinimumValue(double min);
-    boolean initMaximumValue(const char *val);
-    boolean setMaximumValue(double min);
+    bool initNBinsValue(const char *val);
+    bool setNBinsValue(double nbins);
+    bool initMinimumValue(const char *val);
+    bool setMinimumValue(double min);
+    bool initMaximumValue(const char *val);
+    bool setMaximumValue(double min);
 
     //
     // If the data input is disconnected, NULL the histogram data and then
     // call the superclass method.
     //
-    virtual void ioParameterStatusChanged(boolean input, int index,
+    virtual void ioParameterStatusChanged(bool input, int index,
 				NodeParameterStatusChange status); 
 
     //
@@ -216,13 +216,13 @@ class ColormapNode : public DrivenNode
     // map (either hue/sat/val/opacity).
     // No error message is issued if an error occurs.
     //
-    boolean cmPrintMap(FILE *fp, double min, double max, const char *map);
+    bool cmPrintMap(FILE *fp, double min, double max, const char *map);
 
     //
     // Install the default h/s/v/opacity colormap and send it to the executive
     // if requested.
     //
-    void installTHEDefaultMaps(boolean send = TRUE);
+    void installTHEDefaultMaps(bool send = true);
 
     //
     // The colormap node is always present in the network (i.e. there is a
@@ -232,7 +232,7 @@ class ColormapNode : public DrivenNode
     // when the network is marked dirty (i.e. the first execution of a new
     // network).
     //
-    virtual boolean expectingModuleMessage();
+    virtual bool expectingModuleMessage();
 
 
   public:
@@ -246,7 +246,7 @@ class ColormapNode : public DrivenNode
     //
     ~ColormapNode();
 
-    virtual boolean initialize();
+    virtual bool initialize();
     void openDefaultWindow();
 
     //
@@ -257,17 +257,17 @@ class ColormapNode : public DrivenNode
     // A name describing the type of window can be written into window_name in order
     // to enable nicer warning messages.
     //
-    virtual boolean defaultWindowIsCDB(char* window_name = NULL)
-	{ if (window_name) strcpy (window_name, "Colormap Window"); return FALSE; }
+    virtual bool defaultWindowIsCDB(char* window_name = NULL)
+	{ if (window_name) strcpy (window_name, "Colormap Window"); return false; }
 
-    boolean isTitleVisuallyWriteable();
-    void setTitle(const char *title, boolean fromServer = FALSE);
+    bool isTitleVisuallyWriteable();
+    void setTitle(const char *title, bool fromServer = false);
     virtual const char *getTitle();
 
     virtual DXWindow *getDXWindow()
 	{return (DXWindow *)(this->colormapEditor);}
 
-    boolean isNBinsAlterable();
+    bool isNBinsAlterable();
     double  getMinimumValue();
     double  getMaximumValue();
     double  getNBinsValue();
@@ -312,56 +312,56 @@ class ColormapNode : public DrivenNode
                 int s_count,  double  *s_level, double  *s_value,
                 int v_count,  double  *v_level, double  *v_value,
                 int op_count, double *op_level, double *op_value,
-                boolean send);
+                bool send);
 
 
     //
     // Install the currently defined default hsv colormap and send it
     // to the executive if requested.
     //
-    void installCurrentDefaultHSVMap(boolean send);
-    boolean hasDefaultHSVMap();
+    void installCurrentDefaultHSVMap(bool send);
+    bool hasDefaultHSVMap();
     //
     // Install the currently defined default opacity colormap and send it
     // to the executive if requested.
     //
-    void installCurrentDefaultOpacityMap(boolean send);
-    boolean hasDefaultOpacityMap();
+    void installCurrentDefaultOpacityMap(bool send);
+    bool hasDefaultOpacityMap();
     //
     // Install the currently defined default min and max and send it
     // to the executive if requested.
     //
-    void installCurrentDefaultMin(boolean send);
-    void installCurrentDefaultMax(boolean send);
-    void installCurrentDefaultMinAndMax(boolean send);
-    boolean hasDefaultMin();
-    boolean hasDefaultMax();
+    void installCurrentDefaultMin(bool send);
+    void installCurrentDefaultMax(bool send);
+    void installCurrentDefaultMinAndMax(bool send);
+    bool hasDefaultMin();
+    bool hasDefaultMax();
 
 
     //
     // Read the .cm file and set the 1st - 4th inputs and the min/max with
-    // the values found there.  If send is TRUE, then update the executive.
+    // the values found there.  If send is true, then update the executive.
     // If an error occurs and installDefaultOnError is set, then the default
     // colormap is installed.
     //
-    boolean cmOpenFile(const char *cmapfile, 
-			boolean send = TRUE, 
-			boolean installDefaultOnError = TRUE);
+    bool cmOpenFile(const char *cmapfile, 
+			bool send = true, 
+			bool installDefaultOnError = true);
 
     //
     // Save and retrieve image window state (camera, approx, render mode...)
     // to and from the .cfg file.
     //
-    virtual boolean hasCfgState();
-    virtual boolean cfgParseComment(const char* comment,
+    virtual bool hasCfgState();
+    virtual bool cfgParseComment(const char* comment,
                                 const char* filename, int lineno);
-    virtual boolean cfgPrintNode(FILE *f, PrintType);
+    virtual bool cfgPrintNode(FILE *f, PrintType);
 
     //
     // Save the .cm file from the 1st - 4th inputs and the min/max with
     // the values found there.
     //
-    boolean cmSaveFile(const char *cmapfile);
+    bool cmSaveFile(const char *cmapfile);
 
     //  
     // Most nodes' id parameter is number 1 but a few aren't.  This number is
@@ -380,13 +380,13 @@ class ColormapNode : public DrivenNode
     // by switching networks at which time its safe to go ahead and spout off.
     // See node.h for a comment on 'silently'
     //
-    virtual void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
+    virtual void switchNetwork(Network *from, Network *to, bool silently=false);
 
  
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

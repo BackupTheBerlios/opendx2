@@ -38,7 +38,7 @@ class CreateMacroDialog : public SetMacroNameDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     static void ConfirmationCancel(void *data);
     static void ConfirmationOk(void *data);
     EditorWindow *editor;
@@ -52,9 +52,9 @@ class CreateMacroDialog : public SetMacroNameDialog
     //Widget filename;
     TextFile *textFile;
 
-    virtual boolean okCallback(Dialog *d);
+    virtual bool okCallback(Dialog *d);
     
-    virtual boolean createMacro();
+    virtual bool createMacro();
 
     virtual void createDialog();
 

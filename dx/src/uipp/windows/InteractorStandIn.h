@@ -60,7 +60,7 @@ class InteractorStandIn : public StandIn
     //
     // Called when the StandIn has been selected by the Editor. 
     //
-    virtual void handleSelectionChange(boolean select);
+    virtual void handleSelectionChange(bool select);
 
     //
     // Returns a pointer to the class name.

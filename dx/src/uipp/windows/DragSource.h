@@ -40,7 +40,7 @@ class DragSource : public Base
   private:
     //
     // "Class" data
-    static boolean 		DragSourceClassInitialized;
+    static bool 		DragSourceClassInitialized;
 //    static XtTranslations	drag_tranlations;
     static void*		TransferData;
 
@@ -58,13 +58,13 @@ class DragSource : public Base
 
     //
     // On behalf of pagetabs, enforce d-n-d inside a single top level window.
-    // intra_toplevel == TRUE iff we want to enforce this behavior.
-    // inside_own_shell is maintained during the drag operation.  It's set to TRUE
+    // intra_toplevel == true iff we want to enforce this behavior.
+    // inside_own_shell is maintained during the drag operation.  It's set to true
     // if the pointer is still inside the initiating top level shell.
     //
 //    Window		top_level_window;
-    boolean		intra_toplevel;
-    boolean		inside_own_shell;
+    bool		intra_toplevel;
+    bool		inside_own_shell;
 
 
     //
@@ -115,16 +115,16 @@ class DragSource : public Base
     // Instead of passing around a stored value for this, make the subclasses
     // implement a proc which decodes according to an enum and then invokes a member.
     //
-    //virtual boolean decodeDragType (int, char *, XtPointer*, unsigned long*, long) = 0;
+    //virtual bool decodeDragType (int, char *, XtPointer*, unsigned long*, long) = 0;
 
-    void setIntraShellBehavior(boolean intra_shell) { 
+    void setIntraShellBehavior(bool intra_shell) { 
 	this->intra_toplevel = intra_shell; 
     }
-    boolean isIntraShell();
+    bool isIntraShell();
 
   public:
 
-    void addSupportedType (int, const char *, boolean);
+    void addSupportedType (int, const char *, bool);
 
     //
     // Constructor:

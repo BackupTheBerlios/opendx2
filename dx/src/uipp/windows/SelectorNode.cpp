@@ -35,11 +35,11 @@ InteractorInstance *SelectorNode::newInteractorInstance()
 //
 // Determine if this node is of the given class.
 //
-boolean SelectorNode::isA(Symbol classname)
+bool SelectorNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassSelectorNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->InteractorNode::isA(classname);
 }
@@ -47,7 +47,7 @@ boolean SelectorNode::isA(Symbol classname)
 // Deselect all current selections and make the given index
 // the current selection.
 //
-void SelectorNode::setSelectedOptionIndex(int index, boolean send)
+void SelectorNode::setSelectedOptionIndex(int index, bool send)
 {
     if (this->getSelectedOptionIndex() == index)
 	return;

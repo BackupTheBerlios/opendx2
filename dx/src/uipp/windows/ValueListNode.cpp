@@ -40,11 +40,11 @@ InteractorInstance* ValueListNode::newInteractorInstance()
 //
 // Determine if this node is of the given class.
 //
-boolean ValueListNode::isA(Symbol classname)
+bool ValueListNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassValueListNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ValueNode::isA(classname);
 }

@@ -40,7 +40,7 @@ class NoUndoPanelCommand : public NoUndoCommand
     ControlPanel *controlPanel;
     PanelCommandType commandType;
  
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -48,7 +48,7 @@ class NoUndoPanelCommand : public NoUndoCommand
     //
     NoUndoPanelCommand(const char*   name,
                    CommandScope  *scope,
-                   boolean       active,
+                   bool       active,
 		   ControlPanel  *cp,
 		   PanelCommandType comType);
 

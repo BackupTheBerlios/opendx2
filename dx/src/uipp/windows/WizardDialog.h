@@ -33,11 +33,11 @@ class WizardDialog : public TextEditDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     char* text;
     char* parent_name;
-    boolean file_read;
+    bool file_read;
 
 //    Widget closeToggle;
 
@@ -60,7 +60,7 @@ class WizardDialog : public TextEditDialog
     //
     //virtual void installDefaultResources(Widget baseWidget);
 
-    virtual boolean okCallback(Dialog*);
+    virtual bool okCallback(Dialog*);
 
     virtual void createDialog();
 

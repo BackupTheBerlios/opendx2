@@ -15,7 +15,7 @@
 
 Node *ScalarListDefinition::newNode(Network *net, int inst)
 {
-    ScalarListNode *n = new ScalarListNode(this, net, inst, FALSE, 1);
+    ScalarListNode *n = new ScalarListNode(this, net, inst, false, 1);
     return n;
 }
 

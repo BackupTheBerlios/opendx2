@@ -15,7 +15,7 @@
 
 
 RepeatingToggle::RepeatingToggle(char* name, 
-    Command* command, boolean  state, const char *bubbleHelp):
+    Command* command, bool  state, const char *bubbleHelp):
 	ToggleButtonInterface(name, command, state, bubbleHelp)
 {
 }

@@ -32,21 +32,21 @@ class PageTab: public NotebookTab, public DXDropSite, public DragSource {
     WorkSpace* 		workSpace;
     PageGroupRecord*	group_rec;
     char*		group_name;
-    boolean		set;
+    bool		set;
     int			position;
     int			desired_position;
-    boolean		has_desired_position;
+    bool		has_desired_position;
     //XtIntervalId	color_timer;
     PageSelector*	selector;
     //Pixel		pending_fg;
 
     //static String	DefaultResources[];
-    static boolean	ClassInitialized;
+    static bool	ClassInitialized;
     //static Pixmap	TopShadowPixmap;
     //static Pixmap	BottomShadowPixmap;
     //static Pixmap	AnimationPixmap;
     //static Pixmap	AnimationMaskPixmap;
-    static boolean 	BrokenServer;
+    static bool 	BrokenServer;
 
     //
     // data type dictionary for drops.
@@ -76,10 +76,10 @@ class PageTab: public NotebookTab, public DXDropSite, public DragSource {
     //
     // Drag - n - Drop
     //
-    //virtual boolean decodeDropType (int , char *, XtPointer , unsigned long , int , int );
-    //virtual boolean decodeDragType (int, char *, XtPointer*, unsigned long*, long);
+    //virtual bool decodeDropType (int , char *, XtPointer , unsigned long , int , int );
+    //virtual bool decodeDragType (int, char *, XtPointer*, unsigned long*, long);
 
-    virtual boolean mergeNetElements (Network*, List*, int, int);
+    virtual bool mergeNetElements (Network*, List*, int, int);
 
     virtual void activate();
     virtual void multiClick();
@@ -98,16 +98,16 @@ class PageTab: public NotebookTab, public DXDropSite, public DragSource {
     //virtual void 	createButton(Widget );
     //void 	createButton(Widget, PageGroupRecord*);
 
-    void setState(boolean set=TRUE);
+    void setState(bool set=true);
     WorkSpace* getWorkSpace() { return this->workSpace; }
     const char* getGroupName() { return this->group_name; }
     void setGroup(PageGroupRecord* rec);
-    void setPosition(int, boolean designated_by_user=FALSE);
+    void setPosition(int, bool designated_by_user=false);
     int  getPosition();
     //void setColor(Pixel);
     int getDesiredPosition();
-    boolean hasDesiredPosition() { return this->has_desired_position; }
-    boolean getDesiredShowing();
+    bool hasDesiredPosition() { return this->has_desired_position; }
+    bool getDesiredShowing();
     const char* getClassName() { return ClassPageTab; }
 
 };

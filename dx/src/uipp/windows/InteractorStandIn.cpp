@@ -27,7 +27,7 @@ StandIn *InteractorStandIn::AllocateStandIn(WorkSpace *w, Node *node)
 //
 // Called when the StandIn has been selected by the Editor.
 //
-void InteractorStandIn::handleSelectionChange(boolean selected)
+void InteractorStandIn::handleSelectionChange(bool selected)
 {
     int i;
     Node *n = this->node;

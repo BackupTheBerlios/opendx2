@@ -33,13 +33,13 @@ class CommentStyleUser: public CommentStyle {
     CommentStyleUser(){};
     ~CommentStyleUser(){};
 
-    virtual boolean parseComment 
+    virtual bool parseComment 
 	(LabelDecorator* ldec, const char* comment, const char* file, int l) {
 	CommentStyleUser::ParsingDecorator = ldec;
 	return this->CommentStyle::parseComment(comment, file, l);
     }
 
-    virtual boolean printComment (LabelDecorator* ldec, FILE* f) {
+    virtual bool printComment (LabelDecorator* ldec, FILE* f) {
 	CommentStyleUser::ParsingDecorator = ldec;
 	return this->CommentStyle::printComment(f);
     }

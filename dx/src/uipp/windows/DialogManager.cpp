@@ -113,7 +113,7 @@
 //    }
 //#endif
 //
-//    boolean freeData = (callback == data->getCancelCallback());
+//    bool freeData = (callback == data->getCancelCallback());
 //    if (callback)
 //	(*callback)(data->getClientData());
 //    else
@@ -249,7 +249,7 @@ DialogManager::DialogManager(char* name): UIComponent(name)
 //	     (XtPointer)this);
 //    }
 //
-//    this->setRootWidget(newDialog, FALSE);
+//    this->setRootWidget(newDialog, false);
 //
 //    XtAddCallback
 //	(newDialog,

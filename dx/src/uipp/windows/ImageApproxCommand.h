@@ -39,7 +39,7 @@ class ImageApproxCommand : public NoUndoCommand
     // Private member data:
     //
     ImageWindow *imageWindow;
-    boolean    up;
+    bool    up;
     ApproxMode mode;
 
   protected:
@@ -47,7 +47,7 @@ class ImageApproxCommand : public NoUndoCommand
     // Protected member data:
     //
 
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
 
   public:
@@ -56,9 +56,9 @@ class ImageApproxCommand : public NoUndoCommand
     //
     ImageApproxCommand(const char   *name,
 		   CommandScope *scope,
-		   boolean       active,
+		   bool       active,
 		   ImageWindow  *w,
-		   boolean      up,
+		   bool      up,
 		   ApproxMode   mode);
 
     //

@@ -32,12 +32,12 @@
 #include "RepeatingToggle.h"
 #include "DXPacketIF.h"
 
-boolean MsgWin::ClassInitialized = FALSE;
+bool MsgWin::ClassInitialized = false;
 
 //
 // Constructor:
 //
-MsgWin::MsgWin(): DXWindow("messageWindow", FALSE)
+MsgWin::MsgWin(): DXWindow("messageWindow", false)
 {
 
     //this->fileMenu = NULL;
@@ -57,16 +57,16 @@ MsgWin::MsgWin(): DXWindow("messageWindow", FALSE)
     this->errorOption = NULL; 
     this->execScriptOption = NULL; 
 
-    this->clearCmd = new MWClearCmd("clear", this->commandScope, FALSE, this);
-    this->logCmd   = new NoUndoMWCmd("log", this->commandScope, TRUE,
+    this->clearCmd = new MWClearCmd("clear", this->commandScope, false, this);
+    this->logCmd   = new NoUndoMWCmd("log", this->commandScope, true,
 	this, NoUndoMWCmd::Log);
-    this->saveCmd  = new NoUndoMWCmd("save", this->commandScope, TRUE, 
+    this->saveCmd  = new NoUndoMWCmd("save", this->commandScope, true, 
 	this, NoUndoMWCmd::Save);
-    this->closeCmd = new NoUndoMWCmd("close", this->commandScope, TRUE, 
+    this->closeCmd = new NoUndoMWCmd("close", this->commandScope, true, 
 	this, NoUndoMWCmd::Close);
-    this->nextErrorCmd = new NoUndoMWCmd("nextError", this->commandScope, TRUE, 
+    this->nextErrorCmd = new NoUndoMWCmd("nextError", this->commandScope, true, 
 	this, NoUndoMWCmd::NextError);
-    this->prevErrorCmd = new NoUndoMWCmd("prevError", this->commandScope, TRUE, 
+    this->prevErrorCmd = new NoUndoMWCmd("prevError", this->commandScope, true, 
 	this, NoUndoMWCmd::PrevError);
 
     if (theDXApplication->appAllowsScriptCommands()) {
@@ -78,13 +78,13 @@ MsgWin::MsgWin(): DXWindow("messageWindow", FALSE)
 	theDXApplication->disconnectedFromServerCmd->autoDeactivate(this->execScriptCmd);
 
 	this->traceCmd = new NoUndoMWCmd ("traceOn", this->commandScope,
-	    TRUE, this, NoUndoMWCmd::Tracing);
+	    true, this, NoUndoMWCmd::Tracing);
 #if 0
 	theDXApplication->connectedToServerCmd->autoActivate(this->traceCmd);
 #endif
 
 	this->memoryCmd = new NoUndoMWCmd ("memory", this->commandScope,
-	    FALSE, this, NoUndoMWCmd::Memory);
+	    false, this, NoUndoMWCmd::Memory);
 	theDXApplication->connectedToServerCmd->autoActivate(this->memoryCmd);
 	theDXApplication->disconnectedFromServerCmd->autoDeactivate(this->memoryCmd);
     } else {
@@ -94,9 +94,9 @@ MsgWin::MsgWin(): DXWindow("messageWindow", FALSE)
     }
 
     //this->intervalId = 0;
-    this->firstMsg   = FALSE;
-    this->executing  = FALSE;
-    this->beenManaged= FALSE;
+    this->firstMsg   = false;
+    this->executing  = false;
+    this->beenManaged= false;
 
     this->logFile    = NULL;
     this->saveDialog = NULL;
@@ -110,7 +110,7 @@ MsgWin::MsgWin(): DXWindow("messageWindow", FALSE)
     if (NOT MsgWin::ClassInitialized)
     {
 	ASSERT(theApplication);
-        MsgWin::ClassInitialized = TRUE;
+        MsgWin::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -178,7 +178,7 @@ MsgWin::~MsgWin()
 
 void MsgWin::manage()
 {
-    this->beenManaged = TRUE;
+    this->beenManaged = true;
     this->DXWindow::manage();
 }
 
@@ -389,7 +389,7 @@ void MsgWin::addInformation(const char *info)
 		//	(XtPointer)this);
 		if (this->firstMsg)
 		{
-			this->firstMsg = FALSE;
+			this->firstMsg = false;
 			if (this->logFile)
 			{
 				fputs("Begin Execution\n", this->logFile);
@@ -463,7 +463,7 @@ void MsgWin::addError(const char *error)
 
     if (this->firstMsg)
     {
-	this->firstMsg = FALSE;
+	this->firstMsg = false;
 	if (this->logFile)
 	{
 	    fputs("Begin Execution\n", this->logFile);
@@ -501,14 +501,14 @@ void MsgWin::addError(const char *error)
 	char *line = new char[STRLEN(error)+1];
 	char *p = line;
 	const char *o = error + l;
-	boolean names = TRUE;
-	boolean skipDigits = FALSE;
-	boolean moreNames = TRUE;
+	bool names = true;
+	bool skipDigits = false;
+	bool moreNames = true;
 	while(names && *o)
 	{
 	    if (!skipDigits && *o == ':')
 	    {
-		skipDigits = TRUE;
+		skipDigits = true;
 		if (moreNames)
 		{
 		    *p++ = *o++;
@@ -519,14 +519,14 @@ void MsgWin::addError(const char *error)
 	    }
 	    else if (*o == '/')
 	    {
-		skipDigits = FALSE;
+		skipDigits = false;
 		o++;
 	    }
 	    else if (skipDigits && isdigit(*o))
 		o++;
 	    else if (skipDigits && *o == ':')
 	    {
-		names = FALSE;
+		names = false;
 		o++;
 	    }
 	    else
@@ -543,7 +543,7 @@ void MsgWin::addError(const char *error)
 			strcpy(p, netName);
 			p += STRLEN(netName);
 			*p++ = ':';
-			moreNames = FALSE;
+			moreNames = false;
 		    }
 		    else
 		    {
@@ -610,7 +610,7 @@ void MsgWin::addError(const char *error)
 	{
 	    //XBell(XtDisplay(this->getRootWidget()), 0);
 	    //XFlush(XtDisplay(this->getRootWidget()));
-	    this->beenBeeped = TRUE;
+	    this->beenBeeped = true;
 	}
 	if (!this->isManaged())
 	    this->manage();
@@ -634,7 +634,7 @@ void MsgWin::addWarning(const char *warning)
 
 	if (this->firstMsg)
 	{
-		this->firstMsg = FALSE;
+		this->firstMsg = false;
 		if (this->logFile)
 		{
 			fputs("Begin Execution\n", this->logFile);
@@ -677,9 +677,9 @@ void MsgWin::beginExecution()
 {
     this->DXWindow::beginExecution();
 
-    this->firstMsg  = TRUE;
-    this->executing = TRUE;
-    this->beenBeeped = FALSE;
+    this->firstMsg  = true;
+    this->executing = true;
+    this->beenBeeped = false;
 
     this->clearSelectableLines();
 }
@@ -701,12 +701,12 @@ void MsgWin::endExecution()
 {
     this->DXWindow::endExecution();
 
-    this->executing = FALSE;
+    this->executing = false;
     this->flushBuffer();
 
     if (this->selectableLines.getSize() > 0)
     {
-	this->findNextError(FALSE);
+	this->findNextError(false);
 	this->nextErrorCmd->activate();
 	this->prevErrorCmd->activate();
     }
@@ -721,12 +721,12 @@ void MsgWin::standBy()
 {
     this->DXWindow::standBy();
 
-    this->executing = FALSE;
+    this->executing = false;
     this->flushBuffer();
 
     if (this->selectableLines.getSize() > 0)
     {
-	this->findNextError(FALSE);
+	this->findNextError(false);
 	this->nextErrorCmd->activate();
 	this->prevErrorCmd->activate();
     }
@@ -790,7 +790,7 @@ void MsgWin::flushBuffer()
 	this->clearCmd->activate();
 }
 
-boolean MsgWin::clear()
+bool MsgWin::clear()
 {
 	this->flushBuffer();
 	//if (this->intervalId)
@@ -811,12 +811,12 @@ boolean MsgWin::clear()
 	//XmListDeleteAllItems(this->list);
 
 	this->clearCmd->deactivate();
-	this->beenBeeped = FALSE;
+	this->beenBeeped = false;
 
-	return TRUE;
+	return true;
 }
 
-boolean MsgWin::log(const char *file)
+bool MsgWin::log(const char *file)
 {
     this->flushBuffer();
     if (file == NULL && this->logFile)
@@ -825,7 +825,7 @@ boolean MsgWin::log(const char *file)
 	delete[] this->logFileName;
 	this->logFile = NULL;
 	this->logFileName = NULL;
-	this->logOption->setState(FALSE);
+	this->logOption->setState(false);
     }
     else
     {
@@ -839,17 +839,17 @@ boolean MsgWin::log(const char *file)
 	{
 	    ErrorMessage("Failed to open %s: %s", file, strerror(errno));
 	    this->logFileName = NULL;
-	    this->logOption->setState(FALSE);
-	    return FALSE;
+	    this->logOption->setState(false);
+	    return false;
 	}
 	this->logFileName = DuplicateString(file);
-	this->logOption->setState(TRUE);
+	this->logOption->setState(true);
     }
 
-    return TRUE;
+    return true;
 }
 
-boolean MsgWin::save(const char *file)
+bool MsgWin::save(const char *file)
 {
 	if (file)
 	{
@@ -857,7 +857,7 @@ boolean MsgWin::save(const char *file)
 		if (f == NULL)
 		{
 			ErrorMessage("Failed to open %s: %s", file, strerror(errno));
-			return FALSE;
+			return false;
 		}
 		//int itemCount;
 		//XmStringTable items;
@@ -886,7 +886,7 @@ boolean MsgWin::save(const char *file)
 		fclose(f);
 	}
 
-	return TRUE;
+	return true;
 }
 
 void MsgWin::postExecCommandDialog()
@@ -902,7 +902,7 @@ void MsgWin::postLogDialog()
     if (!this->logDialog)
 	this->logDialog = this->saveDialog =
 	    new MWFileDialog(this);
-    this->logDialog->postAs(TRUE);
+    this->logDialog->postAs(true);
 }
 
 void MsgWin::postSaveDialog()
@@ -910,7 +910,7 @@ void MsgWin::postSaveDialog()
     if (!this->logDialog)
 	this->logDialog = this->saveDialog =
 	    new MWFileDialog(this);
-    this->logDialog->postAs(FALSE);
+    this->logDialog->postAs(false);
 }
 
 //extern "C" void MsgWin_SelectCB(Widget w, XtPointer closure, XtPointer callData)
@@ -927,7 +927,7 @@ void MsgWin::postSaveDialog()
 //    // param to see if it should prompt the user.  I would like to prompt only
 //    // in certain circumstances to avoid nagging.
 //    //
-//    boolean prompt = TRUE;
+//    bool prompt = true;
 //#if 0
 //    if (l->event) {
 //	if ((l->event->type == ButtonPress) ||
@@ -935,7 +935,7 @@ void MsgWin::postSaveDialog()
 //	    (l->event->type == KeyPress) ||
 //	    (l->event->type == KeyRelease)) {
 //	    if (l->event->xany.window == XtWindow(w)) {
-//		prompt = FALSE;
+//		prompt = false;
 //	    }
 //	}
 //    } 
@@ -944,11 +944,11 @@ void MsgWin::postSaveDialog()
 //}
 //
 
-void MsgWin::selectLine(int pos, boolean promptUser)
+void MsgWin::selectLine(int pos, bool promptUser)
 {
     ListIterator li(this->selectableLines);
     SelectableLine *l;
-    boolean questionPosted = FALSE;
+    bool questionPosted = false;
 
     while( (l = (SelectableLine*)li.getNext()) )
     {
@@ -1079,17 +1079,17 @@ class EdInfo {
 // flag is set, then prompt the user with a Yes/No dialog about opening
 // the editor.  
 //
-// Return TRUE, if we posted a dialog to ask the user if we should post
+// Return true, if we posted a dialog to ask the user if we should post
 // the window.
 //
-boolean MsgWin::openEditorIfNecessary(Network *net, 
+bool MsgWin::openEditorIfNecessary(Network *net, 
 									  const char *nodeName, int inst, 
-									  boolean promptUser)
+									  bool promptUser)
 {
 	EditorWindow *e = net->getEditor();
 	EdInfo *edinfo = new EdInfo (nodeName, net, e, inst);
 	int show_status = theDXApplication->doesErrorOpenVpe(net);
-	boolean questionPosted = FALSE;
+	bool questionPosted = false;
 
 	if (show_status == DXApplication::MustOpenVpe) {
 		//MsgWin::ShowEditor((XtPointer)edinfo);
@@ -1122,7 +1122,7 @@ boolean MsgWin::openEditorIfNecessary(Network *net,
 			//	XmDIALOG_FULL_APPLICATION_MODAL
 			//	);
 			delete[] confMsg;
-			questionPosted = TRUE;
+			questionPosted = true;
 		} 
 	} 
 
@@ -1141,7 +1141,7 @@ boolean MsgWin::openEditorIfNecessary(Network *net,
 //    if (ei->editor) {
 //	ei->editor->manage();
 //	ei->editor->deselectAllNodes();
-//	ei->editor->selectNode (ei->nodeName, ei->inst, TRUE);
+//	ei->editor->selectNode (ei->nodeName, ei->inst, true);
 //    }
 //    delete ei;
 //}
@@ -1158,10 +1158,10 @@ boolean MsgWin::openEditorIfNecessary(Network *net,
 // callers are: a menu bar button, and endExecution (which happens quite often
 // including during File/New, File/Open).  For the menu bar button, we cycle thru
 // error messages ad infinitum.  For internal use we want to visit each member of
-// the list at most once.  So if activateSameSelection==FALSE, then don't reset
+// the list at most once.  So if activateSameSelection==false, then don't reset
 // pos=0 and do another loop over all selections.
 //
-void MsgWin::findNextError(boolean activateSameSelection)
+void MsgWin::findNextError(bool activateSameSelection)
 {
 	int *positions;
 	int npos;
@@ -1188,12 +1188,12 @@ void MsgWin::findNextError(boolean activateSameSelection)
 
 	ListIterator li(this->selectableLines);
 	SelectableLine *s;
-	boolean found = FALSE;
+	bool found = false;
 	while( (s = (SelectableLine*)li.getNext()) )
 	{
 		if (s->position > pos)
 		{
-			found = TRUE;
+			found = true;
 			//XmListSelectPos(this->list, s->position, True);
 			//if (s->position < topItem || s->position >= topItem + visibleItems)
 			//	XmListSetBottomPos(this->list, s->position);
@@ -1208,7 +1208,7 @@ void MsgWin::findNextError(boolean activateSameSelection)
 		{
 			if (s->position > pos)
 			{
-				found = TRUE;
+				found = true;
 				//XmListSelectPos(this->list, s->position, True);
 				//if (s->position < topItem ||
 				//	s->position >= topItem + visibleItems)
@@ -1244,13 +1244,13 @@ void MsgWin::findPrevError()
 
 	int i = this->selectableLines.getSize();
 	SelectableLine *s;
-	boolean found = FALSE;
+	bool found = false;
 	for (; i > 0 && (s = (SelectableLine*)this->selectableLines.getElement(i));
 		--i)
 	{
 		if (s->position < pos)
 		{
-			found = TRUE;
+			found = true;
 			//XmListSelectPos(this->list, s->position, True);
 			//if (s->position < topItem || s->position >= topItem + visibleItems)
 			//	XmListSetBottomPos(this->list, s->position);
@@ -1267,7 +1267,7 @@ void MsgWin::findPrevError()
 		{
 			if (s->position < pos)
 			{
-				found = TRUE;
+				found = true;
 				//XmListSelectPos(this->list, s->position, True);
 				//if (s->position < topItem || 
 				//	s->position >= topItem + visibleItems)
@@ -1280,9 +1280,9 @@ void MsgWin::findPrevError()
 
 
 
-boolean MsgWin::toggleTracing()
+bool MsgWin::toggleTracing()
 {
-boolean on_or_off = this->traceOption->getState();
+bool on_or_off = this->traceOption->getState();
 const char *cmd = (on_or_off? "Trace(\"0\",1);\n" : "Trace(\"0\", 0);\n" );
 
     //
@@ -1293,14 +1293,14 @@ const char *cmd = (on_or_off? "Trace(\"0\",1);\n" : "Trace(\"0\", 0);\n" );
 	theDXApplication->getMessageWindow()->addInformation(cmd);
 	p->send(DXPacketIF::FOREGROUND, cmd);
 	theDXApplication->showInstanceNumbers(on_or_off);
-	return TRUE;
+	return true;
     } else {
 	theDXApplication->showInstanceNumbers(on_or_off);
-	return FALSE;
+	return false;
     }
 }
 
-boolean MsgWin::memoryUse()
+bool MsgWin::memoryUse()
 {
     //
     // Issue the script command
@@ -1310,8 +1310,8 @@ boolean MsgWin::memoryUse()
     if (p) {
 	theDXApplication->getMessageWindow()->addInformation(cmd);
 	p->send(DXPacketIF::FOREGROUND, cmd);
-	return TRUE;
+	return true;
     }
 
-    return FALSE;
+    return false;
 }

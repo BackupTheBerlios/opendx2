@@ -19,7 +19,7 @@
 #include "DXStrings.h"
 #include "DXApplication.h" 
 
-boolean Interactor::InteractorClassInitialized = FALSE;
+bool Interactor::InteractorClassInitialized = false;
 //Widget  Interactor::DragIcon;
 
 #if defined(aviion) || defined(alphax)
@@ -62,7 +62,7 @@ static int HiLites = OFFSET + 1;
 Dictionary* Interactor::DragTypeDictionary = new Dictionary;
 
 Interactor::Interactor(const char * name, InteractorInstance *ii) : 
-   WorkSpaceComponent(name, FALSE), 
+   WorkSpaceComponent(name, false), 
    DXDragSource(PrintCPBuffer)
 { 
     this->interactorInstance = ii; 
@@ -82,11 +82,11 @@ Interactor::~Interactor()
 // change the attributes of the interactive part.
 //
 void Interactor::handleInteractorStateChange(
-			InteractorInstance *src_ii, boolean major_change)
+			InteractorInstance *src_ii, bool major_change)
 {
 int userw, userh, curw, curh;
 
-    this->handleInteractivePartStateChange(src_ii, FALSE);
+    this->handleInteractivePartStateChange(src_ii, false);
 
 #if 0
    //
@@ -102,13 +102,13 @@ int userw, userh, curw, curh;
    // The charset must match what was used when the XmString was created.
    XmStringGetLtoR(xms, "bold", &curr_label); 
    if (!EqualString(curr_label,new_label))
-       this->setLabel(new_label, FALSE);
+       this->setLabel(new_label, false);
    delete curr_label;
    XmStringFree(xms);
 #else
    // setLabel does nothing if oldlabel == newlabel
    const char *new_label = this->interactorInstance->getInteractorLabel();
-   this->setLabel(new_label, FALSE);
+   this->setLabel(new_label, false);
 #endif
 
    //
@@ -144,7 +144,7 @@ void Interactor::initialize()
     //
     if (NOT Interactor::InteractorClassInitialized)
     {
-        Interactor::InteractorClassInitialized = TRUE;
+        Interactor::InteractorClassInitialized = true;
 	//Interactor::DragIcon = 
  //               this->createDragIcon(ntractor_width, ntractor_height,
  //                                    (char *)ntractor_bits,
@@ -164,15 +164,15 @@ void Interactor::initialize()
 	    (theDXApplication->appAllowsSavingNetFile()) &&
 	    (theDXApplication->appAllowsSavingCfgFile()) &&
 	    (theDXApplication->appAllowsPanelEdit())) {
-	    this->addSupportedType (Interactor::Modules, DXINTERACTORS, TRUE);
+	    this->addSupportedType (Interactor::Modules, DXINTERACTORS, true);
 	}
 	if (theDXApplication->appAllowsPanelEdit())
-	    this->addSupportedType (Interactor::Trash, DXTRASH, FALSE);
+	    this->addSupportedType (Interactor::Trash, DXTRASH, false);
     }
 }
 
 
-void Interactor::setSelected (boolean state)
+void Interactor::setSelected (bool state)
 {
 InteractorInstance *ii = this->interactorInstance;
 
@@ -184,7 +184,7 @@ InteractorInstance *ii = this->interactorInstance;
 //
 // Set the displayed label of the interactor
 //
-void Interactor::setLabel(const char *labelString, boolean )
+void Interactor::setLabel(const char *labelString, bool )
 {
 //XmStringContext cxt;
 //char *text, *tag;
@@ -238,9 +238,9 @@ void Interactor::setLabel(const char *labelString, boolean )
  //   }
 
  //   if ((!filtered)||(!filtered[0])||(!strlen(filtered))) {
- //       this->setBlankLabelLayout(TRUE);
+ //       this->setBlankLabelLayout(true);
  //   } else {
- //       this->setBlankLabelLayout(FALSE);
+ //       this->setBlankLabelLayout(false);
 	////this->WorkSpaceComponent::SetLabelResource(this->label, labelString);
  //   }
  //   delete filtered;
@@ -294,7 +294,7 @@ void Interactor::createInteractor()
     int	width = 0;
     int height = 0;
     ii->getXYSize(&width,&height); 
-    boolean avr = true, ahr = true;
+    bool avr = true, ahr = true;
  //   XtVaGetValues (this->getRootWidget(), 
 	//XmNallowVerticalResizing, &avr,
 	//XmNallowHorizontalResizing, &ahr, 
@@ -322,7 +322,7 @@ void Interactor::createInteractor()
  //   XtSetArg(wargs[n], XmNuserData, this); n++;
  //   this->label = XmCreateLabel(standInRoot, "interactor_label", wargs, n);
  //   XtManageChild (this->label);
- //   this->passEvents (this->label, TRUE);
+ //   this->passEvents (this->label, true);
 
     const char *new_label = this->interactorInstance->getInteractorLabel();
     if ((new_label) && (new_label[0]))
@@ -348,7 +348,7 @@ void Interactor::createInteractor()
  //   XtManageChild(this->customPart);
  //   this->createInteractivePart(this->customPart);
 
-    //this->passEvents (this->customPart, FALSE);
+    //this->passEvents (this->customPart, false);
 
     // 
     // Set the label after creating the interactive part in case the
@@ -356,7 +356,7 @@ void Interactor::createInteractor()
     //
     //labelString = ii->getInteractorLabel();
     //ASSERT(labelString);
-    //this->setLabel(labelString, FALSE);
+    //this->setLabel(labelString, false);
 
     // Set to ! because must be sure the function does something.
     this->currentLayout|= WorkSpaceComponent::NotSet;
@@ -389,7 +389,7 @@ void Interactor::createInteractor()
 //
 // Pass button and motion events through to the parent of w.
 //
-//void Interactor::passEvents(Widget w, boolean dnd)
+//void Interactor::passEvents(Widget w, bool dnd)
 //{
 //    this->WorkSpaceComponent::passEvents (w, dnd);
 //    if (dnd) this->setDragWidget(w);
@@ -409,7 +409,7 @@ void Interactor::createInteractor()
 // time it appears on the screen.  When changing the layout simply change
 // form attachments.
 //
-void Interactor::setBlankLabelLayout(boolean blank_label)
+void Interactor::setBlankLabelLayout(bool blank_label)
 {
     if ((this->currentLayout & WorkSpaceComponent::NotSet) == 0) {
 	if ((blank_label)&&
@@ -424,7 +424,7 @@ void Interactor::setBlankLabelLayout(boolean blank_label)
 
     InteractorInstance *ii = this->interactorInstance;
     if (blank_label) {
-	ii->setVerticalLayout(TRUE);
+	ii->setVerticalLayout(true);
 	this->currentLayout|= WorkSpaceComponent::BlankLabel;
 	this->layoutInteractor();
     } else {
@@ -433,7 +433,7 @@ void Interactor::setBlankLabelLayout(boolean blank_label)
 	this->layoutInteractor();
     }
 }
-void Interactor::setVerticalLayout(boolean vertical)
+void Interactor::setVerticalLayout(bool vertical)
 {
     if ((this->currentLayout & WorkSpaceComponent::NotSet) == 0) {
 	if ((vertical)&&(this->currentLayout & WorkSpaceComponent::Vertical)) return ;
@@ -469,7 +469,7 @@ void Interactor::layoutInteractor()
 
 void Interactor::layoutInteractorHorizontally()
 {
-//boolean label_managed = XtIsManaged(this->label);
+//bool label_managed = XtIsManaged(this->label);
 //
 //    if (!label_managed)  XtManageChild (this->label);
 
@@ -503,7 +503,7 @@ void Interactor::layoutInteractorHorizontally()
 
 void Interactor::layoutInteractorVertically()
 {
-//boolean label_managed = XtIsManaged(this->label);
+//bool label_managed = XtIsManaged(this->label);
 
  //   if (!label_managed)  {
 	//XtManageChild (this->label);
@@ -606,10 +606,10 @@ void Interactor::layoutInteractorWithNoLabel()
 // The header (which will not end up being part of the files) says
 // "hostname:pid, net length = %d, cfg length = %d\n"
 //
-boolean Interactor::createNetFiles(Network *netw, FILE *netf, char *cfgfile)
+bool Interactor::createNetFiles(Network *netw, FILE *netf, char *cfgfile)
 {
    netw->setCPSelectionOwner(this->getControlPanel());
-   return (boolean)this->DXDragSource::createNetFiles (netw, netf, cfgfile);
+   return (bool)this->DXDragSource::createNetFiles (netw, netf, cfgfile);
 }
 
 //
@@ -646,10 +646,10 @@ void Interactor::dropFinish (long operation, int tag, unsigned char status)
  //   }
 }
 
-//boolean Interactor::decodeDragType (int tag,
+//bool Interactor::decodeDragType (int tag,
 //	char * a, XtPointer *value, unsigned long *length, long operation)
 //{
-//boolean retVal;
+//bool retVal;
 //
 //    switch (tag) {
 //	case Interactor::Modules:
@@ -659,7 +659,7 @@ void Interactor::dropFinish (long operation, int tag, unsigned char status)
 //
 //	// Don't do anything...  Just say OK.  this->dropFinish does the delete
 //	case Interactor::Trash:
-//	    retVal = TRUE;
+//	    retVal = true;
 //
 //	    // dummy pointer
 //	    *value = (XtPointer)malloc(4);
@@ -667,7 +667,7 @@ void Interactor::dropFinish (long operation, int tag, unsigned char status)
 //	    break;
 //
 //	default:
-//	    retVal = FALSE;
+//	    retVal = false;
 //	    break;
 //    }
 //    return retVal;
@@ -680,17 +680,17 @@ void Interactor::dropFinish (long operation, int tag, unsigned char status)
 // U T I L S   U T I L S   U T I L S   U T I L S   U T I L S   U T I L S
 // U T I L S   U T I L S   U T I L S   U T I L S   U T I L S   U T I L S
 // U T I L S   U T I L S   U T I L S   U T I L S   U T I L S   U T I L S
-boolean Interactor::isA(Symbol classname)
+bool Interactor::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassInteractor);
-    if (s == classname) return TRUE;
+    if (s == classname) return true;
     return this->WorkSpaceComponent::isA(classname);
 }
 
 //
 // Indicate that the interactor is selected. 
 //
-void Interactor::indicateSelect(boolean selected)
+void Interactor::indicateSelect(bool selected)
 {
  //   if (this->getRootWidget()) {
 	//XtVaSetValues(this->getRootWidget(),
@@ -736,5 +736,5 @@ ControlPanel *Interactor::getControlPanel()
 //    Interactor* ntr = (Interactor*)clientData;
 //    ntr->drag_drop_wpid = 0;
 //    ntr->getControlPanel()->deleteSelectedInteractors();
-//    return TRUE;
+//    return true;
 //}

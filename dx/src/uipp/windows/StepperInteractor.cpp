@@ -18,7 +18,7 @@
 #include "ErrorDialogManager.h"
 
 static void CreateStepperComponent( 
-				     boolean isInteger,
+				     bool isInteger,
 				     double  min,
 				     double  max,
 				     double  value,
@@ -27,7 +27,7 @@ static void CreateStepperComponent(
 				     int     comp_index,
 				     void * clientData);
 				     
-boolean StepperInteractor::StepperInteractorClassInitialized = FALSE;
+bool StepperInteractor::StepperInteractorClassInitialized = false;
 
 //String StepperInteractor::DefaultResources[] =  {
 //   "*Offset:				0",
@@ -73,7 +73,7 @@ void StepperInteractor::initialize()
         //                          StepperInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          Interactor::DefaultResources);
-        StepperInteractor::StepperInteractorClassInitialized = TRUE;
+        StepperInteractor::StepperInteractorClassInitialized = true;
     }
 }
 
@@ -95,7 +95,7 @@ Interactor *StepperInteractor::AllocateInteractor(const char *name,
 void StepperInteractor::completeInteractivePart()
 {
 //    if (this->componentForm)
-//	this->passEvents(this->componentForm, TRUE);
+//	this->passEvents(this->componentForm, true);
     this->resizeCB();
 }
 
@@ -169,7 +169,7 @@ void StepperInteractor::completeInteractivePart()
 // Build a stepper component with the given attributes.
 //
 static void CreateStepperComponent(
-				     boolean isInteger,
+				     bool isInteger,
 				     double  min,
 				     double  max,
 				     double  value,
@@ -274,7 +274,7 @@ static void CreateStepperComponent(
 //     * there is continuous update), then get the interactor value, store it,  
 //     * and send it.
 //     */
-//    boolean send = (cb->reason == XmCR_ACTIVATE) || si->isContinuous();
+//    bool send = (cb->reason == XmCR_ACTIVATE) || si->isContinuous();
 //    if (send) {
 //        ScalarNode *node       = (ScalarNode*)si->getNode(); 
 //	si->setComponentValue(component, (double)cb->value);
@@ -329,7 +329,7 @@ void StepperInteractor::updateStepperValue()
 //
 void StepperInteractor::handleInteractivePartStateChange(
 					InteractorInstance *src_ii,
-					boolean major_change)
+					bool major_change)
 {
     //Arg		   wargs[8];
     int		   components;

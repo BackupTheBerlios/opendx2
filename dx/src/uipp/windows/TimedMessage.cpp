@@ -29,7 +29,7 @@ TimedMessage::~TimedMessage()
 	delete[] this->message;
     if (this->title)
 	delete[] this->title;
-    //if(theApplication->getLogoPixmap(FALSE) != XtUnspecifiedPixmap)
+    //if(theApplication->getLogoPixmap(false) != XtUnspecifiedPixmap)
 	//theApplication->cleanupLogo();
 }
 
@@ -60,9 +60,9 @@ void TimedMessage::createDialog(void)
     //
     // Use the Logo as the button
     //
- //   if (theApplication->getLogoPixmap(FALSE) != XtUnspecifiedPixmap) {
+ //   if (theApplication->getLogoPixmap(false) != XtUnspecifiedPixmap) {
 	//XtVaSetValues(this->ok, 
-	//	XmNlabelPixmap, theApplication->getLogoPixmap(FALSE),
+	//	XmNlabelPixmap, theApplication->getLogoPixmap(false),
 	//	XmNlabelType, XmPIXMAP,
 	//	NULL);
  //   } else {

@@ -15,7 +15,7 @@
 
 Node *VectorDefinition::newNode(Network *net, int inst)
 {
-    ScalarNode *n = new ScalarNode(this, net, inst, TRUE, 3);
+    ScalarNode *n = new ScalarNode(this, net, inst, true, 3);
     return n;
 }
 

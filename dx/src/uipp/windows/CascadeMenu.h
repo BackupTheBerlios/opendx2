@@ -61,16 +61,16 @@ class CascadeMenu : public UIComponent
     //
     // Append the given UIComponent to the sub menu and manage it.
     //
-    boolean appendComponent(UIComponent *uic);
+    bool appendComponent(UIComponent *uic);
     //
     // Remove (but do not delete) the given UIComponent from the submenu and
     // unmanage it.
     //
-    boolean removeComponent(UIComponent *uic);
+    bool removeComponent(UIComponent *uic);
     //
     // Remove and delete the given UIComponent from the submenu.
     //
-    boolean deleteComponent(UIComponent *uic);
+    bool deleteComponent(UIComponent *uic);
     //
     // Remove and delete all UIComponents owned by the menu.
     //
@@ -84,10 +84,10 @@ class CascadeMenu : public UIComponent
     //
     // Set the sensitivity of the cascade menu item based on the sensitivity
     // of its immediate children.  If any are sensitive, then set the 
-    // sensitivity to true (active) else not sensitive.  We return TRUE if 
-    // the cascade was set active, otherwise FALSE.
+    // sensitivity to true (active) else not sensitive.  We return true if 
+    // the cascade was set active, otherwise false.
     //
-    boolean setActivationFromChildren();
+    bool setActivationFromChildren();
 
 
     //

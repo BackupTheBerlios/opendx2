@@ -38,9 +38,9 @@ class UndoDeletion : public UndoableAction
     public:
 	virtual const char* getLabel() { return UndoDeletion::OperationName; }
 	virtual ~UndoDeletion();
-	virtual boolean canUndo();
+	virtual bool canUndo();
 	UndoDeletion (EditorWindow* editor, List* nodes, List* decorators);
-	virtual void undo(boolean first_in_list=TRUE);
+	virtual void undo(bool first_in_list=true);
 	virtual const char* getClassName() { return UndoDeletionClassName; }
 };
 

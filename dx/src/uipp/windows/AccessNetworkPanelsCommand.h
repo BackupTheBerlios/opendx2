@@ -49,7 +49,7 @@ class AccessNetworkPanelsCommand : public NoUndoCommand
     //
     // Does nothing;
     //
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -57,7 +57,7 @@ class AccessNetworkPanelsCommand : public NoUndoCommand
     //
     AccessNetworkPanelsCommand(const char*   name,
 				CommandScope* scope,
-				boolean       active,
+				bool       active,
 				Network*      network,
 				AccessPanelType	how);
 

@@ -192,7 +192,7 @@ typedef struct
 
     char*	viewDataFile;		// Data file to use in viewer mode. 
 
-    bool 	autoScrollVPEInitVal;	// set to FALSE by default, provides an
+    bool 	autoScrollVPEInitVal;	// set to false by default, provides an
 					// initial value to EditorWorkSpace for
 					// repositioning scrollbars during page changes.
     char*	cosmoDir;		// On behalf of java generation
@@ -264,7 +264,7 @@ class DXApplication : public IBMApplication
     //
     // Private class data:
     //
-    static boolean    DXApplicationClassInitialized; // class initialized?
+    static bool    DXApplicationClassInitialized; // class initialized?
     static void 	DebugEchoCallback(void *clientData, char *echoString);
     static void       QueuedPacketAccept(void *data);
     static void       QueuedPacketCancel(void *data);
@@ -276,7 +276,6 @@ class DXApplication : public IBMApplication
 #else
     DXApplication_HandleCoreDump(int dummy);
 #endif
-
 
     //
     // License manager stuff
@@ -292,19 +291,19 @@ class DXApplication : public IBMApplication
     // Should we do a disconnect from the executive next time through the 
     // handleEvents.
     //
-    boolean 	serverDisconnectScheduled;
+    bool 	serverDisconnectScheduled;
 
     //
     // Private member data:
     //
-    boolean runApplication;	// continue to run the application?
+    bool runApplication;	// continue to run the application?
 
     //
     // Define a mapping of integer levels and the restriction level names and
     // determine if the current restriction level is at the given level.
     // The highest level of restriction is 1 the lowest and +infinity.
     //
-    boolean isRestrictionLevel(int level);
+    bool isRestrictionLevel(int level);
 
     //
     // Called if DIAGNOSTICS is defined
@@ -314,7 +313,7 @@ class DXApplication : public IBMApplication
     //
     // Have we read the first network yet.
     //
-    boolean readFirstNetwork;
+    bool readFirstNetwork;
 
     //
     // Save all dirty files and return a message string
@@ -332,10 +331,10 @@ class DXApplication : public IBMApplication
     //
     // See if there is an OEM license code (see oemApplicationName and
     // oemLicenseCode resources) and if so see if it is valid.
-    // If so return TRUE and the type of functional license (rt/dev) that
+    // If so return true and the type of functional license (rt/dev) that
     // was granted to the oem.
     //
-    boolean verifyOEMLicenseCode(LicenseTypeEnum *);
+    bool verifyOEMLicenseCode(LicenseTypeEnum *);
 
 #if defined(BETA_VERSION) && defined(NOTDEF)
     //
@@ -360,7 +359,7 @@ class DXApplication : public IBMApplication
     DXServerInfo	serverInfo;
     DXExecCtl		execCtl;
 #ifdef HAS_CLIPNOTIFY_EXTENSION
-    boolean		hasClipnotifyExtension;
+    bool		hasClipnotifyExtension;
     int			clipnotifyEventCode;
 #endif
 
@@ -372,7 +371,7 @@ class DXApplication : public IBMApplication
     // Overrides the Application class version:
     //   Initializes Xt Intrinsics with option list (switches).
     //
-    virtual boolean initialize(unsigned int* argcp,
+    virtual bool initialize(unsigned int* argcp,
 			    char**        argv);
 
     //
@@ -426,7 +425,7 @@ class DXApplication : public IBMApplication
     virtual void determineUILicense(LicenseTypeEnum *appLicense,
 				    LicenseTypeEnum *funcLicense);
 
-    virtual boolean	    verifyServerLicense();
+    virtual bool	    verifyServerLicense();
 
     //
     // Disconnect from Exec next time through the main loop
@@ -557,7 +556,7 @@ class DXApplication : public IBMApplication
     //
     // Functions to manage the server connection.
     int connectToServer(int port, DXChild *c = NULL);
-    boolean disconnectFromServer();
+    bool disconnectFromServer();
     void closeConnection(DXChild *c);
     void completeConnection(DXChild *c);
     DXChild *startServer();
@@ -566,15 +565,15 @@ class DXApplication : public IBMApplication
     DXPacketIF *getPacketIF() { return this->serverInfo.packet; }
     DXExecCtl  *getExecCtl()  { return &this->execCtl; }
 
-    virtual boolean openFile(const char *netfile, 
+    virtual bool openFile(const char *netfile, 
 				const char *cfgfile = NULL,
-				boolean resetTheServer = TRUE);
+				bool resetTheServer = true);
 
-    virtual boolean saveFile(const char *netfile, 
-				boolean force = FALSE);
+    virtual bool saveFile(const char *netfile, 
+				bool force = false);
 
-    virtual boolean resetServer(void);
-    boolean postStartServerDialog();
+    virtual bool resetServer(void);
+    bool postStartServerDialog();
     void postProcessGroupAssignDialog();
     void postOpenNetworkDialog();
     void postLoadMDFDialog();
@@ -597,7 +596,7 @@ class DXApplication : public IBMApplication
     // Functions to manage the application connection
     //
     virtual void connectToApplication(const char *host, const int port);
-    virtual void disconnectFromApplication(boolean terminate);
+    virtual void disconnectFromApplication(bool terminate);
 
     //
     // Pre-allocate required ui colors
@@ -632,24 +631,24 @@ class DXApplication : public IBMApplication
  //   {
  //       return this->resource.insensitiveColor;
  //   }
-    boolean inDebugMode() { return this->resource.debugMode; }
+    bool inDebugMode() { return this->resource.debugMode; }
 
     //
     // I added trace on/off buttons to the msgwin and I want to be able to see
     // the instance numbers in the vpe conditionally as well.
     //
-    boolean showInstanceNumbers() 
+    bool showInstanceNumbers() 
 	{ return (this->resource.debugMode || this->resource.showInstanceNumbers); }
-    void showInstanceNumbers(boolean on_or_off);
+    void showInstanceNumbers(bool on_or_off);
 
-    boolean inEditMode();
-    boolean inImageMode();
-    boolean inMenuBarMode();
+    bool inEditMode();
+    bool inImageMode();
+    bool inMenuBarMode();
 
-    boolean inDataViewerMode();		// Object viewer, requires ui/viewer.net
+    bool inDataViewerMode();		// Object viewer, requires ui/viewer.net
     const char *getDataViewerImportFile();  // Data file to view	
 
-    boolean isMetricUnits()
+    bool isMetricUnits()
     {
 	return this->resource.isMetric;
     }
@@ -685,7 +684,7 @@ class DXApplication : public IBMApplication
     //
     virtual EditorWindow *newNetworkEditor(Network *n);
 
-    virtual Network *newNetwork(boolean nonJava=FALSE);
+    virtual Network *newNetwork(bool nonJava=false);
     virtual MsgWin *newMsgWin();
     virtual ImageWindow *newImageWindow(Network *n);
     virtual ControlPanel *newControlPanel(Network *n);
@@ -697,16 +696,16 @@ class DXApplication : public IBMApplication
     //
     void markNetworksDirty(void);
 
-    boolean	isInfoEnabled();
-    boolean	isWarningEnabled();
-    boolean	isErrorEnabled();
-    boolean	doesInfoOpenMessage(boolean fromModule = FALSE);
-    boolean	doesWarningOpenMessage();
-    boolean	doesErrorOpenMessage();
+    bool	isInfoEnabled();
+    bool	isWarningEnabled();
+    bool	isErrorEnabled();
+    bool	doesInfoOpenMessage(bool fromModule = false);
+    bool	doesWarningOpenMessage();
+    bool	doesErrorOpenMessage();
     int 	doesErrorOpenVpe(Network*);
-    void	enableInfo(boolean enable);
-    void	enableWarning(boolean enable);
-    void	enableError(boolean enable);
+    void	enableInfo(bool enable);
+    void	enableWarning(bool enable);
+    void	enableError(bool enable);
 
     //
     // constants returned by doesErrorOpenVpe()
@@ -721,12 +720,12 @@ class DXApplication : public IBMApplication
     // Read the user's description file into the Node Definition Dictionary.
     // If dict is not null then fill the given dictionary with the 
     // NodeDefintions found in the given MDF. 
-    // If uiLoadedOnly is TRUE, then the user has asked to have these loaded
+    // If uiLoadedOnly is true, then the user has asked to have these loaded
     // from somewhere other than the command line (in which case the 
     // exec does not know about them yet).
     //
     virtual void loadUDF(const char *fileName, Dictionary *dict = NULL,
-				boolean uiLoadedOnly = FALSE);
+				bool uiLoadedOnly = false);
 
     //
     // Get selected NodeDefinitoins from the newdefs dictionary and send 
@@ -741,51 +740,51 @@ class DXApplication : public IBMApplication
     //
     // Define a set of methods that indicate a level of UI capability. 
     //
-    virtual boolean appAllowsDXHelp();
-    virtual boolean appSuppressesStartupWindows();
-    virtual boolean appLimitsNetFileSelection();
+    virtual bool appAllowsDXHelp();
+    virtual bool appSuppressesStartupWindows();
+    virtual bool appLimitsNetFileSelection();
 
-    virtual boolean appAllowsPanelEdit();
-    virtual boolean appAllowsRWConfig();
-    virtual boolean appAllowsPanelAccess();
-    virtual boolean appAllowsOpenAllPanels();
-    virtual boolean appAllowsPanelOptions();
+    virtual bool appAllowsPanelEdit();
+    virtual bool appAllowsRWConfig();
+    virtual bool appAllowsPanelAccess();
+    virtual bool appAllowsOpenAllPanels();
+    virtual bool appAllowsPanelOptions();
 
-    virtual boolean appAllowsInteractorEdits();
-    virtual boolean appAllowsInteractorSelection();
-    virtual boolean appAllowsInteractorMovement();
-    virtual boolean appAllowsInteractorAttributeChange();
+    virtual bool appAllowsInteractorEdits();
+    virtual bool appAllowsInteractorSelection();
+    virtual bool appAllowsInteractorMovement();
+    virtual bool appAllowsInteractorAttributeChange();
 
-    virtual boolean appAllowsImageRWNetFile();
-    virtual boolean appAllowsSavingNetFile(Network *n = NULL);
-    virtual boolean appAllowsSavingCfgFile();
-    virtual boolean appAllowsImageLoad();
-    virtual boolean appAllowsImageSaving();
-    virtual boolean appAllowsImagePrinting();
-    virtual boolean appLimitsImageOptions();
+    virtual bool appAllowsImageRWNetFile();
+    virtual bool appAllowsSavingNetFile(Network *n = NULL);
+    virtual bool appAllowsSavingCfgFile();
+    virtual bool appAllowsImageLoad();
+    virtual bool appAllowsImageSaving();
+    virtual bool appAllowsImagePrinting();
+    virtual bool appLimitsImageOptions();
 
-    virtual boolean appAllowsEditorAccess();
-    virtual boolean appAllowsPGroupAssignmentChange();
+    virtual bool appAllowsEditorAccess();
+    virtual bool appAllowsPGroupAssignmentChange();
 
-    virtual boolean appAllowsMessageInfoOption();
-    virtual boolean appAllowsMessageWarningOption();
-    virtual boolean appAllowsScriptCommands();
+    virtual bool appAllowsMessageInfoOption();
+    virtual bool appAllowsMessageWarningOption();
+    virtual bool appAllowsScriptCommands();
     
-    virtual boolean appAllowsCMapSetName();
-    virtual boolean appAllowsCMapOpenMap();
-    virtual boolean appAllowsCMapSaveMap();
-    virtual boolean appForcesNetFileEncryption();
-    boolean appAllowsExitOptions();
-    boolean appAllowsExecuteMenus();
-    boolean appAllowsConnectionMenus();
-    boolean appAllowsWindowsMenus();
-    boolean appAllowsImageMenus();
-    boolean appAllowsConfirmedQuit();
+    virtual bool appAllowsCMapSetName();
+    virtual bool appAllowsCMapOpenMap();
+    virtual bool appAllowsCMapSaveMap();
+    virtual bool appForcesNetFileEncryption();
+    bool appAllowsExitOptions();
+    bool appAllowsExecuteMenus();
+    bool appAllowsConnectionMenus();
+    bool appAllowsWindowsMenus();
+    bool appAllowsImageMenus();
+    bool appAllowsConfirmedQuit();
 
-    boolean dxlAppNotifySaveNet()
+    bool dxlAppNotifySaveNet()
     { return DXApplication::resource.notifySaveNet; }
 
-    boolean dxlAppNoNetworkExecute()
+    bool dxlAppNoNetworkExecute()
     { return DXApplication::resource.noNetworkExecute; }
 
 
@@ -816,15 +815,15 @@ class DXApplication : public IBMApplication
     //
     void refreshErrorIndicators();
 
-    virtual boolean printComment(FILE *f);
-    virtual boolean parseComment(const char *line, const char *filename, 
+    virtual bool printComment(FILE *f);
+    virtual bool parseComment(const char *line, const char *filename, 
 					int lineno);
 
     //
-    // Return TRUE if the DXWindows are supposed to use the window placement
+    // Return true if the DXWindows are supposed to use the window placement
     // information saved in the .net or .cfg files.
     //
-    virtual boolean applyWindowPlacements();
+    virtual bool applyWindowPlacements();
 
     virtual const char* getCryptKey() { return this->resource.cryptKey; }
 
@@ -839,7 +838,7 @@ class DXApplication : public IBMApplication
     // Should we force the functional license to be that returned by
     // getForcedFunctionalLicenseEnum(). 
     //
-    virtual boolean isFunctionalLicenseForced();
+    virtual bool isFunctionalLicenseForced();
 
     //
     // Get the functional license that was granted.
@@ -851,7 +850,7 @@ class DXApplication : public IBMApplication
     //
     virtual void abortApplication();
 
-    boolean getAutoScrollInitialValue() { return this->resource.autoScrollVPEInitVal; }
+    bool getAutoScrollInitialValue() { return this->resource.autoScrollVPEInitVal; }
 
 #if WORKSPACE_PAGES
     ProcessGroupManager *getProcessGroupManager();

@@ -44,7 +44,7 @@ class StartServerDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
   protected:
@@ -70,7 +70,7 @@ class StartServerDialog : public Dialog
 			 //       XEvent* event,
 				//Boolean *cont);
 
-    virtual boolean okCallback(Dialog *clientData);
+    virtual bool okCallback(Dialog *clientData);
     virtual void cancelCallback(Dialog *clientData);
     virtual void optionsCallback(StartServerDialog *clientData);
 

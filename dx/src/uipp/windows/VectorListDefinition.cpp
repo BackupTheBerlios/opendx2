@@ -15,7 +15,7 @@
 
 Node *VectorListDefinition::newNode(Network *net, int inst)
 {
-    ScalarListNode *n = new ScalarListNode(this, net, inst, TRUE, 3);
+    ScalarListNode *n = new ScalarListNode(this, net, inst, true, 3);
     return n;
 }
 

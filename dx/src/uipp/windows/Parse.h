@@ -43,7 +43,7 @@ extern
 void ParseFunctionID(char* name);
 
 extern
-void ParseArgument(char* name, const boolean isVarname);
+void ParseArgument(char* name, const unsigned char isVarname);
 
 extern
 void ParseLValue(char* name);

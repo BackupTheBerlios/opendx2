@@ -20,24 +20,24 @@
 #include "InfoDialogManager.h"
 #include "ErrorDialogManager.h"
 
-boolean DXLInputNode::Initializing = FALSE;
+bool DXLInputNode::Initializing = false;
 
 DXLInputNode::DXLInputNode(NodeDefinition *nd, Network *net, int instnc) :
     UniqueNameNode(nd, net, instnc)
 {
 }
-boolean DXLInputNode::initialize()
+bool DXLInputNode::initialize()
 {
     char label[512];
 
     if (!this->getNetwork()->isReadingNetwork()) {
 	sprintf(label,"%s_%d",this->getNameString(),this->getInstanceNumber());
-	DXLInputNode::Initializing = TRUE;
+	DXLInputNode::Initializing = true;
 	this->setLabelString(label);
-	DXLInputNode::Initializing = FALSE;
+	DXLInputNode::Initializing = false;
     }
 
-    return TRUE;
+    return true;
 }
 
 DXLInputNode::~DXLInputNode()
@@ -91,12 +91,12 @@ char        *DXLInputNode::valuesString(const char *prefix)
     return vs;
 }
 
-boolean     DXLInputNode::sendValues(boolean ignoreDirty )
+bool     DXLInputNode::sendValues(bool ignoreDirty )
 {
     DXPacketIF *pif  = theDXApplication->getPacketIF();
 
     if (!pif)
-        return TRUE;
+        return true;
 
     Parameter *p = this->getInputParameter(1);
 
@@ -105,17 +105,17 @@ boolean     DXLInputNode::sendValues(boolean ignoreDirty )
  	pif->send(DXPacketIF::FOREGROUND, vs);	
 	delete vs;
     }
-    return TRUE;
+    return true;
 }
 
 //
 // Determine if this node is of the given class.
 //
-boolean DXLInputNode::isA(Symbol classname)
+bool DXLInputNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassDXLInputNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->UniqueNameNode::isA(classname);
 }
@@ -125,22 +125,22 @@ boolean DXLInputNode::isA(Symbol classname)
 // by default, and we make sure that it does not conflict with other nodes
 // in the network (e.g. Transmitters).
 //
-boolean DXLInputNode::setLabelString(const char *label)
+bool DXLInputNode::setLabelString(const char *label)
 {
     if (EqualString(label, this->getLabelString()))
-        return TRUE;
+        return true;
 
     Network *n = this->getNetwork();
 
     if (!DXLInputNode::Initializing && !n->isReadingNetwork()) {
 	if (!this->verifyRestrictedLabel(label))
-	    return FALSE;
+	    return false;
 
 	const char* conflict = n->nameConflictExists(this, label);
 	if (conflict) {
 	    ErrorMessage("A %s with name \"%s\" already exists.", 
 						conflict, label);
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -157,7 +157,7 @@ int instnum = this->UniqueNameNode::assignNewInstanceNumber();
     //
     const char* cur_label = this->getLabelString();
     const char* matchstr = "DXLInput_";
-    boolean change_label = EqualSubstring (cur_label, matchstr, strlen(matchstr));
+    bool change_label = EqualSubstring (cur_label, matchstr, strlen(matchstr));
     if (change_label) {
 	char *new_label = new char [2+strlen(cur_label)];
 	sprintf (new_label, "%s%d", matchstr, instnum);
@@ -169,10 +169,10 @@ int instnum = this->UniqueNameNode::assignNewInstanceNumber();
 }
 
 
-boolean DXLInputNode::printAsBean(FILE* f)
+bool DXLInputNode::printAsBean(FILE* f)
 {
-    if (this->isInputConnected(1)) return TRUE;
-    if (this->isOutputConnected(1) == FALSE) return TRUE;
+    if (this->isInputConnected(1)) return true;
+    if (this->isOutputConnected(1) == false) return true;
 
     char* indent = "    ";
 
@@ -199,17 +199,17 @@ boolean DXLInputNode::printAsBean(FILE* f)
     indent = "    ";
     fprintf (f, "%s}\n\n", indent);
 
-    return TRUE;
+    return true;
 }
 
-boolean DXLInputNode::printAsBeanInitCall(FILE* f)
+bool DXLInputNode::printAsBeanInitCall(FILE* f)
 {
-    if (this->isInputConnected(1)) return TRUE;
-    if (this->isOutputConnected(1) == FALSE) return TRUE;
+    if (this->isInputConnected(1)) return true;
+    if (this->isOutputConnected(1) == false) return true;
     const char* value = this->getInputValueString(1);
-    if ((value == NUL(char*)) || (value[0] == '\0')) return TRUE;
-    if (EqualString(value, "NULL")) return TRUE;
-    if (EqualString(value, "\"NULL\"")) return TRUE;
+    if ((value == NUL(char*)) || (value[0] == '\0')) return true;
+    if (EqualString(value, "NULL")) return true;
+    if (EqualString(value, "\"NULL\"")) return true;
 
     char* indent = "\t";
 
@@ -224,6 +224,6 @@ boolean DXLInputNode::printAsBeanInitCall(FILE* f)
 
     fprintf (f, "%sset%s((float)%s);\n", indent, PropName, value);
 
-    return TRUE;
+    return true;
 }
 

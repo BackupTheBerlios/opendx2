@@ -53,27 +53,27 @@ class TransmitterNode : public UniqueNameNode
     //
     ~TransmitterNode();
 
-    virtual boolean initialize();
+    virtual bool initialize();
 
-    boolean setLabelString(const char *label);
+    bool setLabelString(const char *label);
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Switch the node from one net to another.  Resolve any name 
     // space collisions.
     //
-    void switchNetwork(Network *from, Network *to, boolean silently=FALSE);
+    void switchNetwork(Network *from, Network *to, bool silently=false);
 
     //
     // Check for name conflicts.  Usually you disallow 2 nodes with the same
     // labelString, but it certain cases it's desirable.  Capture that logic
     // locally.
     //
-    virtual boolean namesConflict (const char* his_label, const char* my_label,
+    virtual bool namesConflict (const char* his_label, const char* my_label,
 	const char* his_classname);
 
 

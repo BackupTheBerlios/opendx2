@@ -62,12 +62,12 @@ class ValueNode : public NondrivenInteractorNode
     //
     ~ValueNode();
 
-    virtual boolean initialize();
+    virtual bool initialize();
 
     //
     // Determine if this node is a node of the given class
     //
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 
     //
     // Returns a pointer to the class name.

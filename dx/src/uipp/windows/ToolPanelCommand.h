@@ -39,19 +39,19 @@ class ToolPanelCommand : public Command
     // Protected member data:
     //
     EditorWindow* editor;
-    boolean       setting;
+    bool       setting;
 
     //
     // Implements the command:
     //   Toggles the tool panel to be visible/invisible.
     //
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
 
     //
     // Undoes the command.
     //
-    virtual boolean undoIt();
+    virtual bool undoIt();
 
 
   public:
@@ -60,7 +60,7 @@ class ToolPanelCommand : public Command
     //
     ToolPanelCommand(const char*     name,
 		     CommandScope*   scope,
-		     boolean         active,
+		     bool         active,
 		     EditorWindow* editor);
 
     //

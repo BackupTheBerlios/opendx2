@@ -28,7 +28,7 @@ class ComponentAttributes : public Base {
 
     private:
 
-        boolean integerTyped; 
+        bool integerTyped; 
 	double	currentValue; 
 	double	minimum; 
 	double	maximum; 
@@ -39,8 +39,8 @@ class ComponentAttributes : public Base {
 
 	void setDecimals(int places) { this->decimal_places = places; }
 	void setDelta(double delta) { this->delta = delta; }
-	void setIntegerType()       { this->integerTyped = TRUE; }
-	void setRealType()          { this->integerTyped = FALSE; }
+	void setIntegerType()       { this->integerTyped = true; }
+	void setRealType()          { this->integerTyped = false; }
 	void setMinimum(double min) 
 			{ this->minimum = min;
 			  if (min > this->maximum)
@@ -76,9 +76,9 @@ class ComponentAttributes : public Base {
 		}
 	~ComponentAttributes() {}
 
- 	boolean	isIntegerType()	{ return this->integerTyped; } 
+ 	bool	isIntegerType()	{ return this->integerTyped; } 
 
-	// boolean isContinuous() { return this->continuous == TRUE; } 
+	// bool isContinuous() { return this->continuous == true; } 
 
 #define ROUND(x) \
 	( (double) ((x > 0.0) ? (int)(x + .5) : (int)(x - .5) ) )

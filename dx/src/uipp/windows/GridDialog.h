@@ -43,7 +43,7 @@ class GridDialog : public Dialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //Widget toplevel_form;
     //Widget separator1, separator2, separator3;
@@ -85,7 +85,7 @@ class GridDialog : public Dialog
 
     virtual void manage();
     virtual void createDialog();
-    virtual boolean okCallback(Dialog * /* clientData */);
+    virtual bool okCallback(Dialog * /* clientData */);
     void   resetToggleBtn();
 
     //

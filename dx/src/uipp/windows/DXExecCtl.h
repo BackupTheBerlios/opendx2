@@ -43,10 +43,10 @@ class DXExecCtl : public Base
     static void ResumeExecOnChange(void *clientData, int id, void *p);
     static void ResetVcrNextFrame(void *clientData, int id, void *p);
 
-    void 	beginSingleExecution(boolean update_macros);
-    void	endLastExecution(boolean resume = FALSE);
+    void 	beginSingleExecution(bool update_macros);
+    void	endLastExecution(bool resume = false);
 
-    boolean 	endExecOnChangePending;
+    bool 	endExecOnChangePending;
 
   protected:
     //
@@ -56,16 +56,16 @@ class DXExecCtl : public Base
     //
     // Execution flag.
     //
-    boolean isCurrentlyExecuting;
-    boolean vcrIsExecuting;
-    boolean execOnChange;
+    bool isCurrentlyExecuting;
+    bool vcrIsExecuting;
+    bool execOnChange;
     int	    execOnChangeSuspensions;
     int     hwExecuting;  	// counter for HW rendering messages
-    boolean hwBusy;  		// setting of busy cursor for HW rendering 
-    boolean forceNetworkResend;	
-    boolean forceParameterResend;	
-    boolean resumeExecOnChangeAfterExecution;	
-    boolean isExecOnChangeSuspended()  
+    bool hwBusy;  		// setting of busy cursor for HW rendering 
+    bool forceNetworkResend;	
+    bool forceParameterResend;	
+    bool resumeExecOnChangeAfterExecution;	
+    bool isExecOnChangeSuspended()  
 			     {	return this->execOnChangeSuspensions > 0; }
   public:
     //
@@ -91,19 +91,19 @@ class DXExecCtl : public Base
     // graph execution.  If not current executing, then we go ahead and
     // go out of eoc mode, otherwise schedule the exit from eoc mode for
     // the end of the current graph execution (see endLastExecution()).
-    // We return TRUE if we were able to go out of eoc mode now, FALSE if
+    // We return true if we were able to go out of eoc mode now, false if
     // we won't be going out until the end of the current execution.
     //
-    boolean endExecOnChange();
+    bool endExecOnChange();
 
     void enableExecOnChange();
-    void updateMacros(boolean force = FALSE);
+    void updateMacros(bool force = false);
     void executeOnce();
 
-    boolean inExecOnChange() { return this->execOnChange;}
-    boolean isExecuting() { return this->isCurrentlyExecuting; }
-    boolean isVcrExecuting() { return this->vcrIsExecuting; }
-    boolean assignmentRequiresExecution()
+    bool inExecOnChange() { return this->execOnChange;}
+    bool isExecuting() { return this->isCurrentlyExecuting; }
+    bool isVcrExecuting() { return this->vcrIsExecuting; }
+    bool assignmentRequiresExecution()
 		{ return !this->isVcrExecuting() && !this->inExecOnChange(); }
 
     //
@@ -112,7 +112,7 @@ class DXExecCtl : public Base
     void vcrFrameSet(char* command);
     void vcrTransmit();
     void vcrExecute(int action);
-    void vcrCommand(int action, boolean state);
+    void vcrCommand(int action, bool state);
     
     //
     // Will take you out of execute on change if in it, and

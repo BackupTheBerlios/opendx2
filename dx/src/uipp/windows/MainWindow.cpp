@@ -14,9 +14,9 @@
 #include "MainWindow.h"
 #include "CommandScope.h"
 
-boolean MainWindow::OffsetsInitialized = FALSE;
-boolean MainWindow::IsMwmBroken = FALSE;
-boolean MainWindow::IsMwmRunning = FALSE;
+bool MainWindow::OffsetsInitialized = false;
+bool MainWindow::IsMwmBroken = false;
+bool MainWindow::IsMwmRunning = false;
 int MainWindow::WmOffsetX = 0;
 int MainWindow::WmOffsetY = 0;
 
@@ -68,7 +68,7 @@ using namespace System::Drawing;
 
 //
 // This method should only be called if this window does not have a 
-// menu bar (i.e. this->hasMenuBar == FALSE);
+// menu bar (i.e. this->hasMenuBar == false);
 //
 //void MainWindow::createMenus(Widget)
 //{
@@ -76,7 +76,7 @@ using namespace System::Drawing;
 //}
 
 
-MainWindow::MainWindow(const char* name, boolean usesMenuBar): UIComponent(name)
+MainWindow::MainWindow(const char* name, bool usesMenuBar): UIComponent(name)
 {
 //    this->workArea = NUL(Widget);
 //    this->commandArea = NUL(Widget);
@@ -87,8 +87,8 @@ MainWindow::MainWindow(const char* name, boolean usesMenuBar): UIComponent(name)
     // By default, MainWindow's can't be resized.
     // and it isn't managed.
     //
-    this->resizable = FALSE;
-    this->managed   = FALSE;
+    this->resizable = false;
+    this->managed   = false;
     this->title = NULL;
 //    this->menuBar = NULL;
     this->createX = UIComponent::UnspecifiedPosition;
@@ -265,7 +265,7 @@ int n = 0;
  //   XmAddWMProtocolCallback
 	//(this->getRootWidget(),
 	// XmInternAtom(XtDisplay(this->getRootWidget()),
-	//		"WM_DELETE_WINDOW", FALSE),
+	//		"WM_DELETE_WINDOW", false),
 	// (XtCallbackProc)MainWindow_CloseCB,
 	// (void *)this);
 
@@ -357,7 +357,7 @@ void MainWindow::manage()
     //XUndefineCursor(XtDisplay(this->main), XtWindow(this->main));
 
     // mark the window as managed;
-    this->managed = TRUE;
+    this->managed = true;
 
     //XmUpdateDisplay(this->main);
     //XSync(XtDisplay(this->main), 0);
@@ -373,10 +373,10 @@ void MainWindow::unmanage()
     //XtPopdown(this->getRootWidget());
 
     // mark the window as unmanaged
-    this->managed = FALSE;
+    this->managed = false;
 }
 
-boolean MainWindow::isManaged()
+bool MainWindow::isManaged()
 {
     return this->managed;
 }
@@ -389,7 +389,7 @@ void MainWindow::iconify()
     // the root widget has not yet been initialized.
     //
     //ASSERT(this->getRootWidget());
-    //XtVaSetValues(this->getRootWidget(), XmNiconic, TRUE, NULL);
+    //XtVaSetValues(this->getRootWidget(), XmNiconic, true, NULL);
 
     //
     // If the shell has already been realized, iconify the window.
@@ -474,7 +474,7 @@ void MainWindow::notify(const Symbol message, const void *data, const char *)
 
 }
 
-void MainWindow::allowResize(boolean resizable)
+void MainWindow::allowResize(bool resizable)
 {
     this->resizable = resizable;
  //   if (this->getRootWidget())
@@ -508,10 +508,10 @@ const char *MainWindow::getWindowTitle()
 // If check_geometry is on, then check the resource database to see if
 // there is a geometry setting matching the new title.
 //
-void MainWindow::setWindowTitle(const char *name, boolean check_geometry)
+void MainWindow::setWindowTitle(const char *name, bool check_geometry)
 {
     ASSERT(name);
-    boolean titles_equal = FALSE;
+    bool titles_equal = false;
 
     if (!this->title)
     {
@@ -523,15 +523,15 @@ void MainWindow::setWindowTitle(const char *name, boolean check_geometry)
 	    delete[] this->title;
 	this->title = DuplicateString(name);
     } else {
-	titles_equal = TRUE;
+	titles_equal = true;
     }
 
- //   if ((this->getRootWidget()) && (check_geometry) && (titles_equal == FALSE)) {
+ //   if ((this->getRootWidget()) && (check_geometry) && (titles_equal == false)) {
 	//if (check_geometry) {
 	//    char* old_geom_string = this->geometry_string;
 	//    this->geometry_string = NUL(char*);
 	//    const char* new_geom_string = this->getGeometryString();
-	//    boolean geom_strings_equal = FALSE;
+	//    bool geom_strings_equal = false;
 	//    if ((new_geom_string) && (old_geom_string))
 	//	geom_strings_equal = EqualString(new_geom_string, old_geom_string);
 	//    if ((!geom_strings_equal) && (new_geom_string)) {
@@ -555,7 +555,7 @@ void MainWindow::setWindowTitle(const char *name, boolean check_geometry)
 //
 // Get the size and dimensions. 
 //
-boolean MainWindow::getGeometry(int *x, int *y, int *width, int *height)
+bool MainWindow::getGeometry(int *x, int *y, int *width, int *height)
 {
  //   Position a = UIComponent::UnspecifiedPosition;
  //   Position b = UIComponent::UnspecifiedPosition;
@@ -624,7 +624,7 @@ boolean MainWindow::getGeometry(int *x, int *y, int *width, int *height)
 //
 // Caveat for when mwm is running and you're displaying onto an sgi:
 //	Fortunately, the sgi/4Dwm combo behaves differently from all others.
-//	Assume you're running on it if MainWindow::IsMwmRunning==TRUE &&
+//	Assume you're running on it if MainWindow::IsMwmRunning==true &&
 //	_SGI__MENU_WINDOW on the root window is readable.  For 4Dwm, you
 // 	must add wm offsets for both XmN{x,y} and for XmNgeometry just as with
 //	the dec.  It's just harder to figure out if you're using 4Dwm.
@@ -687,11 +687,11 @@ void MainWindow::setGeometry(int x, int y, int width, int height)
 	////
 	//// exclude those settings which are already in the geometry string
 	////
-	//boolean ignore_size = FALSE;
-	//boolean ignore_pos = FALSE;
+	//bool ignore_size = false;
+	//bool ignore_pos = false;
 	//if (geom_str) {
-	//    if (strchr(geom_str, 'x') || strchr(geom_str,'X')) ignore_size = TRUE;
-	//    if (strchr(geom_str, '-') || strchr(geom_str,'+')) ignore_pos = TRUE;
+	//    if (strchr(geom_str, 'x') || strchr(geom_str,'X')) ignore_size = true;
+	//    if (strchr(geom_str, '-') || strchr(geom_str,'+')) ignore_pos = true;
 	//}
 
 	//if (!ignore_pos) {
@@ -709,9 +709,9 @@ void MainWindow::setGeometry(int x, int y, int width, int height)
 	//if ((n > 0) || (geom_str)) {
 	//    char geom[256];
 
-	//    boolean remanage = this->isManaged() && (geom_str != NUL(char*));
+	//    bool remanage = this->isManaged() && (geom_str != NUL(char*));
 	//    if (remanage) this->unmanage();
-	//    boolean was_managed = this->isManaged();
+	//    bool was_managed = this->isManaged();
 
 	//    //
 	//    // You can always move a window if it's currently mapped.
@@ -871,11 +871,11 @@ void MainWindow::InitializeOffsets()
 //    XQueryTree (d, win, &root, &parent, &kids, &nkids);
 //    MainWindow::IsMwmRunning = XmIsMotifWMRunning(shell);
 //    if (!MainWindow::IsMwmRunning) {
-//	MainWindow::IsMwmBroken = FALSE;
+//	MainWindow::IsMwmBroken = false;
 //	Atom mexists = XInternAtom (d, "_MOTIF_WM_INFO", True);
 //	if (mexists != None) {
 //	    if (XGetTextProperty (d, root, &tprop, mexists)) {
-//		MainWindow::IsMwmBroken = TRUE;
+//		MainWindow::IsMwmBroken = true;
 //	    }
 //	}
 //	if (MainWindow::IsMwmBroken) {
@@ -885,7 +885,7 @@ void MainWindow::InitializeOffsets()
 //	Atom sgiexists = XInternAtom (d, "_SGI__MENU_WINDOW", True);
 //	if (sgiexists != None) {
 //	    if (XGetTextProperty (d, root, &tprop, sgiexists)) {
-//		MainWindow::IsMwmBroken = TRUE;
+//		MainWindow::IsMwmBroken = true;
 //	    }
 //	} else
 //	    MainWindow::IsMwmBroken = False;
@@ -902,11 +902,11 @@ void MainWindow::InitializeOffsets()
 //	}
 //    } else if (parent != root) {
 //	XTextProperty tprop;
-//	boolean probablyOlwm = FALSE;
+//	bool probablyOlwm = false;
 //	Atom olwm = XInternAtom (d, "_SUN_WM_PROTOCOLS", True);
 //	if (olwm != None) {
 //	    if (XGetTextProperty (d, root, &tprop, olwm)) {
-//		probablyOlwm = TRUE;
+//		probablyOlwm = true;
 //	    }
 //	}
 //	//
@@ -924,7 +924,7 @@ void MainWindow::InitializeOffsets()
 //	MainWindow::WmOffsetX = MainWindow::WmOffsetY = 0;
 //    }
 //
-//    MainWindow::OffsetsInitialized = TRUE;
+//    MainWindow::OffsetsInitialized = true;
 }
 
 

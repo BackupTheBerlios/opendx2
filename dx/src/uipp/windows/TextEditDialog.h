@@ -54,22 +54,22 @@ class TextEditDialog : public Dialog
 
     //Widget editorText;
     int    dialogModality;
-    boolean readOnly;
-    boolean wizard;
+    bool readOnly;
+    bool wizard;
 
     void createDialog();
 
 
     //virtual void applyCallback(Widget    widget, XtPointer callData);
     //virtual void restoreCallback(Widget    widget, XtPointer callData);
-    virtual boolean okCallback(Dialog *d);
+    virtual bool okCallback(Dialog *d);
 
   
     //
     // Read the text in the text window and save it with saveText(). 
-    // If there is no error then return TRUE. 
+    // If there is no error then return true. 
     //
-    boolean saveEditorText();
+    bool saveEditorText();
 
     //
     // Get the the text that is to be edited. 
@@ -80,9 +80,9 @@ class TextEditDialog : public Dialog
     //
     // Save the given text. 
     // At this level we do nothing; the subclass may redefine this.
-    // If there is no error then return TRUE. 
+    // If there is no error then return true. 
     //
-    virtual boolean saveText(const char *s);
+    virtual bool saveText(const char *s);
 
 
     //
@@ -95,7 +95,7 @@ class TextEditDialog : public Dialog
     // Constructor (for derived classes only):
     //
     TextEditDialog (const char *name, 
-	boolean readonly = FALSE, boolean wizard = FALSE);
+	bool readonly = false, bool wizard = false);
 
     //
     // Install the default resources for this class and then call the

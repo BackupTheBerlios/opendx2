@@ -21,7 +21,7 @@ ComputeNode::ComputeNode(NodeDefinition *nd, Network *net, int instnc) :
     Node(nd, net, instnc)
 {
     this->expression = DuplicateString("");
-    this->exposedExpression = FALSE;
+    this->exposedExpression = false;
 }
 
 ComputeNode::~ComputeNode()
@@ -36,7 +36,7 @@ ComputeNode::~ComputeNode()
     this->nameList.clear();
 }
 
-boolean 
+bool 
 ComputeNode::initialize()
 {
     int i;
@@ -47,9 +47,9 @@ ComputeNode::initialize()
     for (i = 2; i <= count; ++i)
     {
 	name[0] = 'a' + i - 2;
-	this->setName(name, i - 1, FALSE);
+	this->setName(name, i - 1, false);
     }
-    return TRUE;
+    return true;
 }
 
 const char *
@@ -59,12 +59,12 @@ ComputeNode::getExpression()
 }
 
 void
-ComputeNode::setExpression(const char *expr, boolean send)
+ComputeNode::setExpression(const char *expr, bool send)
 {
     if (this->expression)
 	delete this->expression;
     this->expression = DuplicateString(expr);
-    this->exposedExpression = FALSE;
+    this->exposedExpression = false;
 
     char *input = this->resolveExpression();
     this->setInputValue(1, input, DXType::StringType, send);
@@ -72,7 +72,7 @@ ComputeNode::setExpression(const char *expr, boolean send)
 }
 
 void
-ComputeNode::setName(const char *name, int i, boolean send)
+ComputeNode::setName(const char *name, int i, bool send)
 {
     char *oldName = (char *)this->nameList.getElement(i);
     if (oldName)
@@ -93,7 +93,7 @@ ComputeNode::getName(int i)
     return (char *)this->nameList.getElement(i);
 }
 
-boolean
+bool
 ComputeNode::netParseAuxComment(const char *comment,
 				const char *file,
 				int lineno)
@@ -103,8 +103,8 @@ ComputeNode::netParseAuxComment(const char *comment,
     // name[2]: value = a
     if (strncmp(" expression:", comment, STRLEN(" expression:")) == 0)
     {
-	this->setExpression(comment + STRLEN(" expression: value = "), FALSE);
-	return TRUE;
+	this->setExpression(comment + STRLEN(" expression: value = "), false);
+	return true;
     }
     else if (strncmp(" name[", comment, STRLEN(" name[")) == 0)
     {
@@ -112,14 +112,14 @@ ComputeNode::netParseAuxComment(const char *comment,
 	int   i;
 	if (sscanf(comment, " name[%d]: value = %[^\n]", &i, s) == 2)
 	{
-	    this->setName(s, i-1, FALSE);
+	    this->setName(s, i-1, false);
 	    
 	} else {
 	    ErrorMessage("Erroneous 'name' comment file %s, line %d",
 				file,lineno);
 	}
 	delete s;
-	return TRUE;
+	return true;
     }
     else
 	return Node::netParseAuxComment(comment, file, lineno);
@@ -142,7 +142,7 @@ ComputeNode::resolveExpression()
     int  outLen = 3 + STRLEN(this->expression) + 2 * len;
     char *output = (char*)MALLOC(outLen);
     char token[512];
-    boolean substituted = FALSE;
+    bool substituted = false;
     int i = 0;
     j = 0;
     int k;
@@ -187,7 +187,7 @@ ComputeNode::resolveExpression()
 	/*
 	 * Is the identifier a component name (".x", ".y", etc.)?
 	 */
-	substituted = FALSE;
+	substituted = false;
 	if (j == 0 || (j > 0 && output[j - 1] != '.'))
 	{
 	    /*
@@ -198,7 +198,7 @@ ComputeNode::resolveExpression()
 	    {
 		if (EqualString(token, (char *)this->nameList.getElement(k)))
 		{
-		    substituted = TRUE;
+		    substituted = true;
 
 		    if (j >= outLen)
 		    {
@@ -233,7 +233,7 @@ ComputeNode::resolveExpression()
 			 * If the number of Compute parameters ever go
 			 *  beyond 99, we'll worry about it then...
 			 */
-			ASSERT(FALSE);
+			ASSERT(false);
 		    }
 		    break;
 		}
@@ -270,14 +270,14 @@ ComputeNode::resolveExpression()
     return realOutput;
 }
 
-boolean ComputeNode::netPrintAuxComment(FILE *f)
+bool ComputeNode::netPrintAuxComment(FILE *f)
 {
     if (!this->Node::netPrintAuxComment(f))
-	return FALSE;
+	return false;
 
     if (this->expression &&
 	fprintf(f, "    // expression: value = %s\n", this->expression) < 0)
-	return FALSE;
+	return false;
 
     int i;
     int s = this->nameList.getSize();
@@ -287,10 +287,10 @@ boolean ComputeNode::netPrintAuxComment(FILE *f)
 		"    // name[%d]: value = %s\n",
 		i + 1,
 		(char *)this->nameList.getElement(i)) < 0)
-	    return FALSE;
+	    return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -298,7 +298,7 @@ boolean ComputeNode::netPrintAuxComment(FILE *f)
 // this node.   An error  ocurrs if the parameter list indicated does
 // not have repeatable parameters.
 //
-boolean ComputeNode::addRepeats(boolean input)
+bool ComputeNode::addRepeats(bool input)
 {
     
     if (input)
@@ -308,12 +308,12 @@ boolean ComputeNode::addRepeats(boolean input)
 
 	name[0] = 'a' + i - 2;
 	name[1] = '\0';
-	this->setName(name, i - 1, FALSE);
+	this->setName(name, i - 1, false);
     }
 
     return this->Node::addRepeats(input);
 }
-boolean ComputeNode::removeRepeats(boolean input)
+bool ComputeNode::removeRepeats(bool input)
 {
     if (input)
     {
@@ -331,11 +331,11 @@ boolean ComputeNode::removeRepeats(boolean input)
 //
 // Determine if this node is of the given class.
 //
-boolean ComputeNode::isA(Symbol classname)
+bool ComputeNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassComputeNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->Node::isA(classname);
 }

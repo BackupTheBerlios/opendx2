@@ -44,7 +44,7 @@ class CloseWindowCommand : public NoUndoCommand
     //
     // Does nothing;
     //
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -52,7 +52,7 @@ class CloseWindowCommand : public NoUndoCommand
     //
     CloseWindowCommand(const char*   name,
 		       CommandScope* scope,
-		       boolean       active,
+		       bool       active,
 		       MainWindow*   window);
 
     //

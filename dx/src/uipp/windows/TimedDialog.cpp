@@ -11,7 +11,7 @@
 
 #include "TimedDialog.h"
 
-boolean TimedDialog::ClassInitialized = FALSE;
+bool TimedDialog::ClassInitialized = false;
 
 TimedDialog::TimedDialog(const char* name, int timeout):
     Dialog(name)
@@ -20,7 +20,7 @@ TimedDialog::TimedDialog(const char* name, int timeout):
 //    this->timeoutId = 0;
     if (NOT TimedDialog::ClassInitialized)
     {
-        TimedDialog::ClassInitialized = TRUE;
+        TimedDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -31,10 +31,10 @@ TimedDialog::~TimedDialog()
 	//XtRemoveTimeOut(this->timeoutId);
 }
 
-boolean TimedDialog::okCallback(Dialog *)
+bool TimedDialog::okCallback(Dialog *)
 {
     this->unmanage();
-    return TRUE;
+    return true;
 }
 
 //extern "C" void TimedDialog_TimeoutTO(XtPointer clientData, XtIntervalId*)

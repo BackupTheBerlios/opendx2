@@ -60,7 +60,7 @@ class StandIn : public UIComponent, public DXDragSource
 
   private:
    
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 //    static Widget DragIcon;
     static Dictionary *DragTypeDictionary;
 
@@ -121,7 +121,7 @@ class StandIn : public UIComponent, public DXDragSource
 
   //  void trackArk(Widget widget, XEvent *event);
 
-    boolean  setMinimumWidth(int &width);
+    bool  setMinimumWidth(int &width);
     int  getVisibleInputCount();
     int  getVisibleOutputCount();
     void adjustParameterLocations(int width);
@@ -129,9 +129,9 @@ class StandIn : public UIComponent, public DXDragSource
     Tab *createInputTab(int index, int width);
     Tab *createOutputTab(int index, int width);
 
-    void indicateSelection(boolean select);
+    void indicateSelection(bool select);
 
-    void setVisibility(int index, boolean outputTab);
+    void setVisibility(int index, bool outputTab);
     //XmString   createButtonLabel();
 
     //
@@ -177,14 +177,14 @@ class StandIn : public UIComponent, public DXDragSource
 
     void       setButtonLabel();
     virtual    const char *getButtonLabel();
-    virtual    void handleSelectionChange(boolean select);
+    virtual    void handleSelectionChange(bool select);
 
     //
     // Drag and Drop related stuff
     //
     //virtual int decideToDrag(XEvent *);
     virtual void dropFinish(long, int, unsigned char);
-    //virtual boolean decodeDragType (int, char *, XtPointer*, unsigned long*, long);
+    //virtual bool decodeDragType (int, char *, XtPointer*, unsigned long*, long);
 
     virtual const char *getButtonLabelFont();
 
@@ -197,7 +197,7 @@ class StandIn : public UIComponent, public DXDragSource
     // Set XmNuserData on the root widget so that we can track movement
     // in the workspace for the purpose of implementing undo
     //
-    //virtual void setRootWidget(Widget root, boolean standardDestroy = TRUE);
+    //virtual void setRootWidget(Widget root, bool standardDestroy = true);
 
   public:
 
@@ -224,16 +224,16 @@ class StandIn : public UIComponent, public DXDragSource
 
     void deleteArk(Ark *a);
     void drawArks(Node *dst_node);
-    void drawTab(int paramIndex, boolean outputTab);
+    void drawTab(int paramIndex, bool outputTab);
 
-    void ioStatusChange(int index, boolean outputTab, 
+    void ioStatusChange(int index, bool outputTab, 
 					NodeParameterStatusChange status);
 
     static void ToggleHotSpots(EditorWindow* editor,
                                Node*    destnode,
-                               boolean     on);
+                               bool     on);
 
-    void displayTabLabel(int index, boolean outputTab);
+    void displayTabLabel(int index, bool outputTab);
     void clearTabLabel();
     Tab *getInputParameterTab(int i);
     Tab *getOutputParameterTab(int i); 
@@ -271,7 +271,7 @@ class StandIn : public UIComponent, public DXDragSource
 
 
 
-    void setSelected(boolean s); 
+    void setSelected(bool s); 
     int isSelected()        { return this->selected; }
 
     void addArk(EditorWindow* editor, Ark *a);
@@ -283,8 +283,8 @@ class StandIn : public UIComponent, public DXDragSource
     // PostScript output file).  We do not print the ArkStandIns, but do
     // print the Tabs.
     //
-    boolean printPostScriptPage(FILE *f, boolean label_parameters = TRUE);
-    static boolean PrintPostScriptSetup(FILE *f);
+    bool printPostScriptPage(FILE *f, bool label_parameters = true);
+    static bool PrintPostScriptSetup(FILE *f);
     virtual const char *getPostScriptLabelFont();
 
 

@@ -45,7 +45,7 @@ class ComputeCDB : public ConfigurationDialog
     //
     // Private member data:
     //
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     //
@@ -53,7 +53,7 @@ class ComputeCDB : public ConfigurationDialog
     // CDBInput object for each input and that object keeps track of dirtiness.  
     // The expression input doesn't get one so we provide one here.
     //
-    boolean expression_modified;
+    bool expression_modified;
     void    setExpression (const char*);
 
     //
@@ -86,10 +86,10 @@ class ComputeCDB : public ConfigurationDialog
     // field), and the expression itself.
     virtual void createDialog(void);
     //virtual Widget createInputs(Widget parent, Widget top);
-    boolean        widgetChanged(int i, boolean send = TRUE);
-    virtual void   remanageInputs(boolean force);
+    bool        widgetChanged(int i, bool send = true);
+    virtual void   remanageInputs(bool force);
 
-    virtual boolean applyCallback(Dialog *d);
+    virtual bool applyCallback(Dialog *d);
     virtual void restoreCallback(Dialog *d);
 
 

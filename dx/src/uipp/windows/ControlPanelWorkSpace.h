@@ -39,14 +39,14 @@ class ControlPanelWorkSpace : public WorkSpace, public DXDropSite
     // Private member data:
     //
 
-    static boolean ControlPanelWorkSpaceClassInitialized;
+    static bool ControlPanelWorkSpaceClassInitialized;
 
     //static String DefaultResources[];
 
     //
     // if set to false, then reject all drops -- for user mode control panels
     //
-    boolean dropPermission;
+    bool dropPermission;
 
     //
     // For use during autoArrange mode, record the difference between the size
@@ -96,9 +96,9 @@ class ControlPanelWorkSpace : public WorkSpace, public DXDropSite
     //
     // Drag and Drop related stuff
     //
-    boolean mergeNetElements (Network *tmpnet, List *tmppanels, int x, int y);
-    //boolean compoundTextTransfer (char *, XtPointer, unsigned long, int, int);
-    //boolean decodeDropType (int, char *, XtPointer, unsigned long, int, int);
+    bool mergeNetElements (Network *tmpnet, List *tmppanels, int x, int y);
+    //bool compoundTextTransfer (char *, XtPointer, unsigned long, int, int);
+    //bool decodeDropType (int, char *, XtPointer, unsigned long, int, int);
 
     virtual Dictionary *getDropDictionary() 
 	{ return ControlPanelWorkSpace::DropTypeDictionary; }
@@ -118,12 +118,12 @@ class ControlPanelWorkSpace : public WorkSpace, public DXDropSite
     //
     // One time class initialization.
     //
-    void initializeRootWidget(boolean fromFirstIntanceOfADerivedClass = FALSE);
+    void initializeRootWidget(bool fromFirstIntanceOfADerivedClass = false);
 
     //
     // Turn on/off drops
     //
-    void dropsPermitted (boolean onoff);
+    void dropsPermitted (bool onoff);
 
     //
     // Supply a resize method which chains to that of the parent class

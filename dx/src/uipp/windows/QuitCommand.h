@@ -42,7 +42,7 @@ class QuitCommand : public ConfirmedCommand
     //   If affirmatively confirmed, the command terminates
     //   the application program.
     //
-    virtual boolean doIt(CommandInterface *ci);
+    virtual bool doIt(CommandInterface *ci);
 
   public:
     //
@@ -51,7 +51,7 @@ class QuitCommand : public ConfirmedCommand
     QuitCommand(BaseApp*  app,
 		const char*   name,
 		CommandScope* scope,
-		boolean       active,
+		bool       active,
 		char*         dialogTitle,
 		char*         dialogQuestion);
 

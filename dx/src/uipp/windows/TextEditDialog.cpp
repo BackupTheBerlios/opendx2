@@ -54,7 +54,7 @@
 //};
 
 TextEditDialog::TextEditDialog(const char *name, 
-			boolean readonly, boolean wizard) 
+			bool readonly, bool wizard) 
                        		: Dialog(name)
 {
 //   this->editorText = NULL;
@@ -301,9 +301,9 @@ void TextEditDialog::installEditorText(const char *text)
     }
     //XmTextSetString(this->editorText, (char*)s);
 }
-boolean TextEditDialog::saveEditorText()
+bool TextEditDialog::saveEditorText()
 {
-boolean return_value;
+bool return_value;
 
 //    ASSERT(this->editorText);
     //char *s = XmTextGetString(this->editorText);
@@ -312,11 +312,11 @@ boolean return_value;
     return return_value;
 }
 
-boolean TextEditDialog::okCallback(Dialog *d)
+bool TextEditDialog::okCallback(Dialog *d)
 {
     if (!this->readOnly)
         return this->saveEditorText();
-    return TRUE;
+    return true;
 }
 void TextEditDialog::manage()
 {
@@ -371,6 +371,6 @@ void TextEditDialog::updateDialogTitle()
 	delete title;
    }
 }
-boolean TextEditDialog::saveText(const char *s) { return TRUE; }
+bool TextEditDialog::saveText(const char *s) { return true; }
 const char *TextEditDialog::getText() { return NULL; }
 

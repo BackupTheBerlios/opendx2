@@ -19,8 +19,8 @@
 #include "SetAnnotatorTextDialog.h"
 
 
-boolean VPEAnnotator::VPEAnnotatorClassInitialized = FALSE;
-boolean VPEAnnotator::DragDictionaryInitialized = FALSE;
+bool VPEAnnotator::VPEAnnotatorClassInitialized = false;
+bool VPEAnnotator::DragDictionaryInitialized = false;
 
 Dictionary* VPEAnnotator::DragTypeDictionary = new Dictionary;
 //Widget VPEAnnotator::DragIcon = 0;
@@ -43,12 +43,12 @@ Dictionary* VPEAnnotator::DragTypeDictionary = new Dictionary;
 //    NUL(char*)
 //};
 
-VPEAnnotator::VPEAnnotator(boolean developerStyle) : 
+VPEAnnotator::VPEAnnotator(bool developerStyle) : 
     LabelDecorator (developerStyle, "VPEAnnotator")
 {
     this->layout_information = NUL(Base*);
 }
-VPEAnnotator::VPEAnnotator(boolean developerStyle, const char *name) : 
+VPEAnnotator::VPEAnnotator(bool developerStyle, const char *name) : 
     LabelDecorator (developerStyle, name)
 {
     this->layout_information = NUL(Base*);
@@ -73,22 +73,22 @@ void VPEAnnotator::initialize()
  //                                       Decorator::DefaultResources);
 	//this->setDefaultResources(theApplication->getRootWidget(),
  //                                       WorkSpaceComponent::DefaultResources);
-        VPEAnnotator::VPEAnnotatorClassInitialized = TRUE;
+        VPEAnnotator::VPEAnnotatorClassInitialized = true;
 
     }
     if (!VPEAnnotator::DragDictionaryInitialized) {
 	if ((theDXApplication->appAllowsSavingNetFile()) &&
 	    (theDXApplication->appAllowsSavingCfgFile()) &&
 	    (theDXApplication->appAllowsEditorAccess())) {
-	    this->addSupportedType (Decorator::Trash, DXTRASH, FALSE);
-	    this->addSupportedType (Decorator::Modules, DXMODULES, FALSE);
+	    this->addSupportedType (Decorator::Trash, DXTRASH, false);
+	    this->addSupportedType (Decorator::Modules, DXMODULES, false);
 	}
 	// Don't use text because Shift+drag breaks
-	//this->addSupportedType (Decorator::Text, "TEXT", FALSE);
+	//this->addSupportedType (Decorator::Text, "TEXT", false);
 
 	//VPEAnnotator::DragIcon = this->createDragIcon (moduledrag_width, 
 	//    moduledrag_height, (char *)moduledrag_bits, (char *)moduledragmask_bits);
-	VPEAnnotator::DragDictionaryInitialized = TRUE;
+	VPEAnnotator::DragDictionaryInitialized = true;
     }
 }
 
@@ -104,7 +104,7 @@ DynamicResource *dr;
 	  ListIterator it(*this->setResourceList);
 	  while ( (dr = (DynamicResource*)it.getNext()) ) {
 	      // don't bother checking return value from setRootWidget because it will
-	      // always return FALSE for resources belonging to xmLabelWidgetClass if
+	      // always return false for resources belonging to xmLabelWidgetClass if
 	      // there is no XmLabel widget already in its list.  Not a problem.
 	      //dr->setRootWidget(this->getRootWidget());
 	  }
@@ -129,7 +129,7 @@ DynamicResource *dr;
 
 
 Decorator*
-VPEAnnotator::AllocateDecorator (boolean devStyle)
+VPEAnnotator::AllocateDecorator (bool devStyle)
 {
     return new VPEAnnotator (devStyle);
 }
@@ -137,10 +137,10 @@ VPEAnnotator::AllocateDecorator (boolean devStyle)
 //
 // Determine if this Component is of the given class.
 //
-boolean VPEAnnotator::isA(Symbol classname)
+bool VPEAnnotator::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassVPEAnnotator);
-    if (s == classname) return TRUE;
+    if (s == classname) return true;
     return this->LabelDecorator::isA(classname);
 }
 
@@ -150,14 +150,14 @@ void VPEAnnotator::openDefaultWindow()
 {
     if (!this->setTextDialog)
 	//this->setTextDialog = new SetAnnotatorTextDialog 
-	//    (XtParent(this->getRootWidget()), FALSE, this);
+	//    (XtParent(this->getRootWidget()), false, this);
 
     this->setTextDialog->post();
 }
 
 
 
-boolean VPEAnnotator::printPostScriptPage (FILE *f)
+bool VPEAnnotator::printPostScriptPage (FILE *f)
 {
 	int xpos, ypos, xsize, ysize;
 
@@ -186,17 +186,17 @@ boolean VPEAnnotator::printPostScriptPage (FILE *f)
 	int* line_lengths = new int[1+lines];
 	int next = 0;
 	int line_length = 0;
-	boolean line_waiting = FALSE;
+	bool line_waiting = false;
 	i = 0;
 	while (label[i]) {
 		if ((label[i] == '\n') && (i) && (label[i+1])) {
 			line_lengths[next] = line_length;
 			line_length = 0;
-			line_waiting = FALSE;
+			line_waiting = false;
 			next++;
 		} else {
 			line_length++;
-			line_waiting = TRUE;
+			line_waiting = true;
 		}
 		i++;
 	}
@@ -224,13 +224,13 @@ boolean VPEAnnotator::printPostScriptPage (FILE *f)
 	i = 0;
 	next = 0;
 	int slot = 0;
-	line_waiting = FALSE;
+	line_waiting = false;
 	while (label[i]) {
 		if (label[i] == '\n') {
 			line_buckets[next][slot] = '\0';
 			slot = 0;
 			next++;
-			line_waiting = FALSE;
+			line_waiting = false;
 			if (!line_buckets[next]) break;
 		} else {
 			switch (label[i]) {
@@ -243,7 +243,7 @@ boolean VPEAnnotator::printPostScriptPage (FILE *f)
 			line_buckets[next][slot++] = label[i];
 			break;
 			}
-			line_waiting = TRUE;
+			line_waiting = true;
 		}
 		i++;
 	}
@@ -256,7 +256,7 @@ boolean VPEAnnotator::printPostScriptPage (FILE *f)
 	float font_scale = ysize/divisor;
 	if (fprintf(f,"/%s findfont \n[ %f 0 0 -%f 0 0 ] makefont setfont\n",
 		this->getPostScriptFont(), font_scale, font_scale) <= 0)
-		return FALSE;
+		return false;
 
 	int yofs = (int)font_scale;
 	// 
@@ -293,12 +293,12 @@ boolean VPEAnnotator::printPostScriptPage (FILE *f)
 	//			ypos + (i*yofs), line_buckets[i],
 	//			xsize, xpos,
 	//			line_buckets[i]) <= 0)
-	//			return FALSE;
+	//			return false;
 	//	}
 	//} else if ((align == XmALIGNMENT_BEGINNING) || (lines == 1)) {
 	//	for (i=0; i<lines; i++) {
 	//		if (fprintf(f, "%d %d moveto (%s) show\n",
-	//			xpos, ypos + (i*yofs), line_buckets[i]) <= 0) return FALSE;
+	//			xpos, ypos + (i*yofs), line_buckets[i]) <= 0) return false;
 	//	}
 	//} else {
 	//	for (i=0; i<lines; i++) {
@@ -313,7 +313,7 @@ boolean VPEAnnotator::printPostScriptPage (FILE *f)
 	//			ypos + (i*yofs),
 	//			xsize, xpos,
 	//			line_buckets[i]) <= 0)
-	//			return FALSE;
+	//			return false;
 	//	}
 	//}
 
@@ -322,23 +322,23 @@ boolean VPEAnnotator::printPostScriptPage (FILE *f)
 	delete line_buckets;
 
 	if (fprintf (f, "0.0 0.0 0.0 setrgbcolor\n") <= 0)
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 #if WORKSPACE_PAGES
-boolean VPEAnnotator::printComment (FILE *f)
+bool VPEAnnotator::printComment (FILE *f)
 {
-    if (!this->LabelDecorator::printComment(f)) return FALSE;
-    if (!this->printGroupComment(f)) return FALSE;
-    return TRUE;
+    if (!this->LabelDecorator::printComment(f)) return false;
+    if (!this->printGroupComment(f)) return false;
+    return true;
 }
 
-boolean VPEAnnotator::parseComment (const char *comment, const char *file, int line)
+bool VPEAnnotator::parseComment (const char *comment, const char *file, int line)
 {
-    if (this->parseGroupComment(comment, file, line)  == TRUE) 
-	return TRUE;
+    if (this->parseGroupComment(comment, file, line)  == true) 
+	return true;
     return this->LabelDecorator::parseComment (comment, file, line);
 }
 #endif
@@ -379,7 +379,7 @@ const char* VPEAnnotator::getPostScriptFont()
 
 void VPEAnnotator::postTextGrowthWork()
 {
-    if (this->requiresLineReroutingOnResize() == FALSE) return ;
+    if (this->requiresLineReroutingOnResize() == false) return ;
     WorkSpace* ws = this->getWorkSpace();
     if (!ws) return ;
     //if (!ws->getRootWidget()) return ;

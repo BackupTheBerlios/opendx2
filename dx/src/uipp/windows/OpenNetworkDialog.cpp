@@ -19,7 +19,7 @@
 #include "InfoDialogManager.h"
 #include "Network.h"
 
-boolean OpenNetworkDialog::ClassInitialized = FALSE;
+bool OpenNetworkDialog::ClassInitialized = false;
 
 //String OpenNetworkDialog::DefaultResources[] =
 //{
@@ -32,19 +32,19 @@ boolean OpenNetworkDialog::ClassInitialized = FALSE;
 OpenNetworkDialog::OpenNetworkDialog() : 
                        FileDialog("openNetworkDialog")
 {
-    this->hasCommentButton = TRUE;
+    this->hasCommentButton = true;
     this->netCommentDialog = NULL;
 
     if (NOT OpenNetworkDialog::ClassInitialized)
     {
-        OpenNetworkDialog::ClassInitialized = TRUE;
+        OpenNetworkDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
 OpenNetworkDialog::OpenNetworkDialog(const char *name) : 
                        FileDialog(name)
 {
-    this->hasCommentButton = TRUE;
+    this->hasCommentButton = true;
     this->netCommentDialog = NULL;
 }
 
@@ -81,12 +81,12 @@ void OpenNetworkDialog::helpCallback(Dialog* dialog)
 #define REALLOC_CHUNK	512
     char *f = this->getSelectedFileName();
     char buffer[BUFSIZE];
-    boolean parsing = FALSE, done = FALSE;
+    bool parsing = false, done = false;
     char *pc = NULL, *comment = NULL, *netfile = NULL; 
     int comment_len=0, maxlen=0;
     FILE *fp = NULL;
     char *errmsg = "";
-    boolean wasEncoded;
+    bool wasEncoded;
  
     if (!f) {
 	ModalErrorMessage("A file must be selected.");
@@ -115,14 +115,14 @@ void OpenNetworkDialog::helpCallback(Dialog* dialog)
 		pc = comment;
 		if (comment_len == 0) {
 		    *pc = '\0';
-		    parsing = TRUE;
+		    parsing = true;
 	 	}
 	    }
 	    strcat(pc, p);
 	    comment_len += len;
 	    pc += STRLEN(pc); 
 	} else if (parsing) {
-	    done = TRUE;
+	    done = true;
 	}
     }
     Network::CloseNetworkFILE(fp,wasEncoded);

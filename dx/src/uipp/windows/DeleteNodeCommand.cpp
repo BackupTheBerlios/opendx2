@@ -15,7 +15,7 @@
 
 DeleteNodeCommand::DeleteNodeCommand(const char*   name,
 			             CommandScope* scope, 
-				     boolean active,
+				     bool active,
                                      EditorWindow *editor) 
                       : NoUndoCommand(name, scope, active)
 {
@@ -24,12 +24,12 @@ DeleteNodeCommand::DeleteNodeCommand(const char*   name,
 }
 
 
-boolean DeleteNodeCommand::doIt(CommandInterface *ci)
+bool DeleteNodeCommand::doIt(CommandInterface *ci)
 {
     EditorWindow *editor = this->editor;
 
     editor->removeSelectedNodes();
 
-    return TRUE;
+    return true;
 }
 

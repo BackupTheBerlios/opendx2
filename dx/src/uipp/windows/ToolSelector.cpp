@@ -25,7 +25,7 @@
 #define ALPHABETIZED "( ALL )"
 //#define DONT_USE_ALL_IN_THE_LIST 1
 
-boolean ToolSelector::ToolSelectorClassInitialized = FALSE;
+bool ToolSelector::ToolSelectorClassInitialized = false;
 List ToolSelector::AllToolSelectors;
 
 //String ToolSelector::DefaultResources[] =
@@ -42,7 +42,7 @@ List ToolSelector::AllToolSelectors;
 ToolSelector::ToolSelector(const char *name) : UIComponent(name) 
 {
     this->activeData = NUL(void*); 
-    this->lockedData = FALSE;
+    this->lockedData = false;
     this->initialize();
 
     AllToolSelectors.appendElement((void*)this);
@@ -70,7 +70,7 @@ ToolSelector::~ToolSelector()
 void ToolSelector::deselectAllTools()
 {
     this->activeData = NULL;
-    this->lockedData = FALSE;
+    this->lockedData = false;
     this->treeView->clear();
 }
 
@@ -85,13 +85,13 @@ void ToolSelector::initialize()
 
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          ToolSelector::DefaultResources);
-        ToolSelector::ToolSelectorClassInitialized = TRUE;
+        ToolSelector::ToolSelectorClassInitialized = true;
 
     }
 }
 //
 //
-boolean ToolSelector::initialize(Dictionary *d)
+bool ToolSelector::initialize(Dictionary *d)
 {
     //
     // Create the widgets before do 'addTool'.
@@ -101,23 +101,23 @@ boolean ToolSelector::initialize(Dictionary *d)
     theSymbolManager->registerSymbol(ALPHABETIZED);
 
     if (d->getSize() == 0)
-	return TRUE;
+	return true;
     //
     // Build the category lists. 
     //
     if (!this->augmentLists(d))
-	return FALSE;
+	return false;
 
     this->buildTreeModel();
 
-    return TRUE;
+    return true;
 }
 
 //
 // Build the category lists and add the list items to the widgets. 
 // from a dictionary of NodeDefinitions.
 //
-boolean ToolSelector::augmentLists(Dictionary *d)
+bool ToolSelector::augmentLists(Dictionary *d)
 {
     Symbol c, t;
     DictionaryIterator iterator(*d);
@@ -133,10 +133,10 @@ boolean ToolSelector::augmentLists(Dictionary *d)
         c = nd->getCategorySymbol();
         t = nd->getNameSymbol();
         if (!this->addTool(c, t, (void*)nd))
-		return FALSE;
+		return false;
     }
 
-    return TRUE;
+    return true;
 }
 
 //
@@ -156,14 +156,14 @@ boolean ToolSelector::augmentLists(Dictionary *d)
 // first level of dictionary is the categories, the second is the tools
 // under the given category.
 //
-boolean ToolSelector::addTool(Symbol cat, Symbol tool, void *ptr)
+bool ToolSelector::addTool(Symbol cat, Symbol tool, void *ptr)
 {
     ActiveItemDictionary *toollist;
 
     //
     // Tools without categories are ignored.
     //
-    if (!cat) return TRUE;
+    if (!cat) return true;
 
     toollist = (ActiveItemDictionary*) this->categoryDictionary.findDefinition(cat);
 
@@ -177,7 +177,7 @@ boolean ToolSelector::addTool(Symbol cat, Symbol tool, void *ptr)
 
     if (!toollist->addDefinition(tool,ptr)) {
         if (!toollist->replaceDefinition(tool,ptr)) {
-	    return FALSE;
+	    return false;
 	}
     }
 
@@ -185,12 +185,12 @@ boolean ToolSelector::addTool(Symbol cat, Symbol tool, void *ptr)
     if (cat != alpha)
 	return this->addTool(alpha,tool,ptr);
     else
-	return TRUE;
+	return true;
 }
 
 void ToolSelector::buildTreeModel()
 {
-    boolean repaint = (this->treeView->getDataModel()!=NUL(dxui::TreeNode*));
+    bool repaint = (this->treeView->getDataModel()!=NUL(dxui::TreeNode*));
     RootNode* root = new RootNode();
     DictionaryIterator citer(this->categoryDictionary);
     Symbol cat;
@@ -218,7 +218,7 @@ void ToolSelector::buildTreeModel()
 	// did the user leave the category open?
 	//
 	if (expanded_categories.isMember((void*)cat))
-	    cnode->setExpanded(TRUE);
+	    cnode->setExpanded(true);
     }
 
     //
@@ -245,7 +245,7 @@ void ToolSelector::buildTreeModel()
 // first level of dictionary is the categories, the second is the tools
 // under the given category.
 //
-boolean ToolSelector::removeTool(Symbol cat, Symbol tool)
+bool ToolSelector::removeTool(Symbol cat, Symbol tool)
 {
     ActiveItemDictionary *toollist;
 
@@ -255,13 +255,13 @@ boolean ToolSelector::removeTool(Symbol cat, Symbol tool)
     // If adding new category create a new toollist data structure
     //
     if (!toollist || toollist->removeDefinition(tool) == NULL)
-	return FALSE;
+	return false;
 
     Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
     if (cat != alpha)
 	return this->removeTool(alpha,tool);
     else
-	return TRUE;
+	return true;
 }
 
 
@@ -303,16 +303,16 @@ void ToolSelector::toolSelect(Symbol ts)
 	dxui::TreeNode* tn = this->getToolNode(this->treeView->getDataModel(), ts);
 	dxui::TreeNode* seln = tv->getSelection();
 	if ((seln) && (tn->getDefinition() != seln->getDefinition()))
-	    tv->select (tn, TRUE);
+	    tv->select (tn, true);
     } else {
 	this->activeData = NULL;
     }
-    this->lockedData = FALSE;
+    this->lockedData = false;
 }
 
 void ToolSelector::lockSelect(Symbol ts)
 {
-    if (this->activeData != NULL) this->lockedData = TRUE;
+    if (this->activeData != NULL) this->lockedData = true;
 }
 
 ToolCategoryNode::ToolCategoryNode(Symbol s, dxui::TreeNode* parent, ToolSelector* ts) :
@@ -347,7 +347,7 @@ NodeDefinition* activeData;
 
 
 // These perform addTool and removeTool to all tool selectors.
-boolean ToolSelector::AddTool(Symbol cat, Symbol tool, void *ptr)
+bool ToolSelector::AddTool(Symbol cat, Symbol tool, void *ptr)
 {
     ListIterator li(ToolSelector::AllToolSelectors);
     ToolSelector *ts;
@@ -356,23 +356,23 @@ boolean ToolSelector::AddTool(Symbol cat, Symbol tool, void *ptr)
     // If there is no category, don't put it in the list.
     //
     if (!cat)
-	return TRUE;
+	return true;
 
     while( (ts = (ToolSelector*)li.getNext()) ) {
 	ts->addTool(cat, tool, ptr);
     }
-    return TRUE;
+    return true;
 }
 
-boolean ToolSelector::RemoveTool(Symbol cat, Symbol tool)
+bool ToolSelector::RemoveTool(Symbol cat, Symbol tool)
 {
     ListIterator li(ToolSelector::AllToolSelectors);
     ToolSelector *ts;
-    boolean result = TRUE;
+    bool result = true;
     while( (ts = (ToolSelector*)li.getNext()) )
     {
 	if (!ts->removeTool(cat, tool))
-	    result = FALSE;
+	    result = false;
     }
     return result;
 }
@@ -384,15 +384,15 @@ boolean ToolSelector::RemoveTool(Symbol cat, Symbol tool)
 // when creating/modifying a macro.  When updating either, you must
 // update both and you have to update the data model.
 //
-boolean ToolSelector::UpdateCategoryListWidget()
+bool ToolSelector::UpdateCategoryListWidget()
 {
     ListIterator li(ToolSelector::AllToolSelectors);
     ToolSelector *ts;
-    boolean result = TRUE;
+    bool result = true;
     while( (ts = (ToolSelector*)li.getNext()) )
     {
 	if (!ts->updateCategoryListWidget())
-	    result = FALSE;
+	    result = false;
 	else
 	    ts->buildTreeModel();
     }
@@ -403,7 +403,7 @@ boolean ToolSelector::UpdateCategoryListWidget()
 // Merge new tools definitions into all tool selectors from a dictionary 
 // of NodeDefinitions.
 //
-boolean ToolSelector::MergeNewTools(Dictionary *d)
+bool ToolSelector::MergeNewTools(Dictionary *d)
 {
     ListIterator li(ToolSelector::AllToolSelectors);
     ToolSelector *ts;
@@ -412,10 +412,10 @@ boolean ToolSelector::MergeNewTools(Dictionary *d)
     {
 	if (!ts->augmentLists(d) ||
 	    !ts->updateCategoryListWidget())
-	    return FALSE;
+	    return false;
 	ts->buildTreeModel();
     }
-    return TRUE;
+    return true;
 }
 
 
@@ -423,17 +423,17 @@ boolean ToolSelector::MergeNewTools(Dictionary *d)
 // Build a new Category list and install it in the categoryList. 
 // This assumes that there is at least ONE categorie.
 //
-boolean ToolSelector::updateCategoryListWidget()
+bool ToolSelector::updateCategoryListWidget()
 {
     DictionaryIterator iterator(this->categoryDictionary);
     Symbol first_cat = iterator.getNextSymbol();
     if (!this->categoryDictionary.isActive())
         this->categoryDictionary.setActiveItem(first_cat);
 
-    return TRUE;
+    return true;
 }
 
-void ToolView::select(dxui::TreeNode* node, boolean repaint) 
+void ToolView::select(dxui::TreeNode* node, bool repaint) 
 {
  //   if (this->getSelection() == node) return ;
  //   this->TreeView::select(node, repaint);
@@ -471,13 +471,13 @@ void ToolView::getSearchableNodes(List& nodes_to_search)
     List* kids = root->getChildren();
     ListIterator iter(*kids);;
 	dxui::TreeNode* kid;
-    boolean found = FALSE;
+    bool found = false;
 	while (kid = (dxui::TreeNode*)iter.getNext()) {
 	if (kid->getDefinition() == alpha) {
-	    if (kid->isExpanded() == FALSE) {
+	    if (kid->isExpanded() == false) {
 		List* nodes = kid->getChildren();
 		ListIterator liter(*nodes);
-		boolean in_expanded_category;
+		bool in_expanded_category;
 		while (kid=(dxui::TreeNode*)liter.getNext()) {
 		    Symbol ns = kid->getDefinition();
 		    NodeDefinition* nd = (NodeDefinition*)
@@ -489,7 +489,7 @@ void ToolView::getSearchableNodes(List& nodes_to_search)
 			nodes_to_search.appendElement(kid);
 		}
 	    }
-	    found = TRUE;
+	    found = true;
 	    break;
 	}
     }
@@ -518,7 +518,7 @@ dxui::TreeNode* ToolSelector::getToolNode (dxui::TreeNode* node, Symbol tool)
     Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
     if (alpha) {
 	if (node->getDefinition() == alpha) {
-	    if (node->isExpanded()==FALSE) {
+	    if (node->isExpanded()==false) {
 		return 0;
 	    }
 	}
@@ -556,7 +556,7 @@ CategoryNode* ToolSelector::getCategoryNode (dxui::TreeNode* node, Symbol cat)
     return NUL(CategoryNode*);
 }
 
-void ToolCategoryNode::setExpanded(boolean e) 
+void ToolCategoryNode::setExpanded(bool e) 
 {
     this->CategoryNode::setExpanded(e);
     if (this->toolSelector->inAnchor()) {

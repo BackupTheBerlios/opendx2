@@ -45,7 +45,7 @@ void FindStack::push(char* name, int instance, char* label)
     this->Stack::push((const void*)element);
 }
 
-boolean FindStack::pop(char* name, int* instance, char* label)
+bool FindStack::pop(char* name, int* instance, char* label)
 {
     FindStackElement* element;
 
@@ -55,10 +55,10 @@ boolean FindStack::pop(char* name, int* instance, char* label)
        strcpy(label, element->label);
        *instance = element->instance;
        delete element;
-       return (TRUE); 
+       return (true); 
     }  
 
-    return (FALSE);
+    return (false);
 }
     
 void FindStack::clear()

@@ -37,7 +37,7 @@ class WorkSpaceGrid : public Base
     //
     // Private member data:
     //
-    boolean             active;         /* grid active?                 */
+    bool             active;         /* grid active?                 */
     short           width;              /* horizontal spacing value     */
     short           height;             /* vertical spacing value       */
     unsigned char   x_alignment;	/* horizontal alignment         */
@@ -48,7 +48,7 @@ class WorkSpaceGrid : public Base
     // Protected member data:
     //
 
-    void setActive(boolean set)      { this->active = set; }
+    void setActive(bool set)      { this->active = set; }
     void setSpacing(int w, int h)    { this->width = w; this->height = h; }
     void setAlignment(int x, int y)  {  this->x_alignment = x; 
 					this->y_alignment = y; }
@@ -72,12 +72,12 @@ class WorkSpaceGrid : public Base
     ~WorkSpaceGrid(){}
 
 
-    boolean isActive()                  { return this->active; }
+    bool isActive()                  { return this->active; }
     void    getSpacing(int& w, int& h)  { w = this->width; h = this->height; }
 
     char *  getCommentString();
-    boolean printComments(FILE *f);
-    boolean parseComment(const char *comment, 
+    bool printComments(FILE *f);
+    bool parseComment(const char *comment, 
 				const char *filename, int lineno);
 
     //

@@ -37,7 +37,7 @@ void PrintNode::execModuleMessageHandler(int id, const char *line)
 
     if (p) {
         MsgWin *mw = theDXApplication->getMessageWindow();
-        if (theDXApplication->doesInfoOpenMessage(TRUE))
+        if (theDXApplication->doesInfoOpenMessage(true))
 	    mw->infoOpen();
     }
 }
@@ -45,7 +45,7 @@ void PrintNode::execModuleMessageHandler(int id, const char *line)
 //
 // Returns a string that is used to register
 // this->ExecModuleMessageHandler() when this->hasModuleMessageProtocol()
-// return TRUE.  This version, returns an id that is unique to this
+// return true.  This version, returns an id that is unique to this
 // instance of this node.
 //
 const char *PrintNode::getModuleMessageIdString()
@@ -60,11 +60,11 @@ const char *PrintNode::getModuleMessageIdString()
 //
 // Determine if this node is of the given class.
 //
-boolean PrintNode::isA(Symbol classname)
+bool PrintNode::isA(Symbol classname)
 {
     Symbol s = theSymbolManager->registerSymbol(ClassPrintNode);
     if (s == classname)
-	return TRUE;
+	return true;
     else
 	return this->ModuleMessagingNode::isA(classname);
 }

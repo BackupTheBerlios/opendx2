@@ -41,11 +41,11 @@ Symbol DXWindow::lastMsg = 0;
 const void *DXWindow::lastMsgData = NULL;
 
 DXWindow::DXWindow(const char*   name,
-		   boolean isAnchor, boolean usesMenuBar): 
+		   bool isAnchor, bool usesMenuBar): 
 		IBMMainWindow(name, usesMenuBar)
 {
     this->anchor       = isAnchor;
-    this->startup      = FALSE;
+    this->startup      = false;
 //    this->anchorPixmap = NUL(Pixmap);
 //    this->anchorButton = NUL(Widget);
 
@@ -184,7 +184,7 @@ void DXWindow::serverDisconnected()
 // Create the anchor button widget and add the pixmap if desired and not
 // already present
 //
-//void DXWindow::createAnchor(boolean addPixmap)
+//void DXWindow::createAnchor(bool addPixmap)
 //{
 //    ASSERT(this->menuBar);
 //
@@ -413,7 +413,7 @@ void DXWindow::endCommandExecuting()
 //
 //void DXWindow::createHelpMenu(Widget parent)
 //{
-//    boolean addHelp = theDXApplication->appAllowsDXHelp();
+//    bool addHelp = theDXApplication->appAllowsDXHelp();
 //    // this->createBaseHelpMenu(parent, addHelp, addHelp && this->isAnchor()); 
 //    // if (theDXApplication->appAllowsDXHelp() && this->isAnchor()) {
 //    this->createBaseHelpMenu(parent, addHelp, addHelp); 
@@ -521,15 +521,15 @@ void DXWindow::postPanelAccessDialog( PanelAccessManager *pam)
     } else 
         this->panelAccessDialog->setDialogTitle("Control Panel Access...");
 }
-boolean DXWindow::printComment(FILE *f) 
+bool DXWindow::printComment(FILE *f) 
 { 
     int xsize, ysize, xpos, ypos;
 
     if (!this->getGeometry(&xpos, &ypos, &xsize,&ysize))
-	return TRUE;
+	return true;
 
     if (!UIComponent::PrintGeometryComment(f,xpos,ypos,xsize,ysize))
-	return FALSE;
+	return false;
 
 #if 00
 #if INCLUDE_FLAGS_COMMENT	// Not used as of version 2.1
@@ -543,9 +543,9 @@ boolean DXWindow::printComment(FILE *f)
 #endif
 #endif
 
-    return TRUE;
+    return true;
 }
-boolean DXWindow::parseComment(const char *line, const char *file,
+bool DXWindow::parseComment(const char *line, const char *file,
 				int lineno) 
 { 
     int items, xsize=0, ysize=0, xpos=0, ypos=0;
@@ -563,7 +563,7 @@ boolean DXWindow::parseComment(const char *line, const char *file,
 	      "(Customers should never get this message)", file,lineno);
 	}
 #endif
-	return FALSE;
+	return false;
     }
 
 #if INCLUDE_FLAGS_COMMENT	// Not used as of version 2.1
@@ -589,21 +589,21 @@ boolean DXWindow::parseComment(const char *line, const char *file,
 	}
 #if INCLUDE_FLAGS_COMMENT	// Not used as of version 2.1
 	if (flags & 1)
-	    this->setStartup(TRUE);
+	    this->setStartup(true);
 	else 
-	    this->setStartup(FALSE);
+	    this->setStartup(false);
 #endif
     } else {
 	ErrorMessage("Bad comment found in file '%s' line %d (ignoring)",
 					file,lineno);
-	return TRUE;
+	return true;
     }
 
     if (theDXApplication->applyWindowPlacements()) {
 	this->setGeometry(xpos, ypos, xsize,ysize);
     }
 
-    return TRUE;
+    return true;
 }
 //
 // Reset the window to use the default settings for the state that is
@@ -611,7 +611,7 @@ boolean DXWindow::parseComment(const char *line, const char *file,
 //
 void DXWindow::useDefaultCommentState()
 {
-    this->setStartup(FALSE);
+    this->setStartup(false);
 }
 
 
@@ -624,7 +624,7 @@ void DXWindow::useDefaultCommentState()
 //    if (!this->toggleWindowStartupCmd)
 //	this->toggleWindowStartupCmd = 
 //		new NoUndoDXWindowCommand("toggleWindowStartup",
-//                                  this->commandScope, TRUE,
+//                                  this->commandScope, true,
 //                                  this,
 //                                  NoUndoDXWindowCommand::ToggleWindowStartup);
 //
@@ -648,7 +648,7 @@ void DXWindow::toggleWindowStartup()
 //
 // Change whether or not this window is an startup window.
 //
-void DXWindow::setStartup(boolean setting)
+void DXWindow::setStartup(bool setting)
 {
     this->startup = setting;
     
@@ -659,12 +659,12 @@ void DXWindow::setStartup(boolean setting)
 //
 // Change whether or not this window is an anchor window.
 //
-//void DXWindow::setAnchor(boolean isAnchor)
+//void DXWindow::setAnchor(bool isAnchor)
 //{
 //    this->anchor = isAnchor;
 // 
 //    if (isAnchor && this->hasMenuBar) {
-//	this->createAnchor(TRUE);
+//	this->createAnchor(true);
 //	XtManageChild(this->anchorButton);
 //    } else if (this->anchorButton) { 
 //	XtUnmanageChild(this->anchorButton);
@@ -820,12 +820,12 @@ void DXWindow::buildFileHistoryMenu()
 	//    const char* fullpath = theSymbolManager->getSymbolString(s);
 	//    char* cp = GetFileBaseName(fullpath,0);
 	//    baseNames.appendElement(cp);
-	//    boolean unique = TRUE;
+	//    bool unique = true;
 	//    ListIterator biter(baseNames);
 	//    const char* cmprtr;
 	//    while (cmprtr = (const char*)biter.getNext()) {
 	//	if ((cmprtr!=cp) && (EqualString(cmprtr, cp))) {
-	//	    unique = FALSE;
+	//	    unique = false;
 	//	    break;
 	//	}
 	//    }

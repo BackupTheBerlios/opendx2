@@ -43,7 +43,7 @@ class PreActionCommand : public NoUndoCommand
 
     PreActionCommand(const char*   name,
 		     CommandScope* scope,
-		     boolean       active,
+		     bool       active,
 		     char*         dialogTitle,
 		     char*         dialogQuestion);
 
@@ -63,7 +63,7 @@ class PreActionCommand : public NoUndoCommand
     //   First posts a dialog to ask for user confirmation before
     //   actually executing the command.
     //
-    virtual boolean execute(CommandInterface *ci = NULL);
+    virtual bool execute(CommandInterface *ci = NULL);
 
     //
     // Returns a pointer to the class name.

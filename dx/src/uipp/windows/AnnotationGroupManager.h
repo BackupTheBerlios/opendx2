@@ -71,15 +71,15 @@ class AnnotationGroupManager : public GroupManager
     //
     ~AnnotationGroupManager(){}
 
-    static boolean SupportsMacros() { return TRUE; }
+    static bool SupportsMacros() { return true; }
 
     //
     // Constructor:
     //
     AnnotationGroupManager(Network *net);
 
-    virtual boolean printComment (FILE*);
-    virtual boolean parseComment (const char*, const char*, int, Network*);
+    virtual bool printComment (FILE*);
+    virtual bool parseComment (const char*, const char*, int, Network*);
 
     //
     // Returns a pointer to the class name.

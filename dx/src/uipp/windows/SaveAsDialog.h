@@ -31,7 +31,7 @@ class Command;
 //				
 class SaveAsDialog : public dxui::SaveFileDialog
 {
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
     //static String  DefaultResources[];
 
     Command *postCmd;

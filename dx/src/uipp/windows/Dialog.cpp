@@ -11,7 +11,7 @@
 
 #include "Dialog.h"
 
-boolean Dialog::ClassInitialized = FALSE;
+bool Dialog::ClassInitialized = false;
 
 
 //extern "C" void Dialog_OkCB(Widget, XtPointer clientData, XtPointer)
@@ -42,7 +42,7 @@ Dialog::Dialog(const char *name) :
 {
     //this->parent = parent;
 
-    this->managed = FALSE;
+    this->managed = false;
 
 //    this->help = NULL;
 //    this->ok = NULL;
@@ -57,7 +57,7 @@ void Dialog::initialize()
 
 void Dialog::post()
 {
- //   theApplication->setBusyCursor(TRUE);
+ //   theApplication->setBusyCursor(true);
  //   if (this->getRootWidget() == NULL)
  //   {
 	//this->initialize();
@@ -90,7 +90,7 @@ void Dialog::post()
  //   }
 
  //   this->manage();
- //   theApplication->setBusyCursor(FALSE);
+ //   theApplication->setBusyCursor(false);
 
  //   XmUpdateDisplay(this->getRootWidget());
 }
@@ -136,7 +136,7 @@ void Dialog::createDialog(void)
 
 void Dialog::manage()
 {
-    this->managed = TRUE;
+    this->managed = true;
 
     //Widget w = this->getRootWidget();
 
@@ -160,10 +160,10 @@ void Dialog::manage()
 void Dialog::unmanage()
 {
     this->UIComponent::unmanage();
-    this->managed = FALSE;
+    this->managed = false;
 }
 
-boolean Dialog::isManaged()
+bool Dialog::isManaged()
 {
     return this->managed;
 }

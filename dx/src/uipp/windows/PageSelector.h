@@ -63,27 +63,27 @@ class PageSelector: public UIComponent, public Dictionary {
     //Widget		parent;
     void		buildSelector();
     void		buildPageMenu();
-    boolean		selecting_page;
+    bool		selecting_page;
     int			num_pages_when_empty;
     //XtIntervalId	button_release_timer;
     //Widget		page_name_prompt;
     //Widget		diag_button;
     //Widget		popupMenu;
     //Widget		popupList;
-    boolean		is_grabbed;
+    bool		is_grabbed;
     //XtActionHookId	action_hook;
     int			starting_button;
     //Widget		vsb, hsb;
-    boolean		is_button_release_grabbed;
+    bool		is_button_release_grabbed;
     //XEvent*		old_event;
-    boolean		mouse_inside_name_prompt;
+    bool		mouse_inside_name_prompt;
     EditorWorkSpace*	name_change_in_progress;
     SetPageNameDialog*  page_dialog;
     MoveNodesDialog*    move_dialog;
     //XtWorkProcId	remove_hook_wpid;
 
     //static 	String		DefaultResources[];
-    static	boolean		ClassInitialized;
+    static	bool		ClassInitialized;
     //static	String		PnpTranslationText;
     //static	XtTranslations	PnpTranslations;
     //static	XtActionsRec	PnpActions[];
@@ -131,7 +131,7 @@ class PageSelector: public UIComponent, public Dictionary {
     void selectPage ( );
     void selectPage (PageTab* );
 
-    virtual boolean verifyPageName(const char* , char* errMsg);
+    virtual bool verifyPageName(const char* , char* errMsg);
     virtual void    changePageName(EditorWorkSpace*, const char* );
     PageTab* getPageTabOf(const char* name);
 
@@ -172,8 +172,8 @@ class PageSelector: public UIComponent, public Dictionary {
     // these as a means of ensuring that the selector is always in sync with
     // the dictionary.
     //
-    virtual boolean addDefinition(const char *name, const void *definition);
-    virtual boolean addDefinition(Symbol key, const void *definition);
+    virtual bool addDefinition(const char *name, const void *definition);
+    virtual bool addDefinition(Symbol key, const void *definition);
     virtual void    *removeDefinition(Symbol findkey);
     // looks like a c++ bug to me.  the const void* version supplants the const char*
     // version from the superclass.  Why?
@@ -190,7 +190,7 @@ class PageSelector: public UIComponent, public Dictionary {
     //
     // Supports drag-n-drop in PageTab.
     //
-    boolean changeOrdering (PageTab*, const char*, boolean dnd_operation=TRUE);
+    bool changeOrdering (PageTab*, const char*, bool dnd_operation=true);
 
 #if 0
     //

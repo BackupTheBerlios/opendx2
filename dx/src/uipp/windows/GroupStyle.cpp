@@ -18,7 +18,7 @@ Dictionary* BuildTheGroupManagerDictionary(Network* net)
 GroupManager *gmgr;
 Dictionary* groupManagers = new Dictionary;
 
-    boolean isMacro = net->isMacro();
+    bool isMacro = net->isMacro();
     if ((!isMacro) || (ProcessGroupManager::SupportsMacros())) {
 	gmgr = new ProcessGroupManager(net);
 	groupManagers->addDefinition (gmgr->getManagerName(), gmgr);

@@ -16,7 +16,7 @@
 QuitCommand::QuitCommand(BaseApp*  app,
 			 const char*   name,
 			 CommandScope* scope,
-			 boolean       active,
+			 bool       active,
 			 char*         dialogTitle,
 			 char*         dialogQuestion) :
 	ConfirmedCommand(name, scope, active, dialogTitle, dialogQuestion)
@@ -28,14 +28,14 @@ QuitCommand::QuitCommand(BaseApp*  app,
 }
 
 
-boolean QuitCommand::doIt(CommandInterface *ci)
+bool QuitCommand::doIt(CommandInterface *ci)
 {
     //
     // Terminate the application
     //
     application->shutdownApplication();
 
-    return TRUE;
+    return true;
 }
 
 

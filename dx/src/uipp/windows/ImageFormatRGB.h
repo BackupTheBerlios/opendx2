@@ -28,7 +28,7 @@ class ImageFormatRGB : public PixelImageFormat
   private:
 
     //static String  DefaultResources[];
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
   protected:
 
@@ -52,15 +52,15 @@ class ImageFormatRGB : public PixelImageFormat
     virtual const char*		paramString() { return "rgb"; }
     virtual const char*		menuString() { return "RGB"; }
     virtual const char*		fileExtension() { return ".rgb"; }
-    virtual boolean 		supportsAppend() { return TRUE; }
-    virtual boolean		supportsDelayedColors() { return FALSE; }
+    virtual bool 		supportsAppend() { return true; }
+    virtual bool		supportsDelayedColors() { return false; }
     virtual void		eraseOutputFile(const char *srcfile);
 
     //
     // Returns a pointer to the class name.
     //
     const char* getClassName() { return ClassImageFormatRGB; }
-    virtual boolean isA(Symbol classname);
+    virtual bool isA(Symbol classname);
 };
 
 

@@ -31,7 +31,7 @@ void ConfirmedCommand::OkDCB(void* clientData)
 
 ConfirmedCommand::ConfirmedCommand(const char*   name,
 				   CommandScope* scope,
-				   boolean       active,
+				   bool       active,
 				   char*         dialogTitle,
 				   char*         dialogQuestion):
 	NoUndoCommand(name, scope, active)
@@ -45,7 +45,7 @@ ConfirmedCommand::ConfirmedCommand(const char*   name,
 }
 
 
-boolean ConfirmedCommand::execute(CommandInterface *ci)
+bool ConfirmedCommand::execute(CommandInterface *ci)
 {
 
  //   Widget parent = this->dialogParent;
@@ -64,7 +64,7 @@ boolean ConfirmedCommand::execute(CommandInterface *ci)
 				   (void*)this,
 				   ConfirmedCommand::OkDCB);
 				   
-    return FALSE;
+    return false;
 }
 
 

@@ -29,7 +29,7 @@
 #include "ScalarListInstance.h"
 #include "ErrorDialogManager.h"
 
-boolean ScalarListInteractor::ScalarListInteractorClassInitialized = FALSE;
+bool ScalarListInteractor::ScalarListInteractorClassInitialized = false;
 
 //String ScalarListInteractor::DefaultResources[] =  {
 //    ".AllowResizing:			True",
@@ -84,7 +84,7 @@ void ScalarListInteractor::initialize()
         //                          StepperInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
         //                          Interactor::DefaultResources);
-        ScalarListInteractor::ScalarListInteractorClassInitialized = TRUE;
+        ScalarListInteractor::ScalarListInteractorClassInitialized = true;
     }
 }
 
@@ -122,7 +122,7 @@ Interactor *ScalarListInteractor::AllocateInteractor(const char *name,
 //    // Update the list (if an item was selected and the user has released the
 //    // mouse button) . 
 //    //
-//    boolean update = (this->selectedItemIndex != UNSELECTED_INDEX) &&
+//    bool update = (this->selectedItemIndex != UNSELECTED_INDEX) &&
 //		      ((cb->reason == XmCR_ACTIVATE) || sli->isContinuous());
 //
 //    if (update) {
@@ -141,7 +141,7 @@ Interactor *ScalarListInteractor::AllocateInteractor(const char *name,
 //	 * Get the interactor value, store it, and send it.
 //	 */
 //	char *s = this->buildDXList();
-//	sln->setOutputValue(1,s, DXType::UndefinedType, TRUE);
+//	sln->setOutputValue(1,s, DXType::UndefinedType, true);
 //	if (s) delete s;
 //    }
 //
@@ -153,8 +153,8 @@ Interactor *ScalarListInteractor::AllocateInteractor(const char *name,
 //
 void ScalarListInteractor::completeInteractivePart()
 {
-    //this->passEvents(this->listForm, TRUE);
-    //this->passEvents(this->steppers, TRUE);
+    //this->passEvents(this->listForm, true);
+    //this->passEvents(this->steppers, true);
     this->StepperInteractor::completeInteractivePart();
     this->layoutInteractor();
 }
@@ -262,7 +262,7 @@ void ScalarListInteractor::updateDisplayedInteractorValue()
 //
 void ScalarListInteractor::handleInteractivePartStateChange(
                                         InteractorInstance *src_ii,
-					boolean major_change)
+					bool major_change)
 {
 //    int n_tuples, count, j, i, *decimalPlaces;
 //    ScalarListInstance *sli = (ScalarListInstance*)this->interactorInstance;
@@ -274,13 +274,13 @@ void ScalarListInteractor::handleInteractivePartStateChange(
 //
 //#define NEEDCLAMP 0
 //#if NEEDCLAMP // Not need after adding ScalarNode::rangeCheckComponentValue 6/3/93
-//    boolean clamped_vector = FALSE;
+//    bool clamped_vector = false;
 //#endif
 // 
 //    //
 //    // Update the stepper.
 //    //
-//    this->StepperInteractor::handleInteractivePartStateChange(src_ii, FALSE);
+//    this->StepperInteractor::handleInteractivePartStateChange(src_ii, false);
 //
 //   // XtVaGetValues(this->valueList,
 //			//XmNreadonlyVectors, &ro_vectors,
@@ -306,12 +306,12 @@ void ScalarListInteractor::handleInteractivePartStateChange(
 //		if (val > max) {
 //		    val = max;
 //#if NEEDCLAMP // Not need after adding ScalarNode::rangeCheckComponentValue 6/3/93
-//		    clamped_vector = TRUE;
+//		    clamped_vector = true;
 //#endif
 //		} else if (val < min) {
 //		    val = min;
 //#if NEEDCLAMP // Not need after adding ScalarNode::rangeCheckComponentValue 6/3/93
-//		    clamped_vector = TRUE;
+//		    clamped_vector = true;
 //#endif
 //		}
 //		vectors[j][i] = val;
@@ -458,7 +458,7 @@ char *ScalarListInteractor::buildDXList()
 
  //   if (count > 0 ) {
 	//ScalarNode *node = (ScalarNode*)this->interactorInstance->getNode();
-	//boolean ints = node->isIntegerTypeComponent();
+	//bool ints = node->isIntegerTypeComponent();
  //       list = new char[n_tuples * count * (1 + 4 + 16)  * sizeof(char)];
 	//strcpy(list,"{ ");
  //	char *p = list;

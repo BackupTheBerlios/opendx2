@@ -16,7 +16,7 @@
 
 NoUndoAnchorCommand::NoUndoAnchorCommand(const char*   name,
 				       CommandScope* scope,
-				       boolean       active,
+				       bool       active,
 				       DXAnchorWindow  *aw,
 				       AnchorCommandType comType ) :
 	NoUndoCommand(name, scope, active)
@@ -26,7 +26,7 @@ NoUndoAnchorCommand::NoUndoAnchorCommand(const char*   name,
 }
 
 
-boolean NoUndoAnchorCommand::doIt(CommandInterface *ci)
+bool NoUndoAnchorCommand::doIt(CommandInterface *ci)
 {
     DXAnchorWindow *aw = this->anchorWindow;
 
@@ -40,7 +40,7 @@ boolean NoUndoAnchorCommand::doIt(CommandInterface *ci)
 	    ASSERT(0);
     }
 
-    return TRUE;
+    return true;
 }
 
 

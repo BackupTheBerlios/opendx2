@@ -84,8 +84,8 @@ class WorkSpaceRoot : public Base
     //
     // Access WorkSpace::{wasAllowOverlap,wasLineDrawingEnabled}
     //
-    virtual boolean getLineDrawingEnabled() = 0;
-    virtual boolean getOverlapEnabled() = 0;
+    virtual bool getLineDrawingEnabled() = 0;
+    virtual bool getOverlapEnabled() = 0;
 
     //
     // Access the Workspace widget of WorkSpace
@@ -152,8 +152,8 @@ class WorkSpaceRoot : public Base
 	return ClassWorkSpaceRoot;
     }
 
-    virtual boolean isA (Symbol classname);
-    boolean isA (const char* classname);
+    virtual bool isA (Symbol classname);
+    bool isA (const char* classname);
 };
 
 

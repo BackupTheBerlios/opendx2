@@ -57,13 +57,13 @@ class Tab : public UIComponent
     //
     // Creates the tab widget 
     //
-    void createTab(boolean createManaged = TRUE);
+    void createTab(bool createManaged = true);
 
     //
-    // Returns TRUE if the object has been initialized,
+    // Returns true if the object has been initialized,
     //   i.e., the window root widget has been created.
     //
-    boolean isInitialized()
+    bool isInitialized()
     {
         //return this->getRootWidget() != NUL(Widget);
 		return true;
@@ -72,9 +72,9 @@ class Tab : public UIComponent
     //
     // Moves the Tab
     //
-    //void moveTabXY(Position x, Position y, boolean update);
-    //void moveTabX(Position x, boolean update);
-    //void moveTabY(Position y, boolean update);
+    //void moveTabXY(Position x, Position y, bool update);
+    //void moveTabX(Position x, bool update);
+    //void moveTabY(Position y, bool update);
 
     //
     // Return info about the Tab

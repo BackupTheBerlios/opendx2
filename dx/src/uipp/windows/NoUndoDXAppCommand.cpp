@@ -22,7 +22,7 @@
 
 NoUndoDXAppCommand::NoUndoDXAppCommand(const char*   name,
 				       CommandScope* scope,
-				       boolean       active,
+				       bool       active,
 				       DXApplication *app,
 				       DXAppCommandType comType ) :
 	NoUndoCommand(name, scope, active)
@@ -32,15 +32,15 @@ NoUndoDXAppCommand::NoUndoDXAppCommand(const char*   name,
 }
 
 
-boolean NoUndoDXAppCommand::doIt(CommandInterface *ci)
+bool NoUndoDXAppCommand::doIt(CommandInterface *ci)
 {
     DXApplication *app = this->application;
-    boolean ret;
+    bool ret;
     SequencerNode*  seq_node = NULL; // xlC wants this initialized 
 
     ASSERT(app);
 
-    ret = TRUE;
+    ret = true;
     switch (this->commandType) {
 
     case NoUndoDXAppCommand::StartServer:
@@ -78,10 +78,10 @@ boolean NoUndoDXAppCommand::doIt(CommandInterface *ci)
 #if USE_REMAP	// 6/14/93
     case NoUndoDXAppCommand::RemapInteractorOutputs:
 	if (NOT app->network) {
-	    ret = FALSE;
+	    ret = false;
 	} else {
 	    Network *n = app->network;
-	    boolean remap = n->isRemapInteractorOutputMode();
+	    bool remap = n->isRemapInteractorOutputMode();
 	    n->setRemapInteractorOutputMode(!remap);
 	    this->notifyClients(ToggleButtonInterface::MsgToggleState);
 	}
@@ -90,9 +90,9 @@ boolean NoUndoDXAppCommand::doIt(CommandInterface *ci)
 
     case NoUndoDXAppCommand::OpenAllColormaps:
 	if (NOT app->network) {
-	    ret = FALSE;
+	    ret = false;
 	} else {
-	    app->network->openColormap(TRUE);
+	    app->network->openColormap(true);
 	}
 	break;
 
@@ -100,16 +100,16 @@ boolean NoUndoDXAppCommand::doIt(CommandInterface *ci)
 	ASSERT(app->network);
 	seq_node = app->network->sequencer;
 	if (NOT seq_node) {
-	    ret = FALSE;
+	    ret = false;
 	} else {
 	    seq_node->openDefaultWindow();
-	    ret = TRUE;
+	    ret = true;
 	}
 	break;
 
     case NoUndoDXAppCommand::OpenMessageWindow:
 	theDXApplication->getMessageWindow()->manage();
-	ret = TRUE;
+	ret = true;
 	break;
 
     case NoUndoDXAppCommand::ToggleInfoEnable:
@@ -126,17 +126,17 @@ boolean NoUndoDXAppCommand::doIt(CommandInterface *ci)
 
     case NoUndoDXAppCommand::LoadUserMDF:
 	theDXApplication->postLoadMDFDialog();
-	ret = TRUE;
+	ret = true;
 	break;
 
     case NoUndoDXAppCommand::HelpOnManual:
 	theDXApplication->helpOn("OnManual");
-	ret = TRUE;
+	ret = true;
 	break;
 
     case NoUndoDXAppCommand::HelpOnHelp:
 	theDXApplication->helpOn("OnHelp");
-	ret = TRUE;
+	ret = true;
 	break;
 
     default:
@@ -154,19 +154,19 @@ boolean NoUndoDXAppCommand::doIt(CommandInterface *ci)
 void NoUndoDXAppCommand::activate()
 {
     DXApplication *app = this->application;
-    boolean connected = app->getPacketIF() != NULL;
+    bool connected = app->getPacketIF() != NULL;
 
 
     ASSERT(app);
 
-    boolean enable = TRUE;
+    bool enable = true;
 
     switch (this->commandType) {
 
     case NoUndoDXAppCommand::ExecuteOnce:
     case NoUndoDXAppCommand::ExecuteOnChange:
     case NoUndoDXAppCommand::EndExecution:
-	if (!connected) enable = FALSE;
+	if (!connected) enable = false;
 	break;
 
     }

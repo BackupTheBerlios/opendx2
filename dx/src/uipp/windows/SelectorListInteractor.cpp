@@ -17,7 +17,7 @@
 #include "DXApplication.h"
 #include "SelectorListInstance.h"
 
-boolean SelectorListInteractor::ClassInitialized = FALSE;
+bool SelectorListInteractor::ClassInitialized = false;
 
 //String SelectorListInteractor::DefaultResources[] =  {
 //    "*allowHorizontalResizing:		True",
@@ -38,9 +38,9 @@ SelectorListInteractor::SelectorListInteractor(const char *name,
     //
     SelectionNode* sn = (SelectionNode*)this->getNode();
     if (EqualString (ClassSelectorListNode, sn->getClassName())) {
-	this->single_select = FALSE;
+	this->single_select = false;
     } else if (EqualString (ClassSelectorNode, sn->getClassName())) {
-	this->single_select = TRUE;
+	this->single_select = true;
     } else
 	ASSERT(0);
 
@@ -54,7 +54,7 @@ SelectorListInteractor::SelectorListInteractor(const char *name,
 			     // SelectorListInteractor::DefaultResources);
         //this->setDefaultResources(theApplication->getRootWidget(),
 			     // Interactor::DefaultResources);
-        SelectorListInteractor::ClassInitialized = TRUE;
+        SelectorListInteractor::ClassInitialized = true;
     }
 }
 
@@ -104,7 +104,7 @@ SelectorListInteractor::SelectorListInteractor(const char *name,
 //    return form;
 //}
 //
-//void SelectorListInteractor::enableCallbacks (boolean enab)
+//void SelectorListInteractor::enableCallbacks (bool enab)
 //{
 //    if (enab) {
 //	XtAddCallback (this->list_widget, XmNmultipleSelectionCallback, 
@@ -221,14 +221,14 @@ void SelectorListInteractor::updateDisplayedInteractorValue()
 //
 void 
 SelectorListInteractor::handleInteractivePartStateChange(InteractorInstance *,
-					boolean major_change)
+					bool major_change)
 {
     if (major_change) this->unmanage();
     this->reloadListOptions();
     if (major_change) this->manage();
 }
 
-void SelectorListInteractor::setAppearance(boolean developer_style)
+void SelectorListInteractor::setAppearance(bool developer_style)
 {
  //   Pixel fg,bg,ts,bs,arm;
  //   Screen *screen;

@@ -17,7 +17,7 @@
 
 ImageSetModeCommand::ImageSetModeCommand(const char   *name,
 						 CommandScope *scope,
-						 boolean       active,
+						 bool       active,
 						 ImageWindow  *w,
 						 DirectInteractionMode mode):
     NoUndoCommand(name, scope, active)
@@ -26,7 +26,7 @@ ImageSetModeCommand::ImageSetModeCommand(const char   *name,
     this->mode = mode;
 }
 
-boolean ImageSetModeCommand::doIt(CommandInterface *ci)
+bool ImageSetModeCommand::doIt(CommandInterface *ci)
 {
     return this->imageWindow->setInteractionMode(mode);
 }

@@ -40,10 +40,10 @@ class SelectorListInteractor : public Interactor
     // Private member data:
     //
     //Widget list_widget;
-    boolean single_select;
+    bool single_select;
 
-    //void enableCallbacks (boolean enab = TRUE);
-    //void disableCallbacks () { this->enableCallbacks(FALSE); }
+    //void enableCallbacks (bool enab = true);
+    //void disableCallbacks () { this->enableCallbacks(false); }
 
   protected:
     //
@@ -54,7 +54,7 @@ class SelectorListInteractor : public Interactor
     // One widget for each component (scalar or n-vector).
     //
 
-    static boolean ClassInitialized;
+    static bool ClassInitialized;
 
     //static String DefaultResources[];
 
@@ -104,12 +104,12 @@ class SelectorListInteractor : public Interactor
     //
     // Make sure the attributes match the resources for the widgets. 
     //
-    void handleInteractivePartStateChange(InteractorInstance *, boolean );
+    void handleInteractivePartStateChange(InteractorInstance *, bool );
 
     //
     // Added to be able to override the developer style selectColor
     //
-    void setAppearance(boolean );
+    void setAppearance(bool );
 
     //
     // Returns a pointer to the class name.

@@ -18,7 +18,7 @@
 #include "MsgWin.h"
 #include "lex.h"
 
-boolean ExecCommandDialog::ClassInitialized = FALSE;
+bool ExecCommandDialog::ClassInitialized = false;
 
 //String ExecCommandDialog::DefaultResources[] =
 //{
@@ -29,13 +29,13 @@ boolean ExecCommandDialog::ClassInitialized = FALSE;
 
 
 ExecCommandDialog::ExecCommandDialog() :
-    SetNameDialog("execCommandDialog", TRUE)
+    SetNameDialog("execCommandDialog", true)
 {
     this->lastCommand = NULL;
 
     if (NOT ExecCommandDialog::ClassInitialized)
     {
-        ExecCommandDialog::ClassInitialized = TRUE;
+        ExecCommandDialog::ClassInitialized = true;
 	//this->installDefaultResources(theApplication->getRootWidget());
     }
 }
@@ -70,7 +70,7 @@ void ExecCommandDialog::saveLastCommand(const char *s)
     this->lastCommand = DuplicateString(s);
 }
 
-boolean ExecCommandDialog::saveText(const char *s)
+bool ExecCommandDialog::saveText(const char *s)
 {
     if (!IsBlankString(s)) {
 	DXPacketIF *p = theDXApplication->getPacketIF();
@@ -91,6 +91,6 @@ boolean ExecCommandDialog::saveText(const char *s)
 	    }
 	}
     }
-    return TRUE;
+    return true;
 }
 
