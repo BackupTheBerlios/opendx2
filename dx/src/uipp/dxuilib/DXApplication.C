@@ -5348,20 +5348,20 @@ void DXApplication::getRecentNets(List& result)
     theResourceManager->getValue(RECENT_NETS, result);
 }
 
-// The call to FilterDottedPath is supposed to take
+// The call to GetFullFilePath is supposed to take
 // care of calling Dos2Unix().  These functions could
 // also be written with ifdefs for the pc platform,
 // but this way I have better assurance that they're
 // working right since there aren't platform dependencies.
 void DXApplication::appendReferencedFile(const char* file)
 {
-    char* cp = FilterDottedPath(file);
+    char* cp = GetFullFilePath(file);
     theResourceManager->addValue(RECENT_NETS, cp);
     delete cp;
 }
 void DXApplication::removeReferencedFile(const char* file)
 {
-    char* cp = FilterDottedPath(file);
+    char* cp = GetFullFilePath(file);
     theResourceManager->removeValue(RECENT_NETS, cp);
     delete cp;
 }
