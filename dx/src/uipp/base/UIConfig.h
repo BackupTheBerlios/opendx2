@@ -88,7 +88,7 @@
 */
 #if defined(sgi)
 # define EXECVE_2ND_TYPE char **
-#elif defined(hp700) || defined(aviion) || defined(ibm6000) || defined(solaris) || defined(alphax)
+#elif defined(hp700) || defined(aviion) || defined(ibm6000) || defined(solaris) || defined(alphax) || defined(linux)
 # define EXECVE_2ND_TYPE char * const*
 #else
 # define EXECVE_2ND_TYPE const char **
@@ -96,7 +96,7 @@
 
 #if defined(sun4) || defined(sgi)
 # define EXECVE_3RD_TYPE char **
-#elif defined(hp700) || defined(aviion) || defined(ibm6000) || defined(solaris) || defined(alphax)
+#elif defined(hp700) || defined(aviion) || defined(ibm6000) || defined(solaris) || defined(alphax) || defined(linux)
 # define EXECVE_3RD_TYPE char * const*
 #else
 # define EXECVE_3RD_TYPE const char **
