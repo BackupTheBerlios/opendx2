@@ -361,107 +361,172 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 	long rc;
 	int i, k=0;
 	DWORD options;
+	HKEY regLoc = HKEY_LOCAL_MACHINE;
+
+/* First determine which system we're looking up. */
+
+if(co == OPENDX_ID) {
+	char *path[256] = {"SOFTWARE", "OpenDX", "DX", "CurrentVersion"};
+	const int pathlength = 4;
 
 	options = KEY_QUERY_VALUE;
 
-	strcpy(key, "SOFTWARE");
-
-	rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0,
-	options, &hkey[k++]);
-
-	if (co == OPENDX_ID || co == STARNET_ID) {
-		if (co == OPENDX_ID)
-			strcat(key, "\\OpenDX");
-		else if (co == STARNET_ID)
-			strcat(key, "\\StarNet");
-
-		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
-    		if(get == CHECK && rc != ERROR_SUCCESS) return 0;
-		IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
-
-		if (co == OPENDX_ID)
-			strcat(key, "\\DX");
-		else if (co == STARNET_ID)
-			strcat(key, "\\X-Win32");
-
-		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
-    		if(get == CHECK && rc != ERROR_SUCCESS) return 0;
-		IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
-
-		if (co == OPENDX_ID)
-			strcat(key, "\\CurrentVersion");
-		else if (co == STARNET_ID)
-			strcat(key, "\\5.1");
-
-	}
-	else if (co == HUMMBIRD_ID) {
-		strcat(key, "\\Hummingbird");
-		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
-    		if(get == CHECK && rc != ERROR_SUCCESS) return 0;
-		IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
-		strcpy(key2, key);
-		strcat(key, "\\Exceed"); /* Version 6 reg entries */
-		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
-		if (rc == ERROR_SUCCESS) {
-			if (get == CHECK) return 6; /* return version number */
-			strcat(key, "\\CurrentVersion");
-		} else { /* Version 7 reg entries */
-			strcpy(key, key2); k--;
-			strcat(key, "\\Connectivity");
-			rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
-			IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
-			strcat(key, "\\7.00");
-			rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
-    			if(get == CHECK && rc == ERROR_SUCCESS) return 7;
-			IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
-			strcat(key, "\\Exceed");
-		}
-
+/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
+/* Check there first if not found then search in CURRENT_USER   */
+        strcpy(key, ""); k = 0;
+	for(i=0; i < pathlength; i++) {
+        	strcat(key, path[i]);
+		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+		if(rc != ERROR_SUCCESS)
+			break;
+		strcat(key, "\\");
 	}
 	
-	rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
-	IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
+	if(rc != ERROR_SUCCESS)
+		regLoc = HKEY_CURRENT_USER;
+	strcpy(key, ""); k = 0;
+	for(i=0; i < pathlength; i++) {
+        	strcat(key, path[i]);
+		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+		if(rc != ERROR_SUCCESS)
+			break;
+		strcat(key, "\\");
+	}
 
-	if (get == CHECK) { return 1; }
-	if (get == GET) {
-		rc = RegQueryValueEx(hkey[k-1], (LPTSTR) name, (LPDWORD) 0, 
+	if(rc != ERROR_SUCCESS && get == CHECK) return 0;
+	else if (get == CHECK) return 1;
+	/* hkey now pointing in the proper reg entry area */
+}
+else if (co == STARNET_ID) { 
+	char *path[256] = {"SOFTWARE", "Starnet", "X-Win32", "5.1"};
+	const int pathlength = 4;
+
+	options = KEY_QUERY_VALUE;
+
+/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
+/* Check there first if not found then search in CURRENT_USER   */
+        strcpy(key, ""); k = 0;
+	for(i=0; i < pathlength; i++) {
+        	strcat(key, path[i]);
+		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+		if(rc != ERROR_SUCCESS)
+			break;
+		strcat(key, "\\");
+	}
+	
+	if(rc != ERROR_SUCCESS)
+		regLoc = HKEY_CURRENT_USER;
+	strcpy(key, ""); k = 0;
+	for(i=0; i < pathlength; i++) {
+        	strcat(key, path[i]);
+		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+		if(rc != ERROR_SUCCESS)
+			break;
+		strcat(key, "\\");
+	}
+
+	if(rc != ERROR_SUCCESS && get == CHECK) return 0;
+	else if(get == CHECK) return 1;
+	/* hkey now pointing in the proper reg entry area */
+}
+else { /* Must be Hummingbird */
+	char *path[256] = {"SOFTWARE", "Hummingbird", "Exceed", "CurrentVersion"};
+	char *path2[256] = {"SOFTWARE", "Hummingbird", "Connectivity", "7.00", "Exceed"};
+	const int pathlength = 4;
+	const int pathlength2 = 5;
+
+	options = KEY_QUERY_VALUE;
+
+/* May not always be in HKEY_LOCAL_MACHINE if installed as user */
+/* Check there first if not found then search in CURRENT_USER   */
+        strcpy(key, ""); k = 0;
+	for(i=0; i < pathlength; i++) {
+        	strcat(key, path[i]);
+		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+		if(rc != ERROR_SUCCESS)
+			break;
+		strcat(key, "\\");
+	}
+	
+	if(rc != ERROR_SUCCESS)
+		regLoc = HKEY_CURRENT_USER;
+	strcpy(key, ""); k = 0;
+	for(i=0; i < pathlength; i++) {
+        	strcat(key, path[i]);
+		rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+		if(rc != ERROR_SUCCESS)
+			break;
+		strcat(key, "\\");
+	}
+
+	if(rc == ERROR_SUCCESS && get == CHECK) return 6;
+	if(rc != ERROR_SUCCESS) { /* Now check for v 7. */
+		regLoc = HKEY_LOCAL_MACHINE;
+	        strcpy(key, ""); k = 0;
+		for(i=0; i < pathlength2; i++) {
+        		strcat(key, path2[i]);
+			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+			if(rc != ERROR_SUCCESS)
+				break;
+			strcat(key, "\\");
+		}
+	
+		if(rc != ERROR_SUCCESS)
+			regLoc = HKEY_CURRENT_USER;
+		strcpy(key, ""); k = 0;
+		for(i=0; i < pathlength2; i++) {
+        		strcat(key, path2[i]);
+			rc = RegOpenKeyEx(regLoc, (LPCTSTR) key, 0, options, &hkey[k++]);
+			if(rc != ERROR_SUCCESS)
+				break;
+			strcat(key, "\\");
+		}
+	}
+	if(rc != ERROR_SUCCESS && get == CHECK) return 0;
+	else if(get == CHECK) return 7;
+	/* hkey now pointing in the proper reg entry area */
+
+}
+
+if (get == GET) {
+	rc = RegQueryValueEx(hkey[k-1], (LPTSTR) name, (LPDWORD) 0, 
 		(LPDWORD) &valtype, (LPBYTE) value, &sizegot);
-		IfError2("Query value failed on registry value", name, "");
+	IfError2("Query value failed on registry value", name, "");
 
-		for (i=k; i > 0; i--) {
-			rc = RegCloseKey(hkey[i-1]);
-			IfError2("CloseKey failed on registry value", name, "");
-		}
-
-		/* Now check to see if it is a DWORD entry if so, pass it back through word
-			   not as a string through name. */
-		switch(valtype) {
-		case REG_DWORD:
-			*word = *((int *)value); 
-			strcpy(value, "");
-			break;
-		case REG_SZ:
-			break;
-		default:
-			return 0;
-		}
-
-		return 1;
-
+	for (i=k; i > 0; i--) {
+		rc = RegCloseKey(hkey[i-1]);
+		IfError2("CloseKey failed on registry value", name, "");
 	}
-	else {
-		if (get == SET)
-			options = KEY_SET_VALUE;
-		rc = RegSetValueEx((HKEY)hkey[k-1], (LPCSTR)name, (DWORD)0, 
+
+	/* Now check to see if it is a DWORD entry if so, pass it back through word
+		not as a string through name. */
+	switch(valtype) {
+	case REG_DWORD:
+		*word = *((int *)value); 
+		strcpy(value, "");
+		break;
+	case REG_SZ:
+		break;
+	default:
+		return 0;
+	}
+
+	return 1;
+
+}
+else {
+	if (get == SET)
+		options = KEY_SET_VALUE;
+	rc = RegSetValueEx((HKEY)hkey[k-1], (LPCSTR)name, (DWORD)0, 
 		(DWORD)REG_SZ, (CONST BYTE *)value, (DWORD)strlen(value)+1);
-		IfError("Registration key installation failed");
+	IfError("Registration key installation failed");
 
-		for (i=k; i > 0; i--) {
-			rc = RegCloseKey(hkey[i-1]);
-			IfError("CloseKey failed");
-		}
-		return 1;
+	for (i=k; i > 0; i--) {
+		rc = RegCloseKey(hkey[i-1]);
+		IfError("CloseKey failed");
 	}
+	return 1;
+}
 
 error:
 	printf("%s: rc = %d\n", errstr, rc);
