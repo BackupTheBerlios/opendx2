@@ -226,26 +226,6 @@ _getTexture_Field(Texture t)
     t->width  = counts[1];
     t->height = counts[0];
 
-    if (counts[0] < 64 || counts[1] < 64)
-    {
-	DXSetError(ERROR_DATA_INVALID,
-	    "texture map resolution must be at least 64x64");
-	goto error;
-    }
-	    
-    for (s0 = s1 = 0, i = 1; i && s0 < 2 && s1 < 2; i <<= 1)
-    {
-	s0 += (counts[0] & i) ? 1 : 0;
-	s1 += (counts[1] & i) ? 1 : 0;
-    }
-
-    if (i)
-    {
-	DXSetError(ERROR_DATA_INVALID,
-	    "texture map resolution must be powers of 2");
-	goto error;
-    }
-
     tmp = (Array)DXGetComponentValue(tf, "colors");
     if (! tmp)
 	tmp = (Array)DXGetComponentValue(tf, "data");
@@ -397,26 +377,6 @@ _getTexture_CompositeField(Texture t)
 
     t->width  = counts[1];
     t->height = counts[0];
-
-    if (counts[0] < 64 || counts[1] < 64)
-    {
-	DXSetError(ERROR_DATA_INVALID,
-	    "texture map resolution must be at least 64x64");
-	goto error;
-    }
-	    
-    for (s0 = s1 = 0, i = 1; i && s0 < 2 && s1 < 2; i <<= 1)
-    {
-	s0 += (counts[0] & i) ? 1 : 0;
-	s1 += (counts[1] & i) ? 1 : 0;
-    }
-
-    if (i)
-    {
-	DXSetError(ERROR_DATA_INVALID,
-	    "texture map resolution must be powers of 2");
-	goto error;
-    }
 
     n = counts[0] * counts[1];
 

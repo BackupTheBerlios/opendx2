@@ -780,8 +780,6 @@ _dxf_newXfieldP(Field f, attributeP attributes, void *globals)
   xf->FlatGridTexture.Address = NULL;
   xf->FlatGridTexture.Index = 0;
 
-  xf->cullFace = DXHW_CULL_OFF;
-
   if(attributes)
     *_dxf_xfieldAttributes(xf) = *attributes;
 
@@ -1066,6 +1064,17 @@ _dxf_getXfieldData(xfieldO obj)
 attributeP
 _dxf_parameters(dxObject o, attributeP old)
 {
+  static struct 
+    { char *str; textureFilterE val; }
+  filter_to_str[] = {
+     { "nearest",               tf_nearest                },
+     { "linear",                tf_linear                 },
+     { "nearest_mipmap_nearest",tf_nearest_mipmap_nearest },
+     { "nearest_mipmap_linear", tf_nearest_mipmap_linear  },
+     { "linear_mipmap_nearest", tf_linear_mipmap_nearest  },
+     { "linear_mipmap_linear",  tf_linear_mipmap_linear   },
+     { 0,                       (textureFilterE) 0        } };
+
   dxObject 	options;
   int	 	density;
   char		*densityString;
@@ -1099,6 +1108,131 @@ _dxf_parameters(dxObject o, attributeP old)
       if (new->texture)
 	  DXDelete(new->texture);
       new->texture = DXReference(obj);
+
+      /* get texture wrap options */
+      if ((options = DXGetAttribute(o, "texture wrap s"))) {
+	char *wrap_s;
+	if(!(DXExtractString(options, &wrap_s))) {
+	  DXSetError(ERROR_BAD_PARAMETER,"#13384");
+	  EXIT(("ERROR"));
+	  return ERROR;
+	}
+	if     (!strcmp(wrap_s,"clamp" )) new->texture_wrap_s = tw_clamp;
+	else if(!strcmp(wrap_s,"repeat")) new->texture_wrap_s = tw_repeat;
+	else {
+	  DXSetError(ERROR_BAD_PARAMETER,"#13384");
+	  EXIT(("ERROR"));
+	  return ERROR;
+	}
+      }
+      if ((options = DXGetAttribute(o, "texture wrap t"))) {
+	char *wrap_t;
+	if(!(DXExtractString(options, &wrap_t))) {
+	  DXSetError(ERROR_BAD_PARAMETER,"#13384");
+	  EXIT(("ERROR"));
+	  return ERROR;
+	}
+	if     (!strcmp(wrap_t,"clamp" )) new->texture_wrap_t = tw_clamp;
+	else if(!strcmp(wrap_t,"repeat")) new->texture_wrap_t = tw_repeat;
+	else {
+	  DXSetError(ERROR_BAD_PARAMETER,"#13384");
+	  EXIT(("ERROR"));
+	  return ERROR;
+	}
+      }
+
+      /* get texture filter options */
+      if ((options = DXGetAttribute(o, "texture min filter"))) {
+	char *str;
+	int i;
+	if(!(DXExtractString(options, &str))) {
+	  DXSetError(ERROR_BAD_PARAMETER,"#13386");
+	  EXIT(("ERROR"));
+	  return ERROR;
+	}
+	for ( i = 0; filter_to_str[i].str != 0; i++ )
+	  if (!strcmp(str,filter_to_str[i].str))
+	    break;
+        if ( filter_to_str[i].str == 0 ) {
+	  DXSetError(ERROR_BAD_PARAMETER,"#13386");
+	  EXIT(("ERROR"));
+	  return ERROR;
+	}
+	new->texture_min_filter = filter_to_str[i].val;
+      }
+      if ((options = DXGetAttribute(o, "texture mag filter"))) {
+	char *str;
+	int i;
+	if(!(DXExtractString(options, &str))) {
+	  DXSetError(ERROR_BAD_PARAMETER,"#13386");
+	  EXIT(("ERROR"));
+	  return ERROR;
+	}
+	for ( i = 0; i < 2; i++ )
+	  if (!strcmp(str,filter_to_str[i].str))
+	    break;
+        if ( i >= 2 ) {
+	  DXSetError(ERROR_BAD_PARAMETER,"#13386");
+	  EXIT(("ERROR"));
+	  return ERROR;
+	}
+	new->texture_mag_filter = filter_to_str[i].val;
+      }
+
+      /* get texture function options */
+      if ((options = DXGetAttribute(o, "texture function"))) {
+	char *str;
+	if(!(DXExtractString(options, &str))) {
+	  DXSetError(ERROR_BAD_PARAMETER,"#13388");
+	  EXIT(("ERROR"));
+	  return ERROR;
+	}
+	if     (!strcmp(str,"decal"))    new->texture_function = tfn_decal;
+	else if(!strcmp(str,"replace"))  new->texture_function = tfn_replace;
+	else if(!strcmp(str,"modulate")) new->texture_function = tfn_modulate;
+	else if(!strcmp(str,"blend"))    new->texture_function = tfn_blend;
+        else {
+	  DXSetError(ERROR_BAD_PARAMETER,"#13388");
+	  EXIT(("ERROR"));
+	  return ERROR;
+	}
+      }
+  }
+
+  /* get culling options */
+  if ((options = DXGetAttribute(o, "cull face"))) {
+    char *cull;
+    if(!(DXExtractString(options, &cull))) {
+      DXSetError(ERROR_BAD_PARAMETER,"#13389");
+      EXIT(("ERROR"));
+      return ERROR;
+    }
+    if     (!strcmp(cull,"off"           )) new->cull_face = cf_off;
+    else if(!strcmp(cull,"front"         )) new->cull_face = cf_front;
+    else if(!strcmp(cull,"back"          )) new->cull_face = cf_back;
+    else if(!strcmp(cull,"front and back")) new->cull_face = cf_front_and_back;
+    else {
+      DXSetError(ERROR_BAD_PARAMETER,"#13389");
+      EXIT(("ERROR"));
+      return ERROR;
+    }
+  }
+
+  /* get lighting model options */
+  if ((options = DXGetAttribute(o, "light model"))) {
+    char *lmodel;
+    if(!(DXExtractString(options, &lmodel))) {
+      DXSetError(ERROR_BAD_PARAMETER,"#13387");
+      EXIT(("ERROR"));
+      return ERROR;
+    }
+    if      (!strcmp(lmodel,"one side" )) new->light_model = lm_one_side;
+    else if (!strcmp(lmodel,"two side" )) new->light_model = lm_two_side;
+    else {
+      DXSetError(ERROR_BAD_PARAMETER,"#13387");
+      EXIT(("ERROR"));
+      return ERROR;
+    }
   }
 
   /* get anti-aliasing options */
@@ -1199,8 +1333,16 @@ static attributeT defAttribute = {
 				 {0.0, 0.0, 1.0, 0.0},
 				 {0.0, 0.0, 0.0, 1.0}
 				},
-  /* texture */			NULL
+  /* texture */			NULL,
 
+  /* texture_wrap_s */          tw_clamp,
+  /* texture_wrap_t */          tw_clamp,
+  /* texture_min_filter */      tf_nearest,
+  /* texture_mag_filter */      tf_nearest,
+  /* texture_function */        tfn_modulate,
+
+  /* cull_face */               cf_off,
+  /* light_model */             lm_one_side
 };
 
 

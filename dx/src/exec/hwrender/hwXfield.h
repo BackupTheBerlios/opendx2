@@ -50,6 +50,39 @@ enum xd {
     XD_LOCAL
 };
 
+typedef enum {
+    tw_clamp,
+    tw_repeat
+} textureWrapE;
+
+typedef enum {
+    tf_nearest,
+    tf_linear,
+    tf_nearest_mipmap_nearest,
+    tf_nearest_mipmap_linear,
+    tf_linear_mipmap_nearest,
+    tf_linear_mipmap_linear
+} textureFilterE;
+
+typedef enum {
+    tfn_decal,
+    tfn_replace,
+    tfn_modulate,
+    tfn_blend
+} textureFunctionE;
+
+typedef enum {
+    cf_off,
+    cf_front,
+    cf_back,
+    cf_front_and_back
+} cullFaceE;
+
+typedef enum {
+    lm_one_side,
+    lm_two_side
+} lightModelE;
+
 /* dependencies XXX do NOT reorder these, they are used and indices into
  * static arrays in xfield.c
  */
@@ -105,6 +138,15 @@ typedef struct attributeS {
   float	vm[4][4];
 
   dxObject texture;
+
+  textureWrapE     texture_wrap_s;
+  textureWrapE     texture_wrap_t;
+  textureFilterE   texture_min_filter;
+  textureFilterE   texture_mag_filter;
+  textureFunctionE texture_function;
+
+  cullFaceE        cull_face;
+  lightModelE      light_model;
 
 } attributeT;
 
@@ -242,10 +284,6 @@ typedef struct xfieldS {
   int           UseDisplayList;
   int           UseFastClip;
 
-  int           cullFace;
-  int           clockWise;
-
-
 } xfieldT;
 
 
@@ -260,11 +298,6 @@ struct sortListElement
     int     poly;
     float   depth;
 };
-
-#define DXHW_CULL_OFF   0
-#define DXHW_CULL_NONE  1
-#define DXHW_CULL_FRONT 2
-#define DXHW_CULL_BACK  3
 
 xfieldO       _dxf_newXfieldO(Field, attributeP, void *);
 xfieldP       _dxf_getXfieldData(xfieldO);

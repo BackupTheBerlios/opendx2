@@ -410,6 +410,7 @@ AC_CHECK_LIB(Xt, XtMalloc)
 AC_CHECK_LIB(Xext, XextAddDisplay)
 AC_CHECK_LIB(m, sqrt)
 AC_CHECK_LIB(GL, glXGetConfig)
+AC_CHECK_LIB(GLU, gluBuild2DMipmaps)
 
 DX_PATH_XM
 if test "$xm_includes" != "" ; then

@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.6 2000/10/06 05:04:37 davidt Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.7 2002/01/15 02:36:30 rhh Exp $
 
 Author:  Ellen Ball
 
@@ -49,7 +49,7 @@ Based on hwrender/gl/hwPortUtil.c
 #include <GL/gl.h>
 
 static void loadTexture(xfieldP);
-static void startTexture();
+static void startTexture(xfieldP);
 static void endTexture();
 
 static int doesTrans;
@@ -74,22 +74,36 @@ static GLubyte screen_door_50[] =
   0xAA, 0xAA, 0xAA, 0xAA, 0x55, 0x55, 0x55, 0x55
 } ;
 
+
+#define LightModel(xf) \
+   do {                                                   \
+     if(xf->attributes.light_model == lm_two_side)        \
+        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);  \
+     else                                                 \
+        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE); \
+   }                                                      \
+   while (0)
+
 #define Cull(xf)                       \
-   if(xf->cullFace == DXHW_CULL_BACK)  \
+   if(xf->attributes.cull_face == cf_back)  \
    {                                   \
       glEnable(GL_CULL_FACE);          \
       glCullFace(GL_BACK);             \
    }                                   \
    else                                \
-   if(xf->cullFace == DXHW_CULL_FRONT) \
+   if(xf->attributes.cull_face == cf_front) \
    {                                   \
       glEnable(GL_CULL_FACE);          \
       glCullFace(GL_FRONT);            \
    }                                   \
    else                                \
-   if(xf->cullFace != DXHW_CULL_OFF)   \
-      glDisable(GL_CULL_FACE);         \
-
+   if(xf->attributes.cull_face == cf_front_and_back) \
+   {                                   \
+      glEnable(GL_CULL_FACE);          \
+      glCullFace(GL_FRONT_AND_BACK);   \
+   }                                   \
+   else                                \
+      glDisable(GL_CULL_FACE);
 
 
 typedef void (*helperFunc) (xfieldP xf, int posPerConn, 
@@ -1659,6 +1673,9 @@ Error _dxf_DrawTranslucentOGL(void *globals,
   ENTRY(("_dxf_DrawTranslucentOGL(0x%x, 0x%x, 0x%x, 0x%x)",
          PORT_HANDLE, xf, ambientColor, buttonUp));
 
+  Cull(xf);
+  LightModel(xf);
+
   glEnable(GL_BLEND);
   OGL_FAIL_ON_ERROR(glEnableBlend);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1710,7 +1727,7 @@ Error _dxf_DrawTranslucentOGL(void *globals,
     if(xf->texture)
     {
        loadTexture(xf);
-       startTexture();
+       startTexture(xf);
     }
 
     if (xf->nClips)
@@ -1798,6 +1815,7 @@ Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf,
   doesTrans = _dxf_isFlagsSet(_dxf_SERVICES_FLAGS(), SF_DOES_TRANS);
 
   Cull(xf);
+  LightModel(xf);
 
   if(xf->normalsDep != dep_none &&
      xf->attributes.buttonUp.approx == approx_none)
@@ -1904,7 +1922,7 @@ Error _dxf_DrawOpaqueOGL(tdmPortHandleP portHandle, xfieldP xf,
 	      loadTexture(xf);
       }
 
-      startTexture();
+      startTexture(xf);
   }
   else
       endTexture();
@@ -2165,14 +2183,10 @@ WriteToFile(char *s, xfieldP xf, int type, float mat[4][4])
 static void
 loadTexture(xfieldP xf)
 {
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, xf->textureWidth,
-		xf->textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE,
-		(GLubyte *)xf->texture);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    // Set texture
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, xf->textureWidth,
+                 xf->textureHeight, GL_RGB, GL_UNSIGNED_BYTE,
+                 (GLubyte *)xf->texture);
 
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
@@ -2180,8 +2194,53 @@ loadTexture(xfieldP xf)
 }
 
 static void
-startTexture()
+startTexture(xfieldP xf)
 {
+    static struct 
+      { textureFilterE dx; GLint gl; }
+    filter_to_gl[] = { 
+      { tf_nearest               , GL_NEAREST },
+      { tf_linear                , GL_LINEAR  },
+      { tf_nearest_mipmap_nearest, GL_NEAREST_MIPMAP_NEAREST },
+      { tf_nearest_mipmap_linear , GL_NEAREST_MIPMAP_LINEAR  },
+      { tf_linear_mipmap_nearest , GL_LINEAR_MIPMAP_NEAREST  },
+      { tf_linear_mipmap_linear  , GL_LINEAR_MIPMAP_LINEAR   }
+    };
+    static struct 
+      { textureFunctionE dx; GLint gl; }
+    function_to_gl[] = { 
+      { tfn_decal   , GL_DECAL    }, { tfn_replace , GL_REPLACE  },
+      { tfn_modulate, GL_MODULATE }, { tfn_blend   , GL_BLEND    }
+    };
+    attributeP attr = &xf->attributes;
+    int i;
+    GLint wrap_s, wrap_t, min_filter, mag_filter, function;
+
+    // Set texture wrap modes
+    wrap_s = ( attr->texture_wrap_s == tw_clamp ? GL_CLAMP : GL_REPEAT );
+    wrap_t = ( attr->texture_wrap_t == tw_clamp ? GL_CLAMP : GL_REPEAT );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
+
+    // Set texture filters
+    min_filter = GL_NEAREST, mag_filter = GL_NEAREST;
+    for ( i = 0; i < sizeof(filter_to_gl)/sizeof(*filter_to_gl); i++ ) {
+      if ( attr->texture_min_filter == filter_to_gl[i].dx )
+        min_filter = filter_to_gl[i].gl;
+      if ( attr->texture_mag_filter == filter_to_gl[i].dx )
+        mag_filter = filter_to_gl[i].gl;
+    }
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
+
+    // Set texture function
+    function = GL_MODULATE;
+    for ( i = 0; i < sizeof(function_to_gl)/sizeof(*function_to_gl); i++ )
+      if ( attr->texture_function == function_to_gl[i].dx )
+        function = function_to_gl[i].gl;
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, function);
+
+    // And activate texuring
     glEnable(GL_TEXTURE_2D);
 }
 
