@@ -7,14 +7,13 @@ dxdir = $(DXROOT)
 dxincludedir = $(DXROOT)/include/dx
 noinst_LIBRARIES = libLIBDX.a
 
-EXTRA_DIST = \
-	class class.awk
-
 noinst_HEADERS = \
 	binSort.h triangles.h internals.h diskio.h zclip.h edf.h render.h \
 	qsort.c
 
 EXTRA_DIST = \
+	class class.awk \
+	\
 	arrayClass.X cameraClass.X clippedClass.X fieldClass.X groupClass.X \
 	lightClass.X objectClass.X privateClass.X screenClass.X stringClass.X \
 	xformClass.X interpClass.X fieldinterpClass.X groupinterpClass.X \
