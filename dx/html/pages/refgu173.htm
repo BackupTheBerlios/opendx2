@@ -184,20 +184,15 @@ Descriptive sections follow the table.
 <P><B><A NAME="TBLFILTYP" HREF="refgu002.htm#FT_TBLFILTYP">Table 9. Format
 Characteristics for WriteImage</A></B><BR>
 <TABLE BORDER>
-<TR>
+			<TR>
 <TH ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">File Type
 </TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">Format Specifier
 </TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">Resulting File Extension(s)
 </TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">Multiframe/
 Series Data
 </TH><TH ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">Modify an Existing File
-</TH></TR><TR>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">gif
-</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">&quot;gif&quot;
-</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">.gif
-</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">No
-</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">No
-</TD></TR><TR>
+</TH></TR>
+			<TR>
 <TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">rgb
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">&quot;rgb&quot;
 <BR>
@@ -210,7 +205,8 @@ Series Data
 &#46;size
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">Yes
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">Yes
-</TD></TR><TR>
+</TD></TR>
+			<TR>
 <TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">TIFF
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">&quot;tiff&quot;
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">.tiff
@@ -266,14 +262,17 @@ Series Data
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">Yes
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">Yes
 
-</TD></TR></TABLE>
+</TD></TR>
+			<TR>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">many different</TD>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">&quot;ImageMagick supported format&quot;</TD>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="25%">many different</TD>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">No</TD>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="19%">No</TD>
+			</TR>
+		</TABLE>
 <TABLE CELLPADDING="3">
-<TR VALIGN="TOP"><TD><P><B><TT><STRONG>gif</STRONG></TT>
-</B></TD><TD><P>Graphics Interchange Format** adheres to the 87A convention.
-It includes LZW compression.
-Images are saved with 24-bit colors, with a maximum palette of 256
-colors.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>rgb</STRONG></TT>
+			<TR VALIGN="TOP"><TD><P><B><TT><STRONG>rgb</STRONG></TT>
 </B></TD><TD><P>rgb file format consists of two files, a binary
 <I>name</I><TT>.rgb</TT> file that contains
 the image pixel values and a
@@ -293,7 +292,8 @@ binary pixel values with 8 bits per color
 (24 bits/pixel).
 Pixels are read and written from the image in left-to-right,
 top-to-bottom order.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>r+g+b</STRONG></TT>
+</TD></TR>
+			<TR VALIGN="TOP"><TD><P><B><TT><STRONG>r+g+b</STRONG></TT>
 </B></TD><TD><P>r+g+b format is similar to rgb format, except that the
 <I>name</I><TT>.rgb</TT> file is replaced by three
 binary files, one for each color.
@@ -444,7 +444,12 @@ sequences. Writing an image to an existing miff file name causes
 the image to be appended to the file. To start a new sequence you
 must delete the .miff file.
 
-</TD></TR></TABLE>
+</TD></TR>
+			<TR VALIGN="TOP">
+				<TD><B>ImageMagick supported format</B></TD>
+				<TD>With the <A HREF="http://www.imagemagick.org">ImageMagick<FONT SIZE="-2"><SUP>TM</SUP></FONT></A> libraries configured and compiled with DX, WriteImage can read and write a large number of image file formats. ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in many image formats (over 68 major formats) including popular formats like TIFF, JPEG, PNG, PDF, PhotoCD, and GIF. The formats that can be written by WriteImage will depend on what functionality is compiled into ImageMagick.</TD>
+			</TR>
+		</TABLE>
 <P>
 
 <P><B>Note: </B>If you are writing out images for use later from within Data

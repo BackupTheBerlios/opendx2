@@ -52,69 +52,10 @@ You can click on a module name to go directly to that module's
 description if applicable.
 
 		<TABLE CELLPADDING="3">
-<A NAME="SPTNEWAUAX"></A>
-<TR VALIGN="TOP"><TD><P><B><A HREF="refgu014.htm#HDRAUTOAXE">AutoAxes</A>
-</B></TD><TD><P>No longer scales the object to be smaller. This means that you
-may
-need to zoom out a bit in order to see all of the axes labels.
-</TD></TR><TR VALIGN="TOP"><TD><P><B>DXLink
-</B></TD><TD><P>Because of the new startup behavior (see <A
-HREF="usrgu010.htm#HDRNEWSTRT">"New Startup Behavior"</A>),
-DXLink programs may need to add "-edit" or "-image" to the
-startup command string.
-</TD></TR><TR VALIGN="TOP"><TD><P><B>Get and Set
-</B></TD><TD><P>Have been replaced by
-<A HREF="refgu066.htm#HDRGETGLO">GetGlobal</A>,
-<A HREF="refgu067.htm#HDRGETLOC">GetLocal</A>,
-<A HREF="refgu135.htm#HDRSETGLO">SetGlobal</A>, and
-<A HREF="refgu136.htm#HDRSETLOC">SetLocal</A>.
-See <A HREF="usrgu011.htm#HDRGETSET">"Changes to Get and Set modules"</A>.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A HREF="refgu104.htm#HDRPLOT">Plot</A>
-</B></TD><TD><P>There is a backward incompatibility with regard to the aspect
-parameter of Plot. This parameter now defaults to 1.0, meaning that the
-ratio of the y to x axis length will be made equal to one. Previously,
-no scaling was automatically done if aspect was not set. The previous
-default behavior can be obtained by specifying aspect as
-"inherent".
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu110.htm#HDRREADIMA">ReadImage</A>
-</B></TD><TD><P>The ReadImage module now will store all images read in as three
-bytes, rather than than three floating point numbers. This will only
-affect visual programs in which the colors themselves are expected to be
-floats. This default behavior can be overridden either with an
-environment variable or an input parameter. In addition, images which
-are stored in a format such that the colors are specified as lookups
-into a table will be read in as "delayed colors". (Some modules may
-not perform properly on delayed colors images.) This default behavior
-may also be overridden with either an environment variable or an input
-parameter. See <A HREF="refgu110.htm#HDRREADIMA">ReadImage</A> in <I>IBM
-Visualization Data Explorer User&#39;s Reference</I> for more information.
-</TD></TR><TR VALIGN="TOP"><TD><P><B>Transmitters and Receivers
-</B></TD><TD><P>Version 3.1.4 prevents Transmitter and Output nodes, and
-Receiver and
-Input nodes from sharing names. These name collisions were permitted in
-earlier versions and could lead to incorrect behavior. Now, colliding
-nodes will be renamed automatically and you will be notified.
-</TD></TR><TR VALIGN="TOP"><TD><P><B>Save Image from Image Window
-</B></TD><TD><P>By default, SaveImage in PostScript format will now nearly fill
-the
-page, and will automatically choose portrait or landscape orientation.
-</TD></TR><TR VALIGN="TOP"><TD><P><B><A
-HREF="refgu173.htm#HDRWRITEIM">WriteImage</A> (and
-<A HREF="refgu072.htm#HDRIMAGE">Image</A>)
-</B></TD><TD><P>A gamma correction factor of 2 is applied to all images when
-they are
-written out. This can be changed if desired by using the format
-parameter of WriteImage or the SaveImage dialog of the Image tool.
-Previously, images were not gamma corrected when saved.
-</TD></TR><TR VALIGN="TOP"><TD><P><B>DXSHMEM environment variable
-</B></TD><TD><P>In versions of Data Explorer prior to 3.1.4, DXSHMEM, if set to
-anything,
-would force shared memory to be used. In version 3.1.4, DXSHMEM must be
-set to anything other than -1 for shared memory to be used; if set to
--1, then the data segment will be extended, for architectures for which
-this is permissible.
-</TD></TR></TABLE>
+			<A NAME="SPTNEWAUAX"></A>
+			<TR VALIGN="TOP"><TD><P><B><A
+HREF="refgu173.htm">WriteImage</A> and <A HREF="refgu110.htm">ReadImage</A> </B></TD><TD><P>gif format has been removed due to patent issues with the LZW compression algorithm owned by UNISYS. In order to read and write GIF images, use the added ImageMagick supported format, which doesn't have this problem.</TD></TR>
+			<TR VALIGN="TOP"><TD><P><B>New Accelerator Keys</B></TD><TD><P>It is possible that some versions may use the new accelerator key assignments. For those that have used DX for a while, the change may be akward and they may wish to recompile DX with the old keymappings.</TD></TR></TABLE>
 		<P>
 		<HR>
 		<DIV align="center">

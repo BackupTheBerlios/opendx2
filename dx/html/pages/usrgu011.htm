@@ -37,11 +37,11 @@ MINING">
 		</TABLE>
 		<H2><A NAME="HDRGETSET" ></A>New Image Formats Available</H2>
 		<P>With the <A HREF="http://www.imagemagick.org">ImageMagick<FONT SIZE="-2"><SUP>TM</SUP></FONT></A> libraries configured and compiled with DX, the ReadImage and WriteImage modules can read and write a large number of image file formats. ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in many image formats (over 68 major formats) including popular formats like TIFF, JPEG, PNG, PDF, PhotoCD, and GIF. The formats that are available to DX will depend on what functionality is compiled into ImageMagick.
-		<P>In order to access the new image formats, select the format as &quot;Image Magick supported format&quot; and add an extension to the filename that ImageMagick recognizes within the ReadImage and WriteImage modules and Save Image dialog box.</P>
+		<P>In order to access the new image formats, select the format as &quot;ImageMagick supported format&quot; and add an extension to the filename that ImageMagick recognizes within the ReadImage and WriteImage modules and Save Image dialog box.</P>
 		<P>Although DX still supports TIFF and MIFF files with its own code, it is possible to have ImageMagick write these formats as well. Some of the default compression settings on these formats may be different within ImageMagick. Instead of selecting TIFF or MIFF in the format box, use appropriate extension and select &quot;Image Magick supported format&quot; as the format to get ImageMagick to write a miff file. The DX .rgb and ImageMagick .rgb are completely different formats. Due not confuse them.</P>
 		<P>ReadImage with the ImageMagick libraries supports:</P>
 		<UL>
-			<LI>creating opacities/opacity map components for images which have opacities or a transparency map, such as the GIF format and PNG format,    <BR>
+			<LI>creating opacities/opacity map components for images which have opacities or a transparency map, such as the GIF format and PNG format,    
 			<LI>both delayed and direct color images, with delayed-&gt;direct option and float/byte option,
 			<LI>smart chomping of supported ImageMagick extensions
 			<LI>the DX convention for reading multi-frame multi-file sequences; such as name=&quot;t.gif&quot;, where the image files are t.0.gif, t.1.gif, t.2.gif, ...,

@@ -166,24 +166,27 @@ If that fails, it will then try to open image.
 &#46;b,
 &#46;size,
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="21%">Yes
-</TD></TR><TR>
+</TD></TR>
+						<TR>
 <TD ALIGN="LEFT" VALIGN="TOP" WIDTH="29%">TIFF
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="21%">&quot;tiff&quot;
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="29%">.tiff
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="21%">Yes
-</TD></TR><TR>
-<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="29%">GIF
-</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="21%">&quot;gif&quot;
-</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="29%">.gif
-</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="21%">No
-
-</TD></TR><TR>
+</TD></TR>
+						<TR>
 <TD ALIGN="LEFT" VALIGN="TOP" WIDTH="29%">MIFF
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="21%">&quot;miff&quot;
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="29%">.miff
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="21%">Yes
 
-</TD></TR></TABLE>
+</TD></TR>
+						<TR>
+							<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="29%">many different</TD>
+							<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="21%">&quot;ImageMagick supported format&quot;</TD>
+							<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="29%">many different</TD>
+							<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="21%">First frame only</TD>
+						</TR>
+					</TABLE>
 </TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>start</STRONG></TT>
 &nbsp;and&nbsp; <TT><STRONG>end</STRONG></TT>
 </B></TD><TD><P>specify the first and last frame to be read from an image file
@@ -227,8 +230,10 @@ point. By default, ReadImage will create byte colors unless the
 <TT><STRONG>colortype</STRONG></TT> is set to "float".
 
 </TD></TR></TABLE>
-<P><B>Notes: </B><OL>
-<P><LI>RGB format files can be either "rgb" or
+<P><B>Notes: </B>
+		<OL>
+<P>
+			<LI>RGB format files can be either "rgb" or
 "r&#43;g&#43;b."
 The file format "rgb" contains the image with the bytes for the
 red, green, and blue values interleaved.
@@ -237,7 +242,8 @@ files contain the non-interleaved image:
 "<TT><STRONG>name.r</STRONG></TT>,"
 "<TT><STRONG>name.g</STRONG></TT>," and
 "<TT><STRONG>name.b</STRONG></TT>."
-<P>
+<p></p>
+			<LI>
 TIFF format files must be either full color RGB images (TIFF Class R)
 or palette color RGB images (TIFF Class P), uncompressed
 ("Compression=1"), and interleaved
@@ -248,31 +254,26 @@ Information about the size of the image is obtained from the file
 itself, since TIFF files are self-describing.
 (For more information on file formats, see
 <A HREF="refgu173.htm#HDRWRITEIM">WriteImage</A>&#46;)
-
-<P><LI>The default behavior of ReadImage is different in Data Explorer version
-3.1.4 and above in terms of the type of image it
-creates internally. If you do not specify the environment variable
-<TT>DXPIXELTYPE</TT> as "DXFloat",
-ReadImage will
-create byte colors internally. This will result in reduced storage
-required for the image,
-and will only affect networks that require the colors to be of type float,
-in which case
-the ReadImage parameter "colortype" should be set to "float", or the
-<TT>DXPIXELTYPE</TT>
-environment variable should be set to "DXFloat".
-<P><LI>ReadImage will also maintain the delayed color status of an image,
-as will be the case for GIF, some TIFF, and some MIFF format files. If
-the visualization program requires full colors for each pixel, set the
-ReadImage "delayed" parameter to false (0) or set the environment
-variable <TT>DXDELAYEDCOLORS</TT> to 0.
-<P><LI>If you want to convert an image file that does not already have
-delayed colors to one that does, use ReadImage to load it in and then
-use QuantizeImage to make it delayed color.
-
-</OL>
-<P><STRONG>Components</STRONG>
-<P>
+<p></p>
+			<LI>With the <A HREF="http://www.imagemagick.org">ImageMagick<FONT SIZE="-2"><SUP>TM</SUP></FONT></A> libraries configured and compiled with DX, ReadImage can read and write a large number of image file formats. ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in many image formats (over 68 major formats) including popular formats like TIFF, JPEG, PNG, PDF, PhotoCD, and GIF. The formats that can be read by ReadImage will depend on what functionality is compiled into ImageMagick. The ImageMagick option supports:<BR>
+				<BR>
+			
+						<UL>
+				<LI TYPE="disc">creating opacities/opacity map components for images which have opacities or a transparency map, such as the GIF format and PNG format,
+				<LI TYPE="disc">both delayed and direct color images, with delayed-&gt;direct option and float/byte option,
+				<LI TYPE="disc">smart chomping of supported ImageMagick extensions
+				<LI TYPE="disc">the DX convention for reading multi-frame multi-file sequences; such as name=&quot;t.gif&quot;, where the image files are t.0.gif, t.1.gif, t.2.gif, ...,
+				<LI TYPE="disc">for multi-frame single-file images such as animated GIFs, stacked TIFF/PNGs, but only loading the first image is supported (ImageMagick is missing basic sub-image support; see the source comments for details).
+			</UL>
+			<p></p>
+			<LI>If you do not specify the environment variable <TT>DXPIXELTYPE</TT> as &quot;DXFloat&quot;, ReadImage will create byte colors internally. This will result in reduced storage required for the image, and will only affect networks that require the colors to be of type float, in which case the ReadImage parameter &quot;colortype&quot; should be set to &quot;float&quot;, or the <TT>DXPIXELTYPE</TT> environment variable should be set to &quot;DXFloat&quot;.
+			<P></P>
+			<LI>ReadImage will also maintain the delayed color status of an image, as will be the case for GIF, some TIFF, and some MIFF format files. If the visualization program requires full colors for each pixel, set the ReadImage &quot;delayed&quot; parameter to false (0) or set the environment variable <TT>DXDELAYEDCOLORS</TT> to 0.
+			<P></P>
+			<LI>If you want to convert an image file that does not already have delayed colors to one that does, use ReadImage to load it in and then use QuantizeImage to make it delayed color.
+		</OL>
+		<P><STRONG>Components</STRONG>
+		<P>
 Creates an output with "positions," "connections," and
 "colors" components.
 <P><STRONG>Example Visual Programs</STRONG>
