@@ -254,7 +254,10 @@ dnl use the javac -verbose code to try and determine where they may be.
     else
       DX_FIND_COSMO($with_cosmojar_path)
     fi
-    WRL_CLASSPATH="$ac_cv_class_netscape:$ac_cv_class_cosmo"
+    WRL_CLASSPATH="$ac_cv_class_netscape"
+    if test -n "$ac_cv_class_cosmo" ; then
+      WRL_CLASSPATH="$ac_cv_class_netscape:$ac_cv_class_cosmo"
+    fi
   fi
 
 fi
