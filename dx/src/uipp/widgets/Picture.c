@@ -456,7 +456,7 @@ XmPictureClassRec xmPictureClassRec =
    },
 
    {		/* picture class - none */
-      0,						/* mumble */
+      NULL,						/* mumble */
    }
 };
 
