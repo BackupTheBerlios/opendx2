@@ -3764,7 +3764,7 @@ createTranslation(Private dpy_object, char *where,
     char 		cacheid[100];
     Private 		p = NULL;
     translationT 	*trans;
-    Colormap 		xcmap = BadColor; // Correct Initialization
+    Colormap 		xcmap = BadColor; /* Correct Initialization */
     Visual		*visual = NULL;
     int   		dscrn;
     Visual 		*dvis;
