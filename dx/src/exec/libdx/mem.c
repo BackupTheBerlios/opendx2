@@ -131,6 +131,7 @@ void _dxfcleanup_mem() { }
 
 #define memroutines
 
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ipc.h>
@@ -139,7 +140,6 @@ void _dxfcleanup_mem() { }
 #include <sys/shm.h>
 #include <stdlib.h>
 #include <fcntl.h>
-
 
 /* no resizing; allocate enough space initially. 
  *
@@ -152,13 +152,46 @@ void _dxfcleanup_mem() { }
  *
  */
 
-#ifndef SHMMAX
-#define SHMMAX (1<<28)      /* 256 Mb */
-#endif
-
 #if ibm6000
 #define DATASEG_LIMIT (255 * 1024L * 1024L)
 #endif
+
+ulong
+getSHMMAX()
+{
+    ulong shmmax = 0;
+
+#if linux
+    FILE *fd = fopen("/proc/sys/kernel/shmmax", "r");
+    if (fd)
+    {
+        fscanf(fd, "%lu", &shmmax);
+	fclose(fd);
+    }
+    else
+    {
+        /*
+	 * A problem here ... SHMMAX is defined in linux/shm.h,
+	 * but if we include that, all hell breaks loose with 
+	 * redefined structures.
+	 */
+        shmmax = 0x2000000;
+    }
+#endif
+
+    if (shmmax == 0)
+    {
+#if defined(SHMMAX)
+	shmmax = SHMMAX;
+#else
+	/* wishful thinking... 256 Meg */
+	shmmax = (1 << 28); 
+#endif
+    }
+
+    return shmmax;
+}
+
 
 extern int _dxd_exRunningSingleProcess;   /* boolean supplied by the exec */
 
@@ -280,7 +313,7 @@ static Error whatkindofmem(ulong limit)
 Error
 _dxfsetmem(ulong limit)
 {
-    ulong size, maxsegsize = SHMMAX;
+    ulong size, maxsegsize = getSHMMAX();
     int id, nchunk, nextseg;
     int i, j;
     int first = 1;
