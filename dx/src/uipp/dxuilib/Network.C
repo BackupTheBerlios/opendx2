@@ -2111,7 +2111,7 @@ void Network::netParseNodeComment(const char* comment)
     // 
     //  Determine if the node definition has changed.
     // 
-    char *p = strstr(comment,"inputs =");
+    const char *p = strstr(comment,"inputs =");
     if (p) {
 	p += STRLEN("inputs =");
 	int inputs = atoi(p);

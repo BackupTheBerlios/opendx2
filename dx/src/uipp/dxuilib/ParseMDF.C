@@ -315,7 +315,7 @@ boolean ParseMDFTypes(ParameterDefinition *param, char *p, int lineNumber)
 static boolean GetIntegerAttribute(const char *line, const char *attr, 
 					int *val)
 {
-    char *c = strstr(line,attr);
+    const char *c = strstr(line,attr);
     if (!c)
 	return FALSE;
     c += STRLEN(attr);
@@ -627,7 +627,7 @@ boolean _ParseInputLine(Dictionary*    mdf,
     /*
      * Parse the first substring:  NAME and optional attributes.
      */
-    begin_attributes = strchr(substring[0],'[');
+    begin_attributes = (char *) strchr(substring[0],'[');
     if (begin_attributes) {
 	char *p = begin_attributes-1;
 	// strip trailing white space from name of parameter.
@@ -814,7 +814,7 @@ boolean _ParseOutputLine(Dictionary*    mdf,
 	*end_attributes = '\0';		// Terminate attributes.
     }
 #else
-    begin_attributes = strchr(substring[0],'[');
+    begin_attributes = (char *) strchr(substring[0],'[');
     if (begin_attributes) {
 	char *p = begin_attributes-1;
 	// strip trailing white space from name of parameter.

@@ -298,7 +298,7 @@ char font[64];
 
     if (!this->Decorator::parseComment (comment, file, l)) return FALSE;
 
-    char *cp = strstr (comment, ", value =");
+    const char *cp = strstr (comment, ", value =");
     if (!cp) {
 	WarningMessage ("Unrecognized text in LabelDecorator Comment (file %s, line %d)",
 		file, l);
@@ -316,7 +316,7 @@ char font[64];
     if (EqualString(text, NO_TEXT_SYMBOL))
 	text[0] = '\0';
 
-    char *fontcp = strstr (comment, ", font=");
+    const char *fontcp = strstr (comment, ", font=");
     if ((fontcp)&&(fontcp<cp)) {
 	items_parsed = sscanf (fontcp, ", font=%[^,]", font);
 	if (items_parsed != 1) {

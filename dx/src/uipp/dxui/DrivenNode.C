@@ -169,7 +169,7 @@ void DrivenNode::completeLongMessage()
 //
 void DrivenNode::execModuleMessageHandler(int id, const char *line)
 {
-    char *p;
+    const char *p;
     int  values;
     boolean do_notify;
 

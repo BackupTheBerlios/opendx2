@@ -288,7 +288,7 @@ boolean PanelAccessManager::cfgParseInaccessibleComment(const char *comment,
     if (strncmp(comment," inaccessible",STRLEN(" inaccessible"))) 
 	return FALSE;
 
-    char* p = strchr(comment,':');
+    char* p = (char *) strchr(comment,':');
     if (!p)
 	return FALSE;
 

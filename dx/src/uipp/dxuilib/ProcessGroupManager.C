@@ -776,7 +776,7 @@ boolean ProcessGroupManager::parseComment(const char *comment,
 
     char *line = DuplicateString(comment);
 
-    p = strchr(comment,'"');
+    p = (char *) strchr(comment,'"');
     if (!p)
 	goto error;
 

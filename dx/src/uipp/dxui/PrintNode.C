@@ -36,7 +36,7 @@ PrintNode::~PrintNode()
 //
 void PrintNode::execModuleMessageHandler(int id, const char *line)
 {
-    char *p = strstr(line,message_token);
+    const char *p = strstr(line,message_token);
 
     if (p) {
         MsgWin *mw = theDXApplication->getMessageWindow();

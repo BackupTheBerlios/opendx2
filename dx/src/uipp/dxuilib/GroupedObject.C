@@ -126,7 +126,7 @@ boolean GroupedObject::parseGroupComment (const char* comment,
     }
 
     if (!group_comment) return FALSE;
-    char *group_name = strchr(comment, ':');
+    char *group_name = (char *) strchr(comment, ':');
     group_name++;
     SkipWhiteSpace(group_name);
 

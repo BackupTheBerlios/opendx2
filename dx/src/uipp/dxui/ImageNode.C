@@ -1099,7 +1099,7 @@ boolean ImageNode::netParseComment(const char* comment,
 
     if (this->getNetwork()->getDXMajorVersion() < 3)
     {
-	char *n = strstr(comment, "input[");
+	const char *n = strstr(comment, "input[");
 	if (n)
 	{
 	    int in, len = (n - comment) + 6;

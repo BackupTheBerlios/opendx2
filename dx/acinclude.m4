@@ -333,6 +333,18 @@ dnl Set xm_includes and/or xm_libraries.
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_PATH_XM,
 [
+AC_ARG_WITH(motif-includes, [  --with-motif-includes   set path for motif includes (default none)],[with_motif_includes=$withval], [with_motif_includes=''])
+if test "$with_motif_includes" != "yes" && test -z "$with_motif_includes"
+then
+        with_motif_includes=''
+fi
+
+AC_ARG_WITH(motif-libs, [  --with-motif-libs       set path for motif libraries (default none)],[with_motif_libs=$withval], [with-motif-libs=''])
+if test "$with_motif_libs" != "yes" && test -z "$with_motif_libs"
+then
+  with_motif_libs=''
+fi
+
   # Guess where to find include files, by looking for this one Xm .h file.
   test -z "$xm_direct_test_include" && xm_direct_test_include=Xm/Xm.h
 
@@ -376,6 +388,7 @@ xm_includes=],
                               \
     /usr/openwin/include      \
     /usr/openwin/share/include \
+    "$with_motif_includes"    \
     ; \
   do
     if test -r "$ac_dir/$xm_direct_test_include"; then

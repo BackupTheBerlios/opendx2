@@ -1404,7 +1404,7 @@ boolean Node::parseIOComment(boolean input, const char* comment,
     /*
      * If parsed ok and node exists, convert value.
      */
-    value = strstr(comment, "value =");
+    value = (char *) strstr(comment, "value =");
     if (value != NUL(char*))
     {
 	value = strchr(value,'=') + 2;

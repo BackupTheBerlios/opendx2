@@ -36,7 +36,7 @@ EchoNode::~EchoNode()
 //
 void EchoNode::execModuleMessageHandler(int id, const char *line)
 {
-    char *p = strstr(line,message_token);
+    char *p = (char *) strstr(line,message_token);
 
     if (p) {
         MsgWin *mw = theDXApplication->getMessageWindow();

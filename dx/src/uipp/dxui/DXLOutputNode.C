@@ -60,7 +60,7 @@ void DXLOutputNode::reflectStateChange(boolean unmanage)
 //
 int DXLOutputNode::handleNodeMsgInfo(const char *line)
 {
-    char *p;
+    const char *p;
 
     if ( (p = strstr(line,"label=")) ) {
 	p+=6;	// skip =.

@@ -220,7 +220,7 @@ boolean PanelGroupManager::cfgParseComment(const char *comment,
     if (strncmp(comment," panel group",12))
         return FALSE;
 
-    p = strchr(comment,'"');
+    p = (char *) strchr(comment,'"');
     if (!p) {
 	ErrorMessage("Bad panel group name (%s, line %d)",filename,lineno); 
 	return FALSE;

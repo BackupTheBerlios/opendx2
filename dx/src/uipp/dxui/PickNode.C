@@ -129,13 +129,13 @@ void PickNode::setCursorValue(int cursor,
     else
     {
 	char *newValue = new char[STRLEN(value) + 102];
-	char *term = strchr(value, '[');
+	const char *term = strchr(value, '[');
 	strcpy (newValue, "{");
 	for (int i = 0; i < cursor; ++i)
 	{
 	    ASSERT(term);
 	    int termLen;
-	    char *end = strchr(term, ']');
+	    const char *end = strchr(term, ']');
 	    ASSERT(end);
 	    termLen = end - term + 1;
 	    strncat(newValue, term, termLen);

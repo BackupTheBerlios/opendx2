@@ -191,7 +191,7 @@ char end_stmnt[64];
 	    //
 	    // Count leading spaces.
 	    //
-	    char* cp = strchr(comment, ':');
+	    const char* cp = strchr(comment, ':');
 	    int leading_space = 0;
 	    cp+=2;
 	    char c = *cp;

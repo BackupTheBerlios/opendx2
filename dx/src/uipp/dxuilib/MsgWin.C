@@ -381,7 +381,7 @@ void MsgWin::addInformation(const char *info)
     if (!info)
 	return;
 
-    char *newLine = strchr(info, '\n');
+    const char *newLine = strchr(info, '\n');
     char *s = NULL;
     if (newLine)
     {
@@ -543,7 +543,7 @@ void MsgWin::addError(const char *error)
 	    }
 	    else
 	    {
-		char *colon = strchr(o, ':');
+		const char *colon = strchr(o, ':');
 		if (moreNames)
 		{
 		    char modName[100];
@@ -982,7 +982,7 @@ void MsgWin::selectLine(int pos, boolean promptUser)
     // For each macro (denoted by the /macroname:digit/ sequence), 
     // find it in the net's editor (if there is either a net or an instance),
     // and look up the net.
-    char *line = strchr(l->line, '/');
+    const char *line = strchr(l->line, '/');
     char c;
     ASSERT(line);
     while (sscanf(line, "/%[^:]:%d%n%c", netName, &inst, &len, &c) == 3 &&

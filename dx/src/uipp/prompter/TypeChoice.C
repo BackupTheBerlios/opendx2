@@ -366,13 +366,13 @@ boolean popup_the_dialog = (is_info == FALSE);
     } else {
 	boolean is_warning = FALSE;
 	char *tmp = DuplicateString(msg);
-	char *cp = strstr(msg, "ERROR");
+	char *cp = (char *) strstr(msg, "ERROR");
 	XmString xmstr2;
 	if (cp) {
 	    cp+= strlen("ERROR");
 	    xmstr2 = XmStringCreateLtoR (cp, "oblique");
 	} else {
-	    cp = strstr(msg, "WARNING");
+	    cp = (char *) strstr(msg, "WARNING");
 	    if (cp) {
 		cp+= strlen("WARNING");
 		xmstr2 = XmStringCreateLtoR (cp, "oblique");
