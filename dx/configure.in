@@ -6,10 +6,15 @@ AC_SUBST(ARCH)
 AC_SUBST(EXEEXT)
 AC_SUBST(INSTALL_DX_EXE)
 AC_SUBST(INSTALL_DX_CSH)
+AC_SUBST(INSTALL_SCRIPT)
 AC_SUBST(FMT_LIBS)
 AC_SUBST(LIBS)
 
 SHELL=sh
+
+
+INSTALL_SCRIPT='$(INSTALL)'
+
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/dx/arch.h)
@@ -32,6 +37,8 @@ else
     INSTALL_DX_EXE=dx
     INSTALL_DX_CSH=
 fi
+
+AC_PROG_INSTALL
 
 dnl Checks for programs.
 AC_PROG_RANLIB
