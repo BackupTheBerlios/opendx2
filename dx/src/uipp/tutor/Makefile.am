@@ -20,5 +20,5 @@ noinst_HEADERS = \
 tutor_LDADD = 				\
 	../base/libBASE.a  		\
 	../widgets/libWIDGETS.a  	\
-	../dxl/libDXL.a		  	\
+	../dxl/libDXL.a @DXUI_LDFLAGS@ 	\
 	-L$(DXROOT)/lib_@ARCH@
