@@ -134,6 +134,12 @@ AC_ARG_WITH(netcdf,
 	      [with_netcdf=$withval],
 	      [with_netcdf='yes'])
 
+# Enable 64-bit arenas, if supported
+AC_ARG_WITH(large-arenas,
+	      [  --with-large-arenas     enable 64-bit arenas, when available (default is no)],
+	      [with_large_arenas=$withval],
+	      [with_large_arenas='no'])
+
 AC_ARG_WITH(javadx,
 	      [  --with-javadx           enable JAVADX (default is yes)],
 	      [with_javadx=$withval],
@@ -303,6 +309,18 @@ if test "$ARCH" = "sgi" ; then
       -32)  DXABI=" $SGI_ABI -L/usr/lib";;
       -n32) DXABI=" $SGI_ABI -L/usr/lib32";;
     esac
+fi
+
+#
+# Enable 64-bit arenas if requested and supported
+#
+AC_MSG_CHECKING(whether to enable large arenas ...)
+if test "$with_large_arenas" != 'no' -a \
+   "$ARCH" = "sgi" -a "$SGI_ABI" = "-64"; then
+  AC_DEFINE(ENABLE_LARGE_ARENAS)
+  AC_MSG_RESULT("yes")
+else
+  AC_MSG_RESULT("no")
 fi
 
 # Code to enable JAVADX to be built
