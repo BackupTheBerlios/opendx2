@@ -155,7 +155,7 @@ CLEANFILES = dx.jar server.jar javainfo libAnyDX.dll libAnyDX.so libAnyDX.dylib
 
 distclean-local:
 	rm -rf classes dxsc
-	find . -name '*.class' | xargs rm
+	find . -name '*.class' | xargs rm -f
 
 install-data-hook:
 	if test "$(ARCH)" = "intelnt" ; then \
