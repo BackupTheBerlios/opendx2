@@ -246,6 +246,8 @@ if test -z "$EXEEXT" ; then
 fi
 DX_OBJEXT
 
+DX_CHECK_HEADERS(windows.h)
+
 
 # Code to enable JAVADX to be built
 if test "$with_javadx" != 'no'; then
@@ -898,7 +900,6 @@ then
     fi
 fi
 
-DX_CHECK_STAT
 
 AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
 	putenv re_comp regcmp select socket strcspn strdup strerror \
@@ -979,6 +980,8 @@ DX_CHECK_HEADERS(DPS/XDPSlib.h DPS/dpsXclient.h \
     sys/utsname.h sys/wait.h sysent.h time.h types.h ulocks.h unistd.h \
     values.h wait.h winbase.h windows.h wingdi.h winioctl.h winsock.h \
     x11/xlibxtra.h xgl/xgl.h linux/kernel.h linux/sys.h)
+
+DX_CHECK_STAT
 
 AC_LANG_CPLUSPLUS
 DX_CHECK_HEADERS(CC/libc.h CC/osfcn.h strstrea.h strstream.h)
