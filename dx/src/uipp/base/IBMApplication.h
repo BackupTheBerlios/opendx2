@@ -207,7 +207,7 @@ class IBMApplication : public Application
     // DX.width: 300x500 into $HOME/DX
     //
     void printResource (const char* resource, const char* value);
-    virtual boolean getApplicationDefaultsFileName(char* res_file);
+    virtual boolean getApplicationDefaultsFileName(char* res_file, boolean create=FALSE);
 
     //
     // Returns a pointer to the class name.

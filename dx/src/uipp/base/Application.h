@@ -114,7 +114,7 @@ class Application : public UIComponent, public Server
     //
     // test the file to ensure that's is a regular file, and writable.
     //
-    boolean isUsableDefaultsFile(const char* res_file);
+    boolean isUsableDefaultsFile(const char* res_file, boolean create=FALSE);
 
   public:
     //
@@ -287,7 +287,7 @@ class Application : public UIComponent, public Server
 
     virtual void handleEvents();
 
-    virtual boolean getApplicationDefaultsFileName(char* res_file);
+    virtual boolean getApplicationDefaultsFileName(char* res_file, boolean create=FALSE);
 
     //
     // Returns a pointer to the class name.

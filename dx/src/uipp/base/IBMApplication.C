@@ -910,7 +910,7 @@ const char *IBMApplication::getTmpDirectory(boolean bList)
 //
 // Application Resources
 //
-boolean IBMApplication::getApplicationDefaultsFileName(char* res_file)
+boolean IBMApplication::getApplicationDefaultsFileName(char* res_file, boolean create)
 {
     //
     // Print the resource database to the file.
@@ -929,9 +929,9 @@ const char* class_name = this->getApplicationClass();
 	sprintf(res_file, "%s/ui/%s-AD", home, class_name);
     }
 
-    return this->isUsableDefaultsFile(res_file);
+    return this->isUsableDefaultsFile(res_file, create);
 #else
-    return this->Application::getApplicationDefaultsFileName(res_file);
+    return this->Application::getApplicationDefaultsFileName(res_file, create);
 #endif
 }
 
@@ -951,7 +951,7 @@ const char* class_name = this->getApplicationClass();
     sprintf (resource_line, "%s*%s: %s\n", class_name, resource, value);
 
     char res_file[256];
-    if (this->getApplicationDefaultsFileName(res_file)) {
+    if (this->getApplicationDefaultsFileName(res_file, TRUE)) {
 	// Here, it would be nice to use a function like
 	// XrmRemoveLineResource() but I can't find any
 	// such beast.  If one were available, then when
@@ -1037,7 +1037,7 @@ void IBMApplication::printNoWizardNames()
 const char* class_name = this->getApplicationClass();
 
     char res_file[256];
-    if (!this->getApplicationDefaultsFileName(res_file)) {
+    if (!this->getApplicationDefaultsFileName(res_file,TRUE)) {
 	//
 	// Probably should complain somehow, but the user is not in a position
 	// to deal with this sort of complaint.  This happens when the user

@@ -199,9 +199,16 @@ void Application::parseCommand(unsigned int* argcp, char** argv,
                                XrmOptionDescList optlist, int optlistsize)
 {
     char res_file[256];
-    this->getApplicationDefaultsFileName(res_file);
-    XrmDatabase resourceDatabase = XrmGetFileDatabase(res_file);
+    XrmDatabase resourceDatabase = 0;
+    //
+    // if the file exists, use it, but don't create an empty file.
+    //
+    if (this->getApplicationDefaultsFileName(res_file, FALSE)) 
+	resourceDatabase = XrmGetFileDatabase(res_file);
 
+    //
+    // XrmParseCommand is spec'd to accept NULL in the resourceDatabase argument.
+    //
     char *appname = GetFileBaseName(argv[0],NULL);
     XrmParseCommand(&resourceDatabase, optlist, optlistsize, 
 	                  appname, (int *)argcp, argv);
@@ -224,6 +231,13 @@ void Application::parseCommand(unsigned int* argcp, char** argv,
 	XrmMergeDatabases(resourceDatabase, &(display->db));
 #endif
     }
+
+    //
+    // It's seems as though a call to XrmDestroyDatabase(resourceDatabase)
+    // is in order here.  A quick reading of the doc doesn't explain to
+    // me why that's wrong.  If I add the call however, there will be
+    // a crash.
+    //
 }
 
 boolean Application::initialize(unsigned int* argcp, char** argv)
@@ -525,7 +539,7 @@ void Application::abortApplication()
 // this is normally something like $HOME/DX.  There is a virtual version
 // of this method in IBMApplication that uses UIRoot on the pc.
 //
-boolean Application::getApplicationDefaultsFileName(char* res_file)
+boolean Application::getApplicationDefaultsFileName(char* res_file, boolean create)
 {
     const char* class_name = this->getApplicationClass();
     char* home = (char*)getenv("HOME");
@@ -539,10 +553,10 @@ boolean Application::getApplicationDefaultsFileName(char* res_file)
 	cp++;
     }
     strcpy (&res_file[len], "-ad");
-    return this->isUsableDefaultsFile(res_file);
+    return this->isUsableDefaultsFile(res_file, create);
 }
 
-boolean Application::isUsableDefaultsFile(const char* res_file)
+boolean Application::isUsableDefaultsFile(const char* res_file, boolean create)
 {
 #if !defined(DXD_OS_NON_UNIX)
     int ru = S_IRUSR;
@@ -562,17 +576,24 @@ boolean Application::isUsableDefaultsFile(const char* res_file)
     // won't try using it to store settings.
     //
     boolean writable=TRUE;
+    boolean erase_the_file=FALSE;
     struct STATSTRUCT statb;
     if (STATFUNC(res_file, &statb)!=-1) {
 	//if (S_ISREG(statb.st_mode)) {
 	if (statb.st_mode & reg) {
 	    if ((statb.st_mode & wu) == 0) {
 		writable = FALSE;
+	    } else if ((statb.st_size==0) && (!create)) {
+		// file is usable.  If we don't need the file
+		// and the file size is 1, then erase it.  This
+		// deals with the mistake I made in creating the
+		// file in situations where it wouldn't ever be used.
+		erase_the_file = TRUE;
 	    }
 	} else {
 	    writable = FALSE;
 	}
-    } else if (errno==ENOENT) {
+    } else if ((errno==ENOENT)&&(create)) {
 	int fd = creat(res_file, ru | wu | rg | ro); //S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 	if (fd >= 0) {
 	    close(fd);
@@ -582,6 +603,11 @@ boolean Application::isUsableDefaultsFile(const char* res_file)
 	}
     } else {
 	//perror(res_file);
+	writable = FALSE;
+    }
+
+    if ((writable) && (erase_the_file)) {
+	unlink(res_file);
 	writable = FALSE;
     }
 

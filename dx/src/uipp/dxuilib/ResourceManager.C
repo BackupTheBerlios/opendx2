@@ -193,7 +193,7 @@ void ResourceManager::initializeValue(Symbol key)
     const char* class_name = theIBMApplication->getApplicationClass();
 
     char fname[256];
-    if (!theIBMApplication->getApplicationDefaultsFileName(fname)) {
+    if (!theIBMApplication->getApplicationDefaultsFileName(fname, TRUE)) {
 	if (!this->write_protection_complaint) {
 	    ModalWarningMessage (theApplication->getRootWidget(), ERRMSG, fname);
 	    this->write_protection_complaint = TRUE;
@@ -221,7 +221,7 @@ void ResourceManager::initializeMultiValued(Symbol key)
     const char* class_name = theIBMApplication->getApplicationClass();
 
     char fname[256];
-    if (!theIBMApplication->getApplicationDefaultsFileName(fname)) {
+    if (!theIBMApplication->getApplicationDefaultsFileName(fname, TRUE)) {
 	if (!this->write_protection_complaint) {
 	    ModalWarningMessage (theApplication->getRootWidget(), ERRMSG, fname);
 	    this->write_protection_complaint = TRUE;
