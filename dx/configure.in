@@ -496,6 +496,40 @@ then
     fi
 fi
 
+#
+# Check for Xpm
+#
+have_xpm='no'
+LIB_XPM=''
+AC_CHECKING(for XPM support ...)
+failed=0;
+passed=0;
+AC_CHECK_HEADERS(xpm.h X11/xpm.h)
+if test "$ac_cv_header_xpm_h" = 'yes' -o "$ac_cv_header_X11_xpm_h" = 'yes'
+then
+    passed=`expr $passed + 1`
+else
+    failed=`expr $failed + 1`
+fi
+AC_CHECK_LIB(Xpm,XpmReadFileToPixmap,passed=`expr $passed + 1`,failed=`expr $failed + 1`, )
+AC_MSG_CHECKING(if XPM package is complete)
+if test $passed -gt 0
+then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_xpm='no (failed tests)'
+    else
+	LIB_XPM='-lXpm'
+	LIBS="$LIB_XPM $LIBS"
+	AC_DEFINE(HAVE_LIBXPM)
+	AC_MSG_RESULT(yes)
+	have_xpm='yes'
+    fi
+else
+AC_MSG_RESULT(no)
+fi
+
 
 #
 # Check for HDF
@@ -534,7 +568,7 @@ if test "$ARCH" = "intelnt" ; then
     else
     AC_MSG_RESULT(no)
     fi
-# check for unix
+dnl -- check for unix
 else
     AC_CHECK_LIB(df,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,[ -lz -ljpeg ])
     AC_MSG_CHECKING(if HDF package is complete)
@@ -590,7 +624,7 @@ if test "$ARCH" = "intelnt" ; then
     else
     AC_MSG_RESULT(no)
     fi
-# check for unix
+dnl -- check for unix
 else
     AC_CHECK_LIB(cdf,CDFlib,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if CDF package is complete)
@@ -680,20 +714,15 @@ if test "$ARCH" = "intelnt" ; then
     else
     AC_MSG_RESULT(no)
     fi
-# check for unix
+dnl -- check for unix
 else
 
 dnl The ImageMagick configuration can be collected with an ImageMagick
 dnl routine. This allows us to simplify the configuration of all the
 dnl format configuration libraries.
 
-	FMT_LIBS=`Magick-config --libs`
-	FMT_LIBS="`Magick-config --ldflags` $FMT_LIBS"
-	LIBS="$FMT_LIBS $LIBS"
-	CFLAGS="`Magick-config --cflags` $CFLAGS"
-	CPPFLAGS="`Magick-config --cppflags` $CPPFLAGS"
-    AC_CHECK_LIB( Magick,GetImageInfo, passed=`expr $passed + 1`, failed=`expr $failed + 1`,
-       [ -lm -lX11 -lXext ])
+    LIB_MAGICK="`Magick-config --ldflags` `Magick-config --libs`"
+    AC_CHECK_LIB( Magick,GetImageInfo, passed=`expr $passed + 1`, failed=`expr $failed + 1`, [ $LIB_MAGICK ])
     AC_MSG_CHECKING(if ImageMagick package is complete)
     if test $passed -gt 0
     then
@@ -702,8 +731,14 @@ dnl format configuration libraries.
 	AC_MSG_RESULT(no -- some components failed test)
         have_magick='no (failed tests)'
     else
-	LIB_MAGICK='-lMagick'
-	LIBS="$LIB_MAGICK $LIBS"
+dnl Magick-config won't work for FMT_LIBS--how are we going to handle that?
+dnl	FMT_LIBS="$FMT_LIBS `Magick-config --libs`"
+dnl	FMT_LIBS="`Magick-config --ldflags` $FMT_LIBS"
+	CFLAGS="`Magick-config --cflags` $CFLAGS"
+	CPPFLAGS="`Magick-config --cppflags` $CPPFLAGS"
+	LIB_MAGICK="$LIBS `Magick-config --ldflags` `Magick-config --libs`"
+dnl UNIQUIFY will remove duplicate library tokens leaving the last instance.
+	AC_UTILS_UNIQUIFY($LIB_MAGICK, LIBS)
 	FMT_LIBS="$FMT_LIBS libMagick.a"
 	AC_DEFINE(HAVE_LIBMAGICK)
 	AC_MSG_RESULT(yes)

@@ -745,7 +745,7 @@ dnl  More information for setting up CYGWIN
 dnl  -------------------------------------------------------------
 AC_DEFUN(DX_CYGWIN_MOUNTS,
 [
-    changequote(<<,>>)dnl
+changequote(<<,>>)dnl
     AC_MSG_CHECKING(if intelnt on cygwin, check for mounts)
     mnts="none"
     if test "$ARCH" = "intelnt" ; then
@@ -767,7 +767,7 @@ AC_DEFUN(DX_CYGWIN_MOUNTS,
     else
 	    AC_MSG_RESULT(no)
     fi
-    changequote([,])dnl
+changequote([,])dnl
 ])
 
 
@@ -1358,3 +1358,37 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
         fi
 ])
 
+#
+# autoconf macro to remove duplicated elements in a list, but to leave
+# in place only the *last* occurence of each duplicate element.
+# Intended for use with lists of -l args, and the like.
+#
+# usage: AC_UTILS_UNIQUIFY([list],[shell-var-to-set-to-uniquified-list])
+
+AC_DEFUN(AC_UTILS_UNIQUIFY,
+[
+ac_u_bar=""
+for arg in $1 ; do
+changequote(<<,>>)dnl
+	x=`echo $arg | tr -dc '[:alnum:]'`
+changequote([,])dnl
+	eval test x\${ac_u_$x} = x;
+	if test $? = 0 ; then
+		eval export ac_u_$x=1
+	else
+		eval export ac_u_$x=\`expr \${ac_u_$x} + 1\`
+	fi
+done
+
+for arg in $1 ; do
+changequote(<<,>>)dnl
+	x=`echo $arg | tr -dc '[:alnum:]'`
+changequote([,])dnl
+	eval ac_u_${x}=\`expr \${ac_u_$x} - 1\`
+	eval test \$ac_u_${x} = 0;
+	if test $? = 0 ; then
+		ac_u_bar="$ac_u_bar $arg"
+	fi
+done
+$2="$ac_u_bar"
+])      
