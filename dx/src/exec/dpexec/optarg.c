@@ -67,6 +67,7 @@
 * No errors are defined.
 *****************************************************************************/
 
+#include <dxconfig.h>
 #if !defined(HAVE_GETOPT)
 
 #include <stdio.h>                  /* for EOF */
