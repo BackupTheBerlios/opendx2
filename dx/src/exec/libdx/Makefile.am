@@ -14,6 +14,13 @@ noinst_HEADERS = \
 	binSort.h triangles.h internals.h diskio.h zclip.h edf.h render.h \
 	qsort.c
 
+EXTRA_DIST = \
+	arrayClass.X cameraClass.X clippedClass.X fieldClass.X groupClass.X \
+	lightClass.X objectClass.X privateClass.X screenClass.X stringClass.X \
+	xformClass.X interpClass.X fieldinterpClass.X groupinterpClass.X \
+	fle2DClass.X linesII1DClass.X linesRR1DClass.X linesRI1DClass.X \
+	trisRI2DClass.X quadsRR2DClass.X cubesIIClass.X cubesRRClass.X \
+	tetrasClass.X quadsII2DClass.X
 
 BUILT_SOURCES = \
 	arrayClass.c cameraClass.c clippedClass.c fieldClass.c groupClass.c \
@@ -30,27 +37,15 @@ BUILT_SOURCES = \
 	trisRI2DClass.h quadsRR2DClass.h cubesIIClass.h cubesRRClass.h \
 	tetrasClass.h quadsII2DClass.h  
 
+libLIBDX_a_LIBADD =  \
+	arrayClass.o cameraClass.o clippedClass.o fieldClass.o groupClass.o \
+	lightClass.o objectClass.o privateClass.o screenClass.o stringClass.o \
+	xformClass.o interpClass.o fieldinterpClass.o groupinterpClass.o \
+	fle2DClass.o linesII1DClass.o linesRR1DClass.o linesRI1DClass.o \
+	trisRI2DClass.o quadsRR2DClass.o cubesIIClass.o cubesRRClass.o \
+	tetrasClass.o quadsII2DClass.o 
+
 libLIBDX_a_SOURCES =  \
-	arrayClass.X cameraClass.X clippedClass.X fieldClass.X groupClass.X \
-	lightClass.X objectClass.X privateClass.X screenClass.X stringClass.X \
-	xformClass.X interpClass.X fieldinterpClass.X groupinterpClass.X \
-	fle2DClass.X linesII1DClass.X linesRR1DClass.X linesRI1DClass.X \
-	trisRI2DClass.X quadsRR2DClass.X cubesIIClass.X cubesRRClass.X \
-	tetrasClass.X quadsII2DClass.X \
-	\
-	arrayClass.c cameraClass.c clippedClass.c fieldClass.c groupClass.c \
-	lightClass.c objectClass.c privateClass.c screenClass.c stringClass.c \
-	xformClass.c interpClass.c fieldinterpClass.c groupinterpClass.c \
-	fle2DClass.c linesII1DClass.c linesRR1DClass.c linesRI1DClass.c \
-	trisRI2DClass.c quadsRR2DClass.c cubesIIClass.c cubesRRClass.c \
-	tetrasClass.c quadsII2DClass.c \
-	\
-	arrayClass.h cameraClass.h clippedClass.h fieldClass.h groupClass.h \
-	lightClass.h objectClass.h privateClass.h screenClass.h stringClass.h \
-	xformClass.h interpClass.h fieldinterpClass.h groupinterpClass.h \
-	fle2DClass.h linesII1DClass.h linesRR1DClass.h linesRI1DClass.h \
-	trisRI2DClass.h quadsRR2DClass.h cubesIIClass.h cubesRRClass.h \
-	tetrasClass.h quadsII2DClass.h \
 	\
 	array.c basic.c box.c cache.c camera.c clipped.c composite.c \
 	cstarray.c field.c grid.c group.c helper.c init.c light.c lock.c \
