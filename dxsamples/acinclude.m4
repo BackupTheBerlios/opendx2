@@ -124,10 +124,10 @@ AC_DEFUN(DX_ARCH_SPECIFIC,
 	    DXEXEC_EXP='-Wl,-export-dynamic'
 	    ;;
     esac
-    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
-    AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP)
-    AC_DEFINE_UNQUOTED(C_LDARGS, $C_LDARGS)
-    AC_DEFINE_UNQUOTED(RTL_LIBS, $RTL_LIBS)
+    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP, [Define dxexec.exp])
+    AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP, [Define dxexec.imp])
+    AC_DEFINE_UNQUOTED(C_LDARGS, $C_LDARGS, [Define c ldflags])
+    AC_DEFINE_UNQUOTED(RTL_LIBS, $RTL_LIBS, [Define run-time libs])
     AC_MSG_RESULT(done)
 ])
 
@@ -164,11 +164,11 @@ if test -n "$ac_cv_dx_install_path" ; then
 fi
 DX_JAR=""
 DX_JAVA_CLASSPATH=""
-if test -r $DXINST/lib_$DXARCH/arch.mak ; then
+if test -r "$DXINST/lib_$DXARCH/arch.mak" ; then
   DX_JAVA_CLASSPATH=`grep DX_JAVA_CLASSPATH $DXINST/lib_$DXARCH/arch.mak | sed -e "s/DX_JAVA_CLASSPATH =//" -e "s/ //"`
 fi
-if test -r $DXINST/java/htmlpages/dx.jar ; then
-  DX_JAR=$DXINST/java/htmlpages/dx.jar
+if test -r "$DXINST/java/htmlpages/dx.jar" ; then
+  DX_JAR="$DXINST/java/htmlpages/dx.jar"
   AC_MSG_RESULT([$DX_JAR])
   ifelse([$1], , , [$1])
 else

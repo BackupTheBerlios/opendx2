@@ -1,5 +1,12 @@
 #include "aclocal.m4"
 
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT([dxsamples],[4.3.0])
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_SRCDIR([programs/AutoColor.net])
+AM_INIT_AUTOMAKE
+
 AC_SUBST(SHELL)
 
 AC_SUBST(DXINST)
@@ -17,12 +24,6 @@ AC_SUBST(C_LDARGS)
 AC_SUBST(RTL_LIBS)
 
 SHELL=/bin/sh
-
-dnl Process this file with autoconf to produce a configure script.
-
-AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(dxsamples, 4.3.0)
-AC_CONFIG_HEADER(config.h)
 
 AC_ARG_WITH(javadx,
               [  --with-javadx           enable JAVADX (default is yes)],
