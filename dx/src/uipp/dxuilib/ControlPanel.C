@@ -1796,7 +1796,7 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
     int       height;
     int       old_id;
     int	      devstyle;
-    boolean   startup;
+    int       startup;
     float 	norm_x, norm_y, norm_width, norm_height;
 
     ASSERT(comment);
@@ -1894,7 +1894,7 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
 
     this->xpos    = x;
     this->ypos    = y;
-    this->startup = startup;
+    this->startup = (boolean)startup;
 
     return TRUE;
 }

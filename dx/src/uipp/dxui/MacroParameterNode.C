@@ -311,9 +311,9 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 	int pos;
 	char name[1000];
 	char value[1000];
-	boolean descriptive;
+	int descriptive;
 	char description[1000];
-	boolean required, visible;
+	int required, visible;
 	int itemsParsed = sscanf(comment, PARAM_FMT, 
 				 &pos,
 				 name,
@@ -351,7 +351,7 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 		pd->setDefaultValue("(no default)");
 	    else
 		pd->setDefaultValue(value);
-	    pd->setDefaultVisibility(visible);
+	    pd->setDefaultVisibility((boolean)visible);
 	}
 	else
 	{
@@ -359,7 +359,7 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 	    ParameterDefinition *pd = this->getParameterDefinition();
 	    pd->setName(name);
 	    pd->setDescription(description);
-	    pd->setDefaultVisibility(visible);
+	    pd->setDefaultVisibility((boolean)visible);
 	}
 	return TRUE;
     }

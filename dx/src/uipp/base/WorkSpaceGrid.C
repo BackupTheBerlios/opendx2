@@ -160,7 +160,7 @@ boolean WorkSpaceGrid::parseComment(const char *comment,
                                 const char *filename, int lineno)
 {
     int      items_parsed;
-    boolean  snap;
+    int      snap;
     int      width;
     int      height;
     char     alignment[8];

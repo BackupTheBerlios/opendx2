@@ -1296,7 +1296,7 @@ boolean Node::parseIOComment(boolean input, const char* comment,
                 const char* filename, int lineno, boolean valueOnly)
 {
     int      defaulting = 0, allowed_params, items_parsed, ionum, r;
-    boolean  visible = TRUE;
+    int  visible = TRUE;
     Type     type = DXType::UndefinedType;
     char     *value, *ioname;
     boolean	parse_error = FALSE;
@@ -1459,10 +1459,10 @@ boolean Node::parseIOComment(boolean input, const char* comment,
 		
     if (!valueOnly) {
 	if (input) {
-	    this->setInputVisibility(ionum, visible);
+	    this->setInputVisibility(ionum, (boolean)visible);
 	} else {	// Outputs always use the value found in the file
 	    this->useAssignedOutputValue(ionum, FALSE);
-	    this->setOutputVisibility(ionum, visible);
+	    this->setOutputVisibility(ionum, (boolean)visible);
 	}
     }
     
