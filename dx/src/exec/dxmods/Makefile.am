@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -D$(ARCH) -I$(DXROOT)/include -I../dpexec
+INCLUDES = -D$(ARCH) -I../../../include -I../dpexec
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 dxdir = $(DXROOT)

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -D$(ARCH) -I$(DXROOT)/include -I../libdx
+INCLUDES = -D$(ARCH) -I../../../include -I../libdx
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 dxdir = $(DXROOT)
