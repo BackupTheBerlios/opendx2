@@ -208,12 +208,12 @@ char *strrstr(char *, char *);
 #undef DXD_GAMMA_16BIT
 #undef DXD_GAMMA_24BIT
 #undef DXD_GAMMA_32BIT
-#define DXD_GAMMA_8BIT	1.0
-#define DXD_GAMMA_12BIT	1.0
-#define DXD_GAMMA_15BIT	1.0
-#define DXD_GAMMA_16BIT	1.0
-#define DXD_GAMMA_24BIT	2.0
-#define DXD_GAMMA_32BIT	2.0
+#define DXD_GAMMA_8BIT	0.9
+#define DXD_GAMMA_12BIT	0.9
+#define DXD_GAMMA_15BIT	0.9
+#define DXD_GAMMA_16BIT	0.9
+#define DXD_GAMMA_24BIT	0.9
+#define DXD_GAMMA_32BIT	0.9
 
 #endif /* macos */
 
