@@ -25,54 +25,58 @@
 //
 // How it works:
 //
-// 1) For each node, record the hops required to reach the node
-//    from the top of the graph.  Optionally push nodes up or
-//    down as aesthetics require.
+// ...in a nutshell: Traverse the graph assigning a hop count
+// to each node computed as the number of hops from the top of
+// the graph to reach the node.  Sort the graph by hop count.
+// Among nodes that share a hop count, sort by the x coord
+// of the nodes' arc's destination.  Iterate over the sorted
+// lists placing nodes with output tab above input tab
+// whereever possible.
 //
-// 2) Set up associations between annotations and nodes by finding
-// each annotation's nearest node.  This happens after computeHopCounts()
-// because we need to use the LayoutInfo that computeHopCounts() sets
-// up.
+// ...in more detail:
+// - For each decorator creating a list of nodes sorted by
+// increasing distance from the decorator.  This is used at
+// the end of the layout so that I can place the decorator close
+// to some node that it was close to before the layout started.
+// - Tag every node with the number of hops required to reach
+// the node from the top of the graph.  After that's computed
+// I use that number * a constant to compute the node's y coord.
+// For many nodes I tweak the tag after the initial computation
+// because many nodes could really be represented by a variety
+// of values.  Example: The max hop count from top to bottom
+// of the graph is 5, but there's also an Input->Output.  The
+// Input and Output nodes could be tagged 1,2 or 4,5.  Either
+// is correct and it just depends on how you want things to
+// look.
+// - Create group data structures.  There is 1 group for every
+// set of connected nodes.  In other words any 2 nodes that can
+// be reached without lifting pen from paper are in the same
+// group.
+// - Sort the graph according to descending hop tag.
+// - Perform the group's layout method starting from the 
+// beginning of the sorted list.  Within the group, create
+// row data structures - 1 row for all nodes that share
+// a hop tag.  The set of nodes placed in the layout method
+// consists of all the nodes ABOVE the root node.
+// - Perform the layout at the very bottom of the graph
+// trivially by placing it at INITIAL_X,INITIAL_Y.
+// - Perform each subsequent row's layout by sorting the
+// nodes in the row by increasing x coord of the destination
+// arc. The x coord is available after the preceeding row has
+// been placed.
 //
-// 3) Sort the list in descending order of hop,ancestor counts.
-//    Internal nodes are placed according to the order in which
-//    they're wired to inputs.  
+
 //
-// 4) Group the nodes.  Any 2 nodes that have a path between them
-//      go into the same group.
-//
-// 5) For the first node in the list, walk up the graph placing nodes.
-//
-// 6) For each subsequent unmarked node in the list, walk up the graph
-//    until hitting a marked node.  
-//
-// 7) All nodes have now been divied up into groups.  Within groups,
-// the nodes have been positioned.  Each group is a set of nodes with
-// connections internal to the group.  Now it's time to position each
-// group.  This should be accomplished with respect shown to the arrangement
-// of the groups within the canvas before automatic layout was kicked
-// off.  This is what gives authors a measure of control over the 
-// appearance of the result.
-//
-// 9) To apply placmenets, compute the bounding box of the nodes'
-//    placments, then translate so that all nodes have positive x,y
-//    and so that the center of the graph is near the center of the
-//    vpe if possible.
-//
-// 10) Rebuild all the arcs by fetching the workspace data structure,
-//    destroying it and creating a new one.  The workspace lines can
-//    be created and destroyed but never modified.
-//
-// Extras:
-// 1) Before beginning, gather up all vpe annotations.  Compute distances
-// to standIns, then sort in ascending order.  At end placment, try to 
-// put each decorator close to its nearest standIn.
 // ToDo:
-// 1) A common thing is Switch(Inquire(foo,"is null+1"),foo,...);
-// This should get special handling
-// 2) If an attempt to make a straight line between source and destination
-// fails, then it would be nice to check to see if source has another 
-// destination.  Maybe making a straight line for the other arc would work.
+// 1) When merging 2 sections of a connected subgraph (repositionNewPlacements())
+// I often place new nodes outside the bounding box of existing nodes.  This is
+// too conservative.  The existing placements have a shape and the new placements
+// have a shape and it would be nice to fit them together more closely.
+// 2) When preparing the call to qsort() in LayoutRow there are some nodes
+// that have 2 destination arcs on the next lower row.  On behalf of those nodes,
+// it would be nice to perform the sort and layout multiple times and measuring
+// the quality of the result.  Then choose the one that worked the best.
+// 3) Finish what I already started in spreadSpaghetti()
 //
 
 //
@@ -99,10 +103,13 @@ int GraphLayout::StandInHeight = -1;
 
 //
 // When attempting to position nodes, we always check for collisions.
-// If we find a collision we just start sliding it up/down/left/right
-// until finding a free spot.  We also offset the y a little bit
-// just to make it stick out.
-//
+// In most cases there should never be any.  Only when merging two
+// chunks of the same graph can it happen, but we check for it.  If
+// there would be one then we place somewhere else.  Note: if you
+// perform the layout, but find the Ctrl-U can't undo because it
+// produces a warning message, the problem is probably that there
+// was a collision when placing nodes.  The undo feature won't move
+// nodes if doing so would cause bumper cars.
 // Currently unused
 #define COLLISION_OFFSET 15
 
@@ -117,21 +124,17 @@ int GraphLayout::StandInHeight = -1;
 #define DESIRED_FUDGE 15
 
 //
-// During node placment we check to see if were putting a node on
-// top of another.  If so, we tweak the coords and retry.  After
-// TOO_MANY_COLLISIONS we bail out.
-//
-#define TOO_MANY_COLLISIONS 500
-
-//
 // Starting coords for graph placement.  They have no meaning.  They
 // just shouldn't get negative or greater than 64K since they might
-// get stored into an unsigned short.  I used lots of different values
-// in these constants as a way of testing.
+// get stored into an unsigned short.  
 //
 #define INITIAL_X 0//5000 
 #define INITIAL_Y 0//5000
 
+//
+// $ setenv DEBUG_PLACEMENT
+// in order to use this.
+//
 static boolean debug = FALSE;
 
 //
@@ -139,7 +142,7 @@ static boolean debug = FALSE;
 // by decreasing hop count. So the things early in the list are at the bottom
 // of the graph.
 //
-int NodeInfo::Comparator (const void* a, const void* b)
+int NodeInfo::SortByHop (const void* a, const void* b)
 {
     Node** aptr = (Node**)a;
     Node** bptr = (Node**)b;
@@ -213,6 +216,10 @@ void AnnotationInfo::initialize (VPEAnnotator* dec)
     this->LayoutInfo::initialize(dec);
 }
 
+//
+// This is the entry point for automatic graph layout.  This is a public
+// method called from EditorWindow.
+//
 boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const List& decorators)
 {
     int offset;
@@ -223,7 +230,6 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
     ListIterator li;
     boolean retval = TRUE;
     Node* n;
-    this->collisions = 0;
 
     // exclude the nodes that aren't in the current page
     li.setList((List&)nodes);
@@ -236,7 +242,6 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	    int w,h;
 	    si->getXYSize(&w,&h);
 	    GraphLayout::StandInHeight = h;
-	    this->height_per_level = GraphLayout::HeightPerLevel;
 	}
 	nodeList.appendElement(n);
     }
@@ -280,7 +285,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
     //    Internal nodes are placed according to the order in which
     //    they're wired to inputs.  
     //
-    qsort (reflow, reflow_count, sizeof(Node*), NodeInfo::Comparator);
+    qsort (reflow, reflow_count, sizeof(Node*), NodeInfo::SortByHop);
 
     //
     // 4) Group the nodes.  Any 2 nodes that have a path between them
@@ -331,7 +336,6 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
     //    until hitting a marked node.  
     //
     for (next=1 ; next<reflow_count; next++) {
-	if (this->collisions > TOO_MANY_COLLISIONS) break;
 	n = reflow[next];
 	linfo = (NodeInfo*)n->getLayoutInformation();
 	if (linfo->isPositioned()) continue;
@@ -357,12 +361,19 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	    ninfo->getXYPosition (dummy, y);
 	    separated = FALSE;
 	    int dd = ninfo->getGraphDepth() - linfo->getGraphDepth();
-	    y-= (dd*this->height_per_level);
+	    y-= (dd*GraphLayout::HeightPerLevel);
 	    break;
 	}
 
 	if (!separated) {
 	    if (debug) fprintf (stdout, " [%d] connected\n", __LINE__);
+	    // The value 20000 isn't really meaningful.  Its purpose is to
+	    // keep new node placments clear of existing node placements 
+	    // because we want the new ones to get a decent arrangement
+	    // without colliding with others in the group.  After we've
+	    // finished this section of the graph, then we'll take all
+	    // the nodes just placed and move them as a group, to a better
+	    // location relative to the others in their group.
 	    linfo->setProposedLocation (20000, y);
 	} else {
 	    if (debug) fprintf (stdout, " [%d] disconnected", __LINE__);
@@ -377,15 +388,6 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	if (debug) fprintf (stdout, "\n");
     }
 
-    if (this->collisions > TOO_MANY_COLLISIONS) {
-	ErrorMessage (
-	    "Bailed out of automatic layout because\n"
-	    "too many nodes' placements conflicted."
-	);
-	retval = FALSE;
-	goto cleanup;
-    }
-
     //
     // 7) All nodes have now been divied up into groups.  Within groups,
     // the nodes have been positioned.  Each group is a set of nodes with
@@ -396,11 +398,6 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
     // appearance of the result.
     // 
     this->repositionGroups(reflow, reflow_count);
-
-    //
-    // 8) apply arc straightening
-    //
-    this->postProcessing(reflow, reflow_count);
 
     //
     // 9) To apply placmenets, compute the bounding box of the nodes'
@@ -435,8 +432,8 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	x-= minx;
 	y-= miny;
 	linfo->setProposedLocation (x, y);
-	// By uncommenting this line, I'm able to see what worked
-	// and what didn't.  I like this information but I don't
+	// By uncommenting this line, I'm able to verify that everything
+	// worked as planned.  I like this information but I don't
 	// what it shown to users.
 	//if (linfo->collided()) y+=COLLISION_OFFSET;
 	this->editor->saveLocationForUndo(n->getStandIn(), FALSE, (boolean)l);
@@ -619,15 +616,11 @@ boolean GraphLayout::CanMoveTo (LayoutInfo* info, int x, int y, Node* reflow[], 
     return TRUE;
 }
 
-boolean GraphLayout::arcStraightener(WorkSpace* workSpace, const List& nodeList)
-{
-    return TRUE;
-}
-
-void GraphLayout::postProcessing(Node* reflow[], int reflow_count)
-{
-}
-
+//
+// Compute a location for the source node of arc.  The location should
+// result in a straight wire from the source's output tab to the 
+// destination's input tab.
+//
 boolean GraphLayout::positionSourceOverDest (Ark* arc, int& x, int& y)
 {
     int input, output;
@@ -645,7 +638,7 @@ boolean GraphLayout::positionSourceOverDest (Ark* arc, int& x, int& y)
     int src_tab_x = src_si->getOutputParameterTabX(output);
     sx = dx + (dst_tab_x - src_tab_x);
     sy = dy + (src_info->getGraphDepth()-dst_info->getGraphDepth()) * 
-	      this->height_per_level;
+	      GraphLayout::HeightPerLevel;
 
     boolean collided = (this->nodeCanMoveTo(source, sx,sy) == FALSE);
 
@@ -671,7 +664,7 @@ boolean GraphLayout::positionSource (Ark* arc, int xcoord_of_arc)
     dst_info->getXYPosition (dummy,dy);
     int half_tab_width = 9;
     sy = dy + (src_info->getGraphDepth()-dst_info->getGraphDepth()) * 
-	      this->height_per_level;
+	      GraphLayout::HeightPerLevel;
 
     int src_tab_x = src_si->getOutputParameterTabX(input);
     sx = xcoord_of_arc - (src_tab_x + half_tab_width);
@@ -827,6 +820,11 @@ Ark* GraphLayout::IsSingleInputNoOutputNode (Node* n, boolean* shares_an_output,
     return input_arc;
 }
 
+//
+// Compute a location for the destination node of arc.  The location should
+// result in a straight wire from the source's output tab to the 
+// destination's input tab.
+//
 boolean GraphLayout::positionDestUnderSource (Ark* arc, int& x, int& y)
 {
     int input, output;
@@ -844,162 +842,12 @@ boolean GraphLayout::positionDestUnderSource (Ark* arc, int& x, int& y)
     int src_tab_x = src_si->getOutputParameterTabX(output);
     dx = sx + (-dst_tab_x + src_tab_x);
     dy = sy + ( (dst_info->getGraphDepth()-src_info->getGraphDepth()) * 
-	   this->height_per_level
+	   GraphLayout::HeightPerLevel
 	 );
     boolean collided = (this->nodeCanMoveTo(destination, dx,dy)==FALSE);
     x = dx;
     y = dy;
     return collided;
-}
-
-//
-// The nodes for right_arc have been placed already.  We're preparing to
-// place the standIn for the source node of left_arc.  We don't want the
-// placement to obstruct the right_arc.  Assume the right_arc is straight.
-//
-int GraphLayout::computeLeftOffset (Ark* left_arc, Ark* right_arc)
-{
-    int left_output, right_output;
-    int left_input, right_input;
-    Node* destination = left_arc->getDestinationNode(left_input);
-    NodeInfo* dest_info = (NodeInfo*)destination->getLayoutInformation();
-    ASSERT (dest_info->isPositioned());
-    ASSERT (destination == right_arc->getDestinationNode(right_input));
-    Node* left_src = left_arc->getSourceNode(left_output);
-    Node* right_src = right_arc->getSourceNode(right_output);
-    StandIn* left_si = left_src->getStandIn();
-    StandIn* right_si = right_src->getStandIn();
-    StandIn* dest_si = destination->getStandIn();
-
-    NodeInfo* right_info = (NodeInfo*)right_src->getLayoutInformation();
-    NodeInfo* left_info = (NodeInfo*)left_src->getLayoutInformation();
-    ASSERT (right_info->isPositioned());
-
-    //
-    // If the 2 source nodes are at different levels of the graph, then
-    // they have to be separated by enough to avoid ark obstruction.
-    // If they're at the same level of the graph, then they have to be
-    // separated by enough to avoid bumper cars.
-    //
-    int left_depth = left_info->getGraphDepth();
-    int right_depth = right_info->getGraphDepth();
-
-    int right_x, right_y;
-    right_info->getXYPosition (right_x, right_y);
-
-    int dx,dy;
-    // compute the desired location of the left standin.
-    dest_info->getXYPosition (dx,dy);
-    int src_tab_x = left_si->getOutputParameterTabX(left_output);
-    int dst_tab_x = dx + dest_si->getInputParameterTabX(left_input);
-    int desired_left_x = dst_tab_x - src_tab_x;
-    int sw,sh;
-    left_info->getXYSize(sw,sh);
-    if (left_depth == right_depth) {
-	// ...and make sure to leave 5 extra pixels because it looks goofy to
-	// have standIns really be exactly adjacent
-	//
-	// the right edge of the left standIn has to clear the
-	// left edge of the right standIn.
-	if ((desired_left_x+sw+REQUIRED_FUDGE) < right_x) {
-	    return 0;
-	} else {
-	    return right_x - (desired_left_x+sw+DESIRED_FUDGE);
-	}
-    } else if (left_depth < right_depth) {
-	int scoot = ((right_depth-left_depth)*sw);
-	scoot = MIN(scoot, 300);
-	return scoot;
-    } else {
-	// the right edge of the left  standIn has to clear the
-	// left edge of the right tab instead of the left edge
-	// of the right standIn.
-	int right_tab_x = dx+dest_si->getInputParameterTabX(right_input);
-	if ((desired_left_x+sw) <  right_x) {
-	    return 0;
-	} else {
-	    return right_x - (desired_left_x+sw);
-	}
-    }
-}
-
-//
-// The nodes for left_arc have been placed already.  We're preparing to
-// place the standIn for the source node of right_arc.  We don't want the
-// placement to obstruct the left_arc.  Assume the left_arc is straight.
-//
-int GraphLayout::computeRightOffset (Ark* left_arc, Ark* right_arc)
-{
-    int left_output, right_output;
-    int left_input, right_input;
-    Node* destination = left_arc->getDestinationNode(left_input);
-    NodeInfo* dest_info = (NodeInfo*)destination->getLayoutInformation();
-    ASSERT (dest_info->isPositioned());
-    ASSERT (destination == right_arc->getDestinationNode(right_input));
-    Node* left_src = left_arc->getSourceNode(left_output);
-    Node* right_src = right_arc->getSourceNode(right_output);
-    StandIn* left_si = left_src->getStandIn();
-    StandIn* right_si = right_src->getStandIn();
-    StandIn* dest_si = destination->getStandIn();
-
-    NodeInfo* left_info = (NodeInfo*)left_src->getLayoutInformation();
-    ASSERT (left_info->isPositioned());
-    NodeInfo* right_info = (NodeInfo*)right_src->getLayoutInformation();
-
-    //
-    // If the 2 source nodes are at different levels of the graph, then
-    // they have to be separated by enough to avoid ark obstruction.
-    // If they're at the same level of the graph, then they have to be
-    // separated by enough to avoid bumper cars.
-    //
-    int left_depth = left_info->getGraphDepth();
-    int right_depth = right_info->getGraphDepth();
-
-
-    // compute the desired location of the right standin.
-    int dx,dy;
-    dest_info->getXYPosition (dx,dy);
-    int src_tab_x = right_si->getOutputParameterTabX(right_output);
-    int dst_tab_x = dx + dest_si->getInputParameterTabX(right_input);
-    int desired_right_x = dst_tab_x - src_tab_x;
-    int sx,sy;
-    int sw,sh;
-    left_info->getXYSize(sw,sh);
-    left_info->getXYPosition(sx,sy);
-    // ...and make sure to leave 5 extra pixels because it looks goofy to
-    // have standIns really be exactly adjacent
-    if (left_depth == right_depth) {
-	// the left edge of the right standIn has to clear the
-	// right edge of the left standIn.
-	if ((sx+sw+REQUIRED_FUDGE) < desired_right_x) {
-	    return 0;
-	} else {
-	    return (sx+sw+DESIRED_FUDGE) - desired_right_x;
-	}
-    } else if (right_depth < left_depth) {
-	// the node is higher up the tree so we need to
-	// scoot it over extra far.  This part is a real
-	// hack.  I want to fix this by making a list
-	// of all the nodes on a level sorted on increasing expected
-	// x coord.
-	int rw,rh;
-	right_info->getXYSize(rw,rh);
-	int scoot = ((left_depth-right_depth)*rw);
-	scoot = MIN(scoot, 300);
-	return scoot;
-    } else {
-	// the left edge of the right standIn has to clear the
-	// right edge of the left tab instead of the right edge of
-	// the left standIn. This is less restrictive.  We can't 
-	// compute the size of a tab, so we just guess at it.
-	int left_tab_x = dx + dest_si->getInputParameterTabX(left_input);
-	int tab_width = 12; // From StandIn.C, tabs are 16 wide;
-	if ((left_tab_x + tab_width) < desired_right_x) {
-	    return 0;
-	} else {
-	    return (left_tab_x + tab_width) - desired_right_x;
-	}
-    }
 }
 
 void GraphLayout::bottomUpTraversal (Node* visit_parents_of, int current_depth, int& min)
@@ -1237,45 +1085,42 @@ void GraphLayout::computeHopCounts (Node* reflow[], int reflow_count)
 //
 void GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
 {
+    int dummy;
+    if (this->countConnectedOutputs (n, 1, dummy) <= 1) return ;
+
+    // don't screw around with gets and sets
+    const char* name = n->getLabelString();
+    if (EqualString(name, "GetLocal") || EqualString(name, "GetGlobal") ||
+	EqualString(name, "Get")) {
+	return ;
+    }
+
     NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
     int depth = info->getGraphDepth();
     int output_count = n->getOutputCount();
     int output;
     Ark* arc;
-    List arcs_one_hop_down;
+    List nodes_one_hop_down;
+    int levels_to_decr = 0;
     for (output=1; output<=output_count; output++) {
 	if (!n->isOutputVisible(output)) continue;
 	List* arcs = (List*)n->getOutputArks(output);
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	int input;
+	Node* arc_dest = NUL(Node*);
 	while (arc = (Ark*)iter.getNext()) {
 	    Node* dest = arc->getDestinationNode(input);
 	    NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
 	    if ((dinfo->getGraphDepth()-1) == depth) {
-		arcs_one_hop_down.appendElement(arc);
+		if (!nodes_one_hop_down.isMember(dest)) {
+		    nodes_one_hop_down.appendElement(dest);
+		} else {
+		    levels_to_decr++;
+		}
 	    }
 	}
     }
-    int levels_to_decr = 0;
-    if (arcs_one_hop_down.getSize() > 1) {
-	int nth_tab;
-	int input;
-	int prev_tab;
-	Node* prev_node;
-	ListIterator iter(arcs_one_hop_down);
-	Node* dst;
-	List destination_nodes;
-	while (arc = (Ark*)iter.getNext()) {
-	    dst = arc->getDestinationNode(input);
-	    if (destination_nodes.isMember(dst) == FALSE) {
-		destination_nodes.appendElement(dst);
-	    } else {
-		levels_to_decr++;
-	    }
-	}
-    }
-
     if (levels_to_decr) {
 	int new_depth = depth-levels_to_decr;
 	if (debug) {
@@ -1813,7 +1658,7 @@ void AnnotationInfo::findNearestNode(Node* reflow[], int reflow_count)
 	if (hdist < vdist) this->nearby[i] = new NodeDistance (n, hdist, hloc);
 	else this->nearby[i] = new NodeDistance (n, vdist, vloc);
     }
-    qsort (this->nearby, this->nearbyCnt, sizeof(NodeDistance*), AnnotationInfo::Comparator);
+    qsort (this->nearby, this->nearbyCnt, sizeof(NodeDistance*), AnnotationInfo::SortByDistance);
 }
 
 int GraphLayout::ArcComparator(const void *a, const void* b)
@@ -1844,7 +1689,7 @@ int GraphLayout::ArcComparator(const void *a, const void* b)
     return 0;
 }
 
-int AnnotationInfo::Comparator(const void *a, const void* b)
+int AnnotationInfo::SortByDistance(const void *a, const void* b)
 {
     NodeDistance** aptr = (NodeDistance**)a;
     NodeDistance** bptr = (NodeDistance**)b;
@@ -2022,7 +1867,7 @@ void GraphLayout::repositionGroups(Node* reflow[], int reflow_count)
 	isNewLine = (y1 > prevy2);
 	if (isNewLine) {
 	    gx = 0;
-	    gy+=max_height_in_line + this->height_per_level;
+	    gy+=max_height_in_line + GraphLayout::HeightPerLevel;
 	    max_height_in_line = h;
 	} else if (h>max_height_in_line) {
 	    max_height_in_line = h;
@@ -2287,9 +2132,11 @@ int SlotList::isAvailable (int x, boolean left)
 	prev = slot;
     }
     li.setList(*this);
-    fprintf (stdout, "%s[%d] failed %d (%x)\n", __FILE__,__LINE__,x,left);
-    while (slot=(Slot*)li.getNext()) {
-	fprintf (stdout, "\t %d <--> %d\n", slot->min, slot->max);
+    if (debug) {
+	fprintf (stdout, "%s[%d] failed %d (%x)\n", __FILE__,__LINE__,x,left);
+	while (slot=(Slot*)li.getNext()) {
+	    fprintf (stdout, "\t %d <--> %d\n", slot->min, slot->max);
+	}
     }
 
     ASSERT(FALSE);
@@ -2426,12 +2273,16 @@ void LayoutRow::position (Node* n, int& left_edge, int& right_edge,
     ASSERT (hop > info->getGraphDepth());
     if (go_left) {
 	int desired_right_edge = xcoord_of_line + w - (tabx+half_tab_width); 
-	if ((left_edge-DESIRED_FUDGE) < desired_right_edge)
+	if ((left_edge-REQUIRED_FUDGE) > desired_right_edge) {
+	} else if ((left_edge-DESIRED_FUDGE) < desired_right_edge) {
 	    offset = (left_edge-DESIRED_FUDGE) - desired_right_edge;
+	}
     } else {
 	int desired_left_edge = xcoord_of_line - (half_tab_width + tabx);
-	if ((right_edge+DESIRED_FUDGE) > desired_left_edge)
+	if ((right_edge+REQUIRED_FUDGE) < desired_left_edge) {
+	} else if ((right_edge+DESIRED_FUDGE) > desired_left_edge) {
 	    offset = (right_edge+DESIRED_FUDGE) - desired_left_edge;
+	}
     }
     int target_x = xcoord_of_line + offset;
     if (hop == (info->getGraphDepth()+1)) {

@@ -138,7 +138,6 @@ class NoUndoEditorCommand : public NoUndoCommand
 	JavifyNetwork,
 	UnjavifyNetwork,
 	HitDetection,		// change a resource in in the Workspace widget
-	StraightenArcs,		// Change x-coord of standIns with slightly crooked arcs
 	ReflowGraph,		// Layout the entire graph automatically
 	Undo,			// undo movements in the canvas
         SaveAsCCode

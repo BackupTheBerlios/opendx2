@@ -50,6 +50,7 @@ UndoStandInMove::UndoStandInMove(EditorWindow* editor, StandIn* standIn, const c
 
 void UndoStandInMove::undo(boolean first_in_list)
 {
+    int i;
     Node* n = UndoNode::LookupNode(this->editor, this->className, this->instance_number);
     if (!n) return ;
     StandIn* si = n->getStandIn();
@@ -59,7 +60,7 @@ void UndoStandInMove::undo(boolean first_in_list)
 
     int input_count = n->getInputCount();
     Ark* arc;
-    for (int i=1; i<=input_count; i++) {
+    for (i=1; i<=input_count; i++) {
 	if (!n->isInputVisible(i)) continue;
 	List* arcs = (List*)n->getInputArks(i);
 	if (!arcs) continue;
@@ -72,7 +73,7 @@ void UndoStandInMove::undo(boolean first_in_list)
     }
 
     int output_count = n->getOutputCount();
-    for (int i=1; i<=output_count; i++) {
+    for (i=1; i<=output_count; i++) {
 	if (!n->isOutputVisible(i)) continue;
 	List* arcs = (List*)n->getOutputArks(i);
 	if (!arcs) continue;

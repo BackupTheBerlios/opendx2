@@ -323,7 +323,6 @@ class EditorWindow : public DXWindow
     Command*		javifyNetCmd;
     Command*		unjavifyNetCmd;
     Command*		reflowGraphCmd;
-    Command*		straightenArcsCmd;
     Command*            gridCmd;
     Command*		setPanelGroupCmd;
     Command*		setPanelAccessCmd;
@@ -405,7 +404,6 @@ class EditorWindow : public DXWindow
     CommandInterface*	macroNameOption;
     CommandInterface*	reflowGraphOption;
     CommandInterface*	undoOption;
-    CommandInterface*	straightenArcsOption;
     CommandInterface*	insertNetworkOption;
     CommandInterface*	addAnnotationOption;
     CommandInterface*	createMacroOption;
@@ -941,7 +939,6 @@ class EditorWindow : public DXWindow
     //
     // Use GraphLayout to modify the flow of the graph.
     //
-    boolean applyArcStraightener();
     boolean reflowEntireGraph();
 
     //

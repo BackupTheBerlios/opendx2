@@ -240,7 +240,6 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
     this->pasteOption             = NUL(CommandInterface*);
     this->macroNameOption         = NUL(CommandInterface*);
     this->reflowGraphOption       = NUL(CommandInterface*);
-    this->straightenArcsOption    = NUL(CommandInterface*);
     this->createMacroOption	  = NULL;
     this->insertNetworkOption     = NUL(CommandInterface*);
     this->addAnnotationOption     = NUL(CommandInterface*);
@@ -568,15 +567,6 @@ EditorWindow::EditorWindow(boolean  isAnchor, Network* network) :
 		this, NoUndoEditorCommand::ReflowGraph,
 		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
 
-#if THIS_CODE_GETS_WRITTEN
-    this->straightenArcsCmd = 
-	new NoUndoEditorCommand ("straightenArcs", this->commandScope, FALSE,
-		this, NoUndoEditorCommand::StraightenArcs,
-		NoUndoEditorCommand::AffectsUndo|NoUndoEditorCommand::CanBeUndone);
-#else
-    this->straightenArcsCmd = NUL(Command*);
-#endif
-
     //
     // Window's menu commands
     //
@@ -751,7 +741,6 @@ EditorWindow::~EditorWindow()
     if (this->pasteOption) delete this->pasteOption;
     if (this->macroNameOption) delete this->macroNameOption;
     if (this->reflowGraphOption) delete this->reflowGraphOption;
-    if (this->straightenArcsOption) delete this->straightenArcsOption;
     if (this->createMacroOption) delete this->createMacroOption;
     if (this->insertNetworkOption) delete this->insertNetworkOption;
     if (this->addAnnotationOption) delete this->addAnnotationOption;
@@ -837,7 +826,6 @@ EditorWindow::~EditorWindow()
     if (this->javifyNetCmd) delete this->javifyNetCmd;
     if (this->unjavifyNetCmd) delete this->unjavifyNetCmd;
     delete this->reflowGraphCmd;
-    if (this->straightenArcsCmd) delete this->straightenArcsCmd;
     delete this->editMacroNameCmd;
     delete this->editCommentCmd;
     delete this->findToolCmd;
@@ -977,7 +965,6 @@ void EditorWindow::setCommandActivation()
 	nselected = 0;
 	this->outputCacheabilityCascade->deactivate();
 	this->reflowGraphCmd->deactivate();
-	if (this->straightenArcsCmd) this->straightenArcsCmd->deactivate();
     } else {
 	this->selectAllNodeCmd->activate();
 	this->findToolCmd->activate();
@@ -987,7 +974,6 @@ void EditorWindow::setCommandActivation()
 	nselected = this->getNodeSelectionCount();
 	this->outputCacheabilityCascade->activate();
 	this->reflowGraphCmd->activate();
-	if (this->straightenArcsCmd) this->straightenArcsCmd->activate();
     } 
 
     //
@@ -1836,13 +1822,6 @@ void EditorWindow::createEditMenu(Widget parent)
     this->reflowGraphOption =
 	new ButtonInterface(pulldown, "vpeReflowGraphOption",
 			    this->reflowGraphCmd);
-#if THIS_CODE_GETS_WRITTEN
-    this->straightenArcsOption =
-	new ButtonInterface(pulldown, "vpeStraightenArcsOption",
-			    this->straightenArcsCmd);
-#else
-    this->straightenArcsOption = NUL(CommandInterface*);
-#endif
 
     this->createProcessGroupOption =
 	new ButtonInterface(pulldown, "vpeCreateProcessGroupOption", 
@@ -7348,16 +7327,6 @@ boolean EditorWindow::javifyNetwork()
     }
 
     return TRUE;
-}
-
-boolean EditorWindow::applyArcStraightener()
-{
-    WorkSpace *current_ws = this->workSpace;
-    int page = this->workSpace->getCurrentPage();
-    if (page) current_ws = this->workSpace->getElement(page);
-    if (!this->layout_controller)
-	this->layout_controller = new GraphLayout(this);
-    return this->layout_controller->arcStraightener(current_ws, this->network->nodeList);
 }
 
 boolean EditorWindow::reflowEntireGraph()

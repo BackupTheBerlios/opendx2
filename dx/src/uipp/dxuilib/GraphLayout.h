@@ -140,7 +140,7 @@ class NodeInfo : public LayoutInfo
 	void setGraphDepth(int d) { this->hops = d; }
 
 	// for qsort
-	static int Comparator (const void* a, const void* b);
+	static int SortByHop (const void* a, const void* b);
 
 
     public:
@@ -185,7 +185,7 @@ class AnnotationInfo: public LayoutInfo
 	NodeDistance** nearby;
 	int nearbyCnt;
 
-	static int Comparator(const void* a, const void* b);
+	static int SortByDistance(const void* a, const void* b);
 
 	static int NextX;
 	static int NextY;
@@ -375,11 +375,6 @@ class GraphLayout : public Base
     //
     EditorWindow* editor;
 
-    //
-    // Bail out of node placement if we get too many overlaps
-    //
-    int collisions;
-
     boolean adjustHopCounts (Node* reflow[], int reflow_count, int& min);
     void adjustAncestorHops (Node* parent, int new_hop_count, int& min);
     int computeRequiredHopsTo (Node* n);
@@ -419,27 +414,11 @@ class GraphLayout : public Base
 
     static int ArcComparator(const void* a, const void* b);
 
-    //
-    // There are 2 different values for height per level.  The static version
-    // works in any case especially the case in which we want to put Input
-    // tools into a comb pattern.  We'll check the graph for the presence of
-    // tools that have 2 or more narrow nodes.  If none is found, then
-    // we can use a smaller value for height per level and compress the
-    // graph vertically.
-    //
-    int height_per_level;
-
     void bottomUpTraversal (Node* visit_kids_of, int current_depth, int& min);
 
     boolean hasConnectedInputs(Node* n);
     boolean hasConnectedOutputs(Node* n, Node* other_than=NUL(Node*));
     void unmarkAllNodes(Node* reflow[], int reflow_count);
-
-    //
-    // An additional pass over the nodes to make whatever minor mods
-    // might beautify the result.
-    //
-    void postProcessing(Node* reflow[], int reflow_count);
 
     boolean computeBoundingBox (List& nodes, int& minx, int& miny, int& maxx, int& maxy);
     boolean computeBoundingBox (Node* nodes[], int count, int& minx, int& miny, 
@@ -477,12 +456,9 @@ class GraphLayout : public Base
     //
     GraphLayout(EditorWindow *editor) {
        this->editor = editor;
-       this->collisions = 0;
     }
 
     boolean entireGraph(WorkSpace* workspace, const List& nodes, const List& decorators);
-
-    boolean arcStraightener(WorkSpace* workspace, const List& nodeList);
 
     static Ark* IsSingleInputNoOutputNode(Node* n, boolean *shares_an_output, boolean positioned=TRUE);
     static boolean IsSingleOutputNoInputNode(Node* n);
@@ -491,26 +467,6 @@ class GraphLayout : public Base
     // Destructor:
     //
     ~GraphLayout() { }
-
-    //
-    // Assuming the nodes for right_arc have been positioned
-    // already, we want to compute how much we have to offset
-    // the source node for the left arc so that we can place the
-    // left node as near as we can to having a straight arc but
-    // subject to the constraint that its placment can't obstruct
-    // the right_arc.  The return value will probably be < 0.
-    //
-    int computeLeftOffset(Ark* left_arc, Ark* right_arc);
-
-    //
-    // Assuming the nodes for left_arc have been positioned
-    // already, we want to compute how much we have to offset
-    // the source node for the right arc so that we can place the
-    // right node as near as we can to having a straight arc but
-    // subject to the constraint that its placment can't obstruct
-    // the left_arc.  The return value will probably be > 0.
-    //
-    int computeRightOffset(Ark* left_arc, Ark* right_arc);
 
     boolean hasNoCloserDescendant (Node* source, Node* dest);
 
