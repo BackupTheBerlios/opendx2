@@ -301,10 +301,12 @@ static Error write_im(RWImageArgs *iargs) {
         err = WriteImage(new_frame_info, image);
         if(err == 0) {
             DXFree(copycolors);
-            DestroyConstitute();
             DestroyImage(image);
             DestroyImageInfo(new_frame_info);
             DestroyImageInfo(image_info);
+#if MagickLibVersion > 0x0537
+            DestroyConstitute();
+#endif
             DXErrorReturn(ERROR_INTERNAL, "Could not write temp image to append." );
         }
         
@@ -314,10 +316,12 @@ static Error write_im(RWImageArgs *iargs) {
 	buf = (char*) DXAllocate(4000);
 	if (!buf) {
             DXFree(copycolors);
-            DestroyConstitute();
             DestroyImage(image);
             DestroyImageInfo(new_frame_info);
             DestroyImageInfo(image_info);
+#if MagickLibVersion > 0x0537
+            DestroyConstitute();
+#endif
             DXErrorReturn( ERROR_INTERNAL , "out of memory allocating buffer _im_image.c");
         }
 	
@@ -339,10 +343,12 @@ static Error write_im(RWImageArgs *iargs) {
 	/* Now cleanup */
         DXFree(buf);
         DXFree(copycolors);
-	DestroyConstitute();
         DestroyImage(image);
         DestroyImageInfo(image_info);
         DestroyImageInfo(new_frame_info);
+#if MagickLibVersion > 0x0537
+        DestroyConstitute();
+#endif
         
         DEBUGMESSAGE("back from DestroyImage");
         
@@ -417,10 +423,12 @@ static Error write_im(RWImageArgs *iargs) {
              DXSetError(ERROR_INTERNAL, image->exception.description);
         }
 
-	DestroyConstitute();
         DXFree(copycolors);
         DestroyImage(image);
         DestroyImageInfo(image_info);
+#if MagickLibVersion > 0x0537
+        DestroyConstitute();
+#endif
     }
     return (OK);
 #else /* ndef HAVE_LIBMAGICK */
