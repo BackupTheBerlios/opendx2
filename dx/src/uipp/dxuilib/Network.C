@@ -1190,7 +1190,7 @@ extern "C"
 extern
 FILE* yyin;			/* parser input stream	  */
 
-#if defined(linux)  || defined(cygwin)
+#if defined(linux)  || defined(cygwin) || defined(freebsd)
 int yylineno;
 #else
 extern int yylineno;			/* lexer line number      */
