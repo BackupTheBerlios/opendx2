@@ -249,6 +249,11 @@ struct tdmInteractorWinS {
 
 #define UDATA(interactor) ((interactor)->udata)
 #define WINDOW(interactor) ((interactor)->cdata)
+
+/* gcc gets upset on alpha at least with PRIVATE previously defined */
+#ifdef PRIVATE
+#undef PRIVATE
+#endif
 #define PRIVATE(interactor) ((interactor)->pdata)
 
 #define BTN1(interactor) ((interactor)->btn1)
