@@ -8,7 +8,7 @@
 #ifndef _GraphLayout_h
 #define _GraphLayout_h
 #include "../base/defines.h"
-
+#include "List.h"
 
 #include "Base.h"
 
@@ -21,7 +21,10 @@ class Node;
 class List;
 class Ark;
 class LayoutInfo;
-
+class LayoutGroup;
+class UIComponent;
+class VPEAnnotator;
+class NodeDistance;
 
 //
 // Class name definition:
@@ -30,8 +33,8 @@ class LayoutInfo;
 
 #if ONLY_IN_GRAPH_LAYOUT_CODE
 //
-// No class outside of GraphLayout needs to know anything
-// about LayoutInfo
+// There are several classes defined in this include file that ought
+// to be invisible to all classes other than GraphLayout.
 //
 #define ClassLayoutInfo "LayoutInfo"
 
@@ -39,13 +42,18 @@ class LayoutInfo;
 // Store as a sort of extension record in Node.  
 //
 class LayoutInfo : public Base {
+    private:
+	boolean initialized;
+
     protected:
 	friend class GraphLayout;
 	// proposed new location
 	int x,y;
 
-	// for qsort
-	static int Comparator (const void* a, const void* b);
+	// the original location is used to attempt to place
+	// disconnected subgraphs relative to eachother the same
+	// way as in the original layout.
+	int orig_x, orig_y;
 
 	// are the values in x,y set?
 	boolean positioned_yet;
@@ -58,20 +66,23 @@ class LayoutInfo : public Base {
 	// avoids using XtGetValues over and over.
 	int w,h;
 
-	int hops;
-
 	LayoutInfo () {
-	    this->hops = 0;
 	    this->x = this->y = this->w = this->h = -1;
 	    this->positioned_yet = FALSE;
 	    this->collision = FALSE;
+	    this->initialized = FALSE;
 	}
-	void initialize (Node* n, int hops);
 
-	void setGraphDepth(int d) { this->hops = d; }
+	void initialize (UIComponent* uic);
+
+	virtual boolean isInitialized() { return this->initialized; }
 
     public:
 	virtual ~LayoutInfo(){}
+	void getOriginalXYPosition (int& x, int& y) {
+	    x = this->orig_x;
+	    y = this->orig_y;
+	}
 	void getXYPosition (int& x, int& y) {
 	    x = this->x;
 	    y = this->y;
@@ -80,7 +91,6 @@ class LayoutInfo : public Base {
 	    w = this->w;
 	    h = this->h;
 	}
-	int getGraphDepth() { return this->hops; }
 	boolean isPositioned() { return this->positioned_yet; }
 	void reposition() { this->collision = this->positioned_yet = FALSE; }
 	void setProposedLocation(int x, int y) {
@@ -95,11 +105,168 @@ class LayoutInfo : public Base {
 	//
 	// Returns a pointer to the class name.
 	//
-	const char* getClassName()
+	virtual const char* getClassName()
 	{
 	    return ClassLayoutInfo;
 	}
 };
+
+#define ClassNodeInfo "NodeInfo"
+class NodeInfo : public LayoutInfo
+{
+    protected:
+	friend class GraphLayout;
+	int hops;
+
+	LayoutGroup* group;
+
+	List* connected_nodes;
+	boolean owns_list;
+
+	NodeInfo () {
+	    this->hops = 0;
+	    this->group = NUL(LayoutGroup*);
+	    this->connected_nodes = NUL(List*);
+	    this->owns_list = FALSE;
+	}
+	void initialize (Node* n, int hops);
+
+	void setGraphDepth(int d) { this->hops = d; }
+
+	// for qsort
+	static int Comparator (const void* a, const void* b);
+
+    public:
+	int getGraphDepth() { return this->hops; }
+
+	void setLayoutGroup(LayoutGroup* group) { this->group = group; }
+	LayoutGroup* getLayoutGroup() { return this->group; }
+
+	virtual ~NodeInfo();
+
+	List* getConnectedNodes(Node* n);
+
+	static void BuildList(Node* n, List* nodes);
+
+	void setConnectedNodes(List* nodes);
+
+	virtual const char* getClassName()
+	{
+	    return ClassNodeInfo;
+	}
+};
+
+#define ClassAnnotationInfo "AnnotationInfo"
+class AnnotationInfo: public LayoutInfo
+{
+    private:
+	friend class GraphLayout;
+
+    protected:
+	AnnotationInfo() {
+	    this->nearby = 0;
+	    this->nearbyCnt = 0;
+	}
+
+	void initialize (VPEAnnotator* dec);
+
+	NodeDistance** nearby;
+	int nearbyCnt;
+
+	static int Comparator(const void* a, const void* b);
+
+	static int NextX;
+	static int NextY;
+
+    public:
+
+	virtual ~AnnotationInfo();
+
+	void findNearestNode(Node* reflow[], int reflow_count);
+
+	void reposition(Node* reflow[], int reflow_count, List& other_decorators);
+
+	//
+	// Returns a pointer to the class name.
+	//
+	virtual const char* getClassName()
+	{
+	    return ClassAnnotationInfo;
+	}
+};
+
+class NodeDistance
+{
+    private:
+	Node* node;
+	int distance;
+	int location;
+    protected:
+    public:
+	NodeDistance (Node* n, int distance, int location) {
+	    this->node = n;
+	    this->distance = distance;
+	    this->location = location;
+	}
+	Node* getNode() { return this->node; }
+	int getDistance() { return this->distance; }
+	int getLocation() { return this->location; }
+};
+
+#define ClassLayoutGroup "LayoutGroup"
+class LayoutGroup : public Base
+{
+    private:
+	boolean initialized;
+	int id;
+    protected:
+	int orig_x1,orig_y1,orig_x2,orig_y2;
+	int x1,y1,x2,y2;
+	int x,y;
+	static int Comparator(const void* a, const void* b);
+	friend class GraphLayout;
+    public:
+	LayoutGroup(int id) {
+	    this->initialized = FALSE;
+	    this->x1 = this->orig_x1 = 999999;
+	    this->y1 = this->orig_y1 = 999999;
+	    this->x2 = this->orig_x2 = -999999;
+	    this->y2 = this->orig_y2 = -999999;
+	    this->id = id;
+	}
+	virtual ~LayoutGroup(){}
+	void initialize (List* nodes);
+	void getOriginalXYPosition(int& x, int& y) {
+	    x = this->orig_x1;
+	    y = this->orig_y1;
+	}
+	void getXYSize(int& w, int& h) {
+	    w = this->x2 - this->x1;
+	    h = this->y2 - this->y1;
+	}
+	void getOriginalXYSize(int& w, int& h) {
+	    w = this->orig_x2 - this->orig_x1;
+	    h = this->orig_y2 - this->orig_y1;
+	}
+	void getXYPosition(int& x, int& y) {
+	    x = this->x1;
+	    y = this->y1;
+	}
+	int getId() { return this->id; }
+	void setProposedLocation (int x, int y) {
+	    this->x = x;
+	    this->y = y;
+	}
+	void getProposedLocation (int& x, int& y) {
+	    x = this->x;
+	    y = this->y;
+	}
+	virtual const char* getClassName()
+	{
+	    return ClassLayoutGroup;
+	}
+};
+
 #endif
 
 //
@@ -128,23 +295,27 @@ class GraphLayout : public Base
     // Return TRUE if the node's standin can move to x,y without
     // causing overlap with any other node in the list.
     //
-    boolean nodeCanMoveTo (Node* n, int x, int y, Node* reflow[], int count);
+    boolean nodeCanMoveTo (Node* n, int x, int y); 
 
     //
     // return TRUE if the positioning was accomplished without collision
     //
     boolean positionSourceOverDest(Ark* arc, int& x, int& y, 
 	    int& best_x, int& best_y,
-	    Node* reflow[], int reflow_count, int offset=0, 
-	    boolean saw_tooth=FALSE, boolean prefer_left=FALSE);
+	    int offset=0, 
+	    boolean saw_tooth=FALSE, boolean prefer_left=FALSE,
+	    boolean place_the_node=TRUE);
 
     //
     // return TRUE if the positioning was accomplished without collision
     //
     boolean positionDestUnderSource(Ark* arc, int& x, int& y, 
 	    int& best_x, int& best_y,
-	    Node* reflow[], int reflow_count, int offset=0, 
-	    boolean prefer_left=FALSE);
+	    int offset=0, 
+	    boolean prefer_left=FALSE,
+	    boolean place_the_node=TRUE);
+
+    void repositionGroups(Node* reflow[], int reflow_count);
 
   protected:
     //
@@ -155,6 +326,8 @@ class GraphLayout : public Base
     static int HeightPerLevel;
     static int NarrowStandIn;
     static int WideStandIn;
+
+    static int ArcComparator(const void* a, const void* b);
 
     //
     // There are 2 different values for height per level.  The static version
@@ -176,7 +349,7 @@ class GraphLayout : public Base
     boolean hasConnectedOutputs(Node* n, Node* other_than=NUL(Node*));
     void unmarkAllNodes(Node* reflow[], int reflow_count);
 
-    void doPlacements(Node* n, LayoutInfo* linfo, Node* reflow[], int reflow_count);
+    void doPlacements(Node* n, LayoutInfo* linfo, Node* reflow[], int reflow_count, List& positioned);
 
     boolean hasNoCloserDescendant (Node* source, Node* dest);
 
@@ -186,26 +359,11 @@ class GraphLayout : public Base
     //
     void postProcessing(Node* reflow[], int reflow_count);
 
-    //
-    // Find ancestors of n that have already been positioned.  Each
-    // Node put into the ancestor list is the first encountered on
-    // the traversal, in other words, don't traverse beyond a positioned
-    // ancestor. 
-    //
-    void collectPositionedAncestorsOf (Node* n, List& ancestors);
+    boolean computeBoundingBox (List& nodes, int& minx, int& miny, int& maxx, int& maxy);
+    boolean computeBoundingBox (Node* nodes[], int count, int& minx, int& miny, 
+	    int& maxx, int& maxy, List* decorators=NUL(List*));
 
-    //
-    // Make a list of all nodes that have been positioned.
-    //
-    void collectPositioned(Node* reflow[], int reflow_count, List& positioned);
-
-    void computeBoundingBox (List& nodes, int& minx, int& miny, int& maxx, int& maxy);
-    void computeBoundingBox (Node* nodes[], int count, int& minx, int& miny, int& maxx, int& maxy);
-
-    void repositionDecorators (List& decorators, WorkSpace* workSpace, int minx, int miny, int maxx, int maxy, boolean same_event_flag);
-
-    Ark* isSingleInputNoOutputNode(Node* n, boolean *shares_an_output);
-    boolean isSingleOutputNoInputNode(Node* n);
+    void repositionDecorators (List& decorators, boolean same_event_flag, Node* reflow[], int reflow_count);
 
     //
     // Does the work of countAncestorsWithinHops avoiding double countting.
@@ -221,6 +379,21 @@ class GraphLayout : public Base
 
     void computeHopCounts (Node* reflow[], int reflow_count);
 
+    //
+    // 
+    void prepareAnnotationPlacement(List& decorators, Node* reflow[], int reflow_count, 
+	    const List& all_decorators, WorkSpace* workSpace, int& widest, int& tallest);
+
+    List layout_groups;
+
+    //
+    // Count the connected tabs and return the number of the specified
+    // tab in the ordering of the visible tabs.  i.e. The 20th input
+    // of Image might be the 2nd input tab.
+    //
+    int countConnectedInputs (Node* n, int input, int& nth_tab);
+    int countConnectedOutputs (Node* n, int output, int& nth_tab);
+
   public:
     //
     // Constructor:
@@ -233,6 +406,12 @@ class GraphLayout : public Base
     boolean entireGraph(WorkSpace* workspace, const List& nodes, const List& decorators);
 
     boolean arcStraightener(WorkSpace* workspace, const List& nodeList);
+
+    static boolean CanMoveTo (LayoutInfo* info, int x, int y, Node* reflow[], 
+	int count, List* decorators); 
+
+    static Ark* IsSingleInputNoOutputNode(Node* n, boolean *shares_an_output, boolean positioned=TRUE);
+    static boolean IsSingleOutputNoInputNode(Node* n);
 
     //
     // Destructor:
@@ -272,7 +451,7 @@ class GraphLayout : public Base
     // 
     Node* hasPriorityAncestor(Node* destination, Ark** priority_arc, int at_least);
 
-    void repositionNewPlacements (List& , boolean , Node* reflow[], int );
+    void repositionNewPlacements (Node* , boolean , List&);
 
     //
     // Returns a pointer to the class name.

@@ -52,14 +52,17 @@ String VPEAnnotator::DefaultResources[] =
 VPEAnnotator::VPEAnnotator(boolean developerStyle) : 
     LabelDecorator (developerStyle, "VPEAnnotator")
 {
+    this->layout_information = NUL(Base*);
 }
 VPEAnnotator::VPEAnnotator(boolean developerStyle, const char *name) : 
     LabelDecorator (developerStyle, name)
 {
+    this->layout_information = NUL(Base*);
 }
 
 VPEAnnotator::~VPEAnnotator()
 {
+    if (this->layout_information) delete this->layout_information;
 }
  
 void VPEAnnotator::initialize()
@@ -388,4 +391,11 @@ void VPEAnnotator::postTextGrowthWork()
     if (!ws->getRootWidget()) return ;
     ws->beginManyPlacements();
     ws->endManyPlacements();
+}
+
+void VPEAnnotator::setLayoutInformation (Base* info)
+{
+    if (this->layout_information)
+	delete this->layout_information;
+    this->layout_information = info;
 }

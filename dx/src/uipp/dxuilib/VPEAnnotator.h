@@ -66,6 +66,8 @@ class VPEAnnotator : public LabelDecorator
     virtual boolean resizeOnUpdate() { return TRUE; }
     virtual boolean requiresLineReroutingOnResize() { return TRUE; }
 
+    Base* layout_information;
+
   // P U B L I C   P U B L I C   P U B L I C
   // P U B L I C   P U B L I C   P U B L I C
   public:
@@ -94,6 +96,12 @@ class VPEAnnotator : public LabelDecorator
     virtual void    postTextGrowthWork();
 
     virtual Dictionary* getDragDictionary() { return VPEAnnotator::DragTypeDictionary; }
+
+    //
+    // On behalf of automatic graph layout...
+    //
+    void setLayoutInformation (Base* info);
+    Base* getLayoutInformation () { return this->layout_information; }
 
     // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
     // T H E   T H I N G S   W E   U S E   A L L   T H E   T I M E
