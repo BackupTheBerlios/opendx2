@@ -27,6 +27,7 @@
 #undef HAVE_LIBZ
 #undef HAVE_LIBCDF
 #undef HAVE_LIBJPEG
+#undef HAVE_LIBMAGICK
 #undef HAVE_LIBDF
 #undef HAVE_LIBNETCDF
 
@@ -37,6 +38,7 @@
 #undef int16
 #undef int32
 #undef int64
+#undef __int64
 #undef int8
 #undef short
 #undef ubyte
