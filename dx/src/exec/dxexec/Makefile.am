@@ -3,7 +3,7 @@
 INCLUDES = -D$(ARCH) -I../../../include -I../dpexec
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-dxbindir = $(prefix)/dx/bin_$(ARCH)
+dxbindir = $(prefix)/dx/bin_@ARCH@
 dxbin_PROGRAMS = dxexec
 
 SUFFIXES = .m .y .c .s .h .o .a 
