@@ -99,7 +99,7 @@ for i in $* ; do
                          incpath="$incpath /I\"$tmp2\"" ;; 
                 -L*)     tmp=`echo $i | sed "s/-L//"`
                          tmp2=`cygpath -a --windows "$tmp"`
-                         libpath="$libpath /LIBPATH:\"$tmp2\"" ;;
+                         libpath="$libpath /libpath:\"$tmp2\"" ;;
 		-l*)     libs="$libs `echo $i | sed 's?-l??'`.lib" ;;
 		-echo)   echo=1 ;;
 		*.c)     cfiles="$cfiles $i" ;;
@@ -107,11 +107,11 @@ for i in $* ; do
 			 args="$args $i" ;;
 		-E) 	 link=0
 			 args="$args /E" ;;
-		-B)	 libpath="$libpath /LIBPATH:\"$BINMODEDIR\"" 
+		-B)	 libpath="$libpath /libpath:\"$BINMODEDIR\"" 
 			 binmode="BINMODE.OBJ" ;;
                  *)      if test $oset = 1 ; then
                              oname=$i
-                             args="$args /Fe$i"
+                             args="$args /out:$i"
                              oset=0
                          else
                              args="$args $i"
@@ -126,7 +126,6 @@ msincs="/I\"$tmp\""
 incpath="$incpath $msincs"
 # echo $incpath
 # incpath=`echo "$incpath" | sed 's/\\\\/\\\\\\\\/'g`
-#libpath=`echo $libpath | sed 's/\\\\/\\/'g`
 
 if test $mkdep = 1; then
     if test -e foo$$ ; then
@@ -162,7 +161,9 @@ fi
 if test $compile = 1 ; then
 
     if test $link = 1 ; then
-	cmd="cl -nologo $dllflag $msincs $defs $undefs $args $cfiles $libpath /link $deflibs $libs $dlllib $map $binmode" 
+	# cmd="cl -nologo $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $deflibs $libs $dlllib $map $binmode" 
+	args=`echo $args |sed 's?/Z7?/DEBUG?g'`
+	cmd="link -nologo $args $cfiles $libpath $deflibs $libs $dlllib $map $binmode" 
     else
 	cmd="cl $dllflag -nologo $incpath $defs $undefs $args $cfiles"
     fi

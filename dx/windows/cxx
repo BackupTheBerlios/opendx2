@@ -85,7 +85,7 @@ for i in $* ; do
                 -dllRunTime)
                          dlllib="msvcrt.lib"
                          dllflag="-MD" ;;
-                -o)      args="$args $i"
+                -o)      # args="$args $i"
                          oset=1 ;;
 		-map)	 map="/MAP" ;;
 		-M)	 compile=0
@@ -121,10 +121,12 @@ for i in $* ; do
 			 cfiles="$cfiles $fname" ;;
 		-Wp*)	 dfile=`echo $i | sed "s/^.*\(.deps*\)/ \1/"`
 			 mkdep=1;;
-                *)       args="$args $i"
-                         if test $oset = 1 ; then
-                                oname=$i
-                                oset=0
+                *)       if test $oset = 1 ; then
+                             oname=$i
+                             args="$args /out:$i"
+                             oset=0
+			 else
+			     args="$args $i"
                          fi ;;
 	esac
 done
@@ -175,7 +177,8 @@ if test $compile = 1
 then
 
     if test $link = 1 ; then
-	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles $libpath /link $deflibs $libs $dlllib $map $binmode" 
+	# cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles $libpath /link $deflibs $libs $dlllib $map $binmode" 
+	cmd="link -nologo $args $cfiles $libpath $deflibs $libs $dlllib $map $binmode" 
     else
 	cmd="cl  $dllflag -nologo $incpath $defs $undefs $args $cfiles"
     fi
