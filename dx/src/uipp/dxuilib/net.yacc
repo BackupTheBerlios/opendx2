@@ -12,7 +12,7 @@
 /*****************************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Attic/net.yacc,v 1.1 1999/03/24 15:18:19 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/Attic/net.yacc,v 1.2 1999/04/01 20:05:29 gda Exp $
  */
 
 #include "Parse.h"
@@ -21,10 +21,13 @@
 
 %union
 {
-    char                c;
-    int                 i;
-    float               f;
-    char                s[4096];	/* 4096 == YYLMAX in net.lex */
+    union 
+    {
+	char                c;
+	int                 i;
+	float               f;
+	char                s[4096];	/* 4096 == YYLMAX in net.lex */
+    } ast;
 };
 
 /*
@@ -124,6 +127,68 @@
 %token P_VRESP
 %token P_DATA
 
+%type <ast> T_ID
+%type <ast> argument 
+%type <ast> argument_s 
+%type <ast> argument_s0 
+%type <ast> assignment 
+%type <ast> attribute 
+%type <ast> attribute 
+%type <ast> attribute_s 
+%type <ast> attribute_s0 
+%type <ast> attributes 
+%type <ast> attributes_0 
+%type <ast> block 
+%type <ast> c_0 
+%type <ast> comment 
+%type <ast> complex 
+%type <ast> constant 
+%type <ast> empty 
+%type <ast> expression 
+%type <ast> expression_s 
+%type <ast> f_assignment 
+%type <ast> float 
+%type <ast> formal
+%type <ast> formal_s
+%type <ast> formal_s0
+%type <ast> function_call 
+%type <ast> int 
+%type <ast> include 
+%type <ast> l_value
+%type <ast> l_value_s 
+%type <ast> list 
+%type <ast> macro 
+%type <ast> quaternion 
+%type <ast> r_value 
+%type <ast> real 
+%type <ast> s_assignment 
+%type <ast> scalar 
+%type <ast> scalar_s 
+%type <ast> start 
+%type <ast> statement 
+%type <ast> statement_s
+%type <ast> statement_s0 
+%type <ast> string 
+%type <ast> string_s
+%type <ast> tensor 
+%type <ast> tensor_s 
+%type <ast> top 
+%type <ast> value 
+
+%type <ast> T_LPAR
+%type <ast> T_RPAR
+%type <ast> T_LBRA
+%type <ast> T_RBRA
+%type <ast> T_SEMI
+%type <ast> T_RSQB
+%type <ast> T_LSQB
+%type <ast> T_COMMENT
+%type <ast> T_INT
+%type <ast> T_FLOAT
+%type <ast> T_STRING
+%type <ast> K_NULL
+%type <ast> K_INCLUDE
+
 %%
 
 start           :
@@ -203,11 +268,12 @@ statement       : block
 /*
  * include
  */
-include		: K_INCLUDE string
+include		: K_INCLUDE string 
+		;
 
 
 /*
- * Assignment:
+ * Assignment
  */
 
 assignment      : f_assignment
@@ -218,10 +284,6 @@ f_assignment    : l_value_s T_ASSIGN function_call
 	        ;
 
 s_assignment    : l_value_s T_ASSIGN expression_s
-/*
- * used to be:
- *              : id_s T_ASSIGN expression_s
- */
 	        | T_ID T_PP
 	        | T_ID T_MM
 	        ;
@@ -316,10 +378,6 @@ expression_s    : expression
 
 expression      : constant
 		| r_value
-/*
- * used to be:
- *	        | id
- */
 	        | T_LPAR expression T_RPAR
 	        ;
 
@@ -386,13 +444,6 @@ string_s	: string
 string          : T_STRING
 	        ;
 
-id_s0           : empty
-	        | id_s
-	        ;
-
-id_s		: T_ID attributes_0
-		| id_s T_COMMA T_ID attributes_0
-
 l_value_s       : l_value attributes_0
 	        | l_value_s T_COMMA l_value attributes_0
 	        ;
@@ -410,6 +461,8 @@ r_value         : T_ID
 	        ;
 
 empty           :
+		{
+		}
 	        ;
 
 %%
