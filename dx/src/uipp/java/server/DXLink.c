@@ -11,9 +11,14 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.2 1999/09/01 17:00:54 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.3 1999/12/28 18:30:43 pdk Exp $
  */
-
+#if defined(hp700) 
+#define _UINT64_T
+#define _INT64_T
+#define _UINT32_T
+#define _INT32_T
+#endif /* defined hp700 */
 #include "dxconfig.h"
 #include <string.h>
 #include <stdlib.h>
