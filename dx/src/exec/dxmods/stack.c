@@ -284,7 +284,7 @@ doStack(StackParms *sp, StackInfo *si)
     tostack = si->thisobj;
 
     inclass = DXGetObjectClass(tostack);
-    if (inclass = CLASS_GROUP)
+    if (inclass == CLASS_GROUP)
 	inclass = DXGetGroupClass((Group)tostack);
 
     si->inclass = inclass;
