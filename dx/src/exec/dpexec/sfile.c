@@ -24,7 +24,7 @@ struct sfile
     SOCKET 		socket;
 #endif
     int			fd;
-    char                buffer[BUFSIZ];
+    char                buffer[BUFSIZ+1];
     char                *nextchar;
     FILE                *file;
     int			count;
@@ -147,10 +147,8 @@ readFromSFILE(SFILE *sf, char *buf, int n)
 	    b = recv(ssf->socket, buf+a, n, 0);
 	else
 #endif
-		if (ssf->type == SFILE_FPTR)
-	        b = fread(buf+a, 1, n, ssf->file);
-		else
-	        b = read(ssf->fd, buf+a, n);
+	b = read(ssf->fd, buf+a, n);
+	buf[a+b] = '\0';
     }
     return a+b;
 }
@@ -163,14 +161,8 @@ writeToSFILE(SFILE *sf, char *buf, int n)
     if (ssf->type == SFILE_SOCKET)
 	return send(ssf->socket, buf, n, 0);
     else
-    {
- 	DXSetError(ERROR_INTERNAL, "writeToSFILE on non-socket SFILE?");
-	return -1;
-    }
-#else
-    DXSetError(ERROR_INTERNAL, "writeToSFILE on non-socket SFILE?");
-    return -1;
 #endif
+    write(ssf->fd, buf, n);
 }
 
 extern SFILE *_dxd_exSockFD;
@@ -178,10 +170,13 @@ extern SFILE *_dxd_exSockFD;
 int 
 SFILECharReady(SFILE *sf)
 {
+	int fd;
 	int i = 1;
-	SFILE *mystdin = stdin;
+	struct sfile *ssf = (struct sfile *)sf;
+
+	if (ssf->count) return 1;
+
 #if defined(HANDLE_SOCKET)
-    struct sfile *ssf = (struct sfile *)sf;
 
 	if (ssf->isAtty)
 	{
@@ -244,19 +239,17 @@ SFILECharReady(SFILE *sf)
 			}
 		}
 	}
-	else if (ssf == _dxd_exSockFD)
-	{
-		if (ssf->count == 0)
-		{
-			struct timeval tv = {0, 0};  
-			fd_set fds;
-			FD_ZERO(&fds);
-			FD_SET(ssf->socket, &fds);
-			select(1, &fds, NULL, NULL, &tv);
-			i = FD_ISSET(ssf->socket, &fds);
-		}
-	}
+	else
 #endif
+	{
+	    int fd = SFILEfileno(sf);
+	    struct timeval tv = {0, 0};  
+	    fd_set fds;
+	    FD_ZERO(&fds);
+	    FD_SET(fd, &fds);
+	    select(fd+1, &fds, NULL, NULL, &tv);
+	    i = FD_ISSET(fd, &fds);
+	}
 
 	return i;
 }
@@ -280,9 +273,10 @@ SFILEGetChar(SFILE *sf)
 			return ';';
 		else
 #endif
-			ssf->count = fread(ssf->buffer, 1, BUFSIZ, ssf->file);
+			ssf->count = read(ssf->fd, ssf->buffer, BUFSIZ);
+		ssf->buffer[ssf->count] = '\0';
 	}
-	else if (ssf->type == SFILE_FPTR)
+	else if (ssf->type == SFILE_FDESC)
 	{
 #if defined(intelnt)
 		if (ssf->fd == fileno(stdin))
@@ -290,6 +284,7 @@ SFILEGetChar(SFILE *sf)
 		else
 #endif
 	    ssf->count = read(ssf->fd, ssf->buffer, BUFSIZ);
+  	    ssf->buffer[ssf->count] = '\0';
 	}
 
 	ssf->nextchar = ssf->buffer;
@@ -311,12 +306,6 @@ SFILEIoctl(SFILE *sf, int cmd, void *argp)
     if (ssf->type == SFILE_SOCKET)
 	return ioctlsocket(ssf->socket, cmd, argp);
     else
-    {
-	DXSetError(ERROR_INTERNAL, "IOCTL on non-socket SFILE?");
-	return ERROR;
-    }
-#else
-    DXSetError(ERROR_INTERNAL, "IOCTL on non-socket SFILE?");
-    return ERROR;
 #endif
+    return ioctl(ssf->fd, cmd, argp);
 }
