@@ -59,7 +59,7 @@ install-exec-local:
 	echo export INSTALL                   >> env
 	echo set DELFILES=\"$(DELFILES)\"     >> env
 	echo export DELFILES                  >> env
-	sh  mklib
+	sh  ${srcdir}/mklib
 	-rm env
 
 endif # WITH_BUILDLIBDX

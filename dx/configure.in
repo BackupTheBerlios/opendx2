@@ -1233,8 +1233,10 @@ AC_OUTPUT(
 	src/Makefile \
 	src/exec/Makefile \
 	src/exec/dpexec/Makefile \
+	src/exec/dpexec/local.mk \
 	src/exec/dxexec/Makefile \
 	src/exec/dxmods/Makefile \
+	src/exec/dxmods/local.mk \
 	src/exec/hwrender/Makefile \
 	src/exec/hwrender/gl/Makefile \
 	src/exec/hwrender/opengl/Makefile \
@@ -1249,6 +1251,7 @@ AC_OUTPUT(
 	src/uipp/dxl/Makefile \
 	src/uipp/dxui/Makefile \
 	src/uipp/dxuilib/Makefile \
+	src/uipp/dxuilib/local.mk \
 	src/uipp/java/Makefile \
 	src/uipp/java/dx/Makefile \
 	src/uipp/java/dx/protocol/Makefile \

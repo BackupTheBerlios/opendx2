@@ -24,7 +24,7 @@ EXTRA_DIST = \
 	class class.awk \
 	$(XFILES) \
 	buffer.Z shade.Z triangle.Z quad.Z plane.Z  \
-	local.mk
+	local.mk.in
 
 CLEANFILES = \
 	buffer.c shade.c triangle.c quad.c plane.c 
