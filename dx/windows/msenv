@@ -1,0 +1,34 @@
+#
+# Root of Visual Developer Studio Common files.
+VSCommonDir="/usr/Program Files/Microsoft Visual Studio/Common"
+VSCommonDir1="D:/Program Files/Microsoft Visual Studio/Common"
+
+#
+# Root of Visual Developer Studio installed files.
+#
+MSDevDir="/usr/Program Files/Microsoft Visual Studio/Common/msdev98"
+MSDevDir1="D:/Program Files/Microsoft Visual Studio/Common/msdev98"
+
+#
+# Root of Visual C++ installed files.
+#
+MSVCDir="/usr/Program Files/Microsoft Visual Studio/VC98"
+MSVCDir1="D:/Program Files/Microsoft Visual Studio/VC98"
+
+#
+# VcOsDir is used to help create either a Windows 95 or Windows NT specific path
+#
+if [ "$OS" = "Windows_NT" ] ; then
+    VcOsDir=WINNT
+    PATH="$HOME/windows:$MSDevDir/bin:$MSVCDir/bin:$VSCommonDir/tools/$VcOsDir:$VSCommonDir/tools:$PATH"
+else
+    VcOsDir=WIN95
+    PATH="$HOME/windows:$MSDevDir/bin:$MSVCDir/bin:$VSCommonDir/tools/$VcOsDir:$VSCommonDir/tools:$WINDIR/system:$PATH"
+fi
+#
+
+INCLUDE="$MSVCDir1/ATL/INCLUDE;$MSVCDir1/INCLUDE;$MSVCDir1/MFC/INCLUDE;$INCLUDE"
+LIB="$MSVCDir1/LIB;$MSVCDir1/MFC/LIB;$LIB"
+
+set VcOsDir=
+set VSCommonDir=
