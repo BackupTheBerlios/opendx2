@@ -90,11 +90,9 @@ if test -n "$ac_cv_dx_install_path" ; then
   DXINST=$ac_cv_dx_install_path
 fi
 DX_JAR=""
-WRL_CLASSPATH=""
-JDK_CLASSPATH=""
+DX_JAVA_CLASSPATH=""
 if test -r $DXINST/lib_$DXARCH/arch.mak ; then
-  WRL_CLASSPATH=`grep WRL_CLASSPATH $DXINST/lib_$DXARCH/arch.mak | sed -e "s/WRL_CLASSPATH =//" -e "s/ //"`
-  JDK_CLASSPATH=`grep JDK_CLASSPATH $DXINST/lib_$DXARCH/arch.mak | sed -e "s/JDK_CLASSPATH =//" -e "s/ //"`
+  DX_JAVA_CLASSPATH=`grep DX_JAVA_CLASSPATH $DXINST/lib_$DXARCH/arch.mak | sed -e "s/DX_JAVA_CLASSPATH =//" -e "s/ //"`
 fi
 if test -r $DXINST/java/htmlpages/dx.jar ; then
   DX_JAR=$DXINST/java/htmlpages/dx.jar

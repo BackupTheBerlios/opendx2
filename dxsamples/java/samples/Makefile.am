@@ -4,7 +4,7 @@ EXTRA_DIST = $(JAVA_FILES) $(WRL_USERS)
 
 CLEANFILES = samples.jar
 
-CLASSPATH = @WRL_CLASSPATH@:@JDK_CLASSPATH@:@DX_JAR@:./
+CLASSPATH = @DX_JAVA_CLASSPATH@:@DX_JAR@:./
 export CLASSPATH
 
 # WRL_CLASSPATH may have been set, but WRLApplication may not have been built
@@ -21,7 +21,7 @@ samples.jar: $(JAVA_CLASSES)
 # but maybe someone can come up with a rule to build them (like above)
 #  rather than a loop. --pete
 # whoever does, please delete these comments!
-	if test -n "$(WRL_CLASSPATH)" && test -n "`$(JAR) -tf $(DX_JAR) 2>&1 | grep WRLApplication`" ; then \
+	if test -n "`$(JAR) -tf $(DX_JAR) 2>&1 | grep WRLApplication`" ; then \
 	   $(JAVAC) $(WRL_USERS); \
 	fi ;
 	$(JAR) cf samples.jar *.class
