@@ -19,7 +19,7 @@ fi
 
 if [ -z "$DXROOT" ]; then
   prefix=@prefix@
-  DXROOT=$(prefix)/dx
+  DXROOT=$prefix/dx
 fi
 export DXROOT
 
