@@ -512,8 +512,8 @@ ListIterator it;
     }
 
     char* cname = NUL(char*);
-    char* uiroot = NULL;
-    char* resource = NULL;
+    const char* uiroot = NULL;
+    const char* resource = NULL;
     fprintf (this->make_f,
 	"##MANDATORY TO SET DXARCH prior to invoking this makefile"
 	"##\n"
