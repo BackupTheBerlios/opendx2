@@ -121,6 +121,12 @@ int bzero(char*,int);
 #include <sys/utsname.h>
 #endif
 
+#if defined(HAVE_GETDTABLESIZE)
+extern "C" int getdtablesize();
+#else
+#define getdtablesize() FD_SETSIZE
+#endif
+
 #ifdef  USING_WINSOCKS
 int DXMessageOnSocket(int s);
 int SetSocketMode(int  s, int iMode);
@@ -1375,12 +1381,7 @@ void PacketIF::connectAsServer(int pport)
 #endif
     int tries;
     fd_set fds;
-#if defined(HAVE_GETDTABLESIZE)
-    extern int getdtablesize();
     int  width = getdtablesize();
-#else
-    int  width = FD_SETSIZE;
-#endif
     struct timeval to;
 
     port = pport;

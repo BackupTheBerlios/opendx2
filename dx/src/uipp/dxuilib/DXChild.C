@@ -128,6 +128,12 @@ extern "C" {
 #include <sys/utsname.h>
 #endif
 
+#if defined(HAVE_GETDTABLESIZE)
+extern "C" int getdtablesize();
+#else
+#define getdtablesize() FD_SETSIZE
+#endif
+
 #if defined(hp700) || defined(aviion)
 # define RSH "/usr/bin/remsh"
 #else
@@ -287,12 +293,7 @@ DXChild::ConnectTo(const char *host,
     int  j;
     char *dnum;
 #if defined(HAVE_SYS_UTSNAME_H)
-#if defined(HAVE_GETDTABLESIZE)
-    extern int getdtablesize();
     int  width = getdtablesize();
-#else
-    int  width = FD_SETSIZE;
-#endif
     struct utsname Uts_Name;
 
     /*
@@ -1258,12 +1259,7 @@ DXChild::waitForConnection()
     rstring[0] = '\0';
 #if defined(HAVE_SYS_UTSNAME_H)
     fd_set fds;
-#if defined(HAVE_GETDTABLESIZE)
-    extern int getdtablesize();
     int  width = getdtablesize();
-#else
-    int  width = FD_SETSIZE;
-#endif
 #endif
 
     /* Until we get port = ..., read from stdout and error.  Close the
