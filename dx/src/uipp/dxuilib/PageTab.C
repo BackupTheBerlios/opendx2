@@ -150,6 +150,7 @@ void PageTab::createButton (Widget p)
 	//
 	static char* unix_servers[] = {
 	    "Hummingbird Communications Ltd.",
+	    "Hummingbird Ltd.",
 	    NUL(char*)
 	};
 	int i;
