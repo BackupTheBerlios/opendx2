@@ -1066,7 +1066,7 @@ count(struct xfield *xf, struct shade *shade, Point *box)
     nx=norm->x, ny=norm->y, nz=norm->z;			$\
 							$\
     /* specular */					$\
-    d = hx*nx + hy*ny + hz*nz;				$\
+    d = _hx*nx + _hy*ny + _hz*nz;				$\
     if (d>0) {						$\
         d = fspec * ipow(d, fshine);			$\
         fspecr=d*lr, fspecg=d*lg, fspecb=d*lb;		$\
@@ -1271,7 +1271,7 @@ work(struct xfield *xf, struct shade *shade,
     float fspecr, fspecg, fspecb, bspecr, bspecg, bspecb;
     float fdiffr, fdiffg, fdiffb, bdiffr, bdiffg, bdiffb;
     float nx, ny, nz;
-    float lr, lg, lb, lx, ly, lz, hx, hy, hz;
+    float lr, lg, lb, lx, ly, lz, _hx, _hy, _hz;
     float d DREG;
     InvalidComponentHandle ich;
     int  fcst = xf->fcst, bcst = xf->bcst, ncst;
@@ -1378,11 +1378,11 @@ work(struct xfield *xf, struct shade *shade,
 		ly = light->direction.y;
 		lz = light->direction.z;
 
-		hx=ex+lx,  hy=ey+ly,  hz=ez+lz;
-		d = hx*hx + hy*hy + hz*hz;
+		_hx=ex+lx,  _hy=ey+ly,  _hz=ez+lz;
+		d = _hx*_hx + _hy*_hy + _hz*_hz;
 		if (d != 0.0)
 		    d = (float)1.0 / sqrt(d);
-		hx*=d, hy*=d, hz*=d;
+		_hx*=d, _hy*=d, _hz*=d;
 
 		if (light->kind == distant)
 		{
@@ -1648,11 +1648,11 @@ work(struct xfield *xf, struct shade *shade,
 	    ifc = xf->fcolors, ofc = fcolors;
 	    ibc = xf->bcolors, obc = bcolors;
 
-	    hx=ex+lx,  hy=ey+ly,  hz=ez+lz;
-	    d = hx*hx + hy*hy + hz*hz;
+	    _hx=ex+lx,  _hy=ey+ly,  _hz=ez+lz;
+	    d = _hx*_hx + _hy*_hy + _hz*_hz;
 	    if (d != 0.0)
 		d = (float)1.0 / sqrt(d);
-	    hx*=d, hy*=d, hz*=d;
+	    _hx*=d, _hy*=d, _hz*=d;
 
 	    if (cmap) {
 		/* mapped color */
@@ -1893,13 +1893,13 @@ _dxfGetLights(Object obj, Camera cam)
     for (i = 0; i < lightlist->nl; i++)
     {
 	Light l = lightlist->lights[i];
-	float hx = eye.x+l->direction.x;
-	float hy = eye.y+l->direction.y;
-	float hz = eye.z+l->direction.z;
-	float d = hx*hx + hy*hy + hz*hz;
+	float _hx = eye.x+l->direction.x;
+	float _hy = eye.y+l->direction.y;
+	float _hz = eye.z+l->direction.z;
+	float d = _hx*_hx + _hy*_hy + _hz*_hz;
 	if (d != 0.0)
 	    d = 1.0 / sqrt(d);
-	lightlist->h[i] = DXVec(hx*d, hy*d, hz*d);
+	lightlist->h[i] = DXVec(_hx*d, _hy*d, _hz*d);
     }
 
     p = DXNewPrivate((Pointer)lightlist, _dxfFreeLightListPrivate);
