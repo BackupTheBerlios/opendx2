@@ -301,6 +301,13 @@ else
 fi
 
 # Code to enable JAVADX to be built
+
+if test -r C:\ ; then
+        DIRSEP=";"
+else
+        DIRSEP=":"
+fi
+
 if test "$with_javadx" != 'no'; then
   failed=0;
   passed=0;
@@ -354,11 +361,25 @@ dnl use the javac -verbose code to try and determine where they may be.
     fi
     WRL_CLASSPATH="$ac_cv_class_netscape"
     if test -n "$ac_cv_class_cosmo" ; then
-      WRL_CLASSPATH="$ac_cv_class_netscape:$ac_cv_class_cosmo"
+      WRL_CLASSPATH="$ac_cv_class_netscape$DIRSEP$ac_cv_class_cosmo"
     fi
+
 dnl Fix up the full CLASSPATH to be used with the JAVA compiles.
-    DX_JAVA_CLASSPATH=$COSMOJAR":"$WRL_CLASSPATH":"$CLASSPATH
-    DX_JAVA_CLASSPATH=`echo $DX_JAVA_CLASSPATH | sed -e 's/::/:/g' -e 's/^://' -e 's/:$//'`
+    TMP_CLASSPATH=./
+    if test ! "$DX_JAVA_CLASSPATH" = "" ; then
+	TMP_CLASSPATH=$DX_JAVA_CLASSPATH$DIRSEP$TMP_CLASSPATH
+    fi
+    if test ! "$CLASSPATH" = "" ; then
+	TMP_CLASSPATH=$CLASSPATH$DIRSEP$TMP_CLASSPATH
+    fi
+    if test ! "$COSMOJAR" = "" ; then
+	TMP_CLASSPATH=$COSMOJAR$DIRSEP$TMP_CLASSPATH
+    fi
+    if test ! "$WRL_CLASSPATH" = "" ; then
+	TMP_CLASSPATH=$WRL_CLASSPATH$DIRSEP$TMP_CLASSPATH
+    fi
+    DX_JAVA_CLASSPATH=$TMP_CLASSPATH
+    echo DX_JAVA_CLASSPATH :: $DX_JAVA_CLASSPATH
   fi
 
 fi
