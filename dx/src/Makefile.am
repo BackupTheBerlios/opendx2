@@ -1,1 +1,1 @@
-SUBDIRS = exec ui++
+SUBDIRS = exec ui++ misc
