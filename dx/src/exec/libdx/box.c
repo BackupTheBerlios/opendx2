@@ -159,10 +159,28 @@ _dxfGroup_BoundingBox(Group g, Point *box, Matrix *m, int validity)
 		v4 = DXSub(box[4], box[0]), l4 = fabs(DXLength(v4));
 		/* XXX - use an epsilon here */
 		if (l1!=0.0 && l2!=0.0 && l4!=0.0) {
+#if defined(ibm6000)
+		    mat.A[0][0] = v1.x;
+		    mat.A[0][1] = v1.y;
+		    mat.A[0][2] = v1.z;
+
+		    mat.A[1][0] = v2.x;
+		    mat.A[1][1] = v2.y;
+		    mat.A[1][2] = v2.z;
+
+		    mat.A[2][0] = v4.x;
+		    mat.A[2][1] = v4.y;
+		    mat.A[2][2] = v4.z;
+
+		    mat.b[0] = box[0].x;
+		    mat.b[1] = box[0].y;
+		    mat.b[2] = box[0].z;
+#else
 		    *(Point*) mat.A[0] = v1;
 		    *(Point*) mat.A[1] = v2;
 		    *(Point*) mat.A[2] = v4;
 		    *(Point*) mat.b    = box[0];
+#endif
 		    inv = DXInvert(mat);
 		    align = 1;
 		}
