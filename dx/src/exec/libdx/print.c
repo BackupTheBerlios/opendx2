@@ -1,6 +1,10 @@
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 /*
  * Header: /usr/people/gresh/code/svs/src/libdx/RCS/print.c,v 5.6 93/02/05 10:59:31 gda Exp Locker: gresh 
  * 

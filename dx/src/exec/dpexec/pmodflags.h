@@ -1,3 +1,10 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 /*
  * these flags modify how a module is treated by the executive and the 
  * user interface.   MODULE_XXX is set in the .mdf file by putting a

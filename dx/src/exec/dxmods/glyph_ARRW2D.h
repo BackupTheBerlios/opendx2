@@ -1,3 +1,10 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 #define ARRW2DPTS 4 
 #define ARRW2DLNS 3 
 

@@ -1,3 +1,10 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 /* import spreadsheet data 					*/
 /* first pass 	-given delimiter, import data			*/
 /* 		-take first line as field name			*/

@@ -1,3 +1,10 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 #define RCKT20PTS 100 
 #define RCKT20TRS 78 
 static Point points[RCKT20PTS] = {

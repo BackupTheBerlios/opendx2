@@ -1,3 +1,10 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 /*
  *  ROTXY creates a matrix which rotates about a unit vector [x y 0].
  *  This matrix can be composed from a rotation about Z to align the

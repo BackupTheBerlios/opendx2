@@ -1,6 +1,10 @@
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 /*
  * Header: /usr/people/gresh/code/svs/src/dxmods/RCS/convert.m,v 5.0 92/11/12
  10:05:29 svs Exp Locker: gresh 

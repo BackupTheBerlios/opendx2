@@ -1,13 +1,17 @@
-/****************************************************************************/
-/*                            DX  SOURCEFILE                                */
-/****************************************************************************/
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 
 #include <dxconfig.h>
 
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/server/Attic/DXLink.c,v 1.3 1999/05/03 14:08:57 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/server/Attic/DXLink.c,v 1.4 1999/05/10 15:46:24 gda Exp $
  */
 
 #include <string.h>

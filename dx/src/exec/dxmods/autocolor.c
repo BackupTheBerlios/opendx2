@@ -1,6 +1,10 @@
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 /*
  * Header: /usr/people/gresh/code/svs/src/dxmods/RCS/autocolor.m,v 5.3 93/01/25 14:50:45 gresh Exp Locker: gresh 
  */

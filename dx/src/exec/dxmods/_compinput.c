@@ -1,6 +1,10 @@
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 /* if all points in generic positions arrays are to be compared (as
  * opposed to just the number of items in the positions arrays), uncomment 
  * the following #defines.

@@ -9,11 +9,13 @@ static char yysccsid[] = "@(#)yaccpar	1.9 (Berkeley) 02/21/93";
 #define YYRECOVERING (yyerrflag!=0)
 #define YYPREFIX "yy"
 #line 2 "yuiif.y"
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
-
-#include <dxconfig.h>
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 
 
 #define DXD_ENABLE_SOCKET_POINTERS	/* define SFILE in arch.h, os2 */
@@ -413,7 +415,7 @@ _dxf_ExEndInput()
     charnum[*fnum] = yycharno;
 }
 
-#line 412 "yuiif.y"
+#line 410 "yuiif.y"
 typedef union
 {
     char		c;
@@ -423,7 +425,7 @@ typedef union
     void		*v;
     node		*n;
 } YYSTYPE;
-#line 431 "y.tab.c"
+#line 429 "y.tab.c"
 #define L_OR 257
 #define L_AND 258
 #define L_NOT 259
@@ -847,7 +849,7 @@ short yycheck[] = {                                       2,
 };
 #define YYFINAL 1
 #ifndef YYDEBUG
-#define YYDEBUG 1
+#define YYDEBUG 0
 #endif
 #define YYMAXTOKEN 341
 #if YYDEBUG
@@ -1094,7 +1096,7 @@ YYSTYPE yylval;
 short yyss[YYSTACKSIZE];
 YYSTYPE yyvs[YYSTACKSIZE];
 #define yystacksize YYSTACKSIZE
-#line 1631 "yuiif.y"
+#line 1629 "yuiif.y"
 
 int
 yyerror (char *s)
@@ -1166,7 +1168,7 @@ yyerror (char *s)
     else if(! _dxd_exRemote)
         _dxf_ExFlushNewLine();
 }
-#line 1174 "y.tab.c"
+#line 1172 "y.tab.c"
 #define YYABORT goto yyabort
 #define YYREJECT goto yyabort
 #define YYACCEPT goto yyaccept
@@ -1308,7 +1310,7 @@ yyreduce:
     switch (yyn)
     {
 case 1:
-#line 585 "yuiif.y"
+#line 583 "yuiif.y"
 {
 		    _dxd_exParseTree  = NULL;
 		    _dxd_exParseMesg  = NULL;
@@ -1318,7 +1320,7 @@ case 1:
 		}
 break;
 case 2:
-#line 593 "yuiif.y"
+#line 591 "yuiif.y"
 {
 		    if (_dxd_exParseError)
 		    {
@@ -1336,7 +1338,7 @@ case 2:
 		}
 break;
 case 7:
-#line 615 "yuiif.y"
+#line 613 "yuiif.y"
 {
 		    _pushInput (yyvsp[0].s);
 		    DXFree ((Pointer) yyvsp[0].s);
@@ -1344,7 +1346,7 @@ case 7:
 		}
 break;
 case 8:
-#line 621 "yuiif.y"
+#line 619 "yuiif.y"
 {
                     /* needed to zero out char count here because */
                     /* parser gets a bit confused                 */
@@ -1355,7 +1357,7 @@ case 8:
 		}
 break;
 case 9:
-#line 630 "yuiif.y"
+#line 628 "yuiif.y"
 {
 		    *_dxd_exTerminating = TRUE;
 		    _dxf_ExVCRCommand (VCR_C_FLAG, VCR_F_LOOP, 0);
@@ -1364,7 +1366,7 @@ case 9:
 		}
 break;
 case 10:
-#line 637 "yuiif.y"
+#line 635 "yuiif.y"
 {
 		    /* if eof on stdin, exit cleanly */
 		    if (_popInput ())
@@ -1382,19 +1384,19 @@ case 10:
 		}
 break;
 case 11:
-#line 653 "yuiif.y"
+#line 651 "yuiif.y"
 {
 		    yyval.n = NULL;
 		}
 break;
 case 12:
-#line 657 "yuiif.y"
+#line 655 "yuiif.y"
 {
 		    yyval.n = NULL;
 		}
 break;
 case 13:
-#line 663 "yuiif.y"
+#line 661 "yuiif.y"
 {
 		    _dxf_ExEvaluateConstants (TRUE);
 		    _dxf_ExVCRCommand (VCR_C_TREE, (long) yyvsp[0].n, 0);
@@ -1402,7 +1404,7 @@ case 13:
 		}
 break;
 case 14:
-#line 669 "yuiif.y"
+#line 667 "yuiif.y"
 {
 		    _dxf_ExExecCommandStr ("kill");
 		    _dxf_ExVCRCommand (VCR_C_PAUSE, 0, 0);
@@ -1414,21 +1416,21 @@ case 14:
 		}
 break;
 case 15:
-#line 679 "yuiif.y"
+#line 677 "yuiif.y"
 {
 		    _dxf_ExVCRCommand (VCR_C_PLAY, 0, 0);
 		    yyval.n = NULL;
 		}
 break;
 case 16:
-#line 684 "yuiif.y"
+#line 682 "yuiif.y"
 {
 		    _dxf_ExVCRCommand (VCR_C_STEP, 0, 0);
 		    yyval.n = NULL;
 		}
 break;
 case 17:
-#line 689 "yuiif.y"
+#line 687 "yuiif.y"
 {
 		    _dxf_ExExecCommandStr ("kill");
 		    _dxf_ExVCRCommand (VCR_C_STOP, 0, 0);
@@ -1440,53 +1442,53 @@ case 17:
 		}
 break;
 case 18:
-#line 699 "yuiif.y"
+#line 697 "yuiif.y"
 {
 		    _dxf_ExVCRCommand (VCR_C_DIR, VCR_D_FORWARD, 0);
 		    yyval.n = NULL;
 		}
 break;
 case 19:
-#line 704 "yuiif.y"
+#line 702 "yuiif.y"
 {
 		    _dxf_ExVCRCommand (VCR_C_DIR, VCR_D_BACKWARD, 0);
 		    yyval.n = NULL;
 		}
 break;
 case 20:
-#line 709 "yuiif.y"
+#line 707 "yuiif.y"
 {
 		    _dxf_ExVCRCommand (VCR_C_FLAG, VCR_F_PALIN, yyvsp[-1].i);
 		    yyval.n = NULL;
 		}
 break;
 case 21:
-#line 714 "yuiif.y"
+#line 712 "yuiif.y"
 {
 		    _dxf_ExVCRCommand (VCR_C_FLAG, VCR_F_LOOP, yyvsp[-1].i);
 		    yyval.n = NULL;
 		}
 break;
 case 22:
-#line 721 "yuiif.y"
+#line 719 "yuiif.y"
 {
 		    yyval.i = TRUE;
 		}
 break;
 case 23:
-#line 725 "yuiif.y"
+#line 723 "yuiif.y"
 {
 		    yyval.i = FALSE;
 		}
 break;
 case 24:
-#line 732 "yuiif.y"
+#line 730 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_INTERRUPT, yyvsp[0].i);
 	}
 break;
 case 25:
-#line 736 "yuiif.y"
+#line 734 "yuiif.y"
 {
 	    _dxf_ExExecCommandStr ("kill");
 	    _dxf_ExVCRCommand (VCR_C_STOP, 0, 0);
@@ -1495,208 +1497,208 @@ case 25:
 	}
 break;
 case 26:
-#line 744 "yuiif.y"
+#line 742 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_SYSTEM, yyvsp[0].i);
 	}
 break;
 case 27:
-#line 748 "yuiif.y"
+#line 746 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 28:
-#line 753 "yuiif.y"
+#line 751 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_ACK, yyvsp[0].i);
 	}
 break;
 case 29:
-#line 757 "yuiif.y"
+#line 755 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 30:
-#line 762 "yuiif.y"
+#line 760 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_MACRO, yyvsp[0].i);
 	}
 break;
 case 31:
-#line 766 "yuiif.y"
+#line 764 "yuiif.y"
 {
 	    yyval.n = _dxf_ExPCreatePacket (PK_MACRO, yyvsp[-8].i, yyvsp[-4].i, yyvsp[-1].n);
 	}
 break;
 case 32:
-#line 771 "yuiif.y"
+#line 769 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_FOREGROUND, yyvsp[0].i);
 	}
 break;
 case 33:
-#line 775 "yuiif.y"
+#line 773 "yuiif.y"
 {
 	    yyval.n = _dxf_ExPCreatePacket (PK_FOREGROUND, yyvsp[-8].i, yyvsp[-4].i, yyvsp[-1].n);
 	}
 break;
 case 34:
-#line 780 "yuiif.y"
+#line 778 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_BACKGROUND, yyvsp[0].i);
 	}
 break;
 case 35:
-#line 784 "yuiif.y"
+#line 782 "yuiif.y"
 {
 	    yyval.n = _dxf_ExPCreatePacket (PK_BACKGROUND, yyvsp[-8].i, yyvsp[-4].i, yyvsp[-1].n);
 	}
 break;
 case 36:
-#line 789 "yuiif.y"
+#line 787 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_ERROR, yyvsp[0].i);
 	    data_len = yyvsp[0].i;
 	}
 break;
 case 37:
-#line 794 "yuiif.y"
+#line 792 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 38:
-#line 799 "yuiif.y"
+#line 797 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_MESSAGE, yyvsp[0].i);
 	}
 break;
 case 39:
-#line 803 "yuiif.y"
+#line 801 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 40:
-#line 808 "yuiif.y"
+#line 806 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_INFO, yyvsp[0].i);
 	}
 break;
 case 41:
-#line 812 "yuiif.y"
+#line 810 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 42:
-#line 817 "yuiif.y"
+#line 815 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_LINQ, yyvsp[0].i);
 	}
 break;
 case 43:
-#line 821 "yuiif.y"
+#line 819 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 44:
-#line 826 "yuiif.y"
+#line 824 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_SINQ, yyvsp[0].i);
 	}
 break;
 case 45:
-#line 830 "yuiif.y"
+#line 828 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 46:
-#line 835 "yuiif.y"
+#line 833 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_VINQ, yyvsp[0].i);
 	}
 break;
 case 47:
-#line 839 "yuiif.y"
+#line 837 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 48:
-#line 844 "yuiif.y"
+#line 842 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_LRESP, yyvsp[0].i);
 	}
 break;
 case 49:
-#line 848 "yuiif.y"
+#line 846 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 50:
-#line 853 "yuiif.y"
+#line 851 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_SRESP, yyvsp[0].i);
 	}
 break;
 case 51:
-#line 857 "yuiif.y"
+#line 855 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 52:
-#line 862 "yuiif.y"
+#line 860 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_VRESP, yyvsp[0].i);
 	}
 break;
 case 53:
-#line 866 "yuiif.y"
+#line 864 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 54:
-#line 871 "yuiif.y"
+#line 869 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_DATA, yyvsp[0].i);
 	}
 break;
 case 55:
-#line 875 "yuiif.y"
+#line 873 "yuiif.y"
 {
 	    yyval.n = NULL;
 	}
 break;
 case 56:
-#line 880 "yuiif.y"
+#line 878 "yuiif.y"
 {
 	    _dxf_ExUIPacketActive (yyvsp[-4].i, PK_IMPORT, yyvsp[0].i);
 	    data_len = yyvsp[0].i;
 	}
 break;
 case 57:
-#line 885 "yuiif.y"
+#line 883 "yuiif.y"
 {
 	    yyval.n = _dxf_ExPCreatePacket (PK_IMPORT, yyvsp[-8].i, yyvsp[-4].i, yyvsp[-1].n);
 	}
 break;
 case 67:
-#line 938 "yuiif.y"
+#line 936 "yuiif.y"
 {
 		    _dxf_ExBackgroundCommand (BG_STATEMENT, yyvsp[0].n);
 		    yyval.n = NULL;
 		}
 break;
 case 68:
-#line 943 "yuiif.y"
+#line 941 "yuiif.y"
 {
 		    _dxf_ExExecCommandStr ("kill");
 		    _dxf_ExVCRCommand (VCR_C_STOP, 0, 0);
@@ -1705,28 +1707,28 @@ case 68:
 		}
 break;
 case 81:
-#line 1012 "yuiif.y"
+#line 1010 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateMacro (yyvsp[-9].n, yyvsp[-7].n, yyvsp[-3].n, yyvsp[0].n);
 		    yyval.n->attr = yyvsp[-1].n;
 		}
 break;
 case 82:
-#line 1018 "yuiif.y"
+#line 1016 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateMacro (yyvsp[-5].n, yyvsp[-3].n, NULL, yyvsp[0].n);
 		    yyval.n->attr = yyvsp[-1].n;
 		}
 break;
 case 85:
-#line 1029 "yuiif.y"
+#line 1027 "yuiif.y"
 {
 		    yyvsp[-1].n->attr = yyvsp[0].n;
 		    LIST_CREATE (yyvsp[-1].n);
 		}
 break;
 case 86:
-#line 1034 "yuiif.y"
+#line 1032 "yuiif.y"
 {
 		    yyvsp[-1].n->attr = yyvsp[0].n;
 		    LIST_APPEND_CHECK (yyvsp[-3].n, yyvsp[-1].n);
@@ -1735,31 +1737,31 @@ case 86:
 		}
 break;
 case 88:
-#line 1044 "yuiif.y"
+#line 1042 "yuiif.y"
 {
 		    yyvsp[-2].n->v.id.dflt = yyvsp[0].n;
 		}
 break;
 case 89:
-#line 1048 "yuiif.y"
+#line 1046 "yuiif.y"
 {
 		    yyvsp[-3].n->v.id.dflt = _dxf_ExPNegateConst (yyvsp[0].n);
 		}
 break;
 case 90:
-#line 1059 "yuiif.y"
+#line 1057 "yuiif.y"
 {
 		    yyval.n = yyvsp[-1].n;
 		}
 break;
 case 93:
-#line 1073 "yuiif.y"
+#line 1071 "yuiif.y"
 {
 		    LIST_CREATE (yyvsp[0].n);
 		}
 break;
 case 94:
-#line 1077 "yuiif.y"
+#line 1075 "yuiif.y"
 {
 		    LIST_APPEND_CHECK (yyvsp[-1].n, yyvsp[0].n);
 		    if (! _dxd_exUIPacket)
@@ -1767,31 +1769,31 @@ case 94:
 		}
 break;
 case 96:
-#line 1090 "yuiif.y"
+#line 1088 "yuiif.y"
 {
 		    LIST_CREATE (yyvsp[-1].n);
 		}
 break;
 case 97:
-#line 1094 "yuiif.y"
+#line 1092 "yuiif.y"
 {
 		    LIST_CREATE (yyvsp[-1].n);
 		}
 break;
 case 100:
-#line 1109 "yuiif.y"
+#line 1107 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateAssign (yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 101:
-#line 1115 "yuiif.y"
+#line 1113 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateAssign (yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 102:
-#line 1119 "yuiif.y"
+#line 1117 "yuiif.y"
 {
 		    node	*mm;
 		    int		val = 1;
@@ -1804,7 +1806,7 @@ case 102:
 		}
 break;
 case 103:
-#line 1130 "yuiif.y"
+#line 1128 "yuiif.y"
 {
 		    node	*mm;
 		    int		val = 1;
@@ -1817,44 +1819,44 @@ case 103:
 		}
 break;
 case 108:
-#line 1156 "yuiif.y"
+#line 1154 "yuiif.y"
 {
 		    yyval.n = yyvsp[-1].n;
 		}
 break;
 case 111:
-#line 1166 "yuiif.y"
+#line 1164 "yuiif.y"
 {
 		    LIST_CREATE (yyvsp[0].n);
 		}
 break;
 case 112:
-#line 1170 "yuiif.y"
+#line 1168 "yuiif.y"
 {
 		    LIST_APPEND_CHECK (yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 113:
-#line 1176 "yuiif.y"
+#line 1174 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateAttribute (yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 114:
-#line 1186 "yuiif.y"
+#line 1184 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateCall (yyvsp[-4].n, yyvsp[-2].n);
 		    yyval.n->attr = yyvsp[0].n;
 		}
 break;
 case 117:
-#line 1201 "yuiif.y"
+#line 1199 "yuiif.y"
 {
 		    LIST_CREATE (yyvsp[0].n);
 		}
 break;
 case 118:
-#line 1205 "yuiif.y"
+#line 1203 "yuiif.y"
 {
 		    LIST_APPEND_CHECK (yyvsp[-2].n, yyvsp[0].n);
 		    if (! _dxd_exUIPacket)
@@ -1862,25 +1864,25 @@ case 118:
 		}
 break;
 case 119:
-#line 1213 "yuiif.y"
+#line 1211 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateArgument (NULL, yyvsp[0].n);
 		}
 break;
 case 120:
-#line 1217 "yuiif.y"
+#line 1215 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateArgument (yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 122:
-#line 1230 "yuiif.y"
+#line 1228 "yuiif.y"
 {
 		    LIST_CREATE (yyvsp[0].n);
 		}
 break;
 case 123:
-#line 1234 "yuiif.y"
+#line 1232 "yuiif.y"
 {
 		    LIST_APPEND_CHECK (yyvsp[-2].n, yyvsp[0].n);
 		    if (! _dxd_exUIPacket)
@@ -1888,55 +1890,55 @@ case 123:
 		}
 break;
 case 126:
-#line 1244 "yuiif.y"
+#line 1242 "yuiif.y"
 {
 		    yyval.n = yyvsp[-1].n;
 		}
 break;
 case 128:
-#line 1251 "yuiif.y"
+#line 1249 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateArith (AO_EXP, yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 129:
-#line 1255 "yuiif.y"
+#line 1253 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateArith (AO_TIMES, yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 130:
-#line 1259 "yuiif.y"
+#line 1257 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateArith (AO_DIV, yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 131:
-#line 1263 "yuiif.y"
+#line 1261 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateArith (AO_IDIV, yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 132:
-#line 1267 "yuiif.y"
+#line 1265 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateArith (AO_MOD, yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 133:
-#line 1271 "yuiif.y"
+#line 1269 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateArith (AO_PLUS, yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 134:
-#line 1275 "yuiif.y"
+#line 1273 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateArith (AO_MINUS, yyvsp[-2].n, yyvsp[0].n);
 		}
 break;
 case 135:
-#line 1279 "yuiif.y"
+#line 1277 "yuiif.y"
 {
 		    if (yyvsp[0].n->type == NT_CONSTANT)
 			yyval.n = _dxf_ExPNegateConst (yyvsp[0].n);
@@ -1945,25 +1947,25 @@ case 135:
 		}
 break;
 case 140:
-#line 1298 "yuiif.y"
+#line 1296 "yuiif.y"
 {
 		    yyval.n = yyvsp[-1].n;
 		}
 break;
 case 141:
-#line 1302 "yuiif.y"
+#line 1300 "yuiif.y"
 {
 		    yyval.n = yyvsp[-1].n;
 		}
 break;
 case 142:
-#line 1306 "yuiif.y"
+#line 1304 "yuiif.y"
 {
 		    yyval.n = yyvsp[-1].n;
 		}
 break;
 case 143:
-#line 1310 "yuiif.y"
+#line 1308 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPDotDotList (yyvsp[-3].n, yyvsp[-1].n, NULL);
 		    _dxf_ExPDestroyNode (yyvsp[-3].n);
@@ -1971,7 +1973,7 @@ case 143:
 		}
 break;
 case 144:
-#line 1316 "yuiif.y"
+#line 1314 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPDotDotList (yyvsp[-5].n, yyvsp[-3].n, yyvsp[-1].n);
 		    _dxf_ExPDestroyNode (yyvsp[-5].n);
@@ -1980,20 +1982,20 @@ case 144:
 		}
 break;
 case 146:
-#line 1326 "yuiif.y"
+#line 1324 "yuiif.y"
 {
 		    yyval.n = _dxf_ExAppendConst (yyvsp[-1].n, yyvsp[0].n);
 		    _dxf_ExPDestroyNode (yyvsp[0].n);
 		}
 break;
 case 147:
-#line 1331 "yuiif.y"
+#line 1329 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPNegateConst (yyvsp[0].n);
 		}
 break;
 case 148:
-#line 1335 "yuiif.y"
+#line 1333 "yuiif.y"
 {
 		    yyvsp[0].n = _dxf_ExPNegateConst (yyvsp[0].n);
 		    yyval.n = _dxf_ExAppendConst (yyvsp[-2].n, yyvsp[0].n);
@@ -2001,14 +2003,14 @@ case 148:
 		}
 break;
 case 149:
-#line 1341 "yuiif.y"
+#line 1339 "yuiif.y"
 {
 		    yyval.n = _dxf_ExAppendConst (yyvsp[-2].n, yyvsp[0].n);
 		    _dxf_ExPDestroyNode (yyvsp[0].n);
 		}
 break;
 case 150:
-#line 1346 "yuiif.y"
+#line 1344 "yuiif.y"
 {
 		    yyvsp[0].n = _dxf_ExPNegateConst (yyvsp[0].n);
 		    yyval.n = _dxf_ExAppendConst (yyvsp[-3].n, yyvsp[0].n);
@@ -2016,32 +2018,32 @@ case 150:
 		}
 break;
 case 151:
-#line 1354 "yuiif.y"
+#line 1352 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPExtendConst (yyvsp[-1].n);
 		}
 break;
 case 152:
-#line 1358 "yuiif.y"
+#line 1356 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPExtendConst (yyvsp[-1].n);
 		}
 break;
 case 154:
-#line 1368 "yuiif.y"
+#line 1366 "yuiif.y"
 {
 		    yyval.n = _dxf_ExAppendConst (yyvsp[-1].n, yyvsp[0].n);
 		    _dxf_ExPDestroyNode (yyvsp[0].n);
 		}
 break;
 case 155:
-#line 1373 "yuiif.y"
+#line 1371 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPNegateConst (yyvsp[0].n);
 		}
 break;
 case 156:
-#line 1377 "yuiif.y"
+#line 1375 "yuiif.y"
 {
 		    yyvsp[0].n = _dxf_ExPNegateConst (yyvsp[0].n);
 		    yyval.n = _dxf_ExAppendConst (yyvsp[-2].n, yyvsp[0].n);
@@ -2049,14 +2051,14 @@ case 156:
 		}
 break;
 case 157:
-#line 1383 "yuiif.y"
+#line 1381 "yuiif.y"
 {
 		    yyval.n = _dxf_ExAppendConst (yyvsp[-2].n, yyvsp[0].n);
 		    _dxf_ExPDestroyNode (yyvsp[0].n);
 		}
 break;
 case 158:
-#line 1388 "yuiif.y"
+#line 1386 "yuiif.y"
 {
 		    yyvsp[0].n = _dxf_ExPNegateConst (yyvsp[0].n);
 		    yyval.n = _dxf_ExAppendConst (yyvsp[-3].n, yyvsp[0].n);
@@ -2064,41 +2066,41 @@ case 158:
 		}
 break;
 case 160:
-#line 1397 "yuiif.y"
+#line 1395 "yuiif.y"
 {
 		    yyval.n = _dxf_ExAppendConst (yyvsp[-1].n, yyvsp[0].n);
 		    _dxf_ExPDestroyNode (yyvsp[0].n);
 		}
 break;
 case 161:
-#line 1402 "yuiif.y"
+#line 1400 "yuiif.y"
 {
 		    yyval.n = _dxf_ExAppendConst (yyvsp[-2].n, yyvsp[0].n);
 		    _dxf_ExPDestroyNode (yyvsp[0].n);
 		}
 break;
 case 166:
-#line 1415 "yuiif.y"
+#line 1413 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPNegateConst (yyvsp[0].n);
 		}
 break;
 case 167:
-#line 1421 "yuiif.y"
+#line 1419 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateConst (TYPE_INT,   CATEGORY_REAL,
 					1, (Pointer) &(yyvsp[0].i));
 		}
 break;
 case 168:
-#line 1426 "yuiif.y"
+#line 1424 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateConst (TYPE_FLOAT, CATEGORY_REAL,
 					1, (Pointer) &(yyvsp[0].f));
 		}
 break;
 case 169:
-#line 1433 "yuiif.y"
+#line 1431 "yuiif.y"
 {
 		    int		c[2];
 
@@ -2109,7 +2111,7 @@ case 169:
 		}
 break;
 case 170:
-#line 1442 "yuiif.y"
+#line 1440 "yuiif.y"
 {
 		    float	c[2];
 
@@ -2120,7 +2122,7 @@ case 170:
 		}
 break;
 case 171:
-#line 1451 "yuiif.y"
+#line 1449 "yuiif.y"
 {
 		    float	c[2];
 
@@ -2131,7 +2133,7 @@ case 171:
 		}
 break;
 case 172:
-#line 1460 "yuiif.y"
+#line 1458 "yuiif.y"
 {
 		    float	c[2];
 
@@ -2142,7 +2144,7 @@ case 172:
 		}
 break;
 case 173:
-#line 1471 "yuiif.y"
+#line 1469 "yuiif.y"
 {
 		    int		c[4];
 
@@ -2155,7 +2157,7 @@ case 173:
 		}
 break;
 case 174:
-#line 1482 "yuiif.y"
+#line 1480 "yuiif.y"
 {
 		    float	c[4];
 
@@ -2168,19 +2170,19 @@ case 174:
 		}
 break;
 case 176:
-#line 1496 "yuiif.y"
+#line 1494 "yuiif.y"
 {
 		    yyval.i = - yyvsp[0].i;
 		}
 break;
 case 179:
-#line 1506 "yuiif.y"
+#line 1504 "yuiif.y"
 {
 		    yyval.f = - yyvsp[0].f;
 		}
 break;
 case 181:
-#line 1515 "yuiif.y"
+#line 1513 "yuiif.y"
 {
                     /* should this be TYPE_STRING eventually? */
 		    yyval.n = _dxf_ExPCreateConst (TYPE_UBYTE, CATEGORY_REAL,
@@ -2189,60 +2191,60 @@ case 181:
 		}
 break;
 case 182:
-#line 1525 "yuiif.y"
+#line 1523 "yuiif.y"
 {
 		    if (! _dxd_exUIPacket)
 			yyerrok;
 		}
 break;
 case 183:
-#line 1531 "yuiif.y"
+#line 1529 "yuiif.y"
 {
 		    if (! _dxd_exUIPacket)
 			yyerrok;
 		}
 break;
 case 184:
-#line 1537 "yuiif.y"
+#line 1535 "yuiif.y"
 {
 		    if (! _dxd_exUIPacket)
 			yyerrok;
 		}
 break;
 case 185:
-#line 1543 "yuiif.y"
+#line 1541 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateId (yyvsp[0].s);
 		}
 break;
 case 186:
-#line 1549 "yuiif.y"
+#line 1547 "yuiif.y"
 {
 		    yyval.n = _dxf_ExPCreateExid (yyvsp[0].s);
 		}
 break;
 case 187:
-#line 1555 "yuiif.y"
+#line 1553 "yuiif.y"
 {
 		    yyval.n = NULL;
 		}
 break;
 case 190:
-#line 1569 "yuiif.y"
+#line 1567 "yuiif.y"
 {
 		    yyvsp[-1].n->attr = yyvsp[0].n;
 		    LIST_CREATE (yyvsp[-1].n);
 		}
 break;
 case 191:
-#line 1574 "yuiif.y"
+#line 1572 "yuiif.y"
 {
 		    yyvsp[-1].n->attr = yyvsp[0].n;
 		    LIST_APPEND_CHECK (yyvsp[-3].n, yyvsp[-1].n);
 		}
 break;
 case 196:
-#line 1594 "yuiif.y"
+#line 1592 "yuiif.y"
 {
 		    Pointer buffer;
 
@@ -2261,7 +2263,7 @@ case 196:
 		}
 break;
 case 197:
-#line 1613 "yuiif.y"
+#line 1611 "yuiif.y"
 {
 		    Pointer buffer;
 
@@ -2278,7 +2280,7 @@ case 197:
 		    }
 		}
 break;
-#line 2286 "y.tab.c"
+#line 2284 "y.tab.c"
     }
     yyssp -= yym;
     yystate = *yyssp;

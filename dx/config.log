@@ -1,73 +1,613 @@
 This file contains any messages produced by compilers while
 running configure, to aid debugging if configure makes a mistake.
 
-configure:578: checking for a BSD compatible install
-configure:628: checking whether build environment is sane
-configure:685: checking whether make sets ${MAKE}
-configure:731: checking for working aclocal
-configure:744: checking for working autoconf
-configure:757: checking for working automake
-configure:770: checking for working autoheader
-configure:783: checking for working makeinfo
-configure:800: checking for ranlib
-configure:829: checking for gcc
-configure:906: checking whether the C compiler (gcc  ) works
-configure:920: gcc -o conftest    conftest.c  1>&5
-configure:940: checking whether the C compiler (gcc  ) is a cross-compiler
-configure:945: checking whether we are using GNU C
-configure:969: checking whether gcc accepts -g
-configure:1001: checking for c++
-configure:1032: checking whether the C++ compiler (gcc  ) works
-configure:1046: gcc -o conftest    conftest.C  1>&5
-configure:1072: checking whether the C++ compiler (gcc  ) is a cross-compiler
-configure:1077: checking whether we are using GNU C++
-configure:1101: checking whether gcc accepts -g
-configure:1131: checking how to run the C preprocessor
-configure:1196: checking for X
-configure:1430: checking for dirent.h that defines DIR
-configure:1468: checking for opendir in -ldir
-configure:1551: checking for ANSI C header files
-configure:1655: checking for sys/wait.h that is POSIX.1 compatible
-configure:1700: checking for fcntl.h
-configure:1700: checking for limits.h
-configure:1700: checking for malloc.h
-configure:1700: checking for strings.h
-configure:1700: checking for sys/file.h
-configure:1700: checking for sys/ioctl.h
-configure:1700: checking for sys/time.h
-configure:1700: checking for unistd.h
-configure:1738: checking for working const
-configure:1813: checking for inline
-configure:1853: checking for mode_t
-configure:1886: checking for pid_t
-configure:1919: checking for size_t
-configure:1952: checking whether time.h and sys/time.h may both be included
-configure:1987: checking whether struct tm is in sys/time.h or time.h
-configure:2023: checking whether gcc needs -traditional
-configure:2069: checking for 8-bit clean memcmp
-configure:2105: checking whether setvbuf arguments are reversed
-configure:2151: checking return type of signal handlers
-configure:2193: checking for vfork.h
-configure:2228: checking for working vfork
-configure:2401: checking for vprintf
-configure:2506: checking for wait3 that fills in rusage
-configure:2570: checking for getcwd
-configure:2570: checking for gethostname
-configure:2570: checking for gettimeofday
-configure:2570: checking for mkdir
-configure:2570: checking for mkfifo
-configure:2570: checking for mktime
-configure:2570: checking for putenv
-configure:2570: checking for re_comp
-configure:2570: checking for regcmp
-configure:2570: checking for select
-configure:2570: checking for socket
-configure:2570: checking for strcspn
-configure:2570: checking for strdup
-configure:2570: checking for strerror
-configure:2570: checking for strspn
-configure:2570: checking for strstr
-configure:2570: checking for strtod
-configure:2570: checking for strtol
-configure:2570: checking for strtoul
-configure:2570: checking for uname
+configure:594: checking for a BSD compatible install
+configure:644: checking whether build environment is sane
+configure:701: checking whether make sets ${MAKE}
+configure:747: checking for working aclocal
+configure:760: checking for working autoconf
+configure:773: checking for working automake
+configure:786: checking for working autoheader
+configure:799: checking for working makeinfo
+configure:832: checking architecture type
+configure:874: checking whether -O2 interferes with fstream in C++
+configure:890: cc -o conftest    conftest.C  1>&5
+/tmp/cca155561.o: In function `main':
+/tmp/cca155561.o(.text+0x23): undefined reference to `ifstream::ifstream(int, char const *, int, int)'
+configure: failed program was:
+#line 877 "configure"
+#include "confdefs.h"
+
+ #include <stdio.h>
+ #include <stdarg.h>
+ #include <fstream.h>
+ 
+int main() {
+
+ ifstream *i = new ifstream("foo");
+ 
+; return 0; }
+configure:908: checking for csh
+configure:946: checking for ranlib
+configure:977: checking for c++
+configure:977: checking for g++
+configure:977: checking for gcc
+configure:1008: checking whether the C++ compiler (gcc  ) works
+configure:1022: gcc -o conftest    conftest.C  1>&5
+configure:1048: checking whether the C++ compiler (gcc  ) is a cross-compiler
+configure:1053: checking whether we are using GNU C++
+configure:1062: gcc -E conftest.C
+configure:1077: checking whether gcc accepts -g
+configure:1107: checking for gcc
+configure:1184: checking whether the C compiler (gcc  ) works
+configure:1198: gcc -o conftest    conftest.c  1>&5
+configure:1218: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:1223: checking whether we are using GNU C
+configure:1232: gcc -E conftest.c
+configure:1247: checking whether gcc accepts -g
+configure:1278: checking for IceConnectionNumber in -lICE
+configure:1297: gcc -o conftest -g -O2   conftest.c -lICE   1>&5
+ld: cannot open -lICE: No such file or directory
+configure: failed program was:
+#line 1286 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char IceConnectionNumber();
+
+int main() {
+IceConnectionNumber()
+; return 0; }
+configure:1325: checking for SmcSetProperties in -lSM
+configure:1344: gcc -o conftest -g -O2   conftest.c -lSM   1>&5
+ld: cannot open -lSM: No such file or directory
+configure: failed program was:
+#line 1333 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char SmcSetProperties();
+
+int main() {
+SmcSetProperties()
+; return 0; }
+configure:1372: checking for regcomp in -lREXP
+configure:1391: gcc -o conftest -g -O2   conftest.c -lREXP   1>&5
+ld: cannot open -lREXP: No such file or directory
+configure: failed program was:
+#line 1380 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char regcomp();
+
+int main() {
+regcomp()
+; return 0; }
+configure:1420: checking how to run the C preprocessor
+configure:1441: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for fcntl.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for limits.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for malloc.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for strings.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for sys/file.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for sys/ioctl.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for sys/time.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for unistd.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for sys/types.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for sys/sysconfig.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1490: sys/sysconfig.h: No such file or directory
+configure: failed program was:
+#line 1489 "configure"
+#include "confdefs.h"
+#include <sys/sysconfig.h>
+configure:1484: checking for sys/un.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for values.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for wait.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for sys/wait.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for sys/utsname.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for signal.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for sys/signal.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1484: checking for process.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1490: process.h: No such file or directory
+configure: failed program was:
+#line 1489 "configure"
+#include "confdefs.h"
+#include <process.h>
+configure:1484: checking for sys/filio.h
+configure:1494: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1490: sys/filio.h: No such file or directory
+configure: failed program was:
+#line 1489 "configure"
+#include "confdefs.h"
+#include <sys/filio.h>
+configure:1523: checking for getcwd
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for gethostname
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for gettimeofday
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for mkdir
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for mkfifo
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for mktime
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for putenv
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for re_comp
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for regcmp
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+/tmp/cca161501.o: In function `main':
+/home/gda/openDX/dx/configure:1545: undefined reference to `regcmp'
+configure: failed program was:
+#line 1528 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char regcmp(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char regcmp();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_regcmp) || defined (__stub___regcmp)
+choke me
+#else
+regcmp();
+#endif
+
+; return 0; }
+configure:1523: checking for select
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for socket
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for strcspn
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for strdup
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for strerror
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for strspn
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for strstr
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for strtod
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for strtol
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for strtoul
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for uname
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for popen
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for vfork
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1523: checking for trunc
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+/tmp/cca163711.o: In function `main':
+/home/gda/openDX/dx/configure:1545: undefined reference to `trunc'
+configure: failed program was:
+#line 1528 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char trunc(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char trunc();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_trunc) || defined (__stub___trunc)
+choke me
+#else
+trunc();
+#endif
+
+; return 0; }
+configure:1523: checking for _popen
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+/tmp/cca163841.o: In function `main':
+/home/gda/openDX/dx/configure:1545: undefined reference to `_popen'
+configure: failed program was:
+#line 1528 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char _popen(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char _popen();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub__popen) || defined (__stub____popen)
+choke me
+#else
+_popen();
+#endif
+
+; return 0; }
+configure:1523: checking for spawnvp
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+/tmp/cca163971.o: In function `main':
+/home/gda/openDX/dx/configure:1545: undefined reference to `spawnvp'
+configure: failed program was:
+#line 1528 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char spawnvp(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char spawnvp();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_spawnvp) || defined (__stub___spawnvp)
+choke me
+#else
+spawnvp();
+#endif
+
+; return 0; }
+configure:1523: checking for _spawnvp
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+/tmp/cca164101.o: In function `main':
+/home/gda/openDX/dx/configure:1545: undefined reference to `_spawnvp'
+configure: failed program was:
+#line 1528 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char _spawnvp(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char _spawnvp();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub__spawnvp) || defined (__stub____spawnvp)
+choke me
+#else
+_spawnvp();
+#endif
+
+; return 0; }
+configure:1523: checking for regcomp
+configure:1551: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1576: checking how to run the C preprocessor
+configure:1641: checking for bison
+configure:1672: checking for main in -lg++
+configure:1687: gcc -o conftest -g -O2   conftest.c -lg++   1>&5
+configure:1715: checking for main in -ldl
+configure:1730: gcc -o conftest -g -O2   conftest.c -ldl  -lg++  1>&5
+configure:1758: checking for free_NC_attr in -lnetcdf
+configure:1777: gcc -o conftest -g -O2   conftest.c -lnetcdf  -ldl -lg++  1>&5
+configure:1806: checking for main in -lcdf
+configure:1821: gcc -o conftest -g -O2   conftest.c -lcdf  -lnetcdf -ldl -lg++  1>&5
+ld: cannot open -lcdf: No such file or directory
+configure: failed program was:
+#line 1814 "configure"
+#include "confdefs.h"
+
+int main() {
+main()
+; return 0; }
+configure:1849: checking for main in -lhdf
+configure:1864: gcc -o conftest -g -O2   conftest.c -lhdf  -lnetcdf -ldl -lg++  1>&5
+ld: cannot open -lhdf: No such file or directory
+configure: failed program was:
+#line 1857 "configure"
+#include "confdefs.h"
+
+int main() {
+main()
+; return 0; }
+configure:1897: checking for X
+configure:2131: checking for dirent.h that defines DIR
+configure:2144: gcc -c -g -O2  conftest.c 1>&5
+configure:2169: checking for opendir in -ldir
+configure:2188: gcc -o conftest -g -O2   conftest.c -ldir  -lnetcdf -ldl -lg++  1>&5
+ld: cannot open -ldir: No such file or directory
+configure: failed program was:
+#line 2177 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char opendir();
+
+int main() {
+opendir()
+; return 0; }
+configure:2252: checking for ANSI C header files
+configure:2265: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:2332: gcc -o conftest -g -O2   conftest.c -lnetcdf -ldl -lg++  1>&5
+configure:2356: checking for sys/wait.h that is POSIX.1 compatible
+configure:2398: checking for working const
+configure:2452: gcc -c -g -O2  conftest.c 1>&5
+configure:2473: checking for mode_t
+configure:2506: checking for pid_t
+configure:2539: checking for size_t
+configure:2572: checking whether time.h and sys/time.h may both be included
+configure:2586: gcc -c -g -O2  conftest.c 1>&5
+configure:2607: checking whether struct tm is in sys/time.h or time.h
+configure:2620: gcc -c -g -O2  conftest.c 1>&5
+configure:2643: checking whether header file math.h contains symbol M_PI
+configure:2693: checking whether header file math.h contains symbol M_SQRT2
+configure:2743: checking whether header file sys/stat.h contains symbol S_ISDIR
+configure:2793: checking whether header file sys/sysmp.h contains symbol sysmp
+configure:2797: sys/sysmp.h: No such file or directory
+configure:2817: sys/sysmp.h: No such file or directory
+configure:2844: checking whether gcc needs -traditional
+configure:2890: checking for 8-bit clean memcmp
+configure:2908: gcc -o conftest -g -O2   conftest.C -lnetcdf -ldl -lg++  1>&5
+configure:2926: checking whether setvbuf arguments are reversed
+configure:2948: gcc -o conftest -g -O2   conftest.C -lnetcdf -ldl -lg++  1>&5
+configure: In function `int main()':
+configure:2941: warning: passing `int' to argument 2 of `setvbuf(_IO_FILE *, char *, int, unsigned int)' lacks a cast
+configure:2941: warning: passing `char *' to argument 3 of `setvbuf(_IO_FILE *, char *, int, unsigned int)' lacks a cast
+configure: failed program was:
+#line 2934 "configure"
+#include "confdefs.h"
+#include <stdio.h>
+/* If setvbuf has the reversed format, exit 0. */
+main () {
+  /* This call has the arguments reversed.
+     A reversed system may check and see that the address of main
+     is not _IOLBF, _IONBF, or _IOFBF, and return nonzero.  */
+  if (setvbuf(stdout, _IOLBF, (char *) main, BUFSIZ) != 0)
+    exit(1);
+  putc('\r', stdout);
+  exit(0);			/* Non-reversed systems segv here.  */
+}
+configure:2972: checking return type of signal handlers
+configure:2994: gcc -c -g -O2  conftest.C 1>&5
+configure:3014: checking for vfork.h
+configure:3024: gcc -E  conftest.C >/dev/null 2>conftest.out
+configure:3020: vfork.h: No such file or directory
+configure: failed program was:
+#line 3019 "configure"
+#include "confdefs.h"
+#include <vfork.h>
+configure:3049: checking for working vfork
+configure:3199: gcc -o conftest -g -O2   conftest.C -lnetcdf -ldl -lg++  1>&5
+configure: In function `int main()':
+configure:3127: too few arguments to function `int sparc_address_test(int)'
+configure:3146: at this point in file
+configure:3180: warning: implicit declaration of function `int wait(...)'
+configure: failed program was:
+#line 3104 "configure"
+#include "confdefs.h"
+/* Thanks to Paul Eggert for this test.  */
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#ifdef HAVE_VFORK_H
+#include <vfork.h>
+#endif
+/* On some sparc systems, changes by the child to local and incoming
+   argument registers are propagated back to the parent.
+   The compiler is told about this with #include <vfork.h>,
+   but some compilers (e.g. gcc -O) don't grok <vfork.h>.
+   Test for this by using a static variable whose address
+   is put into a register that is clobbered by the vfork.  */
+static
+#ifdef __cplusplus
+sparc_address_test (int arg)
+#else
+sparc_address_test (arg) int arg;
+#endif
+{
+  static pid_t child;
+  if (!child) {
+    child = vfork ();
+    if (child < 0) {
+      perror ("vfork");
+      _exit(2);
+    }
+    if (!child) {
+      arg = getpid();
+      write(-1, "", 0);
+      _exit (arg);
+    }
+  }
+}
+main() {
+  pid_t parent = getpid ();
+  pid_t child;
+
+  sparc_address_test ();
+
+  child = vfork ();
+
+  if (child == 0) {
+    /* Here is another test for sparc vfork register problems.
+       This test uses lots of local variables, at least
+       as many local variables as main has allocated so far
+       including compiler temporaries.  4 locals are enough for
+       gcc 1.40.3 on a Solaris 4.1.3 sparc, but we use 8 to be safe.
+       A buggy compiler should reuse the register of parent
+       for one of the local variables, since it will think that
+       parent can't possibly be used any more in this routine.
+       Assigning to the local variable will thus munge parent
+       in the parent process.  */
+    pid_t
+      p = getpid(), p1 = getpid(), p2 = getpid(), p3 = getpid(),
+      p4 = getpid(), p5 = getpid(), p6 = getpid(), p7 = getpid();
+    /* Convince the compiler that p..p7 are live; otherwise, it might
+       use the same hardware register for all 8 local variables.  */
+    if (p != p1 || p != p2 || p != p3 || p != p4
+	|| p != p5 || p != p6 || p != p7)
+      _exit(1);
+
+    /* On some systems (e.g. IRIX 3.3),
+       vfork doesn't separate parent from child file descriptors.
+       If the child closes a descriptor before it execs or exits,
+       this munges the parent's descriptor as well.
+       Test for this by closing stdout in the child.  */
+    _exit(close(fileno(stdout)) != 0);
+  } else {
+    int status;
+    struct stat st;
+
+    while (wait(&status) != child)
+      ;
+    exit(
+	 /* Was there some problem with vforking?  */
+	 child < 0
+
+	 /* Did the child fail?  (This shouldn't happen.)  */
+	 || status
+
+	 /* Did the vfork/compiler bug occur?  */
+	 || parent != getpid()
+
+	 /* Did the file descriptor bug occur?  */
+	 || fstat(fileno(stdout), &st) != 0
+	 );
+  }
+}
+configure:3222: checking for vprintf
+configure:3250: gcc -o conftest -g -O2   conftest.C -lnetcdf -ldl -lg++  1>&5
+/tmp/cca167931.o: In function `main':
+/home/gda/openDX/dx/configure:3244: undefined reference to `vprintf(void)'
+configure: failed program was:
+#line 3227 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char vprintf(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char vprintf();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_vprintf) || defined (__stub___vprintf)
+choke me
+#else
+vprintf();
+#endif
+
+; return 0; }
+configure:3274: checking for _doprnt
+configure:3302: gcc -o conftest -g -O2   conftest.C -lnetcdf -ldl -lg++  1>&5
+/tmp/cca168061.o: In function `main':
+/home/gda/openDX/dx/configure:3296: undefined reference to `_doprnt(void)'
+configure: failed program was:
+#line 3279 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char _doprnt(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char _doprnt();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub__doprnt) || defined (__stub____doprnt)
+choke me
+#else
+_doprnt();
+#endif
+
+; return 0; }
+configure:3327: checking for wait3 that fills in rusage
+configure:3366: gcc -o conftest -g -O2   conftest.C -lnetcdf -ldl -lg++  1>&5
+configure: In function `int main()':
+configure:3352: warning: implicit declaration of function `int fork(...)'
+configure:3354: warning: implicit declaration of function `int sleep(...)'
+configure:3358: warning: implicit declaration of function `int wait3(...)'
+configure:3391: checking for byte
+configure:3424: checking for ubyte
+configure:3457: checking for short
+configure:3490: checking for ushort
+configure:3523: checking for ulong
+configure:3557: checking for int8
+configure:3590: checking for uint8
+configure:3623: checking for int16
+configure:3656: checking for uint16
+configure:3689: checking for int32
+configure:3722: checking for uint32
+configure:3755: checking for int64
+configure:3788: checking for uint64
+configure:3822: checking for float32
+configure:3855: checking for float64
+configure:3889: checking whether byte ordering is bigendian
+configure:3907: gcc -c -g -O2  conftest.C 1>&5
+configure:3922: gcc -c -g -O2  conftest.C 1>&5
+configure: In function `int main()':
+configure:3917: `not' undeclared (first use this function)
+configure:3917: (Each undeclared identifier is reported only once
+configure:3917: for each function it appears in.)
+configure:3917: parse error before `endian'
+configure: failed program was:
+#line 3911 "configure"
+#include "confdefs.h"
+#include <sys/types.h>
+#include <sys/param.h>
+int main() {
+
+#if BYTE_ORDER != BIG_ENDIAN
+ not big endian
+#endif
+; return 0; }

@@ -28,7 +28,7 @@ done
 ac_given_srcdir=.
 ac_given_INSTALL="/usr/bin/install -c"
 
-trap 'rm -fr src/ui++/dxuilib/Makefile src/ui++/ui/Makefile src/exec/Makefile src/exec/dxexec/Makefile include/dx/Makefile src/exec/libdx/Makefile src/Makefile src/exec/dpexec/Makefile src/exec/dxmods/Makefile src/ui++/base/Makefile src/ui++/Makefile src/ui++/dxl/Makefile src/ui++/dxui/Makefile src/ui++/gar/Makefile src/ui++/mb/Makefile src/ui++/widgets/Makefile src/ui++/startup/Makefile src/ui++/tutor/Makefile src/ui++/java/dx/protocol/server/Makefile src/ui++/java/dx/protocol/Makefile src/ui++/java/dx/Makefile src/ui++/java/dx/runtime/Makefile src/ui++/java/dx/client/Makefile src/ui++/java/dx/net/Makefile src/ui++/java/dx/applets/Makefile src/ui++/java/dx/server/Makefile src/ui++/java/Makefile src/exec/hwrender/opengl/Makefile src/exec/hwrender/Makefile Makefile  conftest*; exit 1' 1 2 15
+trap 'rm -fr bin/dx bin/Makefile src/ui++/ui/Makefile lib/Makefile src/exec/hwrender/gl/Makefile src/exec/hwrender/xgl/Makefile src/exec/hwrender/starbase/Makefile src/ui++/dxuilib/Makefile src/ui++/ui/Makefile src/exec/Makefile src/exec/dxexec/Makefile include/Makefile include/dx/Makefile src/exec/libdx/Makefile src/Makefile src/exec/dpexec/Makefile src/exec/dxmods/Makefile src/ui++/base/Makefile src/ui++/Makefile src/ui++/dxl/Makefile src/ui++/dxui/Makefile src/ui++/prompter/Makefile src/ui++/mb/Makefile src/ui++/widgets/Makefile src/ui++/startup/Makefile src/ui++/tutor/Makefile src/ui++/java/dx/protocol/server/Makefile src/ui++/java/dx/protocol/Makefile src/ui++/java/dx/Makefile src/ui++/java/dx/runtime/Makefile src/ui++/java/dx/client/Makefile src/ui++/java/dx/net/Makefile src/ui++/java/dx/applets/Makefile src/ui++/java/dx/server/Makefile src/ui++/java/Makefile src/exec/hwrender/opengl/Makefile src/exec/hwrender/Makefile Makefile help/Makefile html/Makefile man/catl/Makefile man/manl/Makefile man/Makefile fonts/Makefile doc/Makefile src/misc/Makefile include/dxconfig.h conftest*; exit 1' 1 2 15
 
 # Protect against being on the right side of a sed subst in config.status.
 sed 's/%@/@@/; s/@%/@@/; s/%g$/@g/; /@g$/s/[\\&%]/\\&/g;
@@ -36,13 +36,17 @@ sed 's/%@/@@/; s/@%/@@/; s/%g$/@g/; /@g$/s/[\\&%]/\\&/g;
 /^[ 	]*VPATH[ 	]*=[^:]*$/d
 
 s%@SHELL@%/bin/bash%g
-s%@YACC@%yacc%g
+s%@YACC@%bison -y%g
+s%@ARCH@%linux86%g
+s%@EXEEXT@%%g
+s%@INSTALL_DX_EXE@%%g
+s%@INSTALL_DX_CSH@%dx dx.workerscript%g
 s%@CFLAGS@%-g -O2%g
 s%@CPPFLAGS@%%g
-s%@CXXFLAGS@%-g -O2%g
-s%@DEFS@% -DPACKAGE=1 -DVERSION=1 -DHAVE_DIRENT_H=1 -DSTDC_HEADERS=1 -DHAVE_SYS_WAIT_H=1 -DHAVE_FCNTL_H=1 -DHAVE_LIMITS_H=1 -DHAVE_MALLOC_H=1 -DHAVE_STRINGS_H=1 -DHAVE_SYS_FILE_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_UNISTD_H=1 -DTIME_WITH_SYS_TIME=1 -DRETSIGTYPE=void -DHAVE_VPRINTF=1 -DHAVE_WAIT3=1 -DHAVE_GETCWD=1 -DHAVE_GETHOSTNAME=1 -DHAVE_GETTIMEOFDAY=1 -DHAVE_MKDIR=1 -DHAVE_MKFIFO=1 -DHAVE_MKTIME=1 -DHAVE_PUTENV=1 -DHAVE_RE_COMP=1 -DHAVE_SELECT=1 -DHAVE_SOCKET=1 -DHAVE_STRCSPN=1 -DHAVE_STRDUP=1 -DHAVE_STRERROR=1 -DHAVE_STRSPN=1 -DHAVE_STRSTR=1 -DHAVE_STRTOD=1 -DHAVE_STRTOL=1 -DHAVE_STRTOUL=1 -DHAVE_UNAME=1 %g
+s%@CXXFLAGS@%%g
+s%@DEFS@%-DHAVE_CONFIG_H%g
 s%@LDFLAGS@%%g
-s%@LIBS@%%g
+s%@LIBS@%-lnetcdf -ldl -lg++ %g
 s%@exec_prefix@%${prefix}%g
 s%@prefix@%/usr/local%g
 s%@program_transform_name@%s,x,x,%g
@@ -68,10 +72,11 @@ s%@AUTOMAKE@%automake%g
 s%@AUTOHEADER@%autoheader%g
 s%@MAKEINFO@%makeinfo%g
 s%@SET_MAKE@%%g
+s%@HAVE_CSH@%1%g
 s%@RANLIB@%ranlib%g
-s%@CC@%gcc%g
 s%@CXX@%gcc%g
-s%@CPP@%cc -E%g
+s%@CC@%gcc%g
+s%@CPP@%gcc -E%g
 s%@LIBOBJS@%%g
 
 CEOF
@@ -108,7 +113,7 @@ if test -z "$ac_sed_cmds"; then
   ac_sed_cmds=cat
 fi
 
-CONFIG_FILES=${CONFIG_FILES-"src/ui++/dxuilib/Makefile src/ui++/ui/Makefile src/exec/Makefile src/exec/dxexec/Makefile include/dx/Makefile src/exec/libdx/Makefile src/Makefile src/exec/dpexec/Makefile src/exec/dxmods/Makefile src/ui++/base/Makefile src/ui++/Makefile src/ui++/dxl/Makefile src/ui++/dxui/Makefile src/ui++/gar/Makefile src/ui++/mb/Makefile src/ui++/widgets/Makefile src/ui++/startup/Makefile src/ui++/tutor/Makefile src/ui++/java/dx/protocol/server/Makefile src/ui++/java/dx/protocol/Makefile src/ui++/java/dx/Makefile src/ui++/java/dx/runtime/Makefile src/ui++/java/dx/client/Makefile src/ui++/java/dx/net/Makefile src/ui++/java/dx/applets/Makefile src/ui++/java/dx/server/Makefile src/ui++/java/Makefile src/exec/hwrender/opengl/Makefile src/exec/hwrender/Makefile Makefile "}
+CONFIG_FILES=${CONFIG_FILES-"bin/dx bin/Makefile src/ui++/ui/Makefile lib/Makefile src/exec/hwrender/gl/Makefile src/exec/hwrender/xgl/Makefile src/exec/hwrender/starbase/Makefile src/ui++/dxuilib/Makefile src/ui++/ui/Makefile src/exec/Makefile src/exec/dxexec/Makefile include/Makefile include/dx/Makefile src/exec/libdx/Makefile src/Makefile src/exec/dpexec/Makefile src/exec/dxmods/Makefile src/ui++/base/Makefile src/ui++/Makefile src/ui++/dxl/Makefile src/ui++/dxui/Makefile src/ui++/prompter/Makefile src/ui++/mb/Makefile src/ui++/widgets/Makefile src/ui++/startup/Makefile src/ui++/tutor/Makefile src/ui++/java/dx/protocol/server/Makefile src/ui++/java/dx/protocol/Makefile src/ui++/java/dx/Makefile src/ui++/java/dx/runtime/Makefile src/ui++/java/dx/client/Makefile src/ui++/java/dx/net/Makefile src/ui++/java/dx/applets/Makefile src/ui++/java/dx/server/Makefile src/ui++/java/Makefile src/exec/hwrender/opengl/Makefile src/exec/hwrender/Makefile Makefile help/Makefile html/Makefile man/catl/Makefile man/manl/Makefile man/Makefile fonts/Makefile doc/Makefile src/misc/Makefile"}
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
   # Support "outfile[:infile[:infile...]]", defaulting infile="outfile.in".
   case "$ac_file" in
@@ -165,6 +170,385 @@ s%@INSTALL@%$INSTALL%g
 fi; done
 rm -f conftest.s*
 
+# These sed commands are passed to sed as "A NAME B NAME C VALUE D", where
+# NAME is the cpp macro being defined and VALUE is the value it is being given.
+#
+# ac_d sets the value in "#define NAME VALUE" lines.
+ac_dA='s%^\([ 	]*\)#\([ 	]*define[ 	][ 	]*\)'
+ac_dB='\([ 	][ 	]*\)[^ 	]*%\1#\2'
+ac_dC='\3'
+ac_dD='%g'
+# ac_u turns "#undef NAME" with trailing blanks into "#define NAME VALUE".
+ac_uA='s%^\([ 	]*\)#\([ 	]*\)undef\([ 	][ 	]*\)'
+ac_uB='\([ 	]\)%\1#\2define\3'
+ac_uC=' '
+ac_uD='\4%g'
+# ac_e turns "#undef NAME" without trailing blanks into "#define NAME VALUE".
+ac_eA='s%^\([ 	]*\)#\([ 	]*\)undef\([ 	][ 	]*\)'
+ac_eB='$%\1#\2define\3'
+ac_eC=' '
+ac_eD='%g'
 
+if test "${CONFIG_HEADERS+set}" != set; then
+  CONFIG_HEADERS="include/dxconfig.h"
+fi
+for ac_file in .. $CONFIG_HEADERS; do if test "x$ac_file" != x..; then
+  # Support "outfile[:infile[:infile...]]", defaulting infile="outfile.in".
+  case "$ac_file" in
+  *:*) ac_file_in=`echo "$ac_file"|sed 's%[^:]*:%%'`
+       ac_file=`echo "$ac_file"|sed 's%:.*%%'` ;;
+  *) ac_file_in="${ac_file}.in" ;;
+  esac
+
+  echo creating $ac_file
+
+  rm -f conftest.frag conftest.in conftest.out
+  ac_file_inputs=`echo $ac_file_in|sed -e "s%^%$ac_given_srcdir/%" -e "s%:% $ac_given_srcdir/%g"`
+  cat $ac_file_inputs > conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}PACKAGE${ac_dB}PACKAGE${ac_dC}1${ac_dD}
+${ac_uA}PACKAGE${ac_uB}PACKAGE${ac_uC}1${ac_uD}
+${ac_eA}PACKAGE${ac_eB}PACKAGE${ac_eC}1${ac_eD}
+${ac_dA}VERSION${ac_dB}VERSION${ac_dC}1${ac_dD}
+${ac_uA}VERSION${ac_uB}VERSION${ac_uC}1${ac_uD}
+${ac_eA}VERSION${ac_eB}VERSION${ac_eC}1${ac_eD}
+${ac_dA}DXD_VERSION_STRING${ac_dB}DXD_VERSION_STRING${ac_dC}"01.01.0001"${ac_dD}
+${ac_uA}DXD_VERSION_STRING${ac_uB}DXD_VERSION_STRING${ac_uC}"01.01.0001"${ac_uD}
+${ac_eA}DXD_VERSION_STRING${ac_eB}DXD_VERSION_STRING${ac_eC}"01.01.0001"${ac_eD}
+${ac_dA}DXD_VERSION${ac_dB}DXD_VERSION${ac_dC}4${ac_dD}
+${ac_uA}DXD_VERSION${ac_uB}DXD_VERSION${ac_uC}4${ac_uD}
+${ac_eA}DXD_VERSION${ac_eB}DXD_VERSION${ac_eC}4${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}DXD_RELEASE${ac_dB}DXD_RELEASE${ac_dC}1${ac_dD}
+${ac_uA}DXD_RELEASE${ac_uB}DXD_RELEASE${ac_uC}1${ac_uD}
+${ac_eA}DXD_RELEASE${ac_eB}DXD_RELEASE${ac_eC}1${ac_eD}
+${ac_dA}DXD_MODIFICATION${ac_dB}DXD_MODIFICATION${ac_dC}1${ac_dD}
+${ac_uA}DXD_MODIFICATION${ac_uB}DXD_MODIFICATION${ac_uC}1${ac_uD}
+${ac_eA}DXD_MODIFICATION${ac_eB}DXD_MODIFICATION${ac_eC}1${ac_eD}
+${ac_dA}linux86${ac_dB}linux86${ac_dC}1${ac_dD}
+${ac_uA}linux86${ac_uB}linux86${ac_uC}1${ac_uD}
+${ac_eA}linux86${ac_eB}linux86${ac_eC}1${ac_eD}
+${ac_dA}DXD_ARCHNAME${ac_dB}DXD_ARCHNAME${ac_dC}"linux86"${ac_dD}
+${ac_uA}DXD_ARCHNAME${ac_uB}DXD_ARCHNAME${ac_uC}"linux86"${ac_uD}
+${ac_eA}DXD_ARCHNAME${ac_eB}DXD_ARCHNAME${ac_eC}"linux86"${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_FCNTL_H${ac_dB}HAVE_FCNTL_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_FCNTL_H${ac_uB}HAVE_FCNTL_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_FCNTL_H${ac_eB}HAVE_FCNTL_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_LIMITS_H${ac_dB}HAVE_LIMITS_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_LIMITS_H${ac_uB}HAVE_LIMITS_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_LIMITS_H${ac_eB}HAVE_LIMITS_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_MALLOC_H${ac_dB}HAVE_MALLOC_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_MALLOC_H${ac_uB}HAVE_MALLOC_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_MALLOC_H${ac_eB}HAVE_MALLOC_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_STRINGS_H${ac_dB}HAVE_STRINGS_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_STRINGS_H${ac_uB}HAVE_STRINGS_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_STRINGS_H${ac_eB}HAVE_STRINGS_H${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_SYS_FILE_H${ac_dB}HAVE_SYS_FILE_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SYS_FILE_H${ac_uB}HAVE_SYS_FILE_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SYS_FILE_H${ac_eB}HAVE_SYS_FILE_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_SYS_IOCTL_H${ac_dB}HAVE_SYS_IOCTL_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SYS_IOCTL_H${ac_uB}HAVE_SYS_IOCTL_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SYS_IOCTL_H${ac_eB}HAVE_SYS_IOCTL_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_SYS_TIME_H${ac_dB}HAVE_SYS_TIME_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SYS_TIME_H${ac_uB}HAVE_SYS_TIME_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SYS_TIME_H${ac_eB}HAVE_SYS_TIME_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_UNISTD_H${ac_dB}HAVE_UNISTD_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_UNISTD_H${ac_uB}HAVE_UNISTD_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_UNISTD_H${ac_eB}HAVE_UNISTD_H${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_SYS_TYPES_H${ac_dB}HAVE_SYS_TYPES_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SYS_TYPES_H${ac_uB}HAVE_SYS_TYPES_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SYS_TYPES_H${ac_eB}HAVE_SYS_TYPES_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_SYS_UN_H${ac_dB}HAVE_SYS_UN_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SYS_UN_H${ac_uB}HAVE_SYS_UN_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SYS_UN_H${ac_eB}HAVE_SYS_UN_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_VALUES_H${ac_dB}HAVE_VALUES_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_VALUES_H${ac_uB}HAVE_VALUES_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_VALUES_H${ac_eB}HAVE_VALUES_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_WAIT_H${ac_dB}HAVE_WAIT_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_WAIT_H${ac_uB}HAVE_WAIT_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_WAIT_H${ac_eB}HAVE_WAIT_H${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_SYS_WAIT_H${ac_dB}HAVE_SYS_WAIT_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SYS_WAIT_H${ac_uB}HAVE_SYS_WAIT_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SYS_WAIT_H${ac_eB}HAVE_SYS_WAIT_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_SYS_UTSNAME_H${ac_dB}HAVE_SYS_UTSNAME_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SYS_UTSNAME_H${ac_uB}HAVE_SYS_UTSNAME_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SYS_UTSNAME_H${ac_eB}HAVE_SYS_UTSNAME_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_SIGNAL_H${ac_dB}HAVE_SIGNAL_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SIGNAL_H${ac_uB}HAVE_SIGNAL_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SIGNAL_H${ac_eB}HAVE_SIGNAL_H${ac_eC}1${ac_eD}
+${ac_dA}HAVE_SYS_SIGNAL_H${ac_dB}HAVE_SYS_SIGNAL_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SYS_SIGNAL_H${ac_uB}HAVE_SYS_SIGNAL_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SYS_SIGNAL_H${ac_eB}HAVE_SYS_SIGNAL_H${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_GETCWD${ac_dB}HAVE_GETCWD${ac_dC}1${ac_dD}
+${ac_uA}HAVE_GETCWD${ac_uB}HAVE_GETCWD${ac_uC}1${ac_uD}
+${ac_eA}HAVE_GETCWD${ac_eB}HAVE_GETCWD${ac_eC}1${ac_eD}
+${ac_dA}HAVE_GETHOSTNAME${ac_dB}HAVE_GETHOSTNAME${ac_dC}1${ac_dD}
+${ac_uA}HAVE_GETHOSTNAME${ac_uB}HAVE_GETHOSTNAME${ac_uC}1${ac_uD}
+${ac_eA}HAVE_GETHOSTNAME${ac_eB}HAVE_GETHOSTNAME${ac_eC}1${ac_eD}
+${ac_dA}HAVE_GETTIMEOFDAY${ac_dB}HAVE_GETTIMEOFDAY${ac_dC}1${ac_dD}
+${ac_uA}HAVE_GETTIMEOFDAY${ac_uB}HAVE_GETTIMEOFDAY${ac_uC}1${ac_uD}
+${ac_eA}HAVE_GETTIMEOFDAY${ac_eB}HAVE_GETTIMEOFDAY${ac_eC}1${ac_eD}
+${ac_dA}HAVE_MKDIR${ac_dB}HAVE_MKDIR${ac_dC}1${ac_dD}
+${ac_uA}HAVE_MKDIR${ac_uB}HAVE_MKDIR${ac_uC}1${ac_uD}
+${ac_eA}HAVE_MKDIR${ac_eB}HAVE_MKDIR${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_MKFIFO${ac_dB}HAVE_MKFIFO${ac_dC}1${ac_dD}
+${ac_uA}HAVE_MKFIFO${ac_uB}HAVE_MKFIFO${ac_uC}1${ac_uD}
+${ac_eA}HAVE_MKFIFO${ac_eB}HAVE_MKFIFO${ac_eC}1${ac_eD}
+${ac_dA}HAVE_MKTIME${ac_dB}HAVE_MKTIME${ac_dC}1${ac_dD}
+${ac_uA}HAVE_MKTIME${ac_uB}HAVE_MKTIME${ac_uC}1${ac_uD}
+${ac_eA}HAVE_MKTIME${ac_eB}HAVE_MKTIME${ac_eC}1${ac_eD}
+${ac_dA}HAVE_PUTENV${ac_dB}HAVE_PUTENV${ac_dC}1${ac_dD}
+${ac_uA}HAVE_PUTENV${ac_uB}HAVE_PUTENV${ac_uC}1${ac_uD}
+${ac_eA}HAVE_PUTENV${ac_eB}HAVE_PUTENV${ac_eC}1${ac_eD}
+${ac_dA}HAVE_RE_COMP${ac_dB}HAVE_RE_COMP${ac_dC}1${ac_dD}
+${ac_uA}HAVE_RE_COMP${ac_uB}HAVE_RE_COMP${ac_uC}1${ac_uD}
+${ac_eA}HAVE_RE_COMP${ac_eB}HAVE_RE_COMP${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_SELECT${ac_dB}HAVE_SELECT${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SELECT${ac_uB}HAVE_SELECT${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SELECT${ac_eB}HAVE_SELECT${ac_eC}1${ac_eD}
+${ac_dA}HAVE_SOCKET${ac_dB}HAVE_SOCKET${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SOCKET${ac_uB}HAVE_SOCKET${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SOCKET${ac_eB}HAVE_SOCKET${ac_eC}1${ac_eD}
+${ac_dA}HAVE_STRCSPN${ac_dB}HAVE_STRCSPN${ac_dC}1${ac_dD}
+${ac_uA}HAVE_STRCSPN${ac_uB}HAVE_STRCSPN${ac_uC}1${ac_uD}
+${ac_eA}HAVE_STRCSPN${ac_eB}HAVE_STRCSPN${ac_eC}1${ac_eD}
+${ac_dA}HAVE_STRDUP${ac_dB}HAVE_STRDUP${ac_dC}1${ac_dD}
+${ac_uA}HAVE_STRDUP${ac_uB}HAVE_STRDUP${ac_uC}1${ac_uD}
+${ac_eA}HAVE_STRDUP${ac_eB}HAVE_STRDUP${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_STRERROR${ac_dB}HAVE_STRERROR${ac_dC}1${ac_dD}
+${ac_uA}HAVE_STRERROR${ac_uB}HAVE_STRERROR${ac_uC}1${ac_uD}
+${ac_eA}HAVE_STRERROR${ac_eB}HAVE_STRERROR${ac_eC}1${ac_eD}
+${ac_dA}HAVE_STRSPN${ac_dB}HAVE_STRSPN${ac_dC}1${ac_dD}
+${ac_uA}HAVE_STRSPN${ac_uB}HAVE_STRSPN${ac_uC}1${ac_uD}
+${ac_eA}HAVE_STRSPN${ac_eB}HAVE_STRSPN${ac_eC}1${ac_eD}
+${ac_dA}HAVE_STRSTR${ac_dB}HAVE_STRSTR${ac_dC}1${ac_dD}
+${ac_uA}HAVE_STRSTR${ac_uB}HAVE_STRSTR${ac_uC}1${ac_uD}
+${ac_eA}HAVE_STRSTR${ac_eB}HAVE_STRSTR${ac_eC}1${ac_eD}
+${ac_dA}HAVE_STRTOD${ac_dB}HAVE_STRTOD${ac_dC}1${ac_dD}
+${ac_uA}HAVE_STRTOD${ac_uB}HAVE_STRTOD${ac_uC}1${ac_uD}
+${ac_eA}HAVE_STRTOD${ac_eB}HAVE_STRTOD${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_STRTOL${ac_dB}HAVE_STRTOL${ac_dC}1${ac_dD}
+${ac_uA}HAVE_STRTOL${ac_uB}HAVE_STRTOL${ac_uC}1${ac_uD}
+${ac_eA}HAVE_STRTOL${ac_eB}HAVE_STRTOL${ac_eC}1${ac_eD}
+${ac_dA}HAVE_STRTOUL${ac_dB}HAVE_STRTOUL${ac_dC}1${ac_dD}
+${ac_uA}HAVE_STRTOUL${ac_uB}HAVE_STRTOUL${ac_uC}1${ac_uD}
+${ac_eA}HAVE_STRTOUL${ac_eB}HAVE_STRTOUL${ac_eC}1${ac_eD}
+${ac_dA}HAVE_UNAME${ac_dB}HAVE_UNAME${ac_dC}1${ac_dD}
+${ac_uA}HAVE_UNAME${ac_uB}HAVE_UNAME${ac_uC}1${ac_uD}
+${ac_eA}HAVE_UNAME${ac_eB}HAVE_UNAME${ac_eC}1${ac_eD}
+${ac_dA}HAVE_POPEN${ac_dB}HAVE_POPEN${ac_dC}1${ac_dD}
+${ac_uA}HAVE_POPEN${ac_uB}HAVE_POPEN${ac_uC}1${ac_uD}
+${ac_eA}HAVE_POPEN${ac_eB}HAVE_POPEN${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_VFORK${ac_dB}HAVE_VFORK${ac_dC}1${ac_dD}
+${ac_uA}HAVE_VFORK${ac_uB}HAVE_VFORK${ac_uC}1${ac_uD}
+${ac_eA}HAVE_VFORK${ac_eB}HAVE_VFORK${ac_eC}1${ac_eD}
+${ac_dA}HAVE_REGCOMP${ac_dB}HAVE_REGCOMP${ac_dC}1${ac_dD}
+${ac_uA}HAVE_REGCOMP${ac_uB}HAVE_REGCOMP${ac_uC}1${ac_uD}
+${ac_eA}HAVE_REGCOMP${ac_eB}HAVE_REGCOMP${ac_eC}1${ac_eD}
+${ac_dA}HAVE_LIBG__${ac_dB}HAVE_LIBG__${ac_dC}1${ac_dD}
+${ac_uA}HAVE_LIBG__${ac_uB}HAVE_LIBG__${ac_uC}1${ac_uD}
+${ac_eA}HAVE_LIBG__${ac_eB}HAVE_LIBG__${ac_eC}1${ac_eD}
+${ac_dA}HAVE_LIBDL${ac_dB}HAVE_LIBDL${ac_dC}1${ac_dD}
+${ac_uA}HAVE_LIBDL${ac_uB}HAVE_LIBDL${ac_uC}1${ac_uD}
+${ac_eA}HAVE_LIBDL${ac_eB}HAVE_LIBDL${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}HAVE_LIBNETCDF${ac_dB}HAVE_LIBNETCDF${ac_dC}1${ac_dD}
+${ac_uA}HAVE_LIBNETCDF${ac_uB}HAVE_LIBNETCDF${ac_uC}1${ac_uD}
+${ac_eA}HAVE_LIBNETCDF${ac_eB}HAVE_LIBNETCDF${ac_eC}1${ac_eD}
+${ac_dA}HAVE_DIRENT_H${ac_dB}HAVE_DIRENT_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_DIRENT_H${ac_uB}HAVE_DIRENT_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_DIRENT_H${ac_eB}HAVE_DIRENT_H${ac_eC}1${ac_eD}
+${ac_dA}STDC_HEADERS${ac_dB}STDC_HEADERS${ac_dC}1${ac_dD}
+${ac_uA}STDC_HEADERS${ac_uB}STDC_HEADERS${ac_uC}1${ac_uD}
+${ac_eA}STDC_HEADERS${ac_eB}STDC_HEADERS${ac_eC}1${ac_eD}
+${ac_dA}HAVE_SYS_WAIT_H${ac_dB}HAVE_SYS_WAIT_H${ac_dC}1${ac_dD}
+${ac_uA}HAVE_SYS_WAIT_H${ac_uB}HAVE_SYS_WAIT_H${ac_uC}1${ac_uD}
+${ac_eA}HAVE_SYS_WAIT_H${ac_eB}HAVE_SYS_WAIT_H${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}TIME_WITH_SYS_TIME${ac_dB}TIME_WITH_SYS_TIME${ac_dC}1${ac_dD}
+${ac_uA}TIME_WITH_SYS_TIME${ac_uB}TIME_WITH_SYS_TIME${ac_uC}1${ac_uD}
+${ac_eA}TIME_WITH_SYS_TIME${ac_eB}TIME_WITH_SYS_TIME${ac_eC}1${ac_eD}
+${ac_dA}HAS_M_PI${ac_dB}HAS_M_PI${ac_dC}1${ac_dD}
+${ac_uA}HAS_M_PI${ac_uB}HAS_M_PI${ac_uC}1${ac_uD}
+${ac_eA}HAS_M_PI${ac_eB}HAS_M_PI${ac_eC}1${ac_eD}
+${ac_dA}HAS_M_SQRT2${ac_dB}HAS_M_SQRT2${ac_dC}1${ac_dD}
+${ac_uA}HAS_M_SQRT2${ac_uB}HAS_M_SQRT2${ac_uC}1${ac_uD}
+${ac_eA}HAS_M_SQRT2${ac_eB}HAS_M_SQRT2${ac_eC}1${ac_eD}
+${ac_dA}HAS_S_ISDIR${ac_dB}HAS_S_ISDIR${ac_dC}1${ac_dD}
+${ac_uA}HAS_S_ISDIR${ac_uB}HAS_S_ISDIR${ac_uC}1${ac_uD}
+${ac_eA}HAS_S_ISDIR${ac_eB}HAS_S_ISDIR${ac_eC}1${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}RETSIGTYPE${ac_dB}RETSIGTYPE${ac_dC}void${ac_dD}
+${ac_uA}RETSIGTYPE${ac_uB}RETSIGTYPE${ac_uC}void${ac_uD}
+${ac_eA}RETSIGTYPE${ac_eB}RETSIGTYPE${ac_eC}void${ac_eD}
+${ac_dA}vfork${ac_dB}vfork${ac_dC}fork${ac_dD}
+${ac_uA}vfork${ac_uB}vfork${ac_uC}fork${ac_uD}
+${ac_eA}vfork${ac_eB}vfork${ac_eC}fork${ac_eD}
+${ac_dA}HAVE_WAIT3${ac_dB}HAVE_WAIT3${ac_dC}1${ac_dD}
+${ac_uA}HAVE_WAIT3${ac_uB}HAVE_WAIT3${ac_uC}1${ac_uD}
+${ac_eA}HAVE_WAIT3${ac_eB}HAVE_WAIT3${ac_eC}1${ac_eD}
+${ac_dA}byte${ac_dB}byte${ac_dC}signed char${ac_dD}
+${ac_uA}byte${ac_uB}byte${ac_uC}signed char${ac_uD}
+${ac_eA}byte${ac_eB}byte${ac_eC}signed char${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}ubyte${ac_dB}ubyte${ac_dC}unsigned char${ac_dD}
+${ac_uA}ubyte${ac_uB}ubyte${ac_uC}unsigned char${ac_uD}
+${ac_eA}ubyte${ac_eB}ubyte${ac_eC}unsigned char${ac_eD}
+${ac_dA}int8${ac_dB}int8${ac_dC}signed char${ac_dD}
+${ac_uA}int8${ac_uB}int8${ac_uC}signed char${ac_uD}
+${ac_eA}int8${ac_eB}int8${ac_eC}signed char${ac_eD}
+${ac_dA}uint8${ac_dB}uint8${ac_dC}unsigned char${ac_dD}
+${ac_uA}uint8${ac_uB}uint8${ac_uC}unsigned char${ac_uD}
+${ac_eA}uint8${ac_eB}uint8${ac_eC}unsigned char${ac_eD}
+${ac_dA}int16${ac_dB}int16${ac_dC}signed short${ac_dD}
+${ac_uA}int16${ac_uB}int16${ac_uC}signed short${ac_uD}
+${ac_eA}int16${ac_eB}int16${ac_eC}signed short${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}uint16${ac_dB}uint16${ac_dC}unsigned short${ac_dD}
+${ac_uA}uint16${ac_uB}uint16${ac_uC}unsigned short${ac_uD}
+${ac_eA}uint16${ac_eB}uint16${ac_eC}unsigned short${ac_eD}
+${ac_dA}int32${ac_dB}int32${ac_dC}signed int${ac_dD}
+${ac_uA}int32${ac_uB}int32${ac_uC}signed int${ac_uD}
+${ac_eA}int32${ac_eB}int32${ac_eC}signed int${ac_eD}
+${ac_dA}uint32${ac_dB}uint32${ac_dC}unsigned int${ac_dD}
+${ac_uA}uint32${ac_uB}uint32${ac_uC}unsigned int${ac_uD}
+${ac_eA}uint32${ac_eB}uint32${ac_eC}unsigned int${ac_eD}
+${ac_dA}int64${ac_dB}int64${ac_dC}signed long${ac_dD}
+${ac_uA}int64${ac_uB}int64${ac_uC}signed long${ac_uD}
+${ac_eA}int64${ac_eB}int64${ac_eC}signed long${ac_eD}
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  cat > conftest.frag <<CEOF
+${ac_dA}uint64${ac_dB}uint64${ac_dC}unsigned long${ac_dD}
+${ac_uA}uint64${ac_uB}uint64${ac_uC}unsigned long${ac_uD}
+${ac_eA}uint64${ac_eB}uint64${ac_eC}unsigned long${ac_eD}
+${ac_dA}float32${ac_dB}float32${ac_dC}float${ac_dD}
+${ac_uA}float32${ac_uB}float32${ac_uC}float${ac_uD}
+${ac_eA}float32${ac_eB}float32${ac_eC}float${ac_eD}
+${ac_dA}float64${ac_dB}float64${ac_dC}double char${ac_dD}
+${ac_uA}float64${ac_uB}float64${ac_uC}double char${ac_uD}
+${ac_eA}float64${ac_eB}float64${ac_eC}double char${ac_eD}
+s%^[ 	]*#[ 	]*undef[ 	][ 	]*[a-zA-Z_][a-zA-Z_0-9]*%/* & */%
+CEOF
+  sed -f conftest.frag conftest.in > conftest.out
+  rm -f conftest.in
+  mv conftest.out conftest.in
+
+  rm -f conftest.frag conftest.h
+  echo "/* $ac_file.  Generated automatically by configure.  */" > conftest.h
+  cat conftest.in >> conftest.h
+  rm -f conftest.in
+  if cmp -s $ac_file conftest.h 2>/dev/null; then
+    echo "$ac_file is unchanged"
+    rm -f conftest.h
+  else
+    # Remove last slash and all that follows it.  Not all systems have dirname.
+      ac_dir=`echo $ac_file|sed 's%/[^/][^/]*$%%'`
+      if test "$ac_dir" != "$ac_file" && test "$ac_dir" != .; then
+      # The file is in a subdirectory.
+      test ! -d "$ac_dir" && mkdir "$ac_dir"
+    fi
+    rm -f $ac_file
+    mv conftest.h $ac_file
+  fi
+fi; done
+
+
+
+test -z "$CONFIG_HEADERS" || echo timestamp > include/stamp-h
 
 exit 0

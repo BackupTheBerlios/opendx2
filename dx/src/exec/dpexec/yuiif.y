@@ -1,7 +1,12 @@
 %{
-/*********************************************************************/
-/*                     DX SOURCEFILE				     */
-/*********************************************************************/
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
+
 
 #define DXD_ENABLE_SOCKET_POINTERS	/* define SFILE in arch.h, os2 */
 #include <dx/dx.h>

@@ -1,3 +1,10 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 #define SPLIT(z1,z2, p1,p2, v1,v2) {\
     float a = (nearPlane-z1) / (z2-z1); /* XXX */\
     float abar = 1.0-a;\

@@ -1,4 +1,11 @@
 /* include/dxconfig.h.in.  Generated automatically from configure.in by autoheader.  */
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 #ifndef __DXCONFIG_H__
 #define __DXCONFIG_H__
 
@@ -82,6 +89,12 @@
 #undef ulong
 #undef ushort
 
+/* Define if you have the _popen function.  */
+#undef HAVE__POPEN
+
+/* Define if you have the _spawnvp function.  */
+#undef HAVE__SPAWNVP
+
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETCWD
 
@@ -112,11 +125,17 @@
 /* Define if you have the regcmp function.  */
 #undef HAVE_REGCMP
 
+/* Define if you have the regcomp function.  */
+#undef HAVE_REGCOMP
+
 /* Define if you have the select function.  */
 #undef HAVE_SELECT
 
 /* Define if you have the socket function.  */
 #undef HAVE_SOCKET
+
+/* Define if you have the spawnvp function.  */
+#undef HAVE_SPAWNVP
 
 /* Define if you have the strcspn function.  */
 #undef HAVE_STRCSPN
@@ -166,6 +185,12 @@
 /* Define if you have the <ndir.h> header file.  */
 #undef HAVE_NDIR_H
 
+/* Define if you have the <process.h> header file.  */
+#undef HAVE_PROCESS_H
+
+/* Define if you have the <signal.h> header file.  */
+#undef HAVE_SIGNAL_H
+
 /* Define if you have the <strings.h> header file.  */
 #undef HAVE_STRINGS_H
 
@@ -175,11 +200,17 @@
 /* Define if you have the <sys/file.h> header file.  */
 #undef HAVE_SYS_FILE_H
 
+/* Define if you have the <sys/filio.h> header file.  */
+#undef HAVE_SYS_FILIO_H
+
 /* Define if you have the <sys/ioctl.h> header file.  */
 #undef HAVE_SYS_IOCTL_H
 
 /* Define if you have the <sys/ndir.h> header file.  */
 #undef HAVE_SYS_NDIR_H
+
+/* Define if you have the <sys/signal.h> header file.  */
+#undef HAVE_SYS_SIGNAL_H
 
 /* Define if you have the <sys/sysconfig.h> header file.  */
 #undef HAVE_SYS_SYSCONFIG_H
@@ -193,11 +224,29 @@
 /* Define if you have the <sys/un.h> header file.  */
 #undef HAVE_SYS_UN_H
 
+/* Define if you have the <sys/utsname.h> header file.  */
+#undef HAVE_SYS_UTSNAME_H
+
+/* Define if you have the <sys/wait.h> header file.  */
+#undef HAVE_SYS_WAIT_H
+
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 
 /* Define if you have the <values.h> header file.  */
 #undef HAVE_VALUES_H
+
+/* Define if you have the <wait.h> header file.  */
+#undef HAVE_WAIT_H
+
+/* Define if you have the ICE library (-lICE).  */
+#undef HAVE_LIBICE
+
+/* Define if you have the REXP library (-lREXP).  */
+#undef HAVE_LIBREXP
+
+/* Define if you have the SM library (-lSM).  */
+#undef HAVE_LIBSM
 
 /* Define if you have the cdf library (-lcdf).  */
 #undef HAVE_LIBCDF

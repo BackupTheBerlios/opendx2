@@ -1,3 +1,10 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 /* XXX - equivalence loop, prisms, efficient degenerate removal */
 /* XXX - the diagonal isn't preserved with band quad->tri decomp */
 /* XXX - color map component */
@@ -9,9 +16,6 @@
 
 #ifndef _ISOSURFACE_PASS_NUMBER
 
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
 
 /*
  * The following commands may be useful in rebuilding isosurface in

@@ -1,8 +1,12 @@
 %{
 
-/*****************************************************************************/
-/*                         DX SOURCEFILE				     */
-/*****************************************************************************/
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 
 /*****************************************************************************/
 /* uin.lex -								     */
@@ -12,10 +16,13 @@
 /*****************************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/net.lex,v 1.2 1999/04/01 20:06:03 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/net.lex,v 1.3 1999/05/10 15:46:23 gda Exp $
  * $Log: net.lex,v $
- * Revision 1.2  1999/04/01 20:06:03  gda
- * Added type for bison
+ * Revision 1.3  1999/05/10 15:46:23  gda
+ * Copyright message
+ *
+ * Revision 1.3  1999/05/10 15:46:23  gda
+ * Copyright message
  *
  * Revision 1.2  1999/04/01 20:06:03  gda
  * Added type for bison

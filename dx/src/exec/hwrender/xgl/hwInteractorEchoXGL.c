@@ -1,3 +1,10 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 /*********************************************************************/
 /*                     I.B.M. CONFIENTIAL                           */
 /*********************************************************************/
@@ -25,8 +32,11 @@
   read/write primitives we have to flip the Y coordinate ourselves.
 
  $Log: hwInteractorEchoXGL.c,v $
- Revision 1.2  1999/05/03 14:06:42  gda
- moved to using dxconfig.h rather than command-line defines
+ Revision 1.3  1999/05/10 15:45:39  gda
+ Copyright message
+
+ Revision 1.3  1999/05/10 15:45:39  gda
+ Copyright message
 
  Revision 1.2  1999/05/03 14:06:42  gda
  moved to using dxconfig.h rather than command-line defines

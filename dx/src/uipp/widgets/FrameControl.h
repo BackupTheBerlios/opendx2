@@ -1,4 +1,10 @@
-/*  Open Visualization Data Explorer Source File */
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 
 #include <dxconfig.h>
 
@@ -13,8 +19,11 @@
 
 /*
  * $Log: FrameControl.h,v $
- * Revision 1.4  1999/05/03 14:09:01  gda
- * dxconfig.h, plus other post-new-shapshot fixes
+ * Revision 1.5  1999/05/10 15:46:31  gda
+ * Copyright message
+ *
+ * Revision 1.5  1999/05/10 15:46:31  gda
+ * Copyright message
  *
  * Revision 1.4  1999/05/03 14:09:01  gda
  * dxconfig.h, plus other post-new-shapshot fixes

@@ -1,6 +1,10 @@
-/*********************************************************************/
-/*                        DX  SOURCEFILE                             */
-/*********************************************************************/
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 
 #include <dxconfig.h>
 
@@ -8,7 +12,7 @@
 #define render_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.2 1999/05/03 14:06:39 gda Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.3 1999/05/10 15:45:34 gda Exp $"};
 #endif
 
 #include <stdio.h>

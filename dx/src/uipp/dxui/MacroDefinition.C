@@ -1,4 +1,10 @@
-/*  Open Visualization Data Explorer Source File */
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 
 #ifdef OS2
 #   define INCL_DOSFILEMGR

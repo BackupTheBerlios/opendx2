@@ -1,3 +1,10 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 /*********************************************************************/
 /*                     I.B.M. CONFIENTIAL                           */
 /*********************************************************************/
@@ -16,7 +23,7 @@
  *
  ******************************************************************************/
 /*
- $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/starbase/wsutils.c,v 1.2 1999/05/03 14:06:42 gda Exp $
+ $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/starbase/wsutils.c,v 1.3 1999/05/10 15:45:39 gda Exp $
 */
 
 #include <X11/X.h>
