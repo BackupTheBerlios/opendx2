@@ -87,8 +87,8 @@ echo yes
 echo no
 ])
 
-
-AC_EGREP_HEADER(sys_errlist, errno.h, AC_DEFINE_UNQUOTED(HAVE_SYS_ERRLIST, 1), AC_DEFINE_UNQUOTED(HAVE_SYS_ERRLIST, 0))
+AC_EGREP_HEADER(sys_errlist, errno.h, AC_DEFINE(HAVE_SYS_ERRLIST))
+AC_EGREP_HEADER(sys_errlist, stdio.h, AC_DEFINE(HAVE_SYS_ERRLIST))
 
 AC_PROG_YACC
 
@@ -162,11 +162,11 @@ extern "C" void foo(int bar, ...){}
 signal(SIGBUS, foo);
 ],
 [
-echo yes
+echo Using alternate signal argument list in C++
 AC_DEFINE_UNQUOTED(ALTERNATE_CXX_SIGNAL)
 ],
 [
-echo no
+echo Using standard signal argument list in C++
 ])
 
 
