@@ -1021,6 +1021,7 @@ AC_OUTPUT(
 	src/exec/hwrender/xgl/Makefile  \
 	src/exec/libdx/Makefile \
 	src/misc/Makefile \
+	src/misc/arch.mak \
 	src/uipp/Makefile \
 	src/uipp/base/Makefile \
 	src/uipp/dxl/Makefile \
