@@ -12,10 +12,13 @@
 /*****************************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/net.lex,v 1.1 1999/03/24 15:18:18 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/net.lex,v 1.2 1999/04/01 20:06:03 gda Exp $
  * $Log: net.lex,v $
- * Revision 1.1  1999/03/24 15:18:18  gda
- * Initial revision
+ * Revision 1.2  1999/04/01 20:06:03  gda
+ * Added type for bison
+ *
+ * Revision 1.2  1999/04/01 20:06:03  gda
+ * Added type for bison
  *
  * Revision 1.1.1.1  1999/03/24 15:18:18  gda
  * Initial CVS Version
@@ -251,7 +254,7 @@ E                       [eE]{US}{D}+
 "$sys"                  { return (P_SYSTEM); }
 "$vin"                  { return (P_VINQ); }
 "$vre"                  { return (P_VRESP); }
-	                    strcpy (yylval.s, yytext);
+
 
 {AL}{ALN}*              {
 	                    strcpy (yylval.ast.s, yytext);
@@ -259,21 +262,21 @@ E                       [eE]{US}{D}+
 	                }
 
 "?"                     |
-	                    strcpy (yylval.s, yytext);
+"?"({ALN}|"?")+         |
 {AL}({ALN}|"?")*        {
 	                    /* $$$$$ Reduce the expression */
 	                    strcpy (yylval.ast.s, yytext);
 	                    return (T_EXID);
 	                }
 
-	                    yylval.i = strtol (yytext, NULL, 0);
+0[xX]{X}+               |
 0{O}+                   |
 {US}{D}+                {
 	                    yylval.ast.i = strtol (yytext, NULL, 0);
 	                    return (T_INT);
 	                }
 
-	                    yylval.f = (float) atof (yytext);
+{US}{D}+"."{D}*({E})?   |
 {US}{D}*"."{D}+({E})?   |
 {US}{D}+{E}             {
 	                    yylval.ast.f = (float) atof (yytext);
@@ -281,21 +284,21 @@ E                       [eE]{US}{D}+
 	                }
 
 \"([^"\n\r]*(\\\")?[^"\n\r]*)*\"    {
-	                    strcpy (yylval.s, yytext+1);
+	                    /* Strips off enclosing quotes */
 	                    /* $$$$$ still need to process the string */
 	                    yytext[strlen (yytext) - 1] = '\000';
 	                    strcpy (yylval.ast.s, yytext+1);
 	                    return (T_STRING);
-	                    strcpy (yylval.s, yytext+2);
+	                }
 
 "//"[^\n\r]*             	{
 	                    strcpy (yylval.ast.s, yytext+2);
-	                    strcpy (yylval.s, yytext+1);
+	                    return (T_COMMENT);
 	                }
 "#"[^\n\r]*                   {
 	                    strcpy (yylval.ast.s, yytext+1);
 	                    return (T_COMMENT);
-	                    strcpy (yylval.s, "");
+	                }
 
 "$"[^\n\r]*                   {
 	                    strcpy (yylval.ast.s, "");
