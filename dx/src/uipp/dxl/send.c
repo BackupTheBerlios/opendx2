@@ -676,7 +676,7 @@ _dxl_IsReadable(DXLConnection *conn)
     to.tv_usec = 0;
 
     /* this will restart select if it has been interrupted by a signal */
-    SELECT_INTR(width, (SELECT_ARG_TYPE *)&fds, NULL, NULL, &to, retval);
+    SELECT_INTR((conn->fd + 1), (SELECT_ARG_TYPE *)&fds, NULL, NULL, &to, retval);
 #endif
 
 #ifdef OS2
@@ -741,7 +741,7 @@ _dxl_WaitForReadable(DXLConnection *conn)
     FD_SET(conn->fd, &fds);
 
     /* this will restart select if it was interrupted by a signal */
-    SELECT_INTR(width, (SELECT_ARG_TYPE *)&fds, NULL, NULL, NULL, retval);
+    SELECT_INTR((conn->fd + 1), (SELECT_ARG_TYPE *)&fds, NULL, NULL, NULL, retval);
     if(retval < 0)
         goto error;
 #endif
@@ -754,7 +754,7 @@ _dxl_WaitForReadable(DXLConnection *conn)
 #ifdef DXD_HAS_WINSOCKETS
     FD_ZERO(&fds);
     FD_SET(conn->fd, &fds);
-    width =  select(width, &fds, NULL, NULL, NULL);
+    width =  select((conn->fd + 1), &fds, NULL, NULL, NULL);
     if (width < 0)
         goto error;
 

@@ -1581,6 +1581,9 @@ retry:
 #else
 #if defined(HAVE_SYS_UN_H) 
     FD_SET(usock, &fds);
+    width = ((sock > usock) ? sock : usock) + 1;
+#else
+    width = sock + 1;
 #endif
     if (!isatty(0)) {
         to.tv_sec = SOCK_ACCEPT_TIMEOUT;
