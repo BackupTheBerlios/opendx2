@@ -78,7 +78,7 @@ static int nprocs = 8;
 #else
 static int nprocs = -1;
 #endif
-int pids[MAXPROC] = { 0 };
+int pids[MAXPROC];
 
 int
 DXProcessors(int n)

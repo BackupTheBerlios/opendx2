@@ -20,7 +20,7 @@
 struct colortable {
     char        colorname[80];
     RGBColor    colorvalue;
-};
+} colortable;
 
 static  struct colortable ct[] = {
     { "aquamarine",              {0.4392157, 0.8588235, 0.5764706} },
@@ -185,7 +185,7 @@ Error DXColorNameToRGB(char *colorstr, RGBColor *colorvec)
 	    }
 	    /* the table MUST BE IN GLOBAL MEMORY FOR THE CACHE TO WORK */
 	    ctread = (struct colortable *)DXAllocate
-		((numread+1) * sizeof(struct colortable));
+		((numread+1) * sizeof(colortable));
 	    if (!ctread) 
 		goto error;
 	    
