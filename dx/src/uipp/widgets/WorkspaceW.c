@@ -947,11 +947,15 @@ static void Initialize( XmWorkspaceWidget request, XmWorkspaceWidget new )
     /*
      * calling XtSetValues inside the Initialize method is a bad
      * thing since the SetValues method will then be called on a widget
-     * whose initialization process hasn't completed
+     * whose initialization process hasn't completed.
+     *
+     * Use XtOverrideTranslations instead of XtSetValues so as to not blow 
+     * away parent translations that might be useful.
      */
+     
     trans_table = XtParseTranslationTable (defaultTranslations);
-    XtSetArg (warg, XmNtranslations, trans_table);
-    XtSetValues ((Widget)new, &warg, 1);
+    XtOverrideTranslations((Widget)new, trans_table);
+
 }
 
 
@@ -974,6 +978,7 @@ static void Realize( XmWorkspaceWidget ww, Mask* p_valueMask,
     }
     valueMask = *p_valueMask | CWBitGravity | CWDontPropagate;
     attributes->bit_gravity = NorthWestGravity;
+
     attributes->do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask
       | KeyPressMask | KeyReleaseMask | PointerMotionMask;
     XtCreateWindow((Widget)ww, InputOutput, CopyFromParent, valueMask, attributes);
