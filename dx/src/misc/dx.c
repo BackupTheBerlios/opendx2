@@ -268,6 +268,17 @@ void removeQ(char *s)
     *p2 = '\0';
 }
 
+void addQuotes(char *s)
+{
+    int i, length;
+    length=strlen(s);
+    for(i=length; i>0; i--)
+	s[i]=s[i-1];
+    s[length+1] = '"';
+    s[length+2] = '\0';
+    s[0] = '"';
+}
+
 int getenvstr(char *name, char *value)
 {
     char *s;
@@ -386,13 +397,14 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 	else if (co == HUMMBIRD_ID) {
 		strcat(key, "\\Hummingbird");
 		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
+    		if(get == CHECK && rc != ERROR_SUCCESS) return 0;
 		IfError2("Error opening registry", key, "- Software not present or incorrectly installed");
 		strcpy(key2, key);
 		strcat(key, "\\Exceed"); /* Version 6 reg entries */
 		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) key, 0, options, &hkey[k++]);
 		if (rc == ERROR_SUCCESS) {
 			if (get == CHECK) return 6; /* return version number */
-			strcat(key, "\\6.2");
+			strcat(key, "\\CurrentVersion");
 		} else { /* Version 7 reg entries */
 			strcpy(key, key2); k--;
 			strcat(key, "\\Connectivity");
@@ -629,12 +641,14 @@ void configure()
     if (whichX == EXCEED6) {
     	/* Set Exceed 6 env variables */
     	sprintf(path, "%s;%s", exceeddir, path0);
+	setenvpair(path, "Path");
     	//sprintf(xapplresdir, "%s", exceeduserdir);
     	//setenvpair(xapplresdir, "XAPPLRESDIR");
     	//sprintf(xnlspath, "%s\\lib", dxroot);
     	//setenvpair(xnlspath, "XNLSPATH");
     	sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
 	setenvpair(xkeysymdb, "XKEYSYMDB");
+	result = _spawnlp(_P_NOWAIT, "Exceed", "Exceed", NULL);
     }
 
     if (whichX == EXCEED7) {
@@ -646,14 +660,17 @@ void configure()
     	/* Need to define X-Win32 env variables */
 	/* set DISPLAY to COMPUTERNAME:0 */
 	/* Start XWIN32 */
+    	sprintf(xkeysymdb, "%s\\lib\\keysyms.dx", dxroot);
+	setenvpair(xkeysymdb, "XKEYSYMDB");
 	sprintf(path,"%s;%s", path0, starnetdir);
 	setenvpair(path, "Path");
-	result = _spawnlp(_P_WAIT, "xwin32", "xwin32", NULL);
+	result = _spawnlp(_P_NOWAIT, "xwin32", "xwin32", NULL);
 	if(result == -1)
 		printf( "Error spawning xwin32: %s\n", strerror( errno ) );
+	
    }
     
-    sprintf(path, "%s\\bin_%s;%s", dxroot, DXD_ARCHNAME, path0);
+    sprintf(path, "%s\\bin_%s;%s;%s", dxroot, DXD_ARCHNAME, magickhome, path0);
     setenvpair("", "HOME");
 
     setenvpair(path, "Path");
@@ -676,9 +693,9 @@ void configure()
     setenvpair(dx8bitcmap,	"DX8BITCMAP");
 
 
-    if (!*display || !strcasecmp(display, "localhost:0") || !strcasecmp(display, "localpc:0"))
+    if (!*display || !strcasecmp(display, "localpc:0"))
     {
-	if(whichX == EXCEED6 || whichX == EXCEED7)
+	if(whichX == EXCEED7)
 		strcpy(display, "localpc:0");
 	else
 		strcpy(display, "localhost:0");
@@ -714,8 +731,10 @@ int buildcmd()
     d2u(uimdf);
     d2u(uiflags);
     d2u(exmdf);
-    if (*FileName)
+    if (*FileName) {
 	d2u(FileName);
+	addQuotes(FileName);
+    }
 #endif
 
     if (uionly && exonly)
