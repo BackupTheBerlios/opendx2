@@ -106,8 +106,9 @@ AC_DEFUN(DX_ARCHITECTURE,
 [
     AC_MSG_CHECKING(architecture type)
     unameS=`uname -s`
+    unameM=`uname -m`
     if test $unameS = "Linux" ; then
-        if test `uname -m` = "i686" ; then
+        if test $unameM = "i686" ; then
 	    ARCH=linux86 
 	else
 	    ARCH=unknown 
@@ -118,6 +119,9 @@ AC_DEFUN(DX_ARCHITECTURE,
     fi
     if test $unameS = "AIX" ; then
     	ARCH=ibm6000
+    fi
+    if test $unameM = "alpha" ; then
+        ARCH=alphax
     fi
     AC_MSG_RESULT($ARCH)
     AC_SUBST(ARCH)
