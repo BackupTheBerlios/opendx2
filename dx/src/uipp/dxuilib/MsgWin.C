@@ -22,6 +22,7 @@
 #include <Xm/Frame.h>
 #include <Xm/List.h>
 #include <Xm/RowColumn.h>
+#include <Xm/Separator.h>
 
 #include "DXStrings.h"
 #include "MsgWin.h"
@@ -41,57 +42,9 @@
 #include "RepeatingToggle.h"
 #include "DXPacketIF.h"
 
+#include "MWDefaultResources.h"
 
 boolean MsgWin::ClassInitialized = FALSE;
-String  MsgWin::DefaultResources[] = {
-    ".title:				Message Window",
-    ".iconName:				Message Window",
-    "*fileMenu.labelString:		File",
-    "*allowShellResize:			False",
-    "*fileMenu.mnemonic:		F",
-    "*msgClearOption.labelString:	Clear",
-    "*msgClearOption.mnemonic:		C",
-    "*msgLogOption.labelString:		Log...",
-    "*msgLogOption.mnemonic:		g",
-    "*msgSaveOption.labelString:	Save As...",
-    "*msgSaveOption.mnemonic:		S",
-    "*msgCloseOption.labelString:	Close",
-    "*msgCloseOption.mnemonic:		l",
-    "*msgCloseOption.accelerator:	Ctrl<Key>Q",
-    "*msgCloseOption.acceleratorText:	Ctrl+Q",
-    "*editMenu.labelString:		Edit",
-    "*editMenu.mnemonic:		E",
-    "*commandsMenu.labelString:		Commands",
-    "*commandsMenu.mnemonic:		C",
-    "*msgShowMemoryOption.labelString:	Show Memory Use",
-    "*msgShowMemoryOption.mnemonic:	M",
-    "*msgTraceOption.labelString:	Debug Tracing",
-    "*msgTraceOption.mnemonic:		T",
-    "*msgExecScriptOption.labelString:	Execute Script Command...",
-    "*msgExecScriptOption.mnemonic:	S",
-    "*msgNextErrorOption.labelString:	Next Error",
-    "*msgNextErrorOption.mnemonic:	N",
-    "*msgNextErrorOption.accelerator:	Ctrl<Key>N",
-    "*msgNextErrorOption.acceleratorText:	Ctrl+N",
-    "*msgPrevErrorOption.labelString:	Previous Error",
-    "*msgPrevErrorOption.mnemonic:	P",
-    "*msgPrevErrorOption.accelerator:	Ctrl<Key>P",
-    "*msgPrevErrorOption.acceleratorText:	Ctrl+P",
-    "*optionsMenu.labelString:		Options",
-    "*optionsMenu.mnemonic:		O",
-    "*msgInfoOption.labelString:	Information Messages",
-    "*msgInfoOption.mnemonic:		I",
-    "*msgWarningOption.labelString:	Warning Messages",
-    "*msgWarningOption.mnemonic:	W",
-    "*msgErrorOption.labelString:	Error Messages",
-    "*msgErrorOption.mnemonic:		E",
-    "*msgFrame.shadowThickness:		2",
-    "*msgFrame.marginWidth:		3",
-    "*msgFrame.marginHeight:		3",
-    "*msgList.visibleItemCount:		12",
-    "*workArea.width:			600",
-    NULL
-};
 
 //
 // Constructor:
@@ -277,12 +230,14 @@ void MsgWin::createFileMenu(Widget parent)
 	     XmNsubMenuId, pulldown,
 	     NULL);
 
-    this->clearOption = new ButtonInterface(pulldown, "msgClearOption",
-	this->clearCmd);
     this->logOption = new ToggleButtonInterface(pulldown, "msgLogOption",
 	this->logCmd, this->logFile != NULL);
     this->saveOption = new ButtonInterface(pulldown, "msgSaveOption",
 	this->saveCmd);
+
+    XtVaCreateManagedWidget
+	    ("fileSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+
     this->closeOption = new ButtonInterface(pulldown, "msgCloseOption",
 	this->closeCmd);
 }
@@ -311,6 +266,13 @@ void MsgWin::createEditMenu(Widget parent)
     this->prevErrorOption = 
 		new ButtonInterface(pulldown, 
 			"msgPrevErrorOption", this->prevErrorCmd);
+
+    XtVaCreateManagedWidget
+	    ("editSeparator", xmSeparatorWidgetClass, pulldown, NULL);
+
+    this->clearOption = new ButtonInterface(pulldown, "msgClearOption",
+	this->clearCmd);
+
 }
 
 void MsgWin::createCommandsMenu(Widget parent)
