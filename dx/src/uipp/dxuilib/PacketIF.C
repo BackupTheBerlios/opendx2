@@ -8,9 +8,9 @@
 
 #include <dxconfig.h>
 
-
-
-
+#if defined(_AIX41)
+#include <strings.h>
+#endif
 
 #include "UIConfig.h"
 #include "defines.h"
@@ -79,10 +79,6 @@ extern "C" {
 int getsockname(int,struct sockaddr*, int*);
 int bzero(char*,int);
 }
-#endif
-
-#if defined(_AIX41)
-#include <strings.h>
 #endif
 
 #ifdef hp700
@@ -1357,7 +1353,7 @@ void PacketIF::connectAsServer(int pport)
     int oldUmask;
 #endif
     struct linger sl;
-    int length;
+    SOCK_LENGTH_TYPE length;
     ushort port;
     int fd;
     int sts;
