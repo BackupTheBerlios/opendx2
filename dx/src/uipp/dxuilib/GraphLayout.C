@@ -171,7 +171,7 @@ const char* GraphLayout::SetNodeSpacing(int ns)
 #define INITIAL_X 0//5000 
 #define INITIAL_Y 0//5000
 
-#define DEBUG_PLACEMENT
+//#define DEBUG_PLACEMENT
 #if defined(DEBUG_PLACEMENT)
 //
 // $ setenv DEBUG_PLACEMENT
@@ -1428,6 +1428,13 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 
     boolean group_had_placements=TRUE;
     int minx1, miny1, maxx1, maxy1;
+
+    // 
+    // At this point n is not initialized but the method only reads from
+    // n if the connected list hasn't been built yet.  At this point,
+    // all such lists are built, so the uninitialized n is supplied here
+    // only as a misfeature of the api.
+    //
     List* connected = ninfo->getConnectedNodes(n);
 
     if (!disjoint) {
