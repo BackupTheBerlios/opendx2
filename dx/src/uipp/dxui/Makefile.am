@@ -256,6 +256,6 @@ dxui_LDADD = \
 	../widgets/libWIDGETS.a  \
 	-L/usr/X11R6/lib \
 	-L/usr/local/lib \
-	-lpthread -lstdc++ -lm -lXm -lXmu -lXt -lX11 -lXext
+	-lstdc++ -lm -lXm -lXmu -lXt -lX11 -lXext
 
 
