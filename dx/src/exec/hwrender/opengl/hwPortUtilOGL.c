@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.9 2002/02/08 23:38:56 rhh Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.10 2002/03/15 00:17:33 rhh Exp $
 
 Author:  Ellen Ball
 
@@ -2172,8 +2172,12 @@ startTexture(xfieldP xf)
     GLint wrap_s, wrap_t, min_filter, mag_filter, function;
 
     /*  Set texture wrap modes  */
-    wrap_s = ( attr->texture_wrap_s == tw_clamp ? GL_CLAMP : GL_REPEAT );
-    wrap_t = ( attr->texture_wrap_t == tw_clamp ? GL_CLAMP : GL_REPEAT );
+    wrap_s = ( attr->texture_wrap_s == tw_clamp  ? GL_CLAMP  : 
+               attr->texture_wrap_s == tw_repeat ? GL_REPEAT : 
+               GL_CLAMP_TO_EDGE );
+    wrap_t = ( attr->texture_wrap_t == tw_clamp  ? GL_CLAMP  : 
+               attr->texture_wrap_t == tw_repeat ? GL_REPEAT : 
+               GL_CLAMP_TO_EDGE );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
 

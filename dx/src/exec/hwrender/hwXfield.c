@@ -1123,6 +1123,8 @@ _dxf_parameters(dxObject o, attributeP old)
 	}
 	if     (!strcmp(wrap_s,"clamp" )) new->texture_wrap_s = tw_clamp;
 	else if(!strcmp(wrap_s,"repeat")) new->texture_wrap_s = tw_repeat;
+	else if(!strcmp(wrap_s,"clamp to edge")) 
+    new->texture_wrap_s = tw_clamp_to_edge;
 	else {
 	  DXSetError(ERROR_BAD_PARAMETER,"#13384");
 	  EXIT(("ERROR"));
@@ -1138,6 +1140,8 @@ _dxf_parameters(dxObject o, attributeP old)
 	}
 	if     (!strcmp(wrap_t,"clamp" )) new->texture_wrap_t = tw_clamp;
 	else if(!strcmp(wrap_t,"repeat")) new->texture_wrap_t = tw_repeat;
+	else if(!strcmp(wrap_t,"clamp to edge")) 
+    new->texture_wrap_t = tw_clamp_to_edge;
 	else {
 	  DXSetError(ERROR_BAD_PARAMETER,"#13384");
 	  EXIT(("ERROR"));
