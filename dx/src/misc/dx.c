@@ -1,6 +1,8 @@
 /*  DX script - C version	*/
 /*  F. Suits   1/97		*/
 
+#include <dxconfig.h>
+
 
 #ifdef DXD_WIN
 #include <windows.h>
