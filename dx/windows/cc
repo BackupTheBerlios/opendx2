@@ -1,17 +1,18 @@
+MSDEV=C:/msdev
 stdout=/tmp/stdo$$
 stderr=/tmp/stde$$
 args=
 libpath=
 libs=
 incpath="$INCPATH"
-incpath="$incpath /I\"D:/Program Files/Microsoft Visual Studio/VC98/Include\""
-defs=/Dintelnt
+defs="/Dintelnt /X /DWIN32"
 undefs=
 cfiles=
 map=
 mounts=
 echo=0
-deflibs="/LIBPATH:\\\"D:/Program Files/Microsoft Visual Studio/VC98/LIB\\\""
+tmp=$MSDEV/Lib
+deflibs="/LIBPATH:"`cygpath --windows $tmp | sed 's/\\\\/\\\\\\\\/'g`
 deflibs="$deflibs $LIBPATH kernel32.lib"
 deflibs="$deflibs user32.lib gdi32.lib winspool.lib"
 deflibs="$deflibs comdlg32.lib advapi32.lib shell32.lib"
@@ -26,8 +27,6 @@ dllflag="-MD"
 dlllib="msvcrt.lib"
 binmode=
 
-
-
 touch $stdout
 touch $stderr
 
@@ -38,14 +37,18 @@ cleanup() {
 			if test -f $file.obj ; then
 				mv $file.obj $file.o
 			fi
+			file1=`echo $file | sed "s/.*\///"`
+			if test -f $file1.obj ; then
+				mv $file1.obj $file1.o
+			fi
 		fi
 	done
 
 
-	if test -f $oname.exe ; then
-		mv $oname.exe foo
-		mv foo $oname
-	fi
+#	if test -f $oname.exe ; then
+#		mv $oname.exe foo
+#		mv foo $oname
+#	fi
         if test -f $stdout ; then
                 rm $stdout
         fi
@@ -85,8 +88,10 @@ for i in $* ; do
 		-mount*) mounts="$mounts $i" ;;
 		-D*)     defs="$defs `echo $i | sed 's?-D?/D?'`" ;; 
 		-U*)     undefs="$undefs `echo $i | sed 's?-U?/U?'`" ;;
-		-I*)     incpath="$incpath `echo $i | sed 's?-I?/I?'`" ;;
-		-L*)     libpath="$libpath `echo $i | sed 's?-L?/LIBPATH:?'`" ;;
+                -I*)     tmp=`echo $i | sed "s/-I//"`
+                         incpath="$incpath /I"`cygpath --windows $tmp` ;;
+                -L*)     tmp=`echo $i | sed "s/-L//"`
+                         libpath="$libpath /LIBPATH:`cygpath --windows $tmp`" ;;
 		-l*)     libs="$libs `echo $i | sed 's?-l??'`.lib" ;;
 		-echo)   echo=1 ;;
 		*.c)     cfiles="$cfiles $i" ;;
@@ -105,6 +110,12 @@ for i in $* ; do
 	esac
 done
 
+incpath="$incpath /I$MSDEV/Include"
+tmp=$MSDEV/Include
+msincs="$incpath /I"`cygpath --windows $tmp | sed 's/\\\\/\\\\\\\\/'g`
+incpath=`echo $incpath | sed 's/\\\\/\\\\\\\\/g'`
+libpath=`echo $libpath | sed 's/\\\\/\\\\\\\\/g'`
+
 if test $mkdep = 1; then
     if test -e foo$$ ; then
 	rm foo$$
@@ -119,6 +130,9 @@ if test $mkdep = 1; then
 	-e "/DO NOT DELETE/d" \
 	-e "/^$/d" -e "s/^.*://" \
 		 < foo$$ > bar$$
+    if test -e foo$$ ; then
+	rm foo$$
+    fi
     if test `cat bar$$ | wc -l` -eq 0 ; then
 	echo `echo $cfiles | sed "s/\.c/.o/"`: $cfiles > foobar$$
     else
