@@ -19,6 +19,10 @@
 #include <unistd.h>
 #endif
 
+#if defined(HAVE_ERRNO_H)
+#include <errno.h>
+#endif
+
 #if defined(HAVE_PROCESS_H)
 #include <process.h>
 #endif
