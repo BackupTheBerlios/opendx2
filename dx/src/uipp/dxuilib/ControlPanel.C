@@ -573,6 +573,12 @@ void ControlPanel::initialize()
 	// Now, call the superclass initialize().
 	//
 	this->DXWindow::initialize();
+	
+	// The Menubar and the CommandArea have both been added at
+	// this point and managed; however for an initial CP
+	// we don't want the command area initialized--so unmanage it.
+	Widget w = this->getCommandArea();
+	if (w) XtUnmanageChild(w);
     }
     //
     // FIXME: should this be done in manage() and then we could get
