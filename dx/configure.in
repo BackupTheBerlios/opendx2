@@ -12,12 +12,12 @@ DX_ARCHITECTURE
 dnl Checks for programs.
 AC_PROG_RANLIB
 AC_PROG_CC
-AC_PROG_CXX
+AC_PROG_CXX(-g)
 AC_PROG_CPP
 AC_PROG_YACC
 
 dnl Checks for libraries.
-AC_CHECK_LIB(stdc++, main)
+AC_CHECK_LIB(g++, main)
 
 dnl Checks for header files.
 AC_PATH_X
