@@ -34,6 +34,9 @@ SUBCLASS Array OF Object
 DEFINESC Pointer GetArrayData(Array)
 IMPLEMENTS Delete GetType GetArrayData Copy
 
+SUBCLASS SharedArray OF Array
+IMPLEMENTS Delete GetArrayData
+
 SUBCLASS RegularArray OF Array
 IMPLEMENTS Delete GetArrayData
 
@@ -76,6 +79,13 @@ struct array {
 	Pointer data;			/* the local data itself */
     } local[MAX_PROCESSORS];		/* one for each processor */
 #endif
+};
+
+struct sharedarray {			/* shared array structure */
+    struct array array;			/* array class preamble */
+    int id;				/* shared memory id */
+    Pointer base;			/* base of shared segment on this proc */
+    long offset;			/* offset of data in segment */
 };
 
 struct regulararray {			/* regular array structure */

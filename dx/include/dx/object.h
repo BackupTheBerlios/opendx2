@@ -33,6 +33,7 @@ typedef struct group *Group;
 typedef struct series *Series;
 typedef struct compositefield *CompositeField;
 typedef struct array *Array;
+typedef struct sharedarray *SharedArray;
 typedef struct regulararray *RegularArray;
 typedef struct constantarray *ConstantArray;
 typedef struct patharray *PathArray;
@@ -84,6 +85,7 @@ typedef enum {
     CLASS_LIGHT,
     CLASS_CONSTANTARRAY,
     CLASS_MULTIGRID,
+    CLASS_SHAREDARRAY,
     CLASS_MAX,
     CLASS_DELETED
 } Class;

@@ -54,7 +54,7 @@ libDXlite_a_LIBADD = \
 
 dxlite_sources0 = \
         object.c string.c camera.c clipped.c field.c group.c \
-        series.c composite.c multigrid.c light.c array.c \
+        series.c composite.c multigrid.c light.c array.c sharedarray.c \
         regulararray.c cstarray.c patharray.c productarray.c \
         mesharray.c xform.c screen.c private.c message.c  \
         timing.c lock.c stringtable.c client.c basic.c vector.c
@@ -87,7 +87,7 @@ libLIBDX_a_SOURCES =  \
 	array.c basic.c box.c camera.c clipped.c composite.c \
 	cstarray.c field.c grid.c group.c helper.c init.c light.c lock.c \
 	matrix.c mem.c memory.c mesharray.c message.c multigrid.c \
-	neighbors.c object.c patharray.c private.c productarray.c \
+	neighbors.c object.c patharray.c private.c productarray.c sharedarray.c \
 	regulararray.c screen.c series.c string.c stringtable.c \
 	timing.c v3.c vector.c version.c xform.c userinit.c \
 	\

@@ -994,7 +994,7 @@ AC_CHECK_FUNCS(getcwd gethostname gettimeofday mkdir mkfifo mktime \
 	strspn strstr strtod strtol strtoul uname popen vfork trunc \
         _Errno _popen spawnvp _spawnvp regcomp sysmp sysconf \
         pipe _pipe _popen popen _pclose pclose random rand srandom \
-	getopt srand opendir fork _findfirst strrstr strcasecmp \
+	shmat getopt srand opendir fork _findfirst strrstr strcasecmp \
 	stricmp getpid _getpid unlink _unlink getlogin isatty _isatty)
 
 AC_EGREP_HEADER(SIGBUS, signal.h, AC_DEFINE(HAVE_SIGBUS))
@@ -1067,7 +1067,7 @@ DX_CHECK_HEADERS(DPS/XDPSlib.h DPS/dpsXclient.h \
     sys/m_wait.h sys/mman.h sys/mode.h sys/param.h sys/pstat.h sys/resource.h \
     sys/select.h sys/shm.h sys/signal.h sys/socket.h sys/stat.h sys/svs.h \
     sys/syslimits.h sys/sysmacros.h sys/sysmp.h sys/sysconfig.h \
-    sys/errno.h sys/systemcfg.h \
+    sys/errno.h sys/systemcfg.h sys/shm.h \
     sys/systeminfo.h sys/time.h sys/timeb.h sys/times.h sys/types.h sys/un.h \
     sys/utsname.h sys/wait.h sysent.h time.h types.h ulocks.h unistd.h \
     values.h wait.h x11/xlibxtra.h xgl/xgl.h linux/kernel.h linux/sys.h)

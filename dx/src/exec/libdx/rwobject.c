@@ -306,6 +306,11 @@ struct i_array {
     /* subclass array follows */
 };
 
+struct i_sharedarray {
+    int id;
+    long offset;
+};
+
 struct i_arrayarray {
     int datalength;
     /* data follows if inline */
@@ -832,6 +837,10 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
 	    else
 		*header += len;
 	    break;
+
+	  case CLASS_SHAREDARRAY:
+	    *header += sizeof(struct i_sharedarray);
+	    break;
 	    
 	  case CLASS_PATHARRAY:
 	    break;
@@ -993,6 +1002,8 @@ Error size_estimate(Object o, int *header, int *body, int doattr,
 			     INC_BYTE(*byteoffset, len); }
 
  
+extern Error _dxfGetSharedArrayInfo(SharedArray a, int *id, long *offset);
+
 /* fill buffers for header.  body blocks are written out directly.
  *  if attrflag set, traverse attributes.  if 0, skip them.
  */
@@ -1093,6 +1104,14 @@ Error writeout_object(Object o, char *dataset, HashTable ht, Pointer *header,
 
 	    break;
 	    
+	  case CLASS_SHAREDARRAY:
+	  {
+	    struct i_sharedarray isa;
+	    _dxfGetSharedArrayInfo((SharedArray)o, &isa.id, &isa.offset);
+	    SetBytes((Pointer)&isa, sizeof(isa));
+	    break;
+	  }
+
 	  case CLASS_PATHARRAY:
 	    break;
 	    
@@ -1365,6 +1384,8 @@ Error writeout_object(Object o, char *dataset, HashTable ht, Pointer *header,
 /* fill buffers from header.  body blocks are read in directly.
  *  if attrflag set, traverse attributes.  if 0, skip them.
  */
+SharedArray _dxfNewSharedArrayFromOffsetV(int id, long offset, Type t, Category c, int r, int *s);
+
 static
 Object readin_object(char *dataset, Pointer *header, HashTable ht,
 		      uint *byteoffset, int *bodyblk, int attrflag)
@@ -1533,6 +1554,14 @@ Object readin_object(char *dataset, Pointer *header, HashTable ht,
 	    
 	    break;
 	    
+	  case CLASS_SHAREDARRAY:
+	  {
+	      struct i_sharedarray *isa;
+	      GetBytes(isa, sizeof(struct i_sharedarray));
+	      o = (Object)_dxfNewSharedArrayFromOffsetV(isa->id, isa->offset, type, category, rank, shape);
+	      break;
+	  }
+
 	  case CLASS_PATHARRAY:
 	    o = (Object)DXNewPathArray(count+1);
 	    break;

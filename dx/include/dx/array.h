@@ -477,6 +477,12 @@ ConstantArray DXNewConstantArrayV(int n, Pointer d, Type t,
 Array         DXQueryConstantArray(Array a, int *num,  Pointer d);
 Pointer	      DXGetConstantArrayData(Array array);
 
+Error 	    DXRegisterSharedSegment(int id,
+			    void (*or)(int, Pointer, Pointer), Pointer d);
+
+SharedArray DXNewSharedArray(int id, Pointer d, Type t, Category c, int r, ...);
+SharedArray DXNewSharedArrayV(int id, Pointer d, Type t, Category c, int r, int *s);
+
 /* make string list arrays */
 Array DXMakeStringList(int n, char *s, ...);
 Array DXMakeStringListV(int n, char **s);
