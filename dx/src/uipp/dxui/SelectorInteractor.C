@@ -158,7 +158,7 @@ void SelectorInteractor::reloadMenuOptions()
     Arg wargs[20];
     Pixel bg, fg;
     unsigned char rsp, rsproot;
-
+    
     XtVaGetValues (this->optionForm, XmNresizePolicy, &rsp, NULL);
     XtVaSetValues (this->optionForm, XmNresizePolicy, XmRESIZE_GROW, NULL);
 
@@ -286,7 +286,11 @@ void SelectorInteractor::reloadMenuOptions()
 	XtSetArg(wargs[n], XmNforeground, fg); n++;
 	this->optionMenu = XmCreateOptionMenu(this->optionForm, 
 						"optionMenu", wargs, n);
-
+	Widget og = XmOptionButtonGadget(this->optionMenu);
+	XtVaSetValues(og,
+		XmNbackground, bg,
+		XmNforeground, fg,
+		NULL);
 	//
 	// Every motif option menu comes with its own label widget which we
 	// never use.  
@@ -297,6 +301,8 @@ void SelectorInteractor::reloadMenuOptions()
 	Widget labelgadget = XmOptionLabelGadget (this->optionMenu);
 	XtVaSetValues (labelgadget, 
 	    XmNlabelString, xmstr,
+	    XmNbackground, bg,
+	    XmNforeground, fg,
 	NULL);
 	XmStringFree (xmstr);
 	XtManageChild(this->optionMenu);
