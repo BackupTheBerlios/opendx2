@@ -1,5 +1,5 @@
+//////////////////////////////////////////////////////////////////////////////
 //                            DX  SOURCEFILE                                //
-//                                                                          //
 //                                                                          //
 // ImageWindow.C -							    //
 //                                                                          //
@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ImageWindow.C,v 1.1 1999/03/24 15:17:42 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/dxuilib/ImageWindow.C,v 1.2 1999/04/12 21:37:16 gda Exp $
  *
  */
 
@@ -4988,7 +4988,7 @@ void ImageWindow::undoCamera()
 	double from[3];
 	double up[3];
 	double width;
-	boolean projection;
+	int projection;
 	double viewAngle;
 
 	if(!XmPictureGetUndoCamera((XmPictureWidget)this->getCanvas(),
@@ -5004,7 +5004,7 @@ void ImageWindow::undoCamera()
 	in->setFrom(from, FALSE);
 	in->setUp(up, FALSE);
 	in->setWidth(width, FALSE);
-	in->setProjection(projection, FALSE);
+	in->setProjection((boolean)(projection == 1), FALSE);
 	in->setViewAngle(viewAngle, FALSE);
 
 	int image_width;
@@ -5058,7 +5058,7 @@ void ImageWindow::redoCamera()
 	double from[3];
 	double up[3];
 	double width;
-	boolean projection;
+	int projection;
 	double viewAngle;
 
 	XmPictureGetRedoCamera((XmPictureWidget)this->getCanvas(),
@@ -5073,7 +5073,7 @@ void ImageWindow::redoCamera()
 	in->setFrom(from, FALSE);
 	in->setUp(up, FALSE);
 	in->setWidth(width, FALSE);
-	in->setProjection(projection, FALSE);
+	in->setProjection((boolean)(projection == 1), FALSE);
 	in->setViewAngle(viewAngle, FALSE);
 
 	int image_width;
