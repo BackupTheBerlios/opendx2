@@ -347,7 +347,7 @@ DXmain (argc, argv, envp)
     else nprocs = (nphysprocs > 1) ? 2 : 1;
 #elif DXD_HAS_LIBIOP
     nphysprocs = nprocs = SVS_n_cpus;
-#elif DXD_HAS_SYSCONF && defined(_SC_NPROCESSORS_ONLN)
+#elif HAVE_SYSCONF && defined(_SC_NPROCESSORS_ONLN)
     nphysprocs = sysconf(_SC_NPROCESSORS_ONLN);
     if(nphysprocs > 3)
         nprocs = (int)(nphysprocs / 2);
