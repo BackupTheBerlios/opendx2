@@ -858,6 +858,8 @@ void DXPrintMemoryInfo()
 }
 #endif  /* memory stats */
 
+#if !defined(intelnt)
+
 int DXForkChild(int i)
 {
     int pid, master2slave[2], slave2master[2];
@@ -923,3 +925,4 @@ int DXForkChild(int i)
 
     return  pid;
 }
+#endif
