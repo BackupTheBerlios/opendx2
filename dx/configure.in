@@ -969,7 +969,7 @@ dnl Need these to define themselves in dxconfig.h
 
 AC_CHECK_HEADERS(arpa/inet.h CC/osfcn.h conio.h crypt.h ctype.h cygwin/socket.h)
 AC_CHECK_HEADERS(dlfcn.h errno.h fcntl.h get.h io.h limits.h malloc.h netdb.h)
-AC_CHECK_HEADERS(netinet/in.h net/if.h process.h pwd.h signal.h strings.h)
+AC_CHECK_HEADERS(netinet/in.h net/if.h process.h pwd.h signal.h string.h strings.h)
 AC_CHECK_HEADERS(sys/bsd_types.h sys/errno.h sys/file.h sys/filio.h)
 AC_CHECK_HEADERS(sys/ioctl.h sys/ldr.h sys/m_wait.h sys/param.h sys/select.h)
 AC_CHECK_HEADERS(sys/shm.h sys/signal.h sys/socket.h sys/stat.h sys/sysmp.h)
