@@ -376,6 +376,7 @@ fi
 if test "$xm_libraries" != "" ; then
     LIBS="-L$xm_libraries $LIBS"
 fi
+AC_CHECK_LIB(Xp, XpSetImageResolution)
 AC_CHECK_LIB(Xm, XmGetDestination)
 AC_CHECK_LIB(Xm, HCLXmInit, AC_DEFINE(HAVE_HCLXMINIT))
 AC_CHECK_LIB(Xt, HCLXtInit, AC_DEFINE(HAVE_HCLXTINIT))
