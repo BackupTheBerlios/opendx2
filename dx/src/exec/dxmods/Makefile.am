@@ -87,7 +87,7 @@ libDXMODS_a_SOURCES =  \
 
 user.c:  dx.mdf
 	@echo user.c rule
-	awk -f $(DXROOT)/lib/mdf2c.awk < dx.mdf > user.c
+	awk -f ../../../lib/mdf2c.awk < dx.mdf > user.c
 
 dx.mdf:  dxmdf.src
 	-rm -f dx.mdf
