@@ -2123,7 +2123,7 @@ ExCheckInput ()
     char		*prompt;
     int			fno;
     Context		savedContext;
-    extern int		_dxd_exBaseFD;
+    extern SFILE	*_dxd_exBaseFD;
 
     /* don't read anymore input if we are exiting */
     if (*_dxd_exTerminating)
@@ -2135,7 +2135,8 @@ ExCheckInput ()
      * prompt him.
      */
     fno = SFILEfileno (yyin);
-    if ((_dxd_exIsatty || (_dxd_exRshInput && fno == _dxd_exBaseFD)) &&
+    if ((_dxd_exIsatty || 
+        (_dxd_exRshInput && fno == SFILEfileno(_dxd_exBaseFD))) &&
 	! prompted && _dxf_ExGQAllDone () && !SFILECharReady(yyin))
     {
 	prompt = _dxf_ExPromptGet(PROMPT_ID_PROMPT);
@@ -2290,7 +2291,7 @@ ExInputAvailable (SFILE *fp)
     fd_set		fdset;
     struct timeval	tv;
     static int		iters	= 0;
-    extern int		_dxd_exBaseFD;
+    extern SFILE	*_dxd_exBaseFD;
 
     _dxf_ExCheckPacket(NULL, 0);
 
@@ -2298,7 +2299,7 @@ ExInputAvailable (SFILE *fp)
 	return (TRUE);
     
     fd = SFILEfileno (fp);
-    if (fd != _dxd_exBaseFD)
+    if (fd != SFILEfileno(_dxd_exBaseFD))
 	return (TRUE);
     
     if (++iters < EX_SELECT)
