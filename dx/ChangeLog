@@ -145,6 +145,10 @@ Initial support for MacOS X. It appears that there are quite a few bugs
 in 10.0.2 still so it may have to wait a little longer. Also, somebody
 needs to work on the memory routines for OS X.
 
+Further corrections for the Windows code versions. Updated several 
+places where the DOS path may get munged. Updated JavaDX to be able to
+pass in DOS pathnames to start the server.
+
 An addition made to edfparse to allow the creation of a local reference
 to an external file within the native file format. This local reference
 can then be used repeatedly within the other objects without having to
