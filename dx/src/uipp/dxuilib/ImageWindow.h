@@ -425,6 +425,7 @@ class ImageWindow : public DXWindow
     Command		*backgroundColorCmd;
     Command		*displayRotationGlobeCmd;
     Command             *openVPECmd;
+    CascadeMenu		*modeOptionCascade;
     CascadeMenu		*imageDepthCascade;
     Command             *imageDepth8Cmd;
     Command             *imageDepth12Cmd;
@@ -487,12 +488,24 @@ class ImageWindow : public DXWindow
     CommandInterface*	autoAxesOption;
     CommandInterface*	throttleOption;
     CommandInterface*	viewControlOption;
+    CommandInterface*	modeOption;
     CommandInterface*	undoOption;
     CommandInterface*	redoOption;
     CommandInterface*	resetOption;
     CommandInterface*	changeImageNameOption;
     CommandInterface*	backgroundColorOption;
     CommandInterface*	displayRotationGlobeOption;
+
+    ToggleButtonInterface*	modeNoneOption;
+    ToggleButtonInterface*	modeCameraOption;
+    ToggleButtonInterface*	modeCursorsOption;
+    ToggleButtonInterface*	modePickOption;
+    ToggleButtonInterface*	modeNavigateOption;
+    ToggleButtonInterface*	modePanZoomOption;
+    ToggleButtonInterface*	modeRoamOption;
+    ToggleButtonInterface*	modeRotateOption;
+    ToggleButtonInterface*	modeZoomOption;
+
     ToggleButtonInterface*	imageDepth8Option;
     ToggleButtonInterface*	imageDepth12Option;
     ToggleButtonInterface*	imageDepth15Option;
@@ -583,6 +596,13 @@ class ImageWindow : public DXWindow
     // command interfaces.
     //
     void configureImageDepthMenu();
+
+    //
+    // Set the state and sensitivity of the Mode cascade menu and its
+    // command interfaces.
+    //
+    void configureModeMenu();
+
 
     Node *getNodeByInstance(const char *classname, const char *name, 
 					int instance);

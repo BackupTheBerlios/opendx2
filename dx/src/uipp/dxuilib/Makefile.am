@@ -217,10 +217,20 @@ HDRS4 = \
 	ViewControlDialog.h \
 	WorkSpaceComponent.h \
 	enums.h \
+	TransferAccelerator.h \
 	make.image.sh \
 	make.sequence.sh
 
-noinst_HEADERS = $(HDRS1) $(HDRS2) $(HDRS3) $(HDRS4)
+HDRS5 = \
+	CMDefaultResources.h \
+	DXWDefaultResources.h \
+	IWDefaultResources.h \
+	VCDefaultResources.h \
+	CPDefaultResources.h \
+	EWDefaultResources.h \
+	MWDefaultResources.h
+
+noinst_HEADERS = $(HDRS1) $(HDRS2) $(HDRS3) $(HDRS4) $(HDRS5)
 
 SRCS1 = \
 	oem.C \
@@ -376,6 +386,7 @@ SRCS5 = \
 	ToggleAttrDialog.C \
 	ToggleInstance.C \
 	ToolSelector.C \
+	TransferAccelerator.c \
 	VPEAnnotator.C \
 	VPEPage.C \
 	VPEPostIt.C \

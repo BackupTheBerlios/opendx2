@@ -107,6 +107,7 @@
 #include "CloseWindowCommand.h"
 #include "PanelAccessManager.h"
 #include "../widgets/Picture.h"
+#include "TransferAccelerator.h"
 
 #include "CascadeMenu.h"
 
@@ -200,6 +201,7 @@ ImageWindow::ImageWindow(boolean  isAnchor, Network* network) :
     this->autoAxesOption             = NUL(CommandInterface*);
     this->throttleOption             = NUL(CommandInterface*);
     this->viewControlOption          = NUL(CommandInterface*);
+    this->modeOptionCascade = NULL;
     this->undoOption                 = NUL(CommandInterface*);
     this->redoOption                 = NUL(CommandInterface*);
     this->resetOption                = NUL(CommandInterface*);
@@ -570,7 +572,7 @@ ImageWindow::~ImageWindow()
 
     if (this->changeImageNameDialog)
         delete this->changeImageNameDialog;
-    if (this->viewControlDialog)
+    if (this->viewControlDialog) 
 	delete this->viewControlDialog;
     if (this->renderingOptionsDialog)
 	delete this->renderingOptionsDialog;
@@ -1350,6 +1352,60 @@ void ImageWindow::createOptionsMenu(Widget parent)
     this->viewControlOption =
 	new ButtonInterface(pulldown, "imageViewControlOption",
 			    this->viewControlCmd);
+    
+    ToggleButtonInterface *tbm;
+    CascadeMenu *cmm = this->modeOptionCascade = 
+			new CascadeMenu("imageModeOption",pulldown); 
+
+    Widget mitem_parent = cmm->getMenuItemParent();
+
+    ASSERT(this->modeNoneCmd);
+    this->modeNoneOption = tbm = new ToggleButtonInterface(mitem_parent,
+		"imageNoneOption", this->modeNoneCmd, TRUE);
+    cmm->appendComponent(tbm);
+
+    ASSERT(this->modeCameraCmd);
+    this->modeCameraOption = tbm = new ToggleButtonInterface(mitem_parent,
+		"imageCameraOption", this->modeCameraCmd, FALSE);
+    cmm->appendComponent(tbm);
+
+    ASSERT(this->modeCursorsCmd);
+    this->modeCursorsOption = tbm = new ToggleButtonInterface(mitem_parent,
+		"imageCursorsOption", this->modeCursorsCmd, FALSE);
+    cmm->appendComponent(tbm);
+
+    ASSERT(this->modePickCmd);
+    this->modePickOption = tbm = new ToggleButtonInterface(mitem_parent,
+		"imagePickOption", this->modePickCmd, FALSE);
+    cmm->appendComponent(tbm);
+
+    ASSERT(this->modeNavigateCmd);
+    this->modeNavigateOption = tbm = new ToggleButtonInterface(mitem_parent,
+		"imageNavigateOption", this->modeNavigateCmd, FALSE);
+    cmm->appendComponent(tbm);
+
+    ASSERT(this->modePanZoomCmd);
+    this->modePanZoomOption = tbm = new ToggleButtonInterface(mitem_parent,
+		"imagePanZoomOption", this->modePanZoomCmd, FALSE);
+    cmm->appendComponent(tbm);
+
+    ASSERT(this->modeRoamCmd);
+    this->modeRoamOption = tbm = new ToggleButtonInterface(mitem_parent,
+		"imageRoamOption", this->modeRoamCmd, FALSE);
+    cmm->appendComponent(tbm);
+
+    ASSERT(this->modeRotateCmd);
+    this->modeRotateOption = tbm = new ToggleButtonInterface(mitem_parent,
+		"imageRotateOption", this->modeRotateCmd, FALSE);
+    cmm->appendComponent(tbm);
+
+    ASSERT(this->modeZoomCmd);
+    this->modeZoomOption = tbm = new ToggleButtonInterface(mitem_parent,
+		"imageZoomOption", this->modeZoomCmd, FALSE);
+    cmm->appendComponent(tbm);    
+
+    XtVaCreateManagedWidget
+	    ("optionSeparator", xmSeparatorWidgetClass, pulldown, NULL);
 
     this->undoOption =
 	new ButtonInterface(pulldown, "imageUndoOption",
@@ -3264,6 +3320,7 @@ boolean ImageWindow::associateNode(Node *n)
 
     this->configureImageDepthMenu();
     this->resetWindowTitle();
+    this->configureModeMenu();
 
     return ret;
 }
@@ -3351,6 +3408,7 @@ void ImageWindow::allowDirectInteraction(boolean allow)
 	this->modeRoamCmd->activate();
 	this->modeRotateCmd->activate();
 	this->modeZoomCmd->activate();
+
     }
     else
     {
@@ -3376,6 +3434,7 @@ void ImageWindow::allowDirectInteraction(boolean allow)
 	    this->viewControlDialog->sensitizeProbeOptionMenu(FALSE);
 	}
     }
+        this->configureModeMenu();
 }
 
 boolean ImageWindow::postRenderingOptionsDialog()
@@ -3385,6 +3444,51 @@ boolean ImageWindow::postRenderingOptionsDialog()
 	    this->getRootWidget(),
 	    this);
     this->renderingOptionsDialog->post();
+    // Force Image's Translations onto renderingOptionsDialog here.
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->saveOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->saveImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->printImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->closeOption->getRootWidget(), "ArmAndActivate");
+    if(this->openAllControlPanelsOption)
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->openAllControlPanelsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->openAllColormapEditorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->messageWindowOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->undoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->redoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->resetOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->executeOnceOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->executeOnChangeOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->endExecutionOption->getRootWidget(), "ArmAndActivate");
+
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->modeCameraOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->modeCursorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->modePickOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->modeNavigateOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->modePanZoomOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->modeRoamOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->modeRotateOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->renderingOptionsDialog->getRootWidget(), 
+    		this->modeZoomOption->getRootWidget(), "ArmAndActivate");
 
     return TRUE;
 }
@@ -3394,6 +3498,51 @@ boolean ImageWindow::postAutoAxesDialog()
 	this->autoAxesDialog = new AutoAxesDialog(this);
     
     this->autoAxesDialog->post();
+    // Force Image's Translations onto autoAxesDialog here.
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->saveOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->saveImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->printImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->closeOption->getRootWidget(), "ArmAndActivate");
+    if(this->openAllControlPanelsOption)
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->openAllControlPanelsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->openAllColormapEditorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->messageWindowOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->undoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->redoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->resetOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->executeOnceOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->executeOnChangeOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->endExecutionOption->getRootWidget(), "ArmAndActivate");
+
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->modeCameraOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->modeCursorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->modePickOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->modeNavigateOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->modePanZoomOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->modeRoamOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->modeRotateOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->autoAxesDialog->getRootWidget(), 
+    		this->modeZoomOption->getRootWidget(), "ArmAndActivate");
 
     return TRUE;
 }
@@ -3425,6 +3574,52 @@ boolean ImageWindow::postThrottleDialog()
 	    this);
     
     this->throttleDialog->post();
+    // Force Image's Translations onto throttleDialog here.
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->saveOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->saveImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->printImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->closeOption->getRootWidget(), "ArmAndActivate");
+    if(this->openAllControlPanelsOption)
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->openAllControlPanelsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->openAllColormapEditorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->messageWindowOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->undoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->redoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->resetOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->executeOnceOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->executeOnChangeOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->endExecutionOption->getRootWidget(), "ArmAndActivate");
+
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->modeCameraOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->modeCursorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->modePickOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->modeNavigateOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->modePanZoomOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->modeRoamOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->modeRotateOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->throttleDialog->getRootWidget(), 
+    		this->modeZoomOption->getRootWidget(), "ArmAndActivate");
+
 
     return TRUE;
 }
@@ -3435,7 +3630,6 @@ boolean ImageWindow::postViewControlDialog()
     {
 	this->viewControlDialog = new ViewControlDialog(this->getRootWidget(),
 							this);
-	
 	newDialog = TRUE;
     }
 
@@ -3443,6 +3637,34 @@ boolean ImageWindow::postViewControlDialog()
 	return TRUE;
 
     this->viewControlDialog->post();
+    // Force Image's Translations onto ViewControlDialog here.
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->saveOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->saveImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->printImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->closeOption->getRootWidget(), "ArmAndActivate");
+    if(this->openAllControlPanelsOption)
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->openAllControlPanelsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->openAllColormapEditorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->messageWindowOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->undoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->redoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->resetOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->executeOnceOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->executeOnChangeOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->viewControlDialog->getRootWidget(), 
+    		this->endExecutionOption->getRootWidget(), "ArmAndActivate");
 
     if (this->directInteractionAllowed())
     {
@@ -3466,6 +3688,7 @@ boolean ImageWindow::postChangeImageNameDialog()
     if (NOT this->changeImageNameDialog)
 	this->changeImageNameDialog = new SetImageNameDialog(this); 
     this->changeImageNameDialog->post();
+    
     return TRUE;
 }
 
@@ -5982,6 +6205,7 @@ void ImageWindow::newCanvasImage()
 	    this->modeRoamCmd->activate();
 	    this->modeRotateCmd->activate();
 	    this->modeZoomCmd->activate();
+	    this->configureModeMenu();
 	}
     }
     this->state.pixmap = XtUnspecifiedPixmap;
@@ -6345,6 +6569,7 @@ void ImageWindow::resetWindow()
     this->modeRoamCmd->deactivate();
     this->modeRotateCmd->deactivate();
     this->modeZoomCmd->deactivate();
+    this->configureModeMenu();
 
     if (this->state.pixmap)
 	XDeleteProperty(
@@ -6548,6 +6773,51 @@ boolean ImageWindow::postSaveImageDialog()
 	    (this->getRootWidget(), (ImageNode*)this->node, this->commandScope);
 
     this->saveImageDialog->post();
+    // Force Image's Translations onto saveImageDialog here.
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->saveOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->saveImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->printImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->closeOption->getRootWidget(), "ArmAndActivate");
+    if(this->openAllControlPanelsOption)
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->openAllControlPanelsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->openAllColormapEditorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->messageWindowOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->undoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->redoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->resetOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->executeOnceOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->executeOnChangeOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->endExecutionOption->getRootWidget(), "ArmAndActivate");
+
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->modeCameraOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->modeCursorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->modePickOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->modeNavigateOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->modePanZoomOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->modeRoamOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->modeRotateOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->saveImageDialog->getRootWidget(), 
+    		this->modeZoomOption->getRootWidget(), "ArmAndActivate");
 
     return TRUE;
 }
@@ -6559,7 +6829,51 @@ boolean ImageWindow::postPrintImageDialog()
 	    (this->getRootWidget(), (ImageNode*)this->node, this->commandScope);
 
     this->printImageDialog->post();
+    // Force Image's Translations onto PrintImageDialog here.
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->saveOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->saveImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->printImageOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->closeOption->getRootWidget(), "ArmAndActivate");
+    if(this->openAllControlPanelsOption)
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->openAllControlPanelsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->openAllColormapEditorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->messageWindowOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->undoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->redoOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->resetOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->executeOnceOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->executeOnChangeOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->endExecutionOption->getRootWidget(), "ArmAndActivate");
 
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->modeCameraOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->modeCursorsOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->modePickOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->modeNavigateOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->modePanZoomOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->modeRoamOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->modeRotateOption->getRootWidget(), "ArmAndActivate");
+    TransferAccelerator(this->printImageDialog->getRootWidget(), 
+    		this->modeZoomOption->getRootWidget(), "ArmAndActivate");
 
     return TRUE;
 }
@@ -6680,6 +6994,22 @@ void ImageWindow::configureImageDepthMenu()
 	}
     }
 }
+
+void ImageWindow::configureModeMenu()
+{
+    this->modeNoneOption->setState(this->getInteractionMode() == NONE);
+    this->modeCameraOption->setState(this->getInteractionMode() == CAMERA);
+    this->modeCursorsOption->setState(this->getInteractionMode() == CURSORS);
+    this->modePickOption->setState(this->getInteractionMode() == PICK);
+    this->modeNavigateOption->setState(this->getInteractionMode() == NAVIGATE);
+    this->modePanZoomOption->setState(this->getInteractionMode() == PANZOOM);
+    this->modeRoamOption->setState(this->getInteractionMode() == ROAM);
+    this->modeRotateOption->setState(this->getInteractionMode() == ROTATE);
+    this->modeZoomOption->setState(this->getInteractionMode() == ZOOM);
+
+    this->modeOptionCascade->setActivationFromChildren();
+}
+
 Network *ImageWindow::getNetwork()
 {
     return this->network;
@@ -7131,6 +7461,7 @@ void ImageWindow::sensitizeViewControl(boolean flag)
 	    this->viewControlDialog->sensitizePickOptionMenu(FALSE);
 	}
     }
+    this->configureModeMenu();
 }
 
 void ImageWindow::sensitizeChangeImageName(boolean flag)

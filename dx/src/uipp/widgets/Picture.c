@@ -171,16 +171,6 @@ static char defaultTranslations[] =
      <KeyUp>Left:    KeyAct()\n\
      <KeyUp>Up:      KeyAct()\n\
      <KeyUp>Down:    KeyAct()\n\
-     Ctrl<Key>I:     KeyMode()\n\
-     Ctrl<Key>G:     KeyMode()\n\
-     Ctrl<Key>F:     KeyMode()\n\
-     Ctrl<Key>W:     KeyMode()\n\
-     Ctrl<Key>X:     KeyMode()\n\
-     Ctrl<Key>R:     KeyMode()\n\
-     Ctrl<Key>Z:     KeyMode()\n\
-     Ctrl<Key>N:     KeyMode()\n\
-     Ctrl<Key>U:     KeyMode()\n\
-     Ctrl<Key>K:     KeyMode()\n\
      <ClientMessage>:	ClientMessage()\n\
      <PropertyNotify>:	PropertyNotify()";
 #else
@@ -203,6 +193,17 @@ static char defaultTranslations[] =
 /*
      Ctrl<Key>I:     KeyMode()\n\
      Ctrl<Key>G:     KeyMode()\n\
+     Ctrl<Key>F:     KeyMode()\n\
+     Ctrl<Key>W:     KeyMode()\n\
+     Ctrl<Key>X:     KeyMode()\n\
+     Ctrl<Key>R:     KeyMode()\n\
+     Ctrl<Key>Z:     KeyMode()\n\
+     Ctrl<Key>N:     KeyMode()\n\
+     Ctrl<Key>U:     KeyMode()\n\
+     Ctrl<Key>K:     KeyMode()\n\
+
+     Ctrl<Key>I:     KeyMode()\n\
+     Ctrl<Key>G:     KeyMode()\n\
      Ctrl<Key>F:      KeyMode()\n\
      Ctrl<Key>W:      KeyMode()\n\
      Ctrl<Key>X:      KeyMode()\n\
@@ -219,7 +220,7 @@ static XtActionsRec actionsList[] =
    { "Deselect",      (XtActionProc) Deselect  },
    { "BtnMotion",     (XtActionProc) BtnMotion },
    { "KeyAct",        (XtActionProc) KeyProc },
-   { "KeyMode",       (XtActionProc) KeyMode },
+/*   { "KeyMode",       (XtActionProc) KeyMode }, */
    { "ClientMessage", (XtActionProc) ServerMessage },
    { "PropertyNotify",(XtActionProc) PropertyNotifyAR },
 };
@@ -3145,6 +3146,7 @@ perspective_divide_inverse( XmPictureWidget w,
     *newy += w->core.height/2;
 }
 
+#if 0
 /************************************************************************
  *
  *  KeyMode
@@ -3220,6 +3222,9 @@ XmPictureCallbackStruct cb;
 	XtCallCallbacks ((Widget)w, XmNundoCallback, &cb);
 	}
 }
+#endif
+
+
 /************************************************************************
  *
  *  KeyProc
