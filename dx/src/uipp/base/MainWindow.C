@@ -258,6 +258,12 @@ int n = 0;
     {
 	XtManageChild(this->workArea);
     }
+    if (this->commandArea) {
+      if (NOT XtIsManaged(this->commandArea))
+      {
+	   XtManageChild(this->commandArea);
+      }
+    }
 
     //
     // Override the default response to window manager "close" request.
