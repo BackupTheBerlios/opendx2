@@ -91,6 +91,7 @@ for i in $* ; do
 			 dfile=
 			 mkdep=1 ;;
 		-g) 	 args="$args /Z7" ;;
+		-O2)	 args="$args /O2" ;;
 		-mount*) mounts="$mounts $i" ;;
 		-D*)     defs="$defs `echo $i | sed 's?-D?/D?'`" ;; 
 		-U*)     undefs="$undefs `echo $i | sed 's?-U?/U?'`" ;;
