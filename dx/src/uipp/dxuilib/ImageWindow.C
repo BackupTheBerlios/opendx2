@@ -2358,6 +2358,21 @@ extern "C" void ImageWindow_ResizeCB(Widget	drawingArea,
 			   XtPointer	callData)
 {
     ImageWindow* iw = (ImageWindow*)clientData;
+
+    // Without this check, the resize event will cause an execution if
+    // the image window is being managed for the 1st time ever.
+    if (!iw->isManaged()) return ;
+
+    //
+    // We used to proceed with this->imageResize() in response to a resize
+    // event.  Now we pause for a short time in order to wait for more
+    // resize events to arrive.  The length of the pause - well it's a hack
+    // really - is arbitrary.  This problem this is intended to work around
+    // is the excessive amount of executing that's requested when displaying
+    // on a redhat or like system whose window manage resizes windows
+    // immediately rather than rubberbanding the new size the way Mwm always
+    // used to.
+    //
     if (iw->execute_after_resize_to)
 	XtRemoveTimeOut (iw->execute_after_resize_to);
     XtAppContext apcxt = theApplication->getApplicationContext();
