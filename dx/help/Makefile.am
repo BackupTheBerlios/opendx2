@@ -1,16 +1,16 @@
 ## Process this file with automake to produce Makefile.in
 
-htmldir = $(prefix)/dx/html
+helpdir = $(prefix)/dx/help
 
 EXTRA_DIST = help.tar
 
 install-data-local:
-	mkdir $(prefix)/help
-	tar -C $(prefix)/help -xf pages.tar
-	ln -s $(prefix)/help/mbidx      $(prefix)/help/hlpalhtl
-	ln -s $(prefix)/help/quikidx    $(prefix)/help/hlpalhtl
-	ln -s $(prefix)/help/svsmstrh   $(prefix)/help/hlpalhtl
-	ln -s $(prefix)/help/ugidx      $(prefix)/help/hlpalhtl
-	ln -s $(prefix)/help/usrefidx   $(prefix)/help/hlpalhtl
-	ln -s $(prefix)/help/GarHelpDir $(prefix)/help/HelpDir
-	ln -s $(prefix)/help/MBHelpDir  $(prefix)/help/HelpDir
+	mkdir $(helpdir)
+	tar -C $(helpdir) -xf pages.tar
+	ln -s $(helpdir)/mbidx      $(helpdir)/hlpalhtl
+	ln -s $(helpdir)/quikidx    $(helpdir)/hlpalhtl
+	ln -s $(helpdir)/svsmstrh   $(helpdir)/hlpalhtl
+	ln -s $(helpdir)/ugidx      $(helpdir)/hlpalhtl
+	ln -s $(helpdir)/usrefidx   $(helpdir)/hlpalhtl
+	ln -s $(helpdir)/GarHelpDir $(helpdir)/HelpDir
+	ln -s $(helpdir)/MBHelpDir  $(helpdir)/HelpDir
