@@ -524,7 +524,7 @@ char *args[30], *cmdstr;
 	// it hard to run without -p 1 on an mp machine.
 	//
 	args[argcnt++] = "-processors 1";
-#if !defined(DXD_OS_NON_UNIX)
+#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
 	const char* cp = theStartupApplication->getDxuiArgs();
 	if (cp) args[argcnt++] = DuplicateString(cp);
 #endif
@@ -623,7 +623,7 @@ boolean StartupWindow::startPrompter()
 	sprintf(path, "%s/bin_%s/prompter", theIBMApplication->getUIRoot(), DXD_ARCHNAME);
 	close (fds[1]);
 	dup2 (fds[0], STDIN_FILENO);
-#if !defined(DXD_OS_NON_UNIX)
+#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
 	if (theStartupApplication->isLimitedUse()) 
 	    execl (path, path, "-limited", NUL(char*));
 	else

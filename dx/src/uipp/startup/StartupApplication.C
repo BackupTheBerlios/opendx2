@@ -215,7 +215,9 @@ boolean StartupApplication::initialize(unsigned int* argcp,
 
 #if !defined(DXD_OS_NON_UNIX)
     if (this->mainWindow) this->mainWindow->deactivate();
+#ifdef DXD_LICENSED_VERSION
     this->TemporaryLicense::initialize();
+#endif
     if (this->mainWindow) this->mainWindow->activate();
 #endif
 

@@ -33,7 +33,7 @@
 #include "../base/MainWindow.h"
 #include "../base/Dialog.h"
 #include "../base/IBMApplication.h"
-#if !defined(DXD_OS_NON_UNIX)
+#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
 #include "../base/TemporaryLicense.h"
 #endif
 #include "../base/List.h"
@@ -58,7 +58,7 @@ extern "C" int	StartupApplication_XErrorHandler(Display *display,
 						XErrorEvent *event);
 
 
-#if !defined(DXD_OS_NON_UNIX)
+#if !defined(DXD_OS_NON_UNIX) && defined(DXD_LICENSED_VERSION)
 class StartupApplication : public IBMApplication, public TemporaryLicense
 #else
 class StartupApplication : public IBMApplication
