@@ -1,5 +1,3 @@
-#!/bin/sh
-
 #
 # This script generates one of two files from a .X file:
 #
