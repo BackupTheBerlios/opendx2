@@ -1059,6 +1059,8 @@ AC_OUTPUT(
 	fonts/Makefile \
 	help/Makefile \
 	html/Makefile \
+	html/pages/Makefile \
+	html/images/Makefile \
 	include/Makefile \
 	include/dx/Makefile \
 	lib/Makefile \
