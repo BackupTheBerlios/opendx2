@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-htmldir = $(prefix)/html
+htmldir = $(prefix)/dx/html
 
 html_DATA = README.htm README_SMP.htm README_alphax.htm \
 	README_hp700.htm README_ibm6000.htm README_intelnt.htm \

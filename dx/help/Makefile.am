@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-htmldir = $(prefix)/html
+htmldir = $(prefix)/dx/html
 
 EXTRA_DIST = help.tar
 

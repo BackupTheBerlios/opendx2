@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-docdir = $(prefix)/doc
+docdir = $(prefix)/dx/doc
 
 doc_DATA = \
 	README README_SMP README_alphax README_aviion README_hp700 \

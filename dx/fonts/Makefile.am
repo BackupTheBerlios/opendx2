@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-fontdir = $(prefix)/doc
+fontdir = $(prefix)/dx/fonts
 
 font_DATA = \
 	Readme area.dx cyril_d.dx domcasual.dx dutch.dx dutchit.dx \
