@@ -7,7 +7,6 @@
  */
 #ifndef _DXI_ARCH_H
 #define _DXI_ARCH_H 1
-#endif
 
 #ifndef HAS_S_ISDIR
 #define S_ISDIR(x) ((x) & (S_IFDIR))
@@ -106,10 +105,26 @@
 /* cannot load runtime-loadable modules after forking */
 #define DXD_NO_MP_RUNTIME 1
 
+#define F_CHAR_READY(fp) ((fp)->_cnt > 0)
+
 #ifdef linux86
+
+#undef F_CHAR_READY
+#define F_CHAR_READY(fp) ((fp)->_IO_read_ptr < (fp)->_IO_read_end)
+
 #endif
 
 #ifdef cygwin
+
+#ifdef ERROR_INVALID_DATA
+#undef ERROR_INVALID_DATA
+#endif 
+
+#define DXD_SYSERRLIST_DECL 1
+
+#undef F_CHAR_READY
+#define F_CHAR_READY(fp) ((fp)->_r > 0 || (fp)->_ub._base)
+
 #endif
 
 /* silicon graphics: indigo, crimson, 280/gtx, onyx, extreme
@@ -460,8 +475,6 @@ union wait{
 #define DXD_HAS_VFORK 1
 
 #endif  /* aviion */
-
-#if 1
 
 #ifdef intelnt
 
@@ -854,7 +867,6 @@ typedef void * SelectPtr;
 /* fixed type sizes */
 #ifndef DXD_FIXEDSIZES
 #define DXD_FIXEDSIZES 1 
-
 #endif
 
 #if defined(DXD_ENABLE_SOCKET_POINTERS) && (defined(DXD_HAS_IBM_OS2_SOCKETS) || defined(DXD_HAS_WINSOCKETS))
@@ -929,12 +941,12 @@ typedef union SFILES {
 #define CHAR_READY(sfile) \
 	(SOCK_ISSOCKET_SFILE(sfile) ? \
 	 ((sfile)->socket._count > 0) : \
-	 ((sfile)->file._cnt > 0))
+	 F_CHAR_READY(sfile))
 #else
 #define CHAR_READY(sfile) \
 	(SOCK_ISSOCKET_SFILE(sfile) ? \
 	 ((sfile)->socket._count > 0) : \
-	 ((sfile)->file._count > 0))
+	 F_CHAR_READY(sfile))
 #endif
 
 int 	_dxf_nu_fileno(FILE* file);
@@ -951,12 +963,7 @@ int 	_dxf_sock_getc(SOCKET *file);
  */
 #define SFILE FILE
 
-#ifdef linux86
-#define CHAR_READY(fp) ((fp)->_IO_read_ptr < (fp)->_IO_read_end)
-#else
-#define CHAR_READY(fp) ((fp)->_cnt > 0)
-#endif
-
+#define CHAR_READY(fp) F_CHAR_READY(fp)
 #define GETC(file) getc(file)
 
 #endif
