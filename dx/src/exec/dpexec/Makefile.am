@@ -32,4 +32,4 @@ $(libDPEXEC_a_SOURCES): yuiif.c yuiif.h
 
 DISTCLEANFILES = yuiif.c yuiif.h
 
-include local.mk
+@LOCALMAKE@

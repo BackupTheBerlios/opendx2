@@ -38,6 +38,7 @@ AC_SUBST(MKDEP)
 AC_SUBST(JNI_CFLAGS)
 AC_SUBST(JDK_CLASSPATH)
 AC_SUBST(WRL_CLASSPATH)
+AC_SUBST(LOCALMAKE)
 
 SHELL=sh
 
@@ -1135,6 +1136,8 @@ DX_NEEDS_STDCXX
 
 dnl since we statically link the hw-dependent renderer dxexec links need GL
 DX_GL_LINK_LIBS=" -lGL "
+
+LOCALMAKE="include local.mk"
 
 AC_OUTPUT(
 	Makefile \

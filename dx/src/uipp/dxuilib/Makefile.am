@@ -395,4 +395,4 @@ SRCS5 = \
 
 libDXUI_a_SOURCES = $(SRCS1) $(SRCS2) $(SRCS3) $(SRCS4) $(SRCS5)
 
-include local.mk
+@LOCALMAKE@

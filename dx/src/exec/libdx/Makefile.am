@@ -121,7 +121,7 @@ CLEANFILES = \
 
 SUFFIXES = .X .Z .h .m .c .o .s .i
 
-include local.mk.in
+@LOCALMAKE@
 
 $(built_headers) : $(XFILES)
 $(built_sources) : $(built_headers)

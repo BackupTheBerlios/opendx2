@@ -102,4 +102,4 @@ libDXMODS_a_SOURCES =   \
 	$(SOURCES6) \
 	$(SOURCES7)
 
-include local.mk
+@LOCALMAKE@
