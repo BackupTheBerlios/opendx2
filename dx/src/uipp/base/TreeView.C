@@ -48,6 +48,24 @@
 // child,sibling relationships.  The way I've done it here, is different from
 // the way it's usually done but I chose this way of doing it because I didn't
 // want lots of indentation.  Other outliners indent a lot more than this one does.
+// 3) Type-ahead is mostly implemented in TreeView::typeAhead().  It's implemented
+// at this level rather than at the tool selector level so that type-ahead can be
+// available in other situations in which this object might be used.
+//
+
+//
+// ToDo:
+// 1) Anytime you click on an item you toggle its selection state.  It would
+// be better to start a timer to toggle its selection state.  Reason: if you
+// double click on an item that's already selected, you're really trying to
+// double click it but what you get instead is a deselect then another select.
+// 2) Motif provides a flashing ibeam in text widgets and the flash rate is
+// settable.  It would be nice if the flash rate used here were the same
+// as Motif's flash rate.
+// 3) Keyboard focus is problematic.  We always set traversalOn to FALSE,
+// not only here but elsewhere in dxui.  I don't know how to fix it.
+// 4) Type-ahead has a fixed-size buffer of 32 chars.  I don't know what
+// happens if the I type more than that.
 //
 
 boolean TreeView::ClassInitialized = FALSE;
@@ -163,6 +181,11 @@ TreeView::~TreeView()
     if (this->ibeam_timer) XtRemoveTimeOut(this->ibeam_timer);
 }
 
+//
+// This method could also have been called setDataModel().  In the case
+// of the tool selector, a new model is supplied every time the user 
+// loads new macros or changes the set of categories.
+//
 void TreeView::initialize (TreeNode* model, boolean repaint)
 {
     Widget w = this->getRootWidget();
@@ -178,6 +201,11 @@ void TreeView::initialize (TreeNode* model, boolean repaint)
     this->setDirty(TRUE,repaint);
 }
 
+//
+// Every displayed string has a corresponding Rectangle stored in
+// this->markers.  They're used to translate a mouse click back into
+// an TreeNode.
+//
 void TreeView::clearMarkers()
 {
     ListIterator iter(this->markers);
@@ -235,6 +263,9 @@ void TreeView::paint()
     //
     Dimension unused, strHeight;
     if (!TreeView::FontList) {
+	// We're an XmDrawingArea widget which has no XmNfontList resource.  We
+	// require an XmNfontList in order to draw text on the screen.  So I
+	// obtain one by briefly instantiated a dummy widget.
 	Widget lab = XtCreateWidget("foo",xmLabelWidgetClass,this->getRootWidget(), 0,0);
 	XmFontList fontList;
 	XtVaGetValues (lab, XmNfontList, &fontList, NULL);
@@ -249,6 +280,11 @@ void TreeView::paint()
 	if (strHeight < plus_height) strHeight = plus_height + 1;
 	int string_count = 0;
 	Dimension actual_width = 0;
+	//
+	// This call to ::paintNode() does now drawing.  It't just a rehearsal.  It
+	// has the effect of computing the space required for the whole display.
+	// We always make a size request based on this.
+	//
 	this->paintNode(this->data_model, string_count, 0, (int)strHeight, 
 	    actual_width, FALSE, FALSE, selection_drawn);
 	int actual_height = (string_count * strHeight) + TOP_MARGIN;
@@ -315,6 +351,10 @@ boolean TreeView::getMatchLocation (int& x1, int& y1, int& x2, int& y2)
     return TRUE;
 }
 
+//
+// Drawing the contents of the display is a recursive operation: 
+// paintNode() on a node, then for each child of that node do paintNode().
+//
 void TreeView::paintNode(TreeNode* node, int& string_count, int level, int strHeight, Dimension& width, boolean paint_it, boolean last_line, boolean& selection_drawn)
 {
     int level_incr = 1;
@@ -411,6 +451,10 @@ void TreeView::paintNode(TreeNode* node, int& string_count, int level, int strHe
     }
 }
 
+//
+// called by the widget's XmNexposeCallback.  Copy from the double-buffer onto
+// the screen.
+//
 void TreeView::redisplay()
 {
     if (!XtIsRealized(this->getRootWidget())) return ;
@@ -464,6 +508,7 @@ void TreeView::select(TreeNode* node, boolean repaint)
 {
     if (this->selection == node) return ;
     this->selection = node;
+
     if (node) {
 	TreeNode* parent = node->getParent();
 	while (!parent->isRoot()) {
@@ -530,15 +575,22 @@ void TreeView::keyPress(XEvent *xev)
 	    prev = marker;
 	}
 	switch (lookedup) {
+	    case XK_space:
+		if (this->isTyping()) this->endTyping();
+		if (this->selection) this->select(NUL(TreeNode*), TRUE);
+		this->auto_expanded.clear();
+		break;
 	    case XK_Up:
 		if (prev) {
 		    if (this->isTyping()) this->endTyping();
+		    this->auto_expanded.clear();
 		    this->select(prev->getNode(), TRUE);
 		}
 		break;
 	    case XK_Down:
 		if (next) {
 		    if (this->isTyping()) this->endTyping();
+		    this->auto_expanded.clear();
 		    this->select(next->getNode(), TRUE);
 		}
 		break;
@@ -566,24 +618,38 @@ void TreeView::keyPress(XEvent *xev)
 
 	    case XK_Return:
 	    case XK_KP_Enter:
+		this->auto_expanded.clear();
 		if ((node->isLeaf()==FALSE) && (node->hasChildren())) {
 		    node->setExpanded(node->isExpanded() == FALSE);
 		    this->setDirty(TRUE,TRUE);
 		} else if (this->isTyping()) {
-		    this->select(this->matched, TRUE);
+		    TreeNode* tmp = this->matched;
+		    this->endTyping();
+		    this->select(tmp, TRUE);
 		}
 		break;
 	}
     }
 }
 
+//
+//
+//
 void TreeView::typeAhead(KeySym typed)
 {
     if (!this->isTyping()) this->beginTyping();
     if (!this->isTyping()) return ;
 
+    // There is a special cursor displayed while typing is active.  This
+    // isn't really necessary but it is a nice debugging feature.  The
+    // cursor is currently an arrow pointing opposite direction from normal.
     this->setTypeAheadCursor();
 
+    //
+    // The ibeam must be invisible before we do anything because
+    // if it's visible when we repaint, then the next time it displays
+    // it won't make backing store for the ibeam.
+    //
     boolean restart_ibeam = FALSE;
     if (this->ibeam_showing) {
 	if (this->ibeam_timer) {
@@ -597,9 +663,22 @@ void TreeView::typeAhead(KeySym typed)
     this->typing[this->typing_count++] = (char)tolower(typed);
     this->typing[this->typing_count] = '\0';
 
+    //
+    // A list of nodes against which we'll match the typing, was formed in
+    // TreeView::beginTyping().  Ordinarily it includes only the nodes
+    // that are visible i.e. in categories that are expanded.
+    //
     ListIterator iter(this->searchable_nodes);
     int matches = 0;
+
     TreeNode* match;
+    TreeNode* very_next = NUL(TreeNode*);
+    char* very_next_str = 0;
+
+    TreeNode* selection_parent = NUL(TreeNode*);
+    if ((this->selection) && (this->selection->isLeaf()))
+	selection_parent = this->selection->getParent();
+
     this->matched = NUL(TreeNode*);
     while (match=(TreeNode*)iter.getNext()) {
 	char* cp = DuplicateString(match->getString());
@@ -607,14 +686,60 @@ void TreeView::typeAhead(KeySym typed)
 	for (int i=0;i<len;i++) cp[i] = tolower(cp[i]);
 	const char* t = this->typing;
 	int cnt = this->typing_count;
-	if (strncmp (cp, t, cnt) == 0) {
-	    if (matches == 0) this->matched = match;
+	int cmp = strncmp (cp, t, cnt);
+	if (cmp == 0) {
+	    if (matches == 0) {
+		this->matched = match;
+	    } else if (((match->getParent() == selection_parent) &&
+			(selection_parent) &&
+			(this->matched->getParent() != selection_parent))) {
+		// Generally, when we're matching we want the 1st match
+		// we encounter.  An exception is the case in which we find
+		// multiple exact matches but one of them is in the same
+		// category as the current selection.  Then we'll give
+		// preference to the match that allows us to remain in
+		// the same category.
+		this->matched = match;
+	    }
 	    matches++;
+	} else if ((cmp > 0) && (match->getParent()->isExpanded())) {
+	    //
+	    // This is what causes a-u-z to select BSpline.
+	    //
+	    if (!very_next) {
+		very_next = match;
+		very_next_str = DuplicateString(cp);
+	    } else if (strcmp(cp,very_next_str)==0) {
+		if ((selection_parent) && 
+		    (match->getParent() == selection_parent) &&
+		    (very_next->getParent() != selection_parent)) {
+		    very_next = match;
+		}
+	    } else if (match->getParent()->isSorted()==FALSE) {
+		// If the list wasn't sorted, then we have to test each string to 
+		// see if it falls between t and very_next in lexical order.
+		// It might be better to sort everything in
+		// TreeView::getSearchableNodes(List& nodes_to_search)
+		// although then we would lose the ordering based on categories.
+		if (strcmp(cp,very_next_str)<0) {
+		    very_next = match;
+		    delete very_next_str;
+		    very_next_str = DuplicateString(cp);
+		}
+	    }
 	}
 	delete cp;
     }
     if (matches == 0) {
-	this->clear(TRUE);
+	if (very_next) {
+	    this->select(very_next);
+	    this->endTyping();
+	    restart_ibeam = FALSE;
+	} else {
+	    this->endTyping();
+	    this->typeAhead(typed);
+	    restart_ibeam = FALSE;
+	}
     } else {
 	ASSERT(this->matched);
 	this->select(this->matched, TRUE);
@@ -624,6 +749,7 @@ void TreeView::typeAhead(KeySym typed)
 	this->ibeam_timer = XtAppAddTimeOut (apcxt, IBeamTime, 
 	    (XtTimerCallbackProc) TreeView_IBeamTO, (XtPointer)this);
     }
+    if (very_next_str) delete very_next_str;
 }
 
 void TreeView::beginTyping()
@@ -644,7 +770,14 @@ void TreeView::buttonPress(XEvent *xev)
 
     XButtonEvent* xbe = (XButtonEvent*)xev;
     if (xbe->button != 1) return ;
+    if (this->isTyping()) this->endTyping();
+    this->auto_expanded.clear();
+
     if (this->containing_marker) {
+	//
+	// containing_marker is a rectangle containing a pixmap 
+	// preceding a category, a plus or minus.
+	//
 	TreeNode* node = this->containing_marker->getNode();
 	if (node->isLeaf()==FALSE) {
 	    node->setExpanded(node->isExpanded() == FALSE);
@@ -653,6 +786,10 @@ void TreeView::buttonPress(XEvent *xev)
 	    this->single_click_time = 0;
 	}
     } else {
+	//
+	// marker is a rectangle containing a line of text from the 
+	// display.
+	//
 	Marker* marker = this->pick(xbe->x, xbe->y);
 	if (marker) {
 	    TreeNode* node = marker->getNode();
@@ -785,6 +922,11 @@ void TreeView_InputCB(Widget w, XtPointer clientData, XtPointer callData)
 	case KeyPress:
 	    tv->keyPress(xev);
 	    break;
+
+	//
+	// AFAIK, Motif is never notifying us of focusIn,Out.  I considered
+	// using these in order to manage keyboard focus.
+	//
 	case FocusIn:
 	    tv->focusIn();
 	    break;

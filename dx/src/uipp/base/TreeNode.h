@@ -47,6 +47,7 @@ class TreeNode : public Base {
     virtual void setExpanded(boolean e=TRUE) {
 	this->expanded = e;
     }
+    virtual boolean isSorted() { return FALSE; }
 
     TreeNode* getParent() { return this->parent; }
  

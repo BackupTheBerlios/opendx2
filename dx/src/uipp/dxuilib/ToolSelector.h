@@ -149,7 +149,7 @@ class ToolSelector : public UIComponent
     //
     // Get the current Selection. 
     // 
-    NodeDefinition *getCurrentSelection() {return (NodeDefinition*)activeData;}
+    virtual NodeDefinition *getCurrentSelection() {return (NodeDefinition*)activeData;}
 
     boolean  isSelectionLocked()	{ return this->lockedData; }
 
@@ -192,15 +192,17 @@ class ToolSelector : public UIComponent
 #if defined(TOOL_SELECTOR_PRIVATE)
     class ToolCategoryNode : public CategoryNode {
 	private:
+	    boolean sorted;
 	protected:
 	    ToolSelector* toolSelector;
-	    ToolCategoryNode(Symbol s, TreeNode* parent, ToolSelector* ts) : 
-		CategoryNode(s, parent) { 
-		    this->toolSelector = ts;
-	    }
+	    ToolCategoryNode(Symbol s, TreeNode* parent, ToolSelector* ts); 
 	    friend class ToolSelector;
 	public:
 	    void setExpanded(boolean e=TRUE);
+	    boolean isSorted() {
+		if (this->sorted) return TRUE;
+		return this->CategoryNode::isSorted();
+	    }
     };
     class ToolNode : public LeafNode {
 	private:

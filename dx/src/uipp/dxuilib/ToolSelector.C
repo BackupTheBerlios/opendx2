@@ -284,21 +284,7 @@ boolean ToolSelector::removeTool(Symbol cat, Symbol tool)
 //
 void ToolSelector::categorySelect(Symbol cs)
 {
-    ActiveItemDictionary *toollist;
-    ToolView* tv = (ToolView*)this->treeView;
-
-    /*
-     * Get the index of the selected category.
-     */
-    toollist = (ActiveItemDictionary*) this->categoryDictionary.findDefinition(cs);
-    ASSERT(toollist);
-
-    /*
-     * If a new category has been selected, build a module list.
-     */
-    if (toollist != this->categoryDictionary.getActiveDefinition()) {
-	this->categoryDictionary.setActiveItem(cs);
-    }
+    this->categoryDictionary.setActiveItem(cs);
 }
 
 
@@ -318,8 +304,15 @@ void ToolSelector::toolSelect(Symbol ts)
 	toollist = (ActiveItemDictionary*) this->categoryDictionary.getActiveDefinition();
 	this->activeData = toollist->findDefinition(ts); 
 
+	//
+	// When we include ALPHABETIZED in the list, we always have a problem
+	// figuring out exactly which node to select because there are 2 copies
+	// of each node, 1 in the normal category and 1 in ( All ).
+	//
 	TreeNode* tn = this->getToolNode(this->treeView->getDataModel(), ts);
-	tv->select (tn, TRUE);
+	TreeNode* seln = tv->getSelection();
+	if ((seln) && (tn->getDefinition() != seln->getDefinition()))
+	    tv->select (tn, TRUE);
     } else {
 	this->activeData = NULL;
 	this->lockedData = FALSE;
@@ -331,6 +324,12 @@ void ToolSelector::lockSelect(Symbol ts)
     if (this->activeData != NULL) this->lockedData = TRUE;
 }
 
+ToolCategoryNode::ToolCategoryNode(Symbol s, TreeNode* parent, ToolSelector* ts) :
+    CategoryNode(s,parent)
+{
+    this->toolSelector = ts;
+    this->sorted = (s == theSymbolManager->getSymbol(ALPHABETIZED));
+}
 
 //
 // return the NodeDefinition of char strings or 0 if the item is not
