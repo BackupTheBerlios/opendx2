@@ -73,9 +73,9 @@ install-exec-local:
 		ar qv libDX.a *.o ;					   \
 		rm *.o	;						   \
 	done ; 								   \
-	if test ! -z "@FMT_LIBS@" ; then				   \
-	   for i in @FMT_LIBS@ "" ; do				   	   \
-               if test "$i" != "" ; then				   \
+	if test ! -z "$(FMT_LIBS)" ; then				   \
+	   for i in $(FMT_LIBS) "" ; do				   	   \
+		if test "$$i" != "" ; then				   \
 			lib="";						   \
 			for j in /lib /usr/lib /usr/local/lib @LIBS@;  do  \
 				k=`echo $$j | sed -e "s/-L//"` ;	   \
@@ -120,6 +120,7 @@ install-exec-local:
 	fi ; 								   \
 	mv libDX.a .. ; 						   \
 	cd .. ;								   \
+	$(RANLIB) libDX.a ;						   \
 	$(INSTALL) libDX.a $(prefix)/dx/lib_$(ARCH) ;			   \
 	echo making libDXcallm.a ;					   \
 	mv libDX.a tmp/libDXcallm.a ; 					   \
@@ -145,6 +146,7 @@ install-exec-local:
 	done ; 								   \
 	mv libDXcallm.a .. ;						\
 	cd .. ;								\
+	$(RANLIB) libDXcallm.a ;					\
 	$(INSTALL) libDXcallm.a $(prefix)/dx/lib_$(ARCH) ;		   \
 	rm libDXcallm.a ;
 
