@@ -198,7 +198,11 @@ Boolean TransferAccelerator(shell, source, action)
 			keysym    = *keysym_list ;
 			modifiers = *modifiers_list ;
 			retcode   = True ;
+			XtFree((char*) type_list);
+			XtFree((char*) keysym_list);
+			XtFree((char*) modifiers_list);
 		}
+
 #else  /* (HAVE_XMMAPKEYEVENTS) */
 		int       type ;
 		retcode = _XmMapKeyEvent(accelerator, &type, (unsigned *) &keysym, 
