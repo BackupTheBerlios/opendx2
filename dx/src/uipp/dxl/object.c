@@ -19,6 +19,8 @@
 /* #include "dx.h" Not until we actually handle the object */
 #include "dict.h"
 
+extern Object _dxfImportBin_FP(int fd); /* from exec/libdx/rwobject.c */
+
 typedef struct handler_data{
     DXLObjectHandler 	handler;
     const void		*data;
@@ -57,12 +59,10 @@ static char *object_token = "DXLOutput OBJECT"; 		/* V3.x + */
 static void 
 SystemObjectHandler(DXLConnection *conn, const char *msg, void *data)
 {
-    char *p;
     HandlerData *hd;
     char format[1024];
     char varname[1024];
     int object_size;
-    Object o;
 
     /* Parse varname from msg which contains varname" */
     sprintf(format,"%s %%s %%d",object_token);
@@ -86,8 +86,6 @@ SystemObjectHandler(DXLConnection *conn, const char *msg, void *data)
 
 static DXLError InitializeObjectHandler(DXLConnection *conn)
 {
-    int msgtype; 
-
     conn->objectHandlerDict = NewDictionary();
     if (!conn->objectHandlerDict) 
 	return ERROR;
@@ -140,7 +138,7 @@ DXLRemoveObjectHandler(DXLConnection *conn, const char *name)
     if (!conn->objectHandlerDict) 
 	return 1;
 
-    if (hd = (HandlerData*)DictFind(conn->objectHandlerDict,name)) {
+    if ((hd = (HandlerData*)DictFind(conn->objectHandlerDict,name))) {
 	DeleteHandlerData(hd);
  	return 1;
     }

@@ -23,6 +23,7 @@ typedef struct handler_data{
     const void		*data;
 } HandlerData;
 
+#if 0
 static HandlerData *NewHandlerData(DXLValueHandler
                                         handler, const void *data)
 {
@@ -35,6 +36,7 @@ static HandlerData *NewHandlerData(DXLValueHandler
 
     return hd;
 }
+#endif
 
 static void DeleteHandlerData(HandlerData *hd)
 {
@@ -58,12 +60,10 @@ static char *link_value_token = "LINK:  DXLOutput VALUE";
 static void 
 SystemValueHandler(DXLConnection *conn, const char *msg, void *data)
 {
-    char *p;
     HandlerData *hd = NULL;
     char format[1024];
     char varname[1024];
     int count; 
-    const char *token;
     
     /* Parse varname from msg which contains varname" */
     sprintf(format,"%s %%s %%n",link_value_token);
@@ -83,7 +83,6 @@ SystemValueHandler(DXLConnection *conn, const char *msg, void *data)
 static DXLError InitializeValueHandler(DXLConnection *conn)
 {
     DXLPacketTypeEnum ptype; 
-    const char *token;
  
     conn->valueHandlerDict = NewDictionary();
     if (!conn->valueHandlerDict)
@@ -140,7 +139,7 @@ DXLRemoveValueHandler(DXLConnection *conn, const char *name)
     if (!conn->valueHandlerDict) 
 	return OK;
 
-    if (hd = DictFind(conn->valueHandlerDict,name)) {
+    if ((hd = DictFind(conn->valueHandlerDict,name))) {
 	DictDelete(conn->valueHandlerDict,name);
  	return OK;
     }
@@ -153,9 +152,6 @@ DXLError
 DXLSetValue(DXLConnection *conn, const char *var, const char *value)
 {
     int sts;
-    char *buffer = MALLOC(strlen(var)+ strlen(value) +
-				strlen("SetDXLInputNamed(%s, %s);"));
-
     if (conn->dxuiConnected) {
 	char *buffer = MALLOC(strlen(var)+ strlen(value) +
 				strlen("set receiver %s = %s"));
@@ -175,6 +171,8 @@ DXLSetValue(DXLConnection *conn, const char *var, const char *value)
 
     return sts;
 }
+
+#if 0
 static DXLError
 DXLSetTabValue(DXLConnection *conn, const char *var, const char *value)
 {
@@ -194,6 +192,7 @@ DXLSetTabValue(DXLConnection *conn, const char *var, const char *value)
 
     return sts;
 }
+#endif 
 
 DXLError
 DXLSetInteger(DXLConnection *conn, const char *gvarname, const int value)

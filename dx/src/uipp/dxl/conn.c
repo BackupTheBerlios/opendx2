@@ -473,7 +473,6 @@ DXLConnection *
 DXLStartDX(const char *string, const char *host)
 {
     int port;
-    int fd;
     int in, out,err;
     DXLConnection *connection;
 
@@ -552,9 +551,6 @@ void _dxl_InvalidateSocket(DXLConnection *connection)
 void
 DXLCloseConnection(DXLConnection *connection)
 {
-    int i;
-    DXLEvent *e;
-
     if (connection->fd >= 0) {
 	close(connection->fd);
 	connection->fd = 0;
@@ -605,7 +601,7 @@ ConnectTo(const char *host,
 		   char *errstr)
 {
     char s[BUFSIZ];
-    char wd[BUFSIZ],script_name[500],cmd[1000];
+    char script_name[500],cmd[1000];
     FILE *fp;
     int i;
 #if defined(intelnt) || defined(OS2)
@@ -617,11 +613,8 @@ ConnectTo(const char *host,
     char **fargv = NULL;
     int child;
     struct hostent *he;
-    char *home;
     int findx;
     char *pathEnv;
-    char *is;
-    char *os;
     int  j;
 #ifdef hp700
     int  width = MAXFUPLIM;
@@ -824,7 +817,7 @@ ConnectTo(const char *host,
 			evar[j] = ep[i][j];
 		evar[j] = '\0';
 		k = j + 1;	/* Skip the '=' sign */
-		for (j=0 ; c = ep[i][k] ; k++, j++) {
+		for (j=0 ; (c = ep[i][k]) ; k++, j++) {
 			if (c == '\'') {		/* ' -> '\'' */
 				/* Value contains a double quote */
 				eval[j++] = '\'';

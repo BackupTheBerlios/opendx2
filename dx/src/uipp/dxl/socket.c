@@ -96,7 +96,6 @@ _DXLsprintf(char *s, const char* format, ...)
 
 #define DXL_QUEUE_LENGTH	1
 
-static int socketTimeout = DXL_ACCEPT_TIMEOUT;
 static int basePort = DXL_BASE_PORT;
 
 void
@@ -140,10 +139,11 @@ static int nConnection = 0;
 static int
 _dxl_MakeConnection(DXLConnection *connection, int port, const char *host)
 {
-    int   local, i;
+    int   local;
     u_short pport;
     struct sockaddr_in server;
 #ifdef DXD_HAS_WINSOCKETS
+    int i;
     fd_set fdtmp, dxfds;
 #endif
 

@@ -30,13 +30,11 @@ typedef enum DXLExecuteCtl DXLExecuteCtlEnum;
 
 static void _dxl_EndBG(DXLConnection *c, const char *msg, void *data)
 {
-    int packetId = (int)data;
     c->isExecuting --;
 }
 
 static void _dxl_BeginBG(DXLConnection *c, const char *msg, void *data)
 {
-    int packetId = (int)data;
     c->isExecuting ++;
 }
 
@@ -50,7 +48,6 @@ static void _dxl_CompleteExecute(DXLConnection *c, const char *msg, void *data)
 
 static void _dxl_INTRstop(DXLConnection *c, const char *msg, void *data)
 {
-    int state = (int)data;
     c->isExecuting = 0;
     _dxl_RemoveSystemHandler(c,PACK_INTERRUPT,-1,INTRstopMSG, _dxl_INTRstop);
 }

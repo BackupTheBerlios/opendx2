@@ -36,12 +36,14 @@ VOID _Optlink PMCheckInputThread(void *Voidconn);
 void PMCheckInputThread(void *Voidconn);
 #endif
 
+
+#if 0
 static void _dxl_InputHandler(void *clientData)
 {
     DXLConnection *conn = (DXLConnection *)clientData;
     DXLHandlePendingMessages(conn);
 }
-
+#endif
 
     /* FIXME: arrange for _dxl_InputHandler to be called when input available
      * on the connection, or deliver a message to the main loop that must 

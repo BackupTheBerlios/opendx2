@@ -76,6 +76,10 @@ DXLError _dxl_SetSystemHandlerString(DXLConnection *conn,
 DXLError _dxl_SetSystemHandler(DXLConnection *conn,
                 int type, int packetId, const char *str,
                 DXLMessageHandler h, const void *data);
+DXLError _dxl_RemoveSystemHandler(DXLConnection *conn,
+		int type, int packetId, const char *str, 
+		DXLMessageHandler h);
+
 
 
 /*

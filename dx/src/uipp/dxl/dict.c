@@ -150,7 +150,7 @@ _Dictionary *NewDictionary()
 	return(dict);
 }
 
-DictDelete(dictionary,key)
+int DictDelete(dictionary,key)
 _Dictionary	*dictionary;
 const char 	*key;
 {
@@ -159,7 +159,7 @@ const char 	*key;
 	int		bucket;
 		
 	bucket = _dict_hash(key); 
-	if (dlist = dictionary->harr[bucket]) {
+	if (dlist == dictionary->harr[bucket]) {
 		found = !strcmp(dlist->key, key);
 		if (found) {	/* First item on list */
 			dictionary->harr[bucket] = dlist->nexti;
@@ -170,7 +170,7 @@ const char 	*key;
 				if (!found)
 					dlist = dlist->nexti;
 				else {
-					if (next = dlist->nexti) {
+					if (next == dlist->nexti) {
 						dlist->nexti = next->nexti;
 					}
 					else
@@ -188,7 +188,7 @@ const char 	*key;
 	return(found);
 }
 	
-DictInsert(dictionary,key,def, deleter)
+int DictInsert(dictionary,key,def, deleter)
 _Dictionary	*dictionary;
 const 		char *key;
 void		*def;

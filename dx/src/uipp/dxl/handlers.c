@@ -59,6 +59,7 @@ error:
     if (he) {
 	DeleteHandlerEntry(he);
     }
+    return 0;
 }
 /*
  * Set a user error handler

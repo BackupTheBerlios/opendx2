@@ -51,6 +51,10 @@
 #include <sys/select.h>
 #endif
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
 #if   defined(OS2)  || defined(DXD_HAS_WINSOCKETS)
 #if defined(HAVE_IO_H)
 #include <io.h>
@@ -67,7 +71,6 @@ static int _dxl_ReadFromSocket(DXLConnection *conn);
 static int _dxl_WaitForReadable(DXLConnection *conn);
 static int _dxl_IsReadable(DXLConnection *conn);
 static void PrintEvent(DXLEvent *e);
-static void PrintEventList(DXLEvent *e);
 
 static DXLError DXLGetPacket(DXLConnection *, DXLPacketTypeEnum, int,
                 DXLEvent *, int,
@@ -168,7 +171,6 @@ DXLError
 DXLSend(DXLConnection *conn, const char *string)
 {
     DXLPacketTypeEnum ptype;
-    int sts;
 
     if (conn->dxuiConnected) {
 	if (conn->majorVersion <= 2)
@@ -266,9 +268,8 @@ int
 DXLQuery(DXLConnection *conn, const char *string,
          const int length, char *result)
 {
-    int l = STRLEN(string);
-    int found, sts     = 0;
-    int requestId, written = 0;
+    int found;
+    int requestId;
     DXLEvent    event;
     DXLPacketTypeEnum ptype;
 
@@ -406,6 +407,7 @@ DXLNextPacket(DXLConnection *conn, DXLEvent *event)
     return OK;
 }
 
+int
 DXLWaitForEvent(DXLConnection *conn)
 {
     if(conn->nEvents == 0)
@@ -428,7 +430,6 @@ static void DXLDispatchEvent(DXLConnection *conn, DXLEvent *e)
 DXLError
 DXLProcessEventList(DXLConnection *conn)
 {
-    int i;
     DXLEvent *e;
 
     while (_dxl_IsReadable(conn))
@@ -450,9 +451,6 @@ DXLProcessEventList(DXLConnection *conn)
     _dxf_ClearIdleEventHandler(conn);
 
     return OK;
-
-error:
-    return ERROR;
 }
 
 
@@ -974,13 +972,7 @@ static void PrintEvent(DXLEvent *e)
 {
     fprintf(stderr, "id %d type %d %s\n", e->serial, e->type, e->contents);
 }
-static void PrintEventList(DXLEvent *e)
-{
-    DXLEvent *event;
 
-    for (event = e; event ; event = event->next)
-        PrintEvent(event);
-}
 int  DXLSetMessageDebugging(DXLConnection *conn, int on)
 {
     int oldval = conn->debugMessaging;
@@ -993,7 +985,6 @@ int  DXLSetMessageDebugging(DXLConnection *conn, int on)
 DXLError
 exDXLBeginMacroDefinition(DXLConnection *conn, const char *mhdr)
 {
-    int l = STRLEN(mhdr);
     int sts = 0;
     DXLPacketTypeEnum ptype;
 
@@ -1020,7 +1011,6 @@ DXLError
 exDXLEndMacroDefinition(DXLConnection *conn)
 {
     int sts = 0;
-    DXLPacketTypeEnum ptype;
 
     if (conn->dxuiConnected)
     {
