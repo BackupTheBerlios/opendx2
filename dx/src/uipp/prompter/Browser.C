@@ -1843,7 +1843,7 @@ void Browser::searchBackward(char *text)
     if(!found)
 	WarningMessage("Pattern not found");
 
-#ifdef REGCMP_EXISTS
+#if (defined(HAVE_REGCOMP) && (defined(HAVE_REGEX_H) || defined(HAVE_REGEXP_H))) || defined(HAVE_EGCMP)
     free(search_for);
 #endif
 
