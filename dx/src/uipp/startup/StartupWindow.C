@@ -25,6 +25,7 @@
 #include <Xm/Text.h>
 #ifdef DXD_WIN
 #include <Xm/FileSB.h>
+#include <process.h>
 #endif
 
 #if defined(HAVE_UNISTD_H)
@@ -595,6 +596,7 @@ StartupWindow_RefreshTO(XtPointer cData, XtIntervalId*  )
 //
 boolean StartupWindow::startPrompter()
 {
+    int result;
 
 #ifndef DXD_WIN
     if (StartupWindow::GarReadId) {
@@ -645,7 +647,11 @@ boolean StartupWindow::startPrompter()
 #endif
 #else // !DXD_WIN
     char* arg0 = "-prompter";
-    _spawnlp(_P_WAIT, "dx", "dx", arg0, NULL);
+    result = _spawnlp(_P_WAIT, "dx", "dx", arg0, NULL);
+    if(result == -1) {
+	printf( "error prompter spawning process: %s\n", strerror( errno ) );
+    }
+      
 #endif
     return TRUE;
 }
