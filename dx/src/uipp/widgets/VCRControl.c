@@ -1271,7 +1271,8 @@ static void ReleaseModeButtons( XmVCRControlWidget vcr )
  */
 static void ReplaceFrame( XmFrameWidget frame )
 {
-#if !defined(cygwin)
+#if (USING_LESSTIF != 1)
+
 short highlight_thickness = 0;
 
    if( XtIsRealized(frame) )

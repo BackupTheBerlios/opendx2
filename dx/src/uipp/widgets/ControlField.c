@@ -208,7 +208,7 @@ Boolean draw_lines = TRUE;
 		DrawLine(field->line[i], field->line[i]->gc);
 	    }
 	}
-#if !defined(cygwin)
+#if (USING_LESSTIF != 1)
 	_XmDrawShadowType((Widget)field->w, XmSHADOW_IN,
 			  field->w->core.width, field->w->core.height,
 			  field->w->manager.shadow_thickness,
