@@ -217,6 +217,7 @@ DXMakeGridConnectionsV
 DXMakeGridPositions
 DXMakeGridPositionsV
 DXMakeImage
+DXMakeImageFormat
 DXMakeInteger
 DXMakeString
 DXMakeStringList
@@ -568,3 +569,5 @@ _dxfNormals
 * _dxf_gatheredFlags
 * _dxf_gatheredObject
 * _dxf_Insert
+DXAddLikeTasks
+_dxd_UserInteractors
