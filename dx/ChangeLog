@@ -1,3 +1,7 @@
+Corrected a problem with lex/parsing of programs from the UI after
+and error occurs when trying to open a network. A consecutive open
+now works correctly and does not give false error messages.
+
 Added TypeAhead functionality to the tools list of the VPE. With Motif 
 2, this functionality was minimally there, but my additions extend it. 
 To use it, place the mouse over the Tool List and begin typing the name 
