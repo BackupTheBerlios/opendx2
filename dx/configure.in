@@ -224,9 +224,9 @@ if test "$MKDEP" = "" ; then
     MKDEP='$(CC) -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)'
 fi
 
-AC_CHECK_PROG(HAVE_CSH, csh, 1, 0)
+AC_CHECK_PROG(HAVE_CSH, csh, yes, no)
 	
-if test "$HAVE_CSH" = "1" ; then
+if test "$HAVE_CSH" = "yes" ; then
     INSTALL_DX_EXE=
     INSTALL_DX_CSH="dx dxworker"
 else
@@ -690,6 +690,7 @@ LIB_MAGICK=''
 if test "$with_magick" != 'no'
 then
     AC_CHECKING(for ImageMagick support ...)
+    AC_CHECK_PROG(HAVE_MC, Magick-config, yes, no)
 
     failed=0;
     passed=0;
@@ -721,6 +722,7 @@ dnl The ImageMagick configuration can be collected with an ImageMagick
 dnl routine. This allows us to simplify the configuration of all the
 dnl format configuration libraries.
 
+ if test "$HAVE_MC" = "yes" ; then
     LIB_MAGICK="`Magick-config --ldflags` `Magick-config --libs`"
     AC_CHECK_LIB( Magick,GetImageInfo, passed=`expr $passed + 1`, failed=`expr $failed + 1`, [ $LIB_MAGICK ])
     AC_MSG_CHECKING(if ImageMagick package is complete)
@@ -747,6 +749,9 @@ dnl UNIQUIFY will remove duplicate library tokens leaving the last instance.
     else
         AC_MSG_RESULT(no)
     fi
+  else
+	AC_MSG_RESULT(no - Magick-config not found)
+  fi
 fi
 fi
 

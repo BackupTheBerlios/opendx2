@@ -383,7 +383,7 @@ AC_DEFUN(DX_ARCHITECTURE,
 	ac_cv_dx_arch=$ARCH
 	if test "$ARCH" = "" ; then
 	    unameS=`uname -s`
-	    unameM=`uname -m`
+	    unameM="`uname -m`"
 	    ac_cv_dx_arch=unknown
 	    if test $unameS = "FreeBSD" ; then
 		ac_cv_dx_arch=freebsd
@@ -395,12 +395,14 @@ AC_DEFUN(DX_ARCHITECTURE,
 		ac_cv_dx_arch=sgi
 	    elif test $unameS = "AIX" ; then
 		ac_cv_dx_arch=ibm6000
-	    elif test $unameM = "alpha" ; then
+	    elif test "$unameM" = "alpha" ; then
 		ac_cv_dx_arch=alphax
 	    elif test $unameS = "HP-UX" ; then
 		ac_cv_dx_arch=hp700
 	    elif test $unameS = "SunOS" ; then
 		ac_cv_dx_arch=solaris
+	    elif test $unameS = "Darwin" ; then
+		ac_cv_dx_arch=macos
 	    fi
 	fi
     ])
@@ -1072,6 +1074,7 @@ AC_DEFUN(DX_JAVA_ARCHITECTURE,
 	    sunos)     JAVA_ARCH=solaris ;;
 	    linux)     JAVA_ARCH=genunix 
 		       JNI_CFLAGS=-DIBM_LINUX;;
+	    darwin)    JAVA_ARCH=macos ;;
 	    *)         JAVA_ARCH=$lc ;;
 	esac
     fi
@@ -1122,7 +1125,7 @@ dnl a problem as it shouldn't need to be included. This will hardcode the
 dnl path into runtime areas and could cause problems with upgrades of java.
 dnl But as for now this is the way we are going to do it.
 
-ac_cv_jdk_classes=`grep loaded jdkpath.err | tr '\134' '\057' | sed -e "s/.loaded //" -e "s&(.*$&&"`
+ac_cv_jdk_classes=`egrep "loaded|loading" jdkpath.err | tr '\134' '\057' | sed -e "s/.loaded //" -e "s/.loading //" -e "s&(.*$&&"`
 
 dnl Cleanup the files that were created.
 rm -f jdkpath.*
@@ -1161,7 +1164,6 @@ if test -z "$ac_cv_jdk_classes" ; then
 dnl Fallback to checking the default paths since it is empty.
   AC_MSG_RESULT([trying default path])
   ac_cv_jdk_base="/usr/include:/usr/include/$JAVA_ARCH"
-
 else
 
 dnl Get anything that isn't between "/"'s
@@ -1178,6 +1180,10 @@ dnl has jni_md.h for the appropriate architecture.
 
 dnl The path that should be used now is DX_JBASE/include and DX_JBASE/include/JAVA_ARCH.
 DX_FOUND_PATH="$DX_JBASE/include:$DX_JBASE/include/$JAVA_ARCH"
+
+if test "$JAVA_ARCH" = "macos" ; then
+	DX_FOUND_PATH="/System/Library/Frameworks/JavaVM.framework/Headers"
+fi
 
 ac_cv_jdk_base="$DX_FOUND_PATH"
 
