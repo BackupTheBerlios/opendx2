@@ -60,7 +60,7 @@ AC_CACHE_VAL(ac_cv_objext,
   rm -f conftest*
   test x"${ac_cv_objext}" = x && ac_cv_objext=no
 ])
-EXEEXT=""
+OBJEXT=""
 test x"${ac_cv_objext}" != xno && OBJEXT=${ac_cv_objext}
 AC_MSG_RESULT(${ac_cv_objext})
 ac_objext=$OBJEXT
