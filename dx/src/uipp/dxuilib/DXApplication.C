@@ -2917,6 +2917,20 @@ DXApplication::handleEvent (XEvent *xev)
     this->IBMApplication::handleEvent(xev);
 }
 
+static int
+testString(char *s)
+{
+    int r;
+
+    if (!s)
+        return 0;
+
+    while(isspace(*s)) s++;
+
+    r = *s != '\0';
+    return r;
+
+}
 
 DXChild *DXApplication::startServer()
 {
@@ -2952,17 +2966,17 @@ DXChild *DXApplication::startServer()
 	else
 	    strcpy(args, "-exonly -local");
 
-	if (this->serverInfo.executive)
+	if (testString(this->serverInfo.executive))
 	{
 	    strcat(args, " -exec ");
 	    strcat(args, this->serverInfo.executive);
 	}
-	if (this->serverInfo.workingDirectory)
+	if (testString(this->serverInfo.workingDirectory))
 	{
 	    strcat(args, " -directory ");
 	    strcat(args, this->serverInfo.workingDirectory);
 	}
-	if (this->serverInfo.userModules)
+	if (testString(this->serverInfo.userModules))
 	{
 	    strcat(args, " -mdf ");
 	    strcat(args, this->serverInfo.userModules);
@@ -2986,7 +3000,7 @@ DXChild *DXApplication::startServer()
 	    strcat(args, l);
 	}
 #endif
-	if (this->serverInfo.executiveFlags)
+	if (testString(this->serverInfo.executiveFlags))
 	{
 	    strcat(args, " ");
 	    strcat(args, this->serverInfo.executiveFlags);
