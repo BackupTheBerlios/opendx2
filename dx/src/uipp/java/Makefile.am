@@ -48,7 +48,7 @@ server.jar:
 	(CLASSPATH=aaaaa ; unset CLASSPATH ; javac -d dxsc DXServer.java)
 	(CLASSPATH=aaaaa ; unset CLASSPATH ; cd dxsc; @JDKBIN@jar cf ../server.jar DXServer.class server dx )
 
-SHRD_FLAGS = -shared -L../dxl -lDXL -o libAnyDX.so
+SHRD_FLAGS = -shared -o libAnyDX.so
 
 libAnyDX.so: DXLink.o
 	if test "$(ARCH)" = "cygwin" ; then \
