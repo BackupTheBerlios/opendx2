@@ -553,8 +553,11 @@ static int _dxftriangular_coords (float *pt, float *p0,
     b->q = a1 / a;
     b->r = a2 / a;
 
+    if (a0 == 0.0 || a1 == 0.0 || a2 == 0.0) return 0;
+
     if ((b->p >=  0.0 && b->q >=  0.0 && b->r >=  0.0) ||
-	(b->p <=  0.0 && b->q <=  0.0 && b->r <=  0.0))
+	(b->p <=  0.0 && b->q <=  0.0 && b->r <=  0.0) ||
+	(b->p ==  0.0 || b->q ==  0.0 || b->r ==  0.0))
     {
 	return 0;
     }
