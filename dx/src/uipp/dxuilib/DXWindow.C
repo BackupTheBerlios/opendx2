@@ -15,7 +15,9 @@
 #if defined(DXD_WIN) || defined(OS2)                  //SMH get correct hdr
 #include <iostream.h>
 #else
+#if defined(HAVE_STREAM_H)
 #include <stream.h>
+#endif
 #endif
 
 #include <Xm/RowColumn.h>

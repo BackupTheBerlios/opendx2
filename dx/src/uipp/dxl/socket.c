@@ -9,7 +9,9 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
+#if defined(HAVE_MALLOC_H)
 #include <malloc.h>
+#endif
 #include <stdio.h>
 #include <ctype.h>
 

@@ -28,7 +28,9 @@
 #ifdef  DXD_WIN
 #include <iostream.h>
 #else
+#if defined(HAVE_STREAM_H)
 #include <stream.h>
+#endif
 #endif
 #include <ctype.h>
 #include <errno.h>

@@ -16,7 +16,9 @@
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
+#if defined(HAVE_MALLOC_H)
 #include <malloc.h>
+#endif
 #include "ErrorDialogManager.h"
 #include "WarningDialogManager.h"
 #include "MBGenerate.h"

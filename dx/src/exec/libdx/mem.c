@@ -694,7 +694,9 @@ Pointer _dxfgetmem(Pointer base, int size) { return base; }
 
 #if !defined(os2) && !defined(intelnt)
 
+#if !defined(cygwin) && !defined(macos)
 extern int end;   /* filled in by linker */
+#endif
 
 /* extend the existing data segment
  */
@@ -718,7 +720,7 @@ Pointer _dxfgetbrk(Pointer base, int n)
     if (x == ERR_PTR) {
 	unsigned int i;
 	x = (Pointer)sbrk(0);
-#ifdef cygwin
+#if defined(cygwin) || defined (macos)
 	DXSetError(ERROR_NO_MEMORY, 
 		"cannot expand the data segment by %u bytes", n);
 #else
@@ -805,7 +807,10 @@ Error DXmemfork(int i)
  * in case something bad happens.  or print it out with Usage("memory info");
  */
 
+#if !defined(cygwin) && !defined(macos)
 extern int end;   /* filled in by linker */
+#endif
+
 #define min(a,b)  ((a) < (b) ? (a) : (b))
 
 /* public */
@@ -830,7 +835,7 @@ void DXPrintMemoryInfo()
 		      i+1, alloc_addr_start[i], 
 		      (uint)SUB_PTR(alloc_addr_end[i], alloc_addr_start[i]));
 	
-#ifndef cygwin
+#if !defined(cygwin) && !defined(macos)
 	DXMessage("end address = 0x%08x, data segment extended by %u bytes", 
 		  alloc_addr_end[i-1],
 		  (uint)SUB_PTR(alloc_addr_end[i-1], &end));

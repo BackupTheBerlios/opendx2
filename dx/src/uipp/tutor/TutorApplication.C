@@ -17,7 +17,9 @@
 #include <Xm/Label.h>
 #include <X11/cursorfont.h>
 #if 0
+#if defined(HAVE_STREAM_H)
 #include <stream.h>
+#endif
 
 #include <unistd.h>
 #include <signal.h>

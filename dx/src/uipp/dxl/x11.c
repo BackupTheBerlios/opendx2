@@ -11,7 +11,9 @@
 
 
 #include <string.h>
+#if defined(HAVE_MALLOC_H)
 #include <malloc.h>
+#endif
 #include <stdio.h>
 
 #define Object XObject

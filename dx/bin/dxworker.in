@@ -137,6 +137,14 @@ switch ( $thissys )
 
     breaksw
 
+  case Darwin*:
+   set exarch=macos
+   set uiarch=macos    
+ 
+   set remote=/usr/bin/rsh
+ 
+   breaksw
+
   default:
     echo unknown machine type
     exit 1
@@ -1456,6 +1464,7 @@ switch ( $uiarch )
   case alphax:
   case linux:
   case freebsd:
+  case macos:
     breaksw
   
   default:

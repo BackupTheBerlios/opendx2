@@ -85,7 +85,7 @@ static Error load_first(struct column_info **src1, struct column_info **src2,
 static void replace_row(struct column_info **old, struct column_info **new);
 static Field build_field(struct file_info *fs, struct column_info **ds, char** cat_string);
 static Error _dxf_getline(struct parse_state *ps);
-static Type isnumber(char *p, int *d, float *f);
+static Type _dxf_isnumber(char *p, int *d, float *f);
 static Error create_array(struct column_info *ds);
 static Error process_data(char *p, struct column_info *ds, int index, 
 	char *delmiter);
@@ -491,7 +491,7 @@ static Error evaluate_oneline(struct parse_state *ps, char *delimiter,
 				 sizeof(struct column_info)))==NULL)
          goto error;
     test[nc]->array = NULL;
-    test[nc]->type = isnumber(p,&d,&f);
+    test[nc]->type = _dxf_isnumber(p,&d,&f);
     if (test[nc]->type == TYPE_HYPER){
 	DXSetError(ERROR_INTERNAL,"error matching regular expresion");
 	goto error;
@@ -677,7 +677,7 @@ static Error process_data(char *p,struct column_info *ds,int index,char *delimit
   a = ds->array;
   inv = ds->inv;
   strcpy(inv_string," ");
-  number_type = isnumber(p,&d,&f);
+  number_type = _dxf_isnumber(p,&d,&f);
   /* check for missing data */
   if (p[0] == delimiter[0] || number_type==TYPE_BYTE) {
     switch(ds->type) {	
@@ -1317,7 +1317,7 @@ Error _dxf_getline(struct parse_state *ps)
   return OK;
 }
 
-static Type isnumber(char *p,int *d, float *ff)
+static Type _dxf_isnumber(char *p,int *d, float *ff)
 {
   int ret,ret1,type;
   float f;

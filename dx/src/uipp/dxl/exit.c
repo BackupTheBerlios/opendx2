@@ -37,7 +37,9 @@
 #endif
 
 #include <errno.h>
+#if defined(HAVE_MALLOC_H)
 #include <malloc.h>
+#endif
 
 #if defined(HAVE_SYS_SELECT_H)
 #include <sys/select.h>

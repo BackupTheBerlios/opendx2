@@ -927,8 +927,6 @@ arealloc(struct arena *a, char *x, unsigned int n)
 
 #define K   *1024
 #define MEG K K
-
-extern int end;				/* linker-provided end of used data  */
                                         /* the following are in mem.c:       */
 extern Error _dxfsetmem(int limit);	/*             set shared mem size   */
 extern Error _dxfinitmem();		/*             initialize shared mem */
@@ -954,6 +952,7 @@ static int sm_lg_ratio = 0;		/* 0 means compute at run time */
 
 #if ibmpvs
 #define initvalues
+extern int end;				/* linker-provided end of used data  */
 #define SMALL_BASE	SVS_sh_base	/* start at shared base */
 #define SMALL_GET	_dxfgetmem	/* just returns ok */
 #define LARGE_GET	_dxfgetmem	/* just returns ok */
@@ -1093,7 +1092,21 @@ static int sm_lg_ratio = 0;		/* 0 means compute at run time */
 #define LARGE(x) ((long)x>=(long)large)
 #endif
 
+#if defined(macos)
+#define initvalues
+#define SMALL_BASE    0               /* use data segment */
+#define SMALL_GET     _dxfgetmem      /* expand by using DosSetMem */
+#define LARGE_GET     _dxfgetmem      /* expand by using DosSetMem */
+#define LARGE_INIT    2 MEG           /* doesn't matter; consistent w/ sgi */
+#define LARGE_INCR    2 MEG           /* doesn't matter; consistent w/ sgi */
+#define SIZE_ROUND    2 MEG           /* doesn't matter; consistent w/ sgi */
+#define MALLOC_NONE   1               /* provide malloc from global arena */
+#define SMALL(x) ((int)x<(int)large)
+#define LARGE(x) ((int)x>=(int)large)
+#endif
+
 #if !defined(initvalues)		/* default for other platforms */
+extern int end;				/* linker-provided end of used data  */
 #define SMALL_BASE	(long)&end	/* start at end of data segment */
 #define SMALL_GET	_dxfgetbrk	/* expand by using sbrk */
 #define LARGE_GET	_dxfgetbrk	/* expand by using sbrk */

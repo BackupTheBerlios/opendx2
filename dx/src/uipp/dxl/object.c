@@ -11,7 +11,9 @@
 
 
 #include <string.h>
+#if defined(HAVE_MALLOC_H)
 #include <malloc.h>
+#endif
 
 #include "dxlP.h"
 /* #include "dx.h" Not until we actually handle the object */

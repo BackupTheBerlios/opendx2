@@ -47,10 +47,6 @@ extern "C" {
 #endif
 #endif
 
-#if defined(HAVE_NETDB_H)
-#include <netdb.h>
-#endif
-
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1213,7 +1209,6 @@ void PacketIF::HandleError(void *clientData, char *message)
 }
 
 
-
 //
 //
 //
@@ -1353,7 +1348,6 @@ void PacketIF::connectAsClient(const char *host, int port, boolean local)
 
 }
 
-
 /*
  * Open a socket port and wait for a client to connect.
  * This opens 2 sockets (except on the server), one internet domain, and
@@ -1376,7 +1370,7 @@ void PacketIF::connectAsServer(int pport)
     int fd;
     int sts;
     int oldPort;
-#if !defined(linux) && !defined(cygwin) && !defined(freebsd)
+#if !defined(linux) && !defined(cygwin) && !defined(freebsd) && !defined(macos)
     extern int errno;
 #endif
     int tries;

@@ -2449,6 +2449,9 @@ static OperBinding mods[] = {
 #   define rint(x) ((float)((int)((x) + 0.5)))
 #   define trunc(x) ((float)((int)(x)))
 #endif
+#ifdef macos
+#   define trunc(x) ((float)((int)(x)))
+#endif
 #define SIGN(x) ((x) >= 0? (1): (-1))
 
 /* These are the math operators */

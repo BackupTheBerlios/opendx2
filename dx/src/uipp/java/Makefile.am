@@ -67,8 +67,10 @@ server.jar: dx.jar DXServer.java
 SHRD_FLAGS = -shared -o libAnyDX.so
 
 libAnyDX.so: DXLink.o
-	if test ! $(ARCH) = "intelnt" ; then \
-        	( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object ) \
+	if test ! "$(ARCH)" = "intelnt" -a ! "$(ARCH)" = "macos" ; then \
+		( $(MAKE) usual_shared_object || $(MAKE) aix_shared_object ) \
+	elif test "$(ARCH)" = "macos" ; then \
+		( $(MAKE) macos_shared_object ) \
 	fi
 
 usual_shared_object:
@@ -78,6 +80,11 @@ aix_shared_object:
 	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
 	nm -epC tmpAnyDX.a | awk -f $(srcdir)/exports.awk > tmpAnyDX.exp
 	ld -bnoentry -bM:SRE -o libAnyDX.so -bE:tmpAnyDX.exp tmpAnyDX.a -L /usr/lpp/X11/lib -lXt -lX11 -lc
+	rm -f tmpAnyDX.*
+
+macos_shared_object:
+	ar -ruv tmpAnyDX.a `ls ../dxl/*.o | sed -e "s&../dxl/object.o&&"` DXLink.o
+	ld -dylib -o libAnyDX.dylib tmpAnyDX.a -L/usr/X11R6/lib -lXt -lX11 -lc
 	rm -f tmpAnyDX.*
 
 AnyDX.dll: DXLink.o
