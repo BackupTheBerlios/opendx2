@@ -10,7 +10,7 @@
 
 
 /* This file contains the description of each operator from a type and 
- * execution pint of view.  For each operator (such as COND (?:), *, 
+ * execution point of view.  For each operator (such as COND (?:), *, 
  * min, [...], etc.) there is a structure containing the operator
  * code, name, and a list of valid operator bindings.  Each binding contains
  * the routine to implement the operation, a routine to check the type

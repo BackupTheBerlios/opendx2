@@ -11,7 +11,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.5 2000/08/24 20:04:48 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showboundary.c,v 1.6 2000/10/05 20:37:35 davidt Exp $
  */
 
 #include <string.h>
@@ -1402,6 +1402,7 @@ DXPrint   ( (Object)((array_info)&comp->array)->array, "rd", 0);
                   ( ERROR != comp->std_attribs[(int)REF]->value ) &&
                   ( ( 0 == strcmp ( comp->name, "invalid connections" ) ) ||
                     ( 0 == strcmp ( comp->name, "invalid positions"   ) ) ))
+        {
             /*
              * Time/space tradeoff:
              *   push (see _dxf_resample_array) is simpler, pull is smaller
@@ -1540,10 +1541,12 @@ DXPrint   ( (Object)((array_info)&comp->array)->array, "rd", 0);
 
                 DXFree ( (Pointer) pull );  pull = NULL;
             }
+        }
 
         if ( 0 != strcmp ( comp->name, "connections" ) )
             if ( !DXSetComponentValue ( out_field, comp->name, (Object)array ) )
                 goto error;
+        
     }
 
     /* XXX - remove "der"'s ! (This gets the follow-on der's as well) */

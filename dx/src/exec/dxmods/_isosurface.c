@@ -6348,7 +6348,7 @@ CompositeField copy_grow_save ( CompositeField input )
                         ( ERROR_UNEXPECTED,
                          "more than 100 components to grow in copy_grow_save" );
 
-                if ( NULL != growl[ll] )
+                if ( NULL != growl[ll] ) {
 
                     if ( ( 0 == strcmp ( growl[ll], "positions"   ) ) ||
                          ( 0 == strcmp ( growl[ll], "connections" ) ) ||
@@ -6366,6 +6366,7 @@ CompositeField copy_grow_save ( CompositeField input )
                                 ( 0 == strcmp ( dep, "connections" ) )  ) )
 
                         ll++;
+                   }
             }
 
             break;

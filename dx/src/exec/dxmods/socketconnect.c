@@ -1,5 +1,17 @@
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
+
 #include <pthread.h>
 #include <dx/dx.h>
+
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
 
 #if 0
 #include "../simconnect/simconnect.h"
@@ -80,7 +92,7 @@ rcvdata(int fd, Pointer p)
 Error
 m_SocketConnection(Object *in, Object *out)
 {
-    int port, cnum;
+    int port;
     struct _args *args;
     struct _sc *sc;
 
