@@ -284,31 +284,27 @@ PseudoKey _dxf_cat_hashkey( Key key )
     hashelement *h = key;
     int size = h->cp->obj_size;
     int count = h->cp->count;
-	int indsize = size / count;
+    int indsize = size / count;
 
     /* If a vector, then create hash for each portion and combine */
-    for ( fullhash = 0, j = 0; j < count; j++) {
-         s = (( ubyte * ) h->p) + (j * indsize);
-   	
-		for ( hash = 0, i = 0; i < indsize; i++, s++ ) {
-			hash = ( hash << ONE_EIGHTH ) + prime2[ hash % NPRIMES ] * 
-						( *s ? *s : prime1[ i % NPRIMES ] );
-			if ( ( tmp = hash & HIGH_BITS ) ) {
-				hash = ( hash ^ ( tmp >> THREE_FOURTHS ) );
-				hash = hash ^ tmp;
-			}
-			
-		fullhash += hash;
-	}
-
-#ifdef CAT_DEBUG
-        printf( "--- %x  %lx\n", ( int ) ( *s ), hash );
-#endif
+	for ( fullhash = 0, j = 0; j < count; j++) {
+		 s = (( ubyte * ) h->p) + (j * indsize);
+	
+        for ( hash = 0, i = 0; i < indsize; i++, s++ ) {
+            hash = ( hash << ONE_EIGHTH ) + prime2[ hash % NPRIMES ] * 
+                        ( *s ? *s : prime1[ i % NPRIMES ] );
+            if ( ( tmp = hash & HIGH_BITS ) ) {
+                hash = ( hash ^ ( tmp >> THREE_FOURTHS ) );
+                hash = hash ^ tmp;
+            }
+            
+        fullhash = (fullhash << ONE_EIGHTH) + hash;
+        }
 
     }
 
 #ifdef CAT_DEBUG
-    printf( "hash: %lx\n", hash );
+    printf( "hash key: %lx\n", fullhash );
 
 #endif
     if ( fullhash == HASH_KEY_AVOID )
