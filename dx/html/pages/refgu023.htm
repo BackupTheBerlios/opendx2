@@ -44,7 +44,7 @@ MINING">
 Categorizes components of a field
 <P><STRONG>Syntax</STRONG>
 <PRE>
-<STRONG>output</STRONG> = Categorize(<STRONG>input, name</STRONG>);
+<STRONG>output</STRONG> = Categorize(<STRONG>input, name, sort</STRONG>);
 </PRE>
 <P><STRONG>Inputs</STRONG>
 <BR>
@@ -64,7 +64,15 @@ Categorizes components of a field
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string or string list
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">"data"
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">component to categorize
-</TD></TR></TABLE>
+</TD></TR>
+			<TR>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">sort</TD>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">flag</TD>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">1</TD>
+				<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">0: don't sort the added lookup component<BR>
+					1: sort the added lookup component</TD>
+			</TR>
+		</TABLE>
 <P><STRONG>Outputs</STRONG>
 <BR>
 <TABLE BORDER>
@@ -84,14 +92,13 @@ Categorizes components of a field
 </B></TD><TD><P>is the field containing the components to categorize
 </TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>name</STRONG></TT>
 </B></TD><TD><P>is the name or names of the components to categorize
-</TD></TR></TABLE>
-<P>
-The Categorize module converts a component of any type
-to an integer array that references
-a newly created "lookup" component, which is
-a sorted list of the unique values in the original component.
-This serves to
-<OL COMPACT>
+</TD></TR>
+			<TR VALIGN="TOP">
+				<TD><B><TT><STRONG>sort</STRONG></TT></B></TD>
+				<TD>specifies whether the newly created lookup component should be sorted or left in insertion order when it is created.</TD>
+			</TR>
+		</TABLE>
+<P>The Categorize module converts a component of any type to an integer array that references a newly created &quot;lookup&quot; component, which is a list of the unique values in the original component. This serves to<OL COMPACT>
 <LI>reduce the size of a component that contains
 duplicate values,
 <LI>allow conversion of string or vector data to
@@ -104,16 +111,7 @@ for inspection.
 Each component that is categorized will yield its own lookup
 component named "compname lookup", where compname is the
 name of the categorized component.
-<P>
-For example, if the component name is "state" and its values
-are &#123;"MO", "CA", "MO", "NH",
-"AK", "NH"&#125; then
-Categorize(field, "state") would convert component state to:
-&#123;2, 1, 2, 3, 0, 3&#125;
-and produce a new component, "state lookup"
-containing the values &#123;"AK", "CA", "MO",
-"NH"&#125;.
-<P>
+<P>For example, if the component name is &quot;state&quot; and its values are {&quot;MO&quot;, &quot;CA&quot;, &quot;MO&quot;, &quot;NH&quot;, &quot;AK&quot;, &quot;NH&quot;} then Categorize(field, &quot;state&quot;, 1) would convert component state to: {2, 1, 2, 3, 0, 3} and produce a new component, &quot;state lookup&quot; containing the values {&quot;AK&quot;, &quot;CA&quot;, &quot;MO&quot;, &quot;NH&quot;} or Categorize(field, &quot;state&quot;, 0) would convert component state to: {0, 1, 0, 2, 3} and produce a new component, &quot;state lookup&quot; containing the values {&quot;MO&quot;, &quot;CA&quot;, &quot;NH&quot;, &quot;AK&quot;}<P>
 <P><B>Notes: </B><OL>
 <P><LI>Categorize works on scalar, string, or vectors of any type,
 with the lookup component sorted in order of x, y, z, ...

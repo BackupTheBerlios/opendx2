@@ -305,7 +305,6 @@ PseudoKey _dxf_cat_hashkey( Key key )
 
 #ifdef CAT_DEBUG
     printf( "hash key: %lx\n", fullhash );
-
 #endif
     if ( fullhash == HASH_KEY_AVOID )
         fullhash = HASH_KEY_INSTEAD;

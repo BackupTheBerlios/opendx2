@@ -59,6 +59,7 @@ typedef struct _catinfo{
     Object o;		/* use component of this object */
     char *comp_name;	/* current component name in use */
     char **comp_list;	/* component list to use */
+    int sort;  /* 0 - don't sort lookup, 1 - sort lookup (default) */
     int comp_rank;
     int comp_shape[30];
     Array comp_array;	/* component array */

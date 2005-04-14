@@ -29,6 +29,7 @@ m_Categorize( Object *in, Object *out )
     /* initialize catinfo struct to zero */
     memset( ( char * ) & c, '\0', sizeof( c ) );
     c.maxparallel = DXProcessors( 0 );
+    c.sort = 1; /* default to sort */
 
     if ( c.maxparallel > 1 )
         c.maxparallel = ( c.maxparallel - 1 ) * PFACTOR;
@@ -55,6 +56,14 @@ m_Categorize( Object *in, Object *out )
     }
 
     c.comp_list[ i ] = NULL;
+    
+    if (in [ 2 ]) {
+    	if (!DXExtractInteger(in[2], &c.sort) ||
+	    	(c.sort != 0 && c.sort != 1)) {
+	    	DXSetError(ERROR_BAD_PARAMETER, "#10070", "sort flag");
+	    	goto error;
+		}
+	}
 
 
     /* do the work here */
@@ -788,7 +797,8 @@ Categorize( catinfo *cp )
     }
 
     /* sort based on hash data and set sortindex */
-    qsort( sortlist, cp->ncats, sizeof( sortelement ), datacmp );
+	if(cp->sort)
+        qsort( sortlist, cp->ncats, sizeof( sortelement ), datacmp );
 
     for ( i = 0; i < cp->ncats; i++ )
         sortlist[ i ].sortindex = i;

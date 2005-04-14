@@ -235,6 +235,8 @@ CATEGORY Transformation
 DESCRIPTION categorizes a component of a field
 INPUT field; field; (none); the field to categorize
 INPUT name; string list; "data"; the components to categorize
+INPUT sort; flag; 1; if 0, do not sort the resultant lookup component
+OPTIONS true; false 
 OUTPUT categorized; field; field with categorized components and lookups
 
 MODULE CategoryStatistics
