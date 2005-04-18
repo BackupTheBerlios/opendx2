@@ -541,6 +541,11 @@ static int qdouble(Object o)
     return qdatatype(o, TYPE_DOUBLE);    
 }
 
+static int qstring(Object o)
+{
+    return qdatatype(o, TYPE_STRING);    
+}
+
 
 static int qobjtype(Object o, char *match)
 {
@@ -2163,6 +2168,7 @@ static struct functable {
     { "isinteger",	    	IS_YESNO(qint)},
     { "isfloat", 		IS_YESNO(qfloat)},
     { "isdouble",		IS_YESNO(qdouble)},
+    { "isdatastring",           IS_YESNO(qstring)},
     { "isimage",		IS_YESNO(qimage)},
 
     { "isobject",             	YESNO_1PARM(qobjtype, "object")},
