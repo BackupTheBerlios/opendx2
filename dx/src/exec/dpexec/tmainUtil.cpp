@@ -421,7 +421,7 @@ int DXEnvironment::Setup(const int argc, char **argv) {
 				exonly = true;
 			}
 			else
-			if(s == "-execonly") {
+			if(s == "-exonly" || s == "-execonly") {
 				addExFlag("-r");
 				exonly = true;
 			}

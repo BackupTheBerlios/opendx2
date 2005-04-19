@@ -334,6 +334,9 @@ getBestVisual(struct window *w, translationP t)
 	int rasterCaps = GetDeviceCaps(w->hDC, RASTERCAPS);
 	int palette = rasterCaps & RC_PALETTE;
 
+	if (w->windowMode == WINDOW_UI)
+		bitsPerPixel = 24;
+
 	if (t->depth == 0)
 		t->depth = bitsPerPixel;
  
@@ -1137,6 +1140,14 @@ getWindowStructure(int depth, char *title, int directMap,
 				w->parent = (HWND)atoi(num);
 				w->winFlag = 1;
 			}
+			else if (num[0] == '#' && num[1]=='#')
+			{
+				w->windowMode = WINDOW_UI;
+				w->handler = (Handler) handler;
+				num += 2;
+				w->parent = (HWND)atoi(num);
+				w->winFlag = 1;
+			}
 			else
 			{
 				w->windowMode = WINDOW_LOCAL;
@@ -1152,11 +1163,13 @@ getWindowStructure(int depth, char *title, int directMap,
 			strcpy(w->cacheid, cachetag);
 		}
 
+		if(w->windowMode == WINDOW_UI) {
+			w->hWnd = 0;
+		} else {
+			if (! _dxfCreateSWWindow(w) || w->hWnd == 0)
+				DXErrorReturn(ERROR_INTERNAL, "_dxfCreateSWWindow");
+		}
 
-		if (! _dxfCreateSWWindow(w) || w->hWnd == 0)
-			DXErrorReturn(ERROR_INTERNAL, "_dxfCreateSWWindow");
-	
-		w->winFlag = 1;
 		w->objectTag = 0;
 		w->directMap = directMap;
 
@@ -1166,7 +1179,7 @@ getWindowStructure(int depth, char *title, int directMap,
 
 		w->translation = _dxf_GetTranslation(w->translation_owner);
 
-		if (w->winFlag && w->translation->translationType == mapped)
+		if (!w->winFlag && w->translation->translationType == mapped)
 			RealizePalette(w->hDC);
    }
 
@@ -2664,7 +2677,7 @@ Field _dxf_MakeWindowsImage(int width, int height, int depth, char *where)
     if (! getWindowStructure(depth, window, 0, &w, &w_obj, 0))
 		goto error;
 
-	if (w->hWnd == 0)
+	if (w->windowMode != WINDOW_UI && w->hWnd == 0)
 	{	
 		w->wwidth = width;
 		w->wheight = height;
@@ -2674,7 +2687,7 @@ Field _dxf_MakeWindowsImage(int width, int height, int depth, char *where)
 	
 	    w->winFlag = 1;
 	}
-	else if (width != w->wwidth || height != w->wheight)
+	else if (w->windowMode != WINDOW_UI && (width != w->wwidth || height != w->wheight))
 	{
 		w->wwidth = width;
 		w->wheight = height;

@@ -341,7 +341,50 @@ m_Display(Object *in, Object *out)
     }
 
     /* display */
-    if (type[0] == 'X') {
+#if defined(DX_NATIVE_WINDOWS)
+	if (type[0] == 'W') {
+		uint DX_DISPLAYREADY;
+		HWND window;
+		char *win = arg2;
+		int bytes;
+
+		DX_DISPLAYREADY = RegisterWindowMessage("DX_DISPLAY_READY");
+		win+=2;
+		if(ui_window && !message(image, arg2, buttonState, ddcamera, object))
+			goto error;
+		// If doing 64 bit, will need to worry about changing atoi to atoi64
+		bytes = _dxf_GetWindowsPixels(image, NULL);
+		window = (HWND) atoi(win); //parse after ## of arg1
+		if(window && bytes) {
+			if(PostMessage(window, DX_DISPLAYREADY, bytes, 0)==0){
+				/* Error */
+				TCHAR szBuf[80]; 
+				LPVOID lpMsgBuf;
+				DWORD dw = GetLastError(); 
+
+				FormatMessage(
+					FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+					FORMAT_MESSAGE_FROM_SYSTEM,
+					NULL,
+					dw,
+					MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+					(LPTSTR) &lpMsgBuf,
+					0, NULL );
+
+				wsprintf(szBuf, 
+					"%s failed with error %d: %s", 
+					"PostMessage", dw, lpMsgBuf); 
+
+				MessageBox(NULL, szBuf, "Error", MB_OK); 
+
+				LocalFree(lpMsgBuf);
+			}
+		}
+		else
+			goto error;
+	} else
+#endif
+	if (type[0] == 'X') {
 
         if (ui_window && !message(image, arg2, buttonState, ddcamera, object))
             goto error;

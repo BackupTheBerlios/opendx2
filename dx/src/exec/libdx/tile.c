@@ -349,7 +349,15 @@ DXRender(Object o, Camera camera, char *format)
 				      format);
 	    c.img_type = img_x;
 	    DXDebug("R", "X format");
-	} else {
+	} else if(format[0]=='W') { 
+		// Make c.image as compatible with a Windows DIB bitmap as possible.
+		c.image = _dxf_MakeImage(c.width, 
+			c.height, 
+			24,
+			format);
+		c.img_type = img_rgb;
+	}
+	else {
 	    c.image = DXMakeImageFormat(c.width, c.height, format);
 	    c.img_type = img_rgb;
 	}

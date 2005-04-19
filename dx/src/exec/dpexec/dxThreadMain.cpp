@@ -222,8 +222,6 @@ extern HWND		DXGetWindowsHandle(const char *where);  /* from libdx/displayw.c */
 
 DXExecThread *globalExecThread = NULL;
 
-/* looked at already */
-
 int            _dxd_exShowBells = FALSE;
 int            _dxd_exDebugConnect = FALSE;
 int            _dxd_exErrorPrintLevel = 3;
@@ -231,7 +229,7 @@ int            _dxd_exRshInput = FALSE;
 int            _dxd_exIntraGraphSerialize = TRUE;
 int            _dxd_exRemoteUIMsg = FALSE;
 int            _dxd_exSkipExecution = FALSE;
-int            _dxd_exEnableDebug = FALSE;
+int            _dxd_exEnableDebug = TRUE;
 int            _dxd_exCacheOn = TRUE;		    /* use cache */
 int            _dxd_exDebug = FALSE;
 int            _dxd_exRemote = FALSE;
@@ -289,7 +287,7 @@ int DXExecThread::SetupArgs(int argc, char **argv) {
 	largc = argc;
 	largv = (char **) new char*[argc];
 	for(int i=0; i<argc; i++) {
-		largv[i] = new char[strlen(argv[i]+1)];
+		largv[i] = new char[strlen(argv[i])+1];
 		strcpy(largv[i], argv[i]);
 	}
 
@@ -314,9 +312,7 @@ HANDLE DXExecThread::StartAsThread() {
 }
 
 HANDLE DXExecThread::StartAsThread(int argc, char **argv) {
-	printf("okay to here\n");
 	SetupArgs(argc, argv);
-	printf("made it past setup.");
 	return StartAsThread();
 }
 
