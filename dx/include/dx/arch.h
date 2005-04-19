@@ -593,7 +593,6 @@ union wait{
 /* #define	_WINERROR_ 1 */
 /* #define _DLGSH_INCLUDED_  1  */
 
-#include <windows.h>
 #include <errno.h>
 
 /* do you need to declare the system error list explicitly? */
