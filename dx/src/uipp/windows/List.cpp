@@ -149,70 +149,70 @@ int List::getPosition(const void* element)
 
 
 bool List::insertElement(const void* element,
-			    const int   position)
+						 const int   position)
 {
-    Link* link;
-    Link* before;
-    int   i;
+	Link* link;
+	Link* before;
+	int   i;
 
-    ASSERT(this);
+	ASSERT(this);
 
-    if ((position < 1 OR position > this->size + 1) OR
-	element == NUL(const void*))
-    {
-	//
-	// Invalid element or bogus position: return unsuccessfully.
-	//
-	return false;
-    }
-    else
-    {
-	//
-	// Create a new link and assign the element to it.
-	//
-	link = new Link();
-	ASSERT(link);
-	link->element = element;
-
-	//
-	// Insert the link at the specified position.
-	//
-	if (this->size == 0)
+	if ((position < 1 OR position > this->size + 1) OR
+		element == NUL(const void*))
 	{
-	    this->first = this->last = link;
-	}
-	else if (position == 1)
-	{
-	    link->next  = this->first;
-	    this->first = link;
-	}
-	else if (position == this->size + 1)
-	{
-	    this->last->next = link;
-	    this->last       = link;
+		//
+		// Invalid element or bogus position: return unsuccessfully.
+		//
+		return false;
 	}
 	else
 	{
-	    for (before = this->first, i = 1;
-		 before AND i < position - 1;
-		 before = before->next, i++)
-		;
-	    ASSERT(before);
+		//
+		// Create a new link and assign the element to it.
+		//
+		link = new Link();
+		ASSERT(link);
+		link->element = element;
 
-	    link->next   = before->next;
-	    before->next = link;
+		//
+		// Insert the link at the specified position.
+		//
+		if (this->size == 0)
+		{
+			this->first = this->last = link;
+		}
+		else if (position == 1)
+		{
+			link->next  = this->first;
+			this->first = link;
+		}
+		else if (position == this->size + 1)
+		{
+			this->last->next = link;
+			this->last       = link;
+		}
+		else
+		{
+			for (before = this->first, i = 1;
+				before AND i < position - 1;
+				before = before->next, i++)
+				;
+			ASSERT(before);
+
+			link->next   = before->next;
+			before->next = link;
+		}
+
+		//
+		// Increment the list count.
+		//
+		this->size++;
+
+		//
+		// Element inserted into the list successfully...
+		//
+		return true;
 	}
-
-	//
-	// Increment the list count.
-	//
-	this->size++;
-
-	//
-	// Element inserted into the list successfully...
-	//
-	return true;
-    }
 }
 
 

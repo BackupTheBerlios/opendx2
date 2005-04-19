@@ -15,7 +15,6 @@
 #include "IBMApplication.h"
 #include "UIComponent.h"
 #include "WarningDialogManager.h"
-#include "WarningDialogManager.h"
 #include "DXStrings.h"
 
 // SUITS to allow turn-off of stippled drawing on slow devices
