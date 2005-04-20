@@ -1197,7 +1197,7 @@ OUTPUT image; image; resulting rotated or inverted image
 MODULE Replace
 CATEGORY Structuring
 DESCRIPTION replaces a component in one field with a component from another field
-INPUT srcfield; field or value list; (none); field from which to get component
+INPUT srcfield; field or value list or string list; (none); field from which to get component
 INPUT dstfield; field; (none); the field in which to replace
 INPUT srcname; string; "data"; which component from srcfield
 OPTIONS data ; positions; connections; colors
