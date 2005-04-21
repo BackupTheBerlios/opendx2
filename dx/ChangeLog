@@ -1,5 +1,19 @@
 4.x
 ===============
+Fix Lookup to work again.
+
+Replace can now accept a string list not just value lists.
+
+Add an option to Inquire to test for a "string" data component.
+
+Add an option to allow Categorize to not sort the added lookup
+table. 
+
+Fix Categorize's hash function for vector data so more unique
+hash keys are produced.
+
+Fix for ImportSpreadsheet inability to use one row SS. (bug #173)
+
 Fix for ImportSpreadsheet tendency to munge large integers.
 
 Fix when using more than 31 labels on an AutoAxes. (bug #166)
