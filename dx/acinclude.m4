@@ -225,6 +225,10 @@ AC_DEFUN([DX_ARCH_SPECIFIC],
 	    AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP, [Architecture exports])
 	    AC_DEFINE_UNQUOTED(DXEXEC_IMP, $DXEXEC_IMP, [Architecture imports])
 	    ;;
+	cygwin)
+		DXEXEC_EXP='$(WEXP) -Wl,--out-implib,dxexec.a'
+		AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
+	    ;;
 	intelnt)
 		DXEXEC_EXP='-def $(WEXP)'
 		AC_DEFINE_UNQUOTED(DXEXEC_EXP, $DXEXEC_EXP)
@@ -1164,10 +1168,11 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
                 DX_RTL_CFLAGS="-shared -e DXEntry"
         fi
         if test $ARCH = "cygwin" ; then
-                DX_RTL_CFLAGS="-DDXD_WIN -DWIN32 -D_X86_ -DNOMENUS -nologo -w -0d -LD -G5"
-                DX_RTL_ALDFLAGS="-DLL -SUBSYSTEM:console -INCREMENTAL:no -MACHINE:I386 -NOLOGO"
+                DX_RTL_CFLAGS="-shared "
+		DX_RTL_DXENTRY="${MDXLDFLAG}-e,DXEntry"
+		DX_RTL_IMPORTS="\$(BASE)/lib_$ARCH/dxexec.a"
                 DX_RTL_SYSLIBS="$SYSLIBS kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib uuid.lib wsock32.lib"
-                DX_OUTBOARD_LIBS="$OLIBS $DXINST/lib/DXExport.lib"
+                DX_OUTBOARD_LIBS="$OLIBS \$(BASE)/lib/DXExport.lib"
         fi
         if test $ARCH = "hp700" ; then
                 DX_RTL_CFLAGS="-Dhp700 -Aa +z"
@@ -1179,7 +1184,7 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
                 DX_RTL_CFLAGS="-Dibm6000"
                 DX_RTL_DXENTRY="${MDXLDFLAG}-eDXEntry "
 		DX_RTL_ALDFLAGS=
-		DX_RTL_IMPORT="${MDXLDFLAG}-bI:$DXINST/lib/dxexec.exp"
+		DX_RTL_IMPORT="${MDXLDFLAG}-bI:\$(BASE)/lib/dxexec.exp"
         fi
         if test $ARCH = "sgi" ; then
                 DX_RTL_CFLAGS=" -Dsgi"

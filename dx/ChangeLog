@@ -1,5 +1,9 @@
 4.x
 ===============
+Added support for compiling loadable modules on cygwin.
+Updated the module building makefiles to better reflect
+some assigned values during build.
+
 Fix Lookup to work again.
 
 Replace can now accept a string list not just value lists.

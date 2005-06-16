@@ -25,3 +25,6 @@ install-data-hook:
 	$(INSTALL_DATA) dxexec.exp $(prefix)/dx/lib_intelnt/dxexec.exp ; \
 	$(INSTALL_DATA) dxexec.lib $(prefix)/dx/lib_intelnt/dxexec.lib ; \
 	fi
+	if test "$(ARCH)" = "cygwin" ; then \
+	$(INSTALL_DATA) dxexec.a $(prefix)/dx/lib_cygwin/dxexec.a; \
+	fi

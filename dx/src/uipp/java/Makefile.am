@@ -122,7 +122,7 @@ cygwin_shared_object: DXLink.o
 	ar -ruv tmpAnyDX.a $${jObjs} DXLink.o
 	echo EXPORTS > tmpAnyDX.exp
 	nm --demangle --defined-only tmpAnyDX.a | sed -n 's/^.* T //p' >> tmpAnyDX.exp
-	dllwrap -s --export-all-symbols --image-base 0x6620000 --def tmpAnyDX.exp --driver-name gcc -o libAnyDX.dll DXLink.o -L../dxl -lDXL -L/usr/X11R6/lib -lXt -lSM -lICE -lX11
+	dllwrap -s --export-all-symbols --image-base 0x6620000 --def tmpAnyDX.exp --driver-name gcc -o libAnyDX.dll DXLink.o -L../dxl/.libs -lDXL -L/usr/X11R6/lib -lXt -lSM -lICE -lX11
 	rm -f tmpAnyDX.*
 
 windows_shared_object: DXLink.o
@@ -162,7 +162,7 @@ DXLink.o:  server.jar
 	if test "$(ARCH)" = "cygwin" -o "$(ARCH)" = "intelnet" ; then \
 		$(CC) $(DXABI) -o $$javaobj/DXLink.o -I$$srcincs -Iserver \
 	        -I$(BUILDBASE)/include -I$$javaobj/server \
-	        -c -Dintelnt $(JNI_CFLAGS) -I/cygdrive/c/jdk1.1.8/include -I/cygdrive/c/jdk1.1.8/include/win32 $(srcdir)/server/DXLink.c ; \
+	        -c -Dintelnt $(JNI_CFLAGS) @JINC@ $(srcdir)/server/DXLink.c ; \
 	else \
 		$(CC) $(DXABI) -o $$javaobj/DXLink.o -I$$srcincs -Iserver \
 		-I$(BUILDBASE)/include -c -D@ARCH@ $(JNI_CFLAGS) @JINC@ $(srcdir)/server/DXLink.c ; \

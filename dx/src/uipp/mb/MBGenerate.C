@@ -220,7 +220,7 @@ do_makefile(char *basename, Module *mod)
        fprintf(fd, "%s: $(FILES_%s) %s",
                mod->loadable_executable, basename, NEWLINE);
 
-       fprintf(fd, "\t$(SHARED_LINK) $(DXABI) $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(DX_RTL_ALDFLAGS) $(SYSLIBS)%s%s",
+       fprintf(fd, "\t$(SHARED_LINK) $(DXABI) $(DX_RTL_CFLAGS) $(LDFLAGS) -o %s user%s.$(OBJEXT) %s.$(OBJEXT) $(DX_RTL_ALDFLAGS) $(SYSLIBS) $(DX_RTL_IMPORTS) $(DX_RTL_DXENTRY)%s%s",
                mod->loadable_executable, basename, basename, NEWLINE, NEWLINE);
 #if 0
 #ifdef alphax
