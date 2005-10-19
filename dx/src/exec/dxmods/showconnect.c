@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showconnect.c,v 1.7 2003/07/11 05:50:36 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/showconnect.c,v 1.8 2005/10/19 21:23:23 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -530,7 +530,7 @@ Error process_faces_loops_edges
     char      invalid = 0;
     int       *face_ptr, *fp, *fp_end, *fp_last;  /* base, cur, to, last */
     int       *loop_ptr, *lp, *lp_end, *lp_last;
-    int       *edge_ptr, *ep, *ep_end;
+    int       *edge_ptr, *ep, *ep_end, *ep_first;
     int	      nf;
     int	      nl;
     int	      ne;
@@ -562,10 +562,7 @@ Error process_faces_loops_edges
         while ( lp <= lp_end )
         {
             ep_end = &edge_ptr [ ( ( lp != lp_last ) ? lp[1] : ne ) - 1 ];
-            ep     = &edge_ptr [ lp[0] ];
-
-            if ( !store_hash ( htab, ep[0], ep_end[0], invalid ) )
-                goto error;
+            ep_first = ep = &edge_ptr [ lp[0] ];
 
             while ( ep < ep_end )  /* Different inequality from previous two */
             {
@@ -574,6 +571,9 @@ Error process_faces_loops_edges
 
                 ep++;
             }
+
+            if ( !store_hash ( htab, ep_first[0], ep_end[0], invalid ) )
+                goto error;
 
             lp++;
         }
