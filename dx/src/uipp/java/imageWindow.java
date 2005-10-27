@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/imageWindow.java,v 1.1 1999/07/09 17:27:26 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/imageWindow.java,v 1.2 2005/10/27 19:43:04 davidt Exp $
  */
 
 
@@ -20,7 +20,11 @@ import java.applet.*;
 
 public class imageWindow extends ImageWindow {
 
+	public void init() {
+		super.init();
+	}
     public void start() {
-	super.start();
+		super.start();
     }
+        
 } // end imageWindow

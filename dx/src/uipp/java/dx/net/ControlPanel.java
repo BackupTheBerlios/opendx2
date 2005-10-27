@@ -1,7 +1,7 @@
 //
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/ControlPanel.java,v 1.3 1999/07/09 19:29:59 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/ControlPanel.java,v 1.4 2005/10/27 19:43:06 davidt Exp $
  */
 
 package dx.net;
@@ -9,61 +9,123 @@ import java.util.*;
 import java.awt.*;
 import dx.runtime.*;
 
-public class ControlPanel extends Panel {
+public class ControlPanel extends Panel
+{
 
     private Network net;
     private String name;
     private int instance;
     private Vector interactors;
     private Vector decorators;
-    private Checkbox tab;
+    private Dimension size = new Dimension(0, 0);
+    //private Checkbox tab;
 
-    public ControlPanel(Network net, String name, int instance) {
-	super();
-	if (name == null) this.name = "ControlPanel " + instance;
-	else this.name = name;
-	this.instance = instance;
-	this.net = net;
-	this.interactors = null;
+    public ControlPanel( Network net, String name, int instance )
+    {
+        super();
+
+        if ( name == null ) this.name = "ControlPanel " + instance;
+        else this.name = name;
+
+        this.instance = instance;
+        this.net = net;
+        this.interactors = null;
     }
 
-    public String getName() { return this.name; }
-    public Checkbox getTab() { return this.tab; }
-
-    public synchronized void addInteractor(Interactor i) {
-	if (this.interactors == null)
-	    this.interactors = new Vector(4);
-	this.interactors.addElement((Object)i);
+    public String getName()
+    {
+        return this.name;
     }
 
-    public synchronized void addDecorator(Component d) {
-	if (this.decorators == null)
-	    this.decorators = new Vector(4);
-	this.decorators.addElement((Object)d);
+//    public Checkbox getTab()
+//    {
+//        return this.tab;
+//    }
+
+    public synchronized void addInteractor( Interactor i )
+    {
+        if ( this.interactors == null )
+            this.interactors = new Vector( 4 );
+
+        this.interactors.addElement( ( Object ) i );
     }
 
-    public synchronized void buildPanel() {
-	this.setLayout(null);
-	if (this.interactors != null) {
-	    Enumeration enum = interactors.elements();
-	    Interactor i;
-	    while (enum.hasMoreElements()) {
-		i = (Interactor)enum.nextElement();
-		i.init();
-		InteractorNode n = (InteractorNode)i.getNode();
-		n.installValues(i);
-		this.add(i);
-	    }
+    public synchronized void addDecorator( Component d )
+    {
+        if ( this.decorators == null )
+            this.decorators = new Vector( 4 );
+
+        this.decorators.addElement( ( Object ) d );
+    }
+
+	// Added to help get TabbedPanel to show ControlPanels correctly.
+	
+	public Dimension getMinimumSize() {
+		if(size.width > 0 || size.height > 0)
+			return size;
+		else if(this.getLayout() == null) {
+			int w = 0;
+			int h = 0;
+		
+			for (int i = 0; i<this.getComponentCount(); i++) {
+				Rectangle r = getComponent(i).getBounds();
+				w = Math.max(w, r.x+r.width);
+				h = Math.max(h, r.y+r.height);
+			}
+			
+			return new Dimension(w, h);
+		} else {
+			return super.getMinimumSize();
+		}
 	}
-	if (this.decorators != null) {
-	    Enumeration enum = decorators.elements();
-	    Component d;
-	    while (enum.hasMoreElements()) {
-		d = (Component)enum.nextElement();
-		this.add(d);
-	    }
+	
+	public void setSize(Dimension d) {
+		size = d;
 	}
-	this.tab = new Checkbox(this.name);
+	
+	public Dimension getSize() {
+		return getMinimumSize();
+	}
+	
+	public Dimension getPreferredSize () {
+		if(size.width > 0 || size.height > 0)
+			return size;
+		if(this.getLayout() == null) 
+			return getMinimumSize();
+		else
+			return super.getPreferredSize();
+	}
+	
+    public synchronized void buildPanel()
+    {
+        this.setLayout( null );
+
+        if ( this.interactors != null ) {
+            Enumeration enum = interactors.elements();
+            Interactor i;
+
+            while ( enum.hasMoreElements() ) {
+                i = ( Interactor ) enum.nextElement();
+                i.init();
+                InteractorNode n = ( InteractorNode ) i.getNode();
+                n.installValues( i );
+                this.add( i );
+            }
+        }
+
+        if ( this.decorators != null ) {
+            Enumeration enum = decorators.elements();
+            Component d;
+
+            while ( enum.hasMoreElements() ) {
+                d = ( Component ) enum.nextElement();
+                this.add( d );
+            }
+        }
+
+        //this.tab = new Checkbox( this.name );
     }
 
-}; // end ControlPanel
+}
+
+; // end ControlPanel

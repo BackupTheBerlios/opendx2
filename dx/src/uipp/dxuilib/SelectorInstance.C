@@ -67,10 +67,10 @@ boolean SelectorInstance::printAsJava (FILE* jf)
 	fprintf (jf, "%s%s.setHorizontal();\n", indent, var_name);
 
     if (this->style->hasJavaStyle())
-	fprintf (jf, "%s%s.reshape (%s, %d,%d,%d,%d);\n", 
+	fprintf (jf, "%s%s.setBounds (%s, %d,%d,%d,%d);\n", 
 	    indent,node_var_name,var_name, x,y,w,h);
     else
-	fprintf (jf, "%s%s.reshape (%s, %d,%d,%d,%d);\n", 
+	fprintf (jf, "%s%s.setBounds (%s, %d,%d,%d,%d);\n", 
 	    indent,node_var_name,var_name,x,y,w,65);
 
     SelectionNode* n = (SelectionNode*)this->node;

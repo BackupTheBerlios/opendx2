@@ -932,7 +932,7 @@ boolean LabelDecorator::printAsJava (FILE* jf, const char* var_name, int instanc
     if (this->printJavaResources(jf, indent, lvar) == FALSE)
 	return FALSE;
     fprintf (jf, "%s%s.init();\n", indent, lvar);
-    if (fprintf (jf, "%s%s.reshape (%d,%d,%d,%d);\n", indent,lvar,x,y,w,h) <= 0)
+    if (fprintf (jf, "%s%s.setBounds (%d,%d,%d,%d);\n", indent,lvar,x,y,w,h) <= 0)
 	return FALSE;
     fprintf (jf, "%s%s.addDecorator(%s);\n", indent, var_name, lvar);
 

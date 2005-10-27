@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXLAppThread.java,v 1.2 1999/07/09 19:30:00 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXLAppThread.java,v 1.3 2005/10/27 19:43:06 davidt Exp $
  */
 package dx.net;
 import java.io.*;
@@ -20,7 +20,7 @@ public class DXLAppThread extends DXClientThread {
     public final static int SETID 	= DXClientThread.LASTMSG + 3;
 
 
-public DXLAppThread(DXLinkApplication apple, DataInputStream is)
+public DXLAppThread(DXLinkApplication apple, BufferedReader is)
 {
     super(apple, is);
     try {

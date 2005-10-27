@@ -295,7 +295,7 @@ boolean SeparatorDecorator::printAsJava (FILE* jf, const char* var_name, int ins
     if (this->printJavaResources(jf, indent, svar) == FALSE)
 	return FALSE;
 
-    fprintf (jf, "%s%s.reshape(%d,%d,%d,%d);\n", indent,svar, x,y,w,h);
+    fprintf (jf, "%s%s.setBounds(%d,%d,%d,%d);\n", indent,svar, x,y,w,h);
     fprintf (jf, "%s%s.addDecorator(%s);\n", indent, var_name, svar);
 
     return TRUE;

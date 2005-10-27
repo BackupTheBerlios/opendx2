@@ -1,4 +1,5 @@
 public class makeall {
+    //dx.applets.imageWindow		f01;
     dx.net.DXLinkApplication 		a01;
     dx.net.DXApplication 		a02;
     dx.net.ImageWindow 			a03;
@@ -66,4 +67,8 @@ public class makeall {
     dx.protocol.doneMsg 		a43;
     dx.protocol.setidMsg 		a44;
     dx.protocol.setmacroMsg 		a45;
+    layout.SingleFiledLayout	a46;
+    layout.TableLayoutConstants	a47;
+    layout.TableLayout			a48;
+    layout.TableLayoutConstraints	a49;
 }

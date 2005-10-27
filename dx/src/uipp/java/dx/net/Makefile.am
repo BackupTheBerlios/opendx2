@@ -5,4 +5,4 @@ EXTRA_DIST = Arc.java BinaryNode.java CfgValues.java ControlPanel.java \
 	ImageWindow.java InteractorNode.java Network.java Node.java \
 	NumericValues.java PacketIF.java PickNode.java ResetNode.java \
 	ScalarNode.java SelectionNode.java SequencerNode.java ToggleNode.java \
-	ValueNode.java WRLApplication.java WebOptionsNode.java
+	ValueNode.java WRLApplication.java WebOptionsNode.java TabbedPanel.java

@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/runtime/Toggle.java,v 1.1 1999/03/24 15:17:32 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/runtime/Toggle.java,v 1.2 2005/10/27 19:43:08 davidt Exp $
  */
 package dx.runtime;
 //
@@ -42,7 +42,7 @@ public boolean action (Event e, Object o)
 protected void createPart() {
     Checkbox cb = new Checkbox();
     ipart = cb;
-    cb.setLabel(" ");
+    //cb.setLabel(" ");
 }
 
 

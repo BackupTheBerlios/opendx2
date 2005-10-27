@@ -35,7 +35,7 @@ EXTRA_DIST = $(DX_SRCS) DXServer.java makeall.java makewrl.java exports.awk READ
 javalibdir = $(prefix)/dx/java/server/lib_@ARCH@
 
 javalib_DATA = @ANYDX@
-SUBDIRS = server dx
+SUBDIRS = server dx layout
 
 ##
 ## Using -d simplifies things because all .class files
@@ -59,7 +59,7 @@ dx.jar: makeall.java $(DX_SRCS)
 	$(JAVAC) -d $$classdir makewrl.java || exit 1 ; \
 	$(JAVAC) -d $$classdir makeall.java $(DX_SRCS) || exit 1 ; \
 	cd $$classdir ; \
-	$(JAR) cf ../dx.jar $(DX_OBJS) dx || exit 1
+	$(JAR) cf ../dx.jar $(DX_OBJS) dx layout || exit 1
 
 server.jar: dx.jar DXServer.java
 	mkdir -p dxsc

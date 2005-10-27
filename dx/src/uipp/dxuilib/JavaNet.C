@@ -329,29 +329,61 @@ ListIterator it;
 	"<!-- The following applet describes %s.net.  It produces a representation \n"
 	"     of the visual program's control panels and provides execution control.\n"
 	"-->\n"
-	"<applet\n"
-	"\tcode=\"%s.class\" width = %d height = %d\n"
-	"\tcodebase=../\n"
-	"\tarchive=htmlpages/dx.jar,%s/%s.jar\n"
-	"\tMAYSCRIPT=true\n"
+	"<!-- It is required that codebase and archive applet tags be identical \n"
+	"     within the html page for both control panels and image windows. If not, then\n"
+	"     separate class loaders will be instantiated for the separate applets, and \n"
+	"     the DXappplication will not be able to communicate with the image windows.\n"
+	"     This manifests itself as any rendered images popping up in a separate \n"
+	"     browser window.\n"
+	"-->\n"
+	"<APPLET\n"
+	"\tCODE=\"%s.class\" width = %d height = %d\n"
+	"\tCODEBASE=\"../\"\n"
+	"\tARCHIVE=\"htmlpages/dx.jar,%s/%s.jar\"\n"
+	"\tMAYSCRIPT\n"
 	">\n"
-	"\t<param name=\"name\" value=\"%s\">\n"
-	"<!--    <param name=cabbase value=\"dx.cab\"> -->\n"
-	"\t<param name=NETNAME value=\"%s.net\">\n"
-	"\t<param name=DXUIVERS value=\"%s\">\n"
-	"\t<param name=BACKGROUND value=\"[0.86, 0.86, 0.86]\">\n"
-	"\t<param name=EXECUTE_ON_CHANGE value=\"true\">\n"
+	"\t<PARAM NAME=\"name\" VALUE=\"%s\">\n"
+	"<!--    <PARAM NAME=cabbase VALUE=\"dx.cab\"> -->\n"
+	"\t<PARAM NAME=NETNAME VALUE=\"%s.net\">\n"
+	"\t<PARAM NAME=DXUIVERS VALUE=\"%s\">\n"
+	"\t<PARAM NAME=BACKGROUND VALUE=\"[0.86, 0.86, 0.86]\">\n"
+	"\t<PARAM NAME=EXECUTE_ON_CHANGE VALUE=\"true\">\n"
 	"\t<!--\n"
 	"\tIf you define this param, then the web page will let\n"
 	"\tthe user control caching of images.  She would be able to\n"
 	"\tassemble a series of rotations for example into a coherent view\n"
-	"\t<param name=CACHING_FEATURES value=\"true\">\n"
-	"\t-->\n"
-	"</applet>\n",
+	"\t<PARAM NAME=CACHING_FEATURES VALUE=\"true\">\n"
+	"\t-->\n",
 	    this->base_name, this->base_name, applet_width, applet_height, 
 	    theDXApplication->getUserHtmlDir(), this->base_name,
 	    this->base_name, this->base_name, version_string) <= 0)
 	return FALSE;
+	
+	// If the net contains DXLInput tools, then write an applet param tag
+	// containing them.
+	
+	List* dxlis = this->makeClassifiedNodeList(ClassDXLInputNode);
+	if(dxlis && dxlis->getSize() > 1) {
+		fprintf(this->html_f, 
+			"\t<!-- DXLInputs are passed to the network via the DXLInput parameter.\n"
+			"\t     Any number of DXLInputs can be passed in by separating them and\n"
+			"\t     and their values with semi-colons.\n"
+			"\t-->\n");
+	
+		ListIterator iit(*dxlis);
+		Node* din;
+		fprintf(this->html_f, "\t<PARAM NAME=DXLInput VALUE='");
+		while ( (din = (Node*)iit.getNext()) ) {
+			if(strcmp(din->getLabelString(), "_java_control"))
+				fprintf(this->html_f, "%s=%s; ", din->getLabelString(), din->getInputValueString(1));
+		}
+		fprintf(this->html_f, "'>\n");
+	}
+	
+
+	fprintf(this->html_f,
+		"</APPLET>\n"
+		);
 
     int i;
     boolean wrl_commented = FALSE;
@@ -397,21 +429,21 @@ ListIterator it;
 		this->base_name, f, width, height
 	    );
 	} else if (EqualString(ext, "dx")) {
-	    fprintf (this->html_f, "<applet code=ActiveXFinder.class ID=AXF%d\n",
+	    fprintf (this->html_f, "<APPLET CODE=ActiveXFinder.class ID=AXF%d\n",
 		n->getInstanceNumber());
-	    fprintf (this->html_f, "    codebase=../\n");
-	    fprintf (this->html_f, "    MAYSCRIPT=true\n");
-	    fprintf (this->html_f, "    width = 2 height = 2\n");
+	    fprintf (this->html_f, "    CODEBASE=\"../\"\n");
+	    fprintf (this->html_f, "    MAYSCRIPT\n");
+	    fprintf (this->html_f, "    WIDTH = 2 HEIGHT = 2\n");
 	    fprintf (this->html_f, ">\n");
-	    fprintf (this->html_f, "    <param name=IMAGE_NODE value=\"Image_%d\">\n",
+	    fprintf (this->html_f, "    <PARAM NAME=IMAGE_NODE value=\"Image_%d\">\n",
 		n->getInstanceNumber());
 	    fprintf (this->html_f, 
-		"    <param name=INITIAL_IMAGE value=\"%s/%s%d.0.0.dx\">\n",
+		"    <PARAM NAME=INITIAL_IMAGE VALUE=\"%s/%s%d.0.0.dx\">\n",
 		theDXApplication->getUserHtmlDir(), this->base_name, 
 		n->getInstanceNumber());
 	    fprintf (this->html_f, 
-		"<!-- <param name=cabbase value=\"htmlpages/dx.cab\"> -->\n");
-	    fprintf (this->html_f, "</applet>\n");
+		"<!-- <PARAM NAME=cabbase VALUE=\"htmlpages/dx.cab\"> -->\n");
+	    fprintf (this->html_f, "</APPLET>\n");
 
 	    fprintf (this->html_f, "<object ID=\"DXView\" width=%d height=%d\n",
 		width, height);
@@ -429,25 +461,25 @@ ListIterator it;
 	    if (fprintf (this->html_f, "</script>\n") < 0) return FALSE;
 	} else {
 	    fprintf (this->html_f, 
-		"<applet\n"
-		"\tcode=\"imageWindow.class\" width = %d height = %d\n"
-		"\tcodebase=../\n"
-		"\tarchive=htmlpages/dx.jar,%s/%s.jar\n"
-		"\tMAYSCRIPT=true\n"
+		"<APPLET\n"
+		"\tCODE=\"imageWindow.class\" WIDTH = %d HEIGHT = %d\n"
+		"\tCODEBASE=\"../\"\n"
+		"\tARCHIVE=\"htmlpages/dx.jar,%s/%s.jar\"\n"
+		"\tMAYSCRIPT\n"
 		">\n"
-		"<!--    <param name=cabbase value=\"dx.cab\"> -->\n"
-		"\t<param name=IMAGE_NODE value=\"Image_%d\">\n"
-		"\t<param name=INITIAL_IMAGE value=\"%s/%s%d.0.0.%s\">\n",
+		"<!--    <PARAM NAME=cabbase VALUE=\"dx.cab\"> -->\n"
+		"\t<PARAM NAME=IMAGE_NODE VALUE=\"Image_%d\">\n"
+		"\t<PARAM NAME=INITIAL_IMAGE VALUE=\"%s/%s%d.0.0.%s\">\n",
 		width, height, theDXApplication->getUserHtmlDir(),
 		this->base_name, n->getInstanceNumber(),
 		theDXApplication->getUserHtmlDir(), this->base_name, f, ext
 	    );
 	    if (n->isWebOptionsOrbit()) {
 		fprintf (this->html_f,
-		    "\t<param name=OPEN_IN_ORBIT_MODE value=\"true\">\n"
+		    "\t<PARAM NAME=OPEN_IN_ORBIT_MODE VALUE=\"true\">\n"
 		);
 	    }
-	    fprintf (this->html_f, "</applet>\n");
+	    fprintf (this->html_f, "</APPLET>\n");
        }
        if (head) delete head;
     }
@@ -475,21 +507,21 @@ ListIterator it;
 	ListIterator it(*dxlos);
 	Node* don;
 	while ( (don = (Node*)it.getNext()) ) {
-	    fprintf (this->html_f, "<applet\n"
-		"\tcode=\"CaptionLabels.class\" width = 250 height = 20\n"
-		"\tcodebase=../\n"
-		"\tarchive=htmlpages/dx.jar,%s/%s.jar\n"
-		"\tMAYSCRIPT=true\n"
+	    fprintf (this->html_f, "<APPLET\n"
+		"\tCODE=\"CaptionLabels.class\" WIDTH = 250 HEIGHT = 20\n"
+		"\tCODEBASE=\"../\"\n"
+		"\tARCHIVE=\"htmlpages/dx.jar,%s/%s.jar\"\n"
+		"\tMAYSCRIPT\n"
 		">\n"
 		"<!--    <param name=cabbase value=\"htmlpages/dx.cab\"> -->\n"
-		"\t<param name=DXLOutput0 value=\"%s\">\n"
-		"\t<param name=BACKGROUND value=\"[0.86, 0.86, 0.86]\">\n"
-		"\t<param name=FOREGROUND value=\"[0.0, 0.0, 0.0]\">\n",
+		"\t<PARAM NAME=DXLOutput0 VALUE=\"%s\">\n"
+		"\t<PARAM NAME=BACKGROUND VALUE=\"[0.86, 0.86, 0.86]\">\n"
+		"\t<PARAM NAME=FOREGROUND VALUE=\"[0.0, 0.0, 0.0]\">\n",
 		theDXApplication->getUserHtmlDir(), this->base_name,
 		don->getLabelString()
 	    );
 
-	    fprintf (this->html_f, "</applet>\n");
+	    fprintf (this->html_f, "</APPLET>\n");
 	}
 
 	delete dxlos;
@@ -709,6 +741,7 @@ ListIterator it;
 const char* JavaNet::getHtmlHeader()
 {
     const char* header = 
+    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 3//EN\">"
 	"<html><head>\n"
 	"<title>Open Visualization Java Explorer</title>\n"
 	"</head>\n"
@@ -746,7 +779,7 @@ boolean JavaNet::netToApplet()
 	this->getDXMinorVersion(),
 	this->getDXMicroVersion(),
 	ateb);
-    fprintf (this->applet_f, "// Java version 1.0\n");
+    fprintf (this->applet_f, "// Java version 1.1\n");
     fprintf (this->applet_f, "//\n");
 
     fprintf (this->applet_f, "import dx.net.*;\n");

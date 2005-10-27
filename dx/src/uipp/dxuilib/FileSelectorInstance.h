@@ -45,6 +45,7 @@ class FileSelectorInstance : public ValueInstance {
     FileSelectorInstance(FileSelectorNode *n);
 	
     ~FileSelectorInstance(); 
+    boolean FileSelectorInstance::printAsJava (FILE* jf);
 
     const char *getFileFilter() { return this->fileFilter; }
 

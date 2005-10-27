@@ -1,7 +1,7 @@
 //
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/ValueNode.java,v 1.3 1999/07/09 19:30:00 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/ValueNode.java,v 1.4 2005/10/27 19:43:07 davidt Exp $
  */
 
 package dx.net;
@@ -18,13 +18,13 @@ public class ValueNode extends dx.net.InteractorNode {
     }
 
     public synchronized void setValue (String value) {
-	this.value = value;
+		this.value = value;
     }
 
     public void installValues (Interactor i) {
-	super.installValues(i);
-	if (this.value == null) return ;
-	i.setValue(this.value);
+		super.installValues(i);
+		if (this.value == null) return ;
+			i.setValue(this.value);
     }
 
 }; // end ValueNode
