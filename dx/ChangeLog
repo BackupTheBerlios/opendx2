@@ -1,5 +1,14 @@
 4.x
 ===============
+Major update to JavaDX. Updated for Java 1.1 event model.
+Added a better tabbed panel. Updated a bunch of the layout
+code to use TableLayout (can be easier and more efficient.)
+Added functionality to allow data to be passed in through
+a DXLInput via an Applet Param. Fix for stopserver script.
+A fix for FileSelector to pass quoted text.
+
+Added functionality for multi-line Text objects using \n.
+
 Added support for compiling loadable modules on cygwin.
 Updated the module building makefiles to better reflect
 some assigned values during build.

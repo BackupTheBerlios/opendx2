@@ -1263,6 +1263,7 @@ AC_CONFIG_FILES([ Makefile \
 	src/uipp/java/dx/protocol/Makefile \
 	src/uipp/java/dx/protocol/server/Makefile \
 	src/uipp/java/dx/runtime/Makefile \
+	src/uipp/java/layout/Makefile \
 	src/uipp/java/server/Makefile \
 	src/uipp/java/server/macros/Makefile \
 	src/uipp/java/server/dxserver.paths \
