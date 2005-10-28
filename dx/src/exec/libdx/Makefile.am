@@ -136,9 +136,6 @@ BUILT_SOURCES =  $(built_sources) $(built_headers)
 
 $(OBJECTS): $(built_headers)
 
-LTCOMPILE = $(LIBTOOL) $(LIBTOOLFLAGS) --mode=compile \
-	$(CC) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-
 zclipQ.lo: ${srcdir}/zclipQ.c
 	$(LTCOMPILE) -O -c ${srcdir}/zclipQ.c
 
