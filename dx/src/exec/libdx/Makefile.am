@@ -136,21 +136,13 @@ BUILT_SOURCES =  $(built_sources) $(built_headers)
 
 $(OBJECTS): $(built_headers)
 
-zclipQ.o: ${srcdir}/zclipQ.c
-	$(COMPILE) -c -O ${srcdir}/zclipQ.c
+LTCOMPILE = $(LIBTOOL) $(LIBTOOLFLAGS) --mode=compile \
+	$(CC) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-zclipT.o: ${srcdir}/zclipT.c
-	$(COMPILE) -c -O ${srcdir}/zclipT.c
+zclipQ.lo: ${srcdir}/zclipQ.c
+	$(LTCOMPILE) -O -c ${srcdir}/zclipQ.c
 
-all: .cvsignore
+zclipT.lo: ${srcdir}/zclipT.c
+	$(LTCOMPILE) -O -c ${srcdir}/zclipT.c
 
-.cvsignore: Makefile.am
-	echo "!" >.cvsignore
-	echo "CVS" >>.cvsignore
-	echo "Makefile" >>.cvsignore
-	echo "Makefile.in" >>.cvsignore
-	echo ".cvsignore" >>.cvsignore
-	for i in $(BUILT_SOURCES) ;\
-	do \
-	    echo "$$i" >>.cvsignore ;\
-	done
+
