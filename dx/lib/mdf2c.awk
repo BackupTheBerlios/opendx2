@@ -12,7 +12,11 @@ BEGIN {
     printf("#include <windows.h>\n");
     printf("#endif\n");
     printf("\n");
+    printf("#if defined(__cplusplus)\n");
+    printf("extern \"C\" Error DXAddModule (char *, ...);\n");
+    printf("#else\n");
     printf("extern Error DXAddModule (char *, ...);\n");
+    printf("#endif\n");
     printf("\n");
     firsttime = 1
 }
@@ -20,10 +24,17 @@ BEGIN {
 # for run-time loadable modules, dynamic is set to 1 by the calling script
 {   if (firsttime > 0) {
         if (dynamic > 0) {
+        printf("#if defined(__cplusplus)\n");
+        printf("extern \"C\" Error m_%s(Object*, Object*);\n",$2);
+        printf("#endif\n");
         printf("#if defined(intelnt) || defined(WIN32)\n");
         printf("void FAR WINAPI DXEntry()\n");
         printf("#else\n");
-        printf("void DXEntry()\n");
+        printf("  #if defined(__cplusplus)\n");
+        printf("    extern \"C\" void DXEntry()\n");
+        printf("  #else\n");
+        printf("    void DXEntry()\n");
+        printf("  #endif\n");
         printf("#endif\n");
         }
         else
@@ -46,7 +57,11 @@ BEGIN {
 /^MODULE/ {
     if (module!="") {
 	printf("    {\n")
+	printf("#if defined(__cplusplus)\n")
+	printf("        extern \"C\" Error %s(Object *, Object *);\n", funcname)
+	printf("#else\n")
 	printf("        extern Error %s(Object *, Object *);\n", funcname)
+	printf("#endif\n")
         printf("        DXAddModule(\"%s\", %s, ", module, funcname)
 	if (flags=="")
 	    printf("0")
@@ -228,7 +243,9 @@ BEGIN {
 END {
     if (module!="") {
 	printf("    {\n")
+	printf("#ifndef __cplusplus\n")
 	printf("        extern Error %s(Object *, Object *);\n", funcname)
+	printf("#endif\n")
         printf("        DXAddModule(\"%s\", %s, ", module, funcname)
 	if (flags=="")
 	    printf("0")
