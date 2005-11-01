@@ -1228,7 +1228,15 @@ static Error FullAllocHistinfo(struct histinfo *hp, int datadim, int setdef)
     return OK;
 }
 
-
+static int boundBinIndex(int index, int numbins)
+{
+	if(index < 0)
+		return 0;
+	else if(index >= numbins)
+		return numbins-1;
+	
+	return index;
+}
 
 static Field
 HistogramND(struct histinfo *hp, int empty)
@@ -1502,8 +1510,8 @@ HistogramND(struct histinfo *hp, int empty)
 		
 	    } else if (pd->dminlist[i] == pd->dmaxlist[i]) {
 		/* if all are the same, put them all into one bin enmass */
-		pd->thisbin[i] = (pd->dmaxlist[i] - hp->md_min[i]) / 
-		    hp->md_bins[i];
+		pd->thisbin[i] = boundBinIndex( (int)((pd->dmaxlist[i] - hp->md_min[i]) / pd->binsize[i]), 
+		    hp->md_bins[i]);
 		INDEX(hp, i, pd->thisbin[i]);
 		hd[index] = nitems;
 		hp->md_median[i] = pd->dminlist[i];
@@ -1515,7 +1523,7 @@ HistogramND(struct histinfo *hp, int empty)
 	    }
 	}
 	
-	/* if all the data is in one bin or out of range, compute sun
+	/* if all the data is in one bin or out of range, compute sum
 	 * and then we're done.
 	 */
 	if (exitearly) {
@@ -1523,11 +1531,11 @@ HistogramND(struct histinfo *hp, int empty)
 		goto done;
 	    
 	    else if (outofrange == 0) {
-		index = pd->thisbin[0];
-		for (k=1; k<hp->dim; k++) {
-		    index *= hp->md_bins[k];
-		    index += pd->thisbin[k];
-		}
+			index = pd->thisbin[0];
+			for (k=1; k<hp->dim; k++) {
+		    	index *= hp->md_bins[k];
+		    	index += pd->thisbin[k];
+			}
 		
 		od = DXGetArrayData(data);
 		for (i=0; i<nitems; i++) {
@@ -1562,7 +1570,8 @@ HistogramND(struct histinfo *hp, int empty)
 
     
 #define THISVAL(type) (((type *)od)[i*hp->dim + j])
-#define THISBIN(type) ((THISVAL(type) - hp->md_min[j]) / pd->binsize[j])
+#define THISBIN(type) (boundBinIndex((int)((THISVAL(type) - hp->md_min[j]) \
+			/ pd->binsize[j]), hp->md_bins[j]))
 
     totalcnt = 0;
     od = DXGetArrayData(data);
