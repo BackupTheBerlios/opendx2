@@ -1331,9 +1331,9 @@ static void map_dialog (Widget dialog, XmVCRControlWidget vcr,
 {
     Arg wargs[12];
     Display *display;
-    Dimension height;
+    Dimension width, height;
     int dest_x, dest_y;
-    int dispHeight = 0, wmHeight = 0, borderWidth = 0;
+    int dispHeight = 0, dispWidth = 0, wmHeight = 0, borderWidth = 0;
     int screen = 0;
     Window child, rootW, parentW, *childrenW, vcrW;
     int numChildren;
@@ -1347,9 +1347,11 @@ static void map_dialog (Widget dialog, XmVCRControlWidget vcr,
 
     display = XtDisplay(vcr);
     XtSetArg(wargs[0], XmNheight, &height);
-    XtGetValues((Widget)vcr, wargs, 1);
+	XtSetArg(wargs[1], XmNwidth, &width);
+    XtGetValues((Widget)vcr, wargs, 2);
     screen = XScreenNumberOfScreen(XtScreen(vcr));
     dispHeight = DisplayHeight(display, screen);
+	dispWidth = DisplayWidth(display, screen);
 
     vcrW = XtWindow(vcr);
 
@@ -1380,8 +1382,8 @@ static void map_dialog (Widget dialog, XmVCRControlWidget vcr,
         XFree((char *)childrenW);
 
     XGetWindowAttributes(display, parentW, &xwa);
-    wmHeight = xwa.y;
-    borderWidth = xwa.x;
+    wmHeight = dest_y - xwa.y;
+    borderWidth = dest_x - xwa.x;
 
     if(dest_y + height + 180 + wmHeight + 2  + borderWidth * 2 > dispHeight) {
         XtGetValues((Widget)vcr->vcr_control.frame_control, wargs, 1);
@@ -1389,7 +1391,10 @@ static void map_dialog (Widget dialog, XmVCRControlWidget vcr,
     } else
         dest_y = dest_y + height + borderWidth + 2;
 
-    dest_x -= borderWidth;
+	if(dest_x + 400 + borderWidth * 2 > dispWidth) {
+		dest_x = dispWidth - 2*borderWidth - 400 - 2;
+	} else
+	    dest_x -= borderWidth;
 
     XtVaSetValues(dialog,
                   XmNx, dest_x,
