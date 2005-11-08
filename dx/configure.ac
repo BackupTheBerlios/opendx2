@@ -1030,6 +1030,43 @@ AC_CHECK_HEADERS([X11/Xmu/Editres.h], [], [],
 #endif 
 ])
 
+
+#
+# Check for XINERAMA
+#
+have_xinerama='no'
+LIB_XINERAMA=''
+AS_MESSAGE([checking for XINERAMA support ......])
+failed=0;
+passed=0;
+AC_CHECK_HEADERS([X11/extensions/Xinerama.h], [passed=`expr $passed + 1`],
+	[failed=`expr $failed + 1`],
+[#if HAVE_X11_INTRINSIC_H
+   #include <X11/Intrinsic.h>
+#endif 
+])
+AC_CHECK_LIB([Xinerama],[XineramaQueryExtension],[passed=`expr $passed + 1`],
+	[failed=`expr $failed + 1`], [-lXt])
+    	
+AC_MSG_CHECKING(if Xinerama package is complete)
+if test $passed -gt 0
+	then
+	if test $failed -gt 0
+		then
+			AC_MSG_RESULT(no -- some components failed test)
+        		have_xinerama='no (failed tests)'
+    	else
+			LIB_XINERAMA='-lXinerama'
+			LIBS="$LIB_XINERAMA $LIBS"
+			AC_DEFINE(HAVE_XINERAMA, 1, [Define to 1 if you have the Xinerama libraries])
+			AC_MSG_RESULT(yes)
+        	have_xinerama='yes'
+    fi
+else
+    AC_MSG_RESULT(no)
+fi
+
+
 dnl The following is needed to add sys/socket.h to the default headers typically
 dnl included for checking net/if.h. Right now, this is the way it has to be done
 dnl in Autoconf 2.57, but they are working on some kind of fix to be able to 

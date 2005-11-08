@@ -1,5 +1,12 @@
 4.x
 ===============
+Added a fix for the Sequencer VCRControl so that it
+pops up in the right place all the time.
+
+Corrected throttle problem for mult platforms. (bug #168)
+
+Improper array indexing in Histogram module fixed. (bug #183)
+
 Major update to JavaDX. Updated for Java 1.1 event model.
 Added a better tabbed panel. Updated a bunch of the layout
 code to use TableLayout (can be easier and more efficient.)
