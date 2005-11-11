@@ -1,5 +1,8 @@
 4.x
 ===============
+Added fix for Xinerama environment and placement
+of Windows. (bug #135)
+
 Added a fix for the Sequencer VCRControl so that it
 pops up in the right place all the time.
 

@@ -1813,7 +1813,7 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
 				if (XineramaIsActive(disp)) {
 					width = 0; height = 0;
 					int i = dummy_a;
-					if(screen != -1) {
+					if(screen != -1 && screen < screens) {
 						width = screeninfo[screen].width;
 						height = screeninfo[screen].height;
 						x = screeninfo[screen].x_org;
