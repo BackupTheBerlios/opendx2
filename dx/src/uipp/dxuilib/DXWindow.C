@@ -13,11 +13,17 @@
 
 
 #if defined(DXD_WIN) || defined(OS2)                  //SMH get correct hdr
+  #if defined(HAVE_IOSTREAM)
+#include <iostream>
+  #elif defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
+  #endif
 #else
-#if defined(HAVE_STREAM_H)
+  #if defined(HAVE_STREAM)
+#include <stream>
+  #elif defined(HAVE_STREAM_H)
 #include <stream.h>
-#endif
+  #endif
 #endif
 
 #include <Xm/RowColumn.h>
@@ -556,7 +562,7 @@ boolean DXWindow::parseComment(const char *line, const char *file,
 	      "so is not being supported.  You can fix your .cfg by deleting\n"
 	      "the offending line. \n"
 	      "(Customers should never get this message)", file,lineno);
-	}
+		}
 #endif
 	return FALSE;
     }
@@ -568,20 +574,20 @@ boolean DXWindow::parseComment(const char *line, const char *file,
 		&norm_xpos,&norm_ypos,&norm_xsize,&norm_ysize, &flags);
 			
     if (items == 5) {
+		if ((norm_xsize < 3) && (norm_ysize < 3)) {
+	    	display_xsize = DisplayWidth(theApplication->getDisplay(),0); 
+	    	display_ysize = DisplayHeight(theApplication->getDisplay(),0); 
+	    	xpos  = (int) (display_xsize * norm_xpos  + .5);
+	    	ypos  = (int) (display_ysize * norm_ypos  + .5);
+	    	xsize = (int) (display_xsize * norm_xsize + .5);
+	    	ysize = (int) (display_ysize * norm_ysize + .5);
+		}
 #else
-    items = sscanf(line," window: position = (%f,%f), size = %fx%f",
-		&norm_xpos,&norm_ypos,&norm_xsize,&norm_ysize);
-			
-    if (items == 4) {
+
+	if (UIComponent::ParseGeometryComment(line, file, lineno, &xpos, &ypos,
+		&xsize, &ysize, NULL)) {
+		
 #endif
-	if ((norm_xsize < 3) && (norm_ysize < 3)) {
-	    display_xsize = DisplayWidth(theApplication->getDisplay(),0); 
-	    display_ysize = DisplayHeight(theApplication->getDisplay(),0); 
-	    xpos  = (int) (display_xsize * norm_xpos  + .5);
-	    ypos  = (int) (display_ysize * norm_ypos  + .5);
-	    xsize = (int) (display_xsize * norm_xsize + .5);
-	    ysize = (int) (display_ysize * norm_ysize + .5);
-	}
 #if INCLUDE_FLAGS_COMMENT	// Not used as of version 2.1
 	if (flags & 1)
 	    this->setStartup(TRUE);
