@@ -25,6 +25,10 @@
 #include "WarningDialogManager.h"
 #include "DXStrings.h"
 
+#if defined(HAVE_XINERAMA)
+#include <X11/extensions/Xinerama.h>
+#endif
+
 // SUITS to allow turn-off of stippled drawing on slow devices
 #define RES_CONVERT(res, str) XtVaTypedArg, res, XmRString, str, strlen(str)+1
 
@@ -155,6 +159,7 @@ void UIComponent::setRootWidget(Widget root, boolean standardDestroy)
     }
 
     this->root = root;
+        
     if (standardDestroy) {
 	XtAddCallback
 	    (this->root,
@@ -532,12 +537,37 @@ void *UIComponent::getLocalData()
     return data;
 }
 
+/* 
+    ParseGeometryComment actually performs the Window placement and
+    Window sizing for shell windows such as the ImageWindow and 
+    Control Panels. The network saves the placement as a normalized
+    vector of where and what size it was on the authors screen 
+    and then tries to replicate that to fit the screen of others. 
+    This becomes a real problem when Xinerama comes into play. For example,
+    the width/height ratio changes significantly and makes ImageWindows
+    very wide when reconstructing them if the Xinerama environment is
+    in place. For example DisplayWidth may be 2560 and Height may only
+    be 1024. But the original developer was on a system of 1280 x 1024.
+    The resulting image doesn't look anything like the authors.
+
+    The fix for placement is to check for Xinerama and replicate on
+    the dominate screen. Then this also needs to be fixed in PrintGeometryComment
+    as well.
+    
+    It will not be possible to replicate the multiple screen geometry
+    unless the support for Xinerama is turned off. For example: two
+    identical screens side by side. If the user builds with the VPE on
+    the primary screen, and puts the Image Window on the secondary screen,
+    when the Editor is re-opened and executed, the Image Window will
+    appear on the primary screen. The only way to fix this would be
+    to append the screen number in the GeometryComment
+ */
+
 boolean UIComponent::PrintGeometryComment(FILE *f, int xpos, int ypos,
                                 int xsize, int ysize, const char *tag,
                                 const char *indent)
 {
     float norm_xsize, norm_ysize, norm_xpos, norm_ypos;
-    int display_xsize, display_ysize;
 
     if (!tag)
         tag = "window";
@@ -545,19 +575,61 @@ boolean UIComponent::PrintGeometryComment(FILE *f, int xpos, int ypos,
     if (!indent)
         indent = "";
 
-    display_xsize = DisplayWidth(theApplication->getDisplay(),0);
-    display_ysize = DisplayHeight(theApplication->getDisplay(),0);
-    norm_xsize = (float)xsize/display_xsize;
-    norm_ysize = (float)ysize/display_ysize;
-    norm_xpos  = (float) xpos/display_xsize;
-    norm_ypos  = (float) ypos/display_ysize;
-    if (fprintf(f,
+	Display *disp = theApplication->getDisplay();
+    int width = DisplayWidth(disp,0);
+    int height = DisplayHeight(disp,0);
+    int x=0, y=0;
+    int screen = -1;
+
+ #if defined(HAVE_XINERAMA)
+			// Do some Xinerama Magic to use the largest main screen.
+			int dummy_a, dummy_b;
+			int screens;
+			XineramaScreenInfo   *screeninfo = NULL;
+	
+			if ((XineramaQueryExtension (disp, &dummy_a, &dummy_b)) &&
+				(screeninfo = XineramaQueryScreens(disp, &screens))) {
+				// Xinerama Detected
+		
+				if (XineramaIsActive(disp)) {
+					width = 0; height = 0;
+					int i = dummy_a;
+					while ( i < screens ) {
+						if(xpos > screeninfo[i].x_org && 
+							xpos < screeninfo[i].x_org+screeninfo[i].width &&
+							ypos > screeninfo[i].y_org &&
+							ypos < screeninfo[i].y_org+screeninfo[i].height ) {
+							screen = i;
+							width = screeninfo[i].width;
+							height = screeninfo[i].height;
+							x = screeninfo[i].x_org;
+							y = screeninfo[i].y_org;
+						}
+						i++;
+					}
+				}
+			}
+#endif
+
+    norm_xsize = (float) xsize/width;
+    norm_ysize = (float) ysize/height;
+    norm_xpos  = (float) (xpos - x)/width;
+    norm_ypos  = (float) (ypos - y)/height;
+    if(screen != -1) {
+    	if (fprintf(f,
+          "%s// %s: position = (%6.4f,%6.4f), size = %6.4fx%6.4f, screen = %d\n",
+                indent, tag, norm_xpos,norm_ypos,norm_xsize,norm_ysize,screen) < 0)
+        return FALSE;
+    } else {
+    	if (fprintf(f,
           "%s// %s: position = (%6.4f,%6.4f), size = %6.4fx%6.4f\n",
                 indent, tag, norm_xpos,norm_ypos,norm_xsize,norm_ysize) < 0)
         return FALSE;
+    }
 
     return TRUE;
 }
+  
 boolean UIComponent::ParseGeometryComment(const char *line, const char *file,
                                 int lineno, int *xpos, int *ypos,
                                 int *xsize, int *ysize, const char *tag)
@@ -565,44 +637,66 @@ boolean UIComponent::ParseGeometryComment(const char *line, const char *file,
     char format[1024];
     int items;
     float norm_xsize, norm_ysize, norm_xpos, norm_ypos;
+    int screen = -1;
     int display_xsize, display_ysize;
 
     if (!tag)
         tag = "window";
 
     int taglen = STRLEN(tag);
-    sprintf(format," %s: position = (%%f,%%f), size = %%fx%%f",tag);
-
-#if 0
-    if (!EqualSubstring(line,format,"w",19)) {
-        if (EqualSubstring(line," window: pos=(",14)) {
-            WarningMessage("Bad comment found in file '%s' line %d.\n"
-              "This comment is only found in unreleased versions of DX and\n"
-              "so is not being supported.  You can fix your .cfg by deleting\n"
-              "the offending line. \n"
-              "(Customers should never get this message)", file,lineno);
-        }
-        return FALSE;
-    }
-#endif
+    sprintf(format," %s: position = (%%f,%%f), size = %%fx%%f, screen = %%d",tag);
 
     // 15 = strlen(" ") + strlen(": position = (")
     if (!EqualSubstring(line,format,taglen+15))
         return FALSE;
 
-    items = sscanf(line,format,&norm_xpos,&norm_ypos,&norm_xsize,&norm_ysize);
+    items = sscanf(line,format,&norm_xpos,&norm_ypos,&norm_xsize,&norm_ysize,&screen);
 
-    if (items == 4) {
+    if (items == 4 || items == 5) {
         // If the size when printed was UIComponent::UnspecifiedPosition
         // then the normalized value will be greater than 3, so ignore it.
         if ((norm_xsize < 3) && (norm_ysize < 3)) {
-            Display *d = theApplication->getDisplay();
-            display_xsize = DisplayWidth(d,0);
-            display_ysize = DisplayHeight(d,0);
-            *xpos  = (int) (display_xsize * norm_xpos  + .5);
-            *ypos  = (int) (display_ysize * norm_ypos  + .5);
-            *xsize = (int) (display_xsize * norm_xsize + .5);
-            *ysize = (int) (display_ysize * norm_ysize + .5);
+ 
+			int x=0, y=0, width=0, height=0;
+ 			Display *disp = theApplication->getDisplay();
+            width = DisplayWidth(disp,0);
+            height = DisplayHeight(disp,0);
+	
+ #if defined(HAVE_XINERAMA)
+			// Do some Xinerama Magic to use the largest main screen.
+			int dummy_a, dummy_b;
+			int screens;
+			XineramaScreenInfo   *screeninfo = NULL;
+	
+			if ((XineramaQueryExtension (disp, &dummy_a, &dummy_b)) &&
+				(screeninfo = XineramaQueryScreens(disp, &screens))) {
+				// Xinerama Detected
+		
+				if (XineramaIsActive(disp)) {
+					width = 0; height = 0;
+					int i = dummy_a;
+					if(screen != -1) {
+						width = screeninfo[screen].width;
+						height = screeninfo[screen].height;
+						x = screeninfo[screen].x_org;
+						y = screeninfo[screen].y_org;
+					} else
+					while ( i < screens ) {
+						if(screeninfo[i].width > width) {
+							width = screeninfo[i].width;
+							height = screeninfo[i].height;
+							x = screeninfo[i].x_org;
+							y = screeninfo[i].y_org;
+						}
+						i++;
+					}
+				}
+			}
+#endif
+            *xpos  = (int) (width * norm_xpos  + .5 + x);
+            *ypos  = (int) (height * norm_ypos  + .5 + y);
+            *xsize = (int) (width * norm_xsize + .5);
+            *ysize = (int) (height * norm_ysize + .5);
         } else {
             *xpos = UIComponent::UnspecifiedPosition;
             *ypos = UIComponent::UnspecifiedPosition;

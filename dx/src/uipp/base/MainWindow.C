@@ -27,6 +27,10 @@
 #include <X11/Xmu/Editres.h>
 #endif
 
+#if defined(HAVE_XINERAMA)
+#include <X11/extensions/Xinerama.h>
+#endif
+
 boolean MainWindow::OffsetsInitialized = FALSE;
 boolean MainWindow::IsMwmBroken = FALSE;
 boolean MainWindow::IsMwmRunning = FALSE;
@@ -154,23 +158,70 @@ void MainWindow::initialize()
 {
 Arg args[5];
 int n = 0;
+Display* disp = XtDisplay(theApplication->getRootWidget());
+
+	this->screenWidth = DisplayWidth(disp, DefaultScreen(disp));
+	this->screenHeight = DisplayHeight(disp, DefaultScreen(disp));
+
+#if defined(HAVE_XINERAMA)
+	// Do some Xinerama Magic if Xinerama is present to
+	// store the info on the largest screen.
+	int dummy_a, dummy_b;
+	int screens;
+	XineramaScreenInfo   *screeninfo = NULL;
+	int x=0, y=0, width=0, height=0;
+	
+	if ((XineramaQueryExtension (disp, &dummy_a, &dummy_b)) &&
+		(screeninfo = XineramaQueryScreens(disp, &screens))) {
+		// Xinerama Detected
+		
+		if (XineramaIsActive(disp)) {
+			int i = dummy_a;
+			while ( i < screens ) {
+				if(screeninfo[i].width > width) {
+					width = screeninfo[i].width;
+					height = screeninfo[i].height;
+					this->screenLeftPos = screeninfo[i].x_org;
+					this->screenWidth = screeninfo[i].width;
+					this->screenHeight = screeninfo[i].height;
+				}
+				i++;
+			}
+		}
+	}
+#endif
+
     const char* geomstr = this->getGeometryString();
     if ((geomstr) && (geomstr[0])) {
-	XtSetArg (args[n], XmNgeometry, geomstr); n++; 
-	if (strchr(geomstr, '-') || strchr(geomstr, '+')) {
-	} else {
-	    if (this->createX != UIComponent::UnspecifiedPosition ) 
-		{ XtSetArg (args[n], XmNx, this->createX); n++; }
-	    if (this->createY != UIComponent::UnspecifiedPosition ) 
-		{ XtSetArg (args[n], XmNy, this->createY); n++; }
-	}
-	if (strchr(geomstr, 'x') || strchr(geomstr, 'X')) {
-	} else {
-	    if (this->createWidth != UIComponent::UnspecifiedPosition ) 
-		{ XtSetArg (args[n], XmNwidth, this->createWidth); n++; }
-	    if (this->createHeight != UIComponent::UnspecifiedPosition ) 
-		{ XtSetArg (args[n], XmNheight, this->createHeight); n++; }
-	}
+		XtSetArg (args[n], XmNgeometry, geomstr); n++; 
+		if (!(strchr(geomstr, '-') || strchr(geomstr, '+'))) {
+	    	if (this->createX != UIComponent::UnspecifiedPosition ) {
+				XtSetArg (args[n], XmNx, this->createX); n++; 
+			}
+	    	if (this->createY != UIComponent::UnspecifiedPosition ) {
+				XtSetArg (args[n], XmNy, this->createY); n++; 
+			}
+		}
+		if (!(strchr(geomstr, 'x') || strchr(geomstr, 'X'))) {
+	    	if (this->createWidth != UIComponent::UnspecifiedPosition ) {
+				XtSetArg (args[n], XmNwidth, this->createWidth); n++; 
+			}
+	    	if (this->createHeight != UIComponent::UnspecifiedPosition ) {
+				XtSetArg (args[n], XmNheight, this->createHeight); n++; 
+			}
+		}
+    } else {
+    	// Initialize the window based on the Xinerama data.
+    	if (this->createX == UIComponent::UnspecifiedPosition ) {
+    		if (this->screenWidth > 1000) {
+				XtSetArg(args[n], XmNx, this->screenLeftPos+10); n++;
+			}
+		}
+		if (this->createY == UIComponent::UnspecifiedPosition ) {
+			if (this->screenHeight > 800) {
+				XtSetArg(args[n], XmNy, 30); n++;
+			}
+		}		
     }
 
     //

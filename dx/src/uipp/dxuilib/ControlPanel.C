@@ -60,6 +60,10 @@
 #include "LabelDecorator.h"
 #include "QuestionDialogManager.h"
 
+#if defined(HAVE_XINERAMA)
+#include <X11/extensions/Xinerama.h>
+#endif
+
 #define ICON_NAME	"Control Panel"
 
 #include "CPDefaultResources.h"
@@ -1639,14 +1643,40 @@ char stylename[128];
     return TRUE;
 }
 
+/* 
+    ParseGeometryComment actually performs the Window placement and
+    Window sizing for shell windows such as the ImageWindow and 
+    Control Panels. The network saves the placement as a normalized
+    vector of where and what size it was on the authors screen 
+    and then tries to replicate that to fit the screen of others. 
+    This becomes a real problem when Xinerama comes into play. For example,
+    the width/height ratio changes significantly and makes ImageWindows
+    very wide when reconstructing them if the Xinerama environment is
+    in place. For example DisplayWidth may be 2560 and Height may only
+    be 1024. But the original developer was on a system of 1280 x 1024.
+    The resulting image doesn't look anything like the authors.
+
+    The fix for placement is to check for Xinerama and replicate on
+    the dominate screen. Then this also needs to be fixed in PrintGeometryComment
+    as well.
+    
+    It will not be possible to replicate the multiple screen geometry
+    unless the support for Xinerama is turned off. For example: two
+    identical screens side by side. If the user builds with the VPE on
+    the primary screen, and puts the Image Window on the secondary screen,
+    when the Editor is re-opened and executed, the Image Window will
+    appear on the primary screen. The only way to fix this would be
+    to append the screen number in the GeometryComment
+ */
+
 //
 // Print the 'panel' comment in the .cfg file. 
 //
 boolean ControlPanel::cfgPrintPanelComment(FILE *f, PrintType ptype)
 {
-    int x,y, width, height;
+    int xpos, ypos, xsize, ysize;
     
-    this->getGeometry(&x, &y, &width, &height);
+    this->getGeometry(&xpos, &ypos, &xsize, &ysize);
 
     if (!this->isInitialized()) {
 	//
@@ -1656,23 +1686,70 @@ boolean ControlPanel::cfgPrintPanelComment(FILE *f, PrintType ptype)
 	// and MainWindow saves/restores those values even if the window
 	// was not initialized.
 	//
-	x = this->xpos;
-	y = this->ypos;
+		xpos = this->xpos;
+		ypos = this->ypos;
     } 
 
-    int display_xsize = DisplayWidth(theApplication->getDisplay(),0);
-    int display_ysize = DisplayHeight(theApplication->getDisplay(),0);
+	Display *disp = theApplication->getDisplay();
+	
+    int width = DisplayWidth(disp,0);
+    int height = DisplayHeight(disp,0);
+    int x=0, y=0;
+    int screen = -1;
 
-    float norm_xsize = (float)width/display_xsize;
-    float norm_ysize = (float)height/display_ysize;
-    float norm_xpos  = (float)x/display_xsize;
-    float norm_ypos  = (float)y/display_ysize;
+ #if defined(HAVE_XINERAMA)
+			// Do some Xinerama Magic to use the largest main screen.
+			int dummy_a, dummy_b;
+			int screens;
+			XineramaScreenInfo   *screeninfo = NULL;
+	
+			if ((XineramaQueryExtension (disp, &dummy_a, &dummy_b)) &&
+				(screeninfo = XineramaQueryScreens(disp, &screens))) {
+				// Xinerama Detected
+		
+				if (XineramaIsActive(disp)) {
+					width = 0; height = 0;
+					int i = dummy_a;
+					while ( i < screens ) {
+						if(xpos > screeninfo[i].x_org && 
+							xpos < screeninfo[i].x_org+screeninfo[i].width &&
+							ypos > screeninfo[i].y_org &&
+							ypos < screeninfo[i].y_org+screeninfo[i].height ) {
+							screen = i;
+							width = screeninfo[i].width;
+							height = screeninfo[i].height;
+							x = screeninfo[i].x_org;
+							y = screeninfo[i].y_org;
+						}
+						i++;
+					}
+				}
+			}
+#endif
+
+    float norm_xsize = (float)xsize/width;
+    float norm_ysize = (float)ysize/height;
+    float norm_xpos  = (float)(xpos - x)/width;
+    float norm_ypos  = (float)(ypos - y)/height;
 
     //
     // Be sure to print 0 for startup if ptype == PrintCPBuffer. (Dnd within
     // a ControlPanel)  Reason:  Network::readNetwork will manage the panel
     // and it looks stupid.
     //
+
+	if(screen != -1) {
+	    return fprintf(f, "// panel[%d]: position = (%6.4f,%6.4f), "
+		"size = %6.4fx%6.4f, startup = %d, devstyle = %d, screen = %d\n",
+	       this->getInstanceNumber() - 1, // 0 indexed in file
+	       norm_xpos,
+	       norm_ypos,
+	       norm_xsize,
+	       norm_ysize,
+	       ((ptype == PrintCPBuffer)?0:this->startup),
+	       this->developerStyle,
+	       screen) >= 0;
+	}
 
     return fprintf(f, "// panel[%d]: position = (%6.4f,%6.4f), "
 		"size = %6.4fx%6.4f, startup = %d, devstyle = %d\n",
@@ -1691,10 +1768,11 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
                                 const char *filename, int lineno)
 {
     int       items_parsed;
-    int       x;
-    int       y;
+    int       x = 0, y = 0;
+    int		  xpos, ypos, xsize, ysize;
     int       width;
     int       height;
+    int		  screen = -1;
     int       old_id;
     int	      devstyle;
     int       startup;
@@ -1707,23 +1785,59 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
 
     items_parsed =
 	sscanf(comment,
-	      " panel[%d]: position = (%f,%f), size = %fx%f, startup = %d, devstyle = %d",
+	      " panel[%d]: position = (%f,%f), size = %fx%f, startup = %d, devstyle = %d, screen = %d",
 	       &old_id,
 	       &norm_x,
 	       &norm_y,
 	       &norm_width,
 	       &norm_height,
 	       &startup,
-	       &devstyle);
+	       &devstyle,
+	       &screen);
 
-    if ((items_parsed == 6)||(items_parsed == 7)) {
-	int display_xsize = DisplayWidth(theApplication->getDisplay(),0);
-	int display_ysize = DisplayHeight(theApplication->getDisplay(),0);
-	x = (int) (display_xsize * norm_x+ .5);
-        y = (int) (display_ysize * norm_y+ .5);
-        width = (int) (display_xsize * norm_width  + .5);
-        height = (int) (display_ysize * norm_height + .5);
-	if (items_parsed == 7) this->developerStyle = devstyle; // initialized elsewhere
+    if ((items_parsed == 6)||(items_parsed == 7)||(items_parsed == 8)) {
+    	Display *disp = theApplication->getDisplay();
+		int width = DisplayWidth(disp,0);
+		int height = DisplayHeight(disp,0);
+
+ #if defined(HAVE_XINERAMA)
+			// Do some Xinerama Magic to use the largest main screen.
+			int dummy_a, dummy_b;
+			int screens;
+			XineramaScreenInfo   *screeninfo = NULL;
+	
+			if ((XineramaQueryExtension (disp, &dummy_a, &dummy_b)) &&
+				(screeninfo = XineramaQueryScreens(disp, &screens))) {
+				// Xinerama Detected
+		
+				if (XineramaIsActive(disp)) {
+					width = 0; height = 0;
+					int i = dummy_a;
+					if(screen != -1) {
+						width = screeninfo[screen].width;
+						height = screeninfo[screen].height;
+						x = screeninfo[screen].x_org;
+						y = screeninfo[screen].y_org;
+					} else
+					while ( i < screens ) {
+						if(screeninfo[i].width > width) {
+							width = screeninfo[i].width;
+							height = screeninfo[i].height;
+							x = screeninfo[i].x_org;
+							y = screeninfo[i].y_org;
+						}
+						i++;
+					}
+				}
+			}
+#endif		
+		
+		xpos = (int) (width * norm_x + .5 + x);
+        ypos = (int) (height * norm_y + .5 + y);
+        xsize = (int) (width * norm_width  + .5);
+        ysize = (int) (height * norm_height + .5);
+		if (items_parsed == 7)
+			this->developerStyle = devstyle; // initialized elsewhere
     } else {
 
 	// Try older style comment
@@ -1732,10 +1846,10 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
 		   " panel[%d]: x = %d, y = %d, width = %d, height = %d,"
 		   " startup = %d",
 		   &old_id,
-		   &x,
-		   &y,
-		   &width,
-		   &height,
+		   &xpos,
+		   &ypos,
+		   &xsize,
+		   &ysize,
 		   &startup);
 
 	if (items_parsed != 6)	// Try an even older style panel comment
@@ -1744,10 +1858,10 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
 		sscanf(comment,
 		       " panel[%d]: x = %d, y = %d, width = %d, height = %d",
 		       &old_id,
-		       &x,
-		       &y,
-		       &width,
-		       &height);
+		       &xpos,
+		       &ypos,
+		       &xsize,
+		       &ysize);
 
 	    if (items_parsed == 5)
 	    {
@@ -1785,16 +1899,16 @@ boolean ControlPanel::cfgParsePanelComment(const char* comment,
     }
 
     if (theDXApplication->applyWindowPlacements()) {
-	this->setGeometry(x,y,width,height);
+		this->setGeometry(xpos,ypos,xsize,ysize);
     } else {
 	//
 	// Always fix the size of the control panel.
 	//
-	this->setXYSize(width,height);
+		this->setXYSize(xsize,ysize);
     }
 
-    this->xpos    = x;
-    this->ypos    = y;
+    this->xpos    = xpos;
+    this->ypos    = ypos;
     this->startup = (boolean)startup;
 
     return TRUE;

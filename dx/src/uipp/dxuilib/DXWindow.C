@@ -538,18 +538,6 @@ boolean DXWindow::printComment(FILE *f)
     if (!UIComponent::PrintGeometryComment(f,xpos,ypos,xsize,ysize))
 	return FALSE;
 
-#if 00
-#if INCLUDE_FLAGS_COMMENT	// Not used as of version 2.1
-    flags = this->startup ? 1 : 0;
-    if (fprintf(f,"// window: position = (%6.4f,%6.4f), size = %6.4fx%6.4f, "
-		"flags = 0x%x\n", 
-		norm_xpos,norm_ypos,norm_xsize,norm_ysize,flags) < 0)
-#else
-    if (fprintf(f,"// window: position = (%6.4f,%6.4f), size = %6.4fx%6.4f\n",
-		norm_xpos,norm_ypos,norm_xsize,norm_ysize) < 0)
-#endif
-#endif
-
     return TRUE;
 }
 boolean DXWindow::parseComment(const char *line, const char *file,

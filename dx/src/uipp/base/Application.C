@@ -34,6 +34,10 @@
 #include "DXStrings.h"
 #include "TimedMessage.h"
 
+#if defined(HAVE_XINERAMA)
+#include <X11/extensions/Xinerama.h>
+#endif
+
 Application* theApplication = NUL(Application*);
 
 
@@ -166,14 +170,50 @@ boolean Application::initializeWindowSystem(unsigned int *argcp, char **argv)
     //
     this->display = XtDisplay(this->getRootWidget());
 
+	int xmnx=0, xmny=0;
+
+#if defined(HAVE_XINERAMA)
+	// Do some Xinerama Magic if Xinerama is present to
+	// center the first popup-shell on the largest screen.
+	int dummy_a, dummy_b;
+	int screens;
+	XineramaScreenInfo   *screeninfo = NULL;
+	int x=0, y=0, width=0, height=0;
+	
+	if ((XineramaQueryExtension (this->display, &dummy_a, &dummy_b)) &&
+		(screeninfo = XineramaQueryScreens(this->display, &screens))) {
+		// Xinerama Detected
+		
+		if (XineramaIsActive(this->display)) {
+			int i = dummy_a;
+			while ( i < screens ) {
+				if(screeninfo[i].width > width) {
+					width = screeninfo[i].width;
+					height = screeninfo[i].height;
+					x = screeninfo[i].x_org;
+					y = screeninfo[i].y_org;
+					xmnx = x + width / 2;
+					xmny = y + height / 2;
+				}
+				i++;
+			}
+		}
+	}
+#endif
+
+	if(xmnx == 0 || xmny == 0) {
+		xmnx = DisplayWidth(this->display, 0) / 2;
+		xmny = DisplayHeight(this->display, 0) / 2;
+	}
+
     //
     // Center the shell and make sure it is not visible.
     //
     XtVaSetValues
 	(this->getRootWidget(),
 	 XmNmappedWhenManaged, FALSE,
-	 XmNx,                 DisplayWidth(this->display, 0) / 2,
-	 XmNy,                 DisplayHeight(this->display, 0) / 2,
+	 XmNx,                 xmnx,
+	 XmNy,                 xmny,
 	 XmNwidth,             1,
 	 XmNheight,            1,
 	 NULL);

@@ -64,7 +64,7 @@ String GARChooserWindow::DefaultResources[] =
 {
     ".title:				Data Prompter",
     ".iconName:				DX",
-    ".geometry:				+0+105",
+//    ".geometry:				+0+105",
 
     "*notebook.XmToggleButton.indicatorType:	XmONE_OF_MANY",
     "*notebook.XmToggleButton.indicatorSize:	18",

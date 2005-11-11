@@ -75,7 +75,7 @@ class UIComponent : virtual public Base
 
     char*   name;	// component name
     boolean active;	// is component active?
-
+    
     //
     // Constructor:
     //   Protected to prevent direct instantiation.

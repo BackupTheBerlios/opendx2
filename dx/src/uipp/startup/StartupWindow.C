@@ -107,7 +107,6 @@ String  StartupWindow::DefaultResources[] = {
     ".minHeight:			285",
     ".width:				220",
     ".height:				285",
-    ".geometry:				+430+0",
     ".mainWindow.showSeparator:		False",
     ".mainWindow.shadowThickness:	1",
     "*commandForm.shadowThickness:	1",
@@ -503,15 +502,15 @@ char *args[30], *cmdstr;
 	//
 	if (this->entering_image_mode) {
 	    args[argcnt++] = "-menubar"; 
-	    args[argcnt++] = "-xrm";
-	    args[argcnt++] = "DX.editorWindow.geometry:200x150-0+0";
-	    args[argcnt++] = "-xrm";
-	    args[argcnt++] = "DX.dxAnchor.geometry:410x56+0+0";
+//	    args[argcnt++] = "-xrm";
+//	    args[argcnt++] = "DX.editorWindow.geometry:200x150-0+0";
+//	    args[argcnt++] = "-xrm";
+//	    args[argcnt++] = "DX.dxAnchor.geometry:410x56+0+0";
 	    this->started_in_image_mode = TRUE;
 	} else {
 	    args[argcnt++] = "-edit"; 
-	    args[argcnt++] = "-xrm";
-	    args[argcnt++] = "DX.editorWindow.geometry:-0+0";
+//	    args[argcnt++] = "-xrm";
+//	    args[argcnt++] = "DX.editorWindow.geometry:-0+0";
 	    this->started_in_image_mode = FALSE;
 	}
 

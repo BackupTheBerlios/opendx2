@@ -58,6 +58,10 @@
 #include "../base/ButtonInterface.h"
 #include "../base/CommandScope.h"
 
+#if defined(HAVE_XINERAMA)
+#include <X11/extensions/Xinerama.h>
+#endif
+
 #include "row_sens.bm"
 #include "col_sens.bm"
 #include "row_insens.bm"
@@ -184,10 +188,10 @@ static XtTranslations tb_translations = NULL;
 
 String GARMainWindow::DefaultResources[] =
 {
-    ".width:                                      1060",
+    //".width:                                      1060",
     //".height:					  830",
     ".minWidth:					  1060",
-    ".geometry:					  -0-0",
+    //".geometry:					  -0-0",
 
     ".iconName:                                   Data Prompter",
     ".title:                                      Data Prompter",
@@ -200,7 +204,7 @@ String GARMainWindow::DefaultResources[] =
 #ifdef aviion
     "*om.labelString:                             ",
 #endif
-    "*modify_tb.labelString:             	     \n    ",
+    //"*modify_tb.labelString:             	       none",
 
     "*fileMenu.labelString:                       File",
     "*fileMenu.mnemonic:                          F",
@@ -220,8 +224,8 @@ String GARMainWindow::DefaultResources[] =
 
     "*closeGAROption.labelString:                 Close",
     "*closeGAROption.mnemonic:                    C",
-    "*closeGAROption.accelerator:                 Ctrl<Key>C",
-    "*closeGAROption.acceleratorText:             Ctrl+C",
+    "*closeGAROption.accelerator:                 Ctrl<Key>W",
+    "*closeGAROption.acceleratorText:             Ctrl+W",
 
     "*editMenu.labelString:                       Edit",
     "*editMenu.mnemonic:                          E",
@@ -404,20 +408,17 @@ void GARMainWindow::installDefaultResources(Widget baseWidget)
     this->setDefaultResources(baseWidget, GARMainWindow::DefaultResources);
     this->IBMMainWindow::installDefaultResources(baseWidget);
 }
-void GARMainWindow::initialize()
-{
-
-    if (!this->isInitialized()) {
-	//
-	// Now, call the superclass initialize().
-	//
-	this->IBMMainWindow::initialize();
-    }
-}
 
 void GARMainWindow::manage()
-{
-    this->IBMMainWindow::manage();
+{			
+   this->IBMMainWindow::manage();
+
+	// Offset the window from the GARApplication a bit so users
+	// can get to it if need be.
+	int cx, cy, cw, ch;
+	this->getGeometry(&cx, &cy, &cw, &ch);
+
+	this->setGeometry(cx+20, cy+20, cw, ch);	
 }
 
 
@@ -1873,6 +1874,7 @@ Widget GARMainWindow::createWorkArea(Widget parent)
     if(FULL)
 	XtManageChild(this->dependency_label);
 
+
     //
     // Create the Dependency option menu
     //
@@ -2182,13 +2184,13 @@ Widget GARMainWindow::createWorkArea(Widget parent)
 	  (XtCallbackProc)GARMainWindow_ModifyFieldCB,
 	  (XtPointer)this);
 
-
-
+	xms = XmStringCreateSimple(" ");
     this->modify_tb = 
 	XtVaCreateManagedWidget(
 		"modify_tb", xmToggleButtonWidgetClass, 
 		this->fieldform, 
 		XmNvisibleWhenOff, False,
+		XmNlabelString, xms,
 		XmNtopAttachment, XmATTACH_WIDGET,
 		XmNtopWidget, this->modify_pb,
 	/*	XmNleftAttachment, XmATTACH_POSITION, */
@@ -2201,6 +2203,8 @@ Widget GARMainWindow::createWorkArea(Widget parent)
         	XmNalignment, XmALIGNMENT_BEGINNING,  
 		RES_CONVERT(XmNselectColor, "Yellow"), 
 		NULL);
+		
+	XmStringFree(xms);
 
     XtUninstallTranslations(this->modify_tb);
 
@@ -2298,8 +2302,6 @@ Widget GARMainWindow::createWorkArea(Widget parent)
     // Create the Record Separator option menu
     //
    
-
-
     this->record_sep_text = 
 	XtVaCreateWidget(
 		"record_sep_text", xmTextWidgetClass, 
@@ -2337,7 +2339,6 @@ Widget GARMainWindow::createWorkArea(Widget parent)
     if(FULL)
 	XtManageChild(this->record_sep_om);
 
-
     this->record_sep_text_1 = 
 	XtVaCreateWidget(
 		"record_sep_text_1", xmTextWidgetClass, 
@@ -2362,6 +2363,7 @@ Widget GARMainWindow::createWorkArea(Widget parent)
 	  (XtCallbackProc)GARMainWindow_RecSepTextCB,
 	  (XtPointer)this);
 
+
     pulldown_menu = this->createHeaderPulldown(this->fieldform, FALSE, TRUE,
                                                FALSE);
     n = 0;
@@ -2374,12 +2376,12 @@ Widget GARMainWindow::createWorkArea(Widget parent)
     this->record_sep_om_1 = XmCreateOptionMenu(this->fieldform, "om", wargs, n);
 
     if(FULL)
-	XtManageChild(this->record_sep_om_1);
+		XtManageChild(this->record_sep_om_1);
 
     n = 0;
     XtSetArg(wargs[n], XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET); n++;
     XtSetArg(wargs[n], XmNtopWidget, this->record_sep_text_1); n++;
-    XtSetArg(wargs[n], XmNtopOffset, -3); n++;
+//    XtSetArg(wargs[n], XmNtopOffset, -3); n++;
     XtSetArg(wargs[n], XmNrightAttachment, XmATTACH_POSITION); n++;   
     XtSetArg(wargs[n], XmNrightPosition, 50); n++;   
     XtSetArg(wargs[n], XmNleftAttachment, XmATTACH_FORM); n++;     
@@ -2388,16 +2390,19 @@ Widget GARMainWindow::createWorkArea(Widget parent)
     XtSetArg(wargs[n], XmNlistSizePolicy, XmCONSTANT); n++;
     XtSetArg(wargs[n], XmNscrollBarDisplayPolicy, XmSTATIC); n++;
     XtSetArg(wargs[n], XmNbottomAttachment, XmATTACH_FORM); n++;   
+
+// The record_sep_list is the one that is causing the blemish in
+// the simplified prompter.
     this->record_sep_list =
         XmCreateScrolledList(this->fieldform, "recseplist", wargs, n);
+
     XtAddCallback(this->record_sep_list,
 	  XmNsingleSelectionCallback,
 	  (XtCallbackProc)GARMainWindow_RecordSepListSelectCB,
 	  (XtPointer)this);
+
     if(FULL)
         XtManageChild(this->record_sep_list);
-
-
 
     if (FULL)
          this->setRecordSepSensitivity();
@@ -8058,7 +8063,7 @@ void GARMainWindow::setFieldDirty()
 void GARMainWindow::setFieldClean()
 {
     XmToggleButtonSetState(this->modify_tb, False, False);
-    XmString xmstr = XmStringCreateSimple("\n ");
+    XmString xmstr = XmStringCreateSimple(" ");
     XtVaSetValues(this->modify_tb, XmNlabelString, xmstr, NULL);
     XmStringFree(xmstr);
 }

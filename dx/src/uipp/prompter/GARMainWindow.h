@@ -524,12 +524,10 @@ class GARMainWindow : public IBMMainWindow
     ~GARMainWindow();
 
     //
-    // Sets the default resources before calling the superclass
-    // initialize() function.
+    // Call the superclass initialize and then realize the
+    // widget so placement and size can be done.
     //
-    void initialize();
-
-    void	manage();
+    void manage();
 
     Widget getFileTextWid(){ return this->file_text; };
     Boolean originDeltaFormat(char *string);

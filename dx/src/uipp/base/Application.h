@@ -45,7 +45,7 @@ class Application : public UIComponent, public Server
 
 
     int 	busyCursors; 	// Keeps track of setBusyCursor calls.
-
+    
     //
     // The main program needs to access protected member functions.
     //
@@ -66,6 +66,7 @@ class Application : public UIComponent, public Server
     Display*     display;		// X Display pointer
     XtAppContext applicationContext;	// Xt application context
     char*        applicationClass;	// application class name
+
 
     //
     // Initialize the window system.

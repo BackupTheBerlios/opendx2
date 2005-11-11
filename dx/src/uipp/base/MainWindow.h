@@ -110,6 +110,12 @@ class MainWindow : public UIComponent, public Client
     char    *title;	// The title being used for this window.
     boolean hasMenuBar;		// Do we create the menuBar. 
 
+    // Keeps track of the window information in a 
+    // Xinerama environment otherwise its 0.
+    int		screenLeftPos;
+    int		screenWidth;
+    int		screenHeight;
+
     short	createX;	// X position of shell used at creation.
     short	createY;	// Y position of shell used at creation.
     short	createWidth;	// Width of shell used at creation.
