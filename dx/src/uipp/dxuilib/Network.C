@@ -1753,7 +1753,7 @@ void Network::netParseMacroComment(const char* comment)
     //    // macro reference (indirect) : MACRO_NAME MACRO_PATH
     //    // macro definition : MACRO_NAME 
     //
-    items_parsed = sscanf(comment, " macro %[^:]: %[^ ] %s", type, name, path);
+    items_parsed = sscanf(comment, " macro %[^:]: %[^ ] %[^\n]", type, name, path);
 
     if (items_parsed != 3)
     {
