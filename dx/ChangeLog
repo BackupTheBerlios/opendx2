@@ -1,5 +1,8 @@
 4.x
 ===============
+Fix for macros with space in their filename in the
+VPE. (bug #148)
+
 Added fix for Xinerama environment and placement
 of Windows. (bug #135)
 
