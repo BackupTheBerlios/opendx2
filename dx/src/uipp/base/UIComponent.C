@@ -671,7 +671,7 @@ boolean UIComponent::ParseGeometryComment(const char *line, const char *file,
 			if ((XineramaQueryExtension (disp, &dummy_a, &dummy_b)) &&
 				(screeninfo = XineramaQueryScreens(disp, &screens))) {
 				// Xinerama Detected
-		fprintf(stderr, "screens = %d, screen = %d, \nline = %s\n", screens, screen, line);
+		//fprintf(stderr, "screens = %d, screen = %d, \nline = %s\n", screens, screen, line);
 				if (XineramaIsActive(disp)) {
 					width = 0; height = 0;
 					int i = dummy_a;
