@@ -235,14 +235,14 @@ ListIterator it;
 	int msglen = 0;
 	sprintf (tbuf,
 	    "This net contains the following tools which\n"
-	    "are not translated into java code:\n"
+	    "are not translated into java code:\n\n"
 	);
 	strcpy (&msg[msglen], tbuf);
 	msglen+= strlen(tbuf);
 	ListIterator it(*unsup_list);
 	const char* cp;
 	while ( (cp = (char*)it.getNext()) ) {
-	    sprintf (tbuf, "\t%s\n", cp);
+	    sprintf (tbuf, "%s\n", cp);
 	    strcpy (&msg[msglen], tbuf);
 	    msglen+= strlen(tbuf);
 	}
