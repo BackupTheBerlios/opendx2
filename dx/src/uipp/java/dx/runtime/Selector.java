@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/runtime/Selector.java,v 1.2 2005/10/27 19:43:08 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/runtime/Selector.java,v 1.3 2005/12/02 23:37:27 davidt Exp $
  */
 package dx.runtime;
 import java.awt.*;
@@ -57,30 +57,6 @@ public class Selector extends BinaryInstance
     {
         Choice ch = ( Choice ) ipart;
 
-        //
-        // Ouch. Don't try to provide data-drivenness in a OptionMenu-styl
-        // selector interactor running inside netscape because the applet
-        // will crash and there's no way to catch the error.
-        // When I discovered this, I.E. claimed to be at java 1.1.  Netscape
-        // claimed java 1.1.2.  This was I.E. 4.0 and Netscape 4.04
-        //
-        // ...update: Netscape 4.06 works it claims 45.3 and 1.1.5
-        //
-        String vendor = System.getProperty( "java.vendor" );
-        String classver = System.getProperty( "java.class.version" );
-        String javaver = System.getProperty( "java.version" );
-
-        if ( ( vendor != null ) && ( classver != null ) && ( javaver != null ) ) {
-            if ( vendor.startsWith( "Netscape" ) ) {
-                if ( ( classver.startsWith( "45.3" ) ) && ( javaver.startsWith( "1.1.5" ) ) ) {
-                    /* keep going because it's Netscape 4.06 */
-                }
-
-                else {
-                    return ;
-                }
-            }
-        }
 
         try {
             int length = ch.getItemCount();

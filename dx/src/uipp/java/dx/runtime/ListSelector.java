@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/runtime/ListSelector.java,v 1.2 2005/10/27 19:43:08 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/runtime/ListSelector.java,v 1.3 2005/12/02 23:37:27 davidt Exp $
  */
 package dx.runtime;
 import java.awt.*;
@@ -12,12 +12,11 @@ import java.awt.event.*;
 
 public class ListSelector extends Selector implements ActionListener
 {
-
         //
         // private member data
         //
         private boolean mode = false;
-
+        
         //
         // protected member data
         //
@@ -40,6 +39,11 @@ public class ListSelector extends Selector implements ActionListener
         //
         protected void createPart()
         {
+        	// The number of rows visible is not changeable once created.
+        	// So we should use the bounds and try creating the list
+        	// multiple times till we get one that is close to the
+        	// size requested.
+        		
                 List ch = new List();
 
                 if ( this.local_bg != null )

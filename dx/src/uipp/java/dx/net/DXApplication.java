@@ -2,7 +2,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXApplication.java,v 1.4 2005/10/27 19:43:06 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXApplication.java,v 1.5 2005/12/02 23:37:26 davidt Exp $
  */
 
 // Notes:
@@ -24,7 +24,7 @@
 
 // The file selector interactor appears to be broken.
 	// This is caused by needing to put quotes around the filename. Needs to be fixed.
-	// Done by adding code to turn quotes on in FileSelectorInstance.C
+	// Fixed by adding code to turn quotes on in FileSelectorInstance.C
 
 // Why does the image need to be named in order to use the interaction modes. Need to document this.
 	// Is documented now.
@@ -33,6 +33,8 @@
 	// This was due to the fact that the image applet wasn't getting fully initialized
 	// because the entire applet wasn't loading (just the dx.jar portion) due to 
 	// missing quotes around the archive string in the html.
+	// This also sometimes happened when the browser didn't allow
+	// interapplet communication due to different code bases.
 
 // For some reason the image will pop up in an X window instead of being fed as a GIF.
 	// This appears to happen whenever a build is out of sync. If you take and rebuild
@@ -52,7 +54,6 @@
 
 // Trying to add an IntegerList interactor dies in Parameter.C:262.
 
-// Need to go back and start removing debugging statements.
 
 package dx.net;
 import dx.client.*;
@@ -967,6 +968,7 @@ public void setJavaId ( int jid ) {}
 
         else if ( ie.getSource() == this.image_chooser ) {
             String image_name = image_chooser.getSelectedItem();
+//            System.out.println("image now chosen: " + image_name);
 			Date now = new Date();
             long event_time = now.getTime();
 
@@ -976,6 +978,7 @@ public void setJavaId ( int jid ) {}
                 }
 
                 int i = this.image_chooser.getSelectedIndex();
+//            System.out.println("image id chosen: " + i);
                 this.selected_image = ( ImageNode ) this.named_image_list.elementAt( i );
                 this.applyInteractionMode ( this.selected_mode, event_time );
 
@@ -1191,8 +1194,9 @@ public void setJavaId ( int jid ) {}
 
     private boolean applyInteractionMode( int mode, long time ) {
         ImageNode in = this.selected_image;
+        //System.out.println("applyInteractionMode in: " + in.getTitle());
         boolean status = in.setInteractionMode( mode, time );
-
+	
         if ( status == false ) return false;
 
         String group_name = in.getGroupName();

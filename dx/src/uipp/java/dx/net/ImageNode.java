@@ -3,7 +3,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/ImageNode.java,v 1.4 2005/10/27 19:43:06 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/ImageNode.java,v 1.5 2005/12/02 23:37:27 davidt Exp $
  */
 
 package dx.net;
@@ -176,13 +176,14 @@ public class ImageNode extends dx.net.DrivenNode
         public boolean handleAssignment ( String lhs, String rhs )
         {
                 boolean handled = false;
-
+                
                 if ( lhs.equals( "imgId" ) ) {
                         //
                         // If my name matches the initial node name for my image window
                         // then I'm going to refuse to switch.  If you want me to switch
                         // then you wire the WebOptions.imgId param in the net.
                         //
+						//System.out.println("ImageNode::handleAssignment(" + lhs + "," + rhs + "):imgId " + this.image_id + " [" + this.getMatchString() + "]");
 
                         if ( ( this.image_id != -1 ) && ( this.iw != null ) &&
                                 ( this.iw.getInitialNodeName( this.getNetwork() ).equals( this.getMatchString() ) ) ) {
@@ -554,6 +555,8 @@ public class ImageNode extends dx.net.DrivenNode
                 // sanity check
                 //
 
+				//System.out.println("IN::setInteractionNode: " + getTitle());
+
                 if ( ( mode == ImageWindow.ROTATE_MODE ) ||
                         ( mode == ImageWindow.PICK_MODE ) ||
                         ( mode == ImageWindow.ZOOM_MODE ) ||
@@ -566,14 +569,12 @@ public class ImageNode extends dx.net.DrivenNode
                 }
 
                 if ( mode == ImageWindow.LOOP_MODE ) {
-                        if ( this.getCacheCount() <= 1 ) return false;
-
-                        if ( this.iw != null )
-                                if ( this.iw.getCacheSize() <= 1 ) return false;
-
-                        DXApplication dxapp = this.getNetwork().getApplet();
-
-                        if ( dxapp.getCachingMode() == false ) return false;
+                	if ( this.getCacheCount() <= 1 ) return false;
+                	if ( this.iw != null )
+                    	if ( this.iw.getCacheSize() <= 1 ) 
+                        	return false;
+	                DXApplication dxapp = this.getNetwork().getApplet();
+                    if ( dxapp.getCachingMode() == false ) return false;
                 }
 
                 if ( mode == this.interaction_mode ) return true;
@@ -583,42 +584,38 @@ public class ImageNode extends dx.net.DrivenNode
                 this.interaction_mode = mode;
 
                 DXApplication dxapp = this.getNetwork().getApplet();
-
+                
                 PickNode pn = dxapp.getSelectedPickNode();
 
                 if ( ( this.iw != null ) && ( this.orbit_mode == false ) ) {
-                        this.iw.setInteractionMode( this.interaction_mode, time );
+                	this.iw.setInteractionMode( this.interaction_mode, time );
 
-                        if ( this.interaction_mode == ImageWindow.PICK_MODE ) {
-                                if ( pn != null ) {
-                                        pn.setInputValueQuietly ( 2, "\"" + this.getMatchString() + "\"" );
-                                }
+                    if ( this.interaction_mode == ImageWindow.PICK_MODE ) {
+                    	if ( pn != null ) {
+                        	pn.setInputValueQuietly ( 2, "\"" + this.getMatchString() + "\"" );
                         }
-
-                        else if ( this.interaction_mode == ImageWindow.ORBIT_MODE ) {
-                                this.orbit_mode = true;
-                                this.setCacheSize( 9 );
-
-                                if ( this.web_options_node != null )
-                                        this.web_options_node.setOrbitMode( true );
-                        }
-                }
-
-                if ( old_mode == ImageWindow.PICK_MODE ) {
-                        if ( pn != null ) {
-                                pn.setInputValueQuietly ( 2, "NULL" );
-                                pn.setInputValueQuietly ( 3, "NULL" );
-                                this.resetPickList();
-                        }
-                }
-
-                else if ( old_mode == ImageWindow.ORBIT_MODE ) {
-                        this.orbit_mode = false;
+                    }
+                    else if ( this.interaction_mode == ImageWindow.ORBIT_MODE ) {
+                    	this.orbit_mode = true;
+                        this.setCacheSize( 9 );
 
                         if ( this.web_options_node != null )
-                                this.web_options_node.setOrbitMode( false );
-                }
+                        	this.web_options_node.setOrbitMode( true );
+                    }
+				}
 
+				if ( old_mode == ImageWindow.PICK_MODE ) {
+					if ( pn != null ) {
+						pn.setInputValueQuietly ( 2, "NULL" );
+						pn.setInputValueQuietly ( 3, "NULL" );
+						this.resetPickList();
+					}
+				}
+				else if ( old_mode == ImageWindow.ORBIT_MODE ) {
+					this.orbit_mode = false;
+					if ( this.web_options_node != null )
+                         this.web_options_node.setOrbitMode( false );
+				}
                 return true;
         }
 

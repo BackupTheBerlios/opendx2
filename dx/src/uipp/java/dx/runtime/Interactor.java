@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/runtime/Interactor.java,v 1.2 2005/10/27 19:43:07 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/runtime/Interactor.java,v 1.3 2005/12/02 23:37:27 davidt Exp $
  */
 package dx.runtime;
 import dx.net.PacketIF;
@@ -189,8 +189,13 @@ public class Interactor extends Panel
 				double f = TableLayout.FILL;
 				TableLayout tbl;
 				if(vertical == 1) {
-					double size[][] = {{f}, {0.5,p,2,p,0.5}};
-					tbl = new TableLayout(size);
+					if(this instanceof ListSelector) {
+						double size[][] = {{f}, {2,p,2,f,2}};
+						tbl = new TableLayout(size);
+					} else {
+						double size[][] = {{f}, {0.5,p,2,p,0.5}};
+						tbl = new TableLayout(size);
+					}
 				}
 				else {
 					if(getTypeName().compareTo("Toggle") == 0 && orientation != LEFT) {
@@ -247,7 +252,7 @@ public class Interactor extends Panel
 
                         if ( vertical == 1 ) {
                                 int fill_rule = this.getVerticalFill();
-                                add(ipart, "0, 3, c, t");
+                                add(ipart, "0, 3, f, f");
                         }
 
                         else {
@@ -309,6 +314,7 @@ public class Interactor extends Panel
                         return ;
 
                 Dimension d = getSize();
+                //System.out.println("Applet size in paint: " + d.width + ", " + d.height);
                 int w = d.width - 2;
                 int h = d.height - 2;
                 Color bg = getBackground();

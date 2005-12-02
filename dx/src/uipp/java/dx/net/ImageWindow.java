@@ -79,6 +79,7 @@ public abstract class ImageWindow extends AppletClient
     public String getInitialNodeName( Network n )
     {
         DXApplication dxapp = n.getApplet();
+        //System.out.println("ImageWindow::getInitialNodeName - " + this.initial_node_name);
         return dxapp.getMacroName() + "_" + this.initial_node_name;
     }
 
