@@ -52,7 +52,9 @@ int main(unsigned int argc,
 	  char**       argv)
 {
 #if defined(HAVE_HCLXMINIT)
-    HCLXmInit();
+// The following is not needed with the recent Exceed XDK. If you're
+// using an XDK < 11.0 then uncomment the following command.
+//    HCLXmInit();
 #endif
 
 #ifdef intelnt

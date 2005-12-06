@@ -9,7 +9,11 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
+#if defined(HAVE_IOSTREAM)
+#include <iostream>
+#elif defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
+#endif
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
