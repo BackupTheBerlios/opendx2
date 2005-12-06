@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Tue Nov 24 15:52:12 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 16:07:27 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -27,7 +27,7 @@ public class npvcall extends DXLinkApplication {
         toggle_Toggle_1.setLabelLines(1);
         toggle_Toggle_1.setLabel("Show Call");
         toggle_Toggle_1.setHorizontal();
-        Toggle_1.reshape (toggle_Toggle_1, 0,0,153,32);
+        Toggle_1.setBounds (toggle_Toggle_1, 0,0,153,34);
         toggle_Toggle_1.setOutputType(BinaryInstance.INTEGER);
         cp_2.addInteractor(toggle_Toggle_1);
         Vector Toggle_1_vn = new Vector(2);
@@ -49,7 +49,7 @@ public class npvcall extends DXLinkApplication {
         toggle_Toggle_2.setLabelLines(1);
         toggle_Toggle_2.setLabel("Show Put");
         toggle_Toggle_2.setHorizontal();
-        Toggle_2.reshape (toggle_Toggle_2, 0,37,153,32);
+        Toggle_2.setBounds (toggle_Toggle_2, 0,37,153,34);
         toggle_Toggle_2.setOutputType(BinaryInstance.INTEGER);
         cp_2.addInteractor(toggle_Toggle_2);
         Vector Toggle_2_vn = new Vector(2);
@@ -71,7 +71,7 @@ public class npvcall extends DXLinkApplication {
         toggle_Toggle_3.setLabelLines(1);
         toggle_Toggle_3.setLabel("Show Portfolio");
         toggle_Toggle_3.setHorizontal();
-        Toggle_3.reshape (toggle_Toggle_3, 0,77,153,32);
+        Toggle_3.setBounds (toggle_Toggle_3, 0,77,153,34);
         toggle_Toggle_3.setOutputType(BinaryInstance.INTEGER);
         cp_2.addInteractor(toggle_Toggle_3);
         Vector Toggle_3_vn = new Vector(2);
@@ -83,18 +83,19 @@ public class npvcall extends DXLinkApplication {
         Toggle_3.setValues(Toggle_3_vn, Toggle_3_vo);
 
 
-        WebOptionsNode WebOptions_1 = new WebOptionsNode (this.network, "WebOptions", 1, "WebOptions");
-        this.network.addElement((Object)WebOptions_1);
+        WebOptionsNode WebOptions_4 = new WebOptionsNode (this.network, "WebOptions", 4, "WebOptions");
+        this.network.addElement((Object)WebOptions_4);
+        WebOptions_4.setInputValueString(1, "jpg");
 
 
         ImageNode Image_3 = new ImageNode (this.network, "Image", 3, "Image");
         this.network.addElement((Object)Image_3);
-        Image_3.setInputValueString(5, "[39.8125 14.8155 10.2725]");
-        Image_3.setInputValueString(6, "[53.1545 -65.8721 45.8955]");
-        Image_3.setInputValueString(10, "[-0.0713902 0.392949 0.916785]");
+        Image_3.setInputValueString(5, "[39.925 14.928 10.387]");
+        Image_3.setInputValueString(6, "[118.175 -60.4289 60.7865]");
+        Image_3.setInputValueString(10, "[-0.31752 0.276857 0.906935]");
         Image_3.setInputValueString(11, "30.0");
-        Image_3.setInputValueString(41, "camera");
+        Image_3.setInputValueString(41, "none");
         Image_3.setInputValueString(42, "Portfolio");
-        Image_3.addInputArc (49, WebOptions_1, 1);
+        Image_3.addInputArc (49, WebOptions_4, 1);
     }
 }

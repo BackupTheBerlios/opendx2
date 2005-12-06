@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Sep 14 17:07:04 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 10:31:43 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -34,7 +34,7 @@ public class MRI_2 extends DXLinkApplication {
         step_Scalar_1.setLabelLines(1);
         step_Scalar_1.setLabel("Isosurface value:");
         step_Scalar_1.setVertical();
-        Scalar_1.reshape (step_Scalar_1, 20,20,130,56);
+        Scalar_1.setBounds (step_Scalar_1, 20,20,130,54);
         cp_2.addInteractor(step_Scalar_1);
         Scalar_1.setValues(1,668,57684,1000,1,39000);
 

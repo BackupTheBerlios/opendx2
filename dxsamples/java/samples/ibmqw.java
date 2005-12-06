@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Nov 23 10:51:03 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 15:50:55 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -27,7 +27,7 @@ public class ibmqw extends DXLinkApplication {
         pdown_Selector_1.setLabelLines(1);
         pdown_Selector_1.setLabel("Color by");
         pdown_Selector_1.setVertical();
-        Selector_1.reshape (pdown_Selector_1, 0,11,161,158);
+        Selector_1.setBounds (pdown_Selector_1, 0,11,161,158);
         cp_1.addInteractor(pdown_Selector_1);
         Vector Selector_1_vn = new Vector(5);
         Vector Selector_1_vo = new Vector(5);
@@ -75,7 +75,7 @@ public class ibmqw extends DXLinkApplication {
         Image_1.setInputValueString(6, "[6.60187 1984.27 5.36357]");
         Image_1.setInputValueString(10, "[-0.107489 0.35769 0.927634]");
         Image_1.setInputValueString(11, "30.0");
-        Image_1.setInputValueString(41, "pick");
+        Image_1.setInputValueString(41, "none");
         Image_1.setInputValueString(42, "Stock Price");
         Image_1.addInputArc (49, WebOptions_1, 1);
 

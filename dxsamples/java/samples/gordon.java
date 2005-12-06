@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Nov 23 10:26:09 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 15:14:57 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;

@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Sep 14 17:07:20 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 14:26:15 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -27,7 +27,7 @@ public class Streamline extends DXLinkApplication {
         pdown_Selector_2.setLabelLines(1);
         pdown_Selector_2.setLabel("Colors");
         pdown_Selector_2.setVertical();
-        Selector_2.reshape (pdown_Selector_2, 22,8,195,54);
+        Selector_2.setBounds (pdown_Selector_2, 22,8,195,54);
         pdown_Selector_2.setOutputType(BinaryInstance.INTEGER);
         cp_1.addInteractor(pdown_Selector_2);
         Vector Selector_2_vn = new Vector(2);
@@ -49,7 +49,7 @@ public class Streamline extends DXLinkApplication {
         pdown_Selector_3.setLabelLines(1);
         pdown_Selector_3.setLabel("Sequencer Control");
         pdown_Selector_3.setVertical();
-        Selector_3.reshape (pdown_Selector_3, 12,100,271,54);
+        Selector_3.setBounds (pdown_Selector_3, 12,100,271,54);
         pdown_Selector_3.setOutputType(BinaryInstance.INTEGER);
         cp_1.addInteractor(pdown_Selector_3);
         Vector Selector_3_vn = new Vector(2);

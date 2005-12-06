@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Sep 14 15:13:21 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 11:49:53 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -33,7 +33,7 @@ public class ScatterData extends DXLinkApplication {
         tfld_StringList_2.setLabelLines(1);
         tfld_StringList_2.setLabel("Transmitter input:");
         tfld_StringList_2.setVertical();
-        StringList_2.reshape (tfld_StringList_2, 0,0,327,65);
+        StringList_2.setBounds (tfld_StringList_2, 0,0,327,65);
         cp_4.addInteractor(tfld_StringList_2);
         StringList_2.setValue("{ \"inside_urban_area\", \"outside_urban_area\", \"rural_farm\", \"rural_nonfarm\", \"males\", \"females\", \"age_under_1\", \"age_21\", \"age_65_to_69\", \"in_household_1\", \"in_household_2\", \"in_household_3\", \"in_household_4\", \"in_household_5\", \"water_company\", \"water_drilled_well\", \"water_dug_well\", \"heat_utility_gas\", \"heat_bottled_gas\", \"heat_oil\", \"heat_coal\", \"heat_solar\" }");
 
@@ -43,12 +43,12 @@ public class ScatterData extends DXLinkApplication {
 
         ListSelector slist_SelectorList_1 = new ListSelector();
         SelectorList_1.addInteractor(slist_SelectorList_1);
-        slist_SelectorList_1.setStyle(0);
+        slist_SelectorList_1.setStyle(1);
         slist_SelectorList_1.setMode(true);
         slist_SelectorList_1.setLabelLines(1);
         slist_SelectorList_1.setLabel("Data List: Choose 3 for 3 Dimensions");
         slist_SelectorList_1.setVertical();
-        SelectorList_1.reshape (slist_SelectorList_1, 0,0,272,299);
+        SelectorList_1.setBounds (slist_SelectorList_1, 0,0,272,299);
         slist_SelectorList_1.setOutputType(BinaryInstance.INTEGER|BinaryInstance.LIST);
         cp_3.addInteractor(slist_SelectorList_1);
         Vector SelectorList_1_vn = new Vector(22);
@@ -112,7 +112,7 @@ public class ScatterData extends DXLinkApplication {
         pdown_Selector_4.setLabelLines(1);
         pdown_Selector_4.setLabel("Data List: Choose 1 for Glyphs");
         pdown_Selector_4.setVertical();
-        Selector_4.reshape (pdown_Selector_4, 0,14,273,54);
+        Selector_4.setBounds (pdown_Selector_4, 0,14,273,54);
         pdown_Selector_4.setOutputType(BinaryInstance.INTEGER);
         cp_5.addInteractor(pdown_Selector_4);
         Vector Selector_4_vn = new Vector(22);
@@ -174,7 +174,7 @@ public class ScatterData extends DXLinkApplication {
         step_Scalar_2.setLabelLines(1);
         step_Scalar_2.setLabel("scaling for glyph size");
         step_Scalar_2.setVertical();
-        Scalar_2.reshape (step_Scalar_2, 55,91,158,52);
+        Scalar_2.setBounds (step_Scalar_2, 55,91,158,52);
         cp_5.addInteractor(step_Scalar_2);
         Scalar_2.setValues(1,0.1,20,0.1,5,2.6);
 

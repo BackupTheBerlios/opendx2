@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Sep 14 15:13:44 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 14:33:08 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -32,7 +32,7 @@ public class ThunderGlyphSheet extends WRLApplication  {
         step_Scalar_6.setLabelLines(1);
         step_Scalar_6.setLabel("vertical position of maptoplane");
         step_Scalar_6.setVertical();
-        Scalar_6.reshape (step_Scalar_6, 0,72,197,52);
+        Scalar_6.setBounds (step_Scalar_6, 0,72,197,52);
         cp_1.addInteractor(step_Scalar_6);
         Scalar_6.setValues(1,0,15000,500,0,3000);
 
@@ -46,7 +46,7 @@ public class ThunderGlyphSheet extends WRLApplication  {
         step_Scalar_1.setLabelLines(1);
         step_Scalar_1.setLabel("Isovalue");
         step_Scalar_1.setVertical();
-        Scalar_1.reshape (step_Scalar_1, 209,0,197,52);
+        Scalar_1.setBounds (step_Scalar_1, 209,0,197,52);
         cp_1.addInteractor(step_Scalar_1);
         Scalar_1.setValues(1,0.1,2,0.01,2,0.2);
 
@@ -60,7 +60,7 @@ public class ThunderGlyphSheet extends WRLApplication  {
         step_Scalar_7.setLabelLines(1);
         step_Scalar_7.setLabel("isosurface opacity");
         step_Scalar_7.setVertical();
-        Scalar_7.reshape (step_Scalar_7, 209,72,197,52);
+        Scalar_7.setBounds (step_Scalar_7, 209,72,197,52);
         cp_1.addInteractor(step_Scalar_7);
         Scalar_7.setValues(1,0,1,0.017,5,0.306);
 
@@ -74,7 +74,7 @@ public class ThunderGlyphSheet extends WRLApplication  {
         step_Scalar_2.setLabelLines(1);
         step_Scalar_2.setLabel("RubberSheet scale:");
         step_Scalar_2.setVertical();
-        Scalar_2.reshape (step_Scalar_2, 0,0,197,52);
+        Scalar_2.setBounds (step_Scalar_2, 0,0,197,52);
         cp_1.addInteractor(step_Scalar_2);
         Scalar_2.setValues(1,-1000,1000,10,0,430);
 

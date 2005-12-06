@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Nov 23 10:25:06 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Thu Dec  1 13:51:23 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -31,7 +31,7 @@ public class GroceryList extends DXLinkApplication {
         pdown_Selector_1.setLabelLines(1);
         pdown_Selector_1.setLabel("Main Plot");
         pdown_Selector_1.setVertical();
-        Selector_1.reshape (pdown_Selector_1, 0,0,204,108);
+        Selector_1.setBounds (pdown_Selector_1, 0,0,204,108);
         pdown_Selector_1.setOutputType(BinaryInstance.INTEGER);
         cp_1.addInteractor(pdown_Selector_1);
         Vector Selector_1_vn = new Vector(3);
@@ -50,37 +50,37 @@ public class GroceryList extends DXLinkApplication {
         this.network.addElement((Object)Pick_1);
 
 
-        WebOptionsNode WebOptions_7 = new WebOptionsNode (this.network, "WebOptions", 7, "WebOptions");
-        this.network.addElement((Object)WebOptions_7);
+        WebOptionsNode WebOptions_10 = new WebOptionsNode (this.network, "WebOptions", 10, "WebOptions");
+        this.network.addElement((Object)WebOptions_10);
 
 
         ImageNode Image_2 = new ImageNode (this.network, "Image", 2, "Image");
         this.network.addElement((Object)Image_2);
-        Image_2.setInputValueString(5, "[1.99996 1.8494 0]");
-        Image_2.setInputValueString(6, "[1.99996 1.8494 27.4932]");
-        Image_2.setInputValueString(7, "14.7336");
+        Image_2.setInputValueString(5, "[1.92754 1.8494 0]");
+        Image_2.setInputValueString(6, "[1.92754 1.8494 27.9747]");
+        Image_2.setInputValueString(7, "14.9916");
         Image_2.setInputValueString(10, "[0 1 0]");
         Image_2.setInputValueString(41, "pick");
         Image_2.setInputValueString(42, "Pickable Plot");
-        Image_2.addInputArc (49, WebOptions_7, 1);
+        Image_2.addInputArc (49, WebOptions_10, 1);
 
 
-        WebOptionsNode WebOptions_8 = new WebOptionsNode (this.network, "WebOptions", 8, "WebOptions");
-        this.network.addElement((Object)WebOptions_8);
+        WebOptionsNode WebOptions_11 = new WebOptionsNode (this.network, "WebOptions", 11, "WebOptions");
+        this.network.addElement((Object)WebOptions_11);
 
 
         ImageNode Image_3 = new ImageNode (this.network, "Image", 3, "Image");
         this.network.addElement((Object)Image_3);
         Image_3.setInputValueString(5, "[6.92754 4.52749 0]");
-        Image_3.setInputValueString(6, "[6.92754 4.52749 55.0184]");
-        Image_3.setInputValueString(7, "29.4843");
+        Image_3.setInputValueString(6, "[6.92754 4.52749 56.3749]");
+        Image_3.setInputValueString(7, "30.2113");
         Image_3.setInputValueString(10, "[0 1 0]");
         Image_3.setInputValueString(41, "none");
-        Image_3.addInputArc (49, WebOptions_8, 1);
+        Image_3.addInputArc (49, WebOptions_11, 1);
 
 
-        WebOptionsNode WebOptions_9 = new WebOptionsNode (this.network, "WebOptions", 9, "WebOptions");
-        this.network.addElement((Object)WebOptions_9);
+        WebOptionsNode WebOptions_12 = new WebOptionsNode (this.network, "WebOptions", 12, "WebOptions");
+        this.network.addElement((Object)WebOptions_12);
 
 
         ImageNode Image_4 = new ImageNode (this.network, "Image", 4, "Image");
@@ -90,6 +90,6 @@ public class GroceryList extends DXLinkApplication {
         Image_4.setInputValueString(7, "26.481");
         Image_4.setInputValueString(10, "[-0.387822 0.283476 0.877061]");
         Image_4.setInputValueString(41, "none");
-        Image_4.addInputArc (49, WebOptions_9, 1);
+        Image_4.addInputArc (49, WebOptions_12, 1);
     }
 }

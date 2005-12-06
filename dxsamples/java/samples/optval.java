@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Nov 16 09:07:49 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 16:14:28 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -26,15 +26,19 @@ public class optval extends DXLinkApplication {
         this.network.addElement((Object)Pick_1);
 
 
+        DXLOutputNode DXLOutput_1 = new DXLOutputNode (this.network, "DXLOutput", 1, "DXLOutput_1");
+        this.network.addElement((Object)DXLOutput_1);
+
+
         WebOptionsNode WebOptions_2 = new WebOptionsNode (this.network, "WebOptions", 2, "WebOptions");
         this.network.addElement((Object)WebOptions_2);
 
 
         ImageNode Image_1 = new ImageNode (this.network, "Image", 1, "Image");
         this.network.addElement((Object)Image_1);
-        Image_1.setInputValueString(5, "[49 39.75 21.6913]");
-        Image_1.setInputValueString(6, "[59.1522 198.009 112.2]");
-        Image_1.setInputValueString(10, "[0.0109428 -0.496945 0.867713]");
+        Image_1.setInputValueString(5, "[49 79.5 21.5292]");
+        Image_1.setInputValueString(6, "[-42.0643 211.057 82.5288]");
+        Image_1.setInputValueString(10, "[0.214213 -0.284935 0.934305]");
         Image_1.setInputValueString(11, "30.0");
         Image_1.setInputValueString(41, "pick");
         Image_1.setInputValueString(42, "Value");

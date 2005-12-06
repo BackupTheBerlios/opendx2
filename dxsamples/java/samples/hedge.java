@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Nov 23 09:45:52 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 15:32:04 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -35,7 +35,7 @@ public class hedge extends DXLinkApplication {
         pdown_Selector_1.setStyle(0);
         pdown_Selector_1.setLabelLines(0);
         pdown_Selector_1.setVertical();
-        Selector_1.reshape (pdown_Selector_1, 0,0,172,40);
+        Selector_1.setBounds (pdown_Selector_1, 0,0,172,40);
         pdown_Selector_1.setOutputType(BinaryInstance.INTEGER);
         cp_4.addInteractor(pdown_Selector_1);
         Vector Selector_1_vn = new Vector(7);
@@ -67,7 +67,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_12.setLabelLines(1);
         step_Scalar_12.setLabel("Purchase Price");
         step_Scalar_12.setVertical();
-        Scalar_12.reshape (step_Scalar_12, 0,88,240,52);
+        Scalar_12.setBounds (step_Scalar_12, 0,88,240,52);
         cp_1.addInteractor(step_Scalar_12);
         Scalar_12.setValues(1,0,1000,1,2,50);
 
@@ -81,7 +81,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_2.setLabelLines(1);
         step_Scalar_2.setLabel("Interest Rate (1+r)");
         step_Scalar_2.setVertical();
-        Scalar_2.reshape (step_Scalar_2, 247,88,240,52);
+        Scalar_2.setBounds (step_Scalar_2, 247,88,240,52);
         cp_1.addInteractor(step_Scalar_2);
         Scalar_2.setValues(1,1,1.5,0.002,3,1.15);
 
@@ -102,7 +102,7 @@ public class hedge extends DXLinkApplication {
         toggle_Toggle_2.setLabelLines(1);
         toggle_Toggle_2.setLabel("Share Values");
         toggle_Toggle_2.setHorizontal();
-        Toggle_2.reshape (toggle_Toggle_2, 0,44,240,32);
+        Toggle_2.setBounds (toggle_Toggle_2, 0,44,240,32);
         toggle_Toggle_2.setOutputType(BinaryInstance.INTEGER);
         cp_1.addInteractor(toggle_Toggle_2);
         Vector Toggle_2_vn = new Vector(2);
@@ -123,7 +123,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_1.setLabelLines(1);
         step_Scalar_1.setLabel("Strike Price");
         step_Scalar_1.setVertical();
-        Scalar_1.reshape (step_Scalar_1, 247,0,240,52);
+        Scalar_1.setBounds (step_Scalar_1, 247,0,240,52);
         cp_1.addInteractor(step_Scalar_1);
         Scalar_1.setValues(1,0,1000,1,2,50);
 
@@ -137,7 +137,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_3.setLabelLines(1);
         step_Scalar_3.setLabel("Strike Price");
         step_Scalar_3.setVertical();
-        Scalar_3.reshape (step_Scalar_3, 0,66,172,52);
+        Scalar_3.setBounds (step_Scalar_3, 0,66,172,52);
         cp_4.addInteractor(step_Scalar_3);
         Scalar_3.setValues(1,0,1000,1,2,50);
 
@@ -151,7 +151,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_4.setLabelLines(1);
         step_Scalar_4.setLabel("Call Price");
         step_Scalar_4.setVertical();
-        Scalar_4.reshape (step_Scalar_4, 200,0,172,52);
+        Scalar_4.setBounds (step_Scalar_4, 200,0,172,52);
         cp_4.addInteractor(step_Scalar_4);
         Scalar_4.setValues(1,0,1000,1,2,5);
 
@@ -165,7 +165,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_9.setLabelLines(1);
         step_Scalar_9.setLabel("Purchase Price");
         step_Scalar_9.setVertical();
-        Scalar_9.reshape (step_Scalar_9, 200,66,172,52);
+        Scalar_9.setBounds (step_Scalar_9, 200,66,172,52);
         cp_4.addInteractor(step_Scalar_9);
         Scalar_9.setValues(1,0,1000,1,2,50);
 
@@ -178,7 +178,7 @@ public class hedge extends DXLinkApplication {
         pdown_Selector_5.setStyle(0);
         pdown_Selector_5.setLabelLines(0);
         pdown_Selector_5.setVertical();
-        Selector_5.reshape (pdown_Selector_5, 0,0,169,40);
+        Selector_5.setBounds (pdown_Selector_5, 0,0,169,40);
         pdown_Selector_5.setOutputType(BinaryInstance.INTEGER);
         cp_6.addInteractor(pdown_Selector_5);
         Vector Selector_5_vn = new Vector(7);
@@ -210,7 +210,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_5.setLabelLines(1);
         step_Scalar_5.setLabel("Strike Price");
         step_Scalar_5.setVertical();
-        Scalar_5.reshape (step_Scalar_5, 0,66,169,52);
+        Scalar_5.setBounds (step_Scalar_5, 0,66,169,52);
         cp_6.addInteractor(step_Scalar_5);
         Scalar_5.setValues(1,0,1000,1,2,50);
 
@@ -224,7 +224,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_6.setLabelLines(1);
         step_Scalar_6.setLabel("Call Price");
         step_Scalar_6.setVertical();
-        Scalar_6.reshape (step_Scalar_6, 198,0,169,52);
+        Scalar_6.setBounds (step_Scalar_6, 198,0,169,52);
         cp_6.addInteractor(step_Scalar_6);
         Scalar_6.setValues(1,0,1000,1,2,5);
 
@@ -238,7 +238,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_10.setLabelLines(1);
         step_Scalar_10.setLabel("Purchase Price");
         step_Scalar_10.setVertical();
-        Scalar_10.reshape (step_Scalar_10, 198,66,169,52);
+        Scalar_10.setBounds (step_Scalar_10, 198,66,169,52);
         cp_6.addInteractor(step_Scalar_10);
         Scalar_10.setValues(1,0,1000,1,2,50);
 
@@ -251,7 +251,7 @@ public class hedge extends DXLinkApplication {
         pdown_Selector_6.setStyle(0);
         pdown_Selector_6.setLabelLines(0);
         pdown_Selector_6.setVertical();
-        Selector_6.reshape (pdown_Selector_6, 0,0,170,40);
+        Selector_6.setBounds (pdown_Selector_6, 0,0,170,40);
         pdown_Selector_6.setOutputType(BinaryInstance.INTEGER);
         cp_7.addInteractor(pdown_Selector_6);
         Vector Selector_6_vn = new Vector(7);
@@ -283,7 +283,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_7.setLabelLines(1);
         step_Scalar_7.setLabel("Strike Price");
         step_Scalar_7.setVertical();
-        Scalar_7.reshape (step_Scalar_7, 0,66,170,52);
+        Scalar_7.setBounds (step_Scalar_7, 0,66,170,52);
         cp_7.addInteractor(step_Scalar_7);
         Scalar_7.setValues(1,0,1000,1,2,50);
 
@@ -297,7 +297,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_8.setLabelLines(1);
         step_Scalar_8.setLabel("Call Price");
         step_Scalar_8.setVertical();
-        Scalar_8.reshape (step_Scalar_8, 197,0,170,52);
+        Scalar_8.setBounds (step_Scalar_8, 197,0,170,52);
         cp_7.addInteractor(step_Scalar_8);
         Scalar_8.setValues(1,0,1000,1,2,5);
 
@@ -311,7 +311,7 @@ public class hedge extends DXLinkApplication {
         step_Scalar_11.setLabelLines(1);
         step_Scalar_11.setLabel("Purchase Price");
         step_Scalar_11.setVertical();
-        Scalar_11.reshape (step_Scalar_11, 197,66,170,52);
+        Scalar_11.setBounds (step_Scalar_11, 197,66,170,52);
         cp_7.addInteractor(step_Scalar_11);
         Scalar_11.setValues(1,0,1000,1,2,50);
 
@@ -324,7 +324,7 @@ public class hedge extends DXLinkApplication {
         pdown_Selector_7.setStyle(0);
         pdown_Selector_7.setLabelLines(0);
         pdown_Selector_7.setVertical();
-        Selector_7.reshape (pdown_Selector_7, 0,0,240,40);
+        Selector_7.setBounds (pdown_Selector_7, 0,0,240,40);
         pdown_Selector_7.setOutputType(BinaryInstance.INTEGER);
         cp_1.addInteractor(pdown_Selector_7);
         Vector Selector_7_vn = new Vector(4);
@@ -359,7 +359,7 @@ public class hedge extends DXLinkApplication {
         Image_3.setInputValueString(6, "[-66.8957 -293.973 205.956]");
         Image_3.setInputValueString(10, "[0.13856 0.444339 0.885078]");
         Image_3.setInputValueString(11, "30.0");
-        Image_3.setInputValueString(41, "none");
+        Image_3.setInputValueString(41, "rotate");
         Image_3.setInputValueString(42, "Hedge");
         Image_3.addInputArc (49, WebOptions_1, 1);
     }

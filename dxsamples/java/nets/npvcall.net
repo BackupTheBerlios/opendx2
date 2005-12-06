@@ -1,7 +1,7 @@
 //
-// time: Tue Apr 23 20:52:44 2002
+// time: Fri Dec  2 16:07:45 2005
 //
-// version: 3.1.2 (format), 4.1.3 (DX)
+// version: 3.2.0 (format), 4.3.3 (DX)
 //
 //
 //
@@ -22,11 +22,11 @@ include "vrmlmac.net";
 include "dxmac.net";
 // MODULE main
 // page assignment: call value	order=5, windowed=0, showing=0
-// page assignment: data	order=4, windowed=0, showing=1
+// page assignment: data	order=4, windowed=0, showing=0
 // page assignment: images	order=6, windowed=0, showing=0
-// page assignment: java tools	order=3, windowed=0, showing=0
-// page assignment: prob	order=2, windowed=0, showing=0
-// workspace: width = 597, height = 595
+// page assignment: java tools	order=2, windowed=0, showing=0
+// page assignment: prob	order=3, windowed=0, showing=1
+// workspace: width = 161, height = 298
 // layout: snap = 0, width = 50, height = 50, align = NN
 //
 macro main(
@@ -623,7 +623,7 @@ main_Color_8_out_1 =
     main_Color_8_in_5
     ) [instance: 8, cache: 1];
     // 
-    // node GetLocal[1]: x = 297, y = 0, inputs = 3, label = GetLocal
+    // node GetLocal[1]: x = 166, y = 10, inputs = 3, label = GetLocal
     // input[1]: defaulting = 0, visible = 1, type = 67108863, value = 0
     // page group: java tools
     //
@@ -635,7 +635,7 @@ main_GetLocal_1_out_2 =
     main_GetLocal_1_in_3
     ) [instance: 1, cache: 1];
     // 
-    // node Compute2[1]: x = 251, y = 88, inputs = 5, label = Compute2
+    // node Compute2[1]: x = 10, y = 190, inputs = 5, label = Compute2
     // input[1]: defaulting = 0, visible = 1, type = 32, value = "loop+1"
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "loop"
     // input[4]: visible = 0
@@ -651,7 +651,7 @@ main_Compute2_1_out_1 =
     main_Compute2_1_in_5
     ) [instance: 1, cache: 1];
     // 
-    // node GetGlobal[1]: x = 137, y = 0, inputs = 3, label = GetGlobal
+    // node GetGlobal[1]: x = 248, y = 100, inputs = 3, label = GetGlobal
     // input[1]: defaulting = 0, visible = 1, type = 67108863, value = 0
     // page group: java tools
     //
@@ -663,7 +663,7 @@ main_GetGlobal_1_out_2 =
     main_GetGlobal_1_in_3
     ) [instance: 1, cache: 1];
     // 
-    // node Compute2[2]: x = 72, y = 88, inputs = 5, label = Compute2
+    // node Compute2[2]: x = 102, y = 190, inputs = 5, label = Compute2
     // input[1]: defaulting = 0, visible = 1, type = 32, value = "loop+1"
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "loop"
     // input[4]: visible = 0
@@ -679,7 +679,7 @@ main_Compute2_2_out_1 =
     main_Compute2_2_in_5
     ) [instance: 2, cache: 1];
     // 
-    // node Compute2[3]: x = 0, y = 198, inputs = 5, label = Compute2
+    // node Compute2[3]: x = 32, y = 280, inputs = 5, label = Compute2
     // input[1]: defaulting = 0, visible = 1, type = 32, value = "global-local"
     // input[2]: defaulting = 0, visible = 1, type = 32, value = "local"
     // input[4]: defaulting = 0, visible = 1, type = 32, value = "global"
@@ -694,7 +694,7 @@ main_Compute2_3_out_1 =
     main_Compute2_2_out_1
     ) [instance: 3, cache: 1];
     // 
-    // node Compute[1]: x = 183, y = 350, inputs = 3, label = Compute
+    // node Compute[1]: x = 75, y = 370, inputs = 3, label = Compute
     // input[1]: defaulting = 0, visible = 0, type = 32, value = "[$0, $1]"
     // page group: java tools
     // expression: value = [a, b]
@@ -708,7 +708,7 @@ main_Compute_1_out_1 =
     main_GetLocal_1_out_1
     ) [instance: 1, cache: 1];
     // 
-    // node DXLInput[1]: x = 452, y = 0, inputs = 1, label = _java_control
+    // node DXLInput[1]: x = 353, y = 10, inputs = 1, label = _java_control
     // input[1]: defaulting = 0, visible = 1, type = 29, value = 0
     // page group: java tools
     //
@@ -724,42 +724,45 @@ main_Scale_2_out_1 =
     main_Scale_2_in_2
     ) [instance: 2, cache: 1];
     // 
-    // node Transmitter[3]: x = 160, y = 458, inputs = 1, label = java_sequence
+    // node Transmitter[3]: x = 57, y = 460, inputs = 1, label = java_sequence
     // page group: java tools
     //
 java_sequence = main_Compute_1_out_1;
     // 
-    // node Receiver[176]: x = 139, y = 431, inputs = 1, label = java_sequence
+    // node Receiver[191]: x = 136, y = 429, inputs = 1, label = java_sequence
     // page group: images
     //
-main_Receiver_176_out_1[cache: 0] = java_sequence;
+main_Receiver_191_out_1[cache: 0] = java_sequence;
     // 
-    // node WebOptions[1]: x = 115, y = 581, inputs = 10, label = WebOptions
+    // node WebOptions[4]: x = 112, y = 579, inputs = 10, label = WebOptions
+    // input[1]: defaulting = 0, visible = 1, type = 32, value = "jpg"
+    // input[2]: defaulting = 0, visible = 0, type = 32, value = "/Users/dthompsn/src/dxsamples/java/nets/npvcall3"
+    // input[3]: defaulting = 0, visible = 0, type = 3, value = 0
     // page group: images
     //
-main_WebOptions_1_out_1 = 
+main_WebOptions_4_out_1 = 
     WebOptions(
-    main_WebOptions_1_in_1,
-    main_WebOptions_1_in_2,
-    main_WebOptions_1_in_3,
-    main_Receiver_176_out_1,
-    main_WebOptions_1_in_5,
-    main_WebOptions_1_in_6,
-    main_WebOptions_1_in_7,
-    main_WebOptions_1_in_8,
-    main_WebOptions_1_in_9,
-    main_WebOptions_1_in_10
-    ) [instance: 1, cache: 1];
+    main_WebOptions_4_in_1,
+    main_WebOptions_4_in_2,
+    main_WebOptions_4_in_3,
+    main_Receiver_191_out_1,
+    main_WebOptions_4_in_5,
+    main_WebOptions_4_in_6,
+    main_WebOptions_4_in_7,
+    main_WebOptions_4_in_8,
+    main_WebOptions_4_in_9,
+    main_WebOptions_4_in_10
+    ) [instance: 4, cache: 1];
     // 
     // node Image[3]: x = 46, y = 679, inputs = 49, label = Image
     // input[1]: defaulting = 0, visible = 0, type = 67108863, value = "Image_3"
     // input[4]: defaulting = 0, visible = 0, type = 1, value = 1
-    // input[5]: defaulting = 0, visible = 0, type = 8, value = [39.8125 14.8155 10.2725]
-    // input[6]: defaulting = 0, visible = 0, type = 8, value = [53.1545 -65.8721 45.8955]
-    // input[7]: defaulting = 1, visible = 0, type = 5, value = 47.8047
-    // input[8]: defaulting = 0, visible = 0, type = 1, value = 579
-    // input[9]: defaulting = 0, visible = 0, type = 5, value = 0.896
-    // input[10]: defaulting = 0, visible = 0, type = 8, value = [-0.0713902 0.392949 0.916785]
+    // input[5]: defaulting = 0, visible = 0, type = 8, value = [39.925 14.928 10.387]
+    // input[6]: defaulting = 0, visible = 0, type = 8, value = [118.175 -60.4289 60.7865]
+    // input[7]: defaulting = 1, visible = 0, type = 5, value = 64.1778
+    // input[8]: defaulting = 0, visible = 0, type = 1, value = 249
+    // input[9]: defaulting = 0, visible = 0, type = 5, value = 1.412
+    // input[10]: defaulting = 0, visible = 0, type = 8, value = [-0.31752 0.276857 0.906935]
     // input[11]: defaulting = 0, visible = 0, type = 5, value = 30.0
     // input[12]: defaulting = 0, visible = 0, type = 1, value = 1
     // input[14]: defaulting = 0, visible = 0, type = 1, value = 1
@@ -767,9 +770,9 @@ main_WebOptions_1_out_1 =
     // input[16]: defaulting = 1, visible = 0, type = 32, value = "none"
     // input[17]: defaulting = 1, visible = 0, type = 1, value = 1
     // input[18]: defaulting = 1, visible = 0, type = 1, value = 1
-    // input[19]: defaulting = 0, visible = 0, type = 3, value = 0
-    // input[25]: defaulting = 0, visible = 0, type = 32, value = "/a/raster/homes/raster/c1tignor/ibm6000/samples/java/npvcall3.0.0.gif"
-    // input[26]: defaulting = 0, visible = 0, type = 32, value = "gif delayed=1"
+    // input[19]: defaulting = 0, visible = 0, type = 1, value = 0
+    // input[25]: defaulting = 1, visible = 0, type = 32, value = "/a/raster/homes/raster/c1tignor/ibm6000/samples/java/npvcall3.0.0.gif"
+    // input[26]: defaulting = 1, visible = 0, type = 32, value = "gif delayed=1"
     // input[29]: defaulting = 0, visible = 0, type = 3, value = 1
     // input[30]: defaulting = 0, visible = 0, type = 16777248, value = {"Trading at...", "Time to Maturity", "Portfolio Value"}
     // input[32]: defaulting = 0, visible = 0, type = 16777224, value = {[25 0 -5] [55 1 25]}
@@ -777,13 +780,13 @@ main_WebOptions_1_out_1 =
     // input[36]: defaulting = 0, visible = 0, type = 3, value = 1
     // input[39]: defaulting = 0, visible = 0, type = 5, value = 0.6
     // input[40]: defaulting = 0, visible = 0, type = 32, value = "area"
-    // input[41]: defaulting = 0, visible = 0, type = 32, value = "camera"
+    // input[41]: defaulting = 0, visible = 0, type = 32, value = "none"
     // input[42]: defaulting = 0, visible = 0, type = 32, value = "Portfolio"
     // input[49]: visible = 1
     // page group: images
     // title: value = Portfolio
     // depth: value = 24
-    // window: position = (0.5203,0.0078), size = 0.4633x0.5469
+    // window: position = (0.5203,0.0220), size = 0.2055x0.4162, screen = 0
     // internal caching: 1
     //
 main_Image_3_out_1,
@@ -838,7 +841,7 @@ main_Image_3_out_3 =
     main_Image_3_in_46,
     main_Image_3_in_47,
     main_Image_3_in_48,
-    main_WebOptions_1_out_1
+    main_WebOptions_4_out_1
     ) [instance: 3, cache: 1];
     // 
     // node Light[1]: x = 271, y = 526, inputs = 3, label = Light
@@ -853,7 +856,7 @@ main_Light_1_out_1 =
     main_Light_1_in_3
     ) [instance: 1, cache: 1];
     // 
-    // node SetGlobal[1]: x = 137, y = 199, inputs = 3, label = SetGlobal
+    // node SetGlobal[1]: x = 249, y = 280, inputs = 3, label = SetGlobal
     // page group: java tools
     //
     SetGlobal(
@@ -862,7 +865,7 @@ main_Light_1_out_1 =
     main_SetGlobal_1_in_3
     ) [instance: 1, cache: 1];
     // 
-    // node SetLocal[1]: x = 298, y = 207, inputs = 3, label = SetLocal
+    // node SetLocal[1]: x = 167, y = 280, inputs = 3, label = SetLocal
     // page group: java tools
     //
     SetLocal(
@@ -887,10 +890,17 @@ main_ShowConnections_6_out_1 =
     main_RubberSheet_3_out_1
     ) [instance: 6, cache: 1];
     // 
-    // node Transmitter[4]: x = 455, y = 203, inputs = 1, label = java_control
+    // node Transmitter[4]: x = 356, y = 100, inputs = 1, label = java_control
     // page group: java tools
     //
 java_control = main_DXLInput_1_out_1;
+    //
+    // decorator Annotate	pos=(330,206) size=265x44 style(Label), value = <NULL>
+    // annotation user_begin: 58
+    // annotation user: D O   N O T   E D I T
+    // annotation user: This page was created automatically.
+    // annotation user_end: <NULL>
+    // page group: java tools
 // network: end of macro body
 CacheScene(main_Image_3_in_1, main_Image_3_out_1, main_Image_3_out_2);
 }
@@ -1069,17 +1079,17 @@ _java_control = 0;
 main_Scale_2_in_2 = [1 30 1];
 main_Scale_2_out_1 = NULL;
 main_Transmitter_3_out_1 = NULL;
-main_Receiver_176_out_1 = NULL;
-main_WebOptions_1_in_1 = NULL;
-main_WebOptions_1_in_2 = NULL;
-main_WebOptions_1_in_3 = NULL;
-main_WebOptions_1_in_5 = NULL;
-main_WebOptions_1_in_6 = NULL;
-main_WebOptions_1_in_7 = NULL;
-main_WebOptions_1_in_8 = NULL;
-main_WebOptions_1_in_9 = NULL;
-main_WebOptions_1_in_10 = NULL;
-main_WebOptions_1_out_1 = NULL;
+main_Receiver_191_out_1 = NULL;
+main_WebOptions_4_in_1 = "jpg";
+main_WebOptions_4_in_2 = "/Users/dthompsn/src/dxsamples/java/nets/npvcall3";
+main_WebOptions_4_in_3 = 0;
+main_WebOptions_4_in_5 = NULL;
+main_WebOptions_4_in_6 = NULL;
+main_WebOptions_4_in_7 = NULL;
+main_WebOptions_4_in_8 = NULL;
+main_WebOptions_4_in_9 = NULL;
+main_WebOptions_4_in_10 = NULL;
+main_WebOptions_4_out_1 = NULL;
 macro Image( id,object,where,useVector,to,from,width,resolution,aspect,up,viewAngle
 ,perspective,options,buttonState,buttonUpApprox,buttonDownApprox,buttonUpDensity
 ,buttonDownDensity,renderMode,defaultCamera,reset,backgroundColor,throttle,recEnable
@@ -1446,12 +1456,12 @@ IRoute_7_o4,IRcv183_o1,IRcv184_o1,NULL) [instance: 4, cache: 1];}
 main_Image_3_in_1 = "Image_3";
 main_Image_3_in_3 = "X24,,Portfolio";
 main_Image_3_in_4 = 1;
-main_Image_3_in_5 = [39.8125 14.8155 10.2725];
-main_Image_3_in_6 = [53.1545 -65.8721 45.8955];
+main_Image_3_in_5 = [39.925 14.928 10.387];
+main_Image_3_in_6 = [118.175 -60.4289 60.7865];
 main_Image_3_in_7 = NULL;
-main_Image_3_in_8 = 579;
-main_Image_3_in_9 = 0.896;
-main_Image_3_in_10 = [-0.0713902 0.392949 0.916785];
+main_Image_3_in_8 = 249;
+main_Image_3_in_9 = 1.412;
+main_Image_3_in_10 = [-0.31752 0.276857 0.906935];
 main_Image_3_in_11 = 30.0;
 main_Image_3_in_12 = 1;
 main_Image_3_in_13 = NULL;
@@ -1465,8 +1475,8 @@ main_Image_3_in_20 = NULL;
 main_Image_3_in_21 = NULL;
 main_Image_3_in_22 = NULL;
 main_Image_3_in_23 = NULL;
-main_Image_3_in_25 = "/a/raster/homes/raster/c1tignor/ibm6000/samples/java/npvcall3.0.0.gif";
-main_Image_3_in_26 = "gif delayed=1";
+main_Image_3_in_25 = NULL;
+main_Image_3_in_26 = NULL;
 main_Image_3_in_27 = NULL;
 main_Image_3_in_28 = NULL;
 main_Image_3_in_29 = 1;
@@ -1481,7 +1491,7 @@ main_Image_3_in_37 = NULL;
 main_Image_3_in_38 = NULL;
 main_Image_3_in_39 = 0.6;
 main_Image_3_in_40 = "area";
-main_Image_3_in_41 = "camera";
+main_Image_3_in_41 = "none";
 main_Image_3_in_42 = "Portfolio";
 main_Image_3_in_43 = NULL;
 main_Image_3_in_44 = NULL;
@@ -1494,7 +1504,7 @@ main_Light_1_in_2 = NULL;
 main_Light_1_in_3 = 1;
 main_SetGlobal_1_in_3 = NULL;
 main_SetLocal_1_in_3 = NULL;
-Executive("product version 4 1 3");
+Executive("product version 4 3 3");
 $sync
 // This network contains DXLink tools.  Therefore, the following line(s)
 // that would cause an execution when run in script mode have been 

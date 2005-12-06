@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Thu Sep 17 16:48:25 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 14:48:02 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -27,7 +27,7 @@ public class ddi extends DXLinkApplication {
         pdown_Selector_4.setLabelLines(1);
         pdown_Selector_4.setLabel("data variable");
         pdown_Selector_4.setHorizontal();
-        Selector_4.reshape (pdown_Selector_4, 0,0,262,38);
+        Selector_4.setBounds (pdown_Selector_4, 0,0,262,38);
         pdown_Selector_4.setOutputType(BinaryInstance.INTEGER);
         cp_1.addInteractor(pdown_Selector_4);
         Vector Selector_4_vn = new Vector(4);
@@ -53,7 +53,7 @@ public class ddi extends DXLinkApplication {
         step_Scalar_1.setLabelLines(1);
         step_Scalar_1.setLabel("Isosurface value:");
         step_Scalar_1.setHorizontal();
-        Scalar_1.reshape (step_Scalar_1, 0,120,262,36);
+        Scalar_1.setBounds (step_Scalar_1, 0,120,262,36);
         cp_1.addInteractor(step_Scalar_1);
         Scalar_1.setValues(1,-2.01298e-06,11.5107,1,1,1);
 
@@ -67,7 +67,7 @@ public class ddi extends DXLinkApplication {
         step_Integer_1.setLabelLines(1);
         step_Integer_1.setLabel("Slab position:");
         step_Integer_1.setHorizontal();
-        Integer_1.reshape (step_Integer_1, 0,60,262,36);
+        Integer_1.setBounds (step_Integer_1, 0,60,262,36);
         cp_1.addInteractor(step_Integer_1);
         Integer_1.setValues(1,0,7,1,2);
 
@@ -82,7 +82,7 @@ public class ddi extends DXLinkApplication {
 
         WebOptionsNode WebOptions_1 = new WebOptionsNode (this.network, "WebOptions", 1, "WebOptions");
         this.network.addElement((Object)WebOptions_1);
-        WebOptions_1.setInputValueString(1, "gif");
+        WebOptions_1.setInputValueString(1, "jpg");
 
 
         ImageNode Image_5 = new ImageNode (this.network, "Image", 5, "Image");

@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Sep 14 15:13:56 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 14:39:30 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -27,7 +27,7 @@ public class Topo extends DXLinkApplication {
         step_Integer_1.setLabelLines(1);
         step_Integer_1.setLabel("reduction exponent");
         step_Integer_1.setVertical();
-        Integer_1.reshape (step_Integer_1, 0,7,226,52);
+        Integer_1.setBounds (step_Integer_1, 0,7,226,52);
         cp_1.addInteractor(step_Integer_1);
         Integer_1.setValues(1,0,3,1,1);
 
@@ -41,7 +41,7 @@ public class Topo extends DXLinkApplication {
         step_Scalar_1.setLabelLines(1);
         step_Scalar_1.setLabel("rubber sheet scale factor");
         step_Scalar_1.setVertical();
-        Scalar_1.reshape (step_Scalar_1, 0,90,226,52);
+        Scalar_1.setBounds (step_Scalar_1, 0,90,226,52);
         cp_1.addInteractor(step_Scalar_1);
         Scalar_1.setValues(1,0,1,0.1,2,0.5);
 

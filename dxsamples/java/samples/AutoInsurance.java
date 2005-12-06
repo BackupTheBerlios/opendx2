@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Nov 23 10:24:02 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Thu Dec  1 12:14:04 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -33,7 +33,7 @@ public class AutoInsurance extends DXLinkApplication {
         toggle_Toggle_2.setLabelLines(1);
         toggle_Toggle_2.setLabel("Do K Means clustering");
         toggle_Toggle_2.setHorizontal();
-        Toggle_2.reshape (toggle_Toggle_2, 73,140,215,32);
+        Toggle_2.setBounds (toggle_Toggle_2, 73,140,215,32);
         toggle_Toggle_2.setOutputType(BinaryInstance.INTEGER);
         cp_1.addInteractor(toggle_Toggle_2);
         Vector Toggle_2_vn = new Vector(2);
@@ -54,7 +54,7 @@ public class AutoInsurance extends DXLinkApplication {
         step_Scalar_1.setLabelLines(1);
         step_Scalar_1.setLabel("Grid Size (miles)");
         step_Scalar_1.setVertical();
-        Scalar_1.reshape (step_Scalar_1, 194,34,165,52);
+        Scalar_1.setBounds (step_Scalar_1, 194,34,165,52);
         cp_1.addInteractor(step_Scalar_1);
         Scalar_1.setValues(1,0,1000,1,1,50);
 
@@ -69,7 +69,7 @@ public class AutoInsurance extends DXLinkApplication {
         step_Vector_1.setLabelLines(1);
         step_Vector_1.setLabel("Grid Offset");
         step_Vector_1.setVertical();
-        Vector_1.reshape (step_Vector_1, 2,22,165,77);
+        Vector_1.setBounds (step_Vector_1, 2,22,165,77);
         cp_1.addInteractor(step_Vector_1);
         Vector_1.setValues(1,-100,100,1,1,0);
         Vector_1.setValues(2,-100,100,1,1,0);
@@ -84,7 +84,7 @@ public class AutoInsurance extends DXLinkApplication {
         step_Integer_1.setLabelLines(1);
         step_Integer_1.setLabel("N Clusters");
         step_Integer_1.setVertical();
-        Integer_1.reshape (step_Integer_1, 2,178,165,52);
+        Integer_1.setBounds (step_Integer_1, 2,178,165,52);
         cp_1.addInteractor(step_Integer_1);
         Integer_1.setValues(1,-1000000,1000000,1,10);
 
@@ -98,7 +98,7 @@ public class AutoInsurance extends DXLinkApplication {
         step_Integer_2.setLabelLines(1);
         step_Integer_2.setLabel("N Iterations");
         step_Integer_2.setVertical();
-        Integer_2.reshape (step_Integer_2, 194,178,165,52);
+        Integer_2.setBounds (step_Integer_2, 194,178,165,52);
         cp_1.addInteractor(step_Integer_2);
         Integer_2.setValues(1,-1000000,1000000,1,10);
 
@@ -112,7 +112,7 @@ public class AutoInsurance extends DXLinkApplication {
         pdown_Selector_4.setLabelLines(1);
         pdown_Selector_4.setLabel("Color statistics");
         pdown_Selector_4.setVertical();
-        Selector_4.reshape (pdown_Selector_4, 187,34,116,133);
+        Selector_4.setBounds (pdown_Selector_4, 187,34,116,133);
         pdown_Selector_4.setOutputType(BinaryInstance.INTEGER);
         cp_3.addInteractor(pdown_Selector_4);
         Vector Selector_4_vn = new Vector(4);
@@ -138,7 +138,7 @@ public class AutoInsurance extends DXLinkApplication {
         pdown_Selector_3.setLabelLines(1);
         pdown_Selector_3.setLabel("Color");
         pdown_Selector_3.setVertical();
-        Selector_3.reshape (pdown_Selector_3, 21,34,146,108);
+        Selector_3.setBounds (pdown_Selector_3, 21,34,146,108);
         pdown_Selector_3.setOutputType(BinaryInstance.INTEGER);
         cp_3.addInteractor(pdown_Selector_3);
         Vector Selector_3_vn = new Vector(3);
@@ -162,7 +162,7 @@ public class AutoInsurance extends DXLinkApplication {
         toggle_Toggle_1.setLabelLines(1);
         toggle_Toggle_1.setLabel("Log height");
         toggle_Toggle_1.setHorizontal();
-        Toggle_1.reshape (toggle_Toggle_1, 14,158,142,32);
+        Toggle_1.setBounds (toggle_Toggle_1, 14,158,142,32);
         toggle_Toggle_1.setOutputType(BinaryInstance.INTEGER);
         cp_2.addInteractor(toggle_Toggle_1);
         Vector Toggle_1_vn = new Vector(2);
@@ -183,7 +183,7 @@ public class AutoInsurance extends DXLinkApplication {
         pdown_Selector_2.setLabelLines(1);
         pdown_Selector_2.setLabel("Height statistics");
         pdown_Selector_2.setVertical();
-        Selector_2.reshape (pdown_Selector_2, 189,11,122,133);
+        Selector_2.setBounds (pdown_Selector_2, 189,11,122,133);
         pdown_Selector_2.setOutputType(BinaryInstance.INTEGER);
         cp_2.addInteractor(pdown_Selector_2);
         Vector Selector_2_vn = new Vector(4);
@@ -209,7 +209,7 @@ public class AutoInsurance extends DXLinkApplication {
         pdown_Selector_1.setLabelLines(1);
         pdown_Selector_1.setLabel("Height");
         pdown_Selector_1.setVertical();
-        Selector_1.reshape (pdown_Selector_1, 14,11,146,108);
+        Selector_1.setBounds (pdown_Selector_1, 14,11,146,108);
         pdown_Selector_1.setOutputType(BinaryInstance.INTEGER);
         cp_2.addInteractor(pdown_Selector_1);
         Vector Selector_1_vn = new Vector(3);
@@ -234,6 +234,7 @@ public class AutoInsurance extends DXLinkApplication {
 
         WebOptionsNode WebOptions_4 = new WebOptionsNode (this.network, "WebOptions", 4, "WebOptions");
         this.network.addElement((Object)WebOptions_4);
+        WebOptions_4.setInputValueString(1, "gif");
 
 
         ImageNode Image_1 = new ImageNode (this.network, "Image", 1, "Image");
@@ -242,13 +243,14 @@ public class AutoInsurance extends DXLinkApplication {
         Image_1.setInputValueString(6, "[-14.3235 -164.717 101.088]");
         Image_1.setInputValueString(7, "38.6043");
         Image_1.setInputValueString(10, "[0.0453383 0.52159 0.851991]");
-        Image_1.setInputValueString(41, "pick");
+        Image_1.setInputValueString(41, "none");
         Image_1.setInputValueString(42, "Claims");
         Image_1.addInputArc (49, WebOptions_4, 1);
 
 
         WebOptionsNode WebOptions_5 = new WebOptionsNode (this.network, "WebOptions", 5, "WebOptions");
         this.network.addElement((Object)WebOptions_5);
+        WebOptions_5.setInputValueString(1, "gif");
 
 
         ImageNode Image_2 = new ImageNode (this.network, "Image", 2, "Image");

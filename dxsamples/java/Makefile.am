@@ -42,6 +42,9 @@ HomeOwn4.0.5.gif \
 HomeOwn4.0.6.gif \
 HomeOwn4.0.7.gif \
 HomeOwn4.0.8.gif \
+javadx-badge.gif \
+javadx-hd.gif \
+javadx-smhd.gif \
 MRI_2.html \
 MRI_21.0.0.gif \
 MRI_22.0.0.gif \

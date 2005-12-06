@@ -1,7 +1,7 @@
 //
-// time: Tue Apr 23 20:51:30 2002
+// time: Fri Dec  2 15:32:18 2005
 //
-// version: 3.1.2 (format), 4.1.3 (DX)
+// version: 3.2.0 (format), 4.3.3 (DX)
 //
 //
 //
@@ -188,7 +188,7 @@ main_Receiver_57_out_1[cache: 0] = r;
     // input[7]: defaulting = 0, visible = 0, type = 16777217, value = { 1 365 10 1 365 1 }
     // page group: call
     // vcr[1]: min = 1, max = 365, beg = 1, end = 365, cur = 151, inc = 10, loop = off, step = off, pal = off
-    // window: position = (0.7242,0.2842), size = 0.2188x0.0781
+    // window: position = (0.7242,0.2844), size = 0.2188x0.0778, screen = 0
     //
     main_Sequencer_1_out_1 = @frame;
     // 
@@ -1628,6 +1628,8 @@ java_sequence = main_Compute_1_out_1;
 main_Receiver_158_out_1[cache: 0] = java_sequence;
     // 
     // node WebOptions[1]: x = 140, y = 196, inputs = 10, label = WebOptions
+    // input[2]: defaulting = 0, visible = 0, type = 32, value = "/Users/dthompsn/src/dxsamples/java/nets/hedge3"
+    // input[3]: defaulting = 0, visible = 0, type = 3, value = 0
     // page group: image
     //
 main_WebOptions_1_out_1 = 
@@ -1651,7 +1653,7 @@ main_WebOptions_1_out_1 =
     // input[6]: defaulting = 0, visible = 0, type = 8, value = [-66.8957 -293.973 205.956]
     // input[7]: defaulting = 1, visible = 0, type = 5, value = 234.311
     // input[8]: defaulting = 0, visible = 0, type = 1, value = 629
-    // input[9]: defaulting = 0, visible = 0, type = 5, value = 0.75
+    // input[9]: defaulting = 0, visible = 0, type = 5, value = 0.732
     // input[10]: defaulting = 0, visible = 0, type = 8, value = [0.13856 0.444339 0.885078]
     // input[11]: defaulting = 0, visible = 0, type = 5, value = 30.0
     // input[12]: defaulting = 0, visible = 0, type = 1, value = 1
@@ -1660,7 +1662,7 @@ main_WebOptions_1_out_1 =
     // input[16]: defaulting = 1, visible = 0, type = 32, value = "none"
     // input[17]: defaulting = 1, visible = 0, type = 1, value = 1
     // input[18]: defaulting = 1, visible = 0, type = 1, value = 1
-    // input[19]: defaulting = 0, visible = 0, type = 3, value = 0
+    // input[19]: defaulting = 0, visible = 0, type = 1, value = 0
     // input[22]: defaulting = 1, visible = 0, type = 8, value = [0.71 0.71 0.71]
     // input[25]: defaulting = 0, visible = 0, type = 32, value = "/a/raster/homes/raster/c1tignor/ibm6000/samples/java/hedge3.0.0.gif"
     // input[26]: defaulting = 0, visible = 0, type = 32, value = "gif delayed=1"
@@ -1674,13 +1676,13 @@ main_WebOptions_1_out_1 =
     // input[38]: defaulting = 0, visible = 0, type = 16777248, value = {"background", "grid", "ticks", "labels"}
     // input[39]: defaulting = 0, visible = 0, type = 5, value = 0.6
     // input[40]: defaulting = 0, visible = 0, type = 32, value = "area"
-    // input[41]: defaulting = 0, visible = 0, type = 32, value = "rotate"
+    // input[41]: defaulting = 0, visible = 0, type = 32, value = "none"
     // input[42]: defaulting = 0, visible = 0, type = 32, value = "Hedge"
     // input[49]: visible = 1
     // page group: image
     // title: value = Hedge
     // depth: value = 24
-    // window: position = (0.4336,0.3389), size = 0.5023x0.5010
+    // window: position = (0.4336,0.3393), size = 0.5023x0.5010, screen = 0
     // internal caching: 1
     //
 main_Image_3_out_1,
@@ -2261,8 +2263,8 @@ main_DXLOutput_2_in_1 = "DXLOutput_2";
 main_Transmitter_3_out_1 = NULL;
 main_Receiver_158_out_1 = NULL;
 main_WebOptions_1_in_1 = NULL;
-main_WebOptions_1_in_2 = NULL;
-main_WebOptions_1_in_3 = NULL;
+main_WebOptions_1_in_2 = "/Users/dthompsn/src/dxsamples/java/nets/hedge3";
+main_WebOptions_1_in_3 = 0;
 main_WebOptions_1_in_5 = NULL;
 main_WebOptions_1_in_6 = NULL;
 main_WebOptions_1_in_7 = NULL;
@@ -2640,7 +2642,7 @@ main_Image_3_in_5 = [57.5 72.5 2.5];
 main_Image_3_in_6 = [-66.8957 -293.973 205.956];
 main_Image_3_in_7 = NULL;
 main_Image_3_in_8 = 629;
-main_Image_3_in_9 = 0.75;
+main_Image_3_in_9 = 0.732;
 main_Image_3_in_10 = [0.13856 0.444339 0.885078];
 main_Image_3_in_11 = 30.0;
 main_Image_3_in_12 = 1;
@@ -2671,7 +2673,7 @@ main_Image_3_in_37 = {"clear", "white", "yellow", "white"};
 main_Image_3_in_38 = {"background", "grid", "ticks", "labels"};
 main_Image_3_in_39 = 0.6;
 main_Image_3_in_40 = "area";
-main_Image_3_in_41 = "rotate";
+main_Image_3_in_41 = "none";
 main_Image_3_in_42 = "Hedge";
 main_Image_3_in_43 = NULL;
 main_Image_3_in_44 = NULL;
@@ -2682,7 +2684,7 @@ main_Image_3_in_48 = NULL;
 main_SetGlobal_1_in_3 = NULL;
 main_SetLocal_1_in_3 = NULL;
 main_Transmitter_23_in_1 = {0.5};
-Executive("product version 4 1 3");
+Executive("product version 4 3 3");
 $sync
 // This network contains DXLink tools.  Therefore, the following line(s)
 // that would cause an execution when run in script mode have been 

@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Sep 14 15:13:09 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 10:54:18 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -28,7 +28,7 @@ public class Navigation extends WRLApplication  {
         cp_5_label_0.setText("airways.... perfect for practicing some navigation.");
         cp_5_label_0.setAlignment(Label.LEFT);
         cp_5_label_0.init();
-        cp_5_label_0.reshape (0,71,311,54);
+        cp_5_label_0.setBounds (0,71,311,54);
         cp_5.addDecorator(cp_5_label_0);
         ControlPanel cp_6 = new ControlPanel(this.network, "Intersections", 6);
         this.network.addPanel(cp_6);
@@ -40,7 +40,7 @@ public class Navigation extends WRLApplication  {
         cp_6_label_0.setAlignment(Label.LEFT);
         cp_6_label_0.setFont(new Font("Helvetica", Font.BOLD, 10));
         cp_6_label_0.init();
-        cp_6_label_0.reshape (38,0,237,36);
+        cp_6_label_0.setBounds (38,0,237,36);
         cp_6.addDecorator(cp_6_label_0);
 
         LabelGroup cp_6_label_1 = new LabelGroup(2);
@@ -49,7 +49,7 @@ public class Navigation extends WRLApplication  {
         cp_6_label_1.setAlignment(Label.LEFT);
         cp_6_label_1.setFont(new Font("Helvetica", Font.BOLD, 10));
         cp_6_label_1.init();
-        cp_6_label_1.reshape (38,117,237,36);
+        cp_6_label_1.setBounds (38,117,237,36);
         cp_6.addDecorator(cp_6_label_1);
 
 
@@ -78,7 +78,7 @@ public class Navigation extends WRLApplication  {
         toggle_Toggle_17.setLabelLines(1);
         toggle_Toggle_17.setLabel("Intersection Names");
         toggle_Toggle_17.setHorizontal();
-        Toggle_17.reshape (toggle_Toggle_17, 54,159,181,32);
+        Toggle_17.setBounds (toggle_Toggle_17, 54,159,181,32);
         toggle_Toggle_17.setOutputType(BinaryInstance.INTEGER);
         cp_6.addInteractor(toggle_Toggle_17);
         Vector Toggle_17_vn = new Vector(2);
@@ -99,7 +99,7 @@ public class Navigation extends WRLApplication  {
         toggle_Toggle_4.setLabelLines(1);
         toggle_Toggle_4.setLabel("Intersection Names");
         toggle_Toggle_4.setHorizontal();
-        Toggle_4.reshape (toggle_Toggle_4, 54,39,181,32);
+        Toggle_4.setBounds (toggle_Toggle_4, 54,39,181,32);
         toggle_Toggle_4.setOutputType(BinaryInstance.INTEGER);
         cp_6.addInteractor(toggle_Toggle_4);
         Vector Toggle_4_vn = new Vector(2);
@@ -165,7 +165,7 @@ public class Navigation extends WRLApplication  {
         toggle_Toggle_18.setLabelLines(1);
         toggle_Toggle_18.setLabel("VRML");
         toggle_Toggle_18.setHorizontal();
-        Toggle_18.reshape (toggle_Toggle_18, 0,26,172,32);
+        Toggle_18.setBounds (toggle_Toggle_18, 0,26,172,32);
         toggle_Toggle_18.setOutputType(BinaryInstance.INTEGER);
         cp_5.addInteractor(toggle_Toggle_18);
         Vector Toggle_18_vn = new Vector(2);

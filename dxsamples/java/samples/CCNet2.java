@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Nov 23 10:24:31 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 10:15:29 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -31,7 +31,7 @@ public class CCNet2 extends DXLinkApplication {
         pdown_Selector_3.setLabelLines(1);
         pdown_Selector_3.setLabel("Select Data Range");
         pdown_Selector_3.setHorizontal();
-        Selector_3.reshape (pdown_Selector_3, 0,96,198,38);
+        Selector_3.setBounds (pdown_Selector_3, 0,96,198,40);
         pdown_Selector_3.setOutputType(BinaryInstance.INTEGER);
         cp_2.addInteractor(pdown_Selector_3);
         Vector Selector_3_vn = new Vector(2);
@@ -53,7 +53,7 @@ public class CCNet2 extends DXLinkApplication {
         pdown_Selector_2.setLabelLines(1);
         pdown_Selector_2.setLabel("Upper Triangle:");
         pdown_Selector_2.setHorizontal();
-        Selector_2.reshape (pdown_Selector_2, 0,48,198,38);
+        Selector_2.setBounds (pdown_Selector_2, 0,48,198,40);
         pdown_Selector_2.setOutputType(BinaryInstance.INTEGER);
         cp_2.addInteractor(pdown_Selector_2);
         Vector Selector_2_vn = new Vector(2);
@@ -76,7 +76,7 @@ public class CCNet2 extends DXLinkApplication {
         pdown_Selector_1.setLabel("Diagonal  elemenets ");
         pdown_Selector_1.setLabel("shown as white:");
         pdown_Selector_1.setHorizontal();
-        Selector_1.reshape (pdown_Selector_1, 0,0,198,38);
+        Selector_1.setBounds (pdown_Selector_1, 0,0,204,40);
         pdown_Selector_1.setOutputType(BinaryInstance.INTEGER);
         cp_2.addInteractor(pdown_Selector_1);
         Vector Selector_1_vn = new Vector(2);
@@ -98,7 +98,7 @@ public class CCNet2 extends DXLinkApplication {
         step_Scalar_1.setLabelLines(1);
         step_Scalar_1.setLabel("Min CC");
         step_Scalar_1.setVertical();
-        Scalar_1.reshape (step_Scalar_1, 204,0,197,52);
+        Scalar_1.setBounds (step_Scalar_1, 204,0,197,54);
         cp_2.addInteractor(step_Scalar_1);
         Scalar_1.setValues(1,0,1,0.01,2,0.4);
 
@@ -121,7 +121,7 @@ public class CCNet2 extends DXLinkApplication {
         pdown_Selector_4.setLabel("3D representation ");
         pdown_Selector_4.setLabel(" off when select data is off:");
         pdown_Selector_4.setVertical();
-        Selector_4.reshape (pdown_Selector_4, 204,72,197,68);
+        Selector_4.setBounds (pdown_Selector_4, 204,72,197,74);
         pdown_Selector_4.setOutputType(BinaryInstance.INTEGER);
         cp_2.addInteractor(pdown_Selector_4);
         Vector Selector_4_vn = new Vector(2);

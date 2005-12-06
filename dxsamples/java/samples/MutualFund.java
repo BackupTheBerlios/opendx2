@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Nov 23 10:25:43 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 10:36:36 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -27,7 +27,7 @@ public class MutualFund extends DXLinkApplication {
         pdown_Selector_16.setLabelLines(1);
         pdown_Selector_16.setLabel("Colored By:");
         pdown_Selector_16.setHorizontal();
-        Selector_16.reshape (pdown_Selector_16, 22,64,244,38);
+        Selector_16.setBounds (pdown_Selector_16, 22,64,244,38);
         pdown_Selector_16.setOutputType(BinaryInstance.INTEGER);
         cp_6.addInteractor(pdown_Selector_16);
         Vector Selector_16_vn = new Vector(12);
@@ -69,7 +69,7 @@ public class MutualFund extends DXLinkApplication {
         pdown_Selector_17.setLabelLines(1);
         pdown_Selector_17.setLabel("Sized By:");
         pdown_Selector_17.setHorizontal();
-        Selector_17.reshape (pdown_Selector_17, 22,12,244,38);
+        Selector_17.setBounds (pdown_Selector_17, 22,12,244,38);
         pdown_Selector_17.setOutputType(BinaryInstance.INTEGER);
         cp_6.addInteractor(pdown_Selector_17);
         Vector Selector_17_vn = new Vector(16);
@@ -123,7 +123,7 @@ public class MutualFund extends DXLinkApplication {
         pdown_Selector_22.setLabelLines(1);
         pdown_Selector_22.setLabel("Pick Output");
         pdown_Selector_22.setHorizontal();
-        Selector_22.reshape (pdown_Selector_22, 22,116,243,38);
+        Selector_22.setBounds (pdown_Selector_22, 22,116,243,38);
         pdown_Selector_22.setOutputType(BinaryInstance.INTEGER);
         cp_6.addInteractor(pdown_Selector_22);
         Vector Selector_22_vn = new Vector(16);

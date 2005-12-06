@@ -1,9 +1,9 @@
 //
 // Applet file generated automatically 
-// time: Mon Nov 23 10:26:48 1998
-// DX version: 3.1.2 (format), 4.1.1 (DXBeta)
+// time: Fri Dec  2 16:24:13 2005
+// DX version: 3.2.0 (format), 4.3.3 (DX)
 //
-// Java version 1.0
+// Java version 1.1
 //
 import dx.net.*;
 import dx.runtime.*;
@@ -31,7 +31,7 @@ public class wacc extends DXLinkApplication {
         step_Scalar_1.setLabelLines(1);
         step_Scalar_1.setLabel("Corporate Tax Rate");
         step_Scalar_1.setVertical();
-        Scalar_1.reshape (step_Scalar_1, 0,12,216,52);
+        Scalar_1.setBounds (step_Scalar_1, 0,12,216,52);
         cp_1.addInteractor(step_Scalar_1);
         Scalar_1.setValues(1,0,1,0.02,3,0.46);
 
@@ -45,7 +45,7 @@ public class wacc extends DXLinkApplication {
         step_Scalar_2.setLabelLines(1);
         step_Scalar_2.setLabel("Debt-Equity Ratio");
         step_Scalar_2.setVertical();
-        Scalar_2.reshape (step_Scalar_2, 0,82,216,52);
+        Scalar_2.setBounds (step_Scalar_2, 0,82,216,52);
         cp_1.addInteractor(step_Scalar_2);
         Scalar_2.setValues(1,0,10000,0.1,2,1);
 
