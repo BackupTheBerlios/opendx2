@@ -2,39 +2,21 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXApplication.java,v 1.5 2005/12/02 23:37:26 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXApplication.java,v 1.6 2005/12/06 07:24:51 davidt Exp $
  */
 
 // Notes:
 // ddi.html explains how the animation panel is supposed to work. Use it as description
 //  how to fix code.
 // Loop, palindrome, etc. don't affect Sequence but it should.
-// Zoom seems to not be pan zoom--but I think it was supposed to be.
-// Zoom does not work if the drag is to the left.
 // Sequence should not run unless Enable Animation is on.
 // The frames text field should disable when Sequence is on.
-// Pan should require a double-click and work--right now it doesn't do anything.
-// Orbit is not working--needs corrected.
 // If mode is changed by key stroke "reset", picks are not disbaled.
-// It appears as if the Interactors are not being sized correctly.
 // Need to work on listed set of Bugs/Issues.
 //
 // It appears that a lot of stuff doesn't quite work right. Need to work on every
 // single object. 
 
-// The file selector interactor appears to be broken.
-	// This is caused by needing to put quotes around the filename. Needs to be fixed.
-	// Fixed by adding code to turn quotes on in FileSelectorInstance.C
-
-// Why does the image need to be named in order to use the interaction modes. Need to document this.
-	// Is documented now.
-	
-// Why won't the interactions work with a simple named image sometimes?
-	// This was due to the fact that the image applet wasn't getting fully initialized
-	// because the entire applet wasn't loading (just the dx.jar portion) due to 
-	// missing quotes around the archive string in the html.
-	// This also sometimes happened when the browser didn't allow
-	// interapplet communication due to different code bases.
 
 // For some reason the image will pop up in an X window instead of being fed as a GIF.
 	// This appears to happen whenever a build is out of sync. If you take and rebuild
@@ -918,12 +900,17 @@ public void setJavaId ( int jid ) {}
         }
 
         else if ( ie.getSource() == this.set_caching ) {
-            this.setCachingMode( this.set_caching.getState(), true );
+            this.setCachingMode( this.set_caching.getState(), false );
         }
 
-        else if ( ie.getItem() == this.cache_options ) {
+        else if ( ie.getSource() == this.cache_options ) {
             int selected = this.cache_options.getSelectedIndex();
             this.setCacheOption( selected );
+            if ( selected == ImageNode.RESET ) {
+                this.set_caching.setState( false );
+            	this.setCachingMode( false, true );
+            	this.mode_chooser.select( 0 );
+			}
         }
 
         else if ( ie.getSource() == this.pick_chooser ) {
@@ -1092,8 +1079,9 @@ public void setJavaId ( int jid ) {}
     }
 
     private void setCacheOption ( int mode ) {
-        if ( mode == ImageNode.RESET )
+        if ( mode == ImageNode.RESET ) {
             this.cache_options.select( 0 );
+        }
 
         ImageNode in = this.selected_image;
 
@@ -1454,6 +1442,16 @@ public void setJavaId ( int jid ) {}
 
             if ( this.cache_options != null )
                 this.cache_options.setEnabled( true );
+
+ 			if (this.selected_image != null ) {
+	            if ( this.selected_image.getInteractionMode() != ImageWindow.LOOP_MODE ) {
+ 					Date now = new Date();
+	 	            long event_time = now.getTime();
+	 	            
+	 	            this.applyInteractionMode( this.selected_mode, event_time);
+	 	        }
+             }	
+
         }
 
         else {
@@ -1463,8 +1461,9 @@ public void setJavaId ( int jid ) {}
             if ( this.cache_options != null )
                 this.cache_options.setEnabled(false);
 
-            if ( this.selected_image != null )
-                this.selected_image.setInteractionMode( ImageWindow.NO_MODE, 0 );
+			if(this.selected_image != null )
+				if (this.selected_image.getInteractionMode() == ImageWindow.LOOP_MODE )
+					this.applyInteractionMode( ImageWindow.NO_MODE, 0 );
         }
 
         if ( this.imageWindows == null ) return ;

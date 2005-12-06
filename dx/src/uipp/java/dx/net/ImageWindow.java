@@ -58,7 +58,7 @@ public abstract class ImageWindow extends AppletClient
     //
     // Animation
     //
-    private Thread animation;
+    private Thread animation = null;
     private long start_time;
 
     private ImageNode node = null;
@@ -83,6 +83,10 @@ public abstract class ImageWindow extends AppletClient
         return dxapp.getMacroName() + "_" + this.initial_node_name;
     }
 
+	public String getName() {
+		return this.initial_node_name;
+	}
+	
     public static boolean IsGroupInteraction( int mode )
     {
         switch ( mode ) {
