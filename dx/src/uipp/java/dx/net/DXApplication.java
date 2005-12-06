@@ -2,7 +2,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXApplication.java,v 1.6 2005/12/06 07:24:51 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXApplication.java,v 1.7 2005/12/06 14:30:02 davidt Exp $
  */
 
 // Notes:
@@ -1026,7 +1026,7 @@ public void setJavaId ( int jid ) {}
             }
 
             if ( this.selected_mode == ImageWindow.LOOP_MODE ) {
-                if ( this.set_caching == null ) this.setCachingMode( true, false );
+                if ( this.set_caching != null ) this.setCachingMode( true, false );
             }
 
             if ( this.pick_chooser != null ) {
