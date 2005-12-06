@@ -37,67 +37,9 @@ MINING">
 		</TABLE>
 		<H2><A NAME="HDRLIMBUG"></A>11.5 Limitations/Bugs</H2>
 		<P>Java Explorer is the latest major feature added to Data Explorer. Some may say that this is more a proof of concept than an actual working product. The OpenDX community welcomes everybodies help in extending this feature and making Java Explorer a more robust solution. </P>
-		<H4>Limitations</H4>
-		<UL>
-			<LI>Java Explorer applets primarily only work with UN*X and Windows Netscape 4.x clients.
-			<LI>Data driven selector interactors don't work in the following circumstances:
-
-			<OL>
-				<LI>The selector interactor style was set to 'Option Menu' in the Data Explorer control panel, <B>AND</B>
-				<LI>The browser is Netscape 4.05 or earlier.
-			</OL>
-			This is very unfortunate since 'Option Menu' style selector interactors account for a large fraction of all data driven interactors. Some factors which make the problem a little less serious:
-			<OL>
-				<LI>The latest version of the Data Explorer user interface offers a new style - 'Scrolled List' - of selector interactor.
-				<LI>The interactors do work using Internet Explorer 4.0 or later.
-			</OL>
-			The symptom you will see if you use a data driven selector in a Netscape browser is that the menu gets larger and larger with each execution of the visual program. The root cause of the problem is that Netscape's version of Java supports only the Java 1.0 api for handling the Java Choice gui object. It was only with Java 1.1 that the possibility of implementing such a beast was provided.
-			<LI>All browsers used in testing this software exhibit certain cranky behavior when redrawing screen contents during a scrolling operations. The symptom is incorrectly drawn images or applets. Sometimes an applet is left completely blank. The workaround with Netscape 4.04, 4.05 and Internet Explorer 4.0 seems to be to select 'Reload' or 'Refresh'.
-
-			<LI>There are some beginnings for the ability to use a gui builder such as <a href="http://www.software.ibm.com/ad/vajava/about.htm">VisualAge</a>
-to combine Java Explorer's machine generated java code with customized
-gui interfaces for your web pages.  Future releases will include examples
-of such applets.  Combining the capabilites of Java Explorer with VisualAge
-involves importing Java Explorer's jar file, making an applet which
-subclasses dx.net.DXLinkApplication, and setting some of
-Java Explorer's properties.  The documentation you would need for this
-is missing, so it's virtually impossible to do.
-
-		</UL>
 		<H4>Bugs</H4>
 		<UL>
-			<LI>There are inputs of some interactors whose data driven-ness is not handled. This is simply a matter of the software being incomplete. Those that are handled:
-			<UL>
-				<LI>Reset
-				<LI>Scalar, Integer, Vector
-				<UL>
-					<LI>min, max, delta, value, decimals
-				</UL>
-				<LI>Selector, SelectorList
-				<UL>
-					<LI>stringdata, valuelist, index
-				</UL>
-				<LI>Toggle
-				<UL>
-					<LI>setvalue, unsetvalue
-				</UL>
-			</UL>
-			<LI>Data Explorer generates incorrect java code if an interactor in your visual program has multiple interactors in control panels.
-			<LI>Pan mode does not work if the image tool is using a perspective camera.
-			<LI>Scalar and Integer interactor nodes may have associated with them only stepper interactors in control panels. Any other interactor types will cause runtime errors.
-			<LI>Data Explorer's ui provides no way for the visual program author or the web page author to enter certain values:
-			<UL>
-				<LI>Locations of class files in the generated makefile needed for compiling.
-				<LI>Destination directory in the generated makefile needed for installing.
-				<LI>Ordering of control panels within the generated applet.
-				<LI>The contents of the 'Select an Image Tool' menu in the 'Execution' panel of the generated applet are based only on which Images were named in the original .net file. (See 'Edit/Change Image Name' on the menubar of a DX Image window.)
-			</UL>
-			<LI>Differences in width and height requirements between the java and OSF/Motif versions of interactors can lead to overlapping interactors. As a workaround make the OSF/Motif interactors in the original visual program about a 1/4 of an inch larger than they need to be.
-			<LI>Although your visual program may contain many Image tools, execution of the program in web page mode will update only those images which actually change as a result of an execution. (That's a good thing.) However if an image tool's defaultCamera input param in wired in then a new image will be transmitted to the browser with each execution. This is currently a problem even if resetCamera remains 0.
-
-			<LI>The <A HREF="../../../dxsamples/java/Status.htm#configuration">distributed execution</A> mechanism works badly on AIX4.1. Because of an apparent limitation on the use of popen to run remote programs via rsh, DXServer can not run multiple simultaneous sessions. In other words if you point more than browsers at pages served by a DXServer spawning remote dx sessions, the DXServer will hang. You'll have to use <B>$ kill -9 &lt;pid&gt; </B>to clean up after it. This mechanism does work on AIX4.2.
-
-		</UL>
+			<LI>Please see the current bugs at <a href="http://www.opendx.org/bugs/">http://www.opendx.org/bugs/</a></UL>
 		<HR>
 		<H2><A NAME="HDRJAVAINT"></A>11.6 Java Interfaces</H2>
 		<PRE>
