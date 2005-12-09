@@ -1,7 +1,9 @@
 #!/bin/sh
-export PATH="`cygpath \"$MSDEV\"`/bin:`cygpath \"$MSCOM\"`/bin:$PATH"
-export INCLUDE="$MSDEV/INCLUDE;XDKDEV/Include:$INCLUDE"
-export LIB="$MSDEV/LIB;$XDKDEV/Lib;$LIB"
+#export PATH="$PATH:`cygpath \"$MSDEV\"`/bin:`cygpath \"$MSCOM\"`/bin"
+#export INCLUDE="$INCLUDE:$MSDEV/INCLUDE;XDKDEV/Include"
+export INCLUDE="$INCLUDE;XDKDEV/Include"
+#export LIB="$LIB;$MSDEV/LIB;$XDKDEV/Lib"
+export LIB="$LIB;$XDKDEV/Lib"
 
 BINMODEDIR="$MSDEV\Lib"
 
@@ -148,9 +150,9 @@ while test ! "$1" = "" ; do
 	shift
 done
 
-tmp=`cygpath -a --windows "$MSDEV/Include"`
-msincs="/I\"$tmp\""
-incpath="$incpath $msincs"
+#tmp=`cygpath -a --windows "$MSDEV/Include"`
+#msincs="/I\"$tmp\""
+#incpath="$incpath $msincs"
 
 if test $mkdep = 1; then
     if test -e foo$$ ; then
