@@ -213,6 +213,9 @@ AC_DEFINE_UNQUOTED(BSH, "$bsh_path", [Path to the system's Bourne shell.])
 dnl End of command line options configuration
 
 dnl Start DX configuration
+AC_LANG([C++])
+AC_CHECK_HEADERS(stdlib.h)
+AC_LANG([C])
 
 #
 # Check for large file support
@@ -1127,7 +1130,11 @@ AC_DEFINE_UNQUOTED(O_RDONLY, _O_RDONLY, [O_RDONLY is defined somewhere])
 ])
 
 if test "$ARCH" = "intelnt" ; then
-    AC_CHECK_HEADERS(winbase.h wingdi.h winioctl.h winsock.h)
+    AC_CHECK_HEADERS([winbase.h wingdi.h winioctl.h winsock.h], [], [], 
+	[ #if HAVE_WINDOWS_H
+	  #include <windows.h>
+	  #endif
+])
 fi
 
 DX_CHECK_STAT

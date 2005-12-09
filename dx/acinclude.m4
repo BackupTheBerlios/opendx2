@@ -499,7 +499,7 @@ fnc="X"
 str="X"
 for f in stat _stat ; do
 for s in stat _stat ; do
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[ #include <stdlib.h>
 #include "statHdrs.h"
 ]], [[
 $f("foo", (struct $s *)0);
@@ -685,16 +685,24 @@ AC_DEFUN([DX_NEEDS_STDCXX],
     [
 	AC_LANG_PUSH([C++])
 	AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+		#ifdef HAVE_IOSTREAM
+		#include <iostream>
+		#elif HAVE_IOSTREAM_H
 		#include <iostream.h>
+		#endif
 	    ]], [[
-		cout << "foo";
+		std::cout << "foo";
 	    ]])],[ac_cv_requires_lstdcxx="no"],[
 		LIBS="$LIBS -lstdc++"
 		AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+			#ifdef HAVE_IOSTREAM
+			#include <iostream>
+			#elif HAVE_IOSTREAM_H
 			#include <iostream.h>
+			#endif
 		    ]],
 		    [[
-			cout << "foo";
+			std::cout << "foo";
 		    ]])],
 		    [ac_cv_requires_lstdcxx="yes"],
 		    [
