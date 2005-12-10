@@ -886,17 +886,22 @@ static void _dxf_INIT_RENDER_PASS (void *win, int bufferMode, int zBufferMode)
 /* #if defined(DX_NATIVE_WINDOWS) */
 static void _dxf_END_RENDER_PASS(void *win)
 {
+#if defined(DX_NATIVE_WINDOWS)
+	OGLWindow *oglw;
+#endif
 	DEFWINDATA(win) ;
 	DEFPORT(PORT_HANDLE) ;
 	glDisable(GL_BLEND);
 	OGL_FAIL_ON_ERROR(_dxf_END_RENDER_PASS);
+
 #if defined(DX_NATIVE_WINDOWS)
-	OGLWindow *oglw = GetOGLWPtr(XWINID);
+	oglw = GetOGLWPtr(XWINID);
 	
 	glFlush();
 	SwapBuffers(OGLHDC);
 	EndPaint(XWINID, &oglw->ps);
 #endif
+
 }
 /* #endif */
 
