@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/client/DXClientThread.java,v 1.2 2005/10/27 19:43:06 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/client/DXClientThread.java,v 1.3 2005/12/12 20:07:53 davidt Exp $
  */
 
 
@@ -100,7 +100,7 @@ public abstract class DXClientThread extends Thread
         public boolean message ( threadMsg msg )
         {
                 messageMsg mm = ( messageMsg ) msg;
-                //System.out.println ( mm.getMessage() );
+                System.out.println ( mm.getMessage() );
 
                 if ( mm.getMessage().startsWith( "Error" ) )
                         failed = true;
