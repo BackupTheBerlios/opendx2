@@ -2,7 +2,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXApplication.java,v 1.7 2005/12/06 14:30:02 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXApplication.java,v 1.8 2005/12/12 20:31:08 davidt Exp $
  */
 
 // Notes:
@@ -456,7 +456,14 @@ public abstract class DXApplication extends DXClient
             // Only allow numbers to be entered.
             cache_size.addKeyListener(new KeyAdapter() {
             	public void keyTyped(KeyEvent e) {
-            		e.consume();
+					char c = e.getKeyChar();
+					if(!(Character.isDigit(c) ||
+						( c == KeyEvent.VK_BACK_SPACE) ||
+						(c == KeyEvent.VK_DELETE) ||
+						(c == KeyEvent.VK_ENTER) ||
+						(c == KeyEvent.VK_ACCEPT))) {
+						e.consume();
+					}
             	}
             	public void keyPressed(KeyEvent e) {
             		char c = e.getKeyChar();
