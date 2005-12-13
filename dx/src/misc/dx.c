@@ -667,7 +667,7 @@ void dxjsconfig() {
     sprintf(temp, "%s\\userdata", jdxsrvPath);
     ConvertShortPathName(temp);
     if(*dxdata)
-    	strcat(dxmacros, ";"); strcat(dxdata, temp);
+    	strcat(dxdata, ";"); strcat(dxdata, temp);
     setenvpair("DXDATA",	dxdata);
 
     setenvpair("DXMODULES",	dxmodules);
