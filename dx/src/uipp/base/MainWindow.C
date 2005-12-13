@@ -105,6 +105,7 @@ MainWindow::MainWindow(const char* name, boolean usesMenuBar): UIComponent(name)
     this->createY = UIComponent::UnspecifiedPosition;
     this->createWidth  = UIComponent::UnspecifiedDimension;
     this->createHeight = UIComponent::UnspecifiedDimension;
+    this->screenLeftPos = 0;
 
     if (usesMenuBar) 
         this->commandScope = new CommandScope();
