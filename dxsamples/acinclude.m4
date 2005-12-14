@@ -13,7 +13,7 @@ dnl  DX_INSTALL_PATH
 dnl  Tries to find the location where dx is installed if it 
 dnl  can not then it defaults to /usr/local/dx
 dnl  --------------------------------------------------------
-AC_DEFUN(DX_INSTALL_PATH,
+AC_DEFUN([DX_INSTALL_PATH],
 [
 AC_CACHE_CHECK([for dx install path], ac_cv_dx_install_path,
 [
@@ -51,7 +51,7 @@ dnl DX_GET_ARCH
 dnl Finds what DX calls the platform's architecture.
 dnl (Rather than duplicate uname code everwhere we just ask dx)
 dnl  --------------------------------------------------------
-AC_DEFUN(DX_GET_ARCH,
+AC_DEFUN([DX_GET_ARCH],
 [
   AC_MSG_CHECKING(for platform architecture via dx -whicharch)
 AC_CHECK_PROGS( DX, dx )
@@ -64,7 +64,7 @@ dnl  Set up some architecture specific, primarily to handle AIX's
 dnl  export flags. (This needs to be fixed if using gcc)
 dnl  (I added the gcc case)
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_ARCH_SPECIFIC,
+AC_DEFUN([DX_ARCH_SPECIFIC],
 [
     AC_MSG_CHECKING(architecture specific stuff)
     case $DXARCH in
@@ -137,7 +137,7 @@ dnl  DX_GET_PREFIX
 dnl  Sets the prefix where to install the samples. Is overridden
 dnl  by the --prefix configure line.
 dnl  --------------------------------------------------------
-AC_DEFUN(DX_GET_PREFIX,
+AC_DEFUN([DX_GET_PREFIX],
 [
 DX_DEFAULT_INST=/usr/local
 if test "x${prefix}" = "xNONE" ; then
@@ -156,7 +156,7 @@ dnl
 dnl  Set up the JavaDX related samples stuff.
 dnl  DX_JAVADX_SETUP([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  --------------------------------------------------------
-AC_DEFUN(DX_JAVADX_SETUP,
+AC_DEFUN([DX_JAVADX_SETUP],
 [
 AC_MSG_CHECKING(for JavaDX files)
 if test -n "$ac_cv_dx_install_path" ; then
@@ -181,7 +181,7 @@ fi
 dnl
 dnl  DX_PROG_JAVAC([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PROG_JAVAC,[
+AC_DEFUN([DX_PROG_JAVAC],[
 AC_CHECKING([for java compiler])
 if test -n "$JAVAC"; then
   AC_MSG_WARN(JAVAC was preset)
@@ -202,7 +202,7 @@ dnl
 dnl  DX_PROG_JAVAC_WORKS(JAVA-COMPILER, [ACTION-IF-TRUE [, ACTION-IF-FALSE]])
 dnl  This will fail if the CLASSPATH is bad--that is what we want.
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PROG_JAVAC_WORKS,[
+AC_DEFUN([DX_PROG_JAVAC_WORKS],[
 AC_MSG_CHECKING([if $1 works...])
 dx_test_java_classname="dx_conf"
 dx_test_java_prog=$dx_test_java_classname".java"
@@ -230,7 +230,7 @@ rm -f $dx_test_java_prog $dx_test_java_class
 dnl
 dnl  DX_PROG_JAR([ACTION-IF-TRUE [, ACTION-IF-FALSE ]])
 dnl  -------------------------------------------------------------
-AC_DEFUN(DX_PROG_JAR,[
+AC_DEFUN([DX_PROG_JAR],[
 AC_CHECKING(for jar)
 if test -n "$JAR"; then
   AC_MSG_WARN(JAR was preset)
