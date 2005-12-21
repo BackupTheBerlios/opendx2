@@ -35,8 +35,18 @@ MINING">
 				<TD><A href="../srchindx.htm"><IMG SRC="../images/flcgh_11.gif" width=71 height=17 border="0" alt="Search"></A></TD>
 			</TR>
 		</TABLE>
-		<H2><A NAME="Header_26" ></A>OPTIONS now available on Macros</H2>
-		<P>Macros can now assign values to the ellipses for parameters within the CDB. To create an options list, open the selected macro, double-click on the Input module and add a list of options separated by semi-colons in the Optional Values box. Save the macro, and now the options will be available to the end-user.
+		<H2>Fixes</H2>
+		<p>For a list of the current bugs or to look at bugs that have been fixed, please visit &lt;<a href="http://www.opendx.org/bugs/">http://www.opendx.org/bugs/</a>&gt;</p>
+		<p>Added a fix for the Sequencer VCRControl so that it pops up in the right place all the time.</p>
+		<p>Corrected throttle problem for mult platforms. (bug #168)</p>
+		<p>Fix the Lookup module so it works again.</p>
+		<p>Fix when using more than 31 labels on an AutoAxes. (bug #166)</p>
+		<p>Changed the default behavior of nested loops within dx. Now the more time consuming but less crash prone TriangulateNestedLoops is used instead of the faster simpler version. Can change with the environment variable DX_SIMPLE_LOOPS</p>
+		<p>Fix for module builder crash (bug #162)</p>
+		<p>Added some support for a Multithreaded exec (still a long way from full mt). This makes way for wrapper classes for Microsoft .NET world.</p>
+		<p>Outboard modules working again.</p>
+		<p>Have eliminated the Red cache bug (Bug Id#90)</p>
+		<p>Added a fix to eliminate the socket lock problem (Bug Id#147) No longer any need to set the cache size for sockets.</p>
 		<HR>
 		<DIV align="center">
 			<P><A href="../allguide.htm"><IMG src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></A> <A href="../qikguide.htm"><IMG src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></A> <A href="../usrguide.htm"><IMG src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></A> <A href="../refguide.htm"><IMG src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></A></P>
