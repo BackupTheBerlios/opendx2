@@ -1,4 +1,4 @@
-4.x
+4.4.0
 ===============
 Fix for macros with space in their filename in the
 VPE. (bug #148)

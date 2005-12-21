@@ -95,7 +95,7 @@ int _dxf_StartWebBrowserWithURL(char *URL) {
                                       kLSRolesViewer, NULL, &outAppURL);
         CFStringRef urlStr = CFStringCreateWithCString(NULL, URL, kCFStringEncodingUTF8);
 	CFStringRef urlStrEsc = CFURLCreateStringByAddingPercentEscapes(NULL,
-					urlStr, NULL, NULL, kCFStringEncodingUTF8);
+					urlStr, CFSTR("#"), NULL, kCFStringEncodingUTF8);
         CFURLRef inURL = CFURLCreateWithString(NULL, urlStrEsc, NULL);
         CFArrayRef arRef = CFArrayCreate(NULL, (const void**)&inURL, 1, NULL);
         LSLaunchURLSpec lurl = { outAppURL, arRef, NULL, kLSLaunchDefaults, NULL};
