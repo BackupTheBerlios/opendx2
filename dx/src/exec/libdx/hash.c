@@ -119,7 +119,7 @@ struct hashTable
 };
 
 #define LEAF_INDEX(pseudoKey)    ((pseudoKey) & LEAF_WRAP)
-#define LEAF_INCREMENT(leafIndex) ((++leafIndex) & LEAF_WRAP)
+#define LEAF_INCREMENT(leafIndex) ((leafIndex+1) & LEAF_WRAP)
 
 #define DATA_PTR(elt) (Element)(((char *)elt)+sizeof(struct hashElement))
 
