@@ -18,14 +18,6 @@
 #include <errno.h>
 #endif
 
-#if defined(HAVE__SYS_ERRLIST)
-#define sys_errlist _sys_errlist
-#endif
-
-#if ! (defined(HAVE_SYS_ERRLIST) || defined(HAVE__SYS_ERRLIST))
-extern char *sys_errlist[];
-#endif
-
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
@@ -455,15 +447,6 @@ _sprintf(char *s, const char* format, ...)
     return STRLEN(s);
 }
 #endif 	// NON_ANSI_SPRINTF
-
-#ifdef NEEDS_STRERROR
-extern
-char *strerror(int errnum)
-{
-    return sys_errlist[errnum];
-}
-#endif
-
 
 //
 // Find the first string in s that is delimeted by the 'begin' and 'end'

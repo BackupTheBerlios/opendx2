@@ -24,14 +24,6 @@
 #include <errno.h>
 #endif
 
-#if (defined(HAVE__SYS_ERRLIST) && !defined(HAVE_SYS_ERRLIST))
-#define sys_errlist _sys_errlist
-#endif
-
-#if ! (defined(HAVE_SYS_ERRLIST) || defined(HAVE__SYS_ERRLIST))
-extern char *sys_errlist[];
-#endif
-
 #if defined(HAVE_SYS_FILE_H)
 #include <sys/file.h>
 #endif
@@ -597,7 +589,7 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
         return fd;
 
       npipe_error:
-        DXSetError(ERROR_DATA_INVALID, "%s: %s", *outname+1, sys_errlist[errno]);
+        DXSetError(ERROR_DATA_INVALID, "%s: %s", *outname+1, strerror(errno));
         Unlink(*outname+1);
         return ERROR;
 
@@ -800,7 +792,7 @@ static Error is_dir(FILE *fp, char *fname)
     struct stat sbuf;
 
     if (fstat(fileno(fp), &sbuf) < 0) {
-        DXSetError(ERROR_BAD_PARAMETER, "%s: %s", fname, sys_errlist[errno]);
+        DXSetError(ERROR_BAD_PARAMETER, "%s: %s", fname, strerror(errno));
 	return ERROR;
     }
 

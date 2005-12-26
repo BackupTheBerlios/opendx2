@@ -16,7 +16,7 @@ int main(){fprintf(stderr, "misc/dx is only needed on Windows (non-cygwin) based
 
 #include "utils.h"
 
-/* #define USE_REGISTRY 1 */
+#define USE_REGISTRY 1
 
 #if defined(cygwin)
 void

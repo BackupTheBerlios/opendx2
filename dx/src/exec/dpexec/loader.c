@@ -46,15 +46,6 @@
 #include <errno.h>
 #endif
 
-#if defined(HAVE__SYS_ERRLIST) 
-#define sys_errlist _sys_errlist
-#endif
-
-#if ! (defined(HAVE_SYS_ERRLIST) || defined(HAVE__SYS_ERRLIST))
-extern char *sys_errlist[];
-#endif
-
-
 #include <sys/stat.h> 
 
 #if  defined(DXD_NON_UNIX_DIR_SEPARATOR)
@@ -417,7 +408,7 @@ Error DXUnloadObjFile(char *fname, char *envvar)
 
     if (shl_unload(lp->h) < 0) {
 	DXSetError(ERROR_DATA_INVALID, "cannot unload file '%s', %s", 
-		   foundname, sys_errlist[errno]);
+		   foundname, strerror(errno));
 	DXFree((Pointer)foundname);
 	return ERROR;
     }
@@ -557,7 +548,7 @@ Error DXUnloadObjFile(char *fname, char *envvar)
 
     if (dlclose(lp->h) < 0) {
 	DXSetError(ERROR_DATA_INVALID, "cannot unload file '%s', %s", 
-		   foundname, sys_errlist[errno]);
+		   foundname, strerror(errno));
 	DXFree((Pointer)foundname);
 	return ERROR;
     }
@@ -692,7 +683,7 @@ Error DXUnloadObjFile(char *fname, char *envvar)
     
     if (! FreeLibrary((HMODULE)lp->h)) {
         DXSetError(ERROR_INVALID_DATA, "cannot unload file '%s', %s", 
-            foundname, sys_errlist[errno]);
+            foundname, strerror(errno));
         DXFree((Pointer)foundname);
         return ERROR;
     }

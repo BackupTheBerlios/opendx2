@@ -29,14 +29,6 @@
 #include <errno.h>
 #endif
 
-#if (defined(HAVE__SYS_ERRLIST) && !defined(HAVE_SYS_ERRLIST))
-#define sys_errlist _sys_errlist
-#endif
-
-#if ! (defined(HAVE_SYS_ERRLIST) || defined(HAVE__SYS_ERRLIST))
-extern char *sys_errlist[];
-#endif
-
 #if defined(HAVE_IO_H)
 #include <io.h>
 #endif
@@ -319,7 +311,7 @@ DXPrintError(char *s)
 
     /* print error message */
     if (_ErrorCode==ERROR_NONE && errno) {
-    	errnomsg = (char *) sys_errlist[errno];
+    	errnomsg = (char *) strerror(errno); /* sys_errlist[errno]; */
 	if (s)
 	    aqmessage("ERROR", "%s: %s", s, errnomsg);
 	else
