@@ -23,19 +23,19 @@
 #define DXD_ARCHNAME "intelnt"
 
 /* Copyright string placed on splash screen startup. */
-#define DXD_COPYRIGHT_STRING "Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.3.0"
+#define DXD_COPYRIGHT_STRING "Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.4.0"
 
 /* Modification Number */
 #define DXD_MODIFICATION 0
 
 /* Release Number */
-#define DXD_RELEASE 3
+#define DXD_RELEASE 4
 
 /* Version Number */
 #define DXD_VERSION 4
 
 /* Version String Number */
-#define DXD_VERSION_STRING "04.3.0000"
+#define DXD_VERSION_STRING "04.4.0000"
 
 /* Architecture exports */
 #define DXEXEC_EXP -def $(WEXP)

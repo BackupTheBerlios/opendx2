@@ -1,3 +1,7 @@
+Have started replacing
+Widget createWorkAread(Widget) with void* createWorkArea*();
+
+
 if deferring packet handling
 	let event loop continue working for 1 sec 
 	if handling stalled

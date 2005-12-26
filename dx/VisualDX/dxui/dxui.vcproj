@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.LIB odbc32.lib odbccp32.lib opengl32.lib glu32.lib netcdf.lib dllcdf.lib hd414m.lib hm414m.lib CORE_RL_magick_.lib binmode.obj"
+				AdditionalDependencies="Ws2_32.LIB user32.lib odbc32.lib odbccp32.lib opengl32.lib glu32.lib netcdf.lib dllcdf.lib hd414m.lib hm414m.lib CORE_RL_magick_.lib binmode.obj"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../Debug/libs_intelnt,../../../lib"
@@ -529,6 +529,9 @@
 			</File>
 			<File
 				RelativePath="..\..\src\uipp\windows\ImageWindow.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\uipp\windows\ImageWinForm.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\uipp\windows\InfoDialogManager.cpp">
@@ -1676,6 +1679,25 @@
 			</File>
 			<File
 				RelativePath="..\..\src\uipp\windows\ImageWindow.h">
+			</File>
+			<File
+				RelativePath="..\..\src\uipp\windows\ImageWinForm.h"
+				FileType="3">
+				<File
+					RelativePath="..\..\src\uipp\windows\ImageWinForm.resX">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCManagedResourceCompilerTool"
+							ResourceFileName="$(IntDir)/dxui.ImageWinForm.resources"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCManagedResourceCompilerTool"
+							ResourceFileName="$(IntDir)/dxui.ImageWinForm.resources"/>
+					</FileConfiguration>
+				</File>
 			</File>
 			<File
 				RelativePath="..\..\src\uipp\windows\InfoDialogManager.h">

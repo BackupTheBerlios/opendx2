@@ -36,6 +36,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dxui", "dxui\dxui.vcproj", 
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxuics", "dxuics\dxuics.csproj", "{0147EBF1-C55A-43F8-8320-B9610D89CCFA}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -78,6 +82,10 @@ Global
 		{0E555511-1CC6-4202-AB49-9438777FB623}.Debug.Build.0 = Debug|Win32
 		{0E555511-1CC6-4202-AB49-9438777FB623}.Release.ActiveCfg = Release|Win32
 		{0E555511-1CC6-4202-AB49-9438777FB623}.Release.Build.0 = Release|Win32
+		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Debug.ActiveCfg = Debug|.NET
+		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Debug.Build.0 = Debug|.NET
+		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Release.ActiveCfg = Release|.NET
+		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(SolutionItems) = postSolution
 	EndGlobalSection

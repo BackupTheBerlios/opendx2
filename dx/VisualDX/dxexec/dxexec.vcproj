@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..,../../include,../../../include"
+				AdditionalIncludeDirectories="&quot;C:\cygwin\usr\local\src\dx-cvs\dx\src\exec\dxmods&quot;;..;../../include;../../../include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;DLL_NETCDF"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
