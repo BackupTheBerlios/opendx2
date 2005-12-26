@@ -1,7 +1,7 @@
 //
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/ControlPanel.java,v 1.4 2005/10/27 19:43:06 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/ControlPanel.java,v 1.5 2005/12/26 21:33:43 davidt Exp $
  */
 
 package dx.net;
@@ -101,11 +101,11 @@ public class ControlPanel extends Panel
         this.setLayout( null );
 
         if ( this.interactors != null ) {
-            Enumeration enum = interactors.elements();
+            Enumeration enum1 = interactors.elements();
             Interactor i;
 
-            while ( enum.hasMoreElements() ) {
-                i = ( Interactor ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                i = ( Interactor ) enum1.nextElement();
                 i.init();
                 InteractorNode n = ( InteractorNode ) i.getNode();
                 n.installValues( i );
@@ -114,11 +114,11 @@ public class ControlPanel extends Panel
         }
 
         if ( this.decorators != null ) {
-            Enumeration enum = decorators.elements();
+            Enumeration enum1 = decorators.elements();
             Component d;
 
-            while ( enum.hasMoreElements() ) {
-                d = ( Component ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                d = ( Component ) enum1.nextElement();
                 this.add( d );
             }
         }

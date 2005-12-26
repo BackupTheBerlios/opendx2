@@ -256,10 +256,10 @@ public class DXServer extends Object
 
         DXServer.CleanUp();
 
-        Enumeration enum = users.elements();
+        Enumeration enum1 = users.elements();
 
-        while ( enum.hasMoreElements() ) {
-            DXServerThread dxst = ( DXServerThread ) enum.nextElement();
+        while ( enum1.hasMoreElements() ) {
+            DXServerThread dxst = ( DXServerThread ) enum1.nextElement();
 
             if ( dxst.isAlive() == true ) {
                 if ( debug )
@@ -287,28 +287,28 @@ public class DXServer extends Object
     {
         Vector dead_users;
         dead_users = new Vector( 10 );
-        Enumeration enum = users.elements();
+        Enumeration enum1 = users.elements();
 
-        while ( enum.hasMoreElements() ) {
-            DXServerThread old_dxst = ( DXServerThread ) enum.nextElement();
+        while ( enum1.hasMoreElements() ) {
+            DXServerThread old_dxst = ( DXServerThread ) enum1.nextElement();
 
             if ( old_dxst.isAlive() == false )
                 dead_users.addElement( old_dxst );
         }
 
-        enum = dead_users.elements();
+        enum1 = dead_users.elements();
 
-        while ( enum.hasMoreElements() ) {
-            DXServerThread dead_user = ( DXServerThread ) enum.nextElement();
+        while ( enum1.hasMoreElements() ) {
+            DXServerThread dead_user = ( DXServerThread ) enum1.nextElement();
             users.removeElement( ( Object ) dead_user );
         }
 
         synchronized ( DXServer.CachedConns ) {
             Vector killed = new Vector( 4 );
-            enum = DXServer.CachedConns.elements();
+            enum1 = DXServer.CachedConns.elements();
 
-            while ( enum.hasMoreElements() ) {
-                ConnectionEntry existing = ( ConnectionEntry ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                ConnectionEntry existing = ( ConnectionEntry ) enum1.nextElement();
 
                 if ( existing.getUserCount() == 0 ) {
                     if ( existing.getIdleTime() > DXServer.DXIdleTime ) {
@@ -322,10 +322,10 @@ public class DXServer extends Object
                 }
             }
 
-            enum = killed.elements();
+            enum1 = killed.elements();
 
-            while ( enum.hasMoreElements() ) {
-                Long dxlcon = ( Long ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                Long dxlcon = ( Long ) enum1.nextElement();
                 ConnectionEntry ce = ( ConnectionEntry ) DXServer.CachedConns.get( dxlcon );
                 ce.deleteFiles();
                 DXServer.CachedConns.remove( dxlcon );
@@ -339,13 +339,13 @@ public class DXServer extends Object
     public synchronized static DXServerThread GetThread( int java_id )
     {
         DXServerThread dxst = null;
-        Enumeration enum = users.elements();
+        Enumeration enum1 = users.elements();
 
-        while ( enum.hasMoreElements() ) {
-            dxst = ( DXServerThread ) enum.nextElement();
+        while ( enum1.hasMoreElements() ) {
+            dxst = ( DXServerThread ) enum1.nextElement();
 
             if ( dxst.isAlive() ) {
-                int id = dxst.getId();
+                int id = dxst.getIdDX();
 
                 if ( id == java_id )
                     break;
@@ -388,10 +388,10 @@ public class DXServer extends Object
         synchronized ( DXServer.CachedConns ) {
             if ( DXServer.CachedConns.size() > 0 ) {
                 ConnectionEntry minEntry = null;
-                Enumeration enum = CachedConns.elements();
+                Enumeration enum1 = CachedConns.elements();
 
-                while ( enum.hasMoreElements() ) {
-                    ConnectionEntry existing = ( ConnectionEntry ) enum.nextElement();
+                while ( enum1.hasMoreElements() ) {
+                    ConnectionEntry existing = ( ConnectionEntry ) enum1.nextElement();
 
                     if ( existing.isFailed() ) {}
                     else if ( minEntry == null ) {
@@ -498,10 +498,10 @@ public class DXServer extends Object
         synchronized ( DXServer.HostNames ) {
             try {
 
-                Enumeration enum = paths.elements();
+                Enumeration enum1 = paths.elements();
 
-                while ( ( !file_read ) && ( enum.hasMoreElements() ) ) {
-                    String path = ( String ) enum.nextElement();
+                while ( ( !file_read ) && ( enum1.hasMoreElements() ) ) {
+                    String path = ( String ) enum1.nextElement();
                     File hf = new File( path );
 
                     if ( hf.exists() == false ) continue;

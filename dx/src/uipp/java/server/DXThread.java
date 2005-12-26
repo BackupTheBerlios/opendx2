@@ -113,12 +113,12 @@ public abstract class DXThread extends Thread
                 if ( debug )
                     System.out.println ( getName() + ": " + inputLine );
 
-                Enumeration enum = actions.elements();
+                Enumeration enum1 = actions.elements();
 
                 boolean executed = false;
 
-                while ( enum.hasMoreElements() ) {
-                    DXThreadCommand stc = ( DXThreadCommand ) enum.nextElement();
+                while ( enum1.hasMoreElements() ) {
+                    DXThreadCommand stc = ( DXThreadCommand ) enum1.nextElement();
 
                     if ( inputLine.startsWith( stc.getCommandString() ) ) {
                         executed = stc.execute( inputLine );
@@ -200,10 +200,10 @@ public abstract class DXThread extends Thread
 
         synchronized ( msg_queue ) {
             if ( getQueueSize() > 0 ) {
-                Enumeration enum = msg_queue.elements();
+                Enumeration enum1 = msg_queue.elements();
 
-                while ( enum.hasMoreElements() ) {
-                    String msg = ( String ) enum.nextElement();
+                while ( enum1.hasMoreElements() ) {
+                    String msg = ( String ) enum1.nextElement();
 
                     if ( msg.startsWith( cmd ) ) {
                         retval = msg;

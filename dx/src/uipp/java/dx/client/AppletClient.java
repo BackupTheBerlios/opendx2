@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/client/AppletClient.java,v 1.2 2005/10/27 19:43:05 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/client/AppletClient.java,v 1.3 2005/12/26 21:33:42 davidt Exp $
  */
 
 /*
@@ -145,10 +145,10 @@ public abstract class AppletClient extends Applet
     public void stop()
     {
         super.stop();
-        Enumeration enum = this.fclts.elements();
+        Enumeration enum1 = this.fclts.elements();
 
-        while ( enum.hasMoreElements() ) {
-            AppletLoadThread fclt = ( AppletLoadThread ) enum.nextElement();
+        while ( enum1.hasMoreElements() ) {
+            AppletLoadThread fclt = ( AppletLoadThread ) enum1.nextElement();
 
             if ( ( fclt != null ) && ( fclt.isAlive() ) )
                 fclt.interrupt();
@@ -181,11 +181,11 @@ public abstract class AppletClient extends Applet
             }
 
             if ( sequence > current_sequence ) {
-                Enumeration enum = fclts.elements();
+                Enumeration enum1 = fclts.elements();
                 Vector deceased = new Vector( 4 );
 
-                while ( enum.hasMoreElements() ) {
-                    AppletLoadThread fclt = ( AppletLoadThread ) enum.nextElement();
+                while ( enum1.hasMoreElements() ) {
+                    AppletLoadThread fclt = ( AppletLoadThread ) enum1.nextElement();
 
                     if ( ( fclt != null ) && ( fclt.getSequence() < sequence ) ) {
                         if ( fclt.isAlive() ) 
@@ -199,10 +199,10 @@ public abstract class AppletClient extends Applet
                     }
                 }
 
-                enum = deceased.elements();
+                enum1 = deceased.elements();
 
-                while ( enum.hasMoreElements() ) {
-                    AppletLoadThread fclt = ( AppletLoadThread ) enum.nextElement();
+                while ( enum1.hasMoreElements() ) {
+                    AppletLoadThread fclt = ( AppletLoadThread ) enum1.nextElement();
                     fclts.removeElement( ( Object ) fclt );
                 }
             }

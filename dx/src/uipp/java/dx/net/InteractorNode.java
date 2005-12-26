@@ -40,10 +40,10 @@ public abstract class InteractorNode extends dx.net.DrivenNode
         {
                 if ( this.cfgValues == null ) return ;
 
-                Enumeration enum = this.cfgValues.elements();
+                Enumeration enum1 = this.cfgValues.elements();
 
-                while ( enum.hasMoreElements() ) {
-                        CfgValues cfg = ( CfgValues ) enum.nextElement();
+                while ( enum1.hasMoreElements() ) {
+                        CfgValues cfg = ( CfgValues ) enum1.nextElement();
 
                         if ( i != cfg.interactor ) continue;
 
@@ -64,10 +64,10 @@ public abstract class InteractorNode extends dx.net.DrivenNode
                 if ( this.interactors == null )
                         return ;
 
-                Enumeration enum = this.interactors.elements();
+                Enumeration enum1 = this.interactors.elements();
 
-                while ( enum.hasMoreElements() ) {
-                        Interactor i = ( Interactor ) enum.nextElement();
+                while ( enum1.hasMoreElements() ) {
+                        Interactor i = ( Interactor ) enum1.nextElement();
                         this.installValues( i );
                 }
         }

@@ -46,10 +46,10 @@ public class ScalarNode extends dx.net.InteractorNode
 
         if ( this.values == null ) return ;
 
-        Enumeration enum = this.values.elements();
+        Enumeration enum1 = this.values.elements();
 
-        while ( enum.hasMoreElements() ) {
-            NumericValues nv = ( NumericValues ) enum.nextElement();
+        while ( enum1.hasMoreElements() ) {
+            NumericValues nv = ( NumericValues ) enum1.nextElement();
 
             StepperInteractor si = ( StepperInteractor ) i;
 

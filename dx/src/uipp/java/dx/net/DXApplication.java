@@ -2,7 +2,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXApplication.java,v 1.8 2005/12/12 20:31:08 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXApplication.java,v 1.9 2005/12/26 21:33:43 davidt Exp $
  */
 
 // Notes:
@@ -184,10 +184,10 @@ public abstract class DXApplication extends DXClient
         this.named_image_list = null;
 
         if ( ( image_list != null ) && ( image_list.size() > 0 ) ) {
-            Enumeration enum = image_list.elements();
+            Enumeration enum1 = image_list.elements();
 
-            while ( enum.hasMoreElements() ) {
-                ImageNode in = ( ImageNode ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                ImageNode in = ( ImageNode ) enum1.nextElement();
                 String iname = in.getTitle();
                 boolean isWired = in.isInteractionModeConnected();
 
@@ -503,10 +503,10 @@ public abstract class DXApplication extends DXClient
 
             image_chooser = new Choice();
             image_chooser.setBackground( this.getBackground() );
-            Enumeration enum = this.named_image_list.elements();
+            Enumeration enum1 = this.named_image_list.elements();
 
-            while ( enum.hasMoreElements() ) {
-                ImageNode in = ( ImageNode ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                ImageNode in = ( ImageNode ) enum1.nextElement();
                 String name = in.getTitle();
                 image_chooser.addItem( name );
             }
@@ -627,10 +627,10 @@ public abstract class DXApplication extends DXClient
 
             pick_chooser = new Choice();
             pick_chooser.setBackground( this.getBackground() );
-            Enumeration enum = pick_list.elements();
+            Enumeration enum1 = pick_list.elements();
 
-            while ( enum.hasMoreElements() ) {
-                PickNode pn = ( PickNode ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                PickNode pn = ( PickNode ) enum1.nextElement();
                 String name = pn.getName() + "_" + pn.getInstanceNumber();
                 pick_chooser.addItem( name );
             }
@@ -668,10 +668,10 @@ public void setJavaId ( int jid ) {}
             //
             // Install value handlers for all DrivenNodes
             //
-            Enumeration enum = this.network.elements();
+            Enumeration enum1 = this.network.elements();
 
-            while ( enum.hasMoreElements() ) {
-                dx.net.Node n = ( dx.net.Node ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                dx.net.Node n = ( dx.net.Node ) enum1.nextElement();
                 n.enableJava();
             }
 
@@ -687,12 +687,12 @@ public void setJavaId ( int jid ) {}
             //
             this.locateImageWindows();
 
-            enum = this.imageWindows.elements();
+            enum1 = this.imageWindows.elements();
 
             int wid = -1;
 
-            while ( enum.hasMoreElements() ) {
-                ImageWindow iw = ( ImageWindow ) enum.nextElement(); wid++;
+            while ( enum1.hasMoreElements() ) {
+                ImageWindow iw = ( ImageWindow ) enum1.nextElement(); wid++;
                 String node_name = iw.getInitialNodeName( this.network );
 
                 if ( node_name == null ) continue;
@@ -1114,10 +1114,10 @@ public void setJavaId ( int jid ) {}
             node_list = this.network.makeNodeList( ic, false );
 
         if ( node_list != null ) {
-            Enumeration enum = node_list.elements();
+            Enumeration enum1 = node_list.elements();
 
-            while ( enum.hasMoreElements() ) {
-                ImageNode n = ( ImageNode ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                ImageNode n = ( ImageNode ) enum1.nextElement();
 
                 if ( group_name.equals( n.getGroupName() ) )
                     n.setCacheOption( mode );
@@ -1149,10 +1149,10 @@ public void setJavaId ( int jid ) {}
             node_list = this.network.makeNodeList( ic, false );
 
         if ( node_list != null ) {
-            Enumeration enum = node_list.elements();
+            Enumeration enum1 = node_list.elements();
 
-            while ( enum.hasMoreElements() ) {
-                ImageNode n = ( ImageNode ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                ImageNode n = ( ImageNode ) enum1.nextElement();
 
                 if ( group_name.equals( n.getGroupName() ) )
                     n.setCacheSize( size );
@@ -1214,10 +1214,10 @@ public void setJavaId ( int jid ) {}
                 node_list = this.network.makeNodeList( ic, false );
 
             if ( node_list != null ) {
-                Enumeration enum = node_list.elements();
+                Enumeration enum1 = node_list.elements();
 
-                while ( enum.hasMoreElements() ) {
-                    ImageNode n = ( ImageNode ) enum.nextElement();
+                while ( enum1.hasMoreElements() ) {
+                    ImageNode n = ( ImageNode ) enum1.nextElement();
 
                     if ( group_name.equals( n.getGroupName() ) )
                         n.setInteractionMode( mode, time );
@@ -1476,10 +1476,10 @@ public void setJavaId ( int jid ) {}
         if ( this.imageWindows == null ) return ;
 
         if ( clear_cache ) {
-            Enumeration enum = this.imageWindows.elements();
+            Enumeration enum1 = this.imageWindows.elements();
 
-            while ( enum.hasMoreElements() ) {
-                ImageWindow iw = ( ImageWindow ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                ImageWindow iw = ( ImageWindow ) enum1.nextElement();
                 iw.clearImageCache();
             }
         }

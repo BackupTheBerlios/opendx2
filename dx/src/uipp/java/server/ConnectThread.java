@@ -39,10 +39,10 @@ public class ConnectThread extends Thread
                 return ;
             }
 
-            Enumeration enum = DXServer.actions.elements();
+            Enumeration enum1 = DXServer.actions.elements();
 
-            while ( enum.hasMoreElements() ) {
-                ServerCommand sc = ( ServerCommand ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                ServerCommand sc = ( ServerCommand ) enum1.nextElement();
 
                 if ( inputLine.startsWith( sc.getCommandString() ) ) {
                     sc.execute( inputLine, clientSocket );

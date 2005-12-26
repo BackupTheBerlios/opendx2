@@ -67,7 +67,7 @@ public class ConnectionEntry extends Object
 
     public void attachUser (DXServerThread dxst, String path) {
 	try {
-	    this.users.put(dxst, this.useNet(path, dxst.getId()));
+	    this.users.put(dxst, this.useNet(path, dxst.getIdDX()));
 	    this.idle_time = 0;
 	} catch (FileNotFoundException fnfe) {
 	    System.out.println ("ConnectionEntry: file not found: " + path);
@@ -83,9 +83,9 @@ public class ConnectionEntry extends Object
     // and I want to avoid leaving files around.
     //
     public void deleteFiles() {
-	Enumeration enum = this.available_programs.elements();
-	while (enum.hasMoreElements()) {
-	    Vector replacements = (Vector)enum.nextElement();
+	Enumeration enum1 = this.available_programs.elements();
+	while (enum1.hasMoreElements()) {
+	    Vector replacements = (Vector)enum1.nextElement();
 	    Enumeration renum = replacements.elements();
 	    while (renum.hasMoreElements()) {
 		String munged_net = (String)renum.nextElement();

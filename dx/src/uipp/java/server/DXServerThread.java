@@ -115,7 +115,7 @@ public class DXServerThread extends DXThread
 	    }
     }
 
-    public  int     getId() 			{ return java_id; }
+    public  int     getIdDX() 			{ return java_id; }
     public  Long    getDXLConnection()		{ return dxlconnection; }
     public  void    executionFinished() 	{ transmit (new doneMsg()); }
 
@@ -132,9 +132,9 @@ public class DXServerThread extends DXThread
 public void fileNotify(String file_name) 
 {
     boolean found = false;
-    Enumeration enum = shown.elements();
-    while (enum.hasMoreElements()) {
-	FileStyle fs = (FileStyle)enum.nextElement();
+    Enumeration enum1 = shown.elements();
+    while (enum1.hasMoreElements()) {
+	FileStyle fs = (FileStyle)enum1.nextElement();
 	String shown_file = fs.getFileName();
 	if (shown_file.equals(file_name) == true) {
 	    found = true;
@@ -146,22 +146,22 @@ public void fileNotify(String file_name)
 	if (nfs.isSequenced()) {
 	    int seq = nfs.getSequence();
 	    if (seq > latest_sequence) {
-		enum = shown.elements();
+		enum1 = shown.elements();
 		FileStyle ofs;
 		Vector dying = new Vector(4);
-		while (enum.hasMoreElements()) {
-		    ofs = (FileStyle)enum.nextElement();
+		while (enum1.hasMoreElements()) {
+		    ofs = (FileStyle)enum1.nextElement();
 		    int sequence = ofs.getSequence();
 		    if (sequence <= latest_sequence)
 			dying.addElement((Object)ofs);
 		}
-		enum = dying.elements();
-		while (enum.hasMoreElements()) {
-		    ofs = (FileStyle)enum.nextElement();
+		enum1 = dying.elements();
+		while (enum1.hasMoreElements()) {
+		    ofs = (FileStyle)enum1.nextElement();
 		    shown.removeElement((Object)ofs);
 		    ofs.delete();
 		}
-		enum = null;
+		enum1 = null;
 		dying.removeAllElements(); 
 	    }
 	    latest_sequence = seq;
@@ -315,7 +315,7 @@ public DXServerThread(Socket client, int id)
     setidMsg sm = new setidMsg();
     sm.setOutputDir(DXServer.getOutputDir());
     sm.setOutputUrl(DXServer.getOutputUrl());
-    sm.setJavaId(getId());
+    sm.setJavaId(getIdDX());
     transmit (sm);
 }
 
@@ -361,10 +361,10 @@ public void cleanUp()
 	DXServer.EndConnection(this.getDXLConnection(), this);
     this.dxlconnection = new Long(0);
 
-    Enumeration enum = shown.elements();
+    Enumeration enum1 = shown.elements();
     FileStyle fs;
-    while (enum.hasMoreElements()) {
-	fs = (FileStyle)enum.nextElement();
+    while (enum1.hasMoreElements()) {
+	fs = (FileStyle)enum1.nextElement();
 	fs.delete();
     }
     shown = null;
@@ -446,9 +446,9 @@ public synchronized boolean loadProgram(threadMsg msg)
 
 	    this.exec_state = DXServerThread.NotExecuting;
 	    if (this.setvalues != null) {
-		Enumeration enum = this.setvalues.elements();
-		while (enum.hasMoreElements()) {
-		    threadMsg buffered = (threadMsg)enum.nextElement();
+		Enumeration enum1 = this.setvalues.elements();
+		while (enum1.hasMoreElements()) {
+		    threadMsg buffered = (threadMsg)enum1.nextElement();
 		    Enumeration anum = actions.elements();
 		    while (anum.hasMoreElements()) {
 			ServerThreadCommand stc = (ServerThreadCommand)anum.nextElement();
@@ -485,9 +485,9 @@ private void flushQueue()
     if (getConnection() == 0) return ;
     this.exec_state = DXServerThread.NotExecuting;
     if (this.setvalues != null) {
-	Enumeration enum = this.setvalues.elements();
-	while (enum.hasMoreElements()) {
-	    threadMsg buffered = (threadMsg)enum.nextElement();
+	Enumeration enum1 = this.setvalues.elements();
+	while (enum1.hasMoreElements()) {
+	    threadMsg buffered = (threadMsg)enum1.nextElement();
 	    Enumeration anum = actions.elements();
 	    while (anum.hasMoreElements()) {
 		ServerThreadCommand stc = (ServerThreadCommand)anum.nextElement();
@@ -583,9 +583,9 @@ Vector paths;
     synchronized (DXServerThread.PathNames) {
 	try {
 
-	    Enumeration enum = paths.elements();
-	    while ((!file_read) && (enum.hasMoreElements())) {
-		String path = (String)enum.nextElement();
+	    Enumeration enum1 = paths.elements();
+	    while ((!file_read) && (enum1.hasMoreElements())) {
+		String path = (String)enum1.nextElement();
 		File hf = new File(path);
 		if (hf.exists() == false) continue;
 		if (hf.canRead() == false) continue;

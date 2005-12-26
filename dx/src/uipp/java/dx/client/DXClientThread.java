@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/client/DXClientThread.java,v 1.3 2005/12/12 20:07:53 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/client/DXClientThread.java,v 1.4 2005/12/26 21:33:43 davidt Exp $
  */
 
 
@@ -57,11 +57,11 @@ public abstract class DXClientThread extends Thread
 
                         while ( ( failed == false ) && ( ( inputLine = inputStream.readLine() ) != null ) ) {
                         		//System.out.println("InputLine: " + inputLine);
-                                Enumeration enum = actions.elements();
+                                Enumeration enum1 = actions.elements();
                                 boolean executed = false;
 
-                                while ( enum.hasMoreElements() ) {
-                                        DXClientThreadCommand etc = ( DXClientThreadCommand ) enum.nextElement();
+                                while ( enum1.hasMoreElements() ) {
+                                        DXClientThreadCommand etc = ( DXClientThreadCommand ) enum1.nextElement();
                                         
                                         if ( inputLine.startsWith( etc.getCommandString() ) ) {
                                                 executed = etc.execute( inputLine );

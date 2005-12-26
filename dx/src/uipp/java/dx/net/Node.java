@@ -48,9 +48,9 @@ public class Node extends Object implements dx.net.PacketIF {
 
     protected Node getSourceNode(int input) {
 	if (this.input_arcs == null) return null;
-	Enumeration enum = this.input_arcs.elements();
-	while (enum.hasMoreElements()) {
-	    Arc a = (Arc)enum.nextElement();
+	Enumeration enum1 = this.input_arcs.elements();
+	while (enum1.hasMoreElements()) {
+	    Arc a = (Arc)enum1.nextElement();
 	    if (a.getInputParamNumber() == input) 
 		return a.getSourceNode();
 	}
@@ -59,9 +59,9 @@ public class Node extends Object implements dx.net.PacketIF {
 
     protected boolean isInputConnected(int input) {
 	if (this.input_arcs == null) return false;
-	Enumeration enum = this.input_arcs.elements();
-	while (enum.hasMoreElements()) {
-	    Arc a = (Arc)enum.nextElement();
+	Enumeration enum1 = this.input_arcs.elements();
+	while (enum1.hasMoreElements()) {
+	    Arc a = (Arc)enum1.nextElement();
 	    if (a.getInputParamNumber() == input) 
 		return true;
 	}

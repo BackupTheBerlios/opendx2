@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXLinkApplication.java,v 1.2 1999/07/09 19:30:00 daniel Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/net/DXLinkApplication.java,v 1.3 2005/12/26 21:33:43 davidt Exp $
  */
 package dx.net;
 /*
@@ -165,9 +165,9 @@ public abstract class DXLinkApplication extends DXApplication {
 	String msgTxt = mmsg.getMessage();
 	int longest = 0;
 	dx.net.PacketIF found_node = null;
-	Enumeration enum = this.handlers.keys();
-	while (enum.hasMoreElements()) {
-	    String matchStr = (String)enum.nextElement();
+	Enumeration enum1 = this.handlers.keys();
+	while (enum1.hasMoreElements()) {
+	    String matchStr = (String)enum1.nextElement();
 	    if (msgTxt.startsWith(matchStr)) {
 		int length = matchStr.length();
 		if (length > longest) {
@@ -213,9 +213,9 @@ public abstract class DXLinkApplication extends DXApplication {
 	    if (dhClass == null) return ;
 
 	    Vector assd = null;
-	    Enumeration enum = this.unassociated_dxloutputs.elements();
-	    while (enum.hasMoreElements()) {
-		DXLOutputNode don = (DXLOutputNode)enum.nextElement();
+	    Enumeration enum1 = this.unassociated_dxloutputs.elements();
+	    while (enum1.hasMoreElements()) {
+		DXLOutputNode don = (DXLOutputNode)enum1.nextElement();
 		if (don.hasHandler()) {
 		    if (assd == null)
 			assd = new Vector(4);
@@ -241,9 +241,9 @@ public abstract class DXLinkApplication extends DXApplication {
 	    }
 
 	    if (assd != null) {
-		enum = assd.elements();
-		while (enum.hasMoreElements()) {
-		    DXLOutputNode don = (DXLOutputNode)enum.nextElement();
+		enum1 = assd.elements();
+		while (enum1.hasMoreElements()) {
+		    DXLOutputNode don = (DXLOutputNode)enum1.nextElement();
 		    this.unassociated_dxloutputs.removeElement(don);
 		}
 	    }
@@ -257,10 +257,10 @@ public abstract class DXLinkApplication extends DXApplication {
 	if (this.object_applets == null) return ;
 	if (this.object_applets.size() < 1) return ;
 
-	Enumeration enum = this.object_applets.elements();
+	Enumeration enum1 = this.object_applets.elements();
 	DXViewIF destination = null;
-	while (enum.hasMoreElements()) {
-	    DXViewIF dvi = (DXViewIF)enum.nextElement();
+	while (enum1.hasMoreElements()) {
+	    DXViewIF dvi = (DXViewIF)enum1.nextElement();
 
 	    String nname = dvi.getNodeName();
 	    if (nname == null) continue;
@@ -298,9 +298,9 @@ public abstract class DXLinkApplication extends DXApplication {
 	if (this.object_applets == null)
 	    this.object_applets = new Vector(4);
 
-	Enumeration enum = apcxt.getApplets();
-	while (enum.hasMoreElements()) {
-	    Applet a = (Applet)enum.nextElement();
+	Enumeration enum1 = apcxt.getApplets();
+	while (enum1.hasMoreElements()) {
+	    Applet a = (Applet)enum1.nextElement();
 	    Class c = a.getClass();
 	    Class[] faces = c.getInterfaces();
 	    int len = faces.length;

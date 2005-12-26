@@ -19,9 +19,9 @@ public class FileStyleWRAP extends FileStyle {
 	//
 	// Delete the associated file(s)
 	//
-	Enumeration enum = extensions.elements();
-	while (enum.hasMoreElements()) {
-	    String ext = (String)enum.nextElement();
+	Enumeration enum1 = extensions.elements();
+	while (enum1.hasMoreElements()) {
+	    String ext = (String)enum1.nextElement();
 	    String path = base_name + "." + ext;
 	    File df = new File(path);
 	    if (df.exists()) df.delete();

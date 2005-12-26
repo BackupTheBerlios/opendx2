@@ -34,9 +34,9 @@ public class Network extends Vector {
     public synchronized Vector makeNodeList(Class nodeClass, boolean incsub) {
 	if (this.size() == 0) return null;
 	Vector retval = null;
-	Enumeration enum = this.elements();
-	while (enum.hasMoreElements()) {
-	    Node n = (Node)enum.nextElement();
+	Enumeration enum1 = this.elements();
+	while (enum1.hasMoreElements()) {
+	    Node n = (Node)enum1.nextElement();
 	    Class nc = n.getClass();
 	    while (nc != null) {
 		if (nc.equals(nodeClass)) {
@@ -57,9 +57,9 @@ public class Network extends Vector {
 	Vector v = this.makeNodeList(nClass, incsub);
 	if (v == null) return null;
 	Vector retval = null;
-	Enumeration enum = v.elements();
-	while (enum.hasMoreElements()) {
-	    Node n = (Node)enum.nextElement();
+	Enumeration enum1 = v.elements();
+	while (enum1.hasMoreElements()) {
+	    Node n = (Node)enum1.nextElement();
 	    if (n.getNotation().equals(notat)) {
 		if (retval == null) retval = new Vector(2);
 		retval.addElement((Object)n);
@@ -72,9 +72,9 @@ public class Network extends Vector {
     public synchronized Vector makeNodeList(String nodename) {
 	if (this.size() == 0) return null;
 	Vector retval = null;
-	Enumeration enum = this.elements();
-	while (enum.hasMoreElements()) {
-	    Node n = (Node)enum.nextElement();
+	Enumeration enum1 = this.elements();
+	while (enum1.hasMoreElements()) {
+	    Node n = (Node)enum1.nextElement();
 	    String match = n.getName();
 	    if (nodename.equals(match)) {
 		if (retval == null) retval = new Vector(10);
@@ -96,9 +96,9 @@ public class Network extends Vector {
 
     public synchronized Node getNode(String name, int instance) {
 	Vector v = this.makeNodeList(name);
-	Enumeration enum = v.elements();
-	while (enum.hasMoreElements()) {
-	    Node n = (Node)enum.nextElement();
+	Enumeration enum1 = v.elements();
+	while (enum1.hasMoreElements()) {
+	    Node n = (Node)enum1.nextElement();
 	    if (n.getInstanceNumber() == instance) 
 		return n;
 	}

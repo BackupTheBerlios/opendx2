@@ -55,10 +55,10 @@ public class SelectionNode extends dx.net.BinaryNode
                         bi.setOptions( this.strings, this.values );
 
                         if ( this.selections != null ) {
-                                Enumeration enum = this.selections.elements();
+                                Enumeration enum1 = this.selections.elements();
 
-                                while ( enum.hasMoreElements() ) {
-                                        Integer I = ( Integer ) enum.nextElement();
+                                while ( enum1.hasMoreElements() ) {
+                                        Integer I = ( Integer ) enum1.nextElement();
                                         bi.selectOption( I.intValue() );
                                 }
                         }
@@ -78,10 +78,10 @@ public class SelectionNode extends dx.net.BinaryNode
                                 if ( this.selections.size() > 1 ) {
                                         cstr = "{ ";
                                         cval = "{ ";
-                                        Enumeration enum = this.selections.elements();
+                                        Enumeration enum1 = this.selections.elements();
 
-                                        while ( enum.hasMoreElements() ) {
-                                                Integer s = ( Integer ) enum.nextElement();
+                                        while ( enum1.hasMoreElements() ) {
+                                                Integer s = ( Integer ) enum1.nextElement();
                                                 int ind = s.intValue() - 1;
                                                 cstr += "\"" + ( String ) this.strings.elementAt( ind ) + "\" ";
 

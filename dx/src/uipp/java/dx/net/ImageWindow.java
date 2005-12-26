@@ -680,10 +680,10 @@ public abstract class ImageWindow extends AppletClient
                     }
                 }
 
-                Enumeration enum = this.images.elements();
+                Enumeration enum1 = this.images.elements();
 
-                while ( ( !error ) && ( enum.hasMoreElements() ) ) {
-                    Image im = ( Image ) enum.nextElement();
+                while ( ( !error ) && ( enum1.hasMoreElements() ) ) {
+                    Image im = ( Image ) enum1.nextElement();
                     super.setCurrentImage( im, getCurrentSequence(), 0 );
                     repaint();
 
@@ -745,12 +745,12 @@ public abstract class ImageWindow extends AppletClient
         if ( this.interactionMode == ImageWindow.PICK_MODE ) {
             if ( this.pick_list == null ) return ;
 
-            Enumeration enum = this.pick_list.elements();
+            Enumeration enum1 = this.pick_list.elements();
 
             g.setColor( Color.white );
 
-            while ( enum.hasMoreElements() ) {
-                Point p = ( Point ) enum.nextElement();
+            while ( enum1.hasMoreElements() ) {
+                Point p = ( Point ) enum1.nextElement();
                 g.fill3DRect( p.x - 2, p.y - 2, 4, 4, true );
             }
         }
