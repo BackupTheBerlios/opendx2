@@ -229,7 +229,7 @@ do {									\
 #define WORKSPACE_PAGES 1
 
 #if defined(HAVE_LIBXMSTATIC)
-#define XMSTATIC
+#define XMSTATIC 1
 #endif
 
 #endif
