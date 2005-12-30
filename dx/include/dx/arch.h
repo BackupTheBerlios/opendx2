@@ -669,7 +669,7 @@ int getopt(int,char**,char*);
 
 
 #define wait(status)  cwait(status, status, 0)        
-#define trunc(value) ((float)((int)(value)))
+#define trunc(value) ((double)((int)(value)))
 #define rint(value) ((float)((int)((value) + 0.5)))       
 
 #endif  /*   intelnt  */
