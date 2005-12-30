@@ -38,7 +38,9 @@
 #endif
 
 #if !defined(HAVE_TRUNC)
-#define trunc(c)	((double)((int)(c)))
+# ifndef trunc
+#  define trunc(c)	((double)((int)(c)))
+# endif
 #endif
 
 #define	TWO_PI		(double)(M_PI * 2.0)
@@ -50,7 +52,7 @@
 
 #define ROUND(a) 	( (a) > 0 ? (a) + 0.5 : (a) - 0.5 )
 
-#if defined(hp700) || defined(OS2) || defined(intelnt)
+#if defined(hp700) || defined(OS2)
 #   define rint(x) ((double)((int)((x) + 0.5)))
 #   define trunc(x) ((double)((int)(x)))
 #endif
@@ -61,7 +63,7 @@
 static  double  _dxf_round();
 static	void	xm_cvt_str_to_dbladdr();
 static  void    xm_cvt_str_to_clock();
-static	void	ClassInitialize();
+static	void	ClassInitialize(void);
 static  void    Initialize();
 static  void    Redisplay();
 static  void    Resize();

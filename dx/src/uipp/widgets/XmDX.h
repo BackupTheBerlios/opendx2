@@ -172,6 +172,9 @@
 #define XmNscrolledWindowWidget "scrolledWindowWidget"
 #define XmNminColumnWidth	"minColumnWidth"
 #define XmCMinColumnWidth	"MinColumnWidth"
+#ifndef XmNselectCallback
+#  define XmNselectCallback       "selectCallback"
+#endif
 
 #define XmNdisplayGlobe			"displayGlobe"
 #define XmCDisplayGlobe			"DisplayGlobe"
