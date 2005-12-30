@@ -16,21 +16,21 @@
 #include <dx/arch.h>
 
 #if defined(HAVE_WINDOWS_H) && (defined(intelnt) || defined(WIN32))
-#include <windows.h>
-#include <winsock.h>
-#define S_IXUSR S_IEXEC
-#define S_IXGRP S_IEXEC
-#define S_IXOTH S_IEXEC
-#define EADDRINUSE      WSAEADDRINUSE
-#define USING_WINSOCKS
-#endif
-
-#if defined(HAVE_CYGWIN_SOCKET_H)
-#include <cygwin/socket.h>
-#elif defined(HAVE_SYS_SOCKET_H)
-#include <sys/socket.h>
-#elif defined(HAVE_SOCKET_H)
-#include <socket.h>
+  #include <windows.h>
+  #include <winsock.h>
+  #define S_IXUSR S_IEXEC
+  #define S_IXGRP S_IEXEC
+  #define S_IXOTH S_IEXEC
+  #define EADDRINUSE      WSAEADDRINUSE
+  #define USING_WINSOCKS
+#else
+  #if defined(HAVE_CYGWIN_SOCKET_H)
+  #include <cygwin/socket.h>
+  #elif defined(HAVE_SYS_SOCKET_H)
+  #include <sys/socket.h>
+  #elif defined(HAVE_SOCKET_H)
+  #include <socket.h>
+  #endif
 #endif
 
 #if defined(HAVE_SYS_PARAM_H)
@@ -232,7 +232,9 @@ do {									\
 #define WORKSPACE_PAGES 1
 
 #if defined(HAVE_LIBXMSTATIC)
-#define XMSTATIC
+#ifndef XMSTATIC
+#define XMSTATIC 1
+#endif
 #endif
 
 #if !CXX_HAS_FALSE

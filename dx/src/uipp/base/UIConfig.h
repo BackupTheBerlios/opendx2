@@ -258,20 +258,11 @@
 # define DXD_SYSLIB_8_CHARS
 # define DXD_NEEDS_TYPES_H
 # define DXD_XTOFFSET_HOSED
-
-# define DXD_HAS_WINSOCKETS
 # define DXD_DO_NOT_REQ_SYS_SELECT_H
-
 # define DXD_NON_UNIX_SOCKETS
-#if 0
-# define DXD_NON_UNIX_DIR_SEPARATOR
-#endif
-
-# define DXD_NON_UNIX_ENV_SEPARATOR
 # define DXD_CR_IS_CRLF
 # define DXD_LACKS_UTS 
 # define DXD_LACKS_FORK
-# define DXD_OS_NON_UNIX
 # define DXD_NEEDS_PROCESS_H
 # define DXD_NEEDS_CTYPE_H
 # define DXD_HAS_CRYPT 0
