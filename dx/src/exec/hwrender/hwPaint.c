@@ -25,6 +25,8 @@
 
 #include "hwDebug.h"
 
+extern void _dxfGetViewMatrixWithFuzz(void *stack, double fuzz, 
+	register float m[4][4]);
 
 static Error 
 _paintRecurse(void* globals, dxObject object,
@@ -313,7 +315,7 @@ _paintRecurse(void* globals, dxObject object,
   {
   case CLASS_GROUP:
     PRINT(("CLASS_GROUP"));
-    for (i=0; subObject=DXGetEnumeratedMember((Group)object, i, NULL); i++) {
+    for (i=0; (subObject=DXGetEnumeratedMember((Group)object, i, NULL)); i++) {
       /* DXDebug("g", "member %d", i); */
       if (!_paintRecurse(globals, subObject, gather, buttonUp,
 					parent, grandparent))

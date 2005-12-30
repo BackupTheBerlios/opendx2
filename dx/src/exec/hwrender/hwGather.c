@@ -24,6 +24,10 @@
 
 #include "hwDebug.h"
 
+extern  Error _dxf_deleteAttribute(attributeP att);
+extern screenO _dxf_newHwScreen(dxScreen s, dxObject subObject,
+	float mvm[4][4], float mm[4][4], int width, int height);
+
 static Error _gatherRecurse(dxObject object, dxObject *newObject, 
 				gatherO gather, attributeP attributes,
 	       			void *globals);
@@ -680,7 +684,7 @@ _gatherField(Field f,
       char	*elementType = NULL;
       int	one = 1;
       
-      if(connections = DXGetComponentValue(f,"connections")) {
+      if( (connections = DXGetComponentValue(f,"connections")) ) {
 	if(!DXGetStringAttribute(connections,"element type",&elementType))
 	  DXErrorGoto(ERROR_BAD_PARAMETER, "#13070");
 	
@@ -1108,7 +1112,7 @@ _gatherRecurse(dxObject object,
 	  *newObject = (dxObject)cpo;
 
 	}
-	else if (attr = (Array)DXGetAttribute(clipObject,"clipbox min"))
+	else if ( (attr = (Array)DXGetAttribute(clipObject,"clipbox min")) )
 	{
 	  Point  *cp_pts;
 	  Vector *cp_nrms;

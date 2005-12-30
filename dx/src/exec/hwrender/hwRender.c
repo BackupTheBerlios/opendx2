@@ -44,6 +44,12 @@
 #include <arpa/inet.h>
 #endif
 
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#else
+extern int gethostname (char *NAME, size_t SIZE);
+#endif
+
 #if defined(DX_NATIVE_WINDOWS)
 #include <windows.h>
 #include <gl/gl.h>
@@ -69,6 +75,7 @@ int TryDGL(char *, int);
 
 typedef Error (*Handler)(int, Pointer) ;
 static char* _getFullHostName(char* givenName);
+extern Error _dxfDrawMonoInCurrentContext (void*, dxObject, Camera, int buttonUp);
 
 #if defined(DX_NATIVE_WINDOWS)
 

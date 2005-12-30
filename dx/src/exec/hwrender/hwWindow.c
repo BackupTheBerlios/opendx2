@@ -36,6 +36,12 @@
 
 #include "opengl/hwPortOGL.h"
 
+#if defined(HAVE_CTYPE_H)
+#include <ctype.h>
+#else
+extern int isdigit (int);
+#endif
+
 extern int GLTEST();
 
 typedef struct _OGLWindowThreadParams
@@ -57,6 +63,7 @@ static Error  _tdmResizeImage(WinP win) ;
 Error  _tdmResizeWindow(WinP win, int w, int h, int *change) ;
 static void   _tdmClearWindow(WinP win) ;
 static void   _tdmCleanupChild(tdmChildGlobalP childGlobals) ;
+int _dxfUIType(char *);
 
 static void
 StartStroke(OGLWindow *oglw, int x0, int y0, int button)
@@ -1440,7 +1447,7 @@ GL_WINDOW = TRUE;
                     ev.xany.window = tmp;
                 } else {
                     char buf[32];
-                    XLookupString(&ev, buf, 32, NULL, NULL);
+                    XLookupString(&(ev.xkey), buf, 32, NULL, NULL);
                     if (buf[0])
                         tdmKeyStruck(globals->CrntInteractor, ev.xkey.x, ev.xkey.y, buf[0], ev.xkey.state);
                 }

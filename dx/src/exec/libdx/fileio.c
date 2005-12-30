@@ -294,7 +294,7 @@ Error _dxffile_open(char *name, int rw)
 Error _dxfsock_open(char *name, int fd)
 {
     int i;
-    int len = sizeof(int);
+    socklen_t len = sizeof(int);
 
     if (!name) {
 	DXSetError(ERROR_BAD_PARAMETER, "no socket name");

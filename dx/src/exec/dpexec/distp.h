@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/distp.h,v 1.7 2004/06/03 16:27:16 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/distp.h,v 1.8 2005/12/30 19:38:43 davidt Exp $
  */
 
 #if defined(__cplusplus) || defined(c_plusplus)

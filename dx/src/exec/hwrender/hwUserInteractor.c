@@ -27,7 +27,10 @@
 
 typedef float MATRIX[4][4];
 
-       void _dxf_computeMatrix(float *, float *, float *, float, MATRIX *);
+extern Error DXNotifyRegistered(char *name);
+extern Error DXNotifyRegisteredNoExecute(char *name);
+
+void _dxf_computeMatrix(float *, float *, float *, float, MATRIX *);
 
 static void UserDoubleClick(tdmInteractor, int, int, tdmInteractorReturn *);
 static void UserStartStrokeP(tdmInteractor, int, int, int, int);

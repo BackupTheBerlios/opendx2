@@ -120,6 +120,12 @@ static Error _gammaCorrectColors(xfieldP xf, double gamma, int isLit);
 /*=====================================================================*\
   Xfield component functions
 \*=====================================================================*/
+extern Error _dxfTriangulateField(Field);
+extern Error _dxf_XNeighbors(Field f, xfieldT *xf, enum xr required, enum xd xd);
+extern Error _dxf_linesToPlines (xfieldT *xf);
+extern Error _dxf_linesToPlines (xfieldT *xf);
+extern Error _dxf_trisToTmesh (xfieldT *xf, tdmChildGlobalP globals);
+extern Error _dxf_quadsToQmesh (xfieldT *xf, void *globals);
 
 /*
  * box, points, connections
@@ -176,7 +182,7 @@ _XPositions(Field f, xfieldT* xf, enum xr required)
   get(positions);
   DXGetArrayInfo(xf->positions_array,NULL,NULL,NULL,NULL,&xf->shape);
 
-  if (DXGetComponentValue(f, INVALID_POSITIONS))
+  if (DXGetComponentValue(f, INVALID_POSITIONS)) {
     /* This also creates DXReference() */
     if((xf->invPositions = DXCreateInvalidComponentHandle((dxObject)f,
 							  NULL,
@@ -185,6 +191,7 @@ _XPositions(Field f, xfieldT* xf, enum xr required)
       EXIT(("ERROR"));
       return ERROR;
     }
+  }
 
   EXIT(("OK"));
   return OK;
@@ -231,12 +238,12 @@ _XConnections(Field f, xfieldT* xf, enum xr required)
 	int volume;	/* whether these are volume connections */
 	int posPerConn;	/* positions per connection */
     } info[] = {
-	"lines",	ct_lines,	2,	0,	2,
-	"triangles",	ct_triangles,	3,	0,	3,
-	"quads",	ct_quads,	4,	0,	4,
-	"tetrahedra",	ct_tetrahedra,	4,	1,	3,
-	"cubes",	ct_cubes,	8,	1,	4,
-	NULL
+	{ "lines",	ct_lines,	2,	0,	2 },
+	{ "triangles",	ct_triangles,	3,	0,	3 },
+	{ "quads",	ct_quads,	4,	0,	4 },
+	{ "tetrahedra",	ct_tetrahedra,	4,	1,	3 },
+	{ "cubes",	ct_cubes,	8,	1,	4} ,
+	{ NULL }
     };
     struct info *i;
     dxObject cto;
@@ -933,7 +940,7 @@ on an MP machine.
       char*	gammaStr;
 
       
-      if (gammaStr = (char*)getenv("DXHWGAMMA"))	{
+      if ( (gammaStr = (char*)getenv("DXHWGAMMA")) ) {
 	  gamma = atof(gammaStr);
 	  if (gamma < 0.0) gamma = 0.0;
 	}
@@ -1290,7 +1297,7 @@ _dxf_parameters(dxObject o, attributeP old)
   }
 
   /* get approximation density */
-  if ((options = DXGetAttribute(o, "render every")))
+  if ((options = DXGetAttribute(o, "render every"))) {
     if (DXExtractInteger (options, &density)) {
       new->buttonDown.density = density;
       new->buttonUp.density = density;
@@ -1304,6 +1311,7 @@ _dxf_parameters(dxObject o, attributeP old)
       EXIT(("ERROR"));
       DXErrorReturn(ERROR_BAD_PARAMETER,"#13360");
     }
+  }
   
   EXIT(("new = 0x%x", new));
   return new;

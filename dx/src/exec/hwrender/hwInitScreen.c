@@ -12,7 +12,7 @@
 #define tdmInitScreen_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.6 2003/07/11 05:50:37 davidt Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.7 2005/12/30 19:38:45 davidt Exp $"};
 #endif
 
 
@@ -41,7 +41,10 @@ static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/op
 
 typedef Error (*Handler)(int, Pointer);
 
-extern _dxfCacheState(char *, dxObject, dxObject, int);
+extern void _dxfCacheState(char *, dxObject, dxObject, int);
+extern void _dxfFreeStack (void *stack);
+extern void _dxfDeletePortHandle(tdmPortHandleP);
+extern void _dxf_DeleteObjectHash(HashTable);
 
 Error
 _dxfInitRenderObject(WinP win)
@@ -210,6 +213,9 @@ _dxfEndSWRenderPass (WinP win, Field image)
 }
 
 #if !defined(DX_NATIVE_WINDOWS)
+
+extern void _dxfSetXError (Display *dpy, XErrorEvent *event);
+
 static int
 _HandleExitErrors (Display *dpy, XErrorEvent *rep)
 {

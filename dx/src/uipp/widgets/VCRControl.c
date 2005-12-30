@@ -1336,7 +1336,7 @@ static void map_dialog (Widget dialog, XmVCRControlWidget vcr,
     int dispHeight = 0, dispWidth = 0, wmHeight = 0, borderWidth = 0;
     int screen = 0;
     Window child, rootW, parentW, *childrenW, vcrW;
-    int numChildren;
+    unsigned int numChildren;
     XWindowAttributes xwa;
 
     /*

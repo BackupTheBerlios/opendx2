@@ -78,7 +78,7 @@ _dxfSetupServer(int pport, int *psock,
     int oldUmask;
 #endif
     struct linger sl;
-    int length;
+    socklen_t length;
     u_short port;
     int sts;
     int oldPort;
@@ -221,7 +221,7 @@ _dxfCompleteServer(int sock,
     , int timeout
     )
 {
-    int length;
+    socklen_t length;
     int fd=-1;
     int sts;
     extern int errno; /* from <errno.h> */

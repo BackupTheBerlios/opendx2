@@ -764,16 +764,18 @@ FILE *_dxfopen_dxfile(char *inname, char *auxname, char **outname,char *ext)
 Error _dxfclose_dxfile(FILE *fptr, char *filename) 
 {
 #if DXD_POPEN_OK
-    if (fptr)
-	if (filename[0] == '!')
-	    pclose(fptr);
-        else
+    if (fptr) {
+		if (filename[0] == '!') {
+	    	pclose(fptr);
+		} else {
             fclose(fptr);
+        }
+    }
 #else
     if (fptr) {
-	fclose(fptr);
-	if (filename[0] == '!')
-	    Unlink(filename+1);
+	    fclose(fptr);
+	    if (filename[0] == '!')
+	        Unlink(filename+1);
     }
     
 #endif

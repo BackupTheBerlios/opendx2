@@ -301,7 +301,7 @@ static Quadruple
 
 #define AllocateAndCopyQstripPointArray()			             \
 {                                                                            \
-if (stripArray[nStrips].point = (int *)tdmAllocate(nPtsInStrip*sizeof(int))) \
+if ( (stripArray[nStrips].point = (int *)tdmAllocate(nPtsInStrip*sizeof(int))) ) \
   {                                                                          \
     bcopy (point, stripArray[nStrips].point, nPtsInStrip * sizeof(int)) ;    \
     stripArray[nStrips].points = nPtsInStrip ;                               \

@@ -219,7 +219,7 @@ typedef struct tdmDrawPortS {
   void	(*SwapBuffers) (void *ctx, Window);
 #endif
   void	(*WriteApproxBackstore) (void *win, int camw, int camh);
-  void	(*WritePixelRect) (void* win, uint32 *buf, 
+  void	(*WritePixelRect) (void* win, unsigned long *buf, 
 			   int x, int y,int w, int h);
 
   /* End of functions available in 2.0 and 2.0.1 */
@@ -683,7 +683,7 @@ _dxf_DOUBLE_BUFFER_MODE (void *ctx) ;
 void
 _dxf_CLEAR_AREA (void *ctx, int left, int right, int bottom, int top) ;
 void
-_dxf_WRITE_PIXEL_RECT (void *win, unsigne long *buf, 
+_dxf_WRITE_PIXEL_RECT (void *win, unsigned char *buf, 
 		       int x, int y, int w, int h) ;
 int
 _dxf_READ_APPROX_BACKSTORE (void *win, int camw, int camh) ;

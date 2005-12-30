@@ -1534,7 +1534,7 @@ int _dxf_initmemory(void)
 	if (getenv("DX_DEBUG_MEMORY_INIT")) {
 	    char buf[132];
 	    
-	    sprintf(buf, "initial: physmem %d, othermem %d, po_ratio %g, nproc %d\n",
+	    sprintf(buf, "initial: physmem %d, othermem %d, po_ratio %g, physical procs %d, nproc %d\n",
 		    physmem, othermem, po_ratio, _dxf_GetPhysicalProcs(), DXProcessors(0));
 	    write(2, buf, strlen(buf));
 	}

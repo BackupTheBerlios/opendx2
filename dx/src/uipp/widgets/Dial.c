@@ -63,7 +63,7 @@
 static  double  _dxf_round();
 static	void	xm_cvt_str_to_dbladdr();
 static  void    xm_cvt_str_to_clock();
-static	void	ClassInitialize(void);
+static	void	ClassInitialize();
 static  void    Initialize();
 static  void    Redisplay();
 static  void    Resize();

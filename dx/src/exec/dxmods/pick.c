@@ -126,6 +126,9 @@ static Field  PickBufToField(PickBuf *, Matrix);
 static Field  GetFirstHits(Field);
 static Error  PickInterpolate(Object, Field, int);
 
+extern Error _dxfLoadStereoModes();
+extern Error _dxfInitializeStereoCameraMode(void *, Object);
+
 #define CACHE_PICKS	1
 #define NO_CACHE_PICKS	0
 
@@ -665,7 +668,7 @@ error:
 extern Error _dxfGetStereoCameras(void *, Camera, Camera *, Camera *);
 extern void *_dxfGetStereoWindowInfo(char *, void *, void *);
 
-m_StereoPick(Object *in, Object *out)
+Error m_StereoPick(Object *in, Object *out)
 {
     Camera camera, lcamera, rcamera;
     char *where;

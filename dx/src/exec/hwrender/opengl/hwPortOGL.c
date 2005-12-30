@@ -44,6 +44,10 @@
 #include <x11/xlibxtra.h>
 #endif
 
+extern Error _dxf_dither(dxObject, int, int, int, 
+	int, void *, unsigned char *);
+extern Error _dxfExportHwddVersion(int version);
+
 #if defined (alphax) || defined(sgi) || defined(solaris)
 #  if !defined (DEBUG)
 #     include <dlfcn.h>
@@ -1531,7 +1535,7 @@ static void _dxf_WRITE_APPROX_BACKSTORE(void *win, int camw, int camh)
   EXIT((""));
 }
 
-static void _dxf_WRITE_PIXEL_RECT(void* win, uint32 *buf,
+static void _dxf_WRITE_PIXEL_RECT(void* win, unsigned char *buf,
 				  int x, int y, int w, int h)
 {
   DEFWINDATA(win) ;
@@ -1563,7 +1567,7 @@ static Error _dxf_DRAW_IMAGE(void* win, dxObject image, translationO dummy)
   DEFWINDATA(win) ;
   DEFPORT(PORT_HANDLE) ;
   int		x,y,w,h ;
-  uint32 *pixels = NULL ;
+  unsigned char *pixels = NULL ;
   void * translation = OGLTRANSLATION ;
 
   ENTRY(("_dxf_DRAW_IMAGE(0x%x, 0x%x, 0x%x)", win, image, dummy));

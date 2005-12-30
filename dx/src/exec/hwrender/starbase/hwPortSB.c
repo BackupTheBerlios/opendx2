@@ -124,7 +124,7 @@ void
 _dxf_FREE_PIXEL_ARRAY (void *ctx, void *pixels);
 
 int
-_dxf_WRITE_PIXEL_RECT(void *win, uint32 *buf, int x, int y,
+_dxf_WRITE_PIXEL_RECT(void *win, unsigned char *buf, int x, int y,
         int w, int h) ;
 
 extern hwTranslationP
@@ -1038,7 +1038,7 @@ _dxf_DESTROY_WINDOW (void *win)
 }
 
 int 
-_dxf_WRITE_PIXEL_RECT(void *win, uint32 *foo, int x, int y,
+_dxf_WRITE_PIXEL_RECT(void *win, unsigned char *foo, int x, int y,
 	int camw, int camh)
 {
   DEFWINDATA(win) ;
@@ -1406,7 +1406,7 @@ static tdmDrawPortT _DrawPort =
   /* SetWindowSize */ 	       	 _dxf_SET_WINDOW_SIZE,               
   /* SwapBuffers */ 	       	 _dxf_SWAP_BUFFERS,                  
   /* WriteApproxBackstore */     _dxf_WRITE_APPROX_BACKSTORE,
-  /* WritePixelRect */		 (void (*) (void* win, uint32 *buf, 
+  /* WritePixelRect */		 (void (*) (void* win, unsigned long *buf, 
 					    int x, int y,int w, int h))
                                  _dxf_WRITE_PIXEL_RECT,
   /* DrawTransparent */          _dxf_DrawTrans,

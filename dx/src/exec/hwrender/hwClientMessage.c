@@ -47,6 +47,9 @@
 
 struct atomRep _dxdtdmAtoms[MAX_ATOMS] = {{ None, NULL}};
 
+extern Error _dxfDraw (void*, dxObject, Camera, int);
+extern void _dxfCacheState(char *, dxObject, dxObject, int);
+
 static void
 _sendLinkCamera(tdmChildGlobalP globals,
   float *from, float *to, float *up,

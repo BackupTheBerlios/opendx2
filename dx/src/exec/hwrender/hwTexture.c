@@ -279,7 +279,7 @@ _expandOpacityMap(Field tf, ubyte omap[256] )
     }
 
     if ( (type == TYPE_FLOAT &&
-	  (rank == 0 || rank == 1 && shape[0] == 1)) )
+	  (rank == 0 || (rank == 1 && shape[0] == 1) )) )
     {
 	float *map_src = (float *)DXGetArrayData(array);
 
@@ -374,7 +374,7 @@ _getTexture_Field(Texture t)
 	}
 	else {
     	    if (! (o_type == TYPE_FLOAT &&
-    	          (o_rank == 0 || o_rank == 1 && o_shape[0] == 1)) ) {
+    	          (o_rank == 0 || (o_rank == 1 && o_shape[0] == 1) )) ) {
 		DXSetError(ERROR_MISSING_DATA, 
 		    "opacities for a direct color texture map must be float");
 		goto error;
@@ -416,7 +416,7 @@ _getTexture_Field(Texture t)
 	    if ( opac ) {
 	        o_src = (float *)DXGetArrayData(opac);
 		if ( ! (o_type == TYPE_FLOAT &&
-			(o_rank == 0 || o_rank == 1 && o_shape[0] == 1)) ) {
+			(o_rank == 0 || (o_rank == 1 && o_shape[0] == 1) )) ) {
 		    DXSetError(ERROR_MISSING_DATA, 
 		     "opacities for a direct color texture map must be float");
 		    goto error;
@@ -440,7 +440,7 @@ _getTexture_Field(Texture t)
 	/*  Handle ubyte colors w/ float[3] or ubyte[3] colormap    */
 	/*    (w/ optional ubyte opacities with float opacity map)  */
         else if (type == TYPE_UBYTE &&
-                 (rank == 0 || rank == 1 && shape[0] == 1))
+                 (rank == 0 || (rank == 1 && shape[0] == 1) ))
 	{
 	    int i;
 	    ubyte *dst = t->pixels;
@@ -453,7 +453,7 @@ _getTexture_Field(Texture t)
 
 	    if ( opac ) {
 		if ( !(o_type == TYPE_UBYTE &&
-		       (o_rank == 0 || o_rank == 1 && o_shape[0] == 1)) ) {
+		       (o_rank == 0 || (o_rank == 1 && o_shape[0] == 1) )) ) {
 		    DXSetError(ERROR_MISSING_DATA, 
 			"indirect texture map opacities must be scalar ubytes");
 		    goto error;
@@ -611,7 +611,7 @@ _getTexture_CompositeField(Texture t)
 
 	    if ( opac ) {
 		if (! (o_type == TYPE_FLOAT &&
-		      (o_rank == 0 || o_rank == 1 && o_shape[0] == 1)) ) {
+		      (o_rank == 0 || (o_rank == 1 && o_shape[0] == 1) )) ) {
 		    DXSetError(ERROR_MISSING_DATA, 
 		      "opacities for a direct color texture map must be float");
 		    goto error;
@@ -646,7 +646,7 @@ _getTexture_CompositeField(Texture t)
 
 	    if ( opac ) {
 		if (! (o_type == TYPE_FLOAT &&
-		      (o_rank == 0 || o_rank == 1 && o_shape[0] == 1)) ) {
+		      (o_rank == 0 || (o_rank == 1 && o_shape[0] == 1) )) ) {
 		    DXSetError(ERROR_MISSING_DATA, 
 		      "opacities for a direct color texture map must be float");
 		    goto error;
@@ -672,7 +672,7 @@ _getTexture_CompositeField(Texture t)
 	/*  Handle ubyte colors w/ float[3] or ubyte[3] colormap    */
 	/*    (w/ optional ubyte opacities with float opacity map)  */
 	else if (type == TYPE_UBYTE &&
-	    (rank == 0 || rank == 1 && shape[0] == 1))
+	    (rank == 0 || (rank == 1 && shape[0] == 1) ))
 	{
 	    int j, k;
 	    ubyte cmap[768], omap[256];
@@ -687,7 +687,7 @@ _getTexture_CompositeField(Texture t)
 
 	    if ( opac ) {
 		if ( !(o_type == TYPE_UBYTE &&
-		       (o_rank == 0 || o_rank == 1 && o_shape[0] == 1)) ) {
+		       (o_rank == 0 || (o_rank == 1 && o_shape[0] == 1) )) ) {
 		    DXSetError(ERROR_MISSING_DATA, 
 			"indirect texture map opacities must be scalar ubytes");
 		    goto error;

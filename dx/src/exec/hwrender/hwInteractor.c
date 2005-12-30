@@ -10,7 +10,7 @@
 
 
 #ifndef lint
-static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInteractor.c,v 1.4 2002/03/21 02:59:10 rhh Exp $"  ;
+static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInteractor.c,v 1.5 2005/12/30 19:38:45 davidt Exp $"  ;
 #endif
 
 /*---------------------------------------------------------------------------*\
@@ -171,12 +171,14 @@ _dxfAllocateInteractor (tdmInteractorWin W, int size)
 
   if (! I) goto error ;
   
-  if (size)
+  if (size) {
       /* allocate interactor private data */
-      if (! (PRIVATE(I) = tdmAllocateLocal(size)))
+      if (! (PRIVATE(I) = tdmAllocateLocal(size))) {
           goto error ;
-      else
+      } else {
           bzero ((char *) PRIVATE(I), size) ;
+      }
+  }
 
   WINDOW(I) = W ;
   AUX(I) = (tdmInteractor) 0 ;
@@ -392,20 +394,21 @@ _PushInteractorCamera (tdmInteractorCam *stack, tdmInteractorCam new)
       p->next = (tdmInteractorCam) 0 ;
     }
 
-  if (! new)
+  if (! new) {
       /* allocate new camera */
-      if (new = (tdmInteractorCam) tdmAllocateLocal(sizeof(tdmInteractorCamT)))
-          if (*stack)
+      if ( (new = (tdmInteractorCam) tdmAllocateLocal(sizeof(tdmInteractorCamT))) ) {
+          if (*stack) {
               /* copy current top */
               memcpy ((void *)new, (void *)*stack, sizeof(tdmInteractorCamT)) ;
-          else
+          } else {
               /* init new camera */
               bzero ((char *)new, sizeof(tdmInteractorCamT)) ;
-      else
-        {
+          }
+      } else {
           EXIT(("out of memory"));
           return 0 ;
-        }
+      }
+  }
 
   new->next = *stack ;
   *stack = new ;
@@ -660,7 +663,7 @@ _dxfSetInteractorViewInfo (tdmInteractorWin W,
                                         (f[2]-t[2])*(f[2]-t[2]))) ;
 
   /*  !!!!!!! This is very questionable coding style if it's correct !!!!! */
-  if (C->projection = proj)
+  if ( (C->projection = proj) )
     {
       /* perspective */
       C->fov = fov ;

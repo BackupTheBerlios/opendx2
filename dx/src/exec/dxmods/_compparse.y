@@ -13,7 +13,7 @@
 #include <dx/dx.h>
 #include "_compute.h"
 #include "_compputils.h"
-
+#include "_compoper.h"
 
 
 int _dxdparseError = 0;		/* Only shared with _compputils.c */

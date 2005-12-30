@@ -12,7 +12,7 @@
 #define render_c
 
 #ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.10 2004/08/31 19:50:43 davidt Exp $"};
+static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.11 2005/12/30 19:38:45 davidt Exp $"};
 #endif
 
 #include <stdio.h>
@@ -49,6 +49,9 @@ extern void _dxf_computeMatrix(float *, float *, float *, float, MATRIX *);
 extern void _dxfSetProjectionMatrix(void *, void *, MATRIX);
 
 extern dxObject _dxf_getCachedObject(void *, dxObject);
+extern Error _dxf_gather(dxObject object, gatherO gather, void *globals);
+extern Error _dxf_updateView(viewO view, void *globals, screenO camScreen);
+extern Error _dxf_paint(void* globals, viewO view, int buttonUp, screenO camScreen);
 
 #if defined(DX_NATIVE_WINDOWS)
 static HANDLE OGLLock = NULL;

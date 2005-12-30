@@ -23,6 +23,9 @@
 #define ABS(x) (x<0.0?-x:x)
 #endif
 
+extern clippedO _dxf_getHwClippedInfo(clippedO co, Point **points, 
+	Vector **normals, int *count, dxObject *object);
+
 static Error _updateViewRecurse(dxObject object, viewO view, 
 				screenO parent);
 
@@ -98,7 +101,7 @@ _updateViewRecurse(dxObject object, viewO view, screenO parent)
   
   switch (class) {
   case CLASS_GROUP:
-    for (i=0; subObject=DXGetEnumeratedMember((Group)object, i, NULL); i++) {
+    for (i=0; (subObject=DXGetEnumeratedMember((Group)object, i, NULL)); i++) {
       /* DXDebug("g", "member %d", i); */
       if (!_updateViewRecurse(subObject, view, parent)) goto error;
     }

@@ -63,7 +63,7 @@ error:
     return ERROR;
 }
 
-extern int DefaultStereoSystemModes(int *, StereoSystemMode **);
+extern int DXDefaultStereoSystemModes(int *, StereoSystemMode **);
 
 Error
 _dxfLoadStereoSystemModes()

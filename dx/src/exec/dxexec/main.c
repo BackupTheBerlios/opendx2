@@ -24,6 +24,18 @@ extern int DXInitializeWindows(HINSTANCE);
 int errno;
 #endif
 
+#if defined(HAVE_STDLIB_H)
+#include <stdlib.h>
+#endif
+
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
+#if defined(HAVE_SYS_TYPES_H)
+#include <sys/types.h>
+#endif
+
 #if defined(HAVE_WINSOCK_H)
 #include <winsock.h>
 #endif
@@ -42,7 +54,7 @@ char * WideToAnsi(LPCWSTR wstr) {
 	char *cvtval;
 	int len = WideCharToMultiByte(CP_ACP, WC_NO_BEST_FIT_CHARS, 
 		wstr, -1, NULL, 0, NULL, NULL);
-	cvtval = (char *) DXAllocate (len + 1);
+	cvtval = (char *) DXAllocate (len  1);
 	len = WideCharToMultiByte(CP_ACP, WC_NO_BEST_FIT_CHARS, 
 		wstr, -1, cvtval, len, NULL, NULL);
 	if(!len) {
@@ -87,7 +99,7 @@ main (argc, argv, envp)
 
 #if defined(DX_NATIVE_WINDOWS) && defined(_WINDOWS)
 	wargv = CommandLineToArgvW( GetCommandLineW(), &argc );
-	for(i=0; i < argc; i++)
+	for(i=0; i < argc; i)
 		argv[i] = WideToAnsi(wargv[i]);
 	if (!DXInitializeWindows(hInstance)) {
 			MessageBox(NULL, TEXT("Could not initialize windows. Now exiting."),

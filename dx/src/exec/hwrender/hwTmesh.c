@@ -22,6 +22,9 @@
 
 #include "hwDebug.h"
 
+extern dxObject _dxf_QueryObject(HashTable, dxObject);
+extern void _dxf_InsertObject(HashTable, dxObject, dxObject);
+
 typedef struct _Triple
 {
   int p[3] ;

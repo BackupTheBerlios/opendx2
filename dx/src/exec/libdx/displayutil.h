@@ -21,6 +21,8 @@ struct arg {
     unsigned char	*out;			/* output pixel array */
 };
 
+struct buffer;
+
 Error		_dxf_dither(Object, int, int, int, int, void *, unsigned char *);
 int			_dxf_getXDepth(char *);
 translationP  _dxf_GetXTranslation(Object);
