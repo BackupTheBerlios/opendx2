@@ -2,7 +2,7 @@
 
 AC_PREREQ(2.57)
 dnl Start of configuration ----
-AC_INIT([dx],[4.3.3])
+AC_INIT([dx],[4.4.0])
 
 dnl Process this file with autoconf to produce a configure script.
 AC_CONFIG_SRCDIR([include/dx/arch.h])
@@ -11,13 +11,13 @@ AM_INIT_AUTOMAKE
 AC_DISABLE_SHARED
 AC_PROG_LIBTOOL
 
-VERSION_STRING="04.3.3000"
+VERSION_STRING="04.4.0000"
 MAJOR_VERSION=4
-MINOR_VERSION=3
-MICRO_VERSION=3
-AC_DEFINE(DXD_VERSION_STRING, "04.3.3000", [Version String Number])
+MINOR_VERSION=4
+MICRO_VERSION=0
+AC_DEFINE(DXD_VERSION_STRING, "04.4.0000", [Version String Number])
 AC_DEFINE(DXD_COPYRIGHT_STRING,
-  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.3.3"], 
+  ["Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 4.4.0"], 
   [Copyright string placed on splash screen startup.])
 AC_DEFINE_UNQUOTED(DXD_VERSION, $MAJOR_VERSION, [Version Number])
 AC_DEFINE_UNQUOTED(DXD_RELEASE, $MINOR_VERSION, [Release Number])
@@ -957,15 +957,6 @@ int n = _system_configuration.ncpus;
 AC_DEFINE_UNQUOTED(HAVE_SYSCONFIG_NCPUS, 1, 
 	[Define to 1 if you have systemcfg to check for  ncpus])
 ],[])
-
-AC_EGREP_HEADER(sys_errlist, sys/errno.h,  
-	AC_DEFINE(HAVE_SYS_ERRLIST, 1, [Define to 1 if errno.h defines sys_errlist]))
-AC_EGREP_HEADER(sys_errlist, errno.h,      AC_DEFINE(HAVE_SYS_ERRLIST))
-AC_EGREP_HEADER(sys_errlist, stdio.h,      AC_DEFINE(HAVE_SYS_ERRLIST))
-AC_EGREP_HEADER(_sys_errlist, sys/errno.h, 
-	AC_DEFINE(HAVE__SYS_ERRLIST, 1, [Define to 1 if errno.h defines _sys_errlist]))
-AC_EGREP_HEADER(_sys_errlist, errno.h,     AC_DEFINE(HAVE__SYS_ERRLIST))
-AC_EGREP_HEADER(_sys_errlist, stdio.h,     AC_DEFINE(HAVE__SYS_ERRLIST))
 
 dnl Check lexer. Look for flex first--if using lex, may be problem
 dnl with duplicate yylineno linking errors.

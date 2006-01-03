@@ -20,7 +20,8 @@ defs='/D "WIN32" /D "CONSOLE" /D "MOTIFAPP"'
 linkopts="/subsystem:console"
 
 # defs for optimized
-optdefs='/Oispb1 /D "NDEBUG"'
+optdefs='/O2 /Gs /Zi /GF /D "NDEBUG"'
+#optdefs='/Gs /Zi /GF /D "NDEBUG"'
 optlinkopts="/incremental:yes"
 
 #defs for debugged
@@ -36,9 +37,9 @@ tmp="$MSDEV\Lib"
 oname=
 
 prelibs="$prelibs wsock32.lib"
-deflibs="$deflibs $LIBPATH kernel32.lib"
-deflibs="$deflibs $LIBPATH user32.lib"
-deflibs="$deflibs $LIBPATH Advapi32.lib"
+deflibs="$deflibs kernel32.lib"
+deflibs="$deflibs user32.lib"
+deflibs="$deflibs Advapi32.lib"
 deflibs="$deflibs /NODEFAULTLIB:LIBC"
 
 #deflibs="$deflibs user32.lib gdi32.lib winspool.lib"

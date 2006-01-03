@@ -261,7 +261,12 @@ AC_DEFUN([DX_STREAM_O2],
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[
  #include <stdio.h>
  #include <stdarg.h>
+#if HAVE_FSTREAM
+ #include <fstream>
+#elif HAVE_FSTREAM_H
  #include <fstream.h>
+#endif
+using namespace std;
  ]], [[
  ifstream *i = new ifstream("foo");
  ]])],[AC_MSG_RESULT(no)
