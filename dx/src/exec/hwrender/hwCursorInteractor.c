@@ -31,6 +31,11 @@
 
 \*---------------------------------------------------------------------------*/
 
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
+
+
 #include <stdio.h>
 #include <math.h>
 

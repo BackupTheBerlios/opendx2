@@ -5,14 +5,15 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/text.c,v 1.7 2006/01/03 17:02:25 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/text.c,v 1.6 2002/03/21 02:57:42 rhh Exp $
- */
-
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #include <dx/dx.h>
 #include "_post.h"

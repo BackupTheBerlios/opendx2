@@ -5,9 +5,13 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-#include <dx/dx.h>
-
 #include <dxconfig.h>
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
+#include <dx/dx.h>
 
 
 typedef struct 

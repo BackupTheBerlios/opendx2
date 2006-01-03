@@ -5,17 +5,21 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.8 2006/01/03 17:02:25 davidt Exp $:
+ */
+ 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.7 2002/03/21 02:57:40 rhh Exp $:
- */
 #include <dx/dx.h>
+#include <math.h>
+
 #include "stream.h"
 #include "vectors.h"
-#include "math.h"
 
 #define NAME_ARG	0
 #define DATA_ARG	1

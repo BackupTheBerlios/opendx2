@@ -5,15 +5,13 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/* 
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.12 2006/01/03 17:02:26 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
-
 #define render_c
-
-#ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwDraw.c,v 1.11 2005/12/30 19:38:45 davidt Exp $"};
-#endif
 
 #include <stdio.h>
 #include <math.h>

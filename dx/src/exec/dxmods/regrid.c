@@ -18,6 +18,10 @@
 
 #include <stdio.h>
 #include <math.h>
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 #include <dx/dx.h>
 #include "_glyph.h"
 #include "_connectgrids.h"

@@ -8,7 +8,6 @@
 
 #include <dxconfig.h>
 
-
 #define tdmWindow_c
 
 #if defined(DX_NATIVE_WINDOWS)
@@ -779,7 +778,7 @@ error:
 }
 
 /****************************** END WINDOWS *********************************/
-#else
+#else /* DX_NATIVE_WINDOWS */
 
 #define FLING_TIMEOUT 3
 #define FLING_GNOMON_FEECHURE
@@ -796,6 +795,17 @@ error:
 #include <math.h>
 #include <time.h>
 #include <X11/Xatom.h>
+#include <X11/XUtil.h>
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
+#if defined(HAVE_CTYPE_H)
+#include <ctype.h>
+#else
+extern int isdigit (int);
+#endif
 
 #include "hwDeclarations.h"
 #include "hwWindow.h"
@@ -834,6 +844,10 @@ static void
 _tdmCleanupChild(tdmChildGlobalP childGlobals) ;
 static Window
 _getTopLevelShell (Display *dpy, Window w) ;
+
+int _dxfUIType(char *);
+extern Error _dxfDraw (void*, dxObject, Camera, int);
+
 
 /*
 *  These atoms are used by the window manager to notify us if we're about
@@ -2077,8 +2091,6 @@ _dxfTryRestoreBuffer (WinP win)
 
     _dxf_SWAP_BUFFERS(PORT_CTX, XWINID);
 #endif
-
-done:
 
     /* If we restored from a (partialially) invalid buffer, make sure we
     * still refresh.

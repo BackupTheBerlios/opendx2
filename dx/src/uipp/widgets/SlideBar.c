@@ -34,6 +34,9 @@
 #include <Xm/Xm.h>
 #include <Xm/XmP.h>
 #include <Xm/SeparatoGP.h>
+
+extern void _XmDispatchGadgetInput(Widget g, XEvent *event, Mask mask);
+
 #include "SlideBar.h"
 #include "SlideBarP.h"
 

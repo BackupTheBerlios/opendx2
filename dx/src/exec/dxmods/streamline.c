@@ -6,15 +6,18 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.9 2002/03/21 02:57:41 rhh Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streamline.c,v 1.10 2006/01/03 17:02:25 davidt Exp $:
  */
-#include <dx/dx.h>
-#include "stream.h"
-#include "vectors.h"
-#include "math.h"
-
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
+#include <dx/dx.h>
+#include <math.h>
+#include "stream.h"
+#include "vectors.h"
 
 typedef enum
 {

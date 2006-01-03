@@ -28,6 +28,10 @@
 
 \*---------------------------------------------------------------------------*/
 
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
+
 #include <stdio.h>
 #include <math.h>
 #include "hwDeclarations.h"
@@ -69,7 +73,7 @@ typedef struct {
  *  Forward references
  */
 
-static void DoubleClick (tdmInteractor, int, int, tdmInteractorReturn *) ;
+// static void DoubleClick (tdmInteractor, int, int, tdmInteractorReturn *) ;
 static void StartStroke (tdmInteractor, int, int, int, int) ;
 static void StrokePoint (tdmInteractor I, int x, int y, int flag, int state) ;
 static void EndStroke (tdmInteractor, tdmInteractorReturnP) ;

@@ -13,6 +13,14 @@
  * $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwTmesh.c,v $
  */
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
+
 #include <stdio.h>
 #include "hwDeclarations.h"
 #include "hwXfield.h"

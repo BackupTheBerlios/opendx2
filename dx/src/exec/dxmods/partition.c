@@ -10,6 +10,10 @@
 
 #include <dx/dx.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 extern void _dxfPermute(); /* from libdx/permute.c */
 Object DXObjectPartition(Object, int, int); 
 

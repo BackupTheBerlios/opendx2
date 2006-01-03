@@ -5,13 +5,20 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/* $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwQmesh.c,v $
+ */
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #define tdmQmesh_c 
-/* $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwQmesh.c,v $
- */
 
 #include <stdio.h>
 #include "hwDeclarations.h"

@@ -5,16 +5,14 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/* 
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.8 2006/01/03 17:02:27 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
 
 #define tdmInitScreen_c
-
-#ifndef	lint
-static char *rcsid[] = {"$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInitScreen.c,v 1.7 2005/12/30 19:38:45 davidt Exp $"};
-#endif
-
 
 /*
  * Environment:		Risc System 6000

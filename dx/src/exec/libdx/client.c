@@ -51,6 +51,10 @@
 #include <sys/select.h>
 #endif
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 #define verbose 0
 
 int

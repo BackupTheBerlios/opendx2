@@ -130,45 +130,43 @@ extern void _dxf_deleteHashElt(HashTable h, Element e);
 HashTable 
 _dxf_CullObjectHash(HashTable ht)
 {
-    HashTable new = NULL;
-
-    if (! ht)
-    {
-	return NULL;
-    }
-    else
-    {
-	OHashP ptr;
-	new = DXCreateHash(sizeof(OHashS), NULL, NULL);
-
-	DXInitGetNextHashElement(ht);
-	while (NULL != (ptr = (OHashP)DXGetNextHashElement(ht)))
+	HashTable new = NULL;
+	
+	if (! ht)
 	{
-	    if (ptr->hit)
-	    {
-		OHashS str;
-		str.key = ptr->key;
-		str.hit = 0;
-		str.obj = DXReference(ptr->obj);
-		if (! DXInsertHashElement(new, (Element)&str))
-		    DXDelete(ptr->obj);
-	    }
-
-	    if (ptr->obj)
-		DXDelete(ptr->obj);
-
+		return NULL;
 	}
-
-	DXDestroyHash(ht);
-	return new;
-    }
-
-error:
-    
-    if (new)
-        DXDestroyHash(new);
-
-    return NULL;
+	else
+	{
+		OHashP ptr;
+		new = DXCreateHash(sizeof(OHashS), NULL, NULL);
+		
+		DXInitGetNextHashElement(ht);
+		while (NULL != (ptr = (OHashP)DXGetNextHashElement(ht)))
+		{
+			if (ptr->hit)
+			{
+				OHashS str;
+				str.key = ptr->key;
+				str.hit = 0;
+				str.obj = DXReference(ptr->obj);
+				if (! DXInsertHashElement(new, (Element)&str))
+					DXDelete(ptr->obj);
+			}
+			
+			if (ptr->obj)
+				DXDelete(ptr->obj);
+				
+		}
+		
+		DXDestroyHash(ht);
+		return new;
+	}
+	
+	if (new)
+		DXDestroyHash(new);
+		
+		return NULL;
 }
 
 /**************************************************************************************
@@ -342,43 +340,41 @@ extern void _dxf_deleteHashElt(HashTable h, Element e);
 HashTable 
 _dxf_CullDisplayListHash(HashTable ht)
 {
-    HashTable new = NULL;
-
-    if (! ht)
-    {
-	return NULL;
-    }
-    else
-    {
-	DLHashP ptr;
-	new = DXCreateHash(sizeof(DLHashS), dlhash, dlcmp);
-
-	DXInitGetNextHashElement(ht);
-	while (NULL != (ptr = (DLHashP)DXGetNextHashElement(ht)))
+	HashTable new = NULL;
+	
+	if (! ht)
 	{
-	    if (ptr->hit)
-	    {
-		DLHashS str;
-		str.key = ptr->key;
-		str.hit = 0;
-		str.obj = DXReference(ptr->obj);
-		if (! DXInsertHashElement(new, (Element)&str))
-		    DXDelete(ptr->obj);
-	    }
-
-	    if (ptr->obj)
-		DXDelete(ptr->obj);
-
+		return NULL;
 	}
-
-	DXDestroyHash(ht);
-	return new;
-    }
-
-error:
-    
-    if (new)
-        DXDestroyHash(new);
-
-    return NULL;
+	else
+	{
+		DLHashP ptr;
+		new = DXCreateHash(sizeof(DLHashS), dlhash, dlcmp);
+		
+		DXInitGetNextHashElement(ht);
+		while (NULL != (ptr = (DLHashP)DXGetNextHashElement(ht)))
+		{
+			if (ptr->hit)
+			{
+				DLHashS str;
+				str.key = ptr->key;
+				str.hit = 0;
+				str.obj = DXReference(ptr->obj);
+				if (! DXInsertHashElement(new, (Element)&str))
+					DXDelete(ptr->obj);
+			}
+			
+			if (ptr->obj)
+				DXDelete(ptr->obj);
+				
+		}
+		
+		DXDestroyHash(ht);
+		return new;
+	}
+	
+	if (new)
+		DXDestroyHash(new);
+		
+		return NULL;
 }

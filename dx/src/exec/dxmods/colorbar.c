@@ -5,10 +5,15 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+#include <dxconfig.h>
+
 #include <dx/dx.h>
 #include <stdlib.h>
 
-#include <dxconfig.h>
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 #include "plot.h"
 #include "color.h"
 #include "autoaxes.h"

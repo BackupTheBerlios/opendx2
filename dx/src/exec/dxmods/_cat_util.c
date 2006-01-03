@@ -8,12 +8,17 @@
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #include <dx/dx.h>
 #include <math.h>
+
 #if defined(HAVE_CTYPE_H)
 #include <ctype.h>
 #endif
+
 #include "cat.h"
 
 #define HASH_KEY_AVOID ((PseudoKey) -1)

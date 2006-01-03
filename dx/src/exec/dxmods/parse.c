@@ -11,6 +11,9 @@
 
 #include <dx/dx.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #define M_ERROR   1
 #define M_WARNING 2

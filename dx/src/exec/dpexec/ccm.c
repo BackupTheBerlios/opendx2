@@ -19,8 +19,10 @@
 #endif
 
 #include <stdio.h>
-#include <ctype.h>
 
+#if defined(HAVE_CTYPE_H)
+#include <ctype.h>
+#endif
 #if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
 #endif
@@ -47,6 +49,12 @@
 #endif
 #if defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
+#endif
+#if defined(HAVE_SYS_STAT_H)
+#include <sys/stat.h>
+#endif
+#if defined(HAVE_STRING_H)
+#include <string.h>
 #endif
 
 #include "ccm.h"

@@ -5,16 +5,15 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-/*********************************************************************/
-/*                     I.B.M. CONFIENTIAL                           */
-/*********************************************************************/
-
-#include <dxconfig.h>
-
-
 /*---------------------------------------------------------------------------*\
  $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortOGL.c,v $
 \*---------------------------------------------------------------------------*/
+
+#include <dxconfig.h>
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #define STRUCTURES_ONLY
 #include "../hwDeclarations.h"

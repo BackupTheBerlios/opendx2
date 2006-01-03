@@ -8,7 +8,13 @@
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
 
 #include "hwDeclarations.h"
 #include "hwXfield.h"
@@ -633,6 +639,7 @@ _XOpacities(Field f, xfieldT* xf,
 }
 
 
+/*
 static Error
 _XFreeLocal(xfieldT* xf)
 {
@@ -640,6 +647,7 @@ _XFreeLocal(xfieldT* xf)
   EXIT(("stub function"));
   return OK;
 }
+*/
 
 
 /*=====================================================================*\

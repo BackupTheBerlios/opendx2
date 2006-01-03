@@ -40,7 +40,6 @@ typedef struct EdgeS {
   tmp = &edges[ptI];		\
   while(tmp->next && tmp->next->edgeIndex != edgeI) {tmp = tmp->next;}	\
   if(tmp->next) {		\
-    Edge tmp1 = tmp->next;	\
     tmp->next = tmp->next->next;\
   }				\
   }

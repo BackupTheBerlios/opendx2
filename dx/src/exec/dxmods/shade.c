@@ -6,11 +6,14 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/shade.c,v 1.5 2000/08/24 20:04:48 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/shade.c,v 1.6 2006/01/03 17:02:25 davidt Exp $
  */
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #include <stdio.h>
 #include <math.h>

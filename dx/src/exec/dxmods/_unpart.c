@@ -5,13 +5,15 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_unpart.c,v 1.5 2006/01/03 17:02:22 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_unpart.c,v 1.4 2000/08/24 20:04:22 davidt Exp $
- */
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
  
 #include "unpart.h"
  

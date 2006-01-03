@@ -11,6 +11,9 @@
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 /* XXX - traverse once to get values and once to set them (attributes). merge */
 

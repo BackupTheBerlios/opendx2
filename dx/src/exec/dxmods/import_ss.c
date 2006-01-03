@@ -482,7 +482,6 @@ static Error evaluate_oneline(struct parse_state *ps, char *delimiter,
 		struct column_info **test, int *ncolumns)
 {
   int nc=0;
-  int err = 0;
   char *p;
   int d;
   float f;

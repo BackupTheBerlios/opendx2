@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/overlay.c,v 1.6 2003/07/11 05:50:35 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/overlay.c,v 1.7 2006/01/03 17:02:23 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -35,6 +35,10 @@ END:
 #include "_helper_jea.h"
 #include  <math.h>		/* for fabs() */
 #include <stdlib.h>
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #define MAX_SHAPE	64
 

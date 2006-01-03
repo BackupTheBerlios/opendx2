@@ -9,6 +9,9 @@
 
 #include <dxconfig.h>
 #include <ctype.h>
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 #include "plot.h"
 #include "superwin.h"
 

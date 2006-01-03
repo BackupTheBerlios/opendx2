@@ -619,13 +619,13 @@ ExDPSendGvarPkg(DPSendPkg *pkg, int fd)
 
     ret = _dxf_ExWriteSock(fd, &(pkg->index), sizeof(int));
     if(ret != sizeof(int))
-        printf("_dxf_ExWriteSock returned %d instead of %d\n",ret,sizeof(int));
+        printf("_dxf_ExWriteSock returned %d instead of %ld\n",ret,sizeof(int));
     ret = _dxf_ExWriteSock(fd, &(pkg->excache), sizeof(int));
     if(ret != sizeof(int))
-        printf("_dxf_ExWriteSock returned %d instead of %d\n",ret,sizeof(int));
+        printf("_dxf_ExWriteSock returned %d instead of %ld\n",ret,sizeof(int));
     ret = _dxf_ExWriteSock(fd, &(pkg->gvp), sizeof(gvarpkg));
     if(ret != sizeof(gvarpkg))
-        printf("_dxf_ExWriteSock returned %d instead of %d\n", ret, 
+        printf("_dxf_ExWriteSock returned %d instead of %ld\n", ret, 
                                                      sizeof(gvarpkg));
     if(pkg->obj)
     {

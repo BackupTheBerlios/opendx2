@@ -958,7 +958,9 @@ Pointer _dxfgetbrk(Pointer base, ulong n)
 	m = MEM_DATASEG;
 
     if (x == ERR_PTR) {
+#if !(defined(cygwin) || defined (macos))
 	unsigned int i;
+#endif
 	x = (Pointer)sbrk(0);
 #if defined(cygwin) || defined (macos)
 	DXSetError(ERROR_NO_MEMORY, 

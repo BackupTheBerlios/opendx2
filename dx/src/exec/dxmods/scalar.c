@@ -8,6 +8,10 @@
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 #include "scalar.h"
 #include "interact.h"
 

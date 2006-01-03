@@ -5,12 +5,18 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInteractor.c,v 1.6 2006/01/03 17:02:27 davidt Exp $"  ;
+ */
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
 
-#ifndef lint
-static char rcsid[] = "$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwInteractor.c,v 1.5 2005/12/30 19:38:45 davidt Exp $"  ;
+#if defined(HAVE_STRING_H)
+#include <string.h>
 #endif
 
 /*---------------------------------------------------------------------------*\

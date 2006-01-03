@@ -58,9 +58,6 @@ _dxfLoadStereoSystemModeFile(char *fname)
 	(*func)(&_dxd_nStereoSystemModes, &_dxd_StereoSystemModes);
 
     return OK;
-
-error:
-    return ERROR;
 }
 
 extern int DXDefaultStereoSystemModes(int *, StereoSystemMode **);
@@ -194,8 +191,8 @@ _dxfExitStereoSystemMode(void *globals)
  *              NOW THE STEREO CAMERA MODES 
  ***********************************************************/
 
-static void *defInitializeStereoCameraMode(void *, dxObject);
-static int  defExitStereoCameraMode(void *);
+// static void *defInitializeStereoCameraMode(void *, dxObject);
+// static int  defExitStereoCameraMode(void *);
 
 static StereoCameraMode *_dxd_StereoCameraModes = NULL;
 static int _dxd_nStereoCameraModes  = 0;

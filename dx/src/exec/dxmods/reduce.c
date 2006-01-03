@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/reduce.c,v 1.7 2002/03/21 02:57:38 rhh Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/reduce.c,v 1.8 2006/01/03 17:02:24 davidt Exp $:
  */
 
 /***
@@ -35,6 +35,10 @@ END:
 
 #include <stdio.h>
 #include <math.h>
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 #include <dx/dx.h>
 
 #define MAX_DIMENSION	10

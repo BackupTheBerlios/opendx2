@@ -5,13 +5,15 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/imagemessage.c,v 1.7 2006/01/03 17:02:23 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/imagemessage.c,v 1.6 2005/02/01 00:36:23 davidt Exp $
- */
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #include "dx/dx.h"
 #include "interact.h"

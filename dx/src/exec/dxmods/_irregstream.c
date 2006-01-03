@@ -5,14 +5,15 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.9 2006/01/03 17:02:21 davidt Exp $
+ */
 
 #include <dxconfig.h>
 
-
-/*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_irregstream.c,v 1.8 2002/03/21 02:57:28 rhh Exp $
- */
-
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #include <dx/dx.h>
 #include <math.h>

@@ -46,6 +46,8 @@
 #include <Xm/GadgetP.h>
 #endif
 
+extern void _XmDispatchGadgetInput(Widget g, XEvent *event, Mask mask);
+
 #include "../widgets/Image.h"
 #include "../widgets/ImageP.h"
 #include "../widgets/clipnotify.h"

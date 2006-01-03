@@ -2743,7 +2743,6 @@ static void DropSelections( Widget w, XEvent* event,
     XmWorkspaceChildCallbackStruct cb;
     XmWorkspaceConstraints constraints;
     XmWorkspaceWidget ww;
-    XmWorkspaceLine line;
     Widget child;
     int i;
     short delta_x, delta_y;
@@ -2911,7 +2910,6 @@ static void DropSelections( Widget w, XEvent* event,
  */
 static void dropResizedSurrogates (XmWorkspaceWidget ww, int delta_x, int delta_y, XEvent* event)
 {
-    XmWorkspaceChildCallbackStruct cb;
     XmWorkspaceConstraints constraints;
     XmWorkspaceLine line;
     Widget child;

@@ -78,6 +78,7 @@
 #if defined(macos)
 #include <mach/mach.h>
 #include <sys/param.h>
+extern mach_port_t host_self(void);
 #endif
 
 #if DXD_HAS_RLIMIT && ! DXD_IS_MP

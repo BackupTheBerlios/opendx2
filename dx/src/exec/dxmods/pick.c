@@ -10,7 +10,11 @@
 
 
 #include <dx/dx.h>
-#include "math.h"
+#include <math.h>
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #define ZOFFSET         1.0
 #define SENSITIVITY	4.0

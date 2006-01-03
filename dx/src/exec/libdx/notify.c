@@ -9,8 +9,12 @@
 #include <dxconfig.h>
 
 
-#
 #include <stdio.h>
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 #include <dx/dx.h>
 
 #define NAME	in[0]

@@ -6,6 +6,12 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 
+#include <dxconfig.h>
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 #if defined(intelnt) || defined(WIN32)
 
 #include <dx/dx.h>
@@ -55,7 +61,7 @@ rcvdata(int fd, Pointer p)
 {
     struct _args *a = (struct _args *)p;
     int len, cfd;
-    int ll;
+    socklen_t ll;
     void *buf;
     struct _sc *sc = a->sc;
 

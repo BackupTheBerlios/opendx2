@@ -8,6 +8,9 @@
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 /* SimplifySurface
 
@@ -37,7 +40,7 @@
 /*********************************************************************/
 
 
-#include "dx/dx.h"
+#include <dx/dx.h>
 #include "simplesurf.h"
 
 static Error traverse(Object *, Object *);

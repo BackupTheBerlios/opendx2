@@ -8,6 +8,10 @@
 
 #include <dxconfig.h>
 
+#if defined(HAVE_CTYPE_H)
+#include <ctype.h>
+#endif
+
 #include <stdio.h>
 #include <dx/dx.h>
 #include "import.h"

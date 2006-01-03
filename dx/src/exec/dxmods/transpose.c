@@ -6,15 +6,20 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/transpose.c,v 1.5 2000/08/24 20:04:53 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/transpose.c,v 1.6 2006/01/03 17:02:26 davidt Exp $
  */
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
+#if defined(HAVE_CTYPE_H)
+#include <ctype.h>
+#endif
 
 #include <dx/dx.h>
-#include <ctype.h>
 
 static Object Object_Transpose(Object o, int num, int *dimlist);
 static Field Field_Transpose(Field f, int num, int *dimlist);

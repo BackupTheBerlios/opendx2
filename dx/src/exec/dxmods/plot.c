@@ -13,6 +13,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 #include "_autocolor.h"
 #include "plot.h"
 #include "autoaxes.h"
@@ -2447,7 +2450,6 @@ static Error PlotBarDepPositions(struct arg *arg) {
     Point clippoint1, clippoint2;
     Object ino;
     char *p_ubyte_colors=NULL;
-    RGBColor defaultcolor = DEFAULTCOLOR;
     int siblingCount = arg->siblingCount;
     int siblingNumber = arg->siblingNumber;
     float width;

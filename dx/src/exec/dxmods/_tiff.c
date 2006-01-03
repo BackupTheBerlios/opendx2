@@ -6,10 +6,15 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.11 2003/07/11 05:50:34 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.12 2006/01/03 17:02:21 davidt Exp $
  */
 
 #include <dxconfig.h>
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 #include <dx/dx.h>
 
 

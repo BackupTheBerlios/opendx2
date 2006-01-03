@@ -21,6 +21,10 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 #include <dx/dx.h>
 
 /*=====================Definitions=====================================*/

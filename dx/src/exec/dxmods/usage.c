@@ -8,6 +8,10 @@
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
 #include <dx/dx.h>
 
 extern void DXPrintLocalAlloc(int, int); /* from libdx/memory.c */

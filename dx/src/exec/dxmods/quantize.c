@@ -5,10 +5,13 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
-#include "dx/dx.h"
-
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
+
+#include <dx/dx.h>
 #include "quant.h"
 
 static Error traverse(Object *, Object *, int nColors);
@@ -44,7 +47,7 @@ static TreeNode    freenodes = NULL;
 
 static int nLeaves;
 
-struct treeNode depthlist[8] = {{NULL, NULL, NULL, 0, 0}};
+struct treeNode depthlist[8] = {{0, 0, 0, 0, 0}};
 
 static int reduce_max = 1;
 static int find_me = -1;

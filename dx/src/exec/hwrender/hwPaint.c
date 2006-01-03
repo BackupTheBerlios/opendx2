@@ -275,8 +275,6 @@ _dxf_paint(void* globals, viewO view, int buttonUp, screenO camScreen)
     _dxf_POP_MATRIX(PORT_CTX);
   }
 
- done:
-
   DEBUG_ON();
   EXIT(("OK"));
   return OK;

@@ -14,6 +14,7 @@ INCLUDE2 <string.h>
 INCLUDE2 "lightClass.h"
 INCLUDE2 "render.h"
 INCLUDE2 "internals.h"
+INCLUDE2 "../dxmods/_newtri.h"
 
 /*
  * forward declarations

@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/map.c,v 1.4 2000/05/16 18:48:02 gda Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/map.c,v 1.5 2006/01/03 17:02:23 davidt Exp $:
  */
 
 #include <dxconfig.h>
@@ -32,6 +32,10 @@ AUTHOR:
  Greg Abram
 END:
 ***/
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #include <stdio.h>
 #include <dx/dx.h>

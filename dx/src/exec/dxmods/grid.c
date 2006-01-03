@@ -7,12 +7,9 @@
 /***********************************************************************/
 /*
  * Header: /usr/people/gresh/code/svs/src/dxmods/RCS/grid.m,v 5.0 92/11/12 09:15:18 svs Exp Locker: gresh 
-
-#include <dxconfig.h>
-
-
  * 
  */
+
 /***
 MODULE:		
     Grid
@@ -33,6 +30,11 @@ AUTHOR:
     Brian P. O'Toole, Charles R. Clark
 END:
 ***/
+#include <dxconfig.h>
+
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #include <stdio.h>
 #include <math.h>

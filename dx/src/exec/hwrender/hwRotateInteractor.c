@@ -36,7 +36,7 @@
  *  Forward references
  */
 
-static void DoubleClick (tdmInteractor, int, int, tdmInteractorReturn *) ;
+//static void DoubleClick (tdmInteractor, int, int, tdmInteractorReturn *) ;
 static void StartStroke (tdmInteractor, int, int, int, int) ;
 static void StartViewStroke (tdmInteractor, int, int, int, int) ;
 static void StartRotateStroke (tdmInteractor, int, int, int, int) ;
@@ -72,10 +72,12 @@ static void NullFunction()
 {
 }
 
+/*
 static void
 NullStartStroke (tdmInteractor I, int x, int y, int btn, int s)
 {
 }
+*/
 
 static void
 NullDoubleClick (tdmInteractor I, int x, int y, tdmInteractorReturn *R)
@@ -83,11 +85,13 @@ NullDoubleClick (tdmInteractor I, int x, int y, tdmInteractorReturn *R)
   R->change = 0 ;
 }
 
+/*
 static void
 NullEndStroke (tdmInteractor I, tdmInteractorReturn *R)
 {
   R->change = 0 ;
 }
+*/
 
 static void
 NullResumeEcho (tdmInteractor I, tdmInteractorRedrawMode redrawmode)

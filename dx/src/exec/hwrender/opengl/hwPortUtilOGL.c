@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.14 2005/02/01 00:50:10 davidt Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.15 2006/01/03 17:02:28 davidt Exp $
 
 Author:  Ellen Ball
 
@@ -24,6 +24,10 @@ Based on hwrender/gl/hwPortUtil.c
 #include <string.h>
 
 #include "../hwDebug.h"
+
+#ifdef TIMER
+#undef TIMER
+#endif
 
 #ifdef DEBUG
 #define TIMER(s) glFlush(); DXMarkTime(s);

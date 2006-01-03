@@ -8,6 +8,9 @@
 
 #include <dxconfig.h>
 
+#if defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
 #define	TRIANGULATE_ALWAYS		1
 #define	TRIANGULATE_DEBUG		1

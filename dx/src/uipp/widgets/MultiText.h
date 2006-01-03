@@ -83,7 +83,9 @@ typedef struct _XmMultiTextClassRec* XmMultiTextWidgetClass;
 #define XmNfocusSensitive	"focusSensitive"
 #define XmNlinkCallback		"linkCallback"
 #define XmNscaleDPSpercent	"scaleDPSpercent"
+#ifndef XmNselectCallback
 #define XmNselectCallback	"selectCallback"
+#endif
 #define XmNshowCursor		"showCursor"
 #define XmNsmartSpacing		"smartSpacing"
 #define XmNsmoothScroll		"smoothScroll"

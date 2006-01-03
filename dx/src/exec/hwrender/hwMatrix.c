@@ -5,24 +5,25 @@
 /* This code licensed under the                                        */
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
+/*
+ * $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwMatrix.c,v $
+ */
 
 #include <dxconfig.h>
 
-
-/*
- $Source: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/hwMatrix.c,v $
- */
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#endif
 
 #include <stdio.h>
 #include <math.h>
 
-#include "hwDeclarations.h"
-#include "hwMatrix.h"
 #ifndef STANDALONE
 #include "hwMemory.h"
 #endif
+#include "hwDeclarations.h"
+#include "hwMatrix.h"
 #include "hwPortLayer.h"
-
 #include "hwDebug.h"
 
 /*
