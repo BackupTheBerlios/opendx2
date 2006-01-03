@@ -795,7 +795,7 @@ error:
 #include <math.h>
 #include <time.h>
 #include <X11/Xatom.h>
-#include <X11/XUtil.h>
+#include <X11/Xutil.h>
 
 #if defined(HAVE_STRING_H)
 #include <string.h>
