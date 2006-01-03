@@ -585,6 +585,7 @@ union wait{
 #define MAXPATHLEN           255
 
 #define DXD_SOCKET_WINSOCKETS_OK 1
+#define socklen_t int 
 
 /* to port directories on PC enviroments     */
 #define DXD_NON_UNIX_DIR_SEPARATOR 1

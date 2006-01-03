@@ -46,8 +46,6 @@
 
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
-#else
-extern int gethostname (char *NAME, size_t SIZE);
 #endif
 
 #if defined(DX_NATIVE_WINDOWS)
