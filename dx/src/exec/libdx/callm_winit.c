@@ -49,3 +49,4 @@ DXGetWindowsInstance(HINSTANCE *inst)
 }
 
 #endif /* DX_NATIVE_WINDOWS */
+

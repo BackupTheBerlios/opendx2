@@ -32,7 +32,7 @@ _dxf_NewGroupInterpolator(Group g,
     GroupInterpolator	gi;
     int 		i, j;
     Object		child;
-    Interpolator	*subPtr, sub, firstsub;
+    Interpolator	*subPtr, sub, firstsub = NULL;
     int			isMultigrid;
 
     CHECK(g, CLASS_GROUP);

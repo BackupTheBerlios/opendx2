@@ -1587,7 +1587,7 @@ static Error _Filter_Field (Field obj, Filter *filter, char *component)
     Array	fa	= NULL;		/* Filtered component		*/
     DepOn	d;
     int		items;
-    int		olength;
+    int		olength = 0;
     int		*offsets = NULL;
 
     if (DXEmptyField (obj))

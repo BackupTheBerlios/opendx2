@@ -578,6 +578,7 @@ static int UpdateWorkers(char *host, char *user, char *options, int add)
         else dpentry.options = NULL;
         dpentry.procfd = -1;
         dpentry.SlaveId = -1;
+        dpentry.SwapMsg = -1;
         if(!opterr)
             dpentry.numpgrps = 1;
         else 
@@ -719,7 +720,10 @@ static Error ProcessTable (char *cmd, Object *in, EXTab table, int len)
 	continue;
 
     buf[0] = '\0';
-    sscanf (next, "%s", buf);
+    if (sscanf (next, "%1023s", buf) != 1) {
+        DXSetError(ERROR_BAD_PARAMETER, "#8310", cmd);
+        return ERROR;
+    }
     dummy.name = buf;
     tab = (EXTab) bsearch ((char *) &dummy, (char *) table,
 			     len / sizeof (_EXTab), sizeof (_EXTab),
@@ -842,9 +846,10 @@ static int Describe (char *c, Object *in)
     if (c && *c) {
 	while (*c)
 	{
+        int ret = 0;
 	    help[0] = '\000';
-	    sscanf (c, "%s", help);
-	    if (help[0] == '\000')
+	    ret = sscanf (c, "%1023s", help);
+	    if (ret != 1 || help[0] == '\000')
 		break;
 	    str = _dxf_ExHelpFunction (help);
 	    if (str)

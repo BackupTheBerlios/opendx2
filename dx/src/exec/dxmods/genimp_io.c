@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.9 2002/03/21 02:57:35 rhh Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/genimp_io.c,v 1.10 2006/01/04 22:00:51 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -1240,8 +1240,8 @@ read_ascii(FILE *fp, Type t, void *data, int index)
     }
 
     if (r == 0){
-	fscanf(fp,"%70s",string);
-	DXSetError(ERROR_DATA_INVALID, "#10906",string);
+		fscanf(fp,"%70s",string);
+		DXSetError(ERROR_DATA_INVALID, "#10906",string);
         goto error;
     }
 

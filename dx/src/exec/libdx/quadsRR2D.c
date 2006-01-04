@@ -251,7 +251,7 @@ _dxfQuadsRR2DInterpolator_PrimitiveInterpolate(QuadsRR2DInterpolator qi,
 {
     float	    x, y;
     int 	    ix, iy;
-    float	    dx, dy;
+    float	    dx = 0, dy = 0;
     int		    ixMax;
     int		    iyMax;
     int		    sz0, sz1;

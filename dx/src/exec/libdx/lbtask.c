@@ -290,8 +290,8 @@ static
 Error
 one_task(int block)
 {
-    struct task *t;
-    int delete;
+    struct task *t = NULL;
+    int delete=1;
 
     if (block)				/* get DXlock w/ blocking, */
 	DXlock(&(ti->task_lock), 0);

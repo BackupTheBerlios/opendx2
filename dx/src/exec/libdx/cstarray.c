@@ -149,7 +149,7 @@ IsConstantArray(Array a)
 	return 1;
     else if (DXGetArrayClass(a) == CLASS_REGULARARRAY)
     {
-	int cst;
+	int cst=0;
 	switch(a->type)
 	{
 	    case TYPE_DOUBLE: CONSTANT_REGULAR(double, cst); break;

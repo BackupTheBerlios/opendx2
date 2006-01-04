@@ -277,28 +277,31 @@ static int GetNextStringRedGreenBlue(FILE *in, char *compactstring, float *r,
     
     /* read the colorname (at least the first word of it) */
     if (fscanf(in,"%s", string) != EOF) {
-	j=0;
-      more_string:
+        j=0;
+ more_string:
 	i=0;
 	while (i < 80 && string[i] != '\0') {
-	    if (string[i] != ' ') {
-		compactstring[j] = tolower(string[i]);
-		j++;
-	    }
-	    i++;
+	   if (string[i] != ' ') {
+	       compactstring[j] = tolower(string[i]);
+	       j++;
+	   }
+	   i++;
 	}
 	/* now read the next token. Might be more color name, or 
 	   might be red color */
-	fscanf(in,"%s", string);
-	if ((isdigit(string[0]))||(string[0] == '.')) {
-	    /* it's red */
-	    *r = atof(string);
-	    fscanf(in,"%f %f \n", g, b);
-	}
-	else {
-	    /* it's more color name */
-	    goto more_string;
-	} 
+	if(fscanf(in,"%s", string) != EOF) {
+	    if ((isdigit(string[0]))||(string[0] == '.')) {
+	        /* it's red */
+	        *r = atof(string);
+	        if(fscanf(in,"%f %f \n", g, b) != 2) {
+                    return 0;
+                }
+	    }
+	    else {
+	       /* it's more color name */
+	       goto more_string;
+	    }
+        } 
 	/* null terminate */
 	compactstring[j] = '\0';
 	return 1;

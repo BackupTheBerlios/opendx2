@@ -248,7 +248,7 @@ Object
 _dxfIrregGrow(Group group, int nRings, Array components)
 {
     int 	   	  i, j;
-    int		   	  nParts, nNonEmptyFields;
+    int		   	  nParts = 0, nNonEmptyFields = 0;
     Field		  *fields;
     Externals	   	  *externals;
     IJ		   	  ij;
@@ -417,7 +417,7 @@ Object
 _dxfIrregInvalidateDupBoundary(Group group)
 {
     int 	   	  i, j;
-    int		   	  nParts, nNonEmptyFields;
+    int		   	  nParts = 0, nNonEmptyFields = 0;
     Field		  *fields;
     Externals	   	  *externals;
     IJ		   	  ij;
@@ -696,7 +696,7 @@ IrregShrinkField(Pointer ptr)
     Array 	oArray, nArray = NULL;
     int   	i;
     char  	*attr, *name;
-    int   	nPositions, nConnections, dLength, rLength, aLength;
+    int   	nPositions, nConnections, dLength, rLength = -1, aLength;
     char   	*oComponents[256];
     char   	*sComponents[256];
     char        origName[256];
@@ -1499,7 +1499,7 @@ AddOverlap(Pointer ptr)
 	    for (i = 0; i < nComponents; i++)
 	    {
 		int dep;
-		int oKnt, nKnt;
+		int oKnt = 0, nKnt = 0;
 
 		Array src = GetArray(field, components[i]);
 		if (! src)

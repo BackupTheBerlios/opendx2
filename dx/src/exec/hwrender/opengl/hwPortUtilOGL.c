@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.15 2006/01/03 17:02:28 davidt Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.16 2006/01/04 22:00:53 davidt Exp $
 
 Author:  Ellen Ball
 
@@ -478,7 +478,7 @@ static Error points (xfieldP xf, helperFunc helper,
   static long	iscratch;
   int		i = 0, c;
   dependencyT   odep;
-  int 		translu;
+  int 		translu = 0;
 
   ENTRY(("points (0x%x, 0x%x, %d, %d, %d, %d, %d)",
 	 xf, helper, firstConnection, lastConnection, face, approx, skip));
@@ -612,7 +612,7 @@ static Error lines (xfieldP xf, helperFunc helper,
   static int	iscratch;
   int		c;
   dependencyT   odep;
-  int 		translu;
+  int 		translu = 0;
 
   ENTRY(("lines (0x%x, 0x%x, %d, %d, %d, %d, %d)",
 	 xf, helper, firstConnection, lastConnection, face, approx, skip));
@@ -1169,7 +1169,7 @@ static Error polylines (xfieldP xf, helperFunc helper,
     static float fscratch[3];
     static int	 iscratch;
     int		 c;
-    int	         start, end, knt, max, thisknt;
+    int	         start, end, knt, max = 0, thisknt;
 
     if(approx == approx_box)
     {

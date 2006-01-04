@@ -39,7 +39,7 @@ double 			red_dist;
 double 			green_dist;
 double 			blue_dist;
 int    			i;
-XColor 			tmp;
+XColor 			tmp = {0,0,0,0,0,0};
 int    			screen;
 int    			ncells;
 Display 		*d = XtDisplay(w);
@@ -56,59 +56,59 @@ unsigned long		blue_mult=0;
     screen = XScreenNumberOfScreen(XtScreen(w));
     XtVaGetValues(w, XmNdepth, &depth, NULL);
     if(depth == 8) 
-	ncells = 255;
+	    ncells = 255;
     else if(depth == 12) 
-	ncells = 16; 
+	    ncells = 16; 
     else
-	ncells = 256;
+	    ncells = 256;
     if(XtIsRealized(w))
     {
-	XGetWindowAttributes(d, XtWindow(w), &win_att);
-	if(win_att.colormap != 
-	    DefaultColormap(XtDisplay(w), screen))
-	{
-	    cm = win_att.colormap;
-	    red_mask = win_att.visual->red_mask;
-	    green_mask = win_att.visual->green_mask;
-	    blue_mask = win_att.visual->blue_mask;
+	    XGetWindowAttributes(d, XtWindow(w), &win_att);
+	    if(win_att.colormap != 
+	        DefaultColormap(XtDisplay(w), screen))
+	    {
+	        cm = win_att.colormap;
+	        red_mask = win_att.visual->red_mask;
+	        green_mask = win_att.visual->green_mask;
+	        blue_mask = win_att.visual->blue_mask;
 
-	    red_mult = red_mask & (~red_mask+1);
-	    green_mult = green_mask & (~green_mask+1);
-	    blue_mult = blue_mask & (~blue_mask+1);
-	}
-	else
-	{
-	    cm = DefaultColormap(XtDisplay(w), screen);
-	}
+	        red_mult = red_mask & (~red_mask+1);
+	        green_mult = green_mask & (~green_mask+1);
+	        blue_mult = blue_mask & (~blue_mask+1);
+	    }
+	    else
+	    {
+	        cm = DefaultColormap(XtDisplay(w), screen);
+	    }
     }
     else
     {
-	cm = DefaultColormap(XtDisplay(w), screen);
+	    cm = DefaultColormap(XtDisplay(w), screen);
     }
 
     for (i = 0; i < ncells; i++)
 	{
-	switch(depth)
-	    {
-	    case 8:
-		cell_def[i].pixel = i;
-		break;
-	    case 12:
-		pix = i;
-		cell_def[i].pixel = 
-		    (pix * red_mult) + 
-		    (pix * green_mult) + 
-		    (pix * blue_mult);
-		break;
-	    case 24:
-		pix = i;
-		cell_def[i].pixel = 
-		    (pix * red_mult) | 
-		    (pix * green_mult) | 
-		    (pix * blue_mult);
-		break;
-	    }
-	cell_def[i].flags = DoRed | DoGreen | DoBlue;
+	    switch(depth)
+	        {
+	        case 8:
+		    cell_def[i].pixel = i;
+		    break;
+	        case 12:
+		    pix = i;
+		    cell_def[i].pixel = 
+		        (pix * red_mult) + 
+		        (pix * green_mult) + 
+		        (pix * blue_mult);
+		    break;
+	        default:
+		    pix = i;
+		    cell_def[i].pixel = 
+		        (pix * red_mult) | 
+		        (pix * green_mult) | 
+		        (pix * blue_mult);
+		    break;
+	        }
+	    cell_def[i].flags = DoRed | DoGreen | DoBlue;
 	}
 
     XQueryColors(d, cm, cell_def, ncells);
@@ -140,8 +140,7 @@ unsigned long		blue_mult=0;
 		    tmp.pixel = cell_def[i].pixel;
 		    }
 		break;
-	    case 12:
-	    case 24:
+	    default:
 		if(red_dist < cur_red_dist)
 		    {
 		    cur_red_dist = red_dist;
@@ -163,10 +162,14 @@ unsigned long		blue_mult=0;
     switch(depth)
 	{
 	case 8:
-	    *target = tmp;
+	    target->red = tmp.red;
+        target->green = tmp.green;
+        target->blue = tmp.blue;
+        target->pixel = tmp.pixel;
+        target->flags = tmp.flags;
+        target->pad = tmp.pad;
 	    break;
-	case 12:
-	case 24:
+	default:
 	    pix = (cell_def[cur_red_dist_index].pixel & red_mask) |
 		  (cell_def[cur_green_dist_index].pixel & green_mask) |
 		  (cell_def[cur_blue_dist_index].pixel & blue_mask);

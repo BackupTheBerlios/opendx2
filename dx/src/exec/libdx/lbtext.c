@@ -299,8 +299,8 @@ DXGeometricText( char * s, Object font, float * stringwidth ) {
     Point *newpoints;
     Line *lines, *newlines;
     Triangle *tris, *newtris;
-    int pointdim, connsize;
-    int npoints, nconnect, np, nc, i;
+    int pointdim, connsize = 0;
+    int npoints, nconnect = 0, np, nc, i;
     int p1, q1, r1;
     char *conntype;
     static RGBColor white = { 1, 1, 1 };

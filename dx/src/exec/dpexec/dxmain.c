@@ -1895,7 +1895,7 @@ char * _dxf_ExPromptGet(char *var)
 
 static int ExFromMasterInputHndlr (int fd, Pointer p)
 {
-    Program		*graph;
+    Program		*graph = NULL;
     DistMsg             pcktype;
     int			b, peerwait;
     int 		graphId;

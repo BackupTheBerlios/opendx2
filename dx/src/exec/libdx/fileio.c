@@ -217,7 +217,7 @@ static Error movie_init()
 
 Error _dxffile_open(char *name, int rw)
 {
-	int i, fd;
+	int i, fd=-1;
 
 	if (!name) {
 		DXSetError(ERROR_BAD_PARAMETER, "no filename");
@@ -359,7 +359,10 @@ Error _dxffile_add(char *name, uint nblocks)
 
     if (!issocket && nblocks > 0) {
 	lseek(fd, nblocks*ONEBLK - sizeof(int), 0);
-	write(fd, &fd, sizeof(int));
+	if(write(fd, &fd, sizeof(int)) == -1) {
+            DXSetError(ERROR_INTERNAL, "can't write to dataset '%s'", name);
+            return ERROR;
+        }
 	lseek(fd, 0, 0);
     }
 

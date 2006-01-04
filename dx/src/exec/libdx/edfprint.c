@@ -395,8 +395,12 @@ Object DXExportDX(Object o, char *filename, char *format)
 	    goto done;
 	}
 
-	while((nbytes = fread(iob, 1, IOSIZE, p.dfp)) > 0)
-	    fwrite(iob, 1, nbytes, p.fp);
+	while((nbytes = fread(iob, 1, IOSIZE, p.dfp)) > 0) {
+	    if( fwrite(iob, 1, nbytes, p.fp) != nbytes) {
+                DXSetError(ERROR_INTERNAL, "#12249", fname2);
+                rc = ERROR;
+            }
+        }
 
 	DXFree((Pointer)iob);
 

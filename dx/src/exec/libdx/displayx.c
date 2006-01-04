@@ -3962,17 +3962,21 @@ static Error getGamma(int depth, float *gamma)
 
     if (str)
     {
-	sscanf(str, "%f", gamma);
+	if (sscanf(str, "%f", gamma) != 1)
+            *gamma = 0; 
     }
-    else switch(depth)
-    {
-	case 8:  *gamma = DXD_GAMMA_8BIT;  break;
-	case 12: *gamma = DXD_GAMMA_12BIT; break;
-	case 15: *gamma = DXD_GAMMA_15BIT; break;
-	case 16: *gamma = DXD_GAMMA_16BIT; break;
-	case 24: *gamma = DXD_GAMMA_24BIT; break;
-	case 32: *gamma = DXD_GAMMA_32BIT; break;
-    };
+
+    if (!str || *gamma == 0) {
+        switch(depth)
+        {
+	    case 8:  *gamma = DXD_GAMMA_8BIT;  break;
+	    case 12: *gamma = DXD_GAMMA_12BIT; break;
+	    case 15: *gamma = DXD_GAMMA_15BIT; break;
+	    case 16: *gamma = DXD_GAMMA_16BIT; break;
+	    case 24: *gamma = DXD_GAMMA_24BIT; break;
+	    case 32: *gamma = DXD_GAMMA_32BIT; break;
+        };
+    }
 
     return OK;
 }
@@ -4549,7 +4553,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
     Visual 		*visual = (Visual *)d->visual;
     Colormap		cmap    = (Colormap)d->cmap;
     XColor 		colors[MAXCMAPSIZE];
-    int 		i, j, best, r, g, b, n,nn, max_nbrhd; 
+    int 		i, j, best = 0, r, g, b, n,nn, max_nbrhd; 
     int 		comp[MAXCMAPSIZE],
 			uncomp[MAXCMAPSIZE];
     unsigned char       readOnly[MAXCMAPSIZE];
@@ -4557,7 +4561,7 @@ getOneMapTranslation(Display *dpy, translationT *d, int force)
     struct color_sort 	sort[MAX_RR*MAX_GG*MAX_BB];
     unsigned char       colorAssigned[MAX_RR*MAX_GG*MAX_BB];
     unsigned long	pixels[MAXCMAPSIZE];
-    int 		cmapsize, xlatesize;
+    int 		cmapsize, xlatesize = 0;
     int			rr,gg,bb;
     float		invgamma, gamma;
     char		*str;

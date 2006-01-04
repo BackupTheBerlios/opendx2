@@ -1395,8 +1395,8 @@ Object readin_object(char *dataset, Pointer *header, HashTable ht,
     Type type;
     Category category;
     int rank, shape[MAXRANK];
-    Pointer origin, delta;
-    Pointer dp;
+    Pointer origin = NULL, delta = NULL;
+    Pointer dp = NULL;
     Matrix *m;
     int fixed, z;
     int imagewidth;

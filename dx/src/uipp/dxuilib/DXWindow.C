@@ -9,21 +9,15 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-
-
-
-#if defined(DXD_WIN) || defined(OS2)                  //SMH get correct hdr
-  #if defined(HAVE_IOSTREAM)
-#include <iostream>
-  #elif defined(HAVE_IOSTREAM_H)
-#include <iostream.h>
-  #endif
-#else
-  #if defined(HAVE_STREAM)
-#include <stream>
-  #elif defined(HAVE_STREAM_H)
-#include <stream.h>
-  #endif
+#if defined(HAVE_IOSTREAM)
+#  include <iostream>
+#else 
+#  if defined(HAVE_IOSTREAM_H)
+#  include <iostream.h>
+#  endif
+#  if defined(HAVE_STREAM_H)
+#  include <stream.h>
+#  endif
 #endif
 
 #include <Xm/RowColumn.h>

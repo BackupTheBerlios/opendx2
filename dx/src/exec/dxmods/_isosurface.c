@@ -4774,7 +4774,7 @@ grad_table_ptr create_special_gradient
 {
     array_info    pi_info, ci_info, di_info = NULL;
     Cube          connection;
-    Point         centroid;
+    Point         centroid = {0,0,0};
     Point         point[8];
     float         data[8];
     Vector        ccg;

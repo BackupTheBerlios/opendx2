@@ -367,7 +367,7 @@ Error
 _dxf_XColors(Field f, struct xfield *xf, enum xr required, enum xd xd)
 {
     Array colors_array;
-    char *fs, *bs, *s;
+    char *fs, *bs, *s = NULL;
     Object o;
     Type t;
     int r, shape[32];

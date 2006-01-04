@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_normals.c,v 1.6 2001/07/23 17:19:06 gda Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_normals.c,v 1.7 2006/01/04 22:00:50 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -324,7 +324,8 @@ DetermineFunction(Object o, char *method, int *dep, float *radius)
     }
     else
     {
-	sscanf(method, "%f", radius);
+	if (sscanf(method, "%f", radius) != 1)
+	    return ERROR;
 	*dep = DEP_ON_POSITIONS;
 	return OK;
     }

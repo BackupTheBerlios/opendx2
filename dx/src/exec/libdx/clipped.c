@@ -345,7 +345,7 @@ DXClipPlane(Object o, Point p, Vector n)
     int crossings[12];		/* point num for each of 12 edge crossings */
     int first, last;		/* first, last point num on current face */
     int elements = 0;		/* number of triangles so far */
-    int nearPlane;			/* maximal box corner in direction of n */
+    int nearPlane = 0;			/* maximal box corner in direction of n */
     Vector v1, v2, v4;
     float max, d, l1, l2, l4;
     int i, debug;

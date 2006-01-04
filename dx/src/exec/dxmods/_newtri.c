@@ -408,7 +408,7 @@ _dxf__TriangulateFLEP (FLEP *in, Vector *normal, Triangle *tris, int *ntri,
     int         temp, k;
     float       dir;
     FLEP	lin;
-    FLEP	lvalid;
+    FLEP	lvalid= {NULL, NULL};
     Error	ret	= ERROR;
     Loop	*loops	= NULL;
     int		size;

@@ -2368,7 +2368,7 @@ static void KeyboardNavigation( XmWorkspaceWidget ww, XEvent* event )
     int delta_x, delta_y;
     int dx=1, dy=1;
     int i;
-    int minx, miny;
+    int minx=0, miny=0;
     short first = True;
     XmWorkspaceConstraints constraints;
     switch (event->type) {

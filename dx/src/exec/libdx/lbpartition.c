@@ -122,7 +122,7 @@ partition(Field f, int *n, int size, Object *o, int delete)
     Type type;
     Category category;
     Array posA = NULL, negA = NULL;
-    char *pptr, *nptr;
+    char *pptr = NULL, *nptr = NULL;
     int  *ipsrc = NULL, *insrc = NULL;
     byte *c_part  = NULL; /* table indicating which side the element lies in */
     int  *c_index = NULL; /* table indicating index of connection in partition */

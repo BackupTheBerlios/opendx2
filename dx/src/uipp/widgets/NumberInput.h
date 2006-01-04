@@ -11,10 +11,10 @@
 #include <ctype.h>	/*  issspace(), isdigit(), isalnum()  */
 #include <stdlib.h>	/*  strtod()  */
 #include <errno.h>	/*  errno, ERANGE  */
+#include <X11/keysym.h>
 #ifndef XK_MISCELLANY
 #define XK_MISCELLANY 1
 #endif
-#include <X11/keysym.h>
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

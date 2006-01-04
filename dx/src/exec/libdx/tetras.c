@@ -321,7 +321,7 @@ _dxfInitialize(TetrasInterpolator ti)
     float		len, vol;
     int			*t;
     Point 		*mm;
-    float		fuzz;
+    float		fuzz = 0;
 
     ti->hint = -1;
 

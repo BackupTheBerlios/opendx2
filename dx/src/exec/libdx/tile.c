@@ -269,7 +269,7 @@ DXRender(Object o, Camera camera, char *format)
     struct common c, *cp;
     int ci, irregular, n, i, j;
     int nosplit;
-    int x, y, left, bot, lt, rt, tp, bt, split;
+    int x, y, left, bot, lt, rt=0, tp=0, bt, split;
     Point box[8];
     float width;
     int	depth;

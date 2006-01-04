@@ -2003,7 +2003,7 @@ static Error PlotDepConnections(struct arg *arg) {
     int poscount, datacount, conncount, i, needtoclip, count_p, count_c;
     int clipregcolors;
     int nooutput=0;
-    RGBColor *color_ptr=NULL, color, origin;
+    RGBColor *color_ptr=NULL, color= {0,0,0}, origin;
     Point clippoint1, clippoint2, newpoint;
     Quadrilateral newconquad;
     Object ino;
@@ -2446,7 +2446,7 @@ static Error PlotBarDepPositions(struct arg *arg) {
     int poscount, datacount, i, needtoclip, count_p;
     int clipregcolors, regcolors, gotcolors;
     int nooutput=0;
-    RGBColor *p_colors=NULL, *p_colorsnew=NULL, color, origin;
+    RGBColor *p_colors=NULL, *p_colorsnew=NULL, color = {0,0,0}, origin;
     Point clippoint1, clippoint2;
     Object ino;
     char *p_ubyte_colors=NULL;

@@ -186,8 +186,11 @@ static Error checkdim(Object in, int *prev_d)
 	    this_d = 3;
 	else if (!strcmp(cp, "tetrahedra"))
 	    this_d = 3;
-	else if (!strncmp(cp, "cubes", 5))
-	    sscanf(cp, "cubes%dD", &this_d);
+	else if (!strncmp(cp, "cubes", 5)) {
+	    if(sscanf(cp, "cubes%dD", &this_d) != 1) {
+                this_d = -1; /* unknown type */
+            }
+        }
 	
 	else
 	    this_d = -1;   /* unknown type */

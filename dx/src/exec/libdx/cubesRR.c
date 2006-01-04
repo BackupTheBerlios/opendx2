@@ -332,7 +332,7 @@ _dxfCubesRRInterpolator_PrimitiveInterpolate(CubesRRInterpolator ci,
     int		           esz0, esz1;
     InvalidComponentHandle icH = ((FieldInterpolator)ci)->invCon;
     ubyte		   *dbuf = NULL;
-    Matrix 		   *xform;
+    Matrix 		   *xform = NULL;
 
     if (! ci->fieldInterpolator.initialized)
     {

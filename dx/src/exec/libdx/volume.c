@@ -531,7 +531,7 @@ Error
 _dxf_VolumeRegular(struct buffer *b, struct gather *gather, int clip)
 {
     int i /*, patch_size = 0*/;
-    struct xfield **xfields, *xf;
+    struct xfield **xfields, *xf = NULL;
     Vector u, v;
     float a, s;
 

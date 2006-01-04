@@ -1351,6 +1351,7 @@ ExGraphCall (Program *p, node *n, int top, list_int *out, EXDictionary dict, int
 		if (ind == NULL)
 		{
 		    pr.name = _dxf_ExCopyString/*Local*/ (val->v.id.id);
+            pr.oneshot = NULL;
 		    inArgs[slot] = pr.index = SIZE_LIST (p->vars);
                     ExDebug("1","pr.name %s, pr.index %d\n", pr.name, pr.index);
 		    APPEND_LIST (ProgramRef, p->undefineds, pr);
@@ -1966,6 +1967,7 @@ static Program *GetNewMacro(Program *p, int *map, int *resolved)
         }
         else pr.index = slot;
         pr.name = _dxf_ExCopyString(pPr->name);
+        pr.oneshot = NULL;
         ExDebug("1","pr.name %s, pr.index %d\n", pr.name, pr.index);
         APPEND_LIST (ProgramRef, newp->undefineds, pr);
     }
@@ -2004,6 +2006,7 @@ static void ExCopySubP(Program *toP, Program *fromP, int top)
         pPr = FETCH_LIST(fromP->undefineds, i);
         pr.index = pPr->index;
         pr.name = _dxf_ExCopyString(pPr->name);
+        pr.oneshot = NULL;
         ExDebug("1","pr.name %s, pr.index %d\n", pr.name, pr.index);
         APPEND_LIST (ProgramRef, toP->undefineds, pr);
     }

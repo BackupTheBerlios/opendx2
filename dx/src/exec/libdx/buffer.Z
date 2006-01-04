@@ -667,7 +667,7 @@ static Array ENCODE_NAME(Field image, translationP t)			$\
     int segknt, totknt;							$\
     SegListSegment *seg;						$\
     SegList *seglist = NULL;						$\
-    ubyte *segptr;							$\
+    ubyte *segptr=NULL;							$\
     int mask = COLORMASK;                                               $\
 									$\
     a = (Array)DXGetComponentValue(image, "connections");		$\

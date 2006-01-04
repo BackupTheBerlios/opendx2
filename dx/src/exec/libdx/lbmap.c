@@ -278,7 +278,7 @@ Map_Field_Task(Pointer task)
     Array	 invalidArray;
     Object	 attr;
     char	 *invalidName = NULL;
-    char 	 *invalidAssociation;
+    char 	 *invalidAssociation = NULL;
     Array	 origInvalid;
 
     in 		= ((MapTask *)task)->dataField;

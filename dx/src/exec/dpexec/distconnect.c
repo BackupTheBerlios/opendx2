@@ -268,13 +268,28 @@ static Error ConnectPMtoS(dpgraphstat *index)
 
     /* tell slave to connect */
     type = DM_SCONNECT;
-    write(index->procfd, &type, sizeof(DistMsg));
+    if (write(index->procfd, &type, sizeof(DistMsg)) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    }
     len = strlen(_dxd_exHostName) + 1;
-    write(index->procfd, &len, sizeof(int));
-    write(index->procfd, _dxd_exHostName, sizeof(char)*len);
-    write(index->procfd, &dxport, sizeof(int));
+    if (write(index->procfd, &len, sizeof(int)) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    }
+    if (write(index->procfd, _dxd_exHostName, sizeof(char)*len) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    }
+    if (write(index->procfd, &dxport, sizeof(int)) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    }
     slaveid = 0; /* this slave is the master */
-    write(index->procfd, &slaveid, sizeof(int));
+    if (write(index->procfd, &slaveid, sizeof(int)) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    }
 
     /* select becomes os2_select in arch.h for os2 */
     FD_ZERO (&fdset);
@@ -348,11 +363,23 @@ static Error ConnectPStoS(dpgraphstat *index, dpgraphstat *index2)
                                         index2->prochostname);
     type = DM_SLISTEN;
     /* give first slave hostname of slave to connect to */
-    write(index->procfd, &type, sizeof(DistMsg));
+    if (write(index->procfd, &type, sizeof(DistMsg)) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    }
     len = strlen(index2->prochostname) + 1;
-    write(index->procfd, &len, sizeof(int));
-    write(index->procfd, index2->prochostname, sizeof(char)*len);
-    write(index->procfd, &(index2->SlaveId), sizeof(int));
+    if (write(index->procfd, &len, sizeof(int)) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    }
+    if (write(index->procfd, index2->prochostname, sizeof(char)*len) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    }
+    if (write(index->procfd, &(index2->SlaveId), sizeof(int)) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    }
 
     /* wait for a port to accept from */
     FD_ZERO (&fdset);
@@ -373,12 +400,27 @@ static Error ConnectPStoS(dpgraphstat *index, dpgraphstat *index2)
 
             /* tell other slave to connect */
             type = DM_SCONNECT;
-            write(index2->procfd, &type, sizeof(DistMsg));
+            if (write(index2->procfd, &type, sizeof(DistMsg)) == -1) {
+                DXUIMessage("ERROR", "Failed writing to socket.");
+                return(ERROR);
+            }
             len = strlen(index->prochostname) + 1;
-            write(index2->procfd, &len, sizeof(int));
-            write(index2->procfd, index->prochostname, sizeof(char)*len);
-            write(index2->procfd, &port, sizeof(int));
-            write(index2->procfd, &(index->SlaveId), sizeof(int));
+            if (write(index2->procfd, &len, sizeof(int)) == -1) {
+                DXUIMessage("ERROR", "Failed writing to socket.");
+                return(ERROR);
+            }
+            if (write(index2->procfd, index->prochostname, sizeof(char)*len)  == -1) {
+                DXUIMessage("ERROR", "Failed writing to socket.");
+                return(ERROR);
+            }
+            if (write(index2->procfd, &port, sizeof(int))  == -1) {
+                DXUIMessage("ERROR", "Failed writing to socket.");
+                return(ERROR);
+            }
+            if (write(index2->procfd, &(index->SlaveId), sizeof(int))  == -1) {
+                DXUIMessage("ERROR", "Failed writing to socket.");
+                return(ERROR);
+            }
 
             FD_ZERO (&fdset);
             FD_SET(index2->procfd, &fdset);
@@ -406,7 +448,10 @@ static Error ConnectPStoS(dpgraphstat *index, dpgraphstat *index2)
                     }
                 }
                 if(type == DM_SACCEPT) {
-                    write(index->procfd, &type, sizeof(DistMsg));
+                    if (write(index->procfd, &type, sizeof(DistMsg))  == -1) {
+                        DXUIMessage("ERROR", "Failed writing to socket.");
+                        return(ERROR);
+                    }
                     if(_dxd_exDebug) {
                         printf("connected %s to %s at port %d\n", 
                           index->prochostname, index2->prochostname, port);
@@ -485,8 +530,14 @@ Error _dxf_ExSlaveListen()
     }
 
     msgtype = DM_SCONNECTPORT;
-    write(_dxd_exMasterfd, &msgtype, sizeof(DistMsg));
-    write(_dxd_exMasterfd, &dxport, sizeof(int));  
+    if (write(_dxd_exMasterfd, &msgtype, sizeof(DistMsg)) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    }
+    if (write(_dxd_exMasterfd, &dxport, sizeof(int)) == -1) {
+        DXUIMessage("ERROR", "Failed writing to socket.");
+        return(ERROR);
+    } 
  
     /* wait for accept */
     if(_dxf_ExReceiveBuffer(_dxd_exMasterfd, &msgtype, 1, TYPE_INT,
@@ -518,7 +569,10 @@ Error _dxf_ExSlaveListen()
         /* send signature to peer, this must be the first msg that */
         /* the peer gets to determine if it needs to swap bytes    */
         msgtype = (DistMsg) DPMSG_SIGNATURE;
-        write(dxfd, &msgtype, sizeof(int));  
+        if (write(dxfd, &msgtype, sizeof(int)) == -1) {
+            DXUIMessage("ERROR", "Failed writing to socket.");
+            return(ERROR);
+        } 
     }
     else {
         DXUIMessage("ERROR", "Connect to %s failed.", spentry.peername);  
@@ -559,7 +613,10 @@ Error _dxf_ExSlaveConnect()
     /* connecting as peer to master */
     if(spentry.SlaveId == 0) {
         msgtype = (DistMsg) DPMSG_SIGNATURE;
-        write(_dxd_exMasterfd, &msgtype, sizeof(int));
+        if (write(_dxd_exMasterfd, &msgtype, sizeof(int)) == -1) {
+            DXUIMessage("ERROR", "Failed writing to socket.");
+            return(ERROR);
+        }
         spentry.SwapMsg = _dxd_exSwapMsg;
     }
     fd = DXConnectToServer(spentry.peername, port);
@@ -571,12 +628,18 @@ Error _dxf_ExSlaveConnect()
         _dxf_ExAddPeer(&spentry);
         DXRegisterInputHandler(ExSendModuleInputHandler, fd, NULL);
         msgtype = DM_SACCEPT;
-        write(_dxd_exMasterfd, &msgtype, sizeof(DistMsg));
+        if (write(_dxd_exMasterfd, &msgtype, sizeof(DistMsg)) == -1) {
+            DXUIMessage("ERROR", "Failed writing to socket.");
+            return(ERROR);
+        }
 
         /* send signature to peer, this must be the first msg that */
         /* the peer gets to determine if it needs to swap bytes    */
         msgtype = (DistMsg) DPMSG_SIGNATURE;
-        write(fd, &msgtype, sizeof(int));  
+        if (write(fd, &msgtype, sizeof(int)) == -1) {
+            DXUIMessage("ERROR", "Failed writing to socket.");
+            return(ERROR);
+        }
 	
 
 	/* send MP license failed message now that it's safe to use DXMessage */

@@ -293,7 +293,7 @@ void SetControlColor( ControlColor* color,
 		      double hue[], double saturation[], double value[] )
 {
 int i;
-XColor cell_def;
+XColor cell_def = {0, 0, 0};
 unsigned short red, green, blue;
 
     for( i=0; i<color->num_cells; i++ )

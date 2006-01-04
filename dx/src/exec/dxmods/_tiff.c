@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.12 2006/01/03 17:02:21 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_tiff.c,v 1.13 2006/01/04 22:00:51 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -1743,7 +1743,7 @@ Field _dxf_InputTIFF
             goto error;
         else
         {
-            setval tmp_integer;
+            setval tmp_integer = {0, 0};
             int    remote_data = -1;
 
             /*

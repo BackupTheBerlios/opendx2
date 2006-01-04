@@ -13,19 +13,18 @@
 // extern "C" int putenv(char*);
 
 #if defined(HAVE_IOSTREAM)
-#include <iostream>
-#elif defined(HAVE_IOSTREAM_H)
-#include <iostream.h>
+#  include <iostream>
+#else
+#  if defined(HAVE_IOSTREAM_H)
+#  include <iostream.h>
+#  endif
+#  if defined(HAVE_STREAM_H)
+#  include <stream.h>
+#  endif
 #endif
 
 #if defined(HAVE_IO_H)
 #include <io.h>
-#endif
-
-#if defined(HAVE_STREAM)
-#include <stream>
-#elif defined(HAVE_STREAM_H)
-#include <stream.h>
 #endif
 
 #if defined(HAVE_UNISTD_H)

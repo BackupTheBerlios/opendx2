@@ -371,7 +371,7 @@ _dxfLinesRI1DInterpolator_PrimitiveInterpolate(LinesRI1DInterpolator li,
     Pointer v;
     float *p;
     int dir;
-    int i0, i1;
+    int i0 = 0, i1 = 0;
     float fuzz;
     int	dep;
     int itemSize;

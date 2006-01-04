@@ -636,7 +636,7 @@ doLeaf_series_pass2(TreeNode tree, Object *in, Object *out)
   int result=0;
   Array array=NULL;
   Field field;
-  Pointer *in_data[1], *out_data[1];
+  Pointer *in_data[1] = {NULL}, *out_data[1] = {NULL};
   int in_knt[1], out_knt[1];
   Type type;
   Category category;
@@ -860,7 +860,7 @@ doLeaf(Object *in, Object *out, int nColors)
   int result=0;
   Array array=NULL;
   Field field;
-  Pointer *in_data[1], *out_data[1];
+  Pointer *in_data[1] = {NULL}, *out_data[1] = {NULL};
   int in_knt[1], out_knt[1];
   Type type;
   Category category;

@@ -49,7 +49,7 @@ typedef enum {
 } row_type;
 struct file_info {
   FILE *fp;
-  char delimiter[3];
+  char delimiter[4];
   int grid;
   int start;
   int end;

@@ -127,9 +127,9 @@ Error _dxfTextField(Pointer p)
    int colorsrank, colorsshape[30], delayedcolors=0, posted=0, counts[30], j;
    char glyph_rank[30]; 
    float s, posorigin[30], posdeltas[30];
-   Vector v;
+   Vector v={0,0,0};
    unsigned char *colors_byte_ptr=NULL;
-   RGBColor color, colororigin, *colors_ptr=NULL;
+   RGBColor color = {0,0,0}, colororigin, *colors_ptr=NULL;
    char string[100], *string1, *attr, *font;
    Matrix translation; 
    float *data_ptr_f=NULL;
@@ -4701,8 +4701,8 @@ static Error IndexGlyphField(Field field, Object glyphs, float scale)
   Array newnormals=NULL; 
   Array glyphpositions, glyphconnections, glyphcolors, glyphnormals;
   int numdata, datarank, datashape[8], posrank, posshape[8]; 
-  int ipos, icon, iclr, inml, numprev, hasnormals;
-  int newshape, glyphshape, i, j, dataindex=0, numglyphpos, numglyphcon;
+  int ipos, icon, iclr, inml, numprev, hasnormals=0;
+  int newshape, glyphshape=0, i, j, dataindex=0, numglyphpos, numglyphcon;
   int colorrank, colorshape[8], posted =0, totalpoints;
   int *map;
   Type datatype, postype, colortype;

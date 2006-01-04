@@ -173,7 +173,8 @@ getSHMMAX()
     FILE *fd = fopen("/proc/sys/kernel/shmmax", "r");
     if (fd)
     {
-        fscanf(fd, "%lu", &shmmax);
+        if( fscanf(fd, "%lu", &shmmax) != 1)
+            shmmax = 0x2000000;
 	fclose(fd);
     }
     else

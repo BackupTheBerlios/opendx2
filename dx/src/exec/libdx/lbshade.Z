@@ -134,7 +134,7 @@ parameters(Object o, struct shade *new, struct shade *old)
 
     if (NULL != (a = DXGetAttribute(o, "fuzz")))
     {
-	float f;
+	float f = 0;
 
 	if (! DXExtractFloat(a, &f))
 	{
@@ -1263,7 +1263,7 @@ work(struct xfield *xf, struct shade *shade,
     RGBColor *ofc, *obc, *col, *cmap = xf->cmap;
     Pointer ifc, ibc;
     Point from, to, eye;
-    Vector *norm, *normals;
+    Vector *norm, *normals = NULL;
     float ex, ey, ez;
     float fspecr, fspecg, fspecb, bspecr, bspecg, bspecb;
     float fdiffr, fdiffg, fdiffb, bdiffr, bdiffg, bdiffb;
@@ -1979,8 +1979,8 @@ _dxfApplyLights(int *vertices, int *indices, int knt)
 {
     int i, j, k, nknt, rknt, *iPtr;
     struct lighting *lighting, _lighting[4], *l;
-    RGBColor *f, *b;
-    Vector *normal;
+    RGBColor *f=NULL, *b=NULL;
+    Vector *normal = NULL;
     RGBColor fbuf, bbuf;
 
     /*

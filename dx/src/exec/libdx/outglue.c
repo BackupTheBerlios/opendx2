@@ -826,7 +826,9 @@ Error DXReadyToRun(Pointer id)
     if (!id)
 	return ERROR;
 
-    write(*(int *)id, (char *)&signature, sizeof(int));
+    if (write(*(int *)id, (char *)&signature, sizeof(int)) == -1)
+        return ERROR;
+
     return OK;
 }
 
@@ -839,7 +841,9 @@ static Error DXInternalReadyToRun()
     unsigned int signature = 0x12EE44CD;
 #endif
 
-    write(host_socket, (char *)&signature, sizeof(int));
+    if (write(host_socket, (char *)&signature, sizeof(int)) == -1)
+        return ERROR;
+
     return OK;
 }
 

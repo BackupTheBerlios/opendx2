@@ -369,7 +369,7 @@ _XColors(Field f, xfieldT* xf,
 	     enum xr required)
 {
   Array colors_array;
-  char *fs, *bs, *s;
+  char *fs, *bs, *s = NULL;
   dependencyT color_dep;
   int		ncolors;
   

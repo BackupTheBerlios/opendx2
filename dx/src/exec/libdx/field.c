@@ -53,7 +53,7 @@ static
 struct component *
 look_component(Field f, char *name, int add)
 {
-    int i, m, n = f->ncomponents;
+    int i=0, m, n = f->ncomponents;
     struct component *c = NULL;
 
     /* is component there? */

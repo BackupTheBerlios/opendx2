@@ -356,7 +356,9 @@ static Error write_im(RWImageArgs *iargs) {
 	
 	while( !feof(newFrameFile) ) {
 	    noir = fread(buf, 1, 4000, newFrameFile);
-	    fwrite(buf, 1, noir, existFile);
+	    if(fwrite(buf, 1, noir, existFile) != noir) {
+                DXErrorReturn( ERROR_INTERNAL, "error writing file." );
+            }
 	}
 	
 	fclose(existFile);
@@ -727,7 +729,7 @@ Field _dxf_InputIM( int width, int height, char *name, int relframe,
     Array          colorsArray = NULL;
     Array          opacitiesArray = NULL;
     Pointer        pixels;
-    Pointer        opacities;
+    Pointer        opacities = NULL;
     StorageType    storage_type;
     int            i;
 

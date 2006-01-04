@@ -294,9 +294,9 @@ void DXMarkTimeLocalX (char *s) {               mark(s, 0);}
 void
 DXPrintTimes(void)
 {
-    int i, id;
+    int i, id=0;
     static struct last glob;
-    struct _proc *proc, *p;
+    struct _proc *proc = NULL, *p;
     struct event *event;
     struct last *last;
     DXBeginLongMessage();

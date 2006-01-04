@@ -10,7 +10,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_divcurl.c,v 1.5 2000/08/24 20:04:11 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_divcurl.c,v 1.6 2006/01/04 22:00:50 davidt Exp $
  */
 
 
@@ -1054,7 +1054,7 @@ _dxfTetrasDivCurl(ArrayHandle pH, Pointer data,
     float   step, invStep;
     float   yz012, yz013, yz023;
     float   cx, cy, cz;		/* centroid			       */
-    float   curl[3], div;
+    float   curl[3]= {0,0,0}, div;
     float   vc[3], vx[3], vy[3], vz[3];
     float   dx[3], dy[3], dz[3];
     float   pbuf[3];

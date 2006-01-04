@@ -413,7 +413,7 @@ _getTexture_Field(Texture t)
 	    int i;
 	    ubyte *dst = t->pixels;
 	    float *c_src = (float *)DXGetArrayData(colors);
-	    float *o_src;
+	    float *o_src = NULL;
 	    
 	    if ( opac ) {
 	        o_src = (float *)DXGetArrayData(opac);
@@ -447,7 +447,7 @@ _getTexture_Field(Texture t)
 	    int i;
 	    ubyte *dst = t->pixels;
 	    ubyte *c_src = (ubyte *)DXGetArrayData(colors);
-	    ubyte *o_src;
+	    ubyte *o_src = NULL;
 	    ubyte cmap[768], omap[256];
 
 	    if (!_expandColorMap(tf, cmap))
@@ -606,7 +606,7 @@ _getTexture_CompositeField(Texture t)
 	{
 	    int j, k;
 	    ubyte *c_src = (ubyte *)DXGetArrayData(colors);
-	    float *o_src;
+	    float *o_src = NULL;
 	    ubyte *dst = t->pixels + Bpp*((memberOffsets[0]*counts[1])
 					     + memberOffsets[1]);
 	    int dst_stride = Bpp*(counts[1] - memberCounts[1]);
@@ -641,7 +641,7 @@ _getTexture_CompositeField(Texture t)
 	{
 	    int j, k;
 	    float *c_src = (float *)DXGetArrayData(colors);
-	    float *o_src;
+	    float *o_src = NULL;
 	    ubyte *dst = t->pixels + Bpp*((memberOffsets[0]*counts[1])
 					     + memberOffsets[1]);
 	    int dst_stride = Bpp*(counts[1] - memberCounts[1]);
@@ -679,7 +679,7 @@ _getTexture_CompositeField(Texture t)
 	    int j, k;
 	    ubyte cmap[768], omap[256];
 	    ubyte *c_src = (ubyte *)DXGetArrayData(colors);
-	    ubyte *o_src;
+	    ubyte *o_src = NULL;
 	    int dst_stride = Bpp*(counts[1] - memberCounts[1]);
 	    ubyte *dst = t->pixels + Bpp*((memberOffsets[0]*counts[1])
 					     + memberOffsets[1]);

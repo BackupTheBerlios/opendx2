@@ -279,7 +279,7 @@ _dxfLinesII1DInterpolator_PrimitiveInterpolate(LinesII1DInterpolator li,
     int found;
     Pointer v;
     float *p;
-    int i0, i1;
+    int i0 = 0, i1 = 0;
     float fuzz;
     int	dep;
     int itemSize;

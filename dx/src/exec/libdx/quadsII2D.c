@@ -340,7 +340,7 @@ int
 _dxfQuadsII2DInterpolator_PrimitiveInterpolate(QuadsII2DInterpolator qi,
 		    int *n, float **points, Pointer *values, int fuzzFlag)
 {
-    int primNum;
+    int primNum = -1;
     QuadCoord quadCoord;
     int i;
     int found;

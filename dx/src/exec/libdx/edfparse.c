@@ -1152,7 +1152,7 @@ static Error parse_array(struct finfo *f, int kind)
     Object o = NULL;
     Object tmp = NULL, tmp2 = NULL;
     int i, id, done = 0;
-    int conitems;
+    int conitems=0;
     int makeit;
     int issigned = SIGN_UNSET;
     int signok = 0;
@@ -2491,7 +2491,7 @@ static Error parse_light(struct finfo *f)
  
 static Error parse_camera(struct finfo *f)
 { 
-    Object o;
+    Object o=NULL;
     Error rc = OK;
     float width, aspect, angle, fov;
     float *fp, fvalue;

@@ -538,7 +538,7 @@ _dxfField_BoundingBox(Field f, Point *box, Matrix *m, int validity)
     else
     {
 	int	    i, j;
-	float       min[MAX_DIMS], max[MAX_DIMS], *pt;
+	float       min[MAX_DIMS], max[MAX_DIMS], *pt=NULL;
 	ArrayHandle handle = DXCreateArrayHandle(points_array);
 	Pointer     scratch = DXAllocate(DXGetItemSize(points_array));
 	if (! handle || ! scratch)

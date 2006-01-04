@@ -188,7 +188,9 @@ TransformIrregular(Matrix *mp, Camera c, Array points, Point *box, int *behind)
     int i, n, rank, shape[100], dim;
     Array xpoints;
     Point *in, *out;
-    float ix, iy, iz, ox, oy, oz, minx, miny, minz, maxx, maxy, maxz;
+    float ix, iy, iz, ox, oy, oz, 
+        minx=DXD_MAX_FLOAT, miny=DXD_MAX_FLOAT, minz=DXD_MAX_FLOAT, 
+        maxx=-DXD_MAX_FLOAT, maxy=-DXD_MAX_FLOAT, maxz=-DXD_MAX_FLOAT;
 
     /* get input data to local memory */
     in = (Point *) DXGetArrayData(points);

@@ -384,8 +384,8 @@ plane(Pointer ic,
 ) {
     float x, y, minx, miny, maxx, maxy, A, dzdx, dzdy;
     int isx, isy, ikx, iky;
-    float scale1, skew1, scale2, skew2, osy1, osy2, best, extra;
-    int ti1, to1, ti2, to2, contrary=0, osx2;
+    float scale1=0, skew1=0, scale2=0, skew2=0, osy1, osy2, best, extra;
+    int ti1=0, to1, ti2, to2=0, contrary=0, osx2;
     int nx1, ny1, nk, nc;
     RGBColor *ic1=NULL;
     float *io1=NULL;

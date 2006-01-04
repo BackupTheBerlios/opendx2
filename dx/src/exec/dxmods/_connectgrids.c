@@ -455,8 +455,8 @@ static Error ConnectNearest(Group ino, Field base, int numnearest,
   float distanceweight, distance=0, *data=NULL, *dp, *scratch=NULL;
   ArrayHandle handle=NULL;
   Type type;
-  Point gridposition;
-  Vector2D gridposition2D;
+  Point gridposition = {0, 0, 0};
+  Vector2D gridposition2D = {0, 0};
   float gridposition1D=0, origin=0, delta=0;
   float *bufdistance=NULL;
   char *bufdata=NULL;
@@ -1303,7 +1303,7 @@ static Error ConnectRadiusIrregular(Field ino, Field base, float radius,
   InvalidComponentHandle out_invalidhandle=NULL, in_invalidhandle=NULL;
   int numitemsbase, numitemsino; 
   int rank_base, rank_ino, shape_base[30], shape_ino[30], i, j; 
-  int anyinvalid, compcount, rank, shape[30];
+  int anyinvalid=1, compcount, rank, shape[30];
   int numitems;
   Type type;
   ubyte *flagbuf=NULL;

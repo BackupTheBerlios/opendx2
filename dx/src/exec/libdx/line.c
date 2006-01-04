@@ -143,8 +143,8 @@ line(struct buffer *buf, struct xfield *xf, Line l,
      int flat, RGBColor c, RGBColor c1, float o, float o1, int clip)
 {
     Point p, p1;
-    float length, d, dr, dg, db, r, g, b, z;
-    float dx, dy, dz, dop, obar, a;
+    float length, d, dr = 0, dg = 0, db = 0, r, g, b, z;
+    float dx, dy, dz, dop = 0, obar, a;
     int maj, dpix_dmaj, dy_dmaj, dx_dmaj;
     int min, dpix_dmin, dy_dmin, dx_dmin;
     int i, nmaj, x, y, frac;
@@ -342,7 +342,7 @@ _dxf_Line(struct buffer *b, struct xfield *xf,
     char obyte = xf->obyte;
     char fcst = xf->fcst;
     char ocst = xf->ocst;
-    float pop, qop;
+    float pop = 0, qop = 0;
     int odep = xf->colors_dep == dep_connections;
 
     if (ocst) {
@@ -454,7 +454,7 @@ _dxf_LineFlat(struct buffer *b, struct xfield *xf, int n, Line *lines,
     char fcst = xf->fcst;
     char fbyte = xf->fbyte;
     char ocst = xf->ocst;
-    float pop, qop;
+    float pop = 0, qop = 0;
     int odep = xf->colors_dep == dep_connections;
 
     if (ocst) {
@@ -521,7 +521,7 @@ _dxf_Polyline(struct buffer *b, struct xfield *xf,
     char obyte = xf->obyte;
     char fcst = xf->fcst;
     char ocst = xf->ocst;
-    float pop, qop;
+    float pop = 0, qop = 0;
     dependency cdep = xf->colors_dep;
     int start, last, knt, j;
     Line *l;
@@ -696,7 +696,7 @@ _dxf_PolylineFlat(struct buffer *b, struct xfield *xf, int n, int *polylines,
     char fcst = xf->fcst;
     char fbyte = xf->fbyte;
     char ocst = xf->ocst;
-    float pop, qop;
+    float pop = 0, qop = 0;
     dependency cdep = xf->colors_dep;
     int start, last, knt, j;
     Line *l;

@@ -139,3 +139,4 @@ DXKillRegisteredWindows()
 
 
 #endif	
+

@@ -963,15 +963,15 @@ ShrinkPartition(Pointer ptr)
     Field       partition;
     Array       array, oArray, nArray = NULL, rArray = NULL;
     int   	rOffsets[8], oOffsets[8], pSizes[8], gSizes[8];
-    int		oLength, length;
+    int		oLength = 0, length;
     int	  	nPositions, nConnections;
     char 	*name;
     int 	i, nDim;
     char  	origName[128];
     char  	*attr;
-    int		scstrides[3], spstrides[3], *sstrides;
-    int		dcstrides[3], dpstrides[3], *dstrides;
-    int		pmaxi[3], cmaxi[3], *maxi;
+    int		scstrides[3], spstrides[3], *sstrides = NULL;
+    int		dcstrides[3], dpstrides[3], *dstrides = NULL;
+    int		pmaxi[3], cmaxi[3], *maxi = NULL;
     int		dep, ref;
     char	*toShrink[256], *toReplace[256], nS, nR;
 
@@ -1161,7 +1161,7 @@ ShrinkPartition(Pointer ptr)
 	    int nItemsIn;
 	    Type t; Category c; int r, s[32];
 	    int *sPtr, *dPtr;
-	    int nRefsPerElt;
+	    int nRefsPerElt = 0;
 
 	    DXGetArrayInfo(nArray, &nItemsIn, &t, &c, &r, s);
 
@@ -1535,11 +1535,11 @@ AddOverlapData(Field dstField, int *dstCounts, int *meshOffsets,
     int    scmin[3], scmax[3];
     /*int    dpmin[3], dpmax[3];*/
     /*int    dcmin[3], dcmax[3];*/
-    int    *smin, *smax;
-    int    scstride[3], spstride[3], *sstride;
-    int    dcstride[3], dpstride[3], *dstride;
+    int    *smin = NULL, *smax = NULL;
+    int    scstride[3], spstride[3], *sstride = NULL;
+    int    dcstride[3], dpstride[3], *dstride = NULL;
     int	   offset[3];
-    int	   ddep, dref, nRefs, doPositions;
+    int	   ddep, dref, nRefs, doPositions = 0;
     int    sdep, sref;
     char   origName[64];
 
@@ -2586,7 +2586,7 @@ static Error
 FillEmptyOverlap(Field field, int *indices, LoHi growth,
 				int nDim, char **comp, Pointer fill)
 {
-    int    i, j, k, itemSize;
+    int    i, j, k, itemSize = 0;
     struct loop cdep_loop[3];
     struct loop pdep_loop[3];
     struct loop *loop;

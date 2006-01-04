@@ -160,7 +160,10 @@ m_SuperviseWindow(Object *in, Object *out)
 		    DXSetError(ERROR_BAD_PARAMETER,"parent");
 		    goto error;
 		}
-		sscanf(str+(i+2), "%d", &parentId);
+		if(sscanf(str+(i+2), "%d", &parentId) != 1) {
+                    DXSetError(ERROR_BAD_PARAMETER, "parent");
+                    goto error;
+                }
 
 		if (! sizeSet)
 		    if (! _dxf_getParentSize(displayString,

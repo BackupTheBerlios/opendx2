@@ -394,7 +394,7 @@ IsRegular(Object in)
     int    i;
     Array  array;
     Object child;
-    int    result;
+    int    result = IS_REGULAR_ERROR;
 
     switch(DXGetObjectClass(in))
     {
