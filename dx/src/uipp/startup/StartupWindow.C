@@ -8,6 +8,7 @@
 
 #include <dxconfig.h>
 #include "../base/defines.h"
+#include "../base/StartWebBrowser.h"
 
 #include <X11/StringDefs.h>
 
@@ -676,35 +677,41 @@ boolean StartupWindow::startEmptyVPE()
 
 boolean StartupWindow::startTutorial()
 {
+    char *url = new char[strlen(theIBMApplication->getUIRoot()) + 35];
+    strcpy(url, "file://");
+    strcat(url, theIBMApplication->getUIRoot());
+    strcat(url, "/html/pages/qikgu011.htm");
+    if(!_dxf_StartWebBrowserWithURL(url)) {
 #ifndef DXD_WIN
-    if (StartupWindow::TutorConn) {
-	ErrorMessage ("You have one tutorial running already.");
-	return FALSE;
-    }
+		if (StartupWindow::TutorConn) {
+			ErrorMessage ("You have one tutorial running already.");
+			return FALSE;
+		}
 #endif
-    char *args[5], *cmdstr;
-    args[0] = "-tutor"; 
-    args[1] = "-xrm"; 
-    args[2] = "DXTutor.dxTutorWindow.geometry:280x600+670+0";
-    cmdstr = this->formCommand ("dx", args, 3);
-
-    this->postTimedDialog("Starting Data Explorer Tutorial...", 3000);
+		char *args[5], *cmdstr;
+		args[0] = "-tutor"; 
+		args[1] = "-xrm"; 
+		args[2] = "DXTutor.dxTutorWindow.geometry:280x600+670+0";
+		cmdstr = this->formCommand ("dx", args, 3);
+		
+		this->postTimedDialog("Starting Data Explorer Tutorial...", 3000);
 #ifndef DXD_WIN
-    StartupWindow::TutorConn = popen(cmdstr, "r");
-    if (!StartupWindow::TutorConn) {
-	ErrorMessage ("Couldn't spawn the tutorial.");
-	return FALSE;
-    }
-    int fd = fileno(StartupWindow::TutorConn);
-    StartupWindow::TutorReadId = XtAppAddInput (theApplication->getApplicationContext(), 
-	fd, (XtPointer)XtInputReadMask, 
-	(XtInputCallbackProc)StartupWindow_ReadTutor_CB, (XtPointer)this);
-    StartupWindow::TutorErrorId = XtAppAddInput (theApplication->getApplicationContext(), 
-	fd, (XtPointer)XtInputExceptMask, 
-	(XtInputCallbackProc)StartupWindow_ResetTutor_CB, (XtPointer)this);
+		StartupWindow::TutorConn = popen(cmdstr, "r");
+		if (!StartupWindow::TutorConn) {
+			ErrorMessage ("Couldn't spawn the tutorial.");
+			return FALSE;
+		}
+		int fd = fileno(StartupWindow::TutorConn);
+		StartupWindow::TutorReadId = XtAppAddInput (theApplication->getApplicationContext(), 
+			fd, (XtPointer)XtInputReadMask, 
+			(XtInputCallbackProc)StartupWindow_ReadTutor_CB, (XtPointer)this);
+		StartupWindow::TutorErrorId = XtAppAddInput (theApplication->getApplicationContext(), 
+			fd, (XtPointer)XtInputExceptMask, 
+			(XtInputCallbackProc)StartupWindow_ResetTutor_CB, (XtPointer)this);
 #else
-    _spawnlp(_P_WAIT, "dx", "dx", args[0], NULL);
+		_spawnlp(_P_WAIT, "dx", "dx", args[0], NULL);
 #endif
+    }
     return TRUE;
 }
 
