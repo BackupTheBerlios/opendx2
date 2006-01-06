@@ -157,21 +157,31 @@ XWindowAttributes attributes;
       		XtMalloc((bar->image_width) * 
 		bar->image_height * sizeof(char));
 	}
+    else if (bar->depth == 15 || bar->depth == 16)
+    {
+	bar->ximage->data =
+     		XtMalloc(2 * (bar->image_width) * 
+		bar->image_height * sizeof(char));
+    }
     else
-	{
+    {
 	bar->ximage->data =
       		XtMalloc(4 * (bar->image_width) * 
 		bar->image_height * sizeof(char));
-	}
+    }
 
     if (bar->depth == 8)
-	{
+    {
 	bar->ximage->bytes_per_line = bar->image_width;
-	}
+    }
+    else if (bar->depth == 15 || bar->depth ==16)
+    {
+        bar->ximage->bytes_per_line = 2*bar->image_width;
+    }
     else
-	{
-	bar->ximage->bytes_per_line = 4*bar->image_width;
-	}
+    {
+        bar->ximage->bytes_per_line = 4*bar->image_width;
+    }
     bar->ximage->width = bar->image_width;
     bar->ximage->height = bar->image_height;
 
@@ -337,12 +347,12 @@ Pixel pix24;
 int level, i, index;
 unsigned long rmult=0, gmult=0, bmult=0;
 
-    if (depth == 24)
-	{
+    if (depth != 8)
+    {
 	rmult = red_mask & (~red_mask+1);
 	gmult = green_mask & (~green_mask+1);
 	bmult = blue_mask & (~blue_mask+1);
-	}
+    }
     index = 0;
     if( vertical )
         {
@@ -351,12 +361,28 @@ unsigned long rmult=0, gmult=0, bmult=0;
 	    for(i = 0; i < subimage_width; i++)
 		{
 		if(depth == 8)
-		    {
+                {
 		    XPutPixel(ximage, x+i, level, 
 			cells[index + i%column_width].pixel);
-		    }
+                }
+		else if (depth == 15)
+                {
+                    unsigned char r = cells[index + i%column_width].red * 32 / 256;
+                    unsigned char g = cells[index + i%column_width].green * 32 / 256;
+                    unsigned char b = cells[index + i%column_width].blue * 32 / 256;
+                    pix24 = r * rmult + g * gmult + b * bmult;
+                    XPutPixel(ximage, x+i, level, pix24);
+                }
+                else if (depth == 16)
+                {
+                    unsigned char r = cells[index + i%column_width].red * 32 / 256;
+                    unsigned char g = cells[index + i%column_width].green * 64 / 256;
+                    unsigned char b = cells[index + i%column_width].blue * 32 / 256;
+                    pix24 = r * rmult + g * gmult + b * bmult;
+                    XPutPixel(ximage, x+i, level, pix24);
+                }
 		else
-		    {
+                {
 		    pix24 = (unsigned char)cells[index + i%column_width].red *
 				rmult +
 			    (unsigned char)cells[index + i%column_width].green *
@@ -364,11 +390,10 @@ unsigned long rmult=0, gmult=0, bmult=0;
 			    (unsigned char)cells[index + i%column_width].blue *
 				bmult;
 		    XPutPixel(ximage, x+i, level, pix24);
-		
-		    }
-		}
+                }
+            }
 	    index += column_width;
-	    }
+	  }
 	}
 }
 void OpacityCorrectCells( ControlColor* color, double opacity[], 
