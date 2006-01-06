@@ -1,5 +1,8 @@
 4.4.0
 ===============
+Fix for colors in the Colormap Editor when the OS's
+depth is set to thousands of colors. (bug #134)
+
 Fix for macros with space in their filename in the
 VPE. (bug #148)
 
