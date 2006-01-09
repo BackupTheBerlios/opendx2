@@ -176,7 +176,7 @@ struct keytab
     { "backward",	K_BACKWARD},		/* vcr */
     { "cancel",		K_CANCEL },
     { "else",		K_ELSE },
-    { "false",		V_FALSE },
+    { "false",		V_DXFALSE },
     { "forward",	K_FORWARD},		/* vcr */
     { "if",		K_IF },
     { "include",	K_INCLUDE },
@@ -194,7 +194,7 @@ struct keytab
     { "step",		K_STEP},		/* vcr */
     { "stop",		K_STOP},		/* vcr */
     { "then",		K_THEN },
-    { "true",		V_TRUE }
+    { "true",		V_DXTRUE }
 };
  
  

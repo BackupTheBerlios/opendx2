@@ -1220,7 +1220,7 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
                 DX_RTL_CFLAGS=" -Dsolaris"
                 # DX_RTL_ALDFLAGS=" ${MDXLDFLAG}-G ${MDXLDFLAG}-eDXEntry"
                 DX_RTL_ALDFLAGS=" -G "
-		SHARED_LINK="ld"
+		SHARED_LINK="cc"
         fi
         if test $ARCH = "alphax" ; then
                 DX_RTL_CFLAGS=" -Dalphax"

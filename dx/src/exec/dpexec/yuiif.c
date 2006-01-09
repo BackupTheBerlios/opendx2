@@ -71,8 +71,8 @@
      A_EXP = 273,
      U_MINUS = 274,
      LEX_ERROR = 275,
-     V_TRUE = 276,
-     V_FALSE = 277,
+     V_DXTRUE = 276,
+     V_DXFALSE = 277,
      T_EOF = 278,
      T_EOL = 279,
      T_BAR = 280,
@@ -158,8 +158,8 @@
 #define A_EXP 273
 #define U_MINUS 274
 #define LEX_ERROR 275
-#define V_TRUE 276
-#define V_FALSE 277
+#define V_DXTRUE 276
+#define V_DXFALSE 277
 #define T_EOF 278
 #define T_EOL 279
 #define T_BAR 280
@@ -979,9 +979,9 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "L_OR", "L_AND", "L_NOT", "L_NEQ", "L_EQ", 
   "L_GEQ", "L_LEQ", "L_GT", "L_LT", "A_MINUS", "A_PLUS", "A_MOD", 
-  "A_IDIV", "A_DIV", "A_TIMES", "A_EXP", "U_MINUS", "LEX_ERROR", "V_TRUE", 
-  "V_FALSE", "T_EOF", "T_EOL", "T_BAR", "T_LPAR", "T_RPAR", "T_LBRA", 
-  "T_RBRA", "T_LSQB", "T_RSQB", "T_ASSIGN", "T_COMMA", "T_DOT", 
+  "A_IDIV", "A_DIV", "A_TIMES", "A_EXP", "U_MINUS", "LEX_ERROR", 
+  "V_DXTRUE", "V_DXFALSE", "T_EOF", "T_EOL", "T_BAR", "T_LPAR", "T_RPAR", 
+  "T_LBRA", "T_RBRA", "T_LSQB", "T_RSQB", "T_ASSIGN", "T_COMMA", "T_DOT", 
   "T_DOTDOT", "T_COLON", "T_SEMI", "T_PP", "T_MM", "T_RA", "K_BEGIN", 
   "K_CANCEL", "K_DESCRIBE", "K_ELSE", "K_END", "K_IF", "K_INCLUDE", 
   "K_LIST", "K_MACRO", "K_PRINT", "K_QUIT", "K_THEN", "K_BACKWARD", 

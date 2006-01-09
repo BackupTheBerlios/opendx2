@@ -9,7 +9,7 @@
 #include <dxconfig.h>
 #include "../base/defines.h"
 
-#define USE_EDITRES 0
+//#define USE_EDITRES 1
 
 #include <Xm/Xm.h>
 #include <Xm/MainW.h>
@@ -368,11 +368,6 @@ Display* disp = XtDisplay(theApplication->getRootWidget());
     this->setGeometry(this->createX,this->createY, 
 	this->createWidth, this->createHeight);
 
-    // The following is for editres support
-#if (defined(solaris) || defined(sgi) || defined(_AIX41)) && !defined(NO_EDITRES)
-    XtAddEventHandler (this->getRootWidget(), (EventMask) 0, True,
-                   (XtEventHandler) _XEditResCheckMessages, 0);
-#endif
 }
 
 void MainWindow::createMenuBar(Widget parent)

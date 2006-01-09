@@ -444,8 +444,8 @@ _popInput()
 %token	LEX_ERROR
 
 /* Values */
-%token	V_TRUE
-%token	V_FALSE
+%token	V_DXTRUE
+%token	V_DXFALSE
 
 /* Other Symbols */
 %token	T_EOF		/* end-of-file  */
