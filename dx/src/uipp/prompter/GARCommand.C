@@ -31,6 +31,8 @@
 #include "CommentDialog.h"
 #include "../base/WarningDialogManager.h"
 
+using namespace std;
+
 String GARCommand::DefaultResources[] =
 {
         NULL

@@ -19,8 +19,9 @@ CONTENTS
  
     1. System Configuration 
        A. Default Keyboard Mappings
-       B. Memory Usage
-       C. Error message "cannot get shared memory segment"
+       B. Memory Usage in Solaris 
+       C. Memory Usage in Solaris 10
+       D. Error message "cannot get shared memory segment"
     2. Hardware Rendering Considerations
        A. Shared Library Support for Hardware Rendering 
        B. Hardware Rendering Not Available Message
@@ -41,20 +42,44 @@ on the numeric keypad.  Data Explorer responds to the "End" key and arrow
 keys found on the numeric keypad.  The mnemonic key to pull down the menus
 uses the diamond key as the modifier, instead of the Alt key.
  
-B. Memory Usage
+B. Memory Usage in Solaris 7, 8, 9
 Under Solaris, Data Explorer uses shared memory in 256 megabyte segments.
 The default configuration for Solaris only allows 1 megabyte shared memory
-segments.  To allow Data Explorer to run, log in as root, and follow these
-steps:
+segments.  To allow Data Explorer to run in Solaris 7, 8, 9, log in as root,
+and follow these steps:
  
     1)  Copy /etc/system to /etc/system.pre-dx
     2)  edit /etc/system
     3)  add the line "set shmsys:shminfo_shmmax = 0x10000000"
     4)  reboot the system
+
 If this cannot be done, see the DXSHMEMSEGMAX environment variable, described
-in Appendix C of the User Guide. 
+in Appendix C of the User Guide.
  
-C. Error message "cannot get shared memory segment"
+C. Memory Usage in Solaris 10
+For Solaris 10, this process has changed significantly. Instead of a per
+machine limits on shared memory, it is now set per user. 
+
+To increase the shared memory available to a given user on Solaris 10.
+
+    1   Find out which project the user is in
+    2   Use prctl to raise the limit e.g. to 2000mb, using the project ID 
+        returned by id -p.
+	
+example:
+
+juno $ id -p
+uid=1318(dthompso) gid=1002(students) projid=3(default)
+juno $ su
+Password: 
+# prctl -n project.max-shm-memory -r -v 2000mb -i project 3
+
+The amount of memory that dx wants initially is determined by the amount of 
+physical RAM in the machine. If you set the memory limit too small, the error
+will still continue (unless you fix the amount of memory dx initially requests
+with the -memory flag).
+
+D. Error message "cannot get shared memory segment"
 This error message is caused by one of two problems:
     1)  The system hasn't been configured for 256 megabyte shared memory
         segments.  Follow the rules above under Memory Usage.

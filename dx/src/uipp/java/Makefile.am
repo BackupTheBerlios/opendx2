@@ -192,7 +192,7 @@ distclean-local:
 
 install-data-hook:
 	if test "$(ARCH)" = "intelnt" ; then \
-		$(INSTALL_DATA) AnyDX.lib $(javalibdir)/AnyDX.lib ; \
-		$(INSTALL_DATA) AnyDX.exp $(javalibdir)/AnyDX.exp ; \
+		$(INSTALL_DATA) AnyDX.lib $(DESTDIR)$(javalibdir)/AnyDX.lib ; \
+		$(INSTALL_DATA) AnyDX.exp $(DESTDIR)$(javalibdir)/AnyDX.exp ; \
 	fi
 	mkdir -p $(prefix)/dx/java/server/nets

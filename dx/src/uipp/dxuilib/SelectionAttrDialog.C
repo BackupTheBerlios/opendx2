@@ -432,7 +432,7 @@ Widget SelectionAttrDialog::createValueEditor(Widget mainForm)
 
     // XtVaSetValues(mainForm,XmNautoUnmanage, False, NULL);
 
-    XtVaSetValues(this->valueList,XmNvisibleItemCount, 10, 0);
+    XtVaSetValues(this->valueList,XmNvisibleItemCount, 10, NULL);
 
     //
     // The OK and CANCEL buttons. 

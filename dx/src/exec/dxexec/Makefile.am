@@ -22,9 +22,9 @@ EXTRA_DIST = tmain.cpp
 
 install-data-hook:
 	if test "$(ARCH)" = "intelnt" ; then \
-	$(INSTALL_DATA) dxexec.exp $(prefix)/dx/lib_intelnt/dxexec.exp ; \
-	$(INSTALL_DATA) dxexec.lib $(prefix)/dx/lib_intelnt/dxexec.lib ; \
+	$(INSTALL_DATA) dxexec.exp $(DESTDIR)$(prefix)/dx/lib_intelnt/dxexec.exp ; \
+	$(INSTALL_DATA) dxexec.lib $(DESTDIR)$(prefix)/dx/lib_intelnt/dxexec.lib ; \
 	fi
 	if test "$(ARCH)" = "cygwin" ; then \
-	$(INSTALL_DATA) dxexec.a $(prefix)/dx/lib_cygwin/dxexec.a; \
+	$(INSTALL_DATA) dxexec.a $(DESTDIR)$(prefix)/dx/lib_cygwin/dxexec.a; \
 	fi

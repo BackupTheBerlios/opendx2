@@ -1281,7 +1281,7 @@ void ControlPanel::setDimensionsCallback(Widget w, XtPointer )
     ASSERT(inode);
 
     XtPointer ptr;
-    XtVaGetValues(w,XmNuserData,&ptr,0);
+    XtVaGetValues(w,XmNuserData,&ptr,NULL);
     dim = (int)(long)ptr;
     ASSERT(dim>0);
     inode->changeDimensionality(dim);
