@@ -33,7 +33,7 @@ int ShortHelp(); // Print out short help and exit
 int LongHelp();  // Print out long help and exit
 
 
-class DXEnvironment {
+class __declspec(dllexport) DXEnvironment {
 public:
 	// Setup is the function that must be run first with main's argc, argv
 	// startup. This will populate the structure.

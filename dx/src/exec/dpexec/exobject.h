@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/exobject.h,v 1.8 2004/06/09 16:14:28 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dpexec/exobject.h,v 1.9 2006/01/18 00:07:16 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -147,8 +147,6 @@ extern PFIP           _dxd_EXO_default_methods[]; /* from exobject.c */
  */
 
 int			_dxf__EXO_delete	(EXO_Object obj);
-
-extern PFI		_dxd_EXO_default_methods[]; /* from exobject.c */
 
 /*
  * Generally useful external routines (for other objects)

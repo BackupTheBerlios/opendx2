@@ -34,7 +34,7 @@
 
 #define MDF_MAX  5
 
-class DXExecThread {
+class __declspec(dllexport) DXExecThread {
 private:
 	class childThreadTable {
 	public:

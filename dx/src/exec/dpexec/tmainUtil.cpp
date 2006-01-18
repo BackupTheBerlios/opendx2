@@ -226,6 +226,7 @@ int DXEnvironment::Setup(const int argc, char **argv) {
 	// so they will have priority given to the last ones in
 
 	int n = 0;
+	int i = 0;
 
 	fillparms(params, dxargs.c_str(), &n);
 
@@ -235,7 +236,7 @@ int DXEnvironment::Setup(const int argc, char **argv) {
 	addUiFlag(argv[0]);
 	addExFlag(argv[0]);
 
-	for(int i=1; i < argc; i++) {
+	for(i=1; i < argc; i++) {
 		params[n] = argv[i];
 		if(params[n] == "-pipeargs")
 			readpipe = 1;
@@ -247,7 +248,7 @@ int DXEnvironment::Setup(const int argc, char **argv) {
 	if(readpipe) {
 		char c;
 		string pipestr;
-		for(int i = 0; (c=getchar()) != EOF; i++)
+		for(i = 0; (c=getchar()) != EOF; i++)
 			pipestr[i] = c;
 		pipestr[i] = '\0';
 		fillparms(params, pipestr.c_str(), &n);	
