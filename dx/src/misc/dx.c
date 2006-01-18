@@ -432,7 +432,7 @@ int initrun()
     strcat(dxdata,"samples\\data");
 #endif
 
-/* Append the default dxroot/samples/macros to current macros */
+/* Append the default dxroot/samples/macros to current macros if it doesn't exist */
 
 #if defined(cygwin)
     if(dxmacros && *dxmacros)
@@ -442,12 +442,18 @@ int initrun()
 	strcat(dxmacros, "/");
     strcat(dxmacros,"samples/macros");
 #else
-    if(dxmacros && *dxmacros)
-	strcat(dxmacros, ";");
-    strcat(dxmacros, dxroot);
-    if(dxroot[strlen(dxroot)-1] !='\\')
-	strcat(dxmacros, "\\");
-    strcat(dxmacros,"samples\\macros");
+   {
+        namestr buf;
+        strcpy(buf, dxroot);
+        if(dxroot[strlen(dxroot)-1] !='\\')
+	    strcat(buf, "\\");
+        strcat(buf,"samples\\macros");
+        if(strstr(dxmacros, buf) == 0) {
+	    if(dxmacros && *dxmacros)
+                strcat(dxmacros, ";");
+            strcat(dxmacros, buf);
+        }
+    }
 #endif
 
     /* fill envargs */
