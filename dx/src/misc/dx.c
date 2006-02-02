@@ -177,7 +177,9 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
     REGSAM access = KEY_READ;
     const char **regpath;
     const char *dxpath[] = {"SOFTWARE\\OpenDX\\DX\\CurrentVersion", NULL };
-    const char *snpath[] = { "SOFTWARE\\Starnet\\X-Win32 LX\\7.1",
+    const char *snpath[] = { "SOFTWARE\\Starnet\\X-Win32 LX\\7.3",
+		"SOFTWARE\\Starnet\\X-Win32 LX\\7.2",
+		"SOFTWARE\\Starnet\\X-Win32 LX\\7.1",
 		"SOFTWARE\\Starnet\\X-Win32 LX\\7.0",
 		"SOFTWARE\\Starnet\\X-Win32 LX\\6.1",
 		"SOFTWARE\\Starnet\\X-Win32 LX\\6.0",
@@ -191,12 +193,23 @@ int regval(enum regGet get, char *name, enum regCo co, char *value, int size, in
 		"SOFTWARE\\Starnet\\X-Win32\\5.3",
 		"SOFTWARE\\Starnet\\X-Win32\\5.2",
 		"SOFTWARE\\Starnet\\X-Win32\\5.1", NULL };
-    const char *wapath[] = { "SOFTWARE\\LabF.com\\WinaXe\\6.5",
+    const char *wapath[] = { "SOFTWARE\\LabF.com\\WinaXe\\7.4",
+                             "SOFTWARE\\LabF.com\\WinaXe\\7.3",
+                             "SOFTWARE\\LabF.com\\WinaXe\\7.2",
+                             "SOFTWARE\\LabF.com\\WinaXe\\7.1",
+                             "SOFTWARE\\LabF.com\\WinaXe\\7.0",
+                             "SOFTWARE\\LabF.com\\WinaXe\\6.9",
+                             "SOFTWARE\\LabF.com\\WinaXe\\6.8",
+                             "SOFTWARE\\LabF.com\\WinaXe\\6.7",
+                             "SOFTWARE\\LabF.com\\WinaXe\\6.6",
+                             "SOFTWARE\\LabF.com\\WinaXe\\6.5",
 			     "SOFTWARE\\LabF.com\\WinaXe\\6.4",
 			     "SOFTWARE\\LabF.com\\WinaXe\\6.3",
 			     "SOFTWARE\\LabF.com\\WinaXe\\6.2",
 			     "SOFTWARE\\LabF.com\\WinaXe\\6.1", NULL };
-    const char *hbpath[] = { "SOFTWARE\\Hummingbird\\Connectivity\\11.00\\Exceed",
+    const char *hbpath[] = { "SOFTWARE\\Hummingbird\\Connectivity\\12.00\\Exceed",
+		"SOFTWARE\\Hummingbird\\Connectivity\\11.10\\Exceed",
+		"SOFTWARE\\Hummingbird\\Connectivity\\11.00\\Exceed",
 		"SOFTWARE\\Hummingbird\\Connectivity\\10.10\\Exceed",
 		"SOFTWARE\\Hummingbird\\Connectivity\\10.00\\Exceed",
 		"SOFTWARE\\Hummingbird\\Connectivity\\9.10\\Exceed",
