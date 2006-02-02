@@ -2220,13 +2220,12 @@ SigDangerHandler(int dummy)
 void 
 DXApplication::InitializeSignals(void)
 {            
-#if defined(HAVE_SIGDANGER)
-    signal(SIGDANGER, SigDangerHandler);
-#endif       
-
     // adding a signal handler for SIGABRT does not catch us if
     // an assert fails.  The function abort does not return.
     if (!getenv ("DXUINOCATCHERROR")) {
+#if defined(HAVE_SIGDANGER)
+    signal(SIGDANGER, SigDangerHandler);
+#endif       
 	signal (SIGSEGV, DXApplication_HandleCoreDump);
 #if defined(HAVE_SIGBUS)
 	signal (SIGBUS, DXApplication_HandleCoreDump);
