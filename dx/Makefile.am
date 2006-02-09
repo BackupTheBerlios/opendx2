@@ -2,6 +2,6 @@
 
 EXTRA_DIST = LICENSE
 
-SUBDIRS = src include lib bin help html man fonts doc windows VisualDX
+SUBDIRS = src include lib bin help html man fonts doc windows
 
 CLEANFILES = statHdrs.h
