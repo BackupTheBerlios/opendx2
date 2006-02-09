@@ -608,7 +608,7 @@ CategoryStatistics_worker(float *out_data, int in_knt, int out_knt, Array cat_ar
 			out_data[i] = 0;
 		    } else {
 			mean = out_data[i]/knt;
-			out_data[i] = sqrt(sumsq[i]/knt - mean*mean);
+			out_data[i] = sqrt( (sumsq[i] - out_data[i]*out_data[i]/knt)/(knt-1) );
 		    }
 		}
 		DXFree(fmax);
@@ -622,7 +622,7 @@ CategoryStatistics_worker(float *out_data, int in_knt, int out_knt, Array cat_ar
 			out_data[i] = 0;
 		    } else {
 			mean = out_data[i]/knt;
-			out_data[i] = sumsq[i]/knt - mean*mean;
+			out_data[i] = (sumsq[i] - out_data[i]*out_data[i]/knt)/(knt-1);
 		    }
 		}
 		DXFree(fmax);
