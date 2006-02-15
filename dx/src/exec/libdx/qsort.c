@@ -27,7 +27,7 @@
 #define THRESHOLD          	4	/* threshold for insertion */
 #define MEDIANTHRESHOLD         6	/* threshold for median */
 
-static void QUICKSORT_LOCAL(TYPE *base, TYPE *max);
+static void QUICKSORT_LOCAL(TYPE *base, TYPE *qslmax);
 
 static void
 QUICKSORT(TYPE *base, int n)
@@ -38,7 +38,7 @@ QUICKSORT(TYPE *base, int n)
     register TYPE *lo;
     TYPE swaptmp;
     TYPE *min;
-    TYPE *max;
+    TYPE *qsmax;
 
     /*
      * don't bother to short really short arrays
@@ -46,15 +46,15 @@ QUICKSORT(TYPE *base, int n)
     if (n <= 1)
 	return;
 
-    max = base + n;
+    qsmax = base + n;
     if (n >= THRESHOLD)
     {
-	QUICKSORT_LOCAL(base, max);
+	QUICKSORT_LOCAL(base, qsmax);
 	hi = base + THRESHOLD;
     }
     else
     {
-	hi = max;
+	hi = qsmax;
     }
 
     /*
@@ -70,7 +70,7 @@ QUICKSORT(TYPE *base, int n)
     /*
      * sort using insertion sort
      */
-    for (min = base; (hi = ++min) < max;)
+    for (min = base; (hi = ++min) < qsmax;)
     {
 	while (hi--, GT(hi, min))
 	     continue ;
@@ -91,7 +91,7 @@ QUICKSORT(TYPE *base, int n)
  */
 
 static void
-QUICKSORT_LOCAL(TYPE *base, TYPE *max)
+QUICKSORT_LOCAL(TYPE *base, TYPE *qslmax)
 {
     register TYPE *i;
     register TYPE *j;
@@ -101,7 +101,7 @@ QUICKSORT_LOCAL(TYPE *base, TYPE *max)
     TYPE swaptmp;
     int         lo, hi;
 
-    lo = max - base;
+    lo = qslmax - base;
     do
     {
 	/*
@@ -121,7 +121,7 @@ QUICKSORT_LOCAL(TYPE *base, TYPE *max)
 	    /*
 	     * compare larger of first and middle with last
 	     */
-	    tmp = max - 1;
+	    tmp = qslmax - 1;
 	    if (GT(j, tmp))
 	    {
 		j = (j == t) ? i : t;
@@ -135,7 +135,7 @@ QUICKSORT_LOCAL(TYPE *base, TYPE *max)
 	/*
 	 * now do the sorting
 	 */
-	for (i = base, j = max - 1;;)
+	for (i = base, j = qslmax - 1;;)
 	{
 	    while (i < mid && !GT(i, mid))
 		i++;
@@ -183,7 +183,7 @@ QUICKSORT_LOCAL(TYPE *base, TYPE *max)
 	j = mid;
 	i = j + 1; 
 	lo = j - base;
-	hi = max - i;
+	hi = qslmax - i;
 	if (lo <= hi)
 	{
 	    if (lo >= THRESHOLD)
@@ -194,8 +194,8 @@ QUICKSORT_LOCAL(TYPE *base, TYPE *max)
 	else /* hi > lo */
 	{
 	    if (hi >= THRESHOLD)
-		QUICKSORT_LOCAL(i, max);
-	    max = j;
+		QUICKSORT_LOCAL(i, qslmax);
+	    qslmax = j;
 	}
 
     } while (lo >= THRESHOLD);

@@ -22,18 +22,29 @@ int fillparms(string[], const char *, int*);
 
 int getenvstr(char *name, string& value)
 {
-    char *s=NULL;
+	size_t requiredSize;
+	char *s=NULL;
 
-    s = getenv(name);
-	if (s) {
-		value = s;
-		// Go ahead and remove any enclosing quotes.
-		for(int i=value.length()-1; i >= 0; i--) {
-			if(value[i] == '"')
-				value.erase(i, 1);
+	getenv_s( &requiredSize, NULL, 0, name);
+	if(requiredSize > 1) {
+		s = (char *) malloc (requiredSize * sizeof(char));
+		if(!s)
+		{
+			printf("Failed to allocate memory!\n");
+			exit(1);
+		}
+		getenv_s( &requiredSize, s, requiredSize, name);
+
+		if (s) {
+			value = s;
+			// Go ahead and remove any enclosing quotes.
+			for(int i=value.length()-1; i >= 0; i--) {
+				if(value[i] == '"')
+					value.erase(i, 1);
+			}
 		}
 	}
-    return ((s && *s) ? 1 : 0);
+	return ((s && *s) ? 1 : 0);
 }
 
 /*  In Windows, the name/value pair must be separated by = 	*/
@@ -42,7 +53,7 @@ int getenvstr(char *name, string& value)
 int putenvstr(char *name, const char *in)
 {
 	char *value = new char[strlen(in)+1];
-	strcpy(value, in);
+	strcpy_s(value, strlen(in)+1, in);
     char s[MAXENV];
     char *p, *q;
     int rc;
@@ -59,9 +70,9 @@ int putenvstr(char *name, const char *in)
     for(q = &name[strlen(name)-1]; *q == ' ' && q != p; q--);
 
     len = (int)(q-p)+1;
-    strncpy(s, p, len);
+    strncpy_s(s, MAXENV, p, len);
     s[len] = '\0';
-    strcat(s, "=");
+    strcat_s(s, MAXENV, "=");
 
     for(p = value; *p == ' '; p++);
     if(strlen(p)) {
@@ -69,13 +80,13 @@ int putenvstr(char *name, const char *in)
 	if (*p != ' ') {
 	    newlen = strlen(s);
 	    len = (int)(q-p)+1;
-	    strncat(s, p, len);
+	    strncat_s(s, MAXENV, p, len);
 	    s[len+newlen] = '\0';
 	}
     }
 
     p = new char[strlen(s) + 1];
-    strcpy(p, s);
+    strcpy_s(p, strlen(s)+1, s);
     
     rc = _putenv(p);
 	delete p;
@@ -142,7 +153,7 @@ int DXEnvironment::getExArgs(char ** &argv) {
 	argv = (char **) malloc (sizeof(char*)*exnumflags);
 	for(int i = 0; i < exnumflags; i++) {
 		argv[i] = (char *) malloc (sizeof(char*)*exflags[i].length()+1);
-		strcpy(argv[i], exflags[i].c_str());
+		strcpy_s(argv[i], exflags[i].length()+1, exflags[i].c_str());
 	}
 
 	return exnumflags;
@@ -153,7 +164,7 @@ int DXEnvironment::getUiArgs(char ** &argv) {
 	argv = (char **) malloc (sizeof(char*)*uinumflags);
 	for(int i = 0; i < uinumflags; i++) {
 		argv[i] = (char *) malloc (sizeof(char*)*uiflags[i].length()+1);
-		strcpy(argv[i], uiflags[i].c_str());
+		strcpy_s(argv[i], uiflags[i].length()+1, uiflags[i].c_str());
 	}
 
 	return uinumflags;
@@ -169,14 +180,14 @@ int DXEnvironment::getUiArgs(char ** &argv) {
 
 int DXEnvironment::Setup(const int argc, char **argv) {
 	char cwd[512];
-	getcwd(cwd, sizeof(cwd));
+	_getcwd(cwd, sizeof(cwd));
 	curdir = cwd;
 	string localpath;
 	char path[MAXENV];
 	bool seeflags = false;
 
 	getenvstr("Path", localpath);
-	strcpy(path, localpath.c_str());
+	strcpy_s(path, MAXENV, localpath.c_str());
 	getenvstr("DXARGS", dxargs);
 	getenvstr("DXROOT", dxroot);
 	getenvstr("DXDATA", dxdata);
@@ -518,8 +529,8 @@ int DXEnvironment::Setup(const int argc, char **argv) {
 		exit(1);
 	}
 
-	strcat(path, ";");
-	strcat(path, magickhome.c_str());
+	strcat_s(path, MAXENV, ";");
+	strcat_s(path, MAXENV, magickhome.c_str());
 
 	putenvstr("DXDATA", dxdata.c_str());
 	putenvstr("DXMACROS", dxmacros.c_str());
@@ -573,7 +584,7 @@ int DXEnvironment::Setup(const int argc, char **argv) {
 
 	if(cdto == "")
 		cdto = cwd;
-	chdir(cdto.c_str());
+	_chdir(cdto.c_str());
 
 	return 0;
 }
@@ -590,7 +601,7 @@ int fillparms(string parm[], const char *orig, int* n)
 {
 	char *p, *q, *s;
 	s = new char[strlen(orig) + 1];
-	strcpy(s , orig);
+	strcpy_s(s, strlen(orig)+1, orig);
 
 	for (p = s; *p; p++) 
 		if (*p == '\t' || *p == '\n' || *p == '\f')
@@ -608,7 +619,7 @@ int fillparms(string parm[], const char *orig, int* n)
 		if (p == q)				/* no more tokens */
 			return 1;
 		char *dest = new char[q-p+1];
-		strncpy(dest, p, (int)(q-p));		/* load it */
+		strncpy_s(dest, q-p+1, p, (int)(q-p));		/* load it */
 		dest[(int)(q-p)] = '\0';
 		parm[*n] = dest;
 		delete dest;

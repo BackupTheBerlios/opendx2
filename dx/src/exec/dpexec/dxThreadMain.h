@@ -29,8 +29,19 @@
 /* To use the threaded exec, create a new instance of DXThreadMain and
  * call Start().
  */
-#include <dx/dx.h>
+//#include <dx/dx.h>
+#include <stdio.h>
+#include <windows.h>
 #include "sfile.h"
+
+/* Types that would normally come from <dx/dx.h>
+ * problem is, that some of the other definitions from the
+ * dx headers cause conflicts - such as array, String.
+ */
+
+typedef volatile int lock_type;
+typedef int Error;
+typedef void *Pointer;
 
 #define MDF_MAX  5
 

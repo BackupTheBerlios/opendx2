@@ -39,8 +39,6 @@
    undef them so the hdfi.h header can be included. 
  */
  
-#if !defined(intelnt) && !defined(WIN32)
-
 #ifdef int8
 #undef int8
 #endif
@@ -64,8 +62,6 @@
 #endif
 #ifdef float64
 #undef float64
-#endif
-
 #endif
 
 #if defined(HAVE_DFSD_H)
