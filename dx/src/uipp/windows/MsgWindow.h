@@ -111,7 +111,7 @@ namespace dxui
 			this->Name = S"MsgWindow";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterParent;
 			this->Text = S"Message Window";
-			this->Load += new System::EventHandler(this, MsgWindow_Load);
+			this->Load += new System::EventHandler(this, &dxui::MsgWindow::MsgWindow_Load);
 			this->ResumeLayout(false);
 
 		}		

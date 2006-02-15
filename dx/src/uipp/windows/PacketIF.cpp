@@ -1876,7 +1876,7 @@ public:
 
 	void watchForActivity() { 
 		MethodInvoker * processSocket = 
-			new MethodInvoker(this, ThreadWorker::managedProcessSocketInputICB);
+			new MethodInvoker(this, &ThreadWorker::managedProcessSocketInputICB);
 		MethodInvoker * idleProcess = 
 			new MethodInvoker(this, &ThreadWorker::managedInputIdleWP);
 		while(!p->deleting) {

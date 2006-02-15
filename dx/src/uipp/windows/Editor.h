@@ -176,14 +176,14 @@ namespace dxui
 			this->New->Index = 0;
 			this->New->Shortcut = System::Windows::Forms::Shortcut::CtrlN;
 			this->New->Text = S"&New";
-			this->New->Click += new System::EventHandler(this, NewClick);
+			this->New->Click += new System::EventHandler(this, &dxui::Editor::NewClick);
 			// 
 			// Open
 			// 
 			this->Open->Index = 1;
 			this->Open->Shortcut = System::Windows::Forms::Shortcut::CtrlO;
 			this->Open->Text = S"&Open";
-			this->Open->Click += new System::EventHandler(this, OpenClick);
+			this->Open->Click += new System::EventHandler(this, &dxui::Editor::OpenClick);
 			// 
 			// RecentPrograms
 			// 
@@ -200,13 +200,13 @@ namespace dxui
 			this->Quit->Index = 4;
 			this->Quit->Shortcut = System::Windows::Forms::Shortcut::CtrlQ;
 			this->Quit->Text = S"&Quit";
-			this->Quit->Click += new System::EventHandler(this, Quit_Click);
+			this->Quit->Click += new System::EventHandler(this, &dxui::Editor::Quit_Click);
 			// 
 			// Edit
 			// 
 			this->Edit->Index = 1;
 			this->Edit->Text = S"&Edit";
-			this->Edit->Click += new System::EventHandler(this, menuItem6_Click);
+			this->Edit->Click += new System::EventHandler(this, &dxui::Editor::menuItem6_Click);
 			// 
 			// Execute
 			// 
@@ -221,7 +221,7 @@ namespace dxui
 			this->ExecuteOnce->Index = 0;
 			this->ExecuteOnce->Shortcut = System::Windows::Forms::Shortcut::CtrlE;
 			this->ExecuteOnce->Text = S"Execute &Once";
-			this->ExecuteOnce->Click += new System::EventHandler(this, ExecuteOnce_Click);
+			this->ExecuteOnce->Click += new System::EventHandler(this, &dxui::Editor::ExecuteOnce_Click);
 			// 
 			// Windows
 			// 
@@ -312,7 +312,7 @@ namespace dxui
 			this->tabControl2->SelectedIndex = 0;
 			this->tabControl2->Size = System::Drawing::Size(517, 465);
 			this->tabControl2->TabIndex = 1;
-			this->tabControl2->SelectedIndexChanged += new System::EventHandler(this, tabControl2_SelectedIndexChanged);
+			this->tabControl2->SelectedIndexChanged += new System::EventHandler(this, &dxui::Editor::tabControl2_SelectedIndexChanged);
 			// 
 			// tabPage2
 			// 
@@ -346,8 +346,8 @@ namespace dxui
 			this->MinimumSize = System::Drawing::Size(320, 320);
 			this->Name = S"Editor";
 			this->Text = S"Visual Program Editor";
-			this->Closing += new System::ComponentModel::CancelEventHandler(this, Editor_Closing);
-			this->Load += new System::EventHandler(this, Editor_Load);
+			this->Closing += new System::ComponentModel::CancelEventHandler(this, &dxui::Editor::Editor_Closing);
+			this->Load += new System::EventHandler(this, &dxui::Editor::Editor_Load);
 			this->ToolsTab->ResumeLayout(false);
 			this->tabPage1->ResumeLayout(false);
 			this->tabControl2->ResumeLayout(false);
@@ -452,7 +452,7 @@ private: void updateRecentNets() {
 						progs[i] = new System::Windows::Forms::MenuItem();
 						progs[i]->Index = i;
 						progs[i]->Text = new System::String(cp);
-						progs[i]->Click += new System::EventHandler(this, OpenRecentFileClick);
+						progs[i]->Click += new System::EventHandler(this, &dxui::Editor::OpenRecentFileClick);
 						i++;
 						//bi->setLabel(cp);
 					}

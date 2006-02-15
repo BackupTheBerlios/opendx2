@@ -28,7 +28,7 @@ namespace dxui
 			InitializeComponent();
 			this->timer = new Timer();
 			this->timer->Interval = 15000;
-			this->timer->Tick += new EventHandler(this, closeDialog);
+			this->timer->Tick += new EventHandler(this, &dxui::CopyrightDialog::closeDialog);
 		}
         
 	protected: 
@@ -79,7 +79,7 @@ namespace dxui
 			this->button1->Name = S"button1";
 			this->button1->Size = System::Drawing::Size(315, 240);
 			this->button1->TabIndex = 2;
-			this->button1->Click += new System::EventHandler(this, closeDialog);
+			this->button1->Click += new System::EventHandler(this, &dxui::CopyrightDialog::closeDialog);
 			// 
 			// CopyrightDialog
 			// 
@@ -94,7 +94,7 @@ namespace dxui
 			this->ShowInTaskbar = false;
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterParent;
 			this->Text = S"CopyrightDialog";
-			this->Load += new System::EventHandler(this, CopyrightDialog_Load);
+			this->Load += new System::EventHandler(this, &dxui::CopyrightDialog::CopyrightDialog_Load);
 			this->ResumeLayout(false);
 
 		}		

@@ -1128,7 +1128,7 @@ bool DXApplication::initialize(unsigned int* argcp,
 				DX_MAJOR_VERSION, DX_MINOR_VERSION, DX_MICRO_VERSION,
 				__TIME__, __DATE__);
 
-			MessageBox(NULL, buf, "Version", MB_OK | MB_ICONINFORMATION);
+			MessageBox::Show(buf, "Version", MessageBoxButtons::OK);
 			exit (0);
 		}
 

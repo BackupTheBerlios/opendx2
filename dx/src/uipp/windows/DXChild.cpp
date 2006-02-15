@@ -12,8 +12,8 @@
 #include <windows.h>
 #include <winsock.h>
 
-#include "dxThreadMain.h"
-#include "tmainUtil.h"
+#include "../../exec/dpexec/dxThreadMain.h"
+#include "../../exec/dpexec/tmainUtil.h"
 
 #include "DXStrings.h"
 #include "DXChild.h"

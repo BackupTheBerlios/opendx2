@@ -18,14 +18,6 @@
 #include <errno.h>
 #endif
 
-#if defined(HAVE__SYS_ERRLIST)
-#define sys_errlist _sys_errlist
-#endif
-
-#if ! (defined(HAVE_SYS_ERRLIST) || defined(HAVE__SYS_ERRLIST))
-extern char *sys_errlist[];
-#endif
-
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
@@ -89,7 +81,7 @@ bool IsBlankString(const char* string)
     int i;
 
     //
-    // If the string is NULL, then return true...
+    // If the string is NULL, then return TRUE...
     //
     if (string == NUL(char*))
     {
@@ -97,7 +89,7 @@ bool IsBlankString(const char* string)
     }
 
     //
-    // Otherwise, return true if the string is a NULL string or
+    // Otherwise, return TRUE if the string is a NULL string or
     // if the string consists solely of blanks/tabs.
     //
     for (i = 0; string[i] == ' ' OR string[i] == '\t'; i++)
@@ -455,15 +447,6 @@ _sprintf(char *s, const char* format, ...)
     return STRLEN(s);
 }
 #endif 	// NON_ANSI_SPRINTF
-
-#ifdef NEEDS_STRERROR
-extern
-char *strerror(int errnum)
-{
-    return sys_errlist[errnum];
-}
-#endif
-
 
 //
 // Find the first string in s that is delimeted by the 'begin' and 'end'
