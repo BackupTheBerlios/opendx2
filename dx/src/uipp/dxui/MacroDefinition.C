@@ -607,15 +607,6 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
         DIR* d = opendir(nsptr);
 	if (!d)
 #elif defined(HAVE_SYS_STAT_H)
-	char *srch_string = new char[STRLEN(nsptr) + 6];
-	strcpy(srch_string, nsptr);
-	if (strlen(srch_string) > 0) 
-	{
-	    char c = srch_string[strlen(srch_string)-1];
-	    if (c != '/' && c != '\\' && c != ';') 
-		strcat(srch_string, "/");
- 	}
-	strcat(srch_string, "*.net");
 	struct STATSTRUCT b;
 	int d = STATFUNC(nsptr, &b);
 	if (d == -1)
@@ -692,19 +683,19 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 
 #elif defined(HAVE__FINDFIRST)
 
-	    char *srch_string = new char[STRLEN(nsptr) + 10];  
-	    strcpy(srch_string,nsptr);                        
-	    if (strlen(srch_string)>0) {
-		char c = srch_string[strlen(srch_string)-1];
+	    char *srch_string2 = new char[STRLEN(nsptr) + 10];  
+	    strcpy(srch_string2,nsptr);                        
+	    if (strlen(srch_string2)>0) {
+		char c = srch_string2[strlen(srch_string2)-1];
 		if (c != '/' && c != '\\' && c != ':')
-		    strcat(srch_string, "/");                   
+		    strcat(srch_string2, "/");                   
 	    }
-	    strcat(srch_string, "*.net");
+	    strcat(srch_string2, "*.net");
 
             struct _finddata_t entry;
-            long handle = _findfirst(srch_string,&entry);
-            int exists = (handle == -1) ? -1: 0;
-	    while (exists != -1)
+            long handle = _findfirst(srch_string2,&entry);
+            int exists = (handle == -1L) ? -1: 0;
+	    while (exists == 0)
 #endif       
 	    {
 		    char path[1000];
@@ -746,14 +737,14 @@ boolean MacroDefinition::LoadMacroDirectories(const char *path,
 		    else
 		    {
 			MacroDefinition::LoadMacroFile(f, path, 
-						replace, NULL, asSystemMacro);
+					replace, NULL, asSystemMacro);
 			Network::CloseNetworkFILE(f, wasEncoded);
 		    }
 #if defined(HAVE__FINDFIRST)
                     exists=_findnext(handle,&entry);
 	    }
             _findclose(handle);
-	    delete[] srch_string;
+	    delete[] srch_string2;
 #elif defined(HAVE_REGCOMP) && defined(HAVE_REGEX_H)
 		}
 	    }
