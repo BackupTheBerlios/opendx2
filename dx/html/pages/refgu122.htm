@@ -112,7 +112,9 @@ attribute (which can be extracted with the Attribute module).
 ribbon.
 Use the Color module and specify "front colors" and
 "back colors."
-<P><STRONG>Components</STRONG>
+
+		<p>Any transformation matrix applied to Ribbon, such as those created by the <A HREF="refgu129.htm">Scale</A> module, may produce an unwanted effect of tranforming the Ribbon's geometry. To just transform the line but not the Ribbon, insert an <a href="refgu077.htm">Inquire</a> module immediately before the Ribbon module, and set the <tt>inquiry</tt> option to &quot;apply transform&quot;. This operation applies all transformation matrices changing the line's geometry, but prevents the transform from being carried forward onto the Ribbon geometry.</p>
+		<P><STRONG>Components</STRONG>
 <P>
 Creates new "positions," "connections," and "normals"
 components.

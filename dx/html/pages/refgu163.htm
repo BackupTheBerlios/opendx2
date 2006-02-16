@@ -117,8 +117,9 @@ tube.
 </TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>style</STRONG></TT>
 </B></TD><TD><P>in the current version of Data Explorer has no effect.
 </TD></TR></TABLE>
-<P><STRONG>Components</STRONG>
-<P>
+<P>Any transformation matrix applied to Tube, such as those created by the <A HREF="refgu129.htm">Scale</A> module, may produce an unwanted effect of tranforming the Tube's geometry. To just transform the line but not the Tube, insert an <a href="refgu077.htm">Inquire</a> module immediately before the Tube module, and set the <tt>inquiry</tt> option to &quot;apply transform&quot;. This operation applies all transformation matrices changing the line's geometry, but prevents the transform from being carried forward onto the Tube geometry.
+		<p><STRONG>Components</STRONG></p>
+		<P>
 Creates new "positions," "connections," and "normals"
 components.
 All other components are propagated to the output.
