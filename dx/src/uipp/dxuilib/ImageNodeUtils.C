@@ -1281,7 +1281,7 @@ void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac
     int buflen = 0;
     while (mac[i]) {
 	int length = strlen(mac[i]);
-	if ((buflen + length) >= FMBUFSIZE) {
+	if ((buflen + length) >= FMBUFSIZE - 1) {
 	    if (buflen > 0) {
 		tmpbuf[buflen++] = '\n'; tmpbuf[buflen] = '\0';
 		SendString (cbd, cb, f, tmpbuf, viasocket);
@@ -1289,12 +1289,14 @@ void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac
 		//fflush(f);
 		buflen = 0;
 	    } else {
-		SendString (cbd, cb, f, mac[i++], viasocket);
+		SendString (cbd, cb, f, mac[i], viasocket);
+		i++;
 		//fwrite (mac[i++], 1, length, f);
 		//fflush(f);
 	    }
 	} else {
-	    strcpy (&tmpbuf[buflen], mac[i++]);
+	    strcpy (&tmpbuf[buflen], mac[i]);
+	    i++;
 	    buflen+= length;
 	}
     }
