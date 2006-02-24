@@ -835,7 +835,7 @@ dnl format configuration libraries.
 	AC_MSG_RESULT(no -- some components failed test)
         have_magick='no (failed tests)'
     else
-	CFLAGS="`Magick-config --cflags` $CFLAGS"
+dnl	CFLAGS="`Magick-config --cflags` $CFLAGS"
 	CPPFLAGS="`Magick-config --cppflags` $CPPFLAGS"
 	LIB_MAGICK="$LIBS `Magick-config --ldflags` `Magick-config --libs`"
 dnl UNIQUIFY will remove duplicate library tokens leaving the last instance.
