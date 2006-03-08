@@ -16,8 +16,8 @@ public class ConnectThread extends Thread
     public void run()
     {
         try {
-            InputStream bis = new DataInputStream( clientSocket.getInputStream() );
-            BufferedReader dis = new BufferedReader( new InputStreamReader( bis ) );
+            BufferedReader dis = new BufferedReader( new 
+            	InputStreamReader( clientSocket.getInputStream() ) );
             String inputLine = dis.readLine();
 
             if ( inputLine == null )

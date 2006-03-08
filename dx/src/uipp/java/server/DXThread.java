@@ -46,10 +46,8 @@ public abstract class DXThread extends Thread
         clientSocket = client;
 
         try {
-            InputStream bis = new DataInputStream( clientSocket.getInputStream() );
-            OutputStream bos = new DataOutputStream( clientSocket.getOutputStream() );
-            is = new BufferedReader( new InputStreamReader( bis ) );
-            os = new PrintStream( bos, false );
+            is = new BufferedReader( new InputStreamReader( clientSocket.getInputStream() ) );
+            os = new PrintStream( clientSocket.getOutputStream(), false );
         }
 
         catch ( Exception e ) {
