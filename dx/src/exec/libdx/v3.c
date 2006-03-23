@@ -178,6 +178,7 @@ STATIC Matrix3 Transpose3(Matrix3 t)
 #ifdef Invert3
 STATIC Matrix3 Invert3(Matrix3 t)
 {
+    Point3 p;
     Matrix3 s;
     double inv;
 
@@ -195,8 +196,10 @@ STATIC Matrix3 Invert3(Matrix3 t)
     s.A[2][2] = COF(0,1,0,1) * inv;
 
     s.b[0] = s.b[1] = s.b[2] = 0;
-    *(Point3*)s.b = Apply3(Neg3(*(Point3*)t.b), s);
-	
+    p.c1 = -t.b[0]; p.c2 = -t.b[1]; p.c3 = -t.b[2];
+    p  = Apply3(p, s);
+    s.b[0] = p.c1; s.b[1] = p.c2; s.b[2] = p.c3;
+
     return s;
 }
 #endif
