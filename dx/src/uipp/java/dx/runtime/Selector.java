@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/runtime/Selector.java,v 1.3 2005/12/02 23:37:27 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/runtime/Selector.java,v 1.4 2006/03/26 23:50:23 davidt Exp $
  */
 package dx.runtime;
 import java.awt.*;
@@ -121,7 +121,7 @@ public class Selector extends BinaryInstance
 
     public void setEnabled( boolean tf )
     {
-        super.setEnabled( true );
+        super.setEnabled( tf );
 
         if ( this.isEnabled() == true ) {
             if ( ( this.getOptionCount() < 2 ) && ( this.singleItemSelectable() == false ) )
