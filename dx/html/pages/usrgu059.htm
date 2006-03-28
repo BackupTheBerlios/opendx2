@@ -51,17 +51,19 @@ MINING">
 				<LI><A HREF="#HDRJAVAMA">Java Explorer Macros</A>
 			</MENU>
 			<LI><A HREF="#HDRINTERIM">11.3 Interacting with Images </A>
-			<LI><A HREF="usrgu060.htm">11.4 The Java Explorer Server</A>
+		<li><a href="#HDRDISPCAP">11.4 Displaying Captions: The CaptionsLabel Applet</a>
+		<li><a href="#HDRDISPHTML">11.5 Displaying HTML: The HTMLDisplay Applet</a>
+		<li><a href="#HDRDISPURL">11.6 Linking to Other Web Pages: The HTMLDisplay Applet</a>
+		<LI><A HREF="usrgu060.htm">11.7 The Java Explorer Server</A>
 			<MENU>
 				<LI><A NAME="PToC_321" HREF="usrgu060.htm#running">Running the Server</A>
 				<LI><A NAME="PToC_322" HREF="usrgu060.htm#cmds">Scripts for Controlling the Server</A>
 				<LI><A NAME="PToC_324" HREF="usrgu060.htm#HDRJSCONF">Configuration Files</A>
 				<LI><A HREF="usrgu060.htm#HDRCNFNOTE">Configuration Notes</A>
 			</MENU>
-			<LI><A NAME="PToC_340" HREF="usrgu061.htm#HDRLIMBUG">11.5 Limitations/Bugs</A>
-			<LI><A HREF="usrgu061.htm#HDRJAVAINT">11.6 Java Interfaces</A>
-		</MENU>
-		<HR>
+			<LI><A NAME="PToC_340" HREF="usrgu061.htm#HDRLIMBUG">11.8 Limitations/Bugs</A>
+		<LI><A HREF="usrgu061.htm#HDRJAVAINT">11.9 Java Interfaces</A></MENU>
+			<HR>
 		<H2><A NAME="HDRJAVAEXP"></A>11.1 About Java Explorer</H2>
 		<P>Java Explorer is a network based server and a set of Java applets that allow Data Explorer networks to run from within a web browser. In an authoring step, the visualization expert selects to add the required Java Explorer modules; thus, activating the option to then generate an appropriate html page and applet code that corresponds to the network's user interface Control Panels and Images. Once the Java Explorer modules are added, the network can be executed from either the standard DX user interface or a web browser via the Java Explorer server, eliminating dual-source problems. The Image macro when running in the Java Explorer environment outputs image formatted files for the web server to send. Results of a visualization can be sent as Images (single or multiple), or geometry (as VRML), determined by the visualization programmer or the end-user's settings. Direct user interactions (e.g. rotate, pick, etc.) are implemented by the client or the server depending upon the presentation mode.</P>
 		<P>In order to view a network with a web browser, the network is first converted to a web page, installed into the Java Explorer server's specified web page directory and then the server must be started. If Java Explorer is to be used to allow users via the Internet to run specified visualizations, then a web server must also be running and set up in conjunction with Java Explorer.</P>
@@ -116,21 +118,68 @@ MINING">
 		<HR>
 		<H2><A NAME="HDRINTERIM"></A>11.3 Interacting with Images</H2>
 		<P>Java Explorer provides interaction modes similar to those within Data Explorer: Rotate, Pan, Zoom, and Pick. A new interaction mode available in Java Explorer is called <I>Orbit</I> mode. Orbit mode produces an applet with a group of images that allows the users to feel as if they can minimally rotate the object quickly.</P>
-		<UL>
+			<UL>
 			<LI>Java Explorer's Pick mode reflects the design of Data Explorer. Select an Image then choose Pick mode. Place a pick by clicking with the left mouse button on something in the image. The original net must contain a Pick tool with appropriate wiring.
 			<LI>Rotate mode provides a gnomon for rotating in the x and y planes using the left mouse button. Ctrl+mouse button rotates in the z plane.
 			<LI>Zoom mode provides a 2d area of interest in response the mouse button. Ctrl+mouse button zooms out.
 			<LI>Pan mode provides a single pan cursor which moves the screen in response to a mouse button drag.
-			<LI>The <I>Execution</I> control panel provides a 'Reset Camera' button which works the same way Data Explorer's Reset menu bar option works.
-		</UL>
-		<HR>
-		<DIV ALIGN="center">
-			<P><A HREF="../allguide.htm"><IMG SRC="../images/foot-fc.gif" WIDTH="94" HEIGHT="18" BORDER="0" ALT="Full Contents"></A> <A HREF="../qikguide.htm"><IMG SRC="../images/foot-qs.gif" WIDTH="94" HEIGHT="18" BORDER="0" ALT="QuickStart Guide"></A> <A HREF="../usrguide.htm"><IMG SRC="../images/foot-ug.gif" WIDTH="94" HEIGHT="18" BORDER="0" ALT="User's Guide"></A> <A HREF="../refguide.htm"><IMG SRC="../images/foot-ur.gif" WIDTH="94" HEIGHT="18" BORDER="0" ALT="User's Reference"></A></P>
-		</DIV>
-		<DIV ALIGN="center">
-			<P><FONT SIZE="-1">[ <A HREF="http://www.research.ibm.com/dx">OpenDX Home at IBM</A>&nbsp;|&nbsp;<A HREF="http://www.opendx.org/">OpenDX.org</A>&nbsp;] </FONT></P>
-			<P></P>
-		</DIV>
+			
+				
+				<LI>The <I>Execution</I> control panel provides a 'Reset Camera' button which works the same way Data Explorer's Reset menu bar option works.
+		
+			
+			
+					
+				</UL>
+			<h2><a name="IDX1032"></a><a name="HDRDISPCAP"></a>11.4 Displaying Captions: The CaptionLabels Applet</h2>
+			<p>Java Explorer sends information to the end-user's browser via an imageWindow applet as discussed in Interacting with Images. In addition to displaying text in the Image window, you can also display captions and other labels by sending strings to DXLOutput modules within a network.</p>
+			<UL>
+				<LI>A web page generated by the VPE will contain a CaptionLabels applet for each DXLOutput module. Modify the generated applet tags as desired to set the size, font, and colors.
+				<LI>See the AutoInsurance demo for an example.
+			</UL>
+		<li>
+			<hr>
+		
+		<li>
+			
+		
+			
+		<li>
+		<li>
+			<hr>
+			<h2><a id="IDX1033" name="IDX1033"></a><a name="HDRDISPHTML"></a>11.5 Displaying HTML: The HTMLDisplay Applet</h2>
+			<p>Java Explorer can also display HTML generated by your network. (E.g., to provide even more formatting for labels, include icons, links, etc.) </p>
+		<ul>
+			<li>
+				<p>As with CaptionLabels, send the HTML to a DXLOutput module.</p>
+			<li>In the generated html page, you must change the class name in the applet tag from &quot;CaptionLabels.class&quot; to &quot;HTMLDisplay.class&quot;
+			<li>Optionally, add a PARAM to the applet, setting NAME to &quot;Content-type&quot; and VALUE to &quot;text/html&quot;.
+			<li>HTMLDisplay will also render plain text (use content type &quot;text/plain&quot;) and rich text format (use &quot;text/rtf&quot;).
+			<li>Scrollbars are added automatically if the rendered document is larger than the applet's size.
+			<li>Full support for rendering HTML 3.2. Links work. Forms and buttons do not.
+		</ul>
+		<li>
+		<li>
+		<li>
+			<hr>
+			<h2><a name="HDRDISPURL"></a>11.6 Linking to Other Web Pages: The HTMLDisplay Applet</h2>
+			<p>Java Explorer can cause the user's browser to open a desired web page (e.g., to link an object in your scene to an external resource).</p>
+		<ul>
+			<li>Send a string containing the URL and a target window name to a DXLOutput. (Example: send the string &quot;http://www.opendx.org Foo&quot; to open the OpenDX home page in window Foo.) Standard HTML target names (e.g., &quot;_self&quot;) apply.
+			<li>Change the applet's class to HTMLDisplay.class.
+			<li>Add a PARAM with NAME=&quot;Content-type&quot; and VALUE=&quot;text/url&quot;.
+			<li>The applet itself simply displays the URLs you send it. You can make the applet size 1x1 pixel if you don't want to see it.
+		</ul>
+		<li>
+		<li>
+			<HR>
+		
+		<li>
+		<div align="center">
+			<p><a href="../allguide.htm"><img src="../images/foot-fc.gif" width="94" height="18" border="0" alt="Full Contents"></a> <a href="../qikguide.htm"><img src="../images/foot-qs.gif" width="94" height="18" border="0" alt="QuickStart Guide"></a> <a href="../usrguide.htm"><img src="../images/foot-ug.gif" width="94" height="18" border="0" alt="User's Guide"></a> <a href="../refguide.htm"><img src="../images/foot-ur.gif" width="94" height="18" border="0" alt="User's Reference"></a></p>
+			<p><font size="-1">[ <a href="http://www.research.ibm.com/dx">OpenDX Home at IBM</a>&nbsp;|&nbsp;<a href="http://www.opendx.org/">OpenDX.org</a>&nbsp;] </font></p>
+			<p></p>
+		</div>
 	</BODY>
 
 </HTML>
