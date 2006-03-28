@@ -25,7 +25,7 @@ XFILES = \
 	tetrasClass.X quadsII2DClass.X 
 
 EXTRA_DIST = \
-	class class.awk \
+	class class.awk v3.c \
 	$(XFILES) \
 	buffer.Z lbshade.Z triangle.Z quad.Z plane.Z  \
 	local.mk.in
@@ -92,7 +92,7 @@ libLIBDX_la_SOURCES =  \
 	matrix.c mesharray.c lbmessage.c multigrid.c \
 	neighbors.c object.c patharray.c lbprivate.c productarray.c sharedarray.c \
 	regulararray.c lbscreen.c series.c string.c stringtable.c \
-	timing.c v3.c lbvector.c version.c xform.c userinit.c \
+	timing.c lbvector.c version.c xform.c userinit.c \
 	axes.c buffer.c client.c lbcolor.c component.c displayfb.c displayx.c \
 	displayutil.c displayw.c windows.c \
 	edfdata.c edfdict.c edfio.c edflex.c edfobj.c edfparse.c edfprint.c \
