@@ -17,4 +17,4 @@ EXTRA_DIST = CaptionLabels.java Demo4.gif HomeOwn4.0.0.gif HomeOwn4.0.1.gif  \
 	Topo3.0.7.gif Topo3.0.8.gif activex.htm earlier.htm imageWindow.java \
 	pagea.gif pagea2.gif pagea3.gif perp1.0.0.gif perp1.0.1.gif \
 	perp1.0.2.gif perp1.0.3.gif perp1.0.4.gif perp1.0.5.gif perp1.0.6.gif \
-	perp1.0.7.gif perp1.0.8.gif toc.htm   
+	perp1.0.7.gif perp1.0.8.gif toc.htm
