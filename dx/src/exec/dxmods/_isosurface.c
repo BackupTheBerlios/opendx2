@@ -5478,6 +5478,8 @@ Field create_iso_surface
 
         if ( ( 0 == strcmp  ( comp->name, "data"        ) ) ||
              ( 0 == strncmp ( comp->name, "original", 8 ) ) ||
+             ( 0 == strcmp  ( comp->name, "invalid positions" ) ) ||
+             ( 0 == strcmp  ( comp->name, "invalid connections" ) ) ||
              ( NULL != comp->std_attribs[(int)REF]        )  )
             continue;
 
