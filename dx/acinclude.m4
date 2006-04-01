@@ -674,7 +674,7 @@ changequote([,]),
     ])
     AC_MSG_RESULT($ac_cv_type_$1)
     if test $ac_cv_type_$1 = no; then
-        AC_DEFINE($1, $2, [Define to 1 if have type $1])
+        AC_DEFINE($1, $2, [Do not define $1 if already have type $1])
     fi
 ])
 
