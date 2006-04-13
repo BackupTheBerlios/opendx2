@@ -41,6 +41,7 @@ class TickLabel;
 class TickLabelList;
 typedef void (*TickListModifyCB) (TickLabelList*, void*);
 
+// Used only in the AutoAxesDialog
 class TickLabelList : public UIComponent
 {
   private:

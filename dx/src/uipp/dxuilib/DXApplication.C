@@ -175,6 +175,8 @@ Symbol DXApplication::MsgPanelChanged = 0;
 #define EDIT_ANCHOR_MODE 	"EDIT"
 #define MENUBAR_ANCHOR_MODE 	"MENUBAR"
 
+// Resources below
+#if 1
 static
 XrmOptionDescRec _DXOptionList[] =
 {
@@ -1644,6 +1646,7 @@ XtResource _DXResourceList[] =
 	(XtPointer) "user"
     },
 };
+#endif
 
 
 static

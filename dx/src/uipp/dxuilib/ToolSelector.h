@@ -43,7 +43,7 @@ class NodeDefinition;
 
 //
 // ToolSelector class definition:
-//				
+// The Tool panel on the left hand side of the VPE.
 class ToolSelector : public UIComponent 
 {
 

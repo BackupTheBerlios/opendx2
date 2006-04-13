@@ -37,6 +37,8 @@ class WorkSpace;
 
 //
 // Virtual WorkSpaceComponent class definition:
+// Used only in ControlPanels.
+//
 // Support objects which display on either a Workspace widget like the vpe
 // or the ControlPanelWorkSpace.  Provide the callback for user selection
 // of the component and for resizing.

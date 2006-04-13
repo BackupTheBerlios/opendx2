@@ -251,8 +251,6 @@ struct DXServerInfo
     DXPacketIF *packet;
 };
 
-typedef int WindowPlacementPolicyEnum;
-
 //
 // DXApplication class definition:
 //				

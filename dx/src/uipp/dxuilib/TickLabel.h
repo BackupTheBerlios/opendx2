@@ -35,6 +35,7 @@ typedef void (*TickSelectCB)(TickLabel*, void*);
 #define DIRTY_TICK_NUMBER 1
 #define DIRTY_TICK_TEXT 2
 
+// Only used in TickLabelList.
 class TickLabel : public UIComponent
 {
   private:
