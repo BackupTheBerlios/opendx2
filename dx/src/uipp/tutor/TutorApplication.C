@@ -26,7 +26,6 @@
 #include <errno.h>
 #endif
 
-#include "TimedMessage.h"
 #include "DXStrings.h"
 #include "MainWindow.h"
 #include "TutorApplication.h"

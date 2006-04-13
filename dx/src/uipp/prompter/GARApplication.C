@@ -25,7 +25,6 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#include "../base/TimedMessage.h"
 #include "../base/DXStrings.h"
 #include "../base/MainWindow.h"
 #include "../base/WarningDialogManager.h"

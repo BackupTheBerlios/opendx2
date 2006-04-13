@@ -22,7 +22,6 @@
 #include <signal.h>
 #include <errno.h>
 
-#include "TimedMessage.h"
 #include "DXStrings.h"
 #include "MainWindow.h"
 #include "MBApplication.h"

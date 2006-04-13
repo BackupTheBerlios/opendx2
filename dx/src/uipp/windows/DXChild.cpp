@@ -312,9 +312,9 @@ DXChild::ConnectTo(const char *host,
 
 	this->dxexec = new DXExecThread();
 	this->dxexec->StartAsThread(exargc, exargv);
-	for(int i=0; i<exargc; i++)
-		delete [] exargv[i];
-	delete [] exargv;
+	//for(int i=0; i<exargc; i++)
+	//	delete [] exargv[i];
+	//delete [] exargv;
 
     //memset(&pInfo, 0, sizeof(pInfo));
     //memset(&sInfo, 0, sizeof(sInfo));

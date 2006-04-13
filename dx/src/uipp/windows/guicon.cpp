@@ -50,6 +50,8 @@ void RedirectOutputToFile()
 		(const char*) (Marshal::StringToHGlobalAnsi(lad)).ToPointer(),
 		lad->Length);
 
+	res_file[lad->Length] = '\0';
+
 
 	hFile = CreateFile(res_file,
 		GENERIC_WRITE, 
