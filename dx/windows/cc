@@ -40,6 +40,8 @@ prelibs="$prelibs wsock32.lib"
 deflibs="$deflibs kernel32.lib"
 deflibs="$deflibs user32.lib"
 deflibs="$deflibs Advapi32.lib"
+deflibs="$deflibs OLEAUT32.lib"
+deflibs="$deflibs GDI32.lib"
 deflibs="$deflibs /NODEFAULTLIB:LIBC"
 
 #deflibs="$deflibs user32.lib gdi32.lib winspool.lib"
