@@ -14,6 +14,8 @@
 
 #define ClassNotebook "Notebook"
 
+// Notebook is the Panel area including tabs and
+// pages where modules are placed.
 class Notebook : public UIComponent
 {
     private:

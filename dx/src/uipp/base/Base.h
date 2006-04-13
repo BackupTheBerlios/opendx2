@@ -28,6 +28,11 @@
 //
 // Class Base definition:
 //
+
+/// This is the primary Base class for all other classes. It basically just
+/// guarantees that all sub-classes implement the getClassName function
+/// so that it can be queried at any time.
+
 class Base
 {
   protected:

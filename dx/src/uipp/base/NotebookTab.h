@@ -20,6 +20,8 @@ extern "C" void NotebookTab_RepaintTO(XtPointer, XtIntervalId*);
 
 #define ClassNotebookTab "NotebookTab"
 
+/// Notebook tab is the tab that would 
+/// be included in a Notebook.
 class NotebookTab : public UIComponent
 {
     private:

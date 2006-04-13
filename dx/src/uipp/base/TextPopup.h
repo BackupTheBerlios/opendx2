@@ -46,6 +46,9 @@ extern "C" void TextPopup_ButtonEH(Widget widget,
 			   XEvent *e, Boolean *ctd);
 //
 // TextPopup class definition:
+// Contains the TextField followed by a popup button for
+// attaching a menu. Only used in AutoAxes Configuration
+// for the Font selection.
 //				
 class TextPopup : public UIComponent
 {

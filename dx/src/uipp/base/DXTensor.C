@@ -122,114 +122,114 @@ Realloc (void *ptr, int size)
 boolean
 DXTensor::setValue(const char *s, int& index)
 {
-    int j;
-    int components = 0;
-    int ndim = 1, loc_index = index;
-    char c;
-    boolean saw_value = FALSE, saw_right_bracket = FALSE;
-    boolean saw_scalar =  FALSE;
-    DXTensor *subv = NUL(DXTensor*); 
-    
-    SkipWhiteSpace(s,loc_index);
+	int j;
+	int components = 0;
+	int ndim = 1, loc_index = index;
+	char c;
+	boolean saw_value = FALSE, saw_right_bracket = FALSE;
+	boolean saw_scalar =  FALSE;
+	DXTensor *subv = NUL(DXTensor*); 
 
-    if (s[loc_index] != '[')
-	return FALSE;
-    loc_index++;
+	SkipWhiteSpace(s,loc_index);
 
-    while (s[loc_index]) {
-    	SkipWhiteSpace(s,loc_index);
- 	c = s[loc_index];
-	if (c == '[') {
-	    /* Vectors are not allowed if we already saw a scalar  */
-	    if (saw_scalar)
-		goto error;
-	    subv = new DXTensor;
-	    if (!subv->setValue(s, loc_index)) {
-		delete subv;
-		goto error;
-	    }
-	    this->tensors = (DXTensor**)REALLOC(this->tensors,
-					++components*sizeof(DXTensor*));
-	    ASSERT(this->tensors);
+	if (s[loc_index] != '[')
+		return FALSE;
+	loc_index++;
 
-	    this->tensors[components-1] = subv;
-	    if (ndim == 1) {	/* First sub-component */
-		/* Copy the sub-dimensions up to this vector */
-		ndim += subv->dimensions;
-		this->dim_sizes = (char*)REALLOC(this->dim_sizes, 
+	while (s[loc_index]) {
+		SkipWhiteSpace(s,loc_index);
+		c = s[loc_index];
+		if (c == '[') {
+			/* Vectors are not allowed if we already saw a scalar  */
+			if (saw_scalar)
+				goto error;
+			subv = new DXTensor;
+			if (!subv->setValue(s, loc_index)) {
+				delete subv;
+				goto error;
+			}
+			this->tensors = (DXTensor**)REALLOC(this->tensors,
+				++components*sizeof(DXTensor*));
+			ASSERT(this->tensors);
+
+			this->tensors[components-1] = subv;
+			if (ndim == 1) {	/* First sub-component */
+				/* Copy the sub-dimensions up to this vector */
+				ndim += subv->dimensions;
+				this->dim_sizes = (char*)REALLOC(this->dim_sizes, 
 					ndim * sizeof(*dim_sizes));
-		ASSERT(this->dim_sizes);
-		for (j=0 ; j<subv->dimensions ; j++ )
-		    this->dim_sizes[j+1] = subv->dim_sizes[j];
-	    } else { 		
-		/* Ensure that next elements have the correct dimensionality */
-		if (subv->dimensions != ndim-1) {
-		    delete subv;
-		    goto error;
-		}
-		for (j=1 ; j<ndim ; j++) 
-		    if (this->dim_sizes[j] != subv->dim_sizes[j-1]) {
-			this->tensors[components-1] = NULL;
-			delete subv;
-			goto error;
-		    }
-	    }
-	    saw_value = TRUE;
-	} else if (c == ']') {
-	    if (saw_value == FALSE)
-		goto error;
-	    saw_scalar = FALSE;
-	    saw_right_bracket = TRUE;
-	    loc_index++;
-	    break;
-	} else if (c == ',') {
-	    if (!saw_value)	/* This checks for ',,' */
-		goto error;
-	    saw_value = FALSE;
-	    saw_scalar = FALSE;
-	    loc_index++;
-	} else {
-	    /* Scalars are not allowed if we already saw a sub-vector */
-	    double val;
-	    int matches, tmp = loc_index;
-	    if (ndim != 1) goto error;
-	    if (!IsScalar(s,tmp)) 
-		goto error;
+				ASSERT(this->dim_sizes);
+				for (j=0 ; j<subv->dimensions ; j++ )
+					this->dim_sizes[j+1] = subv->dim_sizes[j];
+			} else { 		
+				/* Ensure that next elements have the correct dimensionality */
+				if (subv->dimensions != ndim-1) {
+					delete subv;
+					goto error;
+				}
+				for (j=1 ; j<ndim ; j++) 
+					if (this->dim_sizes[j] != subv->dim_sizes[j-1]) {
+						this->tensors[components-1] = NULL;
+						delete subv;
+						goto error;
+					}
+			}
+			saw_value = TRUE;
+		} else if (c == ']') {
+			if (saw_value == FALSE)
+				goto error;
+			saw_scalar = FALSE;
+			saw_right_bracket = TRUE;
+			loc_index++;
+			break;
+		} else if (c == ',') {
+			if (!saw_value)	/* This checks for ',,' */
+				goto error;
+			saw_value = FALSE;
+			saw_scalar = FALSE;
+			loc_index++;
+		} else {
+			/* Scalars are not allowed if we already saw a sub-vector */
+			double val;
+			int matches, tmp = loc_index;
+			if (ndim != 1) goto error;
+			if (!IsScalar(s,tmp)) 
+				goto error;
 
-	    matches = sscanf(&s[loc_index],"%lg", &val);
-	    if ((matches == 0) || (matches == EOF)) 
-		goto error;
-	    loc_index = tmp;
+			matches = sscanf(&s[loc_index],"%lg", &val);
+			if ((matches == 0) || (matches == EOF)) 
+				goto error;
+			loc_index = tmp;
 
-	    this->scalars =(double*)REALLOC(this->scalars,
+			this->scalars =(double*)REALLOC(this->scalars,
 				++components * sizeof(*scalars));
-	    ASSERT(this->scalars);
-	    this->scalars[components-1] = val;
-	    saw_value = TRUE;
-	    saw_scalar = TRUE;
+			ASSERT(this->scalars);
+			this->scalars[components-1] = val;
+			saw_value = TRUE;
+			saw_scalar = TRUE;
+		}
 	}
-    }
 
-    if ((components == 0) || !saw_right_bracket)
-	goto error;
+	if ((components == 0) || !saw_right_bracket)
+		goto error;
 
-    /* Set the dimension at this level of brackets */
-    if (!this->dim_sizes)
-	this->dim_sizes = new char;
-    this->dim_sizes[0] = components;
-    this->dimensions = ndim;
+	/* Set the dimension at this level of brackets */
+	if (!this->dim_sizes)
+		this->dim_sizes = new char;
+	this->dim_sizes[0] = components;
+	this->dimensions = ndim;
 
-    // Be sure that the string representation is cleared when the value changes.
-    if (strval) {
-	delete strval;
-        this->strval = NUL(char*);
-    }
+	// Be sure that the string representation is cleared when the value changes.
+	if (strval) {
+		delete strval;
+		this->strval = NUL(char*);
+	}
 
-    index = loc_index;
-    return TRUE;
+	index = loc_index;
+	return TRUE;
 
 error:
-    return FALSE;
+	return FALSE;
 
 }
 

@@ -30,7 +30,8 @@ extern "C" void TreeView_IBeamTO(XtPointer, XtIntervalId*);
 
 //
 // TreeView class definition:
-//				
+// The TreeView used inside the Tool Selector.
+
 class TreeView : public UIComponent
 {
   private:

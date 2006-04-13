@@ -35,7 +35,12 @@ extern "C" void TextSelector_ProcessOldEventEH(Widget , XtPointer , XEvent *, Bo
 extern "C" Boolean TextSelector_FillWP (XtPointer clientData);
 extern "C" void TextSelector_RemoveGrabEH(Widget, XtPointer, XEvent*, Boolean*);
 
-
+//
+// Class TextSelector:
+// Used in Moved Nodes to Page... dialog
+// and SelectorPulldownInteractor
+// Just a pulldown menu.
+// 
 class TextSelector: public UIComponent {
 
   private:

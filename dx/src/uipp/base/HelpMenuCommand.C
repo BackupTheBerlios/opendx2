@@ -14,7 +14,6 @@
 #include "IBMApplication.h"
 #include "CommandInterface.h"
 #include "InfoDialogManager.h"
-#include "TimedMessage.h"
 #include "StartWebBrowser.h"
 
 HelpMenuCommand::HelpMenuCommand(const char*   name,

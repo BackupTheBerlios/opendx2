@@ -43,7 +43,9 @@ extern "C" void TextFile_fsdButtonCB(Widget widget,
 			   XtPointer);
 //
 // TextFile class definition:
-//				
+// The line in CreateMacro Dialog box of 
+// Filename: box ellipses 
+// The only place its used that I can tell.
 class TextFile : public UIComponent
 {
   private:

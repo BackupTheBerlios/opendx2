@@ -9,9 +9,6 @@
 #include <dxconfig.h>
 #include <defines.h>
 
-
-
-
 #include <Xm/Xm.h>
 #include <Xm/MainW.h>
 
