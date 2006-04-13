@@ -27,7 +27,7 @@ int getenvstr(char *name, string& value)
 
 	getenv_s( &requiredSize, NULL, 0, name);
 	if(requiredSize > 1) {
-		s = (char *) malloc (requiredSize * sizeof(char));
+		s = new char[requiredSize];
 		if(!s)
 		{
 			printf("Failed to allocate memory!\n");
@@ -150,9 +150,9 @@ string DXEnvironment::getUiFlags() {
 
 int DXEnvironment::getExArgs(char ** &argv) {
 
-	argv = (char **) malloc (sizeof(char*)*exnumflags);
+	argv = new char*[exnumflags];
 	for(int i = 0; i < exnumflags; i++) {
-		argv[i] = (char *) malloc (sizeof(char*)*exflags[i].length()+1);
+		argv[i] = new char[exflags[i].length() + 1];
 		strcpy_s(argv[i], exflags[i].length()+1, exflags[i].c_str());
 	}
 
@@ -161,9 +161,9 @@ int DXEnvironment::getExArgs(char ** &argv) {
 
 int DXEnvironment::getUiArgs(char ** &argv) {
 
-	argv = (char **) malloc (sizeof(char*)*uinumflags);
+	argv = new char*[uinumflags];
 	for(int i = 0; i < uinumflags; i++) {
-		argv[i] = (char *) malloc (sizeof(char*)*uiflags[i].length()+1);
+		argv[i] = new char[uiflags[i].length()+1];
 		strcpy_s(argv[i], uiflags[i].length()+1, uiflags[i].c_str());
 	}
 
