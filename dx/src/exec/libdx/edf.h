@@ -18,7 +18,11 @@
 /* constants.
  */ 
 #define MAXNEST	 20             /* max number of nested include files */
-#define MAXBUF	 1024           /* max length of a single input token */
+
+/* MAXBUF controls the size of one line of a dx file. Since this could be
+   a really long string perhaps this isn't the best way to do it. */
+
+#define MAXBUF	 4097           /* max length of a single input token */
 #define MAXRANK  50             /* max rank for data items */
 #define MAXTERMS 100		/* max terms in mesh or product array */
  

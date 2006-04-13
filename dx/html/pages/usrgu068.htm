@@ -1288,16 +1288,17 @@ component "data" 3
 <P>
 <H3><A NAME="HDRSYNFF" ></A>Syntax of the Native File Format
 </H3>
-<P>
+		<P>
 A data file in the Data Explorer native format can contain a header section,
 a data section, or both.
 The header section defines a set of Objects, the data for which are
 contained in the data section or imbedded in the header.
 Each type of object that can be defined is described in the following
 subsections.
-<P>
-<H4><U>Header Section</U></H4>
-<A NAME="IDX994"></A>
+
+		<p></p>
+		<H4><U>Header Section</U></H4>
+		<A NAME="IDX994"></A>
 <P>
 The header section of a Data Explorer file consists of a sequence of Object
 definitions.
@@ -1316,9 +1317,7 @@ across lines.
 The following sections describe each of the types of Objects
 that can be defined.
 In these descriptions, the <TT><STRONG>monospace</STRONG></TT> font specifies
-literals; <I>italics</I>, non-literals; square brackets &#91;
-&#93;, optional items; and a vertical list, alternatives.
-<P>
+literals; <I>italics</I>, non-literals; square brackets [ ], optional items; and a vertical list, alternatives. A single line is limited to 4K characters within Data Explorer; however, the native file format does not have this limitiation.<P>
 <A NAME="IDX995"></A>
 In the header section (and text data sections), <TT><STRONG>#</STRONG></TT>
 is the comment character.
