@@ -556,7 +556,11 @@ void
 DXLCloseConnection(DXLConnection *connection)
 {
     if (connection->fd >= 0) {
+#if defined(WIN32) || defined(intelnt)
+		closesocket(connection->fd);
+#else
 	close(connection->fd);
+#endif
 	connection->fd = 0;
     }
 
