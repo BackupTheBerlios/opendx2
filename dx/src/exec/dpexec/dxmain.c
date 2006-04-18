@@ -1499,7 +1499,8 @@ static void ExCleanup ()
         DXFree(index->procusername);
         if(index->options)
             DXFree(index->options);
-        close(index->procfd);
+		if(index->procfd > 0)
+	        close(index->procfd);
     }
     FREE_LIST(_dxd_dpgraphstat);
 
