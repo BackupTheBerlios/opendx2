@@ -1,5 +1,7 @@
 Makefile.in
 Makefile
+debug
+release
 Debug
 Release
 VisualDX.ncb
