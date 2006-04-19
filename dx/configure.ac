@@ -131,6 +131,11 @@ AC_ARG_WITH(magick,
 	      [with_magick=$withval],
 	      [with_magick='yes'])
 
+AC_ARG_WITH(statmagick,
+	      [  --with-statmagick       enable Link to Static ImageMagick (default is no)],
+	      [with_smagick=$withval],
+	      [with_smagick='no'])
+
 # Enable CDF.
 AC_ARG_WITH(cdf,
 	      [  --with-cdf              enable CDF (default is yes)],
@@ -807,7 +812,12 @@ if test "$ARCH" = "intelnt" ; then
 	AC_MSG_RESULT(no -- some components failed test)
         have_magick='no (failed tests)'
     else
-	LIB_MAGICK='-lCORE_RL_magick_'
+	if test "$with_smagick" != 'no'
+	then
+	    LIB_MAGICK='-lCORE_RL_magick_ -lCORE_RL_bzlib_ -lCORE_RL_coders_ -lCORE_RL_filters_ -lCORE_RL_jbig_ -lCORE_RL_jbig_ -lCORE_RL_jp2_ -lCORE_RL_jpeg_ -lCORE_RL_lcms_ -lCORE_RL_libxml_ -lCORE_RL_png_ -lCORE_RL_tiff_ -lCORE_RL_ttf_ -lCORE_RL_wand_ -lCORE_RL_wmf_ -lCORE_RL_zlib_'
+	else
+	    LIB_MAGICK='-lCORE_RL_magick_'
+	fi
 	LIBS="$LIB_MAGICK $LIBS"
 	FMT_LIBS="$FMT_LIBS CORE_RL_magick_.lib"
 	AC_DEFINE(HAVE_LIBMAGICK, 1, [Define to 1 if you have the ImageMagick libraries])

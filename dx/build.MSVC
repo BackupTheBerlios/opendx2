@@ -23,5 +23,6 @@ ARCH=intelnt \
         --with-jni-path="/cygdrive/c/Progra~1/Java/jdk1.5.0_06/include/win32:/cygdrive/c/Progra~1/Java/jdk1.5.0_06/include" \
         --with-java40jar-path=c:/cygwin/usr/local/src/java40.jar \
         --with-cosmojar-path=c:/cygwin/usr/local/src/npcosmop211.jar \
+	--with-statmagick \
         --x-includes="$XDKINC" --x-libraries="$XDKLIB" 
 
