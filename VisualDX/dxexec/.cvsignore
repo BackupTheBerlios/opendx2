@@ -1,0 +1,4 @@
+*.plg
+Debug
+Release
+dxexec.vcproj.*

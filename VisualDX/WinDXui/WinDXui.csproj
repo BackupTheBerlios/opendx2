@@ -1,0 +1,249 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{805E5D41-131E-43D6-A429-AE8844679FD0}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WinDXui</RootNamespace>
+    <AssemblyName>WinDXui</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.2.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccessNetworkPanelsCommand.cs" />
+    <Compile Include="ApplicIF.cs" />
+    <Compile Include="BaseApplication.cs">
+    </Compile>
+    <Compile Include="Client.cs" />
+    <Compile Include="CmdEntry.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandInterface.cs">
+    </Compile>
+    <Compile Include="CommandScope.cs" />
+    <Compile Include="ConfirmedCommand.cs" />
+    <Compile Include="ConfirmedExitCommand.cs" />
+    <Compile Include="ConfirmedQuitCommand.cs" />
+    <Compile Include="ControlPanel.cs" />
+    <Compile Include="Decorator.cs" />
+    <Compile Include="DeferrableAction.cs" />
+    <Compile Include="Definition.cs" />
+    <Compile Include="DialogManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogManager.Designer.cs">
+      <DependentUpon>DialogManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DisconnectFromServerCommand.cs" />
+    <Compile Include="DXApplication.cs">
+    </Compile>
+    <Compile Include="DXChild.cs" />
+    <Compile Include="DXExecCtl.cs" />
+    <Compile Include="DXLinkHandler.cs" />
+    <Compile Include="DXPacketIF.cs" />
+    <Compile Include="DXTensor.cs" />
+    <Compile Include="DXType.cs" />
+    <Compile Include="DXValue.cs" />
+    <Compile Include="EditorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditorWindow.Designer.cs">
+      <DependentUpon>EditorWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GroupManager.cs" />
+    <Compile Include="HelpMenuCommand.cs" />
+    <Compile Include="ImageWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageWindow.Designer.cs">
+      <DependentUpon>ImageWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LinkHandler.cs" />
+    <Compile Include="MacroDefinition.cs" />
+    <Compile Include="MsgWin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MsgWin.Designer.cs">
+      <DependentUpon>MsgWin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Network.cs" />
+    <Compile Include="Node.cs" />
+    <Compile Include="NodeDefinition.cs" />
+    <Compile Include="NodeList.cs" />
+    <Compile Include="NoOpCommand.cs" />
+    <Compile Include="NoUndoDXAppCommand.cs" />
+    <Compile Include="OpenCommand.cs" />
+    <Compile Include="OptionalPreActionCommand.cs" />
+    <Compile Include="PacketIF.cs" />
+    <Compile Include="PanelAccessManager.cs" />
+    <Compile Include="PanelGroupManager.cs" />
+    <Compile Include="ParameterDefinition.cs" />
+    <Compile Include="PreActionCommand.cs" />
+    <Compile Include="ProcessGroupManager.cs" />
+    <Compile Include="QueuedPackets.cs" />
+    <Compile Include="QuitCommand.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="InfoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NoUndoCommand.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DialogManager.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DialogManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="QuestionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SaveMacroCommand.cs" />
+    <Compile Include="Scanning.cs" />
+    <Compile Include="SequencerNode.cs" />
+    <Compile Include="SequencerWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Server.cs" />
+    <Compile Include="SymbolManager.cs" />
+    <Compile Include="Tests.cs" />
+    <Compile Include="TimedDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimedDialog.Designer.cs">
+      <DependentUpon>TimedDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TransmitterNode.cs" />
+    <Compile Include="Utils.cs">
+    </Compile>
+    <Compile Include="WarningDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WorkSpaceInfo.cs" />
+    <Compile Include="XmlPreferences.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MsgWin.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MsgWin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>WinDX.UI</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimedDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TimedDialog.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vis.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\builder.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dx-cfg.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dx-cm.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dx-doc.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dx-dx.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\editor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\prompter.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\script.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\startup.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tutor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OpenDX-Splash.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="Resources\question.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
