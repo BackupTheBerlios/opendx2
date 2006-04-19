@@ -217,6 +217,66 @@
 			ReferencedProjectIdentifier="{1544CEA3-1365-4482-A719-FF5C14BBAE29}"
 			RelativePathToProject="..\netcdf-3.6.0-p1\src\win32\NET\libsrc\netcdf.vcproj"
 		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{2DE5757A-86E9-428B-9458-2F0868596FC8}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\bzlib\CORE_bzlib_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{772F5C03-09DD-450D-B6DD-E836FE09F9BB}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\coders\CORE_coders_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{F1469E34-0F6D-4580-85A4-5E32DBCF5509}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\filters\CORE_filters_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{2306D373-96AD-4F39-AC32-0925B0838DA0}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\jbig\CORE_jbig_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{3E060147-B130-4FE4-9918-E8B078A2DA03}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\jp2\CORE_jp2_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{811E4862-9587-4A64-B101-2CAF0097C325}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\jpeg\CORE_jpeg_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{F31648E4-CB7E-4B5F-B316-AA746C847345}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\lcms\CORE_lcms_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{DF570163-CEA4-4F13-B9CF-78F58B243681}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\libxml\CORE_libxml_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{0C52454B-7300-460B-9BE7-85018C763C15}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\magick\CORE_magick_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{A8873F3B-9AF2-47D3-B1E7-6594214A14CA}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\png\CORE_png_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{DC394868-1BF1-42B9-93A5-6DCD4B70B6B8}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\tiff\CORE_tiff_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{6A240344-93E4-4086-8696-DE625D761C43}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\ttf\CORE_ttf_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{2B404D7A-B6F0-427C-9B55-18F0B2BB06C6}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\wand\CORE_wand_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{CE662443-406F-4916-8DAE-047A795933F4}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\wmf\CORE_wmf_xt_lib.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{F8872A54-82B5-4C69-99CD-E0B8E251A532}"
+			RelativePathToProject="..\ImageMagick-6.2.6\VisualMagick\zlib\CORE_zlib_xt_lib.vcproj"
+		/>
 	</References>
 	<Files>
 		<Filter
@@ -10795,11 +10855,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\dx\src\exec\dxmods\userInteractors.h"
+				RelativePath="..\..\dx\include\..\..\dx\UserInteractors.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\dx\include\..\..\dx\UserInteractors.h"
+				RelativePath="..\..\dx\src\exec\dxmods\userInteractors.h"
 				>
 			</File>
 			<File
