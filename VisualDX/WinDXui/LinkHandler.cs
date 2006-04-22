@@ -11,21 +11,17 @@ namespace WinDX.UI
 
         public void sendPacket(int packetType, int packetId)
         {
-            sendPacket(packetType, packetId, null, 0);
-        }
-        public void sendPacket(int packetType, int packetId, String data)
-        {
-            sendPacket(packetType, packetId, data, 0);
+            sendPacket(packetType, packetId, null);
         }
         public void sendPacket(int packetType, int packetId,
-            String data, int length)
+            String data)
         {
-            (this.getPacketIF()).sendPacket(packetType, packetId, data, length);
+            (this.getPacketIF()).sendPacket(packetType, packetId, data);
         }
 
         public LinkHandler(PacketIF pif)
         {
-            this.packetIF = packetIF;
+            this.packetIF = pif;
             Dictionary<String, CmdEntry> dict = new Dictionary<String, CmdEntry>();
             commandEntry = new CmdEntry(dict, this);
         }

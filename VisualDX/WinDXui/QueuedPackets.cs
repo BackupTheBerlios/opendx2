@@ -29,9 +29,8 @@ namespace WinDX.UI
     class QueuedBytes
     {
         internal String data;
-        internal int length;
 
-        public QueuedBytes(String data, int length)
+        public QueuedBytes(String data)
         {
             throw new Exception("Not Yet Implemented.");
         }
@@ -47,7 +46,7 @@ namespace WinDX.UI
         internal int type;
         internal int packetId;
 
-        public QueuedPacket(int type, int packetId, String data, int length) : base (data, length)
+        public QueuedPacket(int type, int packetId, String data) : base (data)
         {
             throw new Exception("Not Yet Implemented.");
         }
@@ -60,7 +59,7 @@ namespace WinDX.UI
 
     class QueuedImmediate : QueuedBytes
     {
-        public QueuedImmediate(String data, int length) : base(data, length)
+        public QueuedImmediate(String data) : base(data)
         {
             throw new Exception("Not Yet Implemented.");
         }

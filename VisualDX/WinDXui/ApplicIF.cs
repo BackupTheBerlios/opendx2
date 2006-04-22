@@ -130,7 +130,7 @@ namespace WinDX.UI
 
         public void send(int type, String data)
         {
-            this.sendPacket(type, 0, data, data.Length);
+            this.sendPacket(type, 0, data);
         }
 
         #endregion

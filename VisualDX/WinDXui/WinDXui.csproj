@@ -104,6 +104,7 @@
     <Compile Include="NoUndoDXAppCommand.cs" />
     <Compile Include="OpenCommand.cs" />
     <Compile Include="OptionalPreActionCommand.cs" />
+    <Compile Include="PacketHandler.cs" />
     <Compile Include="PacketIF.cs" />
     <Compile Include="PanelAccessManager.cs" />
     <Compile Include="PanelGroupManager.cs" />

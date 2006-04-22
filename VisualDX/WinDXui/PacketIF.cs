@@ -5,12 +5,78 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Diagnostics;
+using System.Windows.Forms;
+using System.Threading;
 
 namespace WinDX.UI
 {
     class PacketIF
     {
-        
+        class ThreadSender
+        {
+            private PacketIF p;
+
+            public ThreadSender(PacketIF pin)
+            {
+                p = pin;
+            }
+
+            public void ThreadSendProc()
+            {
+                while (p.output_queue.Count > 0 && !p.Deleting)
+                {
+                    QueuedBytes qp = p.output_queue[0];
+                    p.output_queue.Remove(qp);
+                    qp.send(p);
+                }
+                p.packetSender = false;
+            }
+        }
+
+        class ThreadWorker
+        {
+            private PacketIF p;
+            public ThreadWorker(PacketIF pin)
+            {
+                p = pin;
+            }
+
+            public void managedProcessSocketInputICB()
+            {
+                p.ProcessSocketInputICB();
+            }
+
+            public void managedInputIdleWP()
+            {
+                p.InputIdleWP();
+            }
+
+            public void watchForActivity()
+            {
+                MethodInvoker processSocket = new MethodInvoker(this.managedProcessSocketInputICB);
+                MethodInvoker idleProcess = new MethodInvoker(this.managedInputIdleWP);
+                while (!p.deleting)
+                {
+                    if (p.socket.Available > 0)
+                    {
+                        if (p.DeferPacketHandling)
+                        {
+                            Thread.Sleep(1000);
+                            if (p.DeferPacketHandling)
+                                MainProgram.theApplication.getRootForm().BeginInvoke(idleProcess);
+                        }
+                        else
+                        {
+                            MainProgram.theApplication.getRootForm().BeginInvoke(processSocket);
+                        }
+                    }
+                    Thread.Sleep(1000);
+                }
+            }
+        }
+
+
         #region Enums/Structs
 
         public delegate void PacketHandlerCallback(Object obj, int id, String line);
@@ -46,7 +112,53 @@ namespace WinDX.UI
         #endregion
 
         #region public Instance Variables
-        public static String[] PacketTypes;
+
+        public static String[] PacketTypes = {
+            	"UNKNOWN",
+	            "$int",		/* PacketIF::INTERRUPT	*/
+	            "$sys",		/* PacketIF::SYSTEM		*/
+	            "$ack",		/* PacketIF::ACK		*/
+	            "$mac",		/* PacketIF::MACRODEF		*/
+	            "$for",		/* PacketIF::FOREGROUND	*/
+	            "$bac",		/* PacketIF::BACKGROUND	*/
+	            "$err",		/* PacketIF::PKTERROR		*/
+	            "$mes",		/* PacketIF::MESSAGE		*/
+	            "$inf",		/* PacketIF::INFO		*/
+	            "$lin",		/* PacketIF::LINQUIRY		*/
+	            "$lre",		/* PacketIF::LRESPONSE	*/
+	            "$dat",		/* PacketIF::LDATA		*/
+	            "$sin",		/* PacketIF::SINQUIRY		*/
+	            "$sre",		/* PacketIF::SRESPONSE	*/
+	            "$dat",		/* PacketIF::SDATA		*/
+	            "$vin",		/* PacketIF::VINQUIRY		*/
+	            "$vre",		/* PacketIF::VRESPONSE	*/
+	            "$dat",		/* PacketIF::VDATA		*/
+	            "$com",		/* PacketIF::COMPLETE		*/
+	            "$imp",		/* PacketIF::IMPORT		*/
+	            "$imi",		/* PacketIF::IMPORTINFO	*/
+	            "$lnk",		/* PacketIF::LINK		*/
+	            "UNKNOWN"
+        };
+
+        public Socket MySocket
+        {
+            get { return socket; }
+        }
+
+        public bool Deleting
+        {
+            get { return deleting; }
+        }
+
+        public bool Error
+        {
+            get { return error; }
+        }
+
+        public bool DeferPacketHandling
+        {
+            get { return deferPacketHandling; }
+        }
 
         #endregion
 
@@ -54,15 +166,98 @@ namespace WinDX.UI
 
         public PacketIF(String server, int port, bool local, bool asClient)
         {
-            throw new Exception("Not Yet Implemented.");
+            Debug.Assert(server != null);
+
+            wpClientData = this;
+            workProcInstalled = false;
+
+            socket = null;
+            error = false;
+            deferPacketHandling = false;
+            deleting = false;
+            packetSender = false;
+
+            line = "";
+
+            echoCallback = null;
+            echoClientData = null;
+            endReceiving = true;
+
+            linkHandler = null;
+            stallingWorker = null;
+            stallingWorkerData = null;
+
+            if (asClient)
+                connectAsClient(server, port, local);
+            else
+                connectAsServer(port);
+
+            output_queue = new List<QueuedBytes>();
+
+            if (!error)
+            {
+                installInputHandler();
+            }
+        }
+
+        ~PacketIF()
+        {
+            this.deleting = true;
+            Thread.Sleep(1000);
+
+            if (socket != null)
+            {
+                socket.Close();
+                socket = null;
+            }
+
+            removeInputHandler();
+
+            socket = null;
+            
+            if (linkHandler != null)
+                linkHandler = null;
+
+            foreach (PacketHandler h in handlers)
+            {
+                handlers.Remove(h);
+            }
+
+            foreach (QueuedPacket qp in output_queue)
+                output_queue.Remove(qp);
+
         }
 
         public virtual void initializePacketIO()
         {
-            throw new Exception("Not Yet Implemented.");
-        }
+            setHandler(PacketType.MESSAGE,
+                PacketIF.ProcessMessage,
+                this);
+            setHandler(PacketType.INFORMATION,
+                PacketIF.ProcessInformation,
+                this);
+            setHandler(PacketType.INTERRUPT,
+                PacketIF.ProcessInterrupt,
+                this);
+            setHandler(PacketType.PKTERROR,
+                PacketIF.ProcessError,
+                this, "WARNING");
+            setHandler(PacketType.INTERRUPT,
+                PacketIF.ProcessBeginExecNode,
+                this, "begin ");
+            setHandler(PacketType.INTERRUPT,
+                PacketIF.ProcessEndExecNode,
+                this, "end ");
+            setHandler(PacketType.PKTERROR,
+                PacketIF.ProcessErrorERROR,
+                this, "ERROR");
+            setHandler(PacketType.LINK,
+                PacketIF.ProcessLinkCommand,
+                this);
 
-        public int inError() { return this.error; }
+            setErrorCallback(PacketIF.HandleError,
+                this);
+        }
 
         public void setHandler(PacketIF.PacketType type, PacketHandlerCallback callback, Object clientdata)
         {
@@ -72,7 +267,33 @@ namespace WinDX.UI
             Object clientData,
             String matchString)
         {
-            throw new Exception("Not Yet Implemented");
+            if (clientData == null)
+                Console.WriteLine("null client data\n");
+
+            foreach (PacketHandler p in handlers)
+            {
+                if (p.Type == type && p.match(matchString))
+                    break;
+                if (callback == null)
+                {
+                    if (p != null)
+                    {
+                        handlers.Remove(p);
+                    }
+                }
+                else
+                {
+                    PacketHandler h = new PacketHandler(true, type, 0, callback,
+                        clientData, matchString);
+                    if (p != null)
+                    {
+                        handlers.Remove(p);
+                        handlers.Add(h);
+                    }
+                    else
+                        handlers.Add(h);
+                }
+            }
         }
 
         //
@@ -82,19 +303,23 @@ namespace WinDX.UI
         //
         public void setErrorCallback(PacketIFCallback callback, Object clientData)
         {
-            throw new Exception("Not Yet Implemented");
+            errorCallback = callback;
+            errorClientData = clientData;
         }
-        public PacketIFCallback getErrorCallback(ref Object clientData)
+        public PacketIFCallback getErrorCallback(out Object clientData)
         {
-            throw new Exception("Not Yet Implemented");
+            clientData = errorClientData;
+            return errorCallback;
         }
         public void setEchoCallback(PacketIFCallback callback, Object clientData)
         {
-            throw new Exception("Not Yet Implemented");
+            echoCallback = callback;
+            echoClientData = clientData;
         }
         public PacketIFCallback getEchoCallback(ref Object clientData)
         {
-            throw new Exception("Not Yet Implemented");
+            clientData = echoClientData;
+            return echoCallback;
         }
 
         public void sendBytes(String str)
@@ -103,7 +328,14 @@ namespace WinDX.UI
         }
         public void sendImmediate(String str)
         {
-            throw new Exception("Not Yet Implemented");
+            if (isSocketInputReady() || output_queue.Count > 0)
+            {
+                QueuedImmediate item = new QueuedImmediate(str);
+                output_queue.Add(item);
+                QueuedPacketWP();
+                return;
+            }
+            _sendImmediate(str);
         }
 
         //
@@ -113,7 +345,23 @@ namespace WinDX.UI
         //
         public bool receiveContinuous(ref String data)
         {
-            throw new Exception("Not Yet Implemented");
+            bool noerr = true;
+            endReceiving = false;
+            endReceiveData = null;
+            while (!endReceiving)
+            {
+                Debug.Assert(!deferPacketHandling);
+                packetReceive();
+                if (error)
+                {
+                    handleStreamError("PacketIF.receiveContinuous");
+                    noerr = false;
+                    break;
+                }
+            }
+            if (noerr)
+                data = endReceiveData;
+            return noerr;
         }
 
         //
@@ -122,13 +370,16 @@ namespace WinDX.UI
         //
         public void endReceiveContinuous(String data)
         {
-            throw new Exception("Not Yet Implemented");
+            endReceiving = true;
+            endReceiveData = data;
         }
-
 
         public void executeLinkCommand(String c, int id)
         {
-            throw new Exception("Not Yet Implemented");
+            if (linkHandler == null)
+                installLinkHandler();
+
+            linkHandler.executeLinkCommand(c, id);
         }
 
         //
@@ -141,19 +392,49 @@ namespace WinDX.UI
         //
         public bool stallPacketHandling(StallingHandler h, Object data)
         {
-            throw new Exception("Not Yet Implemented");
+            if (isPacketHandlingStalled())
+                return false;
+
+            deferPacketHandling = true;
+
+            stallingWorker = h;
+            stallingWorkerData = data;
+
+            return true;
         }
+
         public bool isPacketHandlingStalled()
         {
-            throw new Exception("Not Yet Implemented");
+            return (!(stallingWorker == null));
         }
 
-        public void sendPacket(int type, int packetId, String data, int length)
+        public void sendPacket(int type, int packetId, String data)
         {
-            throw new Exception("Not Yet Implemented.");
+            if (this.isSocketInputReady() || this.output_queue.Count > 0)
+            {
+                QueuedPacket qp = new QueuedPacket(type, packetId, data);
+                output_queue.Add(qp);
+                this.QueuedPacketWP();
+                return;
+            }
+            this._sendPacket(type, packetId, data);
         }
 
+        public void QueuedPacketWP()
+        {
+            if (this.packetSender)
+                return;
 
+            this.packetSender = true;
+
+            ThreadSender ts = new ThreadSender(this);
+            Thread t = new Thread(
+                new ThreadStart(ts.ThreadSendProc));
+            t.Priority = ThreadPriority.BelowNormal;
+            t.IsBackground = true;
+            t.Name = "SendPackets";
+            t.Start();
+        }
 
         #endregion
 
@@ -181,14 +462,24 @@ namespace WinDX.UI
         // Since we're not using X as the loop, the eventHandlers will need to be added
         // to the main programs loop.
 
-        int error;
-        Socket socket;
-        //XtInputId inputHandlerId;
-        bool deferPacketHandling;
-        int line_length;
-        int alloc_line_length;
+        private PacketIF wpClientData;
 
-        bool endReceiving;
+        private static int pif_count = 0;
+
+        private bool error;
+        private Socket socket;
+        private bool deferPacketHandling;
+        private bool endReceiving;
+        private PacketIFCallback echoCallback;
+        private Object echoClientData;
+        private PacketIFCallback errorCallback;
+        private Object errorClientData;
+        private String endReceiveData;
+        private StallingHandler stallingWorker;
+        private Object stallingWorkerData;
+        private bool workProcInstalled;
+        private bool packetSender;
+        private bool deleting;
 
         #endregion
 
@@ -203,19 +494,178 @@ namespace WinDX.UI
 
         private void connectAsServer(int pport)
         {
-            throw new Exception("Not Yet Implemented.");
+            IPAddress address;
+            int port = pport;
+
+            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
+                ProtocolType.Tcp);
+            if (sock == null)
+            {
+                Console.WriteLine("Error instantiating Tcp socket for server.");
+                return;
+            }
+            LingerOption lingerOption = new LingerOption(true, 0);
+            sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, lingerOption);
+
+            int tries = 0;
+            address = IPAddress.Parse("127.0.0.1");
+            IPEndPoint ep = new IPEndPoint(address, pport);
+            while (tries < 10)
+            {
+                try
+                {
+                    sock.Bind(ep);
+                    break;
+                }
+                catch (SocketException se)
+                {
+                    if (se.ErrorCode == 10048)
+                    {
+                        tries++;
+                        port++;
+                        ep.Port = port;
+                        continue;
+                    }
+                    else
+                        throw;
+                }
+            }
+            if (tries == 10)
+            {
+                Console.WriteLine("Error: bind");
+                return;
+            }
+
+            try
+            {
+                sock.Listen(1);
+            }
+            catch (SocketException se)
+            {
+                sock.Close();
+                Console.WriteLine("Error: listen");
+                return;
+            }
+
+            Console.WriteLine("port = {0}", ((IPEndPoint)sock.RemoteEndPoint).Port.ToString());
+            if (!sock.Poll(60 * 1000, SelectMode.SelectRead))
+            {
+                Console.WriteLine("Error: select");
+                sock.Close();
+                return;
+            }
+
+            Socket asock = sock.Accept();
+
+            if (asock == null)
+            {
+                Console.WriteLine("Error: accept");
+                sock.Close();
+                return;
+            }
+
+            sock.Close();
+
+            // Got a valid connection to a socket. Now set it for PacketIF.
+            socket = asock;
+
+            return;
+
         }
 
         private void connectAsClient(String host, int port, bool local)
         {
-            throw new Exception("Not Yet Implemented.");
+            Debug.Assert(host != null);
+
+            if (socket == null)
+                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream,
+                        ProtocolType.Tcp);
+
+            try
+            {
+                socket.Connect(host, port);
+            }
+            catch (Exception e)
+            {
+                socket.Close();
+                socket = null;
+                error = true;
+                return;
+            }
+
+            // May need to set some of the socket behavior here.
+
         }
+
+        private void installInputHandler() {
+            Debug.Assert(Deleting == false);
+            Debug.Assert(socket != null);
+
+            ThreadWorker tw = new ThreadWorker(this);
+            Thread t = new Thread(new ThreadStart(tw.watchForActivity));
+            t.Priority = ThreadPriority.BelowNormal;
+            t.IsBackground = true;
+            t.Name = "WatchActivity";
+            t.Start();
+        }
+
+        private void removeInputHandler()
+        {
+            deleting = true;
+        }
+
+        public bool InputIdleWP()
+        {
+            if (isPacketHandlingStalled())
+            {
+                Debug.Assert(stallingWorker != null);
+                Debug.Assert(deferPacketHandling);
+                if (stallingWorker(stallingWorkerData))
+                {
+                    stallingWorker = null;
+                    deferPacketHandling = false;
+                    packetReceive(false);
+                }
+            }
+            else
+                deferPacketHandling = false;
+
+            PacketIF pif = DXApplication.theDXApplication.getPacketIF();
+            if (pif.output_queue.Count != 0)
+                pif.QueuedPacketWP();
+
+            return (!deferPacketHandling);
+        }
+
+        public void ProcessSocketInputICB()
+        {
+            if (socket == null)
+                return;
+
+            packetReceive();
+
+            if (socket == null)
+                return;
+
+            if (error)
+            {
+                handleStreamError("ProcessSocketInputICB");
+                deferPacketHandling = false;
+            }
+            else
+            {
+                deferPacketHandling = true;
+                InputIdleWP();
+            }
+        }
+
 
         #endregion
 
         #region protected Instance Variables
 
         protected String line;
+        protected List<PacketHandler> handlers;
 
         #endregion
 
@@ -223,7 +673,119 @@ namespace WinDX.UI
 
         protected virtual void parsePacket()
         {
-            throw new Exception("Not Yet Implemented.");
+            int id;
+            int type;
+            int data_length;
+            int i = 0;
+            int j;
+            int k;
+
+            List<String> toks = Utils.StringTokenizer(line, "|", null);
+
+            if (toks.Count != 4)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Format error encountered in packet.");
+                return;
+            }
+
+            id = Convert.ToInt32(toks[0]);
+
+            for (type = 0; i < PacketIF.PacketTypes.Length; type++)
+            {
+                if (toks[1] == PacketIF.PacketTypes[type])
+                    break;
+            }
+            if (type >= PacketIF.PacketTypes.Length)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Unknown packet type \"{0}\" encountered", toks[1]);
+                return;
+            }
+
+            data_length = Convert.ToInt32(toks[2]);
+
+            if (echoCallback != null)
+            {
+                String s = String.Format("Received {0}:{1}: {2}",
+                    PacketIF.PacketTypes[type], id, toks[3]);
+                echoCallback(echoClientData, s);
+            }
+
+            char [] pakws = {' ', ':'};
+            toks[3].TrimStart(pakws);
+
+            PacketHandler ph = null;
+
+            //
+            // Check for strings that exactly match the handler's match string 
+            // (In the case of data-driven interactors, there will never be an
+            // exact match.)
+            //
+            foreach (PacketHandler h in handlers)
+            {
+                if (h.MatchString != null &&
+                    ((h.Number == id && ((int) h.Type == type || (int) h.Type == -1)) ||
+                    (h.Number == 0 && (int) h.Type == type)) &&
+                    h.match(toks[3]))
+                {
+                    ph = h;
+                    break;
+                }
+            }
+
+            //
+            // If we didn't find an exact match, then check for strings that match 
+            // the handler's match string for the length of the match string.
+            //
+            if (ph == null)
+            {
+                int longest_match_so_far = 0;
+                PacketHandler best_handler = null;
+                foreach (PacketHandler h in handlers)
+                {
+                    if (h.MatchString != null &&
+                        (((int) h.Type == id && ((int)h.Type == type || (int)h.Type == -1)) ||
+                        (h.Number == 0 && (int)h.Type == type)) &&
+                        h.matchFirst(toks[3]))
+                    {
+                        int len = h.MatchString.Length;
+                        if (len > longest_match_so_far)
+                        {
+                            best_handler = h;
+                            longest_match_so_far = len;
+                        }
+                    }
+                }
+                ph = best_handler;
+            }
+
+            //
+            // If we still didn't find an match, then check for handlers that don't
+            // have match string specified, implying they match any string.
+            //
+            if (ph == null)
+            {
+                foreach (PacketHandler h in handlers)
+                {
+                    if (h.MatchString == null &&
+                        ((h.Number == id && ((int)h.Type == type || (int)h.Type == -1)) ||
+                        (h.Number == 0 && (int)h.Type == type)))
+                    {
+                        ph = h;
+                        break;
+                    }
+                }
+            }
+
+            if (ph != null)
+            {
+                ph.callCallback(id, toks[3]);
+                if (!ph.Linger)
+                {
+                    handlers.Remove(ph);
+                }
+            }
         }
 
         //
@@ -233,9 +795,22 @@ namespace WinDX.UI
         // The errnum is passed in for portability, but is ignored on UNIX
         // systems.
         //
-        protected void handleStreamError(int errnum, String msg)
+        protected void handleStreamError(String msg)
         {
-            throw new Exception("Not Yet Implemented.");
+            Object errorData;
+            PacketIFCallback cb = getErrorCallback(out errorData);
+            if (cb != null)
+            {
+                cb(errorData, "Connection to the server has been broken.");
+            }
+            else
+                Console.WriteLine("Connection to the server has been broken.");
+
+            error = true;
+
+            socket.Close();
+            socket = null;
+
         }
 
         //
@@ -243,9 +818,74 @@ namespace WinDX.UI
         // If readSocket is FALSE, then we just process packets that are still
         // in the line buffer.
         //
+        protected void packetReceive()
+        {
+            packetReceive(true);
+        }
+
         protected void packetReceive(bool readSocket)
         {
-            throw new Exception("Not Yet Implemented.");
+            byte [] buffer = new byte[4097];
+            int buflen;
+
+            if (readSocket)
+            {
+
+                if (socket.Available <= 0)
+                    return;
+
+                buflen = socket.Receive(buffer);
+                if (buflen <= 0)
+                {
+                    error = true;
+                    return;
+                }
+            }
+            else
+            {
+                Debug.Assert(!deferPacketHandling);
+                buffer = Encoding.ASCII.GetBytes(line);
+                buflen = line.Length;
+                line = "";
+            }
+
+            // Got the buffer, now look for a new line character.
+            // If it exists then we now have a complete line that 
+            // needs to be parsed. If we don't, just add the buffer
+            // to line. Don't forget about the left over data in
+            // buffer.
+
+            String curline = Encoding.ASCII.GetString(buffer);
+
+
+            while (!deferPacketHandling)
+            {
+                if (curline.Length <= 0)
+                    break;
+
+                if (curline.Contains("\n"))
+                {
+                    int posN = curline.IndexOf('\n');
+                    line += curline.Substring(0, posN);
+                    curline = curline.Substring(posN + 2);
+                    parsePacket();
+                    line = "";
+                }
+                else
+                    line += curline;
+            }
+
+            //
+            // If we didn't finish the buffer (because of a stalling of the packet
+            // handling), then concatenate onto the existing
+            // line for retrieve later (see above).
+            //
+            if (curline.Length > 0)
+            {
+                Debug.Assert(isPacketHandlingStalled());
+                Debug.Assert(line.Length == 0);
+                line = curline;
+            }
         }
 
         //
@@ -253,53 +893,53 @@ namespace WinDX.UI
         //
         protected static void ProcessMessage(Object clientData, int id, Object line)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
         protected static void ProcessInformation(Object clientData, int id, Object line)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
         protected static void ProcessError(Object clientData, int id, Object line)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
         protected static void ProcessErrorWARNING(Object clientData, int id, Object line)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
         protected static void ProcessErrorERROR(Object clientData, int id, Object p)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
         protected static void ProcessCompletion(Object clientData, int id, Object line)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
         protected static void ProcessInterrupt(Object clientData, int id, Object line)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
         protected static void ProcessBeginExecNode(Object clientData, int id, Object line)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
         protected static void ProcessEndExecNode(Object clientData, int id, Object line)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
         protected static void ProcessLinkCommand(Object clientData, int id, Object p)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
         protected static void HandleError(Object clientData, String message)
         {
-            throw new Exception("Not Yet Implemented.");
+            throw new Exception("Never Implemented.");
         }
 
         protected LinkHandler linkHandler;
         protected virtual void installLinkHandler()
         {
-            throw new Exception("Not Yet Implemented");
+            linkHandler = new LinkHandler(this);
         }
 
         //
@@ -311,22 +951,64 @@ namespace WinDX.UI
         }
         protected void _sendImmediate(String str)
         {
-            throw new Exception("Not Yet Implemented.");
+            if (socket == null)
+                return;
+
+            String newStr = "$" + str + "\n";
+            try
+            {
+                socket.Send(Encoding.ASCII.GetBytes(newStr));
+            }
+            catch (Exception e)
+            {
+                handleStreamError(e.Message);
+            }
+            if (echoCallback != null)
+            {
+                String echo_string = "-1: " + newStr + newStr.Length;
+                echoCallback(echoClientData, echo_string);
+            }
         }
-        protected void _sendPacket(int type, int packetId, String data, int length)
+
+        protected void _sendPacket(int type, int packetId, String data)
         {
-            throw new Exception("Not Yet Implemented.");
+            if (socket == null)
+                return;
+
+            String s;
+            if (data.Length > 0)
+                s = String.Format("{0}|{1}|{2}|{3}\n", packetId,
+                PacketIF.PacketTypes[type],
+                data.Length,
+                data);
+            else
+                s = String.Format("{0}|{1}|{2}\n", packetId,
+                    PacketIF.PacketTypes[type], 0);
+            try
+            {
+                socket.Send(Encoding.ASCII.GetBytes(s));
+            }
+            catch (Exception e)
+            {
+                this.handleStreamError(e.Message);
+            }
+
+            if (echoCallback != null)
+            {
+                String echo_string =
+                    String.Format("(0} [{1}]: ", packetId, PacketIF.PacketTypes[type]);
+                if (data != null && data.Length > 0)
+                    echo_string += data + data.Length;
+                echoCallback(echoClientData, echo_string);
+            }
         }
-        protected bool sendQueuedPackets()
-        {
-            throw new Exception("Not Yet Implemented.");
-        }
+
         protected bool isSocketInputReady()
         {
-            throw new Exception("Not Yet Implemented.");
+            return (socket.Available > 0);
         }
-        protected List<QueuedPacket> output_queue;
-        protected int output_queue_wpid;
+
+        protected List<QueuedBytes> output_queue;
 
         #endregion
 
