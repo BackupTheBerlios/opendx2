@@ -9,11 +9,11 @@ namespace WinDX.UI
         private CmdEntry commandEntry;
         private PacketIF packetIF;
 
-        public void sendPacket(int packetType, int packetId)
+        public void sendPacket(PacketIF.PacketType packetType, int packetId)
         {
             sendPacket(packetType, packetId, null);
         }
-        public void sendPacket(int packetType, int packetId,
+        public void sendPacket(PacketIF.PacketType packetType, int packetId,
             String data)
         {
             (this.getPacketIF()).sendPacket(packetType, packetId, data);

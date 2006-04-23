@@ -44,13 +44,9 @@ namespace WinDX.UI
             InfoDialog wd = new InfoDialog();
             wd.modalPost(theApplication.getAboutAppString());
 
-            String[] quotes = { "\"", "[]" };
-            List<String> test = Utils.StringTokenizer("[[test]], \"me\", 1.345", " ,", quotes );
-            String resulting = "";
-            foreach (String t in test)
-            {
-                resulting += t + ", ";
-            }
+            String test = "{\"{a, b}\"}";
+            String resulting = Utils.FindDelimitedString(test, '{', '}', "\"");
+
             MessageBox.Show(resulting);
             //MessageBox.Show("see what happens");
             //Application.Run(new Form1());

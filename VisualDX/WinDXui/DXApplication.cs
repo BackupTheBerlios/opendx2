@@ -338,6 +338,13 @@ namespace WinDX.UI
         public Command toggleWarningEnable;
         public Command toggleErrorEnable;
 
+
+        public MsgWin MessageWindow
+        {
+            get { return messageWindow; }
+        }
+
+
         #endregion
 
         #region Protected Static Properties/Variables
@@ -502,7 +509,7 @@ namespace WinDX.UI
                 this.network.groupManagers[ProcessGroupManager.ProcessGroup];
         }
 
-        protected virtual void packetIFCancel(DXPacketIF p)
+        public virtual void packetIFCancel(DXPacketIF p)
         {
             throw new Exception("The method or operation is not implemented.");
         }
@@ -541,11 +548,10 @@ namespace WinDX.UI
             throw new Exception("The method or operation is not implemented.");
         }
 
-        public MsgWin getMessageWindow()
+        public virtual void addErrorList(String line)
         {
-            return messageWindow;
+            throw new Exception("Not yet implemented.");
         }
-
 
             //
     // Mark all the networks owned by this application as dirty.
@@ -575,9 +581,9 @@ namespace WinDX.UI
         {
             throw new Exception("The method or operation is not implemented.");
         }
-    public bool	doesErrorOpenMessage()
+    public bool	doesErrorOpenMessage
         {
-            throw new Exception("The method or operation is not implemented.");
+            get { throw new Exception("Not yet implemented."); }
         }
     public int 	doesErrorOpenVpe(Network n)
         {
@@ -641,6 +647,18 @@ namespace WinDX.UI
             {
                
             }
+        }
+
+        public enum HighlightType
+        {
+            ERRORHIGHLIGHT,
+            EXECUTEHIGHLIGHT,
+            REMOVEHIGHLIGHT
+        };
+
+        public void highlightNodes(String path, HighlightType highlightType)
+        {
+            throw new Exception("Not Yet Implemented");
         }
 
     }

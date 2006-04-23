@@ -46,7 +46,7 @@ namespace WinDX.UI
         internal int type;
         internal int packetId;
 
-        public QueuedPacket(int type, int packetId, String data) : base (data)
+        public QueuedPacket(PacketIF.PacketType type, int packetId, String data) : base (data)
         {
             throw new Exception("Not Yet Implemented.");
         }

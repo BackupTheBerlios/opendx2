@@ -14,5 +14,23 @@ namespace WinDX.UI
         {
             InitializeComponent();
         }
+
+        // Check this
+        public void addInformation(String line)
+        {
+            throw new Exception("Not yet implemented.");
+        }
+
+        // Check this
+        public void addError(String line)
+        {
+            throw new Exception("Not yet implemented.");
+        }
+
+        // Check this
+        public void addWarning(String line)
+        {
+            throw new Exception("Not yet implemented.");
+        }
     }
 }

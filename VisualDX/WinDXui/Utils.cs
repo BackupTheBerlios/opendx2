@@ -323,5 +323,70 @@ namespace WinDX.UI
             return ret;
         }
 
+
+        /// <summary>
+        /// Find the first string in s that is delimited by the 'start'
+        /// and 'end' characters.
+        /// </summary>
+        /// <param name="s">String to parse</param>
+        /// <param name="start">start character</param>
+        /// <param name="end">end character</param>
+        /// <param name="nestChars">if given as a string of nesting
+        /// characters then if the end delimiter is found within the 
+        /// nesting characters then don't accept it as the terminating
+        /// delimiter. Useful for finding '"{a} {b}"' within
+        /// '{"{a} {b}"}'.</param>
+        /// <returns>null if none found otherwise a string that contains
+        /// the begin and end characters.</returns>
+        public static String FindDelimitedString(String s, char start, char end, String nestChars)
+        {
+            if (s == null)
+                return null;
+            int si = s.IndexOf(start);
+            if (si < 0)
+                return null;
+
+            String sub1 = s.Substring(si + 1);
+
+            if (sub1.IndexOf(end) < 0)
+                return null;
+
+            if (nestChars == null)
+                return (sub1.Substring(0, sub1.IndexOf(end)));
+
+            // Now need to find nested pairs of nestChars.
+            char[] castr = sub1.ToCharArray();
+
+            char nestChar = '\0';
+            int lastInd = -1;
+
+            for (int i = 0; i < castr.Length; i++)
+            {
+                char nc = castr[i];
+                int tt = nestChars.IndexOf(nc);
+                if (tt >= 0)
+                {
+                    // A nesting character.
+                    if (nestChar == '\0')
+                        nestChar = castr[i];
+                    else if (nestChar == castr[i])
+                        nestChar = '\0';
+                }
+                else
+                {
+                    if (nestChar == '\0' && castr[i] == end)
+                    {
+                        lastInd = i;
+                        break;
+                    }
+                }
+            }
+
+            if (lastInd == -1)
+                return null;
+
+            return (sub1.Substring(0, lastInd));
+
+        }
     }
 }

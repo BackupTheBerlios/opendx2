@@ -14,27 +14,27 @@ namespace WinDX.UI
 
         protected static void ApplicationMessage(Object clientData, int id, String line)
         {
-            
+            // blank method in current C++ version
         }
         protected static void ApplicationInformation(Object clientData, int id, String line)
         {
-            
+            // blank method in current C++ version
         }
         protected static void ApplicationError(Object clientData, int id, String line)
         {
-            
+            // blank method in current C++ version
         }
         protected static void ApplicationCompletion(Object clientData, int id, String line)
         {
-           
+            // blank method in current C++ version
         }
         protected static void ApplicationForeground(Object clientData, int id, String line)
         {
-            
+            // blank method in current C++ version
         }
         protected static void ApplicationQuery(Object clientData, int id, String line)
         {
-            
+            // blank method in current C++ version
         }
         protected static void ApplicationLink(Object clientData, int id, String line)
         {
@@ -53,10 +53,11 @@ namespace WinDX.UI
         }
         protected static void PassThruDXL(Object clientData, int id, String line)
         {
-            throw new Exception("Not Yet Implemented.");
+            ApplicIF ai = (ApplicIF)clientData;
+            ai.sendPacket(PacketIF.PacketType.LINK, 0, line);
         }
 
-        protected virtual void installLinkHandler()
+        protected override void installLinkHandler()
         {
             linkHandler = new DXLinkHandler(this);
         }
@@ -93,7 +94,7 @@ namespace WinDX.UI
         //
         // Initializer
         //
-        public virtual void initializePacketIO()
+        public override void initializePacketIO()
         {
             this.setHandler(PacketIF.PacketType.MESSAGE,
                 ApplicIF.ApplicationMessage, this);
@@ -128,7 +129,7 @@ namespace WinDX.UI
             }
         }
 
-        public void send(int type, String data)
+        public void send(PacketIF.PacketType type, String data)
         {
             this.sendPacket(type, 0, data);
         }

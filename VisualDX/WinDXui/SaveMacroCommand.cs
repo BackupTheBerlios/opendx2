@@ -19,7 +19,7 @@ namespace WinDX.UI
 
         public override bool doIt(CommandInterface ci)
         {
-            String message = "Do you want to save macro " + md.body.getNameString();
+            String message = "Do you want to save macro " + md.body.NameString;
             message += " as file: " + md.fileName;
 
             QuestionDialog qd = new QuestionDialog();

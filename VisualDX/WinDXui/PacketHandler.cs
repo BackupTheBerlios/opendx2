@@ -33,6 +33,42 @@ namespace WinDX.UI
 
         public PacketHandler(bool plinger,
             PacketIF.PacketType ptype,
+            int pnumber)
+        {
+            linger = plinger;
+            type = ptype;
+            number = pnumber;
+            callback = null;
+            clientData = null;
+            matchString = null;
+        }
+        public PacketHandler(bool plinger,
+            PacketIF.PacketType ptype,
+            int pnumber,
+           PacketIF.PacketHandlerCallback pcallback)
+        {
+            linger = plinger;
+            type = ptype;
+            number = pnumber;
+            callback = pcallback;
+            clientData = null;
+            matchString = null;
+        }
+        public PacketHandler(bool plinger,
+            PacketIF.PacketType ptype,
+            int pnumber,
+            PacketIF.PacketHandlerCallback pcallback,
+            Object pclientData)
+        {
+            linger = plinger;
+            type = ptype;
+            number = pnumber;
+            callback = pcallback;
+            clientData = pclientData;
+            matchString = null;
+        }
+        public PacketHandler(bool plinger,
+            PacketIF.PacketType ptype,
             int pnumber,
             PacketIF.PacketHandlerCallback pcallback,
             Object pclientData,

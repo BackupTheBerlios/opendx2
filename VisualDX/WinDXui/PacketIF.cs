@@ -408,7 +408,7 @@ namespace WinDX.UI
             return (!(stallingWorker == null));
         }
 
-        public void sendPacket(int type, int packetId, String data)
+        public void sendPacket(PacketType type, int packetId, String data)
         {
             if (this.isSocketInputReady() || this.output_queue.Count > 0)
             {
@@ -682,7 +682,7 @@ namespace WinDX.UI
 
             List<String> toks = Utils.StringTokenizer(line, "|", null);
 
-            if (toks.Count != 4)
+            if (toks.Count < 4)
             {
                 ErrorDialog ed = new ErrorDialog();
                 ed.post("Format error encountered in packet.");
@@ -691,12 +691,12 @@ namespace WinDX.UI
 
             id = Convert.ToInt32(toks[0]);
 
-            for (type = 0; i < PacketIF.PacketTypes.Length; type++)
+            for (type = 0; i < PacketTypes.Length; type++)
             {
-                if (toks[1] == PacketIF.PacketTypes[type])
+                if (toks[1] == PacketTypes[type])
                     break;
             }
-            if (type >= PacketIF.PacketTypes.Length)
+            if (type >= PacketTypes.Length)
             {
                 ErrorDialog ed = new ErrorDialog();
                 ed.post("Unknown packet type \"{0}\" encountered", toks[1]);
@@ -705,15 +705,40 @@ namespace WinDX.UI
 
             data_length = Convert.ToInt32(toks[2]);
 
+            // Skip past the fourth vertical bar and extract the data.
+            bool iocerr = false;
+            int ioc = line.IndexOf('|');
+            if (ioc < 0)
+                iocerr = true;
+            ioc = line.IndexOf('|', ioc + 1);
+            if (ioc < 0)
+                iocerr = true;
+            ioc = line.IndexOf('|', ioc + 1);
+            if (ioc < 0)
+                iocerr = true;
+            ioc = line.IndexOf('|', ioc + 1);
+            if (ioc < 0)
+                iocerr = true;
+
+            String data = line.Substring(ioc + 1, data_length);
+
+            if ((line.ToCharArray())[ioc + 1 + data_length + 1] != '|' || iocerr)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Unknown packet type \"{0}\" encountered", toks[1]);
+                return;
+            }
+
+
             if (echoCallback != null)
             {
                 String s = String.Format("Received {0}:{1}: {2}",
-                    PacketIF.PacketTypes[type], id, toks[3]);
+                    PacketIF.PacketTypes[type], id, data);
                 echoCallback(echoClientData, s);
             }
 
             char [] pakws = {' ', ':'};
-            toks[3].TrimStart(pakws);
+            data.TrimStart(pakws);
 
             PacketHandler ph = null;
 
@@ -727,7 +752,7 @@ namespace WinDX.UI
                 if (h.MatchString != null &&
                     ((h.Number == id && ((int) h.Type == type || (int) h.Type == -1)) ||
                     (h.Number == 0 && (int) h.Type == type)) &&
-                    h.match(toks[3]))
+                    h.match(data))
                 {
                     ph = h;
                     break;
@@ -747,7 +772,7 @@ namespace WinDX.UI
                     if (h.MatchString != null &&
                         (((int) h.Type == id && ((int)h.Type == type || (int)h.Type == -1)) ||
                         (h.Number == 0 && (int)h.Type == type)) &&
-                        h.matchFirst(toks[3]))
+                        h.matchFirst(data))
                     {
                         int len = h.MatchString.Length;
                         if (len > longest_match_so_far)
@@ -780,7 +805,7 @@ namespace WinDX.UI
 
             if (ph != null)
             {
-                ph.callCallback(id, toks[3]);
+                ph.callCallback(id, data);
                 if (!ph.Linger)
                 {
                     handlers.Remove(ph);
@@ -947,8 +972,26 @@ namespace WinDX.UI
         //
         protected void _sendBytes(String str)
         {
-            throw new Exception("Not Yet Implemented.");
+            if (socket == null)
+                return;
+
+            try
+            {
+                if (!socket.Poll(10000, SelectMode.SelectWrite))
+                {
+                    handleStreamError("Unable to write to socket.");
+                }
+                socket.Send(Encoding.ASCII.GetBytes(str));
+            }
+            catch (SocketException se)
+            {
+                handleStreamError(se.Message);
+            }
+
+            if (echoCallback != null)
+                echoCallback(echoClientData, str);
         }
+
         protected void _sendImmediate(String str)
         {
             if (socket == null)
@@ -970,7 +1013,7 @@ namespace WinDX.UI
             }
         }
 
-        protected void _sendPacket(int type, int packetId, String data)
+        protected void _sendPacket(PacketType type, int packetId, String data)
         {
             if (socket == null)
                 return;
@@ -978,12 +1021,12 @@ namespace WinDX.UI
             String s;
             if (data.Length > 0)
                 s = String.Format("{0}|{1}|{2}|{3}\n", packetId,
-                PacketIF.PacketTypes[type],
+                PacketIF.PacketTypes[(int)type],
                 data.Length,
                 data);
             else
                 s = String.Format("{0}|{1}|{2}\n", packetId,
-                    PacketIF.PacketTypes[type], 0);
+                    PacketIF.PacketTypes[(int)type], 0);
             try
             {
                 socket.Send(Encoding.ASCII.GetBytes(s));
@@ -996,7 +1039,7 @@ namespace WinDX.UI
             if (echoCallback != null)
             {
                 String echo_string =
-                    String.Format("(0} [{1}]: ", packetId, PacketIF.PacketTypes[type]);
+                    String.Format("(0} [{1}]: ", packetId, PacketIF.PacketTypes[(int)type]);
                 if (data != null && data.Length > 0)
                     echo_string += data + data.Length;
                 echoCallback(echoClientData, echo_string);

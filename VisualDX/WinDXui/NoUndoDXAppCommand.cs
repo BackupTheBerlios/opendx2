@@ -69,7 +69,7 @@ namespace WinDX.UI
                     }
                     break;
                 case DXApplication.CommandType.OpenMessageWindow:
-                    application.getMessageWindow().Show();
+                    application.MessageWindow.Show();
                     ret = true;
                     break;
                 case DXApplication.CommandType.ToggleInfoEnabled:

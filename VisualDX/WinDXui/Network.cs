@@ -268,8 +268,13 @@ namespace WinDX.UI
         //
         public void openColormap(bool openAll) { throw new Exception("Not yet implemented"); }
 
-            public String getNameString() 
-		{ return MainProgram.theSymbolManager.getSymbolString(name); }
+        /// <summary>
+        /// Name of the Network
+        /// </summary>
+        public String NameString
+        {
+            get { return MainProgram.theSymbolManager.getSymbolString(name); }
+        }
 
 
         public void postSaveAsDialog(Form parent, Command cmd)
