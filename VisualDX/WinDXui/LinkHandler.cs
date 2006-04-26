@@ -1,3 +1,5 @@
+// Completed 4/24/2006
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +18,7 @@ namespace WinDX.UI
         public void sendPacket(PacketIF.PacketType packetType, int packetId,
             String data)
         {
-            (this.getPacketIF()).sendPacket(packetType, packetId, data);
+            packetIF.sendPacket(packetType, packetId, data);
         }
 
         public LinkHandler(PacketIF pif)

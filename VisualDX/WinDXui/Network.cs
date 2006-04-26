@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace WinDX.UI
 {
@@ -291,7 +292,19 @@ namespace WinDX.UI
         throw new Exception("Not yet implemented.");
     }
 
+        public bool IsDeleted
+        {
+            get { return deleting; }
+        }
 
+        public bool printNetwork(Stream s, PrintType pt)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+        public bool readNetwork(String filename)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
 
         #endregion
     }

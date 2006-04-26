@@ -1,3 +1,5 @@
+// Completed 4/24/2006
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -32,40 +34,39 @@ namespace WinDX.UI
 
         public QueuedBytes(String data)
         {
-            throw new Exception("Not Yet Implemented.");
+            this.data = data;
         }
 
         public virtual void send(PacketIF pif)
         {
-            throw new Exception("Not Yet Implemented.");
+            pif._sendBytes(data);
         }
     }
 
     class QueuedPacket : QueuedBytes
     {
-        internal int type;
+        internal PacketIF.PacketType type;
         internal int packetId;
 
         public QueuedPacket(PacketIF.PacketType type, int packetId, String data) : base (data)
         {
-            throw new Exception("Not Yet Implemented.");
+            this.type = type;
+            this.packetId = packetId;
         }
 
         public virtual void send(PacketIF pif)
         {
-            throw new Exception("Not Yet Implemented.");
+            pif._sendPacket(type, packetId, data);
         }
     }
 
     class QueuedImmediate : QueuedBytes
     {
         public QueuedImmediate(String data) : base(data)
-        {
-            throw new Exception("Not Yet Implemented.");
-        }
+        { }
         public virtual void send(PacketIF pif)
         {
-            throw new Exception("Not Yet Implemented.");
+            pif._sendImmediate(data);
         }
     }
 }

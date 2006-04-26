@@ -11,7 +11,6 @@ namespace WinDX.UI
         /// </summary>
         private static BaseApplication globalApp;
         private static XmlPreferences globalPrefs;
-        private static SymbolManager globalSymbols;
 
         public static BaseApplication theApplication
         {
@@ -21,11 +20,6 @@ namespace WinDX.UI
         public static XmlPreferences theXmlPreferences
         {
             get { return globalPrefs; }
-        }
-
-        public static SymbolManager theSymbolManager
-        {
-            get { return globalSymbols; }
         }
 	
         /// <summary>

@@ -5,6 +5,66 @@ using System.Diagnostics;
 
 namespace WinDX.UI
 {
+    //
+    // Ennumeration of base types plus six user-definable types.
+    //
+    // NOTE: Each type is a bit flag and some times inherit other
+    //       types by ORing the bit of the inherited types with
+    //       into its bit.
+    //
+    public enum DXTypeVals : long
+    {
+        UndefinedType = 0x00000000,	// undefined
+        IntegerType = 0x00000001,	// integer
+        FlagType = 0x00000003,	// flag   |= integer
+        ScalarType = 0x00000005,	// scalar |= integer
+        VectorType = 0x00000008,	// vector
+        TensorType = 0x00000010,	// tensor
+        ValueType = 0x0000001d,	// value = integer|scalar|vector|tensor
+        StringType = 0x00000020,	// string
+        CameraType = 0x00000040,	// camera
+        LightType = 0x00000080,	// light
+
+        UserType1 = 0x00000100,	// user-defined
+        UserType2 = 0x00000200,	// user-defined
+        WhereType = 0x00000400,	// WHERE parameter
+
+        FieldType = 0x00000800,	// field
+        GeometryFieldType = 0x00001800,	// geometry field |= field
+        ColorFieldType = 0x00002800,	// color field    |= field
+        ScalarFieldType = 0x00004800,	// scalar field   |= field
+        VectorFieldType = 0x00008800,	// vector field   |= field
+        DataFieldType = 0x00010800,	// data field     |= field
+        ImageType = 0x00020800,	// image |= field
+
+        SeriesType = 0x00040800,	// series |= field
+        FieldSeriesType = 0x000c0800,	// field series |= field|series
+
+        GroupType = 0x00100800,	// group |= field
+        ValueGroupType = 0x00300800,	// value group |= group|field
+        ValueListGroupType = 0x00500800,	// value list group |= group|field
+        FieldGroupType = 0x00900800,	// field group
+
+        ListType = 0x01000000,	// list
+        ListTypeMask = 0x0effffff,	// list mask
+        ObjectType = 0x03ffffff,	// object
+        DescriptionType = 0x04000000,	// description
+
+        ValueListType = ValueType | ListType,
+        ScalarListType = ScalarType | ListType,
+        IntegerListType = IntegerType | ListType,
+        FlagListType = FlagType | ListType,
+        TensorListType = TensorType | ListType,
+        VectorListType = VectorType | ListType,
+        StringListType = StringType | ListType,
+
+        ReservedType = 0x08000000,	// RESERVED FOR FUTURE
+
+        UserType4 = 0x10000000,	// user-defined
+        UserType5 = 0x20000000,	// user-defined
+        UserType6 = 0x40000000	// user-defined
+    };
+
     class DXType
     {
         #region structs and enums
@@ -21,66 +81,6 @@ namespace WinDX.UI
                 this.type = type;
             }
         }
-
-        //
-        // Ennumeration of base types plus six user-definable types.
-        //
-        // NOTE: Each type is a bit flag and some times inherit other
-        //       types by ORing the bit of the inherited types with
-        //       into its bit.
-        //
-        public enum DXTypeVals : long
-        {
-            UndefinedType = 0x00000000,	// undefined
-            IntegerType = 0x00000001,	// integer
-            FlagType = 0x00000003,	// flag   |= integer
-            ScalarType = 0x00000005,	// scalar |= integer
-            VectorType = 0x00000008,	// vector
-            TensorType = 0x00000010,	// tensor
-            ValueType = 0x0000001d,	// value = integer|scalar|vector|tensor
-            StringType = 0x00000020,	// string
-            CameraType = 0x00000040,	// camera
-            LightType = 0x00000080,	// light
-
-            UserType1 = 0x00000100,	// user-defined
-            UserType2 = 0x00000200,	// user-defined
-            WhereType = 0x00000400,	// WHERE parameter
-
-            FieldType = 0x00000800,	// field
-            GeometryFieldType = 0x00001800,	// geometry field |= field
-            ColorFieldType = 0x00002800,	// color field    |= field
-            ScalarFieldType = 0x00004800,	// scalar field   |= field
-            VectorFieldType = 0x00008800,	// vector field   |= field
-            DataFieldType = 0x00010800,	// data field     |= field
-            ImageType = 0x00020800,	// image |= field
-
-            SeriesType = 0x00040800,	// series |= field
-            FieldSeriesType = 0x000c0800,	// field series |= field|series
-
-            GroupType = 0x00100800,	// group |= field
-            ValueGroupType = 0x00300800,	// value group |= group|field
-            ValueListGroupType = 0x00500800,	// value list group |= group|field
-            FieldGroupType = 0x00900800,	// field group
-
-            ListType = 0x01000000,	// list
-            ListTypeMask = 0x0effffff,	// list mask
-            ObjectType = 0x03ffffff,	// object
-            DescriptionType = 0x04000000,	// description
-
-            ValueListType = ValueType | ListType,
-            ScalarListType = ScalarType | ListType,
-            IntegerListType = IntegerType | ListType,
-            FlagListType = FlagType | ListType,
-            TensorListType = TensorType | ListType,
-            VectorListType = VectorType | ListType,
-            StringListType = StringType | ListType,
-
-            ReservedType = 0x08000000,	// RESERVED FOR FUTURE
-
-            UserType4 = 0x10000000,	// user-defined
-            UserType5 = 0x20000000,	// user-defined
-            UserType6 = 0x40000000	// user-defined
-        };
 
         #endregion
 
@@ -529,6 +529,15 @@ namespace WinDX.UI
         public static bool operator &(DXType type1, DXType type2)
         {
             return ((type1.type & type2.type) != 0);
+        }
+
+        public DXType duplicate() { return duplicate(null); }
+        public DXType duplicate(DXType newt)
+        {
+            if (newt == null)
+                newt = new DXType();
+            newt = this;
+            return newt;
         }
 
     }

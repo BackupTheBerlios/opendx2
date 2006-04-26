@@ -1,4 +1,5 @@
 // Last Edited 4/03/2006
+// Completed 4/24/2006
 
 using System;
 using System.Collections.Generic;
@@ -324,7 +325,21 @@ namespace WinDX.UI
 
         public void sendBytes(String str)
         {
-            throw new Exception("Not Yet Implemented");
+            // checking the queue size protects us in the case that we've queued
+            // something up but in the meantime, we've emptied the input side
+            // of the socket.
+
+            if (isSocketInputReady() || output_queue.Count > 0)
+            {
+                //
+                // Record our information and queue writing it (via a workproc)
+                //
+                QueuedBytes item = new QueuedBytes(str);
+                output_queue.Add(item);
+                QueuedPacketWP();
+                return;
+            }
+            _sendBytes(str);
         }
         public void sendImmediate(String str)
         {
@@ -970,7 +985,7 @@ namespace WinDX.UI
         //
         // Queue outgoing messages in order to avoid deadlock with dxexec
         //
-        protected void _sendBytes(String str)
+        public void _sendBytes(String str)
         {
             if (socket == null)
                 return;
@@ -992,7 +1007,7 @@ namespace WinDX.UI
                 echoCallback(echoClientData, str);
         }
 
-        protected void _sendImmediate(String str)
+        public void _sendImmediate(String str)
         {
             if (socket == null)
                 return;
@@ -1013,7 +1028,7 @@ namespace WinDX.UI
             }
         }
 
-        protected void _sendPacket(PacketType type, int packetId, String data)
+        public void _sendPacket(PacketType type, int packetId, String data)
         {
             if (socket == null)
                 return;

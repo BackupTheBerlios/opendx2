@@ -661,5 +661,9 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
+        public CommandScope getCommandScope()
+        {
+            throw new Exception("Not Yet Implemented");
+        }
     }
 }

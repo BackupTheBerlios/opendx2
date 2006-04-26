@@ -1,3 +1,5 @@
+// Completed 4/24/2006
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,7 +8,6 @@ namespace WinDX.UI
 {
     class ConfirmedExitCommand : OptionalPreActionCommand
     {
-        private Command command;
         private DXApplication application;
 
         public ConfirmedExitCommand(String name, CommandScope scope,
@@ -38,7 +39,7 @@ namespace WinDX.UI
             {
                 if (net.isMacro() && net.saveToFileRequired())
                 {
-                    cmd = net.getDefinition().getSaveCmd();
+                    cmd = (SaveMacroCommand) net.getDefinition().getSaveCmd();
                     if (first == null)
                         first = cmd;
                     if (last != null)

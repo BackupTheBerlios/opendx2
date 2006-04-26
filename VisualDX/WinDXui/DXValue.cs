@@ -22,7 +22,7 @@ namespace WinDX.UI
         /// <param name="str"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool IsValidValue(String str, DXType.DXTypeVals type) { throw new Exception("not yet implemented"); }
+        public static bool IsValidValue(String str, DXTypeVals type) { throw new Exception("not yet implemented"); }
         public static bool IsValidValue(String str, DXType type)
         {
             Debug.Assert(str != null);
@@ -41,7 +41,7 @@ namespace WinDX.UI
         /// <param name="val"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static String CoerceValue(String val, DXType.DXTypeVals type)
+        public static String CoerceValue(String val, DXTypeVals type)
         { throw new Exception("Not yet implemented."); }
 
         /// <summary>
@@ -61,9 +61,9 @@ namespace WinDX.UI
         /// <param name="listtype"></param>
         /// <param name="buf"></param>
         /// <returns></returns>
-        public static String NextListItem(String s, ref int index, DXType.DXTypeVals listtype,
+        public static String NextListItem(String s, ref int index, DXTypeVals listtype,
             ref String buf) { throw new Exception("Not yet implemented"); }
-        public static String NextListItem(String s, ref int index, DXType.DXTypeVals listtype)
+        public static String NextListItem(String s, ref int index, DXTypeVals listtype)
         {
             String tmp = null;
             return NextListItem(s, ref index, listtype, ref tmp);
@@ -90,7 +90,7 @@ namespace WinDX.UI
         /// <param name="position"></param>
         /// <returns></returns>
         public static String ReplaceListItem(String list, String item,
-            DXType.DXTypeVals listtype, int position)
+            DXTypeVals listtype, int position)
         { throw new Exception("Not yet implemented"); }
 
 
@@ -104,7 +104,7 @@ namespace WinDX.UI
         /// <param name="?"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        public static String DeleteListItem(String list, DXType.DXTypeVals listtype, int position)
+        public static String DeleteListItem(String list, DXTypeVals listtype, int position)
         { throw new Exception("Not yet implemented"); }
 
 
@@ -117,7 +117,7 @@ namespace WinDX.UI
         /// <param name="index"></param>
         /// <param name="listtype"></param>
         /// <returns></returns>
-        public static String GetListItem(String list, int index, DXType.DXTypeVals listtype)
+        public static String GetListItem(String list, int index, DXTypeVals listtype)
         { throw new Exception("Not yet implemented"); }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace WinDX.UI
         /// <param name="list"></param>
         /// <param name="listtype"></param>
         /// <returns></returns>
-        public static int GetListItemCount(String list, DXType.DXTypeVals listtype)
+        public static int GetListItemCount(String list, DXTypeVals listtype)
         { throw new Exception("Not yet implemented"); }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace WinDX.UI
         /// <param name="maxs"></param>
         /// <param name="clampedval"></param>
         /// <returns></returns>
-        public static bool ClampVSIValue(String val, DXType.DXTypeVals valtype, ref double mins,
+        public static bool ClampVSIValue(String val, DXTypeVals valtype, ref double mins,
             ref double maxs, ref String clampedval)
         { throw new Exception("Not yet implemented"); }
 
@@ -182,7 +182,7 @@ namespace WinDX.UI
         /// <param name="data"></param>
         /// <param name="tuple"></param>
         /// <returns></returns>
-        public static int GetDoublesFromList(String list, DXType.DXTypeVals listtype,
+        public static int GetDoublesFromList(String list, DXTypeVals listtype,
             ref double[] data, ref int tuple)
         { throw new Exception("Not yet implemented"); }
 
@@ -228,7 +228,7 @@ namespace WinDX.UI
         /// <param name="str"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public bool setValue(String str, DXType.DXTypeVals type)
+        public bool setValue(String str, DXTypeVals type)
         { throw new Exception("Not yet implemented"); }
 
         public bool setValue(String str, DXType type)

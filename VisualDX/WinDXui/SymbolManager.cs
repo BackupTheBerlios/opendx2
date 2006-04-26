@@ -1,3 +1,5 @@
+// Completed
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -57,7 +59,7 @@ namespace WinDX
         /// class already implements a unique GetHashCode, this should be pretty
         /// straight forward.
         /// </summary>
-        class SymbolManager
+        public class SymbolManager
         {
             private Hashtable ht;
 
@@ -83,6 +85,10 @@ namespace WinDX
                 }
                 return null;
             }
+
+            public static SymbolManager theSymbolManager = null;
         }
+
+   
     }
 }

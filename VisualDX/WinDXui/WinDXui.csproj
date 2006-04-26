@@ -40,6 +40,8 @@
   <ItemGroup>
     <Compile Include="AccessNetworkPanelsCommand.cs" />
     <Compile Include="ApplicIF.cs" />
+    <Compile Include="Ark.cs" />
+    <Compile Include="ArkStandIn.cs" />
     <Compile Include="BaseApplication.cs">
     </Compile>
     <Compile Include="Client.cs" />
@@ -48,6 +50,12 @@
     <Compile Include="CommandInterface.cs">
     </Compile>
     <Compile Include="CommandScope.cs" />
+    <Compile Include="ConfigurationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigurationDialog.Designer.cs">
+      <DependentUpon>ConfigurationDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConfirmedCommand.cs" />
     <Compile Include="ConfirmedExitCommand.cs" />
     <Compile Include="ConfirmedQuitCommand.cs" />
@@ -80,6 +88,7 @@
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GroupedObject.cs" />
     <Compile Include="GroupManager.cs" />
     <Compile Include="HelpMenuCommand.cs" />
     <Compile Include="ImageWindow.cs">
@@ -90,6 +99,7 @@
     </Compile>
     <Compile Include="LinkHandler.cs" />
     <Compile Include="MacroDefinition.cs" />
+    <Compile Include="MacroNode.cs" />
     <Compile Include="MsgWin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,6 +118,7 @@
     <Compile Include="PacketIF.cs" />
     <Compile Include="PanelAccessManager.cs" />
     <Compile Include="PanelGroupManager.cs" />
+    <Compile Include="Parameter.cs" />
     <Compile Include="ParameterDefinition.cs" />
     <Compile Include="PreActionCommand.cs" />
     <Compile Include="ProcessGroupManager.cs" />
@@ -157,6 +168,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Server.cs" />
+    <Compile Include="StandIn.cs" />
     <Compile Include="SymbolManager.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="TimedDialog.cs">

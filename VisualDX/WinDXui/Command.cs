@@ -1,3 +1,5 @@
+// Completed 4/24/2006
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -41,16 +43,16 @@ namespace WinDX.UI
 
             if (!CommandClassInitialized)
             {
-                if (MainProgram.theSymbolManager == null)
+                if (SymbolManager.theSymbolManager == null)
                 {
                     throw new Exception("theSymbolManager not initialized");
                 }
 
-                MsgActivate = MainProgram.theSymbolManager.registerSymbol("Activate");
-                MsgDeactivate = MainProgram.theSymbolManager.registerSymbol("Deactivate");
-                MsgDisassociate = MainProgram.theSymbolManager.registerSymbol("Disassociate");
-                MsgBeginExecuting = MainProgram.theSymbolManager.registerSymbol("BeginExecuting");
-                MsgEndExecuting = MainProgram.theSymbolManager.registerSymbol("EndExecuting");
+                MsgActivate = SymbolManager.theSymbolManager.registerSymbol("Activate");
+                MsgDeactivate = SymbolManager.theSymbolManager.registerSymbol("Deactivate");
+                MsgDisassociate = SymbolManager.theSymbolManager.registerSymbol("Disassociate");
+                MsgBeginExecuting = SymbolManager.theSymbolManager.registerSymbol("BeginExecuting");
+                MsgEndExecuting = SymbolManager.theSymbolManager.registerSymbol("EndExecuting");
 
                 CommandClassInitialized = true;
             }
@@ -76,6 +78,61 @@ namespace WinDX.UI
                 scopeList.Add(scope);
             }
 
+        }
+
+        ~Command()
+        {
+            if (autoActivators != null && autoActivators.Count > 0)
+            {
+                //
+                // Let all the commands that auto-de/activated this command know that
+                // this command is going away.  Slurp the list items out of the
+                // autoActivators list because, so that we don't have to directly
+                // iterate over the autoActivators list when calling removeAutoCmd()
+                // which will change the autoActivators list.
+                //
+
+                Command[] cmds = new Command[autoActivators.Count];
+                int i = 0; int length = autoActivators.Count;
+                foreach (Command cmd in autoActivators)
+                {
+                    cmds[i] = cmd;
+                    i++;
+                }
+                for (i = 0; i < length; i++)
+                {
+                    cmds[i].removeAutoCmd(this);
+                }
+            }
+            if (activateCmds != null && activateCmds.Count > 0)
+            {
+                Command[] cmds = new Command[activateCmds.Count];
+                int i = 0; int length = activateCmds.Count;
+                foreach (Command cmd in activateCmds)
+                {
+                    cmds[i] = cmd;
+                    i++;
+                }
+                for (i = 0; i < length; i++)
+                {
+                    this.removeAutoCmd(cmds[i]);
+                }
+
+            }
+            if (deactivateCmds != null && deactivateCmds.Count > 0)
+            {
+                Command[] cmds = new Command[deactivateCmds.Count];
+                int i = 0; int length = deactivateCmds.Count;
+                foreach (Command cmd in deactivateCmds)
+                {
+                    cmds[i] = cmd;
+                    i++;
+                }
+                for (i = 0; i < length; i++)
+                {
+                    this.removeAutoCmd(cmds[i]);
+                }
+            }
         }
 
         public virtual bool registerClient(IClient DXinterface)
@@ -230,6 +287,14 @@ namespace WinDX.UI
             c.removeActivator(this);
         }
 
+        public void removeAutoCmd(Command c)
+        {
+            activateCmds.Remove(c);
+            deactivateCmds.Remove(c);
+
+            c.removeActivator(this);
+        }
+
         public void addActivator(Command c)
         {
             autoActivators.Add(c);
@@ -240,19 +305,19 @@ namespace WinDX.UI
             autoActivators.Remove(c);
         }
 
-        public bool isActive()
+        public bool IsActive
         {
-            return active;
+            get { return active; }
         }
 
-        public bool canUndo()
+        public bool CanUndo
         {
-            return hasUndo;
+            get { return hasUndo; }
         }
 
-        public String getName()
+        public String Name
         {
-            return name;
+            get { return name; }
         }
 
         public abstract bool doIt(CommandInterface ci);

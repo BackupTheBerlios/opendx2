@@ -1,3 +1,5 @@
+// Completed 4/24/2006
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,8 +21,8 @@ namespace WinDX.UI
 
         public override bool doIt(CommandInterface ci)
         {
-            String message = "Do you want to save macro " + md.body.NameString;
-            message += " as file: " + md.fileName;
+            String message = "Do you want to save macro " + md.getNetwork().NameString;
+            message += " as file: " + md.FileName;
 
             QuestionDialog qd = new QuestionDialog();
             qd.modalPost(
@@ -36,7 +38,7 @@ namespace WinDX.UI
 
         private void SaveMacro(Object sender, System.EventArgs e)
         {
-            this.md.body.saveNetwork(this.md.fileName);
+            this.md.getNetwork().saveNetwork(this.md.FileName);
             if (this.next != null)
                 this.next.execute();
         }
