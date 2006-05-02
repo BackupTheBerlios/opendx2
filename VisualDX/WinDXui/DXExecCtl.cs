@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class DXExecCtl
+    public class DXExecCtl
     {
         #region Private member data
         static void BGBeginMessage(Object clientData, int id, Object p)

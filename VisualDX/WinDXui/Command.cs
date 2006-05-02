@@ -11,7 +11,7 @@ namespace WinDX.UI
     /// <summary>
     /// I've worked through this one.
     /// </summary>
-    abstract class Command
+    public abstract class Command
     {
         private static readonly bool CommandClassInitialized;
         private String name;

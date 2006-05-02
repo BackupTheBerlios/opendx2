@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace WinDX.UI
 {
-    class ApplicIF : PacketIF
+    public class ApplicIF : PacketIF
     {
         #region protected Methods
 

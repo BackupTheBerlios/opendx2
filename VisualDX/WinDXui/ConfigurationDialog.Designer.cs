@@ -1,4 +1,4 @@
-namespace WinDXui
+namespace WinDX.UI
 {
     partial class ConfigurationDialog
     {

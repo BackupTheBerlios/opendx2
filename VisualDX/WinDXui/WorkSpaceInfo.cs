@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class WorkSpaceInfo
+    public class WorkSpaceInfo
     {
     }
 }

@@ -11,7 +11,7 @@ namespace WinDX.UI
     /// Class completed
     /// The Interface to commands.
     /// </summary>
-    class CommandInterface : IClient
+    public class CommandInterface : IClient
     {
         protected Command command;
         private Object localData;

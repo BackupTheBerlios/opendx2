@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class Ark
+    public class Ark
     {
         private Node from;
         private int fromParameter;

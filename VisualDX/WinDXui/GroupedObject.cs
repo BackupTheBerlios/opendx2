@@ -5,7 +5,7 @@ using System.IO;
 
 namespace WinDX.UI
 {
-    interface IGroupedObject
+    public interface IGroupedObject
     {
         void addToGroup(String group, Symbol groupID);
         String getGroupName(Symbol groupID);

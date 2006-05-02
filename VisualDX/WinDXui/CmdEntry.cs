@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace WinDX.UI
 {
-    class CmdEntry
+    public class CmdEntry
     {
         public delegate bool CmdEntryFunction(String str, int id, Object clientData);
 

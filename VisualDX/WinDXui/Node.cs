@@ -5,7 +5,7 @@ using System.IO;
 
 namespace WinDX.UI
 {
-    class Node : IGroupedObject
+    public class Node : IGroupedObject
     {
         public enum NodeParameterStatusChange {
             ParameterValueChanged = 0x100000,
@@ -135,22 +135,22 @@ namespace WinDX.UI
         /// <param name="send"></param>
         /// <param name="notify"></param>
         /// <returns></returns>
-        private DXTypeVals setIOValue(List<Parameter> io, int index,
+        private DXTypeVals setIOValue(ref List<Parameter> io, int index,
             String value)
         {
-            return setIOValue(io, index, value, DXTypeVals.UndefinedType, true, true);
+            return setIOValue(ref io, index, value, DXTypeVals.UndefinedType, true, true);
         }
-        private DXTypeVals setIOValue(List<Parameter> io, int index,
+        private DXTypeVals setIOValue(ref List<Parameter> io, int index,
             String value, DXTypeVals t)
         {
-            return setIOValue(io, index, value, t, true, true);
+            return setIOValue(ref io, index, value, t, true, true);
         }
-        private DXTypeVals setIOValue(List<Parameter> io, int index,
+        private DXTypeVals setIOValue(ref List<Parameter> io, int index,
             String value, DXTypeVals t, bool send)
         {
-            return setIOValue(io, index, value, t, send, true);
+            return setIOValue(ref io, index, value, t, send, true);
         }
-        private DXTypeVals setIOValue(List<Parameter> io, int index,
+        private DXTypeVals setIOValue(ref List<Parameter> io, int index,
             String value, DXTypeVals t, bool send, bool notify)
         {
             throw new Exception("Not Yet Implemented");
@@ -165,12 +165,12 @@ namespace WinDX.UI
         /// <param name="value"></param>
         /// <param name="t"></param>
         /// <returns></returns>
-        private DXTypeVals setIOValueQuietly(List<Parameter> io, int index,
+        private DXTypeVals setIOValueQuietly(ref List<Parameter> io, int index,
             String value)
         {
-            return setIOValueQuietly(io, index, value, DXTypeVals.UndefinedType);
+            return setIOValueQuietly(ref io, index, value, DXTypeVals.UndefinedType);
         }
-        private DXTypeVals setIOValueQuietly(List<Parameter> io, int index,
+        private DXTypeVals setIOValueQuietly(ref List<Parameter> io, int index,
             String value, DXTypeVals t)
         {
             throw new Exception("Not Yet Implemented");
@@ -182,7 +182,7 @@ namespace WinDX.UI
         /// <param name="io"></param>
         /// <param name="index"></param>
         /// <param name="dirty"></param>
-        private void setIODirty(List<Parameter> io, int index, bool dirty)
+        private void setIODirty(ref List<Parameter> io, int index, bool dirty)
         {
             throw new Exception("Not Yet Implemented");
         }
@@ -543,7 +543,7 @@ namespace WinDX.UI
         protected virtual bool parseIOComment(bool input, String comment,
             String filename, int lineno)
         {
-            parseIOComment(input, comment, filename, lineno, false);
+            return parseIOComment(input, comment, filename, lineno, false);
         }
         protected virtual bool parseIOComment(bool input, String comment, 
             String filename, int lineno, bool valueOnly)
@@ -638,12 +638,12 @@ namespace WinDX.UI
         protected void setIODefaultingStatus(int index, bool input,
             bool defaulting)
         {
-            return setIODefaultingStatus(index, input, defaulting, true, true);
+            setIODefaultingStatus(index, input, defaulting, true, true);
         }
         protected void setIODefaultingStatus(int index, bool input,
             bool defaulting, bool send)
         {
-            return setIODefaultingStatus(index, input, defaulting, send, true);
+            setIODefaultingStatus(index, input, defaulting, send, true);
         }
         protected void setIODefaultingStatus(int index, bool input,
             bool defaulting, bool send, bool notify)
@@ -707,12 +707,12 @@ namespace WinDX.UI
         }
         protected virtual bool printIOComment(Stream s, bool input, int index)
         {
-            printIOComment(s, input, index, null, false);
+            return printIOComment(s, input, index, null, false);
         }
         protected virtual bool printIOComment(Stream s, bool input, int index,
             String indent)
         {
-            printIOComment(s, input, index, indent, false);
+            return printIOComment(s, input, index, indent, false);
         }
         protected virtual bool printIOComment(Stream s, bool input, int index,
             String indent, bool valueOnly)
@@ -979,8 +979,6 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
-        public Network getNetwork() { return network; }
-
         // Manage inputs
         public bool addInputArk(Ark a, int index)
         {
@@ -1069,6 +1067,165 @@ namespace WinDX.UI
         }
 
 
+        public String getInputDescription(int index)
+        {
+            return getIODescription(inputParameters, index);
+        }
+        public String getOutputDescription(int index)
+        {
+            return getIODescription(outputParameters, index);
+        }
+
+        public String getInputDefaultValueString(int index)
+        {
+            return getIODefaultValueString(inputParameters, index);
+        }
+
+        public String getInputSetValueString(int index)
+        {
+            return getIOSetValueString(inputParameters, index);
+        }
+
+        public bool isInputRequired(int index)
+        {
+            return isIORequired(inputParameters, index);
+        }
+        public bool isOutputRequired(int index)
+        {
+            return isIORequired(outputParameters, index);
+        }
+
+        public bool isInputConnected(int index)
+        {
+            return isIOConnected(inputParameters, index);
+        }
+        public bool isOutputConnected(int index)
+        {
+            return isIOConnected(outputParameters, index);
+        }
+        public bool isParameterConnected(int index, bool input)
+        {
+            return (input ? isIOConnected(inputParameters, index) :
+                isIOConnected(outputParameters, index));
+        }
+
+        public void setInputVisibility(int index, bool v)
+        {
+            setIOVisibility(inputParameters, index, v);
+        }
+        public void setOutputVisibility(int index, bool v)
+        {
+            setIOVisibility(outputParameters, index, v);
+        }
+
+        public void setAllInputsVisibility(bool v)
+        {
+            setAllIOVisibility(inputParameters, v);
+        }
+        public void setAllOutputsVisibility(bool v)
+        {
+            setAllIOVisibility(outputParameters, v);
+        }
+
+        public void clearInputDirty(int index)
+        {
+            setIODirty(ref inputParameters, index, false);
+        }
+        public void setInputDirty(int index)
+        {
+            setIODirty(ref inputParameters, index, true);
+        }
+        public void clearOutputDirty(int index)
+        {
+            setIODirty(ref outputParameters, index, false);
+        }
+        public void setOutputDirty(int index)
+        {
+            setIODirty(ref outputParameters, index, true);
+        }
+
+        public bool isInputVisible(int index)
+        { return isIOVisible(inputParameters, index); }
+        public bool isOutputVisible(int index)
+        { return isIOVisible(outputParameters, index); }
+        public bool isParameterVisible(int index, bool input)
+        {
+            return (input ? isInputVisible(index) : isOutputVisible(index));
+        }
+
+        public bool isInputViewable(int index)
+        {
+            return isIOViewable(inputParameters, index);
+        }
+        public bool isOutputViewable(int index)
+        {
+            return isIOViewable(outputParameters, index);
+        }
+        public bool isParameterViewable(int index, bool input)
+        {
+            return (input ? isInputViewable(index) : isOutputViewable(index));
+        }
+
+        public Cacheability getOutputCacheability(int index)
+        {
+            return getIOCacheability(outputParameters, index);
+        }
+        public void setOutputCacheability(int index, Cacheability c)
+        {
+            setIOCacheability(outputParameters, index, c);
+        }
+        public bool isOutputCacheabilityWriteable(int index)
+        {
+            return isIOCacheabilityWriteable(outputParameters, index);
+        }
+
+        public bool isInputDefaulting(int index)
+        { return isIODefaulting(inputParameters, index); }
+
+        public bool isInputSet(int index)
+        { return isIOSet(inputParameters, index); }
+
+
+        // Match output_index of this node tho input_index of n. Returns true
+        // if they can connect.
+        public virtual bool typeMatchOutputToInput(int output_index, Node n, int input_index)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        // Set the stored value.
+        // If the parameter is not defaulting, this is
+        // the same as setValue, but if it is defaulting, then we set the
+        // value but leave the parameter clean and defaulting and ignore send.
+        public virtual DXTypeVals setInputSetValue(int index, String value)
+        {
+            return setInputSetValue(index, value, DXTypeVals.UndefinedType, true);
+        }
+        public virtual DXTypeVals setInputSetValue(int index, String value, DXTypeVals type)
+        {
+            return setInputSetValue(index, value, type, true);
+        }
+        public virtual DXTypeVals setInputSetValue(int index, String value, DXTypeVals type,
+            bool send)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        public virtual DXTypeVals setInputValue(int index, String value)
+        {
+            return setInputValue(index, value, DXTypeVals.UndefinedType, true);
+        }
+        public virtual DXTypeVals setInputValue(int index, String value, DXTypeVals type)
+        {
+            return setInputValue(index, value, type, true);
+        }
+        public virtual DXTypeVals setInputValue(int index, String value, DXTypeVals type,
+            bool send)
+        {
+            return setIOValue(ref inputParameters, index, value, type, send);
+        }
+
+
 
         #endregion 
 
@@ -1111,7 +1268,42 @@ namespace WinDX.UI
             get { return definition.OutputRepeatCount; }
         }
 
+        public bool HasWriteableCachebility
+        {
+            get { return definition.HasWriteableCacheability; }
+        }
+
         #endregion 
+
+        #region IGroupedObject
+
+        public void addToGroup(String group, Symbol groupID)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+        public String getGroupName(Symbol groupID)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+        public Network getNetwork() { return network; }
+
+        public bool parseGroupComment(String comment, String filename, int lineno)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+        public bool printGroupComment(Stream s)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+        public void setGroupName(GroupRecord gr, Symbol groupID)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        protected Dictionary<Symbol, GroupRecord> group;
+
+        #endregion
+
 
     }
 }

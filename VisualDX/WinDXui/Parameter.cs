@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class Parameter
+    public class Parameter
     {
         private ParameterDefinition definition;
         private DXValue value;

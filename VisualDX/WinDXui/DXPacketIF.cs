@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace WinDX.UI
 {
-    class DXPacketIF : PacketIF
+    public class DXPacketIF : PacketIF
     {
         protected int id;
 

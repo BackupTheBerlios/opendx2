@@ -21,7 +21,7 @@ namespace WinDX.UI
         Nothing
     };
 
-    class SequencerNode
+    public class SequencerNode
     {
 
         #region Private Instance Variables

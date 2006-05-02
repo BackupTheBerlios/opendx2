@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class PacketHandler
+    public class PacketHandler
     {
         private bool linger;
         private PacketIF.PacketType type;

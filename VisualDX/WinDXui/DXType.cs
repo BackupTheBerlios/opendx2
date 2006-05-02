@@ -65,7 +65,7 @@ namespace WinDX.UI
         UserType6 = 0x40000000	// user-defined
     };
 
-    class DXType
+    public class DXType
     {
         #region structs and enums
         public struct DXTypeName
@@ -511,6 +511,17 @@ namespace WinDX.UI
         /// <param name="type1"></param>
         /// <param name="type2"></param>
         /// <returns></returns>
+
+        public override bool Equals(Object obj)
+        {
+            if (obj != null && obj is DXType)
+                return this.type == ((DXType)obj).type;
+            return false;
+        }
+        public static bool Equals(DXType type1, DXType type2)
+        {
+            return type1.type == type2.type;
+        }
         public static bool operator ==(DXType type1, DXType type2)
         {
             return type1.type == type2.type;

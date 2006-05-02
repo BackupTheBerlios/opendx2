@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace WinDX.UI
 {
-    class ParameterDefinition : Definition
+    public class ParameterDefinition : Definition
     {
         private List<DXType> types;
         private String[] typeStrings; // If !null, contains type names

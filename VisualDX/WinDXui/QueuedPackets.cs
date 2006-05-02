@@ -28,7 +28,7 @@ namespace WinDX.UI
     //
     // Store raw data.  These bytes will be sent unformatted.
     //
-    class QueuedBytes
+    public class QueuedBytes
     {
         internal String data;
 
@@ -43,7 +43,7 @@ namespace WinDX.UI
         }
     }
 
-    class QueuedPacket : QueuedBytes
+    public class QueuedPacket : QueuedBytes
     {
         internal PacketIF.PacketType type;
         internal int packetId;
@@ -54,17 +54,17 @@ namespace WinDX.UI
             this.packetId = packetId;
         }
 
-        public virtual void send(PacketIF pif)
+        public override void send(PacketIF pif)
         {
             pif._sendPacket(type, packetId, data);
         }
     }
 
-    class QueuedImmediate : QueuedBytes
+    public class QueuedImmediate : QueuedBytes
     {
         public QueuedImmediate(String data) : base(data)
         { }
-        public virtual void send(PacketIF pif)
+        public override void send(PacketIF pif)
         {
             pif._sendImmediate(data);
         }

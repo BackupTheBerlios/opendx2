@@ -16,7 +16,7 @@ namespace WinDX.UI
             newhost = null;
         }
 
-        public virtual bool changesWhere() { return true; }
+        public override bool changesWhere() { return true; }
     }
 
     class ProcessHostRecord
@@ -76,6 +76,7 @@ namespace WinDX.UI
 
 
         public ProcessGroupManager(Network net)
+            : base(net, SymbolManager.theSymbolManager.registerSymbol(ProcessGroup))
         {
             throw new Exception("Not yet implemented");
         }
@@ -88,7 +89,7 @@ namespace WinDX.UI
             DETACH
         };
 
-        public virtual void clear()
+        public override void clear()
         {
             throw new Exception("Not yet implemented");
         }
@@ -186,9 +187,11 @@ namespace WinDX.UI
         /// <param name="name"></param>
         /// <param name="net"></param>
         /// <returns></returns>
-        public virtual bool removeGroup(String name, Network net)
+        public override bool removeGroup(String name, Network net)
         {
-            throw new Exception("Not yet implemented");
+            bool ret = base.removeGroup(name, net);
+            removeGroupAssignment(name);
+            return ret;
         }
 
         /// <summary>

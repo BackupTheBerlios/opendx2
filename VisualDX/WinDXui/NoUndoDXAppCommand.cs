@@ -75,13 +75,13 @@ namespace WinDX.UI
                     ret = true;
                     break;
                 case DXApplication.CommandType.ToggleInfoEnabled:
-                    application.enableInfo(application.isInfoEnabled());
+                    application.enableInfo(application.IsInfoEnabled);
                     break;
                 case DXApplication.CommandType.ToggleWarningEnabled:
-                    application.enableWarning(application.isWarningEnabled());
+                    application.enableWarning(application.IsWarningEnabled);
                     break;
                 case DXApplication.CommandType.ToggleErrorEnabled:
-                    application.enableError(application.isErrorEnabled());
+                    application.enableError(application.IsErrorEnabled);
                     break;
                 case DXApplication.CommandType.LoadUserMDF:
                     application.postLoadMDFDialog();

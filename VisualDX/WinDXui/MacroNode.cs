@@ -4,25 +4,26 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class MacroNode : Node
+    public class MacroNode : Node
     {
         public MacroNode(NodeDefinition nd, Network net, int instnc)
+            : base(nd, net, instnc)
         {
             throw new Exception("Not yet implemented.");
         }
 
-        public virtual void updateDefinition()
+        public override void updateDefinition()
         {
             throw new Exception("Not yet implemented.");
         }
 
-        public virtual bool initialize()
+        public override bool initialize()
         {
             throw new Exception("Not yet implemented.");
         }
         public virtual bool sendValues()
         {
-            sendValues(true);
+            return sendValues(true);
         }
         public virtual bool sendValues(bool ignoreDirty)
         {

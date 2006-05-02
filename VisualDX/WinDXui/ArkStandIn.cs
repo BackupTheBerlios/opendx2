@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class ArkStandIn
+    public class ArkStandIn
     {
         // Not yet implemented.
     }

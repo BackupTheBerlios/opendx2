@@ -5,7 +5,7 @@ using System.IO;
 
 namespace WinDX.UI
 {
-    class GroupRecord
+    public class GroupRecord
     {
         private Network network;
         private bool dirty;
@@ -39,7 +39,7 @@ namespace WinDX.UI
         }
     }
 
-    abstract class GroupManager
+    public abstract class GroupManager
     {
         protected bool dirty;
         protected Dictionary<String, GroupRecord> groups;
@@ -143,7 +143,7 @@ namespace WinDX.UI
         /// <param name="name"></param>
         /// <param name="net"></param>
         /// <returns></returns>
-        public bool removeGroup(String name, Network net)
+        public virtual bool removeGroup(String name, Network net)
         {
             throw new Exception("Not yet implemented.");
         }

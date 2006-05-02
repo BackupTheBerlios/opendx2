@@ -4,420 +4,305 @@ using System.Text;
 using System.Xml;
 using System.Diagnostics;
 
-namespace WinDX
+namespace WinDX.UI
 {
-    namespace UI
+    public class XmlPreferences
     {
-        public class XmlPreferences
+        public enum PrefType { TypeString, TypeInt, TypeBool, TypeFloat };
+
+        private XmlDocument prefs;
+        private bool fileExisted = false;
+        private XmlNode root = null;
+
+        public XmlPreferences()
         {
-            public enum PrefType { TypeString, TypeInt, TypeBool, TypeFloat };
+            prefs = new XmlDocument();
+        }
 
-            private XmlDocument prefs;
-            private bool fileExisted = false;
-            private XmlNode root = null;
+        public bool ReadPrefs(String filename)
+        {
+            XmlTextReader reader = new XmlTextReader(filename);
 
-            public XmlPreferences()
+            if (reader == null)
             {
-                prefs = new XmlDocument();
+                return false;
+            }
+            try
+            {
+                prefs.Load(reader);
+                fileExisted = true;
+            }
+            catch (XmlException e)
+            {
+                Console.WriteLine("Corrupted prefs file--try deleting");
             }
 
-            public bool ReadPrefs(String filename)
+            reader.Close();
+            root = prefs.SelectSingleNode("PREFS");
+            if (root != null)
             {
-                XmlTextReader reader = new XmlTextReader(filename);
+                XmlElement elem = prefs.CreateElement("PREFS");
+                prefs.AppendChild(elem);
+                root = elem;
+            }
+            return fileExisted;
+        }
 
-                if (reader == null)
-                {
+        public bool CreatePrefs()
+        {
+            Debug.Assert(prefs != null);
+            try
+            {
+                XmlElement elem = prefs.CreateElement("PREFS");
+                prefs.AppendChild(elem);
+                root = elem;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool WritePrefs(String filename)
+        {
+            fileExisted = false;
+
+            // Find only Persistent nodes and write them out to the prefs
+            // file. This is done by creating a new XmlDocument, importing
+            // appropriate nodes and adding them before writing.
+
+            try
+            {
+                String lookup = "DXUIPREF[@Persistent='true']";
+                XmlNodeList nl = root.SelectNodes(lookup);
+
+                XmlDocument doc = new XmlDocument();
+                XmlElement elem = doc.CreateElement("PREFS");
+                for (int i = 0; i < nl.Count; i++)
+                    elem.AppendChild(doc.ImportNode(nl.Item(i), true));
+
+                doc.Save(filename);
+                fileExisted = true;
+            }
+            catch (XmlException e)
+            {
+                Console.WriteLine("Couldn't write file--check permissions.");
+            }
+            return fileExisted;
+        }
+
+        public bool GetPref(String prefName, out String value)
+        {
+            value = "";
+            if (prefs == null)
+                return false;
+
+            // Xml is in the form.
+            //<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
+            //<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
+
+            String lookup = "DXUIPREF[@Name='";
+            lookup += prefName;
+            lookup += "']";
+
+            String val = null;
+
+            try
+            {
+                XmlNode n = root.SelectSingleNode(lookup);
+
+                if (n == null)
                     return false;
-                }
-                try
-                {
-                    prefs.Load(reader);
-                    fileExisted = true;
-                }
-                catch (XmlException e)
-                {
-                    Console.WriteLine("Corrupted prefs file--try deleting");
-                }
 
-                reader.Close();
-                root = prefs.SelectSingleNode("PREFS");
-                if (root != null)
-                {
-                    XmlElement elem = prefs.CreateElement("PREFS");
-                    prefs.AppendChild(elem);
-                    root = elem;
-                }
-                return fileExisted;
+                XmlNode n2 = n.SelectSingleNode("VALUE");
+                val = n2.InnerText;
+            }
+            catch (XmlException e)
+            {
+                Console.WriteLine("Corrupted prefs file--try deleting it");
             }
 
-            public bool CreatePrefs()
+            if (val.Length == 0)
             {
-                Debug.Assert(prefs != null);
-                try
-                {
-                    XmlElement elem = prefs.CreateElement("PREFS");
-                    prefs.AppendChild(elem);
-                    root = elem;
-                }
-                catch (Exception e)
-                {
-                    return false;
-                }
+                value = null;
                 return true;
             }
+            value = val;
+            return true;
+        }
 
-            public bool WritePrefs(String filename)
+        public bool GetPref(String prefName, out bool value)
+        {
+            value = false;
+            if (prefs == null)
+                return false;
+
+            // Xml is in the form.
+            //<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
+            //<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
+
+            String lookup = "DXUIPREF[@Name='";
+            lookup += prefName;
+            lookup += "']";
+
+            String val = null;
+
+            try
             {
-                fileExisted = false;
+                XmlNode n = root.SelectSingleNode(lookup);
 
-                // Find only Persistent nodes and write them out to the prefs
-	            // file. This is done by creating a new XmlDocument, importing
-	            // appropriate nodes and adding them before writing.
-
-                try
-                {
-                    String lookup = "DXUIPREF[@Persistent='true']";
-                    XmlNodeList nl = root.SelectNodes(lookup);
-
-                    XmlDocument doc = new XmlDocument();
-                    XmlElement elem = doc.CreateElement("PREFS");
-                    for (int i = 0; i < nl.Count; i++)
-                        elem.AppendChild(doc.ImportNode(nl.Item(i), true));
-
-                    doc.Save(filename);
-                    fileExisted = true;
-                }
-                catch (XmlException e)
-                {
-                    Console.WriteLine("Couldn't write file--check permissions.");
-                }
-                return fileExisted;
-            }
-
-            public bool GetPref(String prefName, out String value)
-            {
-                value = "";
-                if (prefs == null)
+                if (n == null)
                     return false;
 
-                // Xml is in the form.
-                //<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
-                //<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
-
-                String lookup = "DXUIPREF[@Name='";
-                lookup += prefName;
-                lookup += "']";
-
-                String val = null;
-
-                try
-                {
-                    XmlNode n = root.SelectSingleNode(lookup);
-
-                    if (n == null)
-                        return false;
-
-                    XmlNode n2 = n.SelectSingleNode("VALUE");
-                    val = n2.InnerText;
-                }
-                catch (XmlException e)
-                {
-                    Console.WriteLine("Corrupted prefs file--try deleting it");
-                }
-
-                if (val.Length == 0)
-                {
-                    value = null;
-                    return true;
-                }
-                value = val;
-                return true;
+                XmlNode n2 = n.SelectSingleNode("VALUE");
+                val = n2.InnerText;
+            }
+            catch (XmlException e)
+            {
+                Console.WriteLine("Corrupted prefs file--try deleting it");
             }
 
-            public bool GetPref(String prefName, out bool value)
-            {
+            if (val.CompareTo("true") == 0)
+                value = true;
+            else
                 value = false;
-                if (prefs == null)
+
+            return true;
+        }
+
+        public bool GetPref(String prefName, out int value)
+        {
+            value = 0;
+
+            if (prefs == null)
+                return false;
+
+            // Xml is in the form.
+            //<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
+            //<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
+
+            String lookup = "DXUIPREF[@Name='";
+            lookup += prefName;
+            lookup += "']";
+
+            String val = null;
+
+            try
+            {
+                XmlNode n = root.SelectSingleNode(lookup);
+
+                if (n == null)
                     return false;
 
-                // Xml is in the form.
-                //<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
-                //<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
+                XmlNode n2 = n.SelectSingleNode("VALUE");
+                val = n2.InnerText;
+            }
+            catch (XmlException e)
+            {
+                Console.WriteLine("Corrupted prefs file--try deleting it");
+            }
 
-                String lookup = "DXUIPREF[@Name='";
-                lookup += prefName;
-                lookup += "']";
+            value = Int32.Parse(val);
 
-                String val = null;
+            return true;
+        }
 
-                try
-                {
-                    XmlNode n = root.SelectSingleNode(lookup);
+        public bool GetPref(String prefName, out PrefType type, out String value)
+        {
+            type = PrefType.TypeString;
+            value = "";
+            if (prefs == null)
+                return false;
 
-                    if (n == null)
-                        return false;
+            // Xml is in the form.
+            //<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
+            //<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
 
-                    XmlNode n2 = n.SelectSingleNode("VALUE");
-                    val = n2.InnerText;
-                }
-                catch (XmlException e)
-                {
-                    Console.WriteLine("Corrupted prefs file--try deleting it");
-                }
+            String lookup = "DXUIPREF[@Name='";
+            lookup += prefName;
+            lookup += "']";
 
-                if (val.CompareTo("true") == 0)
-                    value = true;
-                else
-                    value = false;
+            String val = null, typeS = null;
 
+            try
+            {
+                XmlNode n = root.SelectSingleNode(lookup);
+
+                if (n == null)
+                    return false;
+
+                XmlNode n2 = n.SelectSingleNode("VALUE");
+                val = n2.InnerText;
+
+                n2 = n.SelectSingleNode("TYPE");
+                typeS = n2.InnerText;
+            }
+            catch (XmlException e)
+            {
+                Console.WriteLine("Corrupted prefs file--try deleting it");
+            }
+
+            if (val.Length == 0)
+            {
+                value = null;
                 return true;
             }
 
-            public bool GetPref(String prefName, out int value)
-            {
-                value = 0;
-
-                if (prefs == null)
-                    return false;
-
-                // Xml is in the form.
-                //<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
-                //<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
-
-                String lookup = "DXUIPREF[@Name='";
-                lookup += prefName;
-                lookup += "']";
-
-                String val = null;
-
-                try
-                {
-                    XmlNode n = root.SelectSingleNode(lookup);
-
-                    if (n == null)
-                        return false;
-
-                    XmlNode n2 = n.SelectSingleNode("VALUE");
-                    val = n2.InnerText;
-                }
-                catch (XmlException e)
-                {
-                    Console.WriteLine("Corrupted prefs file--try deleting it");
-                }
-
-                value = Int32.Parse(val);
-
-                return true;
-            }
-
-            public bool GetPref(String prefName, out PrefType type, out String value)
-            {
+            value = val;
+            if (typeS.CompareTo("bool") == 0)
+                type = PrefType.TypeBool;
+            else if (typeS.CompareTo("int") == 0)
+                type = PrefType.TypeInt;
+            else if (typeS.CompareTo("float") == 0)
+                type = PrefType.TypeFloat;
+            else
                 type = PrefType.TypeString;
-                value = "";
-                if (prefs == null)
-                    return false;
 
-                // Xml is in the form.
-                //<PREF Name='UIRoot' Persistent="true"><TYPE>string</TYPE><VALUE>/usr/local/dx</VALUE></PREF>
-                //<PREF Name='wizard' Persistent="false"><TYPE>bool</TYPE><VALUE>false</VALUE></PREF>
+            return true;
+        }
 
-                String lookup = "DXUIPREF[@Name='";
-                lookup += prefName;
-                lookup += "']";
-
-                String val = null, typeS = null;
-
-                try
-                {
-                    XmlNode n = root.SelectSingleNode(lookup);
-
-                    if (n == null)
-                        return false;
-
-                    XmlNode n2 = n.SelectSingleNode("VALUE");
-                    val = n2.InnerText;
-
-                    n2 = n.SelectSingleNode("TYPE");
-                    typeS = n2.InnerText;
-                }
-                catch (XmlException e)
-                {
-                    Console.WriteLine("Corrupted prefs file--try deleting it");
-                }
-
-                if (val.Length == 0)
-                {
-                    value = null;
-                    return true;
-                }
-
-                value = val;
-                if (typeS.CompareTo("bool") == 0)
-                    type = PrefType.TypeBool;
-                else if (typeS.CompareTo("int") == 0)
-                    type = PrefType.TypeInt;
-                else if (typeS.CompareTo("float") == 0)
-                    type = PrefType.TypeFloat;
-                else
-                    type = PrefType.TypeString;
-
-                return true;
+        public bool SetPref(String prefName, String value, bool persist)
+        {
+            if (prefs == null)
+            {
+                return false;
             }
 
-            public bool SetPref(String prefName, String value, bool persist)
+            String lookup = "DXUIPREF[@Name='" + prefName + "']";
+
+            try
             {
-                if (prefs == null)
+                XmlNode n = root.SelectSingleNode(lookup);
+                if (n != null)
                 {
-                    return false;
-                }
-
-                String lookup = "DXUIPREF[@Name='" + prefName + "']";
-
-                try
-                {
-                    XmlNode n = root.SelectSingleNode(lookup);
-                    if (n != null)
-                    {
-                        try
-                        {
-                            XmlElement elem = prefs.CreateElement("DXUIPREF");
-                            elem.SetAttribute("Name", prefName);
-                            if (persist)
-                                elem.SetAttribute("Persistent", "true");
-                            else
-                                elem.SetAttribute("Persistent", "false");
-                            XmlElement val = prefs.CreateElement("VALUE");
-                            val.InnerText = value;
-                            elem.AppendChild(val);
-                            root.ReplaceChild(elem, n);
-                        }
-                        catch (XmlException e)
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                        try
-                        {
-                            XmlElement elem = prefs.CreateElement("DXUIPREF");
-                            elem.SetAttribute("Name", prefName);
-                            if (persist)
-                                elem.SetAttribute("Persistent", "true");
-                            else
-                                elem.SetAttribute("Persistent", "false");
-                            XmlElement val = prefs.CreateElement("VALUE");
-                            val.InnerText = value;
-                            elem.AppendChild(val);
-                            root.AppendChild(elem);
-                        }
-                        catch (XmlException e)
-                        {
-                            return false;
-                        }
-                }
-                catch (XmlException e)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-
-            public bool SetPref(String prefName, PrefType type, String value, bool persist)
-            {
-                if (prefs == null)
-                    return false;
-
-                String lookup = "DXUIPREF[@Name='" + prefName + "']";
-
-                String typeS = null;
-                switch (type)
-                {
-                    case PrefType.TypeString:
-                        typeS = "string";
-                        break;
-                    case PrefType.TypeInt:
-                        typeS = "int";
-                        break;
-                    case PrefType.TypeBool:
-                        typeS = "bool";
-                        break;
-                    case PrefType.TypeFloat:
-                        typeS = "float";
-                        break;
-                }
-
-                try
-                {
-                    XmlNode n = root.SelectSingleNode(lookup);
-                    if (n != null)
-                    {
-                        try
-                        {
-                            XmlElement elem = prefs.CreateElement("DXUIPREF");
-                            elem.SetAttribute("Name", prefName);
-                            if (persist)
-                                elem.SetAttribute("Persistent", "true");
-                            else
-                                elem.SetAttribute("Persistent", "false");
-                            XmlElement val = prefs.CreateElement("VALUE");
-                            val.InnerText = value;
-                            elem.AppendChild(val);
-                            XmlElement tp = prefs.CreateElement("TYPE");
-                            tp.InnerText = typeS;
-                            elem.AppendChild(tp);
-                            root.ReplaceChild(elem, n);
-                        }
-                        catch (XmlException e)
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                        try
-                        {
-                            XmlElement elem = prefs.CreateElement("DXUIPREF");
-                            elem.SetAttribute("Name", prefName);
-                            if (persist)
-                                elem.SetAttribute("Persistent", "true");
-                            else
-                                elem.SetAttribute("Persistent", "false");
-                            XmlElement val = prefs.CreateElement("VALUE");
-                            val.InnerText = value;
-                            elem.AppendChild(val);
-                            XmlElement tp = prefs.CreateElement("TYPE");
-                            tp.InnerText = typeS;
-                            elem.AppendChild(tp);
-                            root.AppendChild(elem);
-                        }
-                        catch (XmlException e)
-                        {
-                            return false;
-                        }
-                }
-                catch (XmlException e)
-                {
-                    return false;
-                }
-                return true;
-            }
-
-            public bool SetDefault(String prefName, String value)
-            {
-                if (prefs == null)
-                    return false;
-                String lookup = "DXUIPREF[@Name='" + prefName + "']";
-
-                try
-                {
-                    XmlNode n = root.SelectSingleNode(lookup);
-                    if (n != null)
-                        return true;
                     try
                     {
                         XmlElement elem = prefs.CreateElement("DXUIPREF");
                         elem.SetAttribute("Name", prefName);
-                        elem.SetAttribute("Persistent", "false");
+                        if (persist)
+                            elem.SetAttribute("Persistent", "true");
+                        else
+                            elem.SetAttribute("Persistent", "false");
+                        XmlElement val = prefs.CreateElement("VALUE");
+                        val.InnerText = value;
+                        elem.AppendChild(val);
+                        root.ReplaceChild(elem, n);
+                    }
+                    catch (XmlException e)
+                    {
+                        return false;
+                    }
+                }
+                else
+                    try
+                    {
+                        XmlElement elem = prefs.CreateElement("DXUIPREF");
+                        elem.SetAttribute("Name", prefName);
+                        if (persist)
+                            elem.SetAttribute("Persistent", "true");
+                        else
+                            elem.SetAttribute("Persistent", "false");
                         XmlElement val = prefs.CreateElement("VALUE");
                         val.InnerText = value;
                         elem.AppendChild(val);
@@ -427,47 +312,74 @@ namespace WinDX
                     {
                         return false;
                     }
-                }
-                catch (XmlException e)
-                {
-                    return false;
-                }
-                return true;
+            }
+            catch (XmlException e)
+            {
+                return false;
             }
 
-            public bool SetDefault(String prefName, PrefType type, String value)
-            {
-                if (prefs == null)
-                    return false;
-                String lookup = "DXUIPREF[@Name='" + prefName + "']";
-                String typeS = null;
-                switch (type)
-                {
-                    case PrefType.TypeString:
-                        typeS = "string";
-                        break;
-                    case PrefType.TypeInt:
-                        typeS = "int";
-                        break;
-                    case PrefType.TypeBool:
-                        typeS = "bool";
-                        break;
-                    case PrefType.TypeFloat:
-                        typeS = "float";
-                        break;
-                }
+            return true;
+        }
 
-                // First see if it exists. If so just return.
-                try
+        public bool SetPref(String prefName, PrefType type, String value, bool persist)
+        {
+            if (prefs == null)
+                return false;
+
+            String lookup = "DXUIPREF[@Name='" + prefName + "']";
+
+            String typeS = null;
+            switch (type)
+            {
+                case PrefType.TypeString:
+                    typeS = "string";
+                    break;
+                case PrefType.TypeInt:
+                    typeS = "int";
+                    break;
+                case PrefType.TypeBool:
+                    typeS = "bool";
+                    break;
+                case PrefType.TypeFloat:
+                    typeS = "float";
+                    break;
+            }
+
+            try
+            {
+                XmlNode n = root.SelectSingleNode(lookup);
+                if (n != null)
                 {
-                    XmlNode n = root.SelectSingleNode(lookup);
-                    if (n != null)
-                        return true;
                     try
                     {
                         XmlElement elem = prefs.CreateElement("DXUIPREF");
                         elem.SetAttribute("Name", prefName);
-                        elem.SetAttribute("Persistent", "false");
+                        if (persist)
+                            elem.SetAttribute("Persistent", "true");
+                        else
+                            elem.SetAttribute("Persistent", "false");
+                        XmlElement val = prefs.CreateElement("VALUE");
+                        val.InnerText = value;
+                        elem.AppendChild(val);
+                        XmlElement tp = prefs.CreateElement("TYPE");
+                        tp.InnerText = typeS;
+                        elem.AppendChild(tp);
+                        root.ReplaceChild(elem, n);
+                    }
+                    catch (XmlException e)
+                    {
+                        return false;
+                    }
+                }
+                else
+                    try
+                    {
+                        XmlElement elem = prefs.CreateElement("DXUIPREF");
+                        elem.SetAttribute("Name", prefName);
+                        if (persist)
+                            elem.SetAttribute("Persistent", "true");
+                        else
+                            elem.SetAttribute("Persistent", "false");
                         XmlElement val = prefs.CreateElement("VALUE");
                         val.InnerText = value;
                         elem.AppendChild(val);
@@ -480,13 +392,108 @@ namespace WinDX
                     {
                         return false;
                     }
+            }
+            catch (XmlException e)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool SetDefault(String prefName, String value)
+        {
+            if (prefs == null)
+                return false;
+            String lookup = "DXUIPREF[@Name='" + prefName + "']";
+
+            try
+            {
+                XmlNode n = root.SelectSingleNode(lookup);
+                if (n != null)
+                    return true;
+                try
+                {
+                    XmlElement elem = prefs.CreateElement("DXUIPREF");
+                    elem.SetAttribute("Name", prefName);
+                    elem.SetAttribute("Persistent", "false");
+                    XmlElement val = prefs.CreateElement("VALUE");
+                    val.InnerText = value;
+                    elem.AppendChild(val);
+                    root.AppendChild(elem);
                 }
                 catch (XmlException e)
                 {
                     return false;
                 }
-                return true;
             }
+            catch (XmlException e)
+            {
+                return false;
+            }
+            return true;
         }
+
+        /// <summary>
+        /// Set a Default for a Pref. If it already exists, just return.
+        /// In order to set a pref persistently (saves out to file) use
+        /// SetPref.
+        /// </summary>
+        /// <param name="prefName"></param>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool SetDefault(String prefName, PrefType type, String value)
+        {
+            if (prefs == null)
+                return false;
+            String lookup = "DXUIPREF[@Name='" + prefName + "']";
+            String typeS = null;
+            switch (type)
+            {
+                case PrefType.TypeString:
+                    typeS = "string";
+                    break;
+                case PrefType.TypeInt:
+                    typeS = "int";
+                    break;
+                case PrefType.TypeBool:
+                    typeS = "bool";
+                    break;
+                case PrefType.TypeFloat:
+                    typeS = "float";
+                    break;
+            }
+
+            // First see if it exists. If so just return.
+            try
+            {
+                XmlNode n = root.SelectSingleNode(lookup);
+                if (n != null)
+                    return true;
+                try
+                {
+                    XmlElement elem = prefs.CreateElement("DXUIPREF");
+                    elem.SetAttribute("Name", prefName);
+                    elem.SetAttribute("Persistent", "false");
+                    XmlElement val = prefs.CreateElement("VALUE");
+                    val.InnerText = value;
+                    elem.AppendChild(val);
+                    XmlElement tp = prefs.CreateElement("TYPE");
+                    tp.InnerText = typeS;
+                    elem.AppendChild(tp);
+                    root.AppendChild(elem);
+                }
+                catch (XmlException e)
+                {
+                    return false;
+                }
+            }
+            catch (XmlException e)
+            {
+                return false;
+            }
+            return true;
+        }
+        public static XmlPreferences theXmlPreferences = new XmlPreferences();
     }
 }

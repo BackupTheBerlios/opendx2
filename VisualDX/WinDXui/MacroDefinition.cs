@@ -5,7 +5,7 @@ using System.IO;
 
 namespace WinDX.UI
 {
-    class MacroDefinition : NodeDefinition
+    public class MacroDefinition : NodeDefinition
     {
         #region Private Instance Variables
         private SaveMacroCommand saveCmd;
@@ -128,7 +128,7 @@ namespace WinDX.UI
             return true;
         }
 
-        public virtual void finishDefinition()
+        public override void finishDefinition()
         {
             // No implementation
         }
@@ -287,21 +287,21 @@ namespace WinDX.UI
             fileName = name;
         }
 
-        protected static bool LoadMacroFile(Stream file, bool replace)
+        protected static bool LoadMacroFile(Stream file, String filename, bool replace)
         {
             bool wasMacro;
-            return LoadMacroFile(file, replace, out wasMacro, false);
+            return LoadMacroFile(file, filename, replace, out wasMacro, false);
         }
-        protected static bool LoadMacroFile(Stream file, bool replace,
+        protected static bool LoadMacroFile(Stream file, String filename, bool replace,
             out bool wasMacro)
         {
-            return LoadMacroFile(file, replace, out wasMacro, false);
+            return LoadMacroFile(file, filename, replace, out wasMacro, false);
         }
-        protected static bool LoadMacroFile(Stream file, bool replace,
-            out bool wasMacro, bool asSystemMacro)
+        protected static bool LoadMacroFile(Stream file, String filename, 
+            bool replace, out bool wasMacro, bool asSystemMacro)
         {
             if (DXApplication.theDXApplication.InDebugMode)
-                Console.WriteLine("read macro from {0}\n", this.fileName);
+                Console.WriteLine("read macro from {0}\n", filename);
 
             SymbolManager symbolManager = SymbolManager.theSymbolManager;
 
@@ -315,7 +315,7 @@ namespace WinDX.UI
             throw new Exception("Not yet implemented.");
         }
 
-        protected virtual bool addIODef(List<ParameterDefinition> l,
+        protected override bool addIODef(List<ParameterDefinition> l,
             ParameterDefinition pd)
         {
             throw new Exception("Not yet implemented.");
@@ -345,11 +345,11 @@ namespace WinDX.UI
         /// </summary>
         /// <param name="net"></param>
         /// <returns></returns>
-        protected virtual Node newNode(Network net)
+        protected override Node newNode(Network net)
         {
             return newNode(net, -1);
         }
-        protected virtual Node newNode(Network net, int instance)
+        protected override Node newNode(Network net, int instance)
         {
             MacroNode d = new MacroNode(this, net, instance);
             return d;

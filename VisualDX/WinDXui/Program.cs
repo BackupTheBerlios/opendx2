@@ -10,16 +10,10 @@ namespace WinDX.UI
         /// Global instances that must be declared in order to run.
         /// </summary>
         private static BaseApplication globalApp;
-        private static XmlPreferences globalPrefs;
 
         public static BaseApplication theApplication
         {
             get { return globalApp; }
-        }
-
-        public static XmlPreferences theXmlPreferences
-        {
-            get { return globalPrefs; }
         }
 	
         /// <summary>
@@ -31,9 +25,7 @@ namespace WinDX.UI
             Application.SetCompatibleTextRenderingDefault(false);
             Application.EnableVisualStyles();
 
-            globalSymbols = new SymbolManager();
             globalApp = new DXApplication("dx");
-            globalPrefs = new XmlPreferences();
 
             InfoDialog wd = new InfoDialog();
             wd.modalPost(theApplication.getAboutAppString());

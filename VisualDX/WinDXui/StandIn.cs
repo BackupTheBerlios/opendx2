@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class StandIn
+    public class StandIn
     {
         // Not implemented
     }

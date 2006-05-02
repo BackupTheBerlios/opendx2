@@ -8,7 +8,7 @@ namespace WinDX.UI
     /// Class complete
     /// Used store command list.
     /// </summary>
-    class CommandScope
+    public class CommandScope
     {
         private Command lastCommand = null;
         private Command undoCommand = null;

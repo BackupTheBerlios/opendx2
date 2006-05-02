@@ -6,6 +6,7 @@ using WinDX.Scanning;
 using System.Text.RegularExpressions;
 using System.IO;
 using NUnit.Framework;
+using System.Drawing;
 
 namespace WinDX.UI
 {
@@ -387,6 +388,22 @@ namespace WinDX.UI
 
             return (sub1.Substring(0, lastInd));
 
+        }
+
+        public static Color ColorFromPoundString(String str)
+        {
+            if (str.Length != 7)
+                return Color.Black;
+            String red = str.Substring(1, 2);
+            String green = str.Substring(3, 2);
+            String blue = str.Substring(5, 2);
+
+            int redi = Int32.Parse(red, System.Globalization.NumberStyles.HexNumber);
+            int greeni = Int32.Parse(green, System.Globalization.NumberStyles.HexNumber);
+            int bluei = Int32.Parse(blue, System.Globalization.NumberStyles.HexNumber);
+
+            Color c = Color.FromArgb(redi, greeni, bluei);
+            return c;
         }
     }
 }

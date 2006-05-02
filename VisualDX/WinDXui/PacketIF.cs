@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace WinDX.UI
 {
-    class PacketIF
+    public class PacketIF
     {
         class ThreadSender
         {

@@ -6,7 +6,7 @@ using System.IO;
 
 namespace WinDX.UI
 {
-    class Network
+    public class Network
     {
         #region Support Classes/enums
         public class ParseState
@@ -274,7 +274,7 @@ namespace WinDX.UI
         /// </summary>
         public String NameString
         {
-            get { return MainProgram.theSymbolManager.getSymbolString(name); }
+            get { return SymbolManager.theSymbolManager.getSymbolString(name); }
         }
 
 
@@ -305,6 +305,31 @@ namespace WinDX.UI
         {
             throw new Exception("Not Yet Implemented");
         }
+
+        public bool redefineNodes(Dictionary<Symbol, NodeDefinition> newdefs,
+            ref Dictionary<Symbol, NodeDefinition> olddefs)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        public Node findNode(String name)
+        {
+            int a = 0;
+            return findNode(name, ref a, false);
+        }
+        public Node findNode(String name, ref int startpos)
+        {
+            return findNode(name, ref startpos, false);
+        }
+        public Node findNode(String name, ref int startpos, bool byLabel)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+        public Node findNode(Symbol name, int instance)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
 
         #endregion
     }

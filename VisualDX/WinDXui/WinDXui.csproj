@@ -44,6 +44,7 @@
     <Compile Include="ArkStandIn.cs" />
     <Compile Include="BaseApplication.cs">
     </Compile>
+    <Compile Include="CDBAllocatorDictionary.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="CmdEntry.cs" />
     <Compile Include="Command.cs" />
@@ -61,8 +62,10 @@
     <Compile Include="ConfirmedQuitCommand.cs" />
     <Compile Include="ControlPanel.cs" />
     <Compile Include="Decorator.cs" />
+    <Compile Include="DecoratorStyle.cs" />
     <Compile Include="DeferrableAction.cs" />
     <Compile Include="Definition.cs" />
+    <Compile Include="DialInteractor.cs" />
     <Compile Include="DialogManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +91,8 @@
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FileSelectorInteractor.cs" />
+    <Compile Include="GraphLayout.cs" />
     <Compile Include="GroupedObject.cs" />
     <Compile Include="GroupManager.cs" />
     <Compile Include="HelpMenuCommand.cs" />
@@ -97,6 +102,14 @@
     <Compile Include="ImageWindow.Designer.cs">
       <DependentUpon>ImageWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interactor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interactor.Designer.cs">
+      <DependentUpon>Interactor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InteractorInstance.cs" />
+    <Compile Include="InteractorStyle.cs" />
     <Compile Include="LinkHandler.cs" />
     <Compile Include="MacroDefinition.cs" />
     <Compile Include="MacroNode.cs" />
@@ -120,6 +133,7 @@
     <Compile Include="PanelGroupManager.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="ParameterDefinition.cs" />
+    <Compile Include="ParseMDF.cs" />
     <Compile Include="PreActionCommand.cs" />
     <Compile Include="ProcessGroupManager.cs" />
     <Compile Include="QueuedPackets.cs" />
@@ -162,13 +176,21 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SaveMacroCommand.cs" />
+    <Compile Include="ScalarListInteractor.cs" />
     <Compile Include="Scanning.cs" />
+    <Compile Include="SelectorInteractor.cs" />
+    <Compile Include="SelectorListInteractor.cs" />
+    <Compile Include="SelectorListToggleInteractor.cs" />
+    <Compile Include="SelectorRadioInteractor.cs" />
     <Compile Include="SequencerNode.cs" />
     <Compile Include="SequencerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Server.cs" />
+    <Compile Include="SIAllocatorDictionary.cs" />
+    <Compile Include="SliderInteractor.cs" />
     <Compile Include="StandIn.cs" />
+    <Compile Include="StepperInteractor.cs" />
     <Compile Include="SymbolManager.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="TimedDialog.cs">
@@ -177,16 +199,30 @@
     <Compile Include="TimedDialog.Designer.cs">
       <DependentUpon>TimedDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ToggleToggleInteractor.cs" />
+    <Compile Include="ToolSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolSelector.Designer.cs">
+      <DependentUpon>ToolSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="TransmitterNode.cs" />
     <Compile Include="Utils.cs">
     </Compile>
+    <Compile Include="ValueInteractor.cs" />
+    <Compile Include="ValueListInteractor.cs" />
     <Compile Include="WarningDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="WorkSpace.cs" />
     <Compile Include="WorkSpaceInfo.cs" />
     <Compile Include="XmlPreferences.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="EditorWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>EditorWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MsgWin.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MsgWin.cs</DependentUpon>
@@ -200,6 +236,10 @@
     <EmbeddedResource Include="TimedDialog.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TimedDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolSelector.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ToolSelector.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -71,7 +71,7 @@ namespace WinDX.UI
         InputDerivesOutputCacheTag = 1 		// 'cache:1'
     };
 
-    abstract class BaseApplication
+    public abstract class BaseApplication
     {
         #region Application
         private Server server = null;
@@ -105,22 +105,22 @@ namespace WinDX.UI
         {
             if (!ApplicationClassInitialized)
             {
-                if (MainProgram.theSymbolManager == null)
+                if (SymbolManager.theSymbolManager == null)
                 {
                     StackFrame stackFrame = new StackFrame();
                     MethodBase methodBase = stackFrame.GetMethod();
                     throw new Exception(string.Format("{0}: symbolManager not init'd", methodBase));
                 }
 
-                MsgCreate = MainProgram.theSymbolManager.registerSymbol("Create");
-                MsgManage = MainProgram.theSymbolManager.registerSymbol("Manage");
-                MsgUnmanage = MainProgram.theSymbolManager.registerSymbol("Unmanage");
-                MsgSetBusyCursor = MainProgram.theSymbolManager.registerSymbol("SetBusyCursor");
-                MsgResetCursor = MainProgram.theSymbolManager.registerSymbol("ResetCursor");
-                MsgManageByLeafClassName = MainProgram.theSymbolManager.registerSymbol("ManageByLeafClassName");
-                MsgUnmanageByLeafClassName = MainProgram.theSymbolManager.registerSymbol("UnmanageByLeafClassName");
-                MsgManageByTitle = MainProgram.theSymbolManager.registerSymbol("ManageByTitle");
-                MsgUnmanageByTitle = MainProgram.theSymbolManager.registerSymbol("UnmanageByTitle");
+                MsgCreate = SymbolManager.theSymbolManager.registerSymbol("Create");
+                MsgManage = SymbolManager.theSymbolManager.registerSymbol("Manage");
+                MsgUnmanage = SymbolManager.theSymbolManager.registerSymbol("Unmanage");
+                MsgSetBusyCursor = SymbolManager.theSymbolManager.registerSymbol("SetBusyCursor");
+                MsgResetCursor = SymbolManager.theSymbolManager.registerSymbol("ResetCursor");
+                MsgManageByLeafClassName = SymbolManager.theSymbolManager.registerSymbol("ManageByLeafClassName");
+                MsgUnmanageByLeafClassName = SymbolManager.theSymbolManager.registerSymbol("UnmanageByLeafClassName");
+                MsgManageByTitle = SymbolManager.theSymbolManager.registerSymbol("ManageByTitle");
+                MsgUnmanageByTitle = SymbolManager.theSymbolManager.registerSymbol("UnmanageByTitle");
 
                 ApplicationClassInitialized = true;
             }
@@ -138,20 +138,20 @@ namespace WinDX.UI
         /// theXmlPreferences.
         /// </summary>
         /// <param name="argv"></param>
-        protected virtual void parseCommand(String[] argv)
+        protected virtual String[] parseCommand(String[] argv)
         {
             String res_file = null;
             List<String> newargv = new List<String>();
 
             if (getApplicationDefaultsFileName(ref res_file, false))
             {
-                if (!MainProgram.theXmlPreferences.ReadPrefs(res_file))
+                if (!XmlPreferences.theXmlPreferences.ReadPrefs(res_file))
                 {
                     throw new Exception("Preference File Corrupted. Please delete it and restart!");
                 }
             }
             else
-                MainProgram.theXmlPreferences.CreatePrefs();
+                XmlPreferences.theXmlPreferences.CreatePrefs();
 
             for (int i = 0; i < argv.Length; i++)
             {
@@ -262,116 +262,129 @@ namespace WinDX.UI
                 }
             }
 
-            MainProgram.theXmlPreferences.SetDefault("standInBackground", XmlPreferences.PrefType.TypeString, "#5F9EA0");
-            MainProgram.theXmlPreferences.SetDefault("executionHighlightForeground", XmlPreferences.PrefType.TypeString, "#00ff7e");
-            MainProgram.theXmlPreferences.SetDefault("backgroundExecutionForeground", XmlPreferences.PrefType.TypeString, "#7e7eb4");
-            MainProgram.theXmlPreferences.SetDefault("errorHighlightForeground", XmlPreferences.PrefType.TypeString, "#ff9b00");
-            MainProgram.theXmlPreferences.SetDefault("foreground", XmlPreferences.PrefType.TypeString, "Black");
-            MainProgram.theXmlPreferences.SetDefault("background", XmlPreferences.PrefType.TypeString, "#b4b4b4");
-            MainProgram.theXmlPreferences.SetDefault("InsensitiveColor", XmlPreferences.PrefType.TypeString, "#888888");
-            MainProgram.theXmlPreferences.SetDefault("anchorMode", XmlPreferences.PrefType.TypeString, "EDIT");
-            MainProgram.theXmlPreferences.SetDefault("DXVersion", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("debugMode", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("showInstanceNumbers", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("directory", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("executive", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("executeProgram", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("executeOnChange", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("printHelpMessage", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("host", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("noAnchorAtStartup", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noConfirmedQuit", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("standInBackground", XmlPreferences.PrefType.TypeString, "#5F9EA0");
+            XmlPreferences.theXmlPreferences.SetDefault("executionHighlightForeground", XmlPreferences.PrefType.TypeString, "#00ff7e");
+            XmlPreferences.theXmlPreferences.SetDefault("backgroundExecutionForeground", XmlPreferences.PrefType.TypeString, "#7e7eb4");
+            XmlPreferences.theXmlPreferences.SetDefault("errorHighlightForeground", XmlPreferences.PrefType.TypeString, "#ff9b00");
+            XmlPreferences.theXmlPreferences.SetDefault("foreground", XmlPreferences.PrefType.TypeString, "Black");
+            XmlPreferences.theXmlPreferences.SetDefault("background", XmlPreferences.PrefType.TypeString, "#b4b4b4");
+            XmlPreferences.theXmlPreferences.SetDefault("InsensitiveColor", XmlPreferences.PrefType.TypeString, "#888888");
+            XmlPreferences.theXmlPreferences.SetDefault("anchorMode", XmlPreferences.PrefType.TypeString, "EDIT");
+            XmlPreferences.theXmlPreferences.SetDefault("DXVersion", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("debugMode", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("showInstanceNumbers", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("directory", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("executive", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("executeProgram", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("executeOnChange", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("printHelpMessage", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("host", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("noAnchorAtStartup", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noConfirmedQuit", XmlPreferences.PrefType.TypeBool, "false");
 
 
-            MainProgram.theXmlPreferences.SetDefault("memory", XmlPreferences.PrefType.TypeInt, "0");
-            MainProgram.theXmlPreferences.SetDefault("metric", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("messages", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("port", XmlPreferences.PrefType.TypeInt, "0");
-            MainProgram.theXmlPreferences.SetDefault("printImageCommand", XmlPreferences.PrefType.TypeString, "lpr");
-            MainProgram.theXmlPreferences.SetDefault("printImageFormat", XmlPreferences.PrefType.TypeString, "TIFF");
-            MainProgram.theXmlPreferences.SetDefault("printImagePageSize", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("printImageSize", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("printImageResolution", XmlPreferences.PrefType.TypeInt, "0");
-            MainProgram.theXmlPreferences.SetDefault("program", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("cfg", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("runLocally", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("runUIOnly", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("saveImageFormat", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("saveImagePageSize", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("saveImageSize", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("saveImageResolution", XmlPreferences.PrefType.TypeInt, "0");
-            MainProgram.theXmlPreferences.SetDefault("suppressStartupWindows", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("userModuleDescriptionFile", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("executiveModuleDescriptionFile", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("uiModuleDescriptionFile", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("noWindowPlacement", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("restrictionLevel", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("noRWConfig", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noPanelEdit", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noInteractorEdits", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noInteractorAttributes", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noInteractorMovement", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noOpenAllPanels", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noPanelAccess", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noPanelOptions", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noMessageInfoOption", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noMessageWarningOption", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noEditorOnError", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noScriptCommands", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noPGroupAssignment", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noImageRWNetFile", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("limitedNetFileSelection", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("netPath", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("noImageLoad", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noImageSaving", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noImagePrinting", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("limitImageOptions", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("notifySaveNet", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noNetworkExecute", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noEditorAccess", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noDXHelp", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noCMapSetNameOption", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noCMapOpenMap", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noCMapSaveMap", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("applicationPort", XmlPreferences.PrefType.TypeInt, "0");
-            MainProgram.theXmlPreferences.SetDefault("applicationHost", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("infoEnabled", XmlPreferences.PrefType.TypeBool, "true");
-            MainProgram.theXmlPreferences.SetDefault("warningEnabled", XmlPreferences.PrefType.TypeBool, "true");
-            MainProgram.theXmlPreferences.SetDefault("errorEnabled", XmlPreferences.PrefType.TypeBool, "true");
-            MainProgram.theXmlPreferences.SetDefault("moduleInfoOpensMessage", XmlPreferences.PrefType.TypeBool, "true");
-            MainProgram.theXmlPreferences.SetDefault("infoOpenMessage", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("warningOpenMessage", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("errorOpenMessage", XmlPreferences.PrefType.TypeBool, "true");
-            MainProgram.theXmlPreferences.SetDefault("useWindowSpecs", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("forceNetFileEncryption", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("cryptKey", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("exitAfter", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("forceLicense", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("noExecuteMenus", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noConnectionMenus", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noWindowsMenus", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noExitOptions", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("noImageMenus", XmlPreferences.PrefType.TypeBool, "false");
-            MainProgram.theXmlPreferences.SetDefault("oemApplicationName", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("oemApplicationNameCode", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("oemLicenseCode", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("viewDataFile", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("autoScrollVPE", XmlPreferences.PrefType.TypeBool, "true");
-            MainProgram.theXmlPreferences.SetDefault("autoLayoutHeight", XmlPreferences.PrefType.TypeInt, "0");
-            MainProgram.theXmlPreferences.SetDefault("autoLayoutGroupSpacing", XmlPreferences.PrefType.TypeInt, "0");
-            MainProgram.theXmlPreferences.SetDefault("autoLayoutNodeSpacing", XmlPreferences.PrefType.TypeInt, "0");
-            MainProgram.theXmlPreferences.SetDefault("cosmoDir", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("jdkDir", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("htmlDir", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("serverDir", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("dxJarFile", XmlPreferences.PrefType.TypeString, "");
-            MainProgram.theXmlPreferences.SetDefault("userHtmlDir", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("memory", XmlPreferences.PrefType.TypeInt, "0");
+            XmlPreferences.theXmlPreferences.SetDefault("metric", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("messages", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("port", XmlPreferences.PrefType.TypeInt, "0");
+            XmlPreferences.theXmlPreferences.SetDefault("printImageCommand", XmlPreferences.PrefType.TypeString, "lpr");
+            XmlPreferences.theXmlPreferences.SetDefault("printImageFormat", XmlPreferences.PrefType.TypeString, "TIFF");
+            XmlPreferences.theXmlPreferences.SetDefault("printImagePageSize", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("printImageSize", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("printImageResolution", XmlPreferences.PrefType.TypeInt, "0");
+            XmlPreferences.theXmlPreferences.SetDefault("program", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("cfg", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("runLocally", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("runUIOnly", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("saveImageFormat", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("saveImagePageSize", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("saveImageSize", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("saveImageResolution", XmlPreferences.PrefType.TypeInt, "0");
+            XmlPreferences.theXmlPreferences.SetDefault("suppressStartupWindows", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("userModuleDescriptionFile", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("executiveModuleDescriptionFile", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("uiModuleDescriptionFile", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("noWindowPlacement", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("restrictionLevel", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("noRWConfig", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noPanelEdit", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noInteractorEdits", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noInteractorAttributes", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noInteractorMovement", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noOpenAllPanels", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noPanelAccess", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noPanelOptions", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noMessageInfoOption", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noMessageWarningOption", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noEditorOnError", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noScriptCommands", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noPGroupAssignment", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noImageRWNetFile", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("limitedNetFileSelection", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("netPath", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("noImageLoad", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noImageSaving", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noImagePrinting", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("limitImageOptions", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("notifySaveNet", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noNetworkExecute", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noEditorAccess", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noDXHelp", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noCMapSetNameOption", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noCMapOpenMap", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noCMapSaveMap", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("applicationPort", XmlPreferences.PrefType.TypeInt, "0");
+            XmlPreferences.theXmlPreferences.SetDefault("applicationHost", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("infoEnabled", XmlPreferences.PrefType.TypeBool, "true");
+            XmlPreferences.theXmlPreferences.SetDefault("warningEnabled", XmlPreferences.PrefType.TypeBool, "true");
+            XmlPreferences.theXmlPreferences.SetDefault("errorEnabled", XmlPreferences.PrefType.TypeBool, "true");
+            XmlPreferences.theXmlPreferences.SetDefault("moduleInfoOpensMessage", XmlPreferences.PrefType.TypeBool, "true");
+            XmlPreferences.theXmlPreferences.SetDefault("infoOpenMessage", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("warningOpenMessage", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("errorOpenMessage", XmlPreferences.PrefType.TypeBool, "true");
+            XmlPreferences.theXmlPreferences.SetDefault("useWindowSpecs", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("forceNetFileEncryption", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("cryptKey", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("exitAfter", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("forceLicense", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("noExecuteMenus", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noConnectionMenus", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noWindowsMenus", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noExitOptions", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("noImageMenus", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("oemApplicationName", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("oemApplicationNameCode", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("oemLicenseCode", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("viewDataFile", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("autoScrollVPE", XmlPreferences.PrefType.TypeBool, "true");
+            XmlPreferences.theXmlPreferences.SetDefault("autoLayoutHeight", XmlPreferences.PrefType.TypeInt, "0");
+            XmlPreferences.theXmlPreferences.SetDefault("autoLayoutGroupSpacing", XmlPreferences.PrefType.TypeInt, "0");
+            XmlPreferences.theXmlPreferences.SetDefault("autoLayoutNodeSpacing", XmlPreferences.PrefType.TypeInt, "0");
+            XmlPreferences.theXmlPreferences.SetDefault("cosmoDir", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("jdkDir", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("htmlDir", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("serverDir", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("dxJarFile", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("userHtmlDir", XmlPreferences.PrefType.TypeString, "");
 
             // The following is a little different. The default should actually be dxroot/samples/macros
             // Set it in DXApplication if null.
-            MainProgram.theXmlPreferences.SetDefault("macros", XmlPreferences.PrefType.TypeString, "");
+            XmlPreferences.theXmlPreferences.SetDefault("macros", XmlPreferences.PrefType.TypeString, "");
 
+            if (newargv.Count > 0)
+            {
+                String[] retargs = new String[newargv.Count];
+                for (int i = 0; i < newargv.Count; i++)
+                {
+                    retargs[i] = newargv[i];
+                }
+                return retargs;
+
+            }
+            else
+                return null;
         }
+
         #region Command Line Parsing Helpers
         /// <summary>
         /// Private functions for helping parse command line.
@@ -385,8 +398,10 @@ namespace WinDX.UI
         {
             if (cla == arg)
             {
-                MainProgram.theXmlPreferences.SetPref(
+                XmlPreferences.theXmlPreferences.SetPref(
                     pn, XmlPreferences.PrefType.TypeString, val, false);
+                arg = "";
+                val = "";
                 return true;
             }
             return false;
@@ -395,8 +410,9 @@ namespace WinDX.UI
         {
             if (cla == arg)
             {
-                MainProgram.theXmlPreferences.SetPref(
+                XmlPreferences.theXmlPreferences.SetPref(
                     pn, XmlPreferences.PrefType.TypeBool, "true", false);
+                arg = "";
                 return true;
             }
             return false;
@@ -405,8 +421,9 @@ namespace WinDX.UI
         {
             if (cla == arg)
             {
-                MainProgram.theXmlPreferences.SetPref(
+                XmlPreferences.theXmlPreferences.SetPref(
                     pn, XmlPreferences.PrefType.TypeBool, "false", false);
+                arg = "";
                 return true;
             }
             return false;
@@ -414,15 +431,15 @@ namespace WinDX.UI
         #endregion
 
 
-        public virtual bool initialize(String[] argv)
+        protected virtual bool initialize(ref String[] argv)
         {
             name = argv[0];
             thisServer.notifyClients(MsgCreate);
 
-            parseCommand(argv);
+            argv = parseCommand(argv);
 
             String pref;
-            MainProgram.theXmlPreferences.GetPref("UIRoot", out pref);
+            XmlPreferences.theXmlPreferences.GetPref("UIRoot", out pref);
             if (pref == null)
             {
                 String tmp = System.Environment.GetEnvironmentVariable("DXROOT");
@@ -436,7 +453,7 @@ namespace WinDX.UI
                 }
             }
 
-            MainProgram.theXmlPreferences.SetPref("UIRoot", pref, false);
+            XmlPreferences.theXmlPreferences.SetPref("UIRoot", pref, false);
             parseNoWizardNames();
 
             return true;
@@ -735,13 +752,13 @@ namespace WinDX.UI
 
         public void printResource(String resource, String value)
         {
-            MainProgram.theXmlPreferences.SetPref(resource, value, true);
+            XmlPreferences.theXmlPreferences.SetPref(resource, value, true);
         }
 
         public void parseNoWizardNames()
         {
             String wizNames;
-            MainProgram.theXmlPreferences.GetPref("noWizardNames", out wizNames);
+            XmlPreferences.theXmlPreferences.GetPref("noWizardNames", out wizNames);
             if (wizNames == null)
                 return;
 
@@ -771,13 +788,13 @@ namespace WinDX.UI
                 allWiz += noWizards[i] + ":";
             allWiz += noWizards[noWizards.Count - 1];
 
-            MainProgram.theXmlPreferences.SetPref("dismissedWizards", allWiz, true);
+            XmlPreferences.theXmlPreferences.SetPref("dismissedWizards", allWiz, true);
         }
 
         public bool inWizardMode()
         {
             bool wizmode;
-            MainProgram.theXmlPreferences.GetPref("wizard", out wizmode);
+            XmlPreferences.theXmlPreferences.GetPref("wizard", out wizmode);
             return wizmode;
         }
 

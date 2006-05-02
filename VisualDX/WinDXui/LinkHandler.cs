@@ -6,7 +6,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class LinkHandler
+    public class LinkHandler
     {
         private CmdEntry commandEntry;
         private PacketIF packetIF;

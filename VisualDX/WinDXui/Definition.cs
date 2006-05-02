@@ -6,7 +6,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    abstract class Definition
+    public abstract class Definition
     {
         private Symbol key;
 

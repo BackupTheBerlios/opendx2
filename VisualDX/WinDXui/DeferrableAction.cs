@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class DeferrableAction
+    public class DeferrableAction
     {
     }
 }
