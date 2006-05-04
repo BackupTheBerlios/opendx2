@@ -123,36 +123,36 @@ void DXPacketIF::DXProcessErrorERROR(void *clientData, int id, void *p)
 
 void DXPacketIF::DXProcessErrorWARNING(void *, int, void *p)
 {
-    char *line = (char *)p, *s;
-    char buffer[512];
+	char *line = (char *)p, *s;
+	char buffer[512];
 
-    if (FindDelimitedString(line,':',':',buffer) && strstr(buffer,"POPUP")) {
-	char *c = strchr(line,':');	
-	if (c && (c = strchr(c+1,':')))
-	    WarningMessage(c+1);	
-    }
-
-    if (FindDelimitedString(line,':',':',buffer) && strstr(buffer,"MSGERRUP")) {
-	//
-	// These messages are warnings that we want to treat as
-  	// an error message.
-	//
-	if (theDXApplication->doesErrorOpenMessage() && 
-		!theDXApplication->messageWindow->isManaged())
-	    theDXApplication->messageWindow->manage();
-	//
-	// Remove the MSGERRUP characters from the message.
-	//
-	s = strstr(line,"MSGERRUP");
-	char *c = s + strlen("MSGERRUP");
-	while (*c) {
-	    *s = *c;
-	    s++; c++;
+	if (FindDelimitedString(line,':',':',buffer) && strstr(buffer,"POPUP")) {
+		char *c = strchr(line,':');	
+		if (c && (c = strchr(c+1,':')))
+			WarningMessage(c+1);	
 	}
-	*s = '\0';
-    }
 
-    theDXApplication->getMessageWindow()->addWarning(line);
+	if (FindDelimitedString(line,':',':',buffer) && strstr(buffer,"MSGERRUP")) {
+		//
+		// These messages are warnings that we want to treat as
+		// an error message.
+		//
+		if (theDXApplication->doesErrorOpenMessage() && 
+			!theDXApplication->messageWindow->isManaged())
+			theDXApplication->messageWindow->manage();
+		//
+		// Remove the MSGERRUP characters from the message.
+		//
+		s = strstr(line,"MSGERRUP");
+		char *c = s + strlen("MSGERRUP");
+		while (*c) {
+			*s = *c;
+			s++; c++;
+		}
+		*s = '\0';
+	}
+
+	theDXApplication->getMessageWindow()->addWarning(line);
 }
 
 void DXPacketIF::DXProcessCompletion(void *, int , void *)

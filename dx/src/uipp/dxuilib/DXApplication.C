@@ -2152,47 +2152,47 @@ void DXApplication::loadIDF()
 void DXApplication::loadUDF(const char *fileName, Dictionary *dict, 
 				boolean uiLoadedOnly)
 {
-    Dictionary local_dict;
-    if (!dict)
-	dict = &local_dict;
-    if (LoadMDFFile(fileName,"user's",dict, uiLoadedOnly) &&
-	dict->getSize() > 0) {
-	Dictionary olddefs;
+	Dictionary local_dict;
+	if (!dict)
+		dict = &local_dict;
+	if (LoadMDFFile(fileName,"user's",dict, uiLoadedOnly) &&
+		dict->getSize() > 0) {
+			Dictionary olddefs;
 
-	//
-	// Replace the old NodeDefinitions with the new ones. 
-	// 
-	theNodeDefinitionDictionary->replaceDefinitions(dict, &olddefs);
+			//
+			// Replace the old NodeDefinitions with the new ones. 
+			// 
+			theNodeDefinitionDictionary->replaceDefinitions(dict, &olddefs);
 
-	//
-	// Send any new definitions to the server. 
-	//
-	this->sendNewMDFToServer(dict,&olddefs);
+			//
+			// Send any new definitions to the server. 
+			//
+			this->sendNewMDFToServer(dict,&olddefs);
 
-	//
-	// Make sure the tool selectors get updated. 
-	// 
-	ToolSelector::MergeNewTools(dict);
+			//
+			// Make sure the tool selectors get updated. 
+			// 
+			ToolSelector::MergeNewTools(dict);
 
-	//
-	// Now ask all the networks to update the node that are contained
-	// within the network.
-	//
-	this->network->redefineNodes(dict,&olddefs);
-	ListIterator li(this->macroList);
-	Network *net;
-	while ( (net = (Network*)li.getNext()) ) 
-	    net->redefineNodes(dict,&olddefs);
+			//
+			// Now ask all the networks to update the node that are contained
+			// within the network.
+			//
+			this->network->redefineNodes(dict,&olddefs);
+			ListIterator li(this->macroList);
+			Network *net;
+			while ( (net = (Network*)li.getNext()) ) 
+				net->redefineNodes(dict,&olddefs);
 
-	//
-	// And now we can get rid of the old NodeDefinitions.
-	//
-	DictionaryIterator di(olddefs);
-	NodeDefinition *nd;
-	while ( (nd = (NodeDefinition*)di.getNextDefinition()) ) 
-	    delete nd;
-	
-    }
+			//
+			// And now we can get rid of the old NodeDefinitions.
+			//
+			DictionaryIterator di(olddefs);
+			NodeDefinition *nd;
+			while ( (nd = (NodeDefinition*)di.getNextDefinition()) ) 
+				delete nd;
+
+	}
 }
 
 			       
@@ -2249,709 +2249,709 @@ void DXApplication::installDefaultResources(Widget baseWidget)
     this->IBMApplication::installDefaultResources(baseWidget);
 }
 boolean DXApplication::initialize(unsigned int* argcp,
-			       char**        argv)
+								  char**        argv)
 {
-boolean wasSetBusy = FALSE;
+	boolean wasSetBusy = FALSE;
 
-    if (!this->IBMApplication::initializeWindowSystem(argcp,argv))
-	return FALSE;
+	if (!this->IBMApplication::initializeWindowSystem(argcp,argv))
+		return FALSE;
 
-    //
-    // Color preallocation - necessary only because of the logo
-    // 
-    int j;
-    XrmValue from, toinout;
-    Pixel tmp_pixel;
-    for (j=0; j<XtNumber(_DXResourceList); j++) {
-	if (!strcmp(_DXResourceList[j].resource_type, XmRPixel)) {
-	    from.addr = (XPointer)_DXResourceList[j].default_addr; 
-	    from.size = strlen((char*)from.addr);
-	    toinout.addr = (XPointer)&tmp_pixel; toinout.size = sizeof(Pixel);
-	    XtConvertAndStore (this->getRootWidget(), XmRString, &from,
-		XmRPixel, &toinout);
+	//
+	// Color preallocation - necessary only because of the logo
+	// 
+	int j;
+	XrmValue from, toinout;
+	Pixel tmp_pixel;
+	for (j=0; j<XtNumber(_DXResourceList); j++) {
+		if (!strcmp(_DXResourceList[j].resource_type, XmRPixel)) {
+			from.addr = (XPointer)_DXResourceList[j].default_addr; 
+			from.size = strlen((char*)from.addr);
+			toinout.addr = (XPointer)&tmp_pixel; toinout.size = sizeof(Pixel);
+			XtConvertAndStore (this->getRootWidget(), XmRString, &from,
+				XmRPixel, &toinout);
+		}
 	}
-    }
 
-    if (!this->IBMApplication::initialize(argcp,argv))
-	return FALSE;
+	if (!this->IBMApplication::initialize(argcp,argv))
+		return FALSE;
 
 #ifdef DIAGNOSTICS
-    /*
-     * Set after function for diagnostic purposes only...
-     */
-    XSynchronize(this->display, True);
-    XSetAfterFunction(this->display, DXApplication_DXAfterFunction);
+	/*
+	* Set after function for diagnostic purposes only...
+	*/
+	XSynchronize(this->display, True);
+	XSetAfterFunction(this->display, DXApplication_DXAfterFunction);
 #endif
 
-    this->InitializeSignals();
+	this->InitializeSignals();
 
-    this->parseCommand(argcp, argv, _DXOptionList, XtNumber(_DXOptionList));
-
-
-    //
-    // Get application resources.
-    //
-    if (NOT DXApplication::DXApplicationClassInitialized)
-    {
-	this->installDefaultResources(theApplication->getRootWidget());
-	this->getResources((XtPointer)&DXApplication::resource,
-	   _DXResourceList, XtNumber(_DXResourceList));
-
-	DXApplication::MsgExecute = 
-	    theSymbolManager->registerSymbol("Execute");
-	DXApplication::MsgStandBy = 
-	    theSymbolManager->registerSymbol("StandBy");
-	DXApplication::MsgExecuteDone = 
-	    theSymbolManager->registerSymbol("ExecuteDone");
-	DXApplication::MsgServerDisconnected = 
-	    theSymbolManager->registerSymbol("ServerDisconnected");
-	DXApplication::MsgPanelChanged = 
-	    theSymbolManager->registerSymbol("PanelChanged");
-	DXApplication::DXApplicationClassInitialized = TRUE;
-    }
-
-    //
-    // setup resources that can be environment varialbles.
-    //
-    if (DXApplication::resource.executiveModule == NULL)
-	DXApplication::resource.executiveModule = "lib/dx.mdf";
-
-    if (DXApplication::resource.uiModule == NULL)
-	DXApplication::resource.uiModule = "ui/ui.mdf";
-
-    if (DXApplication::resource.userModules == NULL) {
-	char *s = getenv("DXMDF");
-	if (s)
-	    // This will show up as a memory leak, not worth worrying about
-	    DXApplication::resource.userModules = DuplicateString(s);
-    } 
-
-    if (DXApplication::resource.macros == NULL) {
-	char *s = getenv("DXMACROS");
-	if (s)
-	    // This will show up as a memory leak, not worth worrying about
-	    DXApplication::resource.macros = DuplicateString(s);
-    }
-
-    if (DXApplication::resource.server == NULL) {
-	char *s = getenv("DXHOST");
-	if (s) 
-	    // This will show up as a memory leak, not worth worrying about
-	    DXApplication::resource.server = DuplicateString(s); 
-	else
-	    DXApplication::resource.server = "localhost";
-    }
-    // Remove the port number if it exists (i.e DXHOST=slope,1920)
-    char *p;
-    if ( (p = strrchr(DXApplication::resource.server,',')) )
-        *p = '\0';
+	this->parseCommand(argcp, argv, _DXOptionList, XtNumber(_DXOptionList));
 
 
-    if (DXApplication::resource.netPath == NULL) {
-	char *s = getenv("DXNETPATH");
-	if (s)
-	    // This will show up as a memory leak, not worth worrying about
-	    DXApplication::resource.netPath = DuplicateString(s); 
-    }
+	//
+	// Get application resources.
+	//
+	if (NOT DXApplication::DXApplicationClassInitialized)
+	{
+		this->installDefaultResources(theApplication->getRootWidget());
+		this->getResources((XtPointer)&DXApplication::resource,
+			_DXResourceList, XtNumber(_DXResourceList));
 
-    if (DXApplication::resource.cryptKey == 0) {
-        char *s = getenv("DXCRYPTKEY");
-        if (s) {
-            DXApplication::resource.cryptKey = DuplicateString(s);
+		DXApplication::MsgExecute = 
+			theSymbolManager->registerSymbol("Execute");
+		DXApplication::MsgStandBy = 
+			theSymbolManager->registerSymbol("StandBy");
+		DXApplication::MsgExecuteDone = 
+			theSymbolManager->registerSymbol("ExecuteDone");
+		DXApplication::MsgServerDisconnected = 
+			theSymbolManager->registerSymbol("ServerDisconnected");
+		DXApplication::MsgPanelChanged = 
+			theSymbolManager->registerSymbol("PanelChanged");
+		DXApplication::DXApplicationClassInitialized = TRUE;
+	}
+
+	//
+	// setup resources that can be environment varialbles.
+	//
+	if (DXApplication::resource.executiveModule == NULL)
+		DXApplication::resource.executiveModule = "lib/dx.mdf";
+
+	if (DXApplication::resource.uiModule == NULL)
+		DXApplication::resource.uiModule = "ui/ui.mdf";
+
+	if (DXApplication::resource.userModules == NULL) {
+		char *s = getenv("DXMDF");
+		if (s)
+			// This will show up as a memory leak, not worth worrying about
+			DXApplication::resource.userModules = DuplicateString(s);
+	} 
+
+	if (DXApplication::resource.macros == NULL) {
+		char *s = getenv("DXMACROS");
+		if (s)
+			// This will show up as a memory leak, not worth worrying about
+			DXApplication::resource.macros = DuplicateString(s);
+	}
+
+	if (DXApplication::resource.server == NULL) {
+		char *s = getenv("DXHOST");
+		if (s) 
+			// This will show up as a memory leak, not worth worrying about
+			DXApplication::resource.server = DuplicateString(s); 
+		else
+			DXApplication::resource.server = "localhost";
+	}
+	// Remove the port number if it exists (i.e DXHOST=slope,1920)
+	char *p;
+	if ( (p = strrchr(DXApplication::resource.server,',')) )
+		*p = '\0';
+
+
+	if (DXApplication::resource.netPath == NULL) {
+		char *s = getenv("DXNETPATH");
+		if (s)
+			// This will show up as a memory leak, not worth worrying about
+			DXApplication::resource.netPath = DuplicateString(s); 
+	}
+
+	if (DXApplication::resource.cryptKey == 0) {
+		char *s = getenv("DXCRYPTKEY");
+		if (s) {
+			DXApplication::resource.cryptKey = DuplicateString(s);
 #ifndef DEBUG
-            // Hide the key so debuggers can't get at it.
-            s = DuplicateString("DXCRYPTKEY=");
-            putenv(s);
+			// Hide the key so debuggers can't get at it.
+			s = DuplicateString("DXCRYPTKEY=");
+			putenv(s);
 #endif
-        }
-    }
+		}
+	}
 
-    //
-    // If the app does not allow editor access or we are starting up without
-    // displaying the anchor window, force one of (image or menubar) mode.
-    // Note that we also test this below, to check against the functional
-    // license that was acquired.
-    //
-    if ((this->inEditMode() && !this->appAllowsEditorAccess()) || 
-	DXApplication::resource.noAnchorAtStartup) {
-	if (this->inMenuBarMode())
-	    DXApplication::resource.anchorMode = MENUBAR_ANCHOR_MODE; 
-	else
-	    DXApplication::resource.anchorMode = IMAGE_ANCHOR_MODE; 
-    }
+	//
+	// If the app does not allow editor access or we are starting up without
+	// displaying the anchor window, force one of (image or menubar) mode.
+	// Note that we also test this below, to check against the functional
+	// license that was acquired.
+	//
+	if ((this->inEditMode() && !this->appAllowsEditorAccess()) || 
+		DXApplication::resource.noAnchorAtStartup) {
+			if (this->inMenuBarMode())
+				DXApplication::resource.anchorMode = MENUBAR_ANCHOR_MODE; 
+			else
+				DXApplication::resource.anchorMode = IMAGE_ANCHOR_MODE; 
+	}
 
-    //
-    // Echo the resources.
-    //
-    if (DXApplication::resource.debugMode)
-    {
-	if (DXApplication::resource.port != 0)
-	    printf("port        = %d\n", DXApplication::resource.port);
-	if (DXApplication::resource.memorySize != 0)
-	    printf("memory size = %d\n", DXApplication::resource.memorySize);
-
-	if (DXApplication::resource.server)
-	    printf("server = %s\n", DXApplication::resource.server);
-	if (DXApplication::resource.executive)
-	    printf("executive = %s\n", DXApplication::resource.executive);
-	if (DXApplication::resource.workingDirectory)
-	    printf("working directory = %s\n",
-		 DXApplication::resource.workingDirectory);
-	if (DXApplication::resource.netPath)
-	    printf("net path = %s\n", DXApplication::resource.netPath);
-	if (DXApplication::resource.program)
-	    printf("program = %s\n", DXApplication::resource.program);
-	if (DXApplication::resource.cfgfile)
-	    printf("cfgfile = %s\n", DXApplication::resource.cfgfile);
-	if (this->getUIRoot())
-	    printf("root = %s\n", this->getUIRoot());
-	if (DXApplication::resource.macros)
-	    printf("macros = %s\n", DXApplication::resource.macros);
-	if (DXApplication::resource.errorPath)
-	    printf("error path = %s\n", DXApplication::resource.errorPath);
-	if (DXApplication::resource.echoVersion)
-	    printf("echo version\n");
-	if (DXApplication::resource.anchorMode)
-	    printf("anchor mode = %s\n",DXApplication::resource.anchorMode);
-	if (DXApplication::resource.noAnchorAtStartup)
-	    printf("hiding anchor at startup\n");
+	//
+	// Echo the resources.
+	//
 	if (DXApplication::resource.debugMode)
-	    printf("debug mode\n");
-	if (DXApplication::resource.runUIOnly)
-	    printf("run UI only\n");
-	if (DXApplication::resource.showHelpMessage)
-	    printf("show help message\n");
-	if (DXApplication::resource.userModules)
-	    printf("user mdf = %s\n", DXApplication::resource.userModules);
-	if (DXApplication::resource.executiveModule)
-	    printf("executive mdf = %s\n", DXApplication::resource.executiveModule);
-	if (DXApplication::resource.uiModule)
-	    printf("ui mdf = %s\n", DXApplication::resource.uiModule);
-	if (DXApplication::resource.suppressStartupWindows)
-	    printf("suppress startup windows\n");
+	{
+		if (DXApplication::resource.port != 0)
+			printf("port        = %d\n", DXApplication::resource.port);
+		if (DXApplication::resource.memorySize != 0)
+			printf("memory size = %d\n", DXApplication::resource.memorySize);
 
-	if (DXApplication::resource.applicationPort != 0)
-	    printf("application port = %d\n", DXApplication::resource.applicationPort);
-	if (DXApplication::resource.applicationHost)
-	    printf("application host = %s\n", DXApplication::resource.applicationHost);
+		if (DXApplication::resource.server)
+			printf("server = %s\n", DXApplication::resource.server);
+		if (DXApplication::resource.executive)
+			printf("executive = %s\n", DXApplication::resource.executive);
+		if (DXApplication::resource.workingDirectory)
+			printf("working directory = %s\n",
+			DXApplication::resource.workingDirectory);
+		if (DXApplication::resource.netPath)
+			printf("net path = %s\n", DXApplication::resource.netPath);
+		if (DXApplication::resource.program)
+			printf("program = %s\n", DXApplication::resource.program);
+		if (DXApplication::resource.cfgfile)
+			printf("cfgfile = %s\n", DXApplication::resource.cfgfile);
+		if (this->getUIRoot())
+			printf("root = %s\n", this->getUIRoot());
+		if (DXApplication::resource.macros)
+			printf("macros = %s\n", DXApplication::resource.macros);
+		if (DXApplication::resource.errorPath)
+			printf("error path = %s\n", DXApplication::resource.errorPath);
+		if (DXApplication::resource.echoVersion)
+			printf("echo version\n");
+		if (DXApplication::resource.anchorMode)
+			printf("anchor mode = %s\n",DXApplication::resource.anchorMode);
+		if (DXApplication::resource.noAnchorAtStartup)
+			printf("hiding anchor at startup\n");
+		if (DXApplication::resource.debugMode)
+			printf("debug mode\n");
+		if (DXApplication::resource.runUIOnly)
+			printf("run UI only\n");
+		if (DXApplication::resource.showHelpMessage)
+			printf("show help message\n");
+		if (DXApplication::resource.userModules)
+			printf("user mdf = %s\n", DXApplication::resource.userModules);
+		if (DXApplication::resource.executiveModule)
+			printf("executive mdf = %s\n", DXApplication::resource.executiveModule);
+		if (DXApplication::resource.uiModule)
+			printf("ui mdf = %s\n", DXApplication::resource.uiModule);
+		if (DXApplication::resource.suppressStartupWindows)
+			printf("suppress startup windows\n");
 
-	//
-	// Image printing resources.
-	//
-	if (DXApplication::resource.printImageCommand) 
-	    printf("print image command = '%s'\n",
+		if (DXApplication::resource.applicationPort != 0)
+			printf("application port = %d\n", DXApplication::resource.applicationPort);
+		if (DXApplication::resource.applicationHost)
+			printf("application host = %s\n", DXApplication::resource.applicationHost);
+
+		//
+		// Image printing resources.
+		//
+		if (DXApplication::resource.printImageCommand) 
+			printf("print image command = '%s'\n",
 			DXApplication::resource.printImageCommand);
-	if (DXApplication::resource.printImageFormat)
-	    printf("print image format = '%s'\n",
+		if (DXApplication::resource.printImageFormat)
+			printf("print image format = '%s'\n",
 			DXApplication::resource.printImageFormat);
-	if (DXApplication::resource.printImagePageSize)
-	    printf("print image page size = '%s'\n",
+		if (DXApplication::resource.printImagePageSize)
+			printf("print image page size = '%s'\n",
 			DXApplication::resource.printImagePageSize);
-	printf("print image resolution = %d\n",
+		printf("print image resolution = %d\n",
 			DXApplication::resource.printImageResolution);
 
-	//
-	// Image saving resources.
-	//
-	if (DXApplication::resource.saveImageFormat)
-	    printf("save image format = '%s'\n",
+		//
+		// Image saving resources.
+		//
+		if (DXApplication::resource.saveImageFormat)
+			printf("save image format = '%s'\n",
 			DXApplication::resource.saveImageFormat);
-	if (DXApplication::resource.saveImagePageSize)
-	    printf("save image page size = '%s'\n",
+		if (DXApplication::resource.saveImagePageSize)
+			printf("save image page size = '%s'\n",
 			DXApplication::resource.saveImagePageSize);
-	printf("save image resolution = %d\n",
+		printf("save image resolution = %d\n",
 			DXApplication::resource.saveImageResolution);
 
-   	//
-   	// UI restrictions 
-   	//
-	if (DXApplication::resource.restrictionLevel)
-	    printf("restriction level %s\n", 
-				DXApplication::resource.restrictionLevel);
-	if (DXApplication::resource.noEditorAccess)
-	    printf("no editor access\n");
-	if (DXApplication::resource.limitedNetFileSelection)
-	    printf("limited network file selection\n");
-	if (DXApplication::resource.noImageRWNetFile)
-	    printf("no net file read/write\n");
-	if (DXApplication::resource.noImageSaving)
-	    printf("no image saving\n");
-	if (DXApplication::resource.noImagePrinting)
-	    printf("no image printing\n");
-	if (DXApplication::resource.noImageLoad)
-	    printf("no image load \n");
-	if (DXApplication::resource.limitImageOptions)
-	    printf("limit image options\n");
-	if (DXApplication::resource.noRWConfig)
-	    printf("no cfg save\n");
-	if (DXApplication::resource.noPanelEdit)
-	    printf("no panel edit\n");
-	if (DXApplication::resource.noInteractorEdits)
-	    printf("no interactor style\n");
-	if (DXApplication::resource.noInteractorAttributes)
-	    printf("no interactor attributes\n");
-	if (DXApplication::resource.noInteractorMovement)
-	    printf("no interactor movement\n");
-	if (DXApplication::resource.noOpenAllPanels)
-	    printf("no open all panels\n");
-	if (DXApplication::resource.noPanelAccess)
-	    printf("no panel access\n");
-	if (DXApplication::resource.noPanelOptions)
-	    printf("no panel options\n");
-	if (DXApplication::resource.noMessageInfoOption)
-	    printf("no message info option\n");
-	if (DXApplication::resource.noMessageWarningOption)
-	    printf("no message warning option\n");
-	if (DXApplication::resource.noDXHelp)
-	    printf("no DX help\n");
+		//
+		// UI restrictions 
+		//
+		if (DXApplication::resource.restrictionLevel)
+			printf("restriction level %s\n", 
+			DXApplication::resource.restrictionLevel);
+		if (DXApplication::resource.noEditorAccess)
+			printf("no editor access\n");
+		if (DXApplication::resource.limitedNetFileSelection)
+			printf("limited network file selection\n");
+		if (DXApplication::resource.noImageRWNetFile)
+			printf("no net file read/write\n");
+		if (DXApplication::resource.noImageSaving)
+			printf("no image saving\n");
+		if (DXApplication::resource.noImagePrinting)
+			printf("no image printing\n");
+		if (DXApplication::resource.noImageLoad)
+			printf("no image load \n");
+		if (DXApplication::resource.limitImageOptions)
+			printf("limit image options\n");
+		if (DXApplication::resource.noRWConfig)
+			printf("no cfg save\n");
+		if (DXApplication::resource.noPanelEdit)
+			printf("no panel edit\n");
+		if (DXApplication::resource.noInteractorEdits)
+			printf("no interactor style\n");
+		if (DXApplication::resource.noInteractorAttributes)
+			printf("no interactor attributes\n");
+		if (DXApplication::resource.noInteractorMovement)
+			printf("no interactor movement\n");
+		if (DXApplication::resource.noOpenAllPanels)
+			printf("no open all panels\n");
+		if (DXApplication::resource.noPanelAccess)
+			printf("no panel access\n");
+		if (DXApplication::resource.noPanelOptions)
+			printf("no panel options\n");
+		if (DXApplication::resource.noMessageInfoOption)
+			printf("no message info option\n");
+		if (DXApplication::resource.noMessageWarningOption)
+			printf("no message warning option\n");
+		if (DXApplication::resource.noDXHelp)
+			printf("no DX help\n");
 
-	//
-	// automatic graph layout
-	//
-	if (DXApplication::resource.autoLayoutHeight > 0)
-	    printf("automatic graph layout height = %d\n", 
-		DXApplication::resource.autoLayoutHeight);
-	if (DXApplication::resource.autoLayoutGroupSpacing > 0)
-	    printf("automatic graph layout group spacing = %d\n", 
-		DXApplication::resource.autoLayoutGroupSpacing);
-	if (DXApplication::resource.autoLayoutNodeSpacing > 0)
-	    printf("automatic graph layout node spacing = %d\n", 
-		DXApplication::resource.autoLayoutNodeSpacing);
-    }
+		//
+		// automatic graph layout
+		//
+		if (DXApplication::resource.autoLayoutHeight > 0)
+			printf("automatic graph layout height = %d\n", 
+			DXApplication::resource.autoLayoutHeight);
+		if (DXApplication::resource.autoLayoutGroupSpacing > 0)
+			printf("automatic graph layout group spacing = %d\n", 
+			DXApplication::resource.autoLayoutGroupSpacing);
+		if (DXApplication::resource.autoLayoutNodeSpacing > 0)
+			printf("automatic graph layout node spacing = %d\n", 
+			DXApplication::resource.autoLayoutNodeSpacing);
+	}
 
-    if (this->resource.echoVersion)
-    {
-	printf(
+	if (this->resource.echoVersion)
+	{
+		printf(
 #ifdef BETA_VERSION
-	"%s User Interface, version %02d.%02d.%04d Beta (%s, %s)\n",
+			"%s User Interface, version %02d.%02d.%04d Beta (%s, %s)\n",
 #else
-	"%s User Interface, version %02d.%02d.%04d (%s, %s)\n",
+			"%s User Interface, version %02d.%02d.%04d (%s, %s)\n",
 #endif
-	    theApplication->getFormalName(),
-	    DX_MAJOR_VERSION, DX_MINOR_VERSION, DX_MICRO_VERSION,
-	    __TIME__, __DATE__);
-	exit (0);
-    }
-
-    //
-    // If the DXApplication does not allow DX help, then turn off middle
-    // mouse button help which is implemented through the actions added
-    // in IBMApplication::addActions().  This can't be done in addActions() 
-    // because it is called before the options/resources are parsed.
-    //
-    if (!this->appAllowsDXHelp()) {
-	XtActionsRec action;
-	action.string = "IBMButtonHelp";
-	action.proc   = TurnOffButtonHelp; 
-	XtAppAddActions(this->applicationContext, &action, 1);
-    }
-
-    //
-    // Validate and set automatic graph layout values
-    //
-    if (DXApplication::resource.autoLayoutHeight > 0) {
-	const char* errmsg = 
-	    GraphLayout::SetHeightPerLevel (DXApplication::resource.autoLayoutHeight);
-	if (errmsg) {
-	    fprintf (stderr, errmsg);
-	    return FALSE;
+			theApplication->getFormalName(),
+			DX_MAJOR_VERSION, DX_MINOR_VERSION, DX_MICRO_VERSION,
+			__TIME__, __DATE__);
+		exit (0);
 	}
-    }
-    if (DXApplication::resource.autoLayoutGroupSpacing > 0) {
-	const char* errmsg = 
-	    GraphLayout::SetGroupSpacing (DXApplication::resource.autoLayoutGroupSpacing);
-	if (errmsg) {
-	    fprintf (stderr, errmsg);
-	    return FALSE;
-	}
-    }
-    if (DXApplication::resource.autoLayoutNodeSpacing > 0) {
-	const char* errmsg = 
-	    GraphLayout::SetNodeSpacing (DXApplication::resource.autoLayoutNodeSpacing);
-	if (errmsg) {
-	    fprintf (stderr, errmsg);
-	    return FALSE;
-	}
-    }
 
-
-    //
-    // Validate the resources and options
-    //
-    if (this->inEditMode() && !this->appAllowsEditorAccess()) {
-	fprintf(stderr,"-edit and -noEditorAccess options are incompatible.\n");
-	return FALSE;
-    }
-
-    
-    if (this->appAllowsImageRWNetFile()  && 
-	this->appLimitsNetFileSelection()  &&
-	(this->resource.netPath == NULL)) {
-	fprintf(stderr,
-		"The \"limitedNetFileSelection\" or \"noImageRWNetFile\" "
-                 "option requires\na directory pathname specified by "
-                 "the \"DXNETPATH\" environment variable, \n"
-		 "the -netPath command line option, or\n"
-		 "the *netPath resource.\n");
-	return FALSE;
-    } 
-    
-    //
-    // Setup Server Information
-    //
-
-    this->serverInfo.autoStart        = DXApplication::resource.port <= 0;
-    this->serverInfo.server           = DuplicateString(
-					DXApplication::resource.server);
-    this->serverInfo.executive        = DuplicateString(
-					DXApplication::resource.executive);
-    this->serverInfo.workingDirectory = DuplicateString(
-				    DXApplication::resource.workingDirectory);
-    this->serverInfo.userModules = DuplicateString(
-				    DXApplication::resource.userModules);
-    this->serverInfo.port             =
-	DXApplication::resource.port == 0? 1900: DXApplication::resource.port;
-    this->serverInfo.memorySize       = DXApplication::resource.memorySize;
-    this->serverInfo.executiveFlags = NULL;
-    int length = 0;
-    int i;
-    for (i = 1; i < *argcp; ++i)
-    {
-	length += STRLEN(argv[i]) + 1;
-	if (this->serverInfo.executiveFlags == NULL)
-	{
-	    this->serverInfo.executiveFlags = (char *)MALLOC (length);
-	    this->serverInfo.executiveFlags[0] = '\0';
-	}
-	else
-	{
-	    this->serverInfo.executiveFlags = 
-		(char *)REALLOC(this->serverInfo.executiveFlags, length);
-	    strcat(this->serverInfo.executiveFlags, " ");
-	}
-	strcat(this->serverInfo.executiveFlags, argv[i]);
-    }
-
-
-    if (this->inDataViewerMode()) {
-	this->appLicenseType = FullyLicensed; 
-	this->funcLicenseType = ViewerLicense;
-	char *s;
-	if ( (s = getenv("DXVIEWERNET")) ) {
-	    this->resource.program = s; 
-	} else {	
-	    char *buf = new char[1024];
-	    sprintf(buf,"%s/ui/viewer.net",this->getUIRoot());
-	    this->resource.program = buf;	
-	}
-	this->resource.executeOnChange = True;
-	this->resource.noImageRWNetFile = True;
-	this->resource.noRWConfig = True;
-	this->resource.noImageLoad = True;
-	this->resource.noDXHelp = True;
-	this->resource.noPGroupAssignment = True;
-	this->resource.limitImageOptions = True;
-	this->resource.noScriptCommands = True;
-	this->resource.noConnectionMenus = True;
-	this->resource.noWindowsMenus = True;
-	this->resource.anchorMode = IMAGE_ANCHOR_MODE;
-	this->resource.noAnchorAtStartup= True; 
-	this->resource.suppressStartupWindows = True; 
-	this->resource.noConfirmedQuit = True; 
-	// this->resource.cryptKey = 0x54232419; 
-	// this->resource.forceNetFileEncryption = True; 
-    } else {
 	//
-	// Get a license (after parsing resources), and if we can't 
-	// then terminate 
+	// If the DXApplication does not allow DX help, then turn off middle
+	// mouse button help which is implemented through the actions added
+	// in IBMApplication::addActions().  This can't be done in addActions() 
+	// because it is called before the options/resources are parsed.
 	//
-	LicenseTypeEnum app_lic, func_lic;
-	this->determineUILicense(&app_lic,&func_lic);
-	this->appLicenseType = app_lic;
-	this->funcLicenseType = func_lic;
-	if (this->funcLicenseType == Unlicensed) { 
-	    if (this->isFunctionalLicenseForced()) {
-		fprintf(stderr,"%s could not get the requested license\n",
-				    this->getInformalName());
-		this->funcLicenseType = this->getForcedFunctionalLicenseEnum();
-	    } else {
-		this->funcLicenseType = DeveloperLicense;
-	    } 
-#ifdef GUILT_MESSAGE
-	    // We do this below after the anchor window is up.
-	    //WarningMessage(
-	    //	"You are running an unregistered copy of %s\n"
-	    //	"Please contact your sales organization to acquire the\n"
-	    //	"proper license enabling key.",this->getInformalName());
-	    // this->appLicenseType = FullyLicensed;
-	} else if (this->appLicenseType == TimedLicense) {
-	    this->funcLicenseType = DeveloperLicense;
-#endif // GUILT_MESSAGE
-	    this->appLicenseType = TimedLicense;
-	    InstallShutdownTimer(NULL,(XtPointer)(LICENSED_MINUTES*60),NULL);
+	if (!this->appAllowsDXHelp()) {
+		XtActionsRec action;
+		action.string = "IBMButtonHelp";
+		action.proc   = TurnOffButtonHelp; 
+		XtAppAddActions(this->applicationContext, &action, 1);
+	}
+
+	//
+	// Validate and set automatic graph layout values
+	//
+	if (DXApplication::resource.autoLayoutHeight > 0) {
+		const char* errmsg = 
+			GraphLayout::SetHeightPerLevel (DXApplication::resource.autoLayoutHeight);
+		if (errmsg) {
+			fprintf (stderr, errmsg);
+			return FALSE;
+		}
+	}
+	if (DXApplication::resource.autoLayoutGroupSpacing > 0) {
+		const char* errmsg = 
+			GraphLayout::SetGroupSpacing (DXApplication::resource.autoLayoutGroupSpacing);
+		if (errmsg) {
+			fprintf (stderr, errmsg);
+			return FALSE;
+		}
+	}
+	if (DXApplication::resource.autoLayoutNodeSpacing > 0) {
+		const char* errmsg = 
+			GraphLayout::SetNodeSpacing (DXApplication::resource.autoLayoutNodeSpacing);
+		if (errmsg) {
+			fprintf (stderr, errmsg);
+			return FALSE;
+		}
+	}
+
+
+	//
+	// Validate the resources and options
+	//
+	if (this->inEditMode() && !this->appAllowsEditorAccess()) {
+		fprintf(stderr,"-edit and -noEditorAccess options are incompatible.\n");
+		return FALSE;
+	}
+
+
+	if (this->appAllowsImageRWNetFile()  && 
+		this->appLimitsNetFileSelection()  &&
+		(this->resource.netPath == NULL)) {
+			fprintf(stderr,
+				"The \"limitedNetFileSelection\" or \"noImageRWNetFile\" "
+				"option requires\na directory pathname specified by "
+				"the \"DXNETPATH\" environment variable, \n"
+				"the -netPath command line option, or\n"
+				"the *netPath resource.\n");
+			return FALSE;
 	} 
-    }
+
+	//
+	// Setup Server Information
+	//
+
+	this->serverInfo.autoStart        = DXApplication::resource.port <= 0;
+	this->serverInfo.server           = DuplicateString(
+		DXApplication::resource.server);
+	this->serverInfo.executive        = DuplicateString(
+		DXApplication::resource.executive);
+	this->serverInfo.workingDirectory = DuplicateString(
+		DXApplication::resource.workingDirectory);
+	this->serverInfo.userModules = DuplicateString(
+		DXApplication::resource.userModules);
+	this->serverInfo.port             =
+		DXApplication::resource.port == 0? 1900: DXApplication::resource.port;
+	this->serverInfo.memorySize       = DXApplication::resource.memorySize;
+	this->serverInfo.executiveFlags = NULL;
+	int length = 0;
+	int i;
+	for (i = 1; i < *argcp; ++i)
+	{
+		length += STRLEN(argv[i]) + 1;
+		if (this->serverInfo.executiveFlags == NULL)
+		{
+			this->serverInfo.executiveFlags = (char *)MALLOC (length);
+			this->serverInfo.executiveFlags[0] = '\0';
+		}
+		else
+		{
+			this->serverInfo.executiveFlags = 
+				(char *)REALLOC(this->serverInfo.executiveFlags, length);
+			strcat(this->serverInfo.executiveFlags, " ");
+		}
+		strcat(this->serverInfo.executiveFlags, argv[i]);
+	}
 
 
-    i=0;
-    ResourceManager::BuildTheResourceManager();
-    while (DXApplication::ListValuedSettings[i]) {
-	theResourceManager->registerMultiValued(DXApplication::ListValuedSettings[i]);
-	i++;
-    }
+	if (this->inDataViewerMode()) {
+		this->appLicenseType = FullyLicensed; 
+		this->funcLicenseType = ViewerLicense;
+		char *s;
+		if ( (s = getenv("DXVIEWERNET")) ) {
+			this->resource.program = s; 
+		} else {	
+			char *buf = new char[1024];
+			sprintf(buf,"%s/ui/viewer.net",this->getUIRoot());
+			this->resource.program = buf;	
+		}
+		this->resource.executeOnChange = True;
+		this->resource.noImageRWNetFile = True;
+		this->resource.noRWConfig = True;
+		this->resource.noImageLoad = True;
+		this->resource.noDXHelp = True;
+		this->resource.noPGroupAssignment = True;
+		this->resource.limitImageOptions = True;
+		this->resource.noScriptCommands = True;
+		this->resource.noConnectionMenus = True;
+		this->resource.noWindowsMenus = True;
+		this->resource.anchorMode = IMAGE_ANCHOR_MODE;
+		this->resource.noAnchorAtStartup= True; 
+		this->resource.suppressStartupWindows = True; 
+		this->resource.noConfirmedQuit = True; 
+		// this->resource.cryptKey = 0x54232419; 
+		// this->resource.forceNetFileEncryption = True; 
+	} else {
+		//
+		// Get a license (after parsing resources), and if we can't 
+		// then terminate 
+		//
+		LicenseTypeEnum app_lic, func_lic;
+		this->determineUILicense(&app_lic,&func_lic);
+		this->appLicenseType = app_lic;
+		this->funcLicenseType = func_lic;
+		if (this->funcLicenseType == Unlicensed) { 
+			if (this->isFunctionalLicenseForced()) {
+				fprintf(stderr,"%s could not get the requested license\n",
+					this->getInformalName());
+				this->funcLicenseType = this->getForcedFunctionalLicenseEnum();
+			} else {
+				this->funcLicenseType = DeveloperLicense;
+			} 
+#ifdef GUILT_MESSAGE
+			// We do this below after the anchor window is up.
+			//WarningMessage(
+			//	"You are running an unregistered copy of %s\n"
+			//	"Please contact your sales organization to acquire the\n"
+			//	"proper license enabling key.",this->getInformalName());
+			// this->appLicenseType = FullyLicensed;
+		} else if (this->appLicenseType == TimedLicense) {
+			this->funcLicenseType = DeveloperLicense;
+#endif // GUILT_MESSAGE
+			this->appLicenseType = TimedLicense;
+			InstallShutdownTimer(NULL,(XtPointer)(LICENSED_MINUTES*60),NULL);
+		} 
+	}
+
+
+	i=0;
+	ResourceManager::BuildTheResourceManager();
+	while (DXApplication::ListValuedSettings[i]) {
+		theResourceManager->registerMultiValued(DXApplication::ListValuedSettings[i]);
+		i++;
+	}
 
 
 #define START_SERVER_EARLY 0	// Not right before 3.1 release
 #if START_SERVER_EARLY 
-    DXChild *c = NULL;
-    if (!this->resource.runUIOnly)
-	c = this->startServer(); 
+	DXChild *c = NULL;
+	if (!this->resource.runUIOnly)
+		c = this->startServer(); 
 #endif
-    //
-    // Create the first/root/anchor network and place it in the
-    // network list.
-    this->network = this->newNetwork();
-
-
-    if (this->appAllowsEditorAccess()) {
 	//
-	// Initialize the ConfigurationDialog allocator for the editor
-	//
-	theCDBAllocatorDictionary = new CDBAllocatorDictionary;
+	// Create the first/root/anchor network and place it in the
+	// network list.
+	this->network = this->newNetwork();
+
+
+	if (this->appAllowsEditorAccess()) {
+		//
+		// Initialize the ConfigurationDialog allocator for the editor
+		//
+		theCDBAllocatorDictionary = new CDBAllocatorDictionary;
+
+		//
+		// Initialize the StandIn allocator for the editor.
+		//
+		theSIAllocatorDictionary = new SIAllocatorDictionary;
+	} 
 
 	//
-	// Initialize the StandIn allocator for the editor.
+	// Move to the indicated directory 
 	//
-	theSIAllocatorDictionary = new SIAllocatorDictionary;
-    } 
-
-    //
-    // Move to the indicated directory 
-    //
-    if (this->serverInfo.workingDirectory && 
-	(chdir(this->serverInfo.workingDirectory) < 0)) {
-	    fprintf(stderr,"Could not change directory to %s",
-			this->serverInfo.workingDirectory);
-    }
+	if (this->serverInfo.workingDirectory && 
+		(chdir(this->serverInfo.workingDirectory) < 0)) {
+			fprintf(stderr,"Could not change directory to %s",
+				this->serverInfo.workingDirectory);
+	}
 
 
-    //
-    // Load the MDF files.  If there was a user mdf file (i.e. -mdf foo.mdf)
-    // then assume the exec has loaded it itself.
-    //
-    this->loadMDF();
-    this->loadIDF();
-    if (this->resource.userModules)
-	this->loadUDF(this->resource.userModules, NULL, FALSE);
+	//
+	// Load the MDF files.  If there was a user mdf file (i.e. -mdf foo.mdf)
+	// then assume the exec has loaded it itself.
+	//
+	this->loadMDF();
+	this->loadIDF();
+	if (this->resource.userModules)
+		this->loadUDF(this->resource.userModules, NULL, FALSE);
 
 
-    // 
-    // Decorator Styles
-    //
-    BuildtheDecoratorStyleDictionary();
+	// 
+	// Decorator Styles
+	//
+	BuildtheDecoratorStyleDictionary();
 
 #if 0
 #if 00 && SYSTEM_MACROS // Net yet, dawood 11/17/94
-    //
-    // load the set of system macros from $DXROOT/ui/.
-    //
-    char path[1024];
-    sprintf(path,"%s/ui",this->getUIRoot());
-    MacroDefinition::LoadMacroDirectories(path, FALSE, NULL, TRUE);
+	//
+	// load the set of system macros from $DXROOT/ui/.
+	//
+	char path[1024];
+	sprintf(path,"%s/ui",this->getUIRoot());
+	MacroDefinition::LoadMacroDirectories(path, FALSE, NULL, TRUE);
 #endif
 #endif
 
-    //
-    // load the initial set of user macros.
-    //
-    MacroDefinition::LoadMacroDirectories(this->resource.macros);
+	//
+	// load the initial set of user macros.
+	//
+	MacroDefinition::LoadMacroDirectories(this->resource.macros);
 
-    //
-    // Create the anchor window.
-    //
-    if (!this->inEditMode())
-    {
-        if (this->inImageMode())
-	    this->anchor = this->newImageWindow(this->network);
-	else if (this->inMenuBarMode())
-	    this->anchor = new DXAnchorWindow ("dxAnchor", TRUE, TRUE);
-	else {
-	    fprintf(stderr,"Unrecognized anchor mode\n");
-	    ASSERT(0);
-	}
 	//
-	// Initialize the anchor window so it can handle reading in the network
-	// (before being managed).
+	// Create the anchor window.
 	//
-	if (this->applyWindowPlacements() || 
+	if (!this->inEditMode())
+	{
+		if (this->inImageMode())
+			this->anchor = this->newImageWindow(this->network);
+		else if (this->inMenuBarMode())
+			this->anchor = new DXAnchorWindow ("dxAnchor", TRUE, TRUE);
+		else {
+			fprintf(stderr,"Unrecognized anchor mode\n");
+			ASSERT(0);
+		}
+		//
+		// Initialize the anchor window so it can handle reading in the network
+		// (before being managed).
+		//
+		if (this->applyWindowPlacements() || 
 			DXApplication::resource.noAnchorAtStartup)
-	    this->anchor->initialize();
-	else {
-	    this->anchor->manage();
-	    this->setBusyCursor(TRUE);
-	    wasSetBusy = TRUE;
+			this->anchor->initialize();
+		else {
+			this->anchor->manage();
+			this->setBusyCursor(TRUE);
+			wasSetBusy = TRUE;
+		}
 	}
-    }
-    else
-    {
-	this->anchor = this->newNetworkEditor(this->network);
-	if (!this->anchor)
-	    return FALSE;    // Expect newNetworkEditor() to issue message.
+	else
+	{
+		this->anchor = this->newNetworkEditor(this->network);
+		if (!this->anchor)
+			return FALSE;    // Expect newNetworkEditor() to issue message.
+
+		//
+		// The editor must always be managed before reading .nets
+		// (we could do it with some work, but doesn't seem useful especially
+		// since we don't want error messages coming up behind the VPE).
+		//
+		this->anchor->manage();
+		this->setBusyCursor(TRUE);
+		wasSetBusy = TRUE;
+	}
+
 
 	//
-	// The editor must always be managed before reading .nets
-	// (we could do it with some work, but doesn't seem useful especially
-	// since we don't want error messages coming up behind the VPE).
+	// Create the message and debug windows.
 	//
-	this->anchor->manage();
-	this->setBusyCursor(TRUE);
-	wasSetBusy = TRUE;
-    }
-
-
-    //
-    // Create the message and debug windows.
-    //
-    this->messageWindow = this->newMsgWin();
-    this->messageWindow->initialize();
+	this->messageWindow = this->newMsgWin();
+	this->messageWindow->initialize();
 
 
 
-    //
-    // If requested, read in the network.  This is after opening the anchor
-    // window because image nodes may wish to bind with the initial image
-    // window, etc.
-    if (this->resource.program != NULL)
-	this->openFile(this->resource.program, this->resource.cfgfile);
+	//
+	// If requested, read in the network.  This is after opening the anchor
+	// window because image nodes may wish to bind with the initial image
+	// window, etc.
+	if (this->resource.program != NULL)
+		this->openFile(this->resource.program, this->resource.cfgfile);
 
-    if (this->inDataViewerMode()) {
- 	Node *n = this->network->findNode("Import");	
-	if (!n) 
-	    ErrorMessage("Can not find Import tool in viewing program"); 
-	else  {
-	    const char *s = this->getDataViewerImportFile();
-	    ASSERT(s);
-	    n->setInputValue(1,s);
+	if (this->inDataViewerMode()) {
+		Node *n = this->network->findNode("Import");	
+		if (!n) 
+			ErrorMessage("Can not find Import tool in viewing program"); 
+		else  {
+			const char *s = this->getDataViewerImportFile();
+			ASSERT(s);
+			n->setInputValue(1,s);
+		}
 	}
-    }
 
-    //
-    // Display the anchor window (after reading the network which may have
-    // window sizing information). 
-    //
-    if (DXApplication::resource.noAnchorAtStartup)
-	XtRealizeWidget(this->anchor->getRootWidget());
-    else if (!this->anchor->isManaged()) {
-	this->anchor->manage();
-	this->setBusyCursor(TRUE);
-	wasSetBusy = TRUE;
-    }
+	//
+	// Display the anchor window (after reading the network which may have
+	// window sizing information). 
+	//
+	if (DXApplication::resource.noAnchorAtStartup)
+		XtRealizeWidget(this->anchor->getRootWidget());
+	else if (!this->anchor->isManaged()) {
+		this->anchor->manage();
+		this->setBusyCursor(TRUE);
+		wasSetBusy = TRUE;
+	}
 
-    //
-    // Post the copyright message if the anchor window came up.
-    //
-    if (!DXApplication::resource.noAnchorAtStartup)
-	this->postCopyrightNotice();
+	//
+	// Post the copyright message if the anchor window came up.
+	//
+	if (!DXApplication::resource.noAnchorAtStartup)
+		this->postCopyrightNotice();
 
 #ifdef HAS_CLIPNOTIFY_EXTENSION
-    //
-    // If applicable, see if this is an IBM POWER Visualization Server 
-    // Video Controler
-    //
-    int majorCode;
-    int errorCode;
-    if (this->hasClipnotifyExtension =
-	XQueryExtension
-	    (this->display,
-	     CLIPNOTIFY_PROTOCOL_NAME,
-	     &majorCode,
-	     &this->clipnotifyEventCode,
-	     &errorCode))
-    {
-	XSetWindowAttributes        attributes;
-	Window win =
-	    XCreateWindow
+	//
+	// If applicable, see if this is an IBM POWER Visualization Server 
+	// Video Controler
+	//
+	int majorCode;
+	int errorCode;
+	if (this->hasClipnotifyExtension =
+		XQueryExtension
 		(this->display,
-		 RootWindow(this->display, 0),
-		 0,  0,
-		 10, 10,
-		 2,  8,
-		 CopyFromParent,
-		 CopyFromParent,
-		 NULL,
-		 &attributes);
-	XClipNotifyAddWin(this->display, win);
-    }
+		CLIPNOTIFY_PROTOCOL_NAME,
+		&majorCode,
+		&this->clipnotifyEventCode,
+		&errorCode))
+	{
+		XSetWindowAttributes        attributes;
+		Window win =
+			XCreateWindow
+			(this->display,
+			RootWindow(this->display, 0),
+			0,  0,
+			10, 10,
+			2,  8,
+			CopyFromParent,
+			CopyFromParent,
+			NULL,
+			&attributes);
+		XClipNotifyAddWin(this->display, win);
+	}
 #endif
 
-    //
-    // Refresh the screen.
-    //
-    XmUpdateDisplay(this->getRootWidget());
+	//
+	// Refresh the screen.
+	//
+	XmUpdateDisplay(this->getRootWidget());
 
 
 #ifndef	DXD_WIN
-    //
-    // Connect to exec first 
-    //
-    if (!this->resource.runUIOnly)
-    {
+	//
+	// Connect to exec first 
+	//
+	if (!this->resource.runUIOnly)
+	{
 #if !START_SERVER_EARLY 
-	DXChild *c = this->startServer(); 
+		DXChild *c = this->startServer(); 
 #else
-	ASSERT(c);
+		ASSERT(c);
 #endif
-	this->completeConnection(c);
-    }
+		this->completeConnection(c);
+	}
 #endif
 
-    //
-    // If there is an application to talk to, connect to it.
-    //
-    if (this->resource.applicationPort != 0)
-	this->connectToApplication(this->resource.applicationHost,
-				    this->resource.applicationPort);
+	//
+	// If there is an application to talk to, connect to it.
+	//
+	if (this->resource.applicationPort != 0)
+		this->connectToApplication(this->resource.applicationHost,
+		this->resource.applicationPort);
 
 
-    //
-    // If this is a demo license, then post a message after the anchor
-    // has been managed.
-    //
-    if (this->appLicenseType == TimedLicense) {
-	ModalWarningMessage(this->anchor->getRootWidget(),
-	    "You do not have license to run %s.\n"
-	    "However, you have been given a %d minute demonstration license.\n"
-	    "\nNote that this license does NOT allow saving visual programs.",
-	    theDXApplication->getInformalName(), LICENSED_MINUTES);
+	//
+	// If this is a demo license, then post a message after the anchor
+	// has been managed.
+	//
+	if (this->appLicenseType == TimedLicense) {
+		ModalWarningMessage(this->anchor->getRootWidget(),
+			"You do not have license to run %s.\n"
+			"However, you have been given a %d minute demonstration license.\n"
+			"\nNote that this license does NOT allow saving visual programs.",
+			theDXApplication->getInformalName(), LICENSED_MINUTES);
 #ifdef GUILT_MESSAGE
-    } else if (this->appLicenseType == Unlicensed) {
-	ModalWarningMessage(this->anchor->getRootWidget(),
-	    "\nYOUR ARE RUNNING AN UNREGISTER COPY OF %s!!!!\n\n"
-	    "Use of this software is governed by your software license\n"
-	    "agreement which you, the user, must abide by.  Please contact\n"
-	    "your sales representative and system administrator to properly\n"
-	    "register this copy of the software.",
-		this->getInformalName());
-	this->appLicenseType = FullyLicensed;
+	} else if (this->appLicenseType == Unlicensed) {
+		ModalWarningMessage(this->anchor->getRootWidget(),
+			"\nYOUR ARE RUNNING AN UNREGISTER COPY OF %s!!!!\n\n"
+			"Use of this software is governed by your software license\n"
+			"agreement which you, the user, must abide by.  Please contact\n"
+			"your sales representative and system administrator to properly\n"
+			"register this copy of the software.",
+			this->getInformalName());
+		this->appLicenseType = FullyLicensed;
 #endif // GUILT_MESSAGE
-    }
- 
-    ASSERT(this->appLicenseType != Unlicensed);
+	}
 
-    if (wasSetBusy) this->setBusyCursor(FALSE);
+	ASSERT(this->appLicenseType != Unlicensed);
+
+	if (wasSetBusy) this->setBusyCursor(FALSE);
 
 #ifdef	DXD_WIN
-    //
-    // Connect to exec first 
-    //
-    if (!this->resource.runUIOnly)
-    {
-	DXChild *c = this->startServer(); 
-	this->completeConnection(c);
-    }
+	//
+	// Connect to exec first 
+	//
+	if (!this->resource.runUIOnly)
+	{
+		DXChild *c = this->startServer(); 
+		this->completeConnection(c);
+	}
 #endif
 
-    return TRUE;
+	return TRUE;
 }
 
 #if NEED_TO_WATCH_EVENTS

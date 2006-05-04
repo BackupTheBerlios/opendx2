@@ -1181,112 +1181,112 @@ PacketIF::parsePacket()
 void
 PacketIF::packetReceive(bool readSocket)
 {
-    int  buflen, length;
-    int  i;
-    char string[1024];
-    char buffer[4096 + 1];
+	int  buflen, length;
+	int  i;
+	char string[1024];
+	char buffer[4096 + 1];
 
 #ifdef	USING_WINSOCKS
-    if(DXMessageOnSocket(this->socket) <= 0) return ;
+	if(DXMessageOnSocket(this->socket) <= 0) return ;
 #endif
-    buffer[0] = NUL(char);
-    buflen = 0;
-    if (readSocket) {
-	buflen = read(this->socket, buffer, 4096);
-	if (buflen <= 0)
-	{
-	    this->error = true;
-	    return;
+	buffer[0] = NUL(char);
+	buflen = 0;
+	if (readSocket) {
+		buflen = read(this->socket, buffer, 4096);
+		if (buflen <= 0)
+		{
+			this->error = true;
+			return;
+		}
+		buffer[buflen] = NUL(char);
+	} else {
+		//
+		// Copy the packets that had been saved after being read before
+		// a deferPacketHandling was requested.
+		// This is not the most efficient way to do things, but it gets
+		// the job done.
+		//
+		ASSERT(!this->deferPacketHandling);
+		strcpy(buffer,this->line);
+		buflen = STRLEN(buffer);
+		this->line[0]     = NUL(char);
+		this->line_length = 0;
 	}
-	buffer[buflen] = NUL(char);
-    } else {
+
+	i              = 0;
+	while (!this->deferPacketHandling) 
+	{
+		length = 0;
+		while(length < 1023 &&
+			buffer[i] != NUL(char) &&
+			buffer[i] != '\n')
+		{
+			string[length++] = buffer[i++];
+		}
+		if (buffer[i] == '\n')
+		{
+			string[length++] = buffer[i++];
+		}
+		string[length] = NUL(char);
+
+		if (length <= 0)
+		{
+			break;
+		}
+
+		/*
+		* Append the retrieved line (fragment) to contents of current line
+		* (which may be empty or filled with a partial line).
+		*/
+		this->line_length += length;
+		while (this->line_length > this->alloc_line_length)
+			this->line = (char *)REALLOC(this->line, 
+			this->alloc_line_length += 1000);
+
+		strcat(this->line, string);
+
+
+		/*
+		* If a complete line has been assembled...
+		*/
+		if (this->line[this->line_length - 1] == '\n')
+		{
+			/*
+			* Remove the trailing newline character.
+			*/
+			this->line_length--;
+			this->line[this->line_length] = NUL(char);
+
+			/*
+			* Process the completed line....
+			*/
+			this->parsePacket();
+
+			/*
+			* Reinitialize the line.
+			*/
+			this->line[0]     = NUL(char);
+			this->line_length = 0;
+		}
+	}
+
 	//
-	// Copy the packets that had been saved after being read before
-	// a deferPacketHandling was requested.
-	// This is not the most efficient way to do things, but it gets
-	// the job done.
+	// If we didn't finish the buffer (because of a stalling of the packet
+	// handling), then concatenate onto the existing
+	// line for retrieve later (see above).
 	//
-        ASSERT(!this->deferPacketHandling);
-        strcpy(buffer,this->line);
-	buflen = STRLEN(buffer);
-	this->line[0]     = NUL(char);
-	this->line_length = 0;
-    }
-
-    i              = 0;
-    while (!this->deferPacketHandling) 
-    {
-	length = 0;
-	while(length < 1023 &&
-	      buffer[i] != NUL(char) &&
-	      buffer[i] != '\n')
-	{
-	    string[length++] = buffer[i++];
+	if (i != buflen) {
+		ASSERT(this->isPacketHandlingStalled());
+		int leftover = buflen-i+1;
+		ASSERT(leftover > 0);
+		ASSERT(this->line_length == 0);
+		while (leftover > this->alloc_line_length)
+			this->line = (char *)REALLOC(this->line, 
+			this->alloc_line_length += leftover+1);
+		memcpy((void*)this->line, (void*)(buffer+i), leftover);
+		this->line_length = leftover;
+		this->line[leftover] = 0;
 	}
-	if (buffer[i] == '\n')
-	{
-	    string[length++] = buffer[i++];
-	}
-	string[length] = NUL(char);
-
-	if (length <= 0)
-	{
-	    break;
-	}
-
-	/*
-	 * Append the retrieved line (fragment) to contents of current line
-	 * (which may be empty or filled with a partial line).
-	 */
-	this->line_length += length;
-	while (this->line_length > this->alloc_line_length)
-	    this->line = (char *)REALLOC(this->line, 
-					 this->alloc_line_length += 1000);
-
-	strcat(this->line, string);
-
-
-	/*
-	 * If a complete line has been assembled...
-	 */
-	if (this->line[this->line_length - 1] == '\n')
-	{
-	    /*
-	     * Remove the trailing newline character.
-	     */
-	    this->line_length--;
-	    this->line[this->line_length] = NUL(char);
-
-	    /*
-	     * Process the completed line....
-	     */
-	    this->parsePacket();
-
-	    /*
-	     * Reinitialize the line.
-	     */
-	    this->line[0]     = NUL(char);
-	    this->line_length = 0;
-	}
-    }
-
-    //
-    // If we didn't finish the buffer (because of a stalling of the packet
-    // handling), then concatenate onto the existing
-    // line for retrieve later (see above).
-    //
-    if (i != buflen) {
-	ASSERT(this->isPacketHandlingStalled());
-	int leftover = buflen-i+1;
-	ASSERT(leftover > 0);
-	ASSERT(this->line_length == 0);
-	while (leftover > this->alloc_line_length)
-	    this->line = (char *)REALLOC(this->line, 
-					 this->alloc_line_length += leftover+1);
-	memcpy((void*)this->line, (void*)(buffer+i), leftover);
-	this->line_length = leftover;
-	this->line[leftover] = 0;
-    }
 }
 
 void PacketIF::setErrorCallback(PacketIFCallback callback,

@@ -33,7 +33,6 @@ class ConfirmedExitCommand : public OptionalPreActionCommand
 {
   private:
 
-    Command     *command;
     DXApplication *application;
 
   protected:
