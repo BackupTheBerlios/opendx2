@@ -2382,9 +2382,12 @@ int _dxf_GetPhysicalProcs()
     nphysprocs = _system_configuration.ncpus; /* In Kernel space */
 
 #elif defined(intelnt) || defined(WIN32)
+#if 0
     SYSTEM_INFO sysinfo;
 	GetSystemInfo(&sysinfo);
 	nphysprocs = sysinfo.dwNumberOfProcessors;
+#endif
+    nphysprocs = 1;
 #else
     nphysprocs = 1;
 #endif
