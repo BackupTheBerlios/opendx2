@@ -854,6 +854,7 @@ INPUT value [visible:0]; string; "data"; component of table containing lookup re
 INPUT destination [visible:0]; string; "lookedup"; component of input in which to put result
 INPUT ignore [visible:0]; string list; (no default); properties to ignore in string lookup
 OPTIONS case; space; lspace; rspace; lrspace; punctuation
+INPUT notFound [visible:0]; string or value; (zero or empty string); what to return when a value is not found in lookup
 OUTPUT lookedup; field or value or value list; the lookedup values
 
 MODULE Map

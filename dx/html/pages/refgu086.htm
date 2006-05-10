@@ -43,7 +43,7 @@ MINING">
 <P>
 <P><STRONG>Syntax</STRONG>
 <PRE>
-<STRONG>output</STRONG> = Lookup(<STRONG>input, table, data, lookup, value, destination, ignore</STRONG>);
+<STRONG>output</STRONG> = Lookup(<STRONG>input, table, data, lookup, value, destination, ignore, notFound</STRONG>);
 </PRE>
 <P><STRONG>Inputs</STRONG>
 <BR>
@@ -94,6 +94,12 @@ list
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">(no default)
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">Properties to ignore in string
 lookup
+</TD></TR><TR>
+<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>notFound</STRONG></TT>
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">value or string
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">(zero or empty string)
+</TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">What to return for data values that were 
+not found.
 </TD></TR></TABLE>
 <P><STRONG>Outputs</STRONG>
 <BR>
@@ -139,6 +145,12 @@ on both the left and right sides (but not internal white space), and
 characters and white space). <TT><STRONG>ignore</STRONG></TT> can be a list of
 strings; for example, a commonly used combination
 is &#123;"space", "case", "punctuation"&#125;.
+</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>notFound</STRONG></TT>
+</B></TD><TD><P>value to return when a given lookup value is not found. By default,
+Lookup returns 0 or "" for any item that is not found in the lookup table.
+This can be confounding, e.g., when returning "positions" to obtain
+indices: one cannot distinguish between not found and found in the 0-th position.
+Specifying <strong>notFound</strong> provides a means to disambiguate in these cases.
 </TD></TR></TABLE>
 <P>
 Lookup uses one component to find another by "looking up" the

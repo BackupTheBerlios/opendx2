@@ -77,7 +77,7 @@ traverse( Object *in, Object *out )
             DXGetMemberCount( ( Group ) in[ 0 ], &memknt );
 
             for ( i = 0; i < memknt; i++ ) {
-                Object new_in[ 7 ], new_out[ 1 ];
+                Object new_in[ 8 ], new_out[ 1 ];
 
                 if ( in[ 0 ] )
                     new_in[ 0 ] = DXGetEnumeratedMember( ( Group ) in[ 0 ], i, NULL );
@@ -95,6 +95,8 @@ traverse( Object *in, Object *out )
                 new_in[ 5 ] = in[ 5 ];
 
                 new_in[ 6 ] = in[ 6 ];
+
+                new_in[ 7 ] = in[ 7 ];
 
                 if ( groupClass != CLASS_GROUP ) {
                     if ( i == 0 ) {
@@ -139,7 +141,7 @@ traverse( Object *in, Object *out )
         }
 
     case CLASS_XFORM: {
-            Object new_in[ 7 ], new_out[ 1 ];
+            Object new_in[ 8 ], new_out[ 1 ];
 
             if ( in[ 0 ] )
                 DXGetXformInfo( ( Xform ) in[ 0 ], &new_in[ 0 ], NULL );
@@ -158,6 +160,8 @@ traverse( Object *in, Object *out )
 
             new_in[ 6 ] = in[ 6 ];
 
+            new_in[ 7 ] = in[ 7 ];
+
             DXGetXformInfo( ( Xform ) out[ 0 ], &new_out[ 0 ], NULL );
 
             if ( ! traverse( new_in, new_out ) )
@@ -169,7 +173,7 @@ traverse( Object *in, Object *out )
         }
 
     case CLASS_CLIPPED: {
-            Object new_in[ 7 ], new_out[ 1 ];
+            Object new_in[ 8 ], new_out[ 1 ];
 
 
             if ( in[ 0 ] )
@@ -188,6 +192,8 @@ traverse( Object *in, Object *out )
             new_in[ 5 ] = in[ 5 ];
 
             new_in[ 6 ] = in[ 6 ];
+
+            new_in[ 7 ] = in[ 7 ];
 
             DXGetClippedInfo( ( Clipped ) out[ 0 ], &new_out[ 0 ], NULL );
 
@@ -236,6 +242,16 @@ doLeaf( Object *in, Object *out )
     Class in_class;
     Class in_data_class;
     char *str;
+
+    /* Support user-supplied return value for unfounds */
+    Object nfObj = NULL;
+    int delNfObj = 0;
+    int nfKnt = 0;
+    Category nfCat;
+    Type nfType;
+    int nfRank;
+    int nfShape[30];
+    int  nfSize = 0;
 
     memset( &cat_data, 0, sizeof( catinfo ) );
     memset( &cat_lookup, 0, sizeof( catinfo ) );
@@ -300,6 +316,23 @@ doLeaf( Object *in, Object *out )
                         "none, case, space, lspace, rspace, lrspace, punctuation", ignore );
             goto error;
         }
+    }
+
+    nfObj = in[7];
+    if( nfObj ) {
+	switch(DXGetObjectClass(nfObj)){
+	case CLASS_STRING:
+	    /* turn string into array */
+	    delNfObj = 1;
+	    nfObj = (Object) DXMakeStringList(1, DXGetString((String)nfObj));
+	    /* fall thru...*/
+	case CLASS_ARRAY:
+	    DXGetArrayInfo( (Array) nfObj,&nfKnt,&nfType,&nfCat,&nfRank,nfShape );
+	    break;
+	default:
+	    DXSetError( ERROR_BAD_PARAMETER, "notFound must be a string or value" );
+	    goto error;
+	}
     }
 
     if ( look.ignore & CAT_I_SPACE )
@@ -477,6 +510,35 @@ doLeaf( Object *in, Object *out )
     memcpy( look.dest, look.value, sizeof( catinfo ) );
 
     DXGetArrayInfo( value_array, &data_knt, &data_type, &category, &rank, shape );
+
+    if( nfObj ){
+      if(data_type == TYPE_STRING){
+	/* check type, and be sure result shape is max of value
+	 * and not-found value's shape.
+	 */
+        if( nfType != TYPE_STRING ) {
+          DXSetError( ERROR_DATA_INVALID, "notFound type does not match value type" );
+          goto error;
+	}
+	if( nfShape[0] > shape[0] )
+		shape[0] = nfShape[0];
+      }
+      else {
+        /* convert supplied not-found value to same type as value component */
+        Array tmp;
+        if(! (tmp = DXArrayConvertV( (Array)nfObj, data_type, category, rank, shape ))){
+          DXSetError( ERROR_DATA_INVALID, "notFound type does not match value type" );
+          goto error;
+        }
+        if( delNfObj )
+	  DXDelete( nfObj );
+        nfObj = (Object) tmp;
+        delNfObj = 1;
+      }
+      look.nfValue = (Pointer) DXGetArrayData((Array)nfObj);
+      look.nfLen   = DXGetItemSize((Array)nfObj);
+    }
+
     look.dest->comp_array = ( Array ) DXNewArrayV( data_type, category, rank, shape );
     DXAddArrayData( look.dest->comp_array, 0, look.data->num, NULL );
     look.dest->comp_data = DXGetArrayData( ( Array ) ( look.dest->comp_array ) );
@@ -495,6 +557,9 @@ doLeaf( Object *in, Object *out )
 
         goto error;
     }
+
+    if( delNfObj)
+	    DXDelete( nfObj );
 
     if ( free_input ) {
         DXDelete( ( Object ) input_array );
@@ -546,6 +611,9 @@ error:
 
     if ( free_value )
         DXDelete( ( Object ) look.value->o );
+
+    if( delNfObj)
+	    DXDelete( nfObj );
 
     if ( look.dest->comp_array )
         DXDelete( ( Object ) look.dest->comp_array );
@@ -753,6 +821,10 @@ static Error do_lookup( lookupinfo *l )
                 memcpy( v, ( char * ) found->value, size );
             }
 
+	    else if (l->nfValue) {
+                memcpy( v, ( char * ) l->nfValue, l->nfLen );
+	    }
+
             else {
                 memset( v, 0, size );
             }
@@ -766,6 +838,10 @@ static Error do_lookup( lookupinfo *l )
             if ( n >= 0 && n < l->value->num ) {
                 memcpy( v, ( char * ) ( &( ( ( char * ) ( l->value->comp_data ) ) [ n * size ] ) ), size );
             }
+
+	    else if (l->nfValue) {
+                memcpy( v, ( char * ) l->nfValue, l->nfLen );
+	    }
 
             else {
                 memset( v, 0, size );

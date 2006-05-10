@@ -132,6 +132,8 @@ typedef struct {
     catinfo *dest;
     table_entry *lut;
     int ignore;
+    Pointer nfValue;  /* allow explicit return val for unfound */
+    int nfLen;
 } lookupinfo;
 
 #endif /* _CAT_H_ */
