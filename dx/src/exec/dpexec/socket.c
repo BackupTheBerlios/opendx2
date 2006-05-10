@@ -14,10 +14,6 @@
 #if !defined(SOCKET)
 #define SOCKET int
 #endif
-
-#if !defined(INVALID_SOCKET)
-#define INVALID_SOCKET -1;
-#endif
  
 #include <stdio.h>
 #include <ctype.h>
@@ -112,7 +108,11 @@ SFILE *
 _dxf_ExInitServer(int pport)
 {
 
+#if defined(HANDLE_SOCKET)
 	SOCKET sock = INVALID_SOCKET;
+#else
+	SOCKET sock = -1;
+#endif
 
     struct sockaddr_in server;
 #if DXD_SOCKET_UNIXDOMAIN_OK
@@ -139,7 +139,11 @@ retry:
 
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
+#if defined(HANDLE_SOCKET)
 	if (sock < 0 || sock == INVALID_SOCKET)
+#else
+	if(sock < 0)
+#endif
     {
 	perror ("socket");
 	fd = -1;
