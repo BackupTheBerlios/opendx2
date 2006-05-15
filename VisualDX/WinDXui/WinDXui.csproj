@@ -42,10 +42,13 @@
     <Compile Include="ApplicIF.cs" />
     <Compile Include="Ark.cs" />
     <Compile Include="ArkStandIn.cs" />
+    <Compile Include="AttributeParameter.cs" />
     <Compile Include="BaseApplication.cs">
     </Compile>
+    <Compile Include="BinaryParameter.cs" />
     <Compile Include="CDBAllocatorDictionary.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="CloseWindowCommand.cs" />
     <Compile Include="CmdEntry.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandInterface.cs">
@@ -61,6 +64,12 @@
     <Compile Include="ConfirmedExitCommand.cs" />
     <Compile Include="ConfirmedQuitCommand.cs" />
     <Compile Include="ControlPanel.cs" />
+    <Compile Include="ControlPanelAccessDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ControlPanelAccessDialog.Designer.cs">
+      <DependentUpon>ControlPanelAccessDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Decorator.cs" />
     <Compile Include="DecoratorStyle.cs" />
     <Compile Include="DeferrableAction.cs" />
@@ -73,6 +82,18 @@
       <DependentUpon>DialogManager.cs</DependentUpon>
     </Compile>
     <Compile Include="DisconnectFromServerCommand.cs" />
+    <Compile Include="DisplayDefinition.cs" />
+    <Compile Include="DisplayNode.cs" />
+    <Compile Include="DrivenDefinition.cs" />
+    <Compile Include="DrivenNode.cs" />
+    <Compile Include="DXAnchorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DXAnchorWindow.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DXAnchorWindow.resx</DependentUpon>
+    </Compile>
     <Compile Include="DXApplication.cs">
     </Compile>
     <Compile Include="DXChild.cs" />
@@ -82,6 +103,14 @@
     <Compile Include="DXTensor.cs" />
     <Compile Include="DXType.cs" />
     <Compile Include="DXValue.cs" />
+    <Compile Include="DXWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DXWindow.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DXWindow.resx</DependentUpon>
+    </Compile>
     <Compile Include="EditorWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,6 +124,7 @@
     <Compile Include="GraphLayout.cs" />
     <Compile Include="GroupedObject.cs" />
     <Compile Include="GroupManager.cs" />
+    <Compile Include="Help.cs" />
     <Compile Include="HelpMenuCommand.cs" />
     <Compile Include="ImageWindow.cs">
       <SubType>Form</SubType>
@@ -110,9 +140,26 @@
     </Compile>
     <Compile Include="InteractorInstance.cs" />
     <Compile Include="InteractorStyle.cs" />
+    <Compile Include="JavaNet.cs" />
     <Compile Include="LinkHandler.cs" />
     <Compile Include="MacroDefinition.cs" />
     <Compile Include="MacroNode.cs" />
+    <Compile Include="MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModuleMessagingNode.cs" />
+    <Compile Include="NDAllocatorDictionary.cs" />
+    <Compile Include="NoUndoAnchorCommand.cs" />
+    <Compile Include="NoUndoJavaNetCommand.cs" />
+    <Compile Include="StringsTable.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StringsTable.resx</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="MsgWin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -192,9 +239,22 @@
     <Compile Include="StandIn.cs" />
     <Compile Include="StepperInteractor.cs" />
     <Compile Include="SymbolManager.cs" />
+    <Compile Include="test.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="test.Designer.cs">
+      <DependentUpon>test.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tests.cs" />
+    <Compile Include="TextEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextEditDialog.Designer.cs">
+      <DependentUpon>TextEditDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="TimedDialog.cs">
       <SubType>Form</SubType>
+      <CustomToolNamespace>WinDX.UI</CustomToolNamespace>
     </Compile>
     <Compile Include="TimedDialog.Designer.cs">
       <DependentUpon>TimedDialog.cs</DependentUpon>
@@ -214,14 +274,43 @@
     <Compile Include="WarningDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="WizardDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="WorkSpace.cs" />
     <Compile Include="WorkSpaceInfo.cs" />
     <Compile Include="XmlPreferences.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ControlPanelAccessDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ControlPanelAccessDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DXAnchorWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DXAnchorWindow.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DXAnchorWindow.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DXWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DXWindow.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DXWindow.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditorWindow.resx">
       <SubType>Designer</SubType>
       <DependentUpon>EditorWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StringsTable.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringsTable.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>WinDX.UI</CustomToolNamespace>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="MsgWin.resx">
       <SubType>Designer</SubType>
@@ -232,6 +321,18 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <CustomToolNamespace>WinDX.UI</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="test.de-DE.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="test.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextEditDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TextEditDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TimedDialog.resx">
       <SubType>Designer</SubType>

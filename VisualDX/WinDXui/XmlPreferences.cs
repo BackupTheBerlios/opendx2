@@ -94,6 +94,12 @@ namespace WinDX.UI
 
         public bool GetPref(String prefName, out String value)
         {
+            if (root == null)
+            {
+                value = null;
+                return false;
+            }
+
             value = "";
             if (prefs == null)
                 return false;
@@ -134,6 +140,12 @@ namespace WinDX.UI
 
         public bool GetPref(String prefName, out bool value)
         {
+            if (root == null)
+            {
+                value = false;
+                return false;
+            }
+
             value = false;
             if (prefs == null)
                 return false;

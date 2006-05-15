@@ -280,6 +280,28 @@ namespace WinDX.UI
         public String getValueString()
         { throw new Exception("Not yet implemented");}
 
+        public DXTypeVals getType() { throw new Exception("Not Yet Implemented"); }
+        public String getTypeName() { throw new Exception("Not Yet Implemented"); }
+        public int getInteger() { throw new Exception("Not Yet Implemented"); }
+        public double getScalar() { throw new Exception("Not Yet Implemented"); }
+        public double getVectorComponentValue(int component) { throw new Exception("Not Yet Implemented"); }
+
+        /// <summary>
+        /// The number of components in a vector or the 1st vector in a vector list
+        /// Must have a value and the type must be Vector or VectorList.
+        /// </summary>
+        /// <returns></returns>
+        public int getVectorComponentCount() { throw new Exception("Not Yet Implemented"); }
+        public bool setVectorComponentValue(int component, double val) { throw new Exception("Not Yet Implemented"); }
+
+        /// <summary>
+        /// Does the given string represent the given type?
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public bool Valid(String str, DXTypeVals type) { throw new Exception("Not Yet Implemented"); }
+
 
     }
 }

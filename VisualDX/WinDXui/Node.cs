@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 
 namespace WinDX.UI
 {
@@ -701,29 +702,29 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
-        protected bool netPrintCommentHeader(Stream s)
+        protected bool netPrintCommentHeader(StreamWriter s)
         {
             throw new Exception("Not Yet Implemented");
         }
-        protected virtual bool printIOComment(Stream s, bool input, int index)
+        protected virtual bool printIOComment(StreamWriter s, bool input, int index)
         {
             return printIOComment(s, input, index, null, false);
         }
-        protected virtual bool printIOComment(Stream s, bool input, int index,
+        protected virtual bool printIOComment(StreamWriter s, bool input, int index,
             String indent)
         {
             return printIOComment(s, input, index, indent, false);
         }
-        protected virtual bool printIOComment(Stream s, bool input, int index,
+        protected virtual bool printIOComment(StreamWriter s, bool input, int index,
             String indent, bool valueOnly)
         {
             throw new Exception("Not Yet Implemented");
         }
-        protected bool netPrintPgrpComment(Stream s)
+        protected bool netPrintPgrpComment(StreamWriter s)
         {
             throw new Exception("Not Yet Implemented");
         }
-        protected virtual bool netPrintAuxComment(Stream s)
+        protected virtual bool netPrintAuxComment(StreamWriter s)
         {
             throw new Exception("Not Yet Implemented");
         }
@@ -1225,6 +1226,461 @@ namespace WinDX.UI
             return setIOValue(ref inputParameters, index, value, type, send);
         }
 
+        public virtual DXTypeVals setOutputValue(int index, String value)
+        {
+            return setOutputValue(index, value, DXTypeVals.UndefinedType, true);
+        }
+        public virtual DXTypeVals setOutputValue(int index, String value, DXTypeVals type)
+        {
+            return setOutputValue(index, value, type, true);
+        }
+        public virtual DXTypeVals setOutputValue(int index, String value, DXTypeVals type,
+            bool send)
+        {
+            return setIOValue(ref outputParameters, index, value, type, send);
+        }
+
+        /// <summary>
+        /// These are the same as setInputValue and setOutputValue, but they send
+        /// the value to the executive without causing an executive execution in 
+        /// execute on change.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public virtual DXTypeVals setInputValueQuietly(int index, String value)
+        {
+            return setInputValueQuietly(index, value, DXTypeVals.UndefinedType);
+        }
+        public virtual DXTypeVals setInputValueQuietly(int index, String value, DXTypeVals t)
+        {
+            return setIOValueQuietly(ref inputParameters, index, value, t);
+        }
+
+        public virtual DXTypeVals setOutputValueQuietly(int index, String value)
+        {
+            return setIOValueQuietly(ref outputParameters, index, value, DXTypeVals.UndefinedType);
+        }
+        public virtual DXTypeVals setOutputValueQuietly(int index, String value, DXTypeVals t)
+        {
+            return setIOValueQuietly(ref outputParameters, index, value, t);
+        }
+
+        public virtual DXTypeVals clearOutputValue(int index)
+        {
+            return setIOValue(ref outputParameters, index, null, DXTypeVals.UndefinedType, true);
+        }
+        public virtual DXTypeVals clearOutputValue(int index, bool send)
+        {
+            return setIOValue(ref outputParameters, index, null, DXTypeVals.UndefinedType, send);
+        }
+
+        public void getVpePosition(out int x, out int y)
+        {
+            if (this.standin != null)
+            {
+                standin.getXYPosition(out x, out y);
+                vpe_xpos = x;
+                vpe_ypos = y;
+            }
+            else
+            {
+                x = vpe_xpos;
+                y = vpe_ypos;
+            }
+        }
+
+        /// <summary>
+        /// Parse routines for a node, called by a Network. 
+        /// These are called for the comments found in the .net and .cfg files
+        /// respectively. 
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <param name="file"></param>
+        /// <param name="lineno"></param>
+        /// <returns></returns>
+        public virtual bool netParseComment(String comment, String file, int lineno)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+        public virtual bool cfgParseComment(String comment, String file, int lineno)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Print the stuff that belongs in a .cfg file
+        /// </summary>
+        /// <param name="sw"></param>
+        /// <param name="destination"></param>
+        /// <returns></returns>
+        public virtual bool cfgPrintNode(StreamWriter sw, PrintType destination)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Print the invocation of the script language Node call. 
+        /// </summary>
+        /// <param name="sw"></param>
+        /// <param name="destination"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        public bool netPrintNode(StreamWriter sw, PrintType destination, String prefix)
+        {
+            return netPrintNode(sw, destination, prefix, null, null);
+        }
+        public bool netPrintNode(StreamWriter sw, PrintType destination, String prefix,
+            PacketIF.PacketIFCallback callback)
+        {
+            return netPrintNode(sw, destination, prefix, callback, null);
+        }
+        public bool netPrintNode(StreamWriter sw, PrintType destination, String prefix,
+            PacketIF.PacketIFCallback callback, Object clientdata)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Print the invocation of any script language that is to occur at the beginning 
+        /// of the containing macro.
+        /// </summary>
+        /// <param name="sw"></param>
+        /// <param name="destination"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        public bool netPrintBeginningOfMacroNode(StreamWriter sw, PrintType destination,
+            String prefix)
+        {
+            return netPrintBeginningOfMacroNode(sw, destination, prefix, null, null);
+        }
+        public bool netPrintBeginningOfMacroNode(StreamWriter sw, PrintType destination,
+            String prefix, PacketIF.PacketIFCallback callback)
+        {
+            return netPrintBeginningOfMacroNode(sw, destination, prefix, callback, null);
+        }
+        public bool netPrintBeginningOfMacroNode(StreamWriter sw, PrintType destination,
+            String prefix, PacketIF.PacketIFCallback callback, Object clientdata)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Print the invocation of any script language that is to occur at the end of the 
+        /// containing macro.
+        /// </summary>
+        /// <param name="sw"></param>
+        /// <param name="destination"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        public bool netPrintEndOfMacroNode(StreamWriter sw, PrintType destination,
+            String prefix)
+        { return netPrintEndOfMacroNode(sw, destination, prefix, null, null); }
+        public bool netPrintEndOfMacroNode(StreamWriter sw, PrintType destination,
+            String prefix, PacketIF.PacketIFCallback callback)
+        { return netPrintEndOfMacroNode(sw, destination, prefix, callback, null); }
+        public bool netPrintEndOfMacroNode(StreamWriter sw, PrintType destination,
+            String prefix, PacketIF.PacketIFCallback callback, Object clientdata)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+
+        /// <summary>
+        /// Save any other files that relevant to this mode 
+        /// The name passed in is file name used to save the network (without the
+        /// .net extension). 
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool auxPrintNodeFile()
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+
+        /// <summary>
+        /// Print parameter name/value ('name,name = value,value;') pairs.
+        /// </summary>
+        /// <param name="sw"></param>
+        /// <param name="prefix"></param>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        public virtual bool printValues(StreamWriter sw, String prefix, PrintType dest)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// For inputs, outputs or both sets of parameters send the values
+        /// for of which do not have arcs. 
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool sendValues() { return sendValues(true); }
+        public virtual bool sendValues(bool ignoreDirty)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Send all dirty input and output values to the executive in the
+        /// quiet way using the Executive("assign noexecute",...); call.
+        /// </summary>
+        public void sendValuesQuietly()
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Manipulate the standin for this node.
+        /// </summary>
+        /// <param name="w"></param>
+        /// <returns></returns>
+        public StandIn newStandIn(WorkSpace w)
+        {
+            standin = SIAllocatorDictionary.theSIAllocatorDictionary.allocate(
+                getNameSymbol(), w, this);
+            return standin;
+        }
+        public StandIn getStandIn() { return this.standin; }
+
+
+        public ConfigurationDialog newConfigurationDialog(Form f)
+        {
+            if (cdb == null)
+                cdb = CDBAllocatorDictionary.theCDBAllocatorDictionary.allocate(
+                    getNameSymbol(), f, this);
+            return cdb;
+        }
+
+        public ConfigurationDialog getConfigurationDialog() { return cdb; }
+
+        /// <summary>
+        /// Perform the default function that is associated with the 
+        /// StandIn's default event.
+        /// </summary>
+        /// <param name="parent"></param>
+        public virtual void openDefaultWindow(Form parent)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Let the caller of openDefaultWindow() know what kind of window she's getting.
+        /// This is intended for use in EditorWindow so that we can sanity check the number
+        /// of cdbs were going to open before kicking off the operation and so that we
+        /// don't question the user before opening large numbers of interactors.
+        /// A name describing the type of window can be written into window_name in order
+        /// to enable nicer warning messages.
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool defaultWindowIsCDB() { return true; }
+        public virtual bool defaultWindowIsCDB(ref String window_name)
+        {
+            window_name = "Configuration Dialog";
+            return true;
+        }
+
+
+        /// <summary>
+        /// Open this node's cdb.
+        /// </summary>
+        /// <param name="f"></param>
+        public virtual void openConfigurationDialog(Form f)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Display help for this node in a window.
+        /// </summary>
+        /// <param name="f"></param>
+        public virtual void openHelpWindow(Form f)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Returns false for most nodes and is overridden by InteractorNode and
+        /// MacroNode.
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool IsAllowedInMacro()
+        {
+            return definition.IsAllowedInMacro();
+        }
+
+        /// <summary>
+        /// Manipulate whether the default value or assigned value is used 
+        /// as the value for i/o parameter i.
+        /// </summary>
+        /// <param name="index"></param>
+        public void useDefaultInputValue(int index)
+        {
+            setIODefaultingStatus(index, true, true, true);
+        }
+        public void useDefaultInputValue(int index, bool send)
+        {
+            setIODefaultingStatus(index, true, true, send);
+        }
+
+        public void useAssignedInputValue(int index)
+        {
+            setIODefaultingStatus(index, true, false, true);
+        }
+        public void useAssignedInputValue(int index, bool send)
+        {
+            setIODefaultingStatus(index, true, false, send);
+        }
+
+        public void useDefaultOutputValue(int index)
+        {
+            setIODefaultingStatus(index, false, true, true);
+        }
+        public void useDefaultOutputValue(int index, bool send)
+        {
+            setIODefaultingStatus(index, false, true, send);
+        }
+
+        public void useAssignedOutputValue(int index)
+        {
+            setIODefaultingStatus(index, false, false, true);
+        }
+        public void useAssignedOutputValue(int index, bool send)
+        {
+            setIODefaultingStatus(index, false, false, send);
+        }
+
+
+        public bool isA(String classname)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+        public virtual bool isA(Symbol classname)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Reset the node to using the default cfg state (probably before reading
+        /// in a new cfg file).  In general, the only state that should be reset
+        /// here is state that is saved in .cfg files.
+        /// </summary>
+        public virtual void setDefaultCfgState()
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Return TRUE if this node has state that will be saved in a .cfg file.
+        /// At this level, nodes do not have cfg state.
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool hasCfgState()
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Disconnect all input and output arcs from this node.
+        /// </summary>
+        /// <returns></returns>
+        public bool disconnectArks()
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Return TRUE if the node can be switched (pasted/merged/moved) from 
+        /// the 'from' net to the 'to' net.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public virtual bool canSwitchNetwork(Network from, Network to)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Switch the node's net from 'from' to 'to'
+        /// 'silently' added 11/10/02 to support EditorWindow's undo.  We might be
+        /// merging network elements some of which are going to be discarded.  We
+        /// do this sometimes when we want to a node's arcs.  There are nodes saved
+        /// at the other ends of those arcs however those nodes are just going to
+        /// be thrown away at the end of the merge.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        public virtual void switchNetwork(Network from, Network to)
+        {
+            switchNetwork(from, to, false);
+        }
+        public virtual void switchNetwork(Network from, Network to, bool silently)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Get the selectable values for the n'th input.
+        /// This returns a pointer to a constant array of pointers to
+        /// constant strings which is NOT to be manipulated by the caller.
+        /// The returned array of pointers is NULL terminated.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public String getInputValueOptions(int index)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        /// <summary>
+        /// Return the window associated with this node (if one exists)
+        /// </summary>
+        /// <returns></returns>
+        public virtual DXWindow getDXWindow() { return null; }
+
+
+        /// <summary>
+        /// Get the node title (if the node has a title)
+        /// </summary>
+        /// <returns></returns>
+        public virtual String getTitle() { return null; }
+
+
+        /// <summary>
+        /// Provide a mechanism on behalf of StandIn for getting a small piece of text
+        /// for postscript output.  This text will be associated with the standin.  I
+        /// chose to stick this into Node rather than virtualizing the postscript
+        /// print func which would be the normal C++ way to handle this.  It's just that
+        /// postscript printing is so complicated and so few people want to learn it that
+        /// the benefit of making it virtual seems small.   I originally put this here
+        /// on behalf of Compute so that there is a way to print the expression.
+        /// ComputeNode will supply its expression as extra PS text.
+        /// </summary>
+        /// <returns></returns>
+        public virtual String getExtraPSText() { return null; }
+
+
+        public virtual bool needsFastSort() { return false; }
+
+        public virtual bool printAsJava(StreamWriter sw)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+        public virtual String getJavaNodeName() { return "Node"; }
+        public virtual bool hasJavaRepresentation() { return false; }
+        public virtual bool printInputAsJava(int input) { return false; }
+        public virtual String getJavaInputValueString(int index)
+        {
+            return getInputValueString(index);
+        }
+
+        public virtual bool printAsBean(StreamWriter sw) { return true; }
+        public virtual bool printAsBeanInitCall(StreamWriter sw) { return true; }
+
+
+        public Object getLayoutInformation() { return layout_information; }
+        public void setLayoutInformation(Object li) { throw new Exception("Not Yet Implemented"); }
 
 
         #endregion 
@@ -1273,6 +1729,8 @@ namespace WinDX.UI
             get { return definition.HasWriteableCacheability; }
         }
 
+        public int InstanceNumber { get { return instanceNumber; } }
+
         #endregion 
 
         #region IGroupedObject
@@ -1285,17 +1743,17 @@ namespace WinDX.UI
         {
             throw new Exception("Not Yet Implemented");
         }
-        public Network getNetwork() { return network; }
+        public virtual Network getNetwork() { return network; }
 
-        public bool parseGroupComment(String comment, String filename, int lineno)
+        public virtual bool parseGroupComment(String comment, String filename, int lineno)
         {
             throw new Exception("Not Yet Implemented");
         }
-        public bool printGroupComment(Stream s)
+        public virtual bool printGroupComment(Stream s)
         {
             throw new Exception("Not Yet Implemented");
         }
-        public void setGroupName(GroupRecord gr, Symbol groupID)
+        public virtual void setGroupName(GroupRecord gr, Symbol groupID)
         {
             throw new Exception("Not Yet Implemented");
         }

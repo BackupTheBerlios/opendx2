@@ -11,7 +11,7 @@ namespace WinDX.UI
     public interface IClient
     {
         void notify(Symbol message);
-        void notify(Symbol message, Object data);
-        void notify(Symbol message, Object data, String msg);
+        void notify(Symbol message, String data);
+        void notify(Symbol message, String data, String msg);
     }
 }

@@ -111,7 +111,7 @@ namespace WinDX.UI
         #endregion
 
         #region Public Constructors
-        Network() 
+        public Network() 
         {
             deleting = false;
             editor = null;
@@ -302,6 +302,22 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
         public bool readNetwork(String filename)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        public static StreamReader OpenNetworkFile(String netfile, out bool wasEncoded)
+        {
+            String err = "";
+            return OpenNetworkFile(netfile, out wasEncoded, ref err);
+        }
+        public static StreamReader OpenNetworkFile(String netfile,
+            out bool wasEncoded, ref String errmsg)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        public static void CloseNetworkFile(StreamReader sw, bool wasEncoded)
         {
             throw new Exception("Not Yet Implemented");
         }

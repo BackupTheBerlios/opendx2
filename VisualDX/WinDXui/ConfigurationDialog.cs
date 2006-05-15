@@ -14,5 +14,10 @@ namespace WinDX.UI
         {
             InitializeComponent();
         }
+
+        public static ConfigurationDialog AllocateConfigurationDialog(Form parent, Node node)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
     }
 }

@@ -67,6 +67,15 @@ namespace WinDX.UI {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Open Visualization Data Explorer\nMore Info at www.research.ibm.com/dx\nand www.opendx.org\nVersion - 5.0.0.
+        /// </summary>
+        internal static string CopyrightString {
+            get {
+                return ResourceManager.GetString("CopyrightString", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Icon dx_cfg {
             get {
                 object obj = ResourceManager.GetObject("dx_cfg", resourceCulture);

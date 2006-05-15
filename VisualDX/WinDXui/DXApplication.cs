@@ -10,7 +10,14 @@ namespace WinDX.UI
 {
     public class DXApplication : BaseApplication
     {
-        #region structs and enums             
+        #region structs and enums    
+        
+        public enum Restriction
+        {
+            FULLY_RESTRICTED = 1,
+            SOMEWHAT_RESTRICTED = 2,
+            MINIMALLY_RESTRICTED = 3
+        };
 
         protected struct DXResource
         {
@@ -41,7 +48,7 @@ namespace WinDX.UI
             public bool runUIOnly;
             public bool runLocally;
             public bool showHelpMessage;
-            public bool executiveProgram;
+            public bool executeProgram;
             public bool executeOnChange;
             public bool suppressStartupWindows;
             public bool isMetric;
@@ -589,7 +596,7 @@ namespace WinDX.UI
         /// </summary>
         /// <param name="level"></param>
         /// <returns></returns>
-        private bool isRestrictionLevel(int level)
+        private bool isRestrictionLevel(Restriction level)
         {
             Debug.Assert(level > 0);
             String rlev = "";
@@ -598,15 +605,15 @@ namespace WinDX.UI
                 return false;
             switch (level)
             {
-                case 3:
+                case Restriction.MINIMALLY_RESTRICTED:
                     if (rlev == "minimum")
                         return true;
                     break;
-                case 2:
+                case Restriction.SOMEWHAT_RESTRICTED:
                     if (rlev == "intermediate")
                         return true;
                     break;
-                case 1:
+                case Restriction.FULLY_RESTRICTED:
                     if (rlev == "maximum")
                         return true;
                     break;
@@ -679,7 +686,13 @@ namespace WinDX.UI
         /// </summary>
         protected override void postCopyrightNotice()
         {
-            throw new Exception("Not Yet Implemented");
+            if (anchor != null && anchor is DXAnchorWindow)
+            {
+                DXAnchorWindow dxa = (DXAnchorWindow) anchor;
+                dxa.postCopyrightNotice();
+            }
+            else
+                base.postCopyrightNotice();
         }
 
 
@@ -777,6 +790,9 @@ namespace WinDX.UI
         {
             setDefaultResources();
             String val;
+            bool bval;
+            int ival;
+
             XmlPreferences.theXmlPreferences.GetPref("standInBackground", out val);
             resource.standInBackground = Utils.ColorFromPoundString(val);
             XmlPreferences.theXmlPreferences.GetPref("executionHighlightForeground", out val);
@@ -789,7 +805,198 @@ namespace WinDX.UI
             resource.insensitiveColor = Utils.ColorFromPoundString(val);
 
             // Need to get the rest of the XmlPrefs out and set them into DXResource.
-
+            XmlPreferences.theXmlPreferences.GetPref("foreground", out val);
+            resource.foreground = Utils.ColorFromPoundString(val);
+            XmlPreferences.theXmlPreferences.GetPref("background", out val);
+            resource.background = Utils.ColorFromPoundString(val);
+            XmlPreferences.theXmlPreferences.GetPref("anchorMode", out val);
+            resource.anchorMode = val;
+            XmlPreferences.theXmlPreferences.GetPref("DXVersion", out bval);
+            resource.echoVersion = bval;
+            XmlPreferences.theXmlPreferences.GetPref("debugMode", out bval);
+            resource.debugMode = bval;
+            XmlPreferences.theXmlPreferences.GetPref("showInstanceNumbers", out bval);
+            resource.showInstanceNumbers = bval;
+            XmlPreferences.theXmlPreferences.GetPref("directory", out val);
+            resource.workingDirectory = val;
+            XmlPreferences.theXmlPreferences.GetPref("executive", out val);
+            resource.executive = val;
+            XmlPreferences.theXmlPreferences.GetPref("executeProgram", out bval);
+            resource.executeProgram = bval;
+            XmlPreferences.theXmlPreferences.GetPref("executeOnChange", out bval);
+            resource.executeOnChange = bval;
+            XmlPreferences.theXmlPreferences.GetPref("printHelpMessage", out bval);
+            resource.showHelpMessage = bval;
+            XmlPreferences.theXmlPreferences.GetPref("host", out val);
+            resource.server = val;
+            XmlPreferences.theXmlPreferences.GetPref("noAnchorAtStartup", out bval);
+            resource.noAnchorAtStartup = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noConfirmedQuit", out bval);
+            resource.noConfirmedQuit = bval;
+            XmlPreferences.theXmlPreferences.GetPref("macros", out val);
+            resource.macros = val;
+            XmlPreferences.theXmlPreferences.GetPref("memory", out ival);
+            resource.memorySize = ival;
+            XmlPreferences.theXmlPreferences.GetPref("metric", out bval);
+            resource.isMetric = bval;
+            XmlPreferences.theXmlPreferences.GetPref("messages", out val);
+            resource.errorPath = val;
+            XmlPreferences.theXmlPreferences.GetPref("port", out ival);
+            resource.port = ival;
+            XmlPreferences.theXmlPreferences.GetPref("printImageCommand", out val);
+            resource.printImageCommand = val;
+            XmlPreferences.theXmlPreferences.GetPref("printImageFormat", out val);
+            resource.printImageFormat = val;
+            XmlPreferences.theXmlPreferences.GetPref("printImagePageSize", out val);
+            resource.printImagePageSize = val;
+            XmlPreferences.theXmlPreferences.GetPref("printImageSize", out val);
+            resource.printImageSize = val;
+            XmlPreferences.theXmlPreferences.GetPref("printImageResolution", out ival);
+            resource.printImageResolution = ival;
+            XmlPreferences.theXmlPreferences.GetPref("program", out val);
+            resource.program = val;
+            XmlPreferences.theXmlPreferences.GetPref("cfg", out val);
+            resource.cfgfile = val;
+            XmlPreferences.theXmlPreferences.GetPref("runLocally", out bval);
+            resource.runLocally = bval;
+            XmlPreferences.theXmlPreferences.GetPref("runUIOnly", out bval);
+            resource.runUIOnly = bval;
+            XmlPreferences.theXmlPreferences.GetPref("saveImageFormat", out val);
+            resource.saveImageFormat = val;
+            XmlPreferences.theXmlPreferences.GetPref("saveImagePageSize", out val);
+            resource.saveImagePageSize = val;
+            XmlPreferences.theXmlPreferences.GetPref("saveImageSize", out val);
+            resource.saveImageSize = val;
+            XmlPreferences.theXmlPreferences.GetPref("saveImageResolution", out ival);
+            resource.saveImageResolution = ival;
+            XmlPreferences.theXmlPreferences.GetPref("suppressStartupWindows", out bval);
+            resource.suppressStartupWindows = bval;
+            XmlPreferences.theXmlPreferences.GetPref("userModuleDescriptionFile", out val);
+            resource.userModules = val;
+            XmlPreferences.theXmlPreferences.GetPref("executiveModuleDescriptionFile", out val);
+            resource.executiveModule = val;
+            XmlPreferences.theXmlPreferences.GetPref("uiModuleDescriptionFile", out val);
+            resource.uiModule = val;
+            XmlPreferences.theXmlPreferences.GetPref("noWindowPlacement", out bval);
+            resource.noWindowPlacement = bval;
+            XmlPreferences.theXmlPreferences.GetPref("restrictionLevel", out val);
+            resource.restrictionLevel = val;
+            XmlPreferences.theXmlPreferences.GetPref("noRWConfig", out bval);
+            resource.noRWConfig = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noPanelEdit", out bval);
+            resource.noPanelEdit = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noInteractorEdits", out bval);
+            resource.noInteractorEdits = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noInteractorAttributes", out bval);
+            resource.noInteractorAttributes = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noInteractorMovement", out bval);
+            resource.noInteractorMovement = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noOpenAllPanels", out bval);
+            resource.noOpenAllPanels = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noPanelAccess", out bval);
+            resource.noPanelAccess = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noPanelOptions", out bval);
+            resource.noPanelOptions = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noMessageInfoOption", out bval);
+            resource.noMessageInfoOption = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noMessageWarningOption", out bval);
+            resource.noMessageWarningOption = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noEditorOnError", out bval);
+            resource.noEditorOnError = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noScriptCommands", out bval);
+            resource.noScriptCommands = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noPGroupAssignment", out bval);
+            resource.noPGroupAssignment = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noImageRWNetFile", out bval);
+            resource.noImageRWNetFile = bval;
+            XmlPreferences.theXmlPreferences.GetPref("limitedNetFileSelection", out bval);
+            resource.limitedNetFileSelection = bval;
+            XmlPreferences.theXmlPreferences.GetPref("netPath", out val);
+            resource.netPath = val;
+            XmlPreferences.theXmlPreferences.GetPref("noImageLoad", out bval);
+            resource.noImageLoad = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noImageSaving", out bval);
+            resource.noImageSaving = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noImagePrinting", out bval);
+            resource.noImagePrinting = bval;
+            XmlPreferences.theXmlPreferences.GetPref("limitImageOptions", out bval);
+            resource.limitImageOptions = bval;
+            XmlPreferences.theXmlPreferences.GetPref("notifySaveNet", out bval);
+            resource.notifySaveNet = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noNetworkExecute", out bval);
+            resource.noNetworkExecute = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noEditorAccess", out bval);
+            resource.noEditorAccess = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noDXHelp", out bval);
+            resource.noDXHelp = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noCMapSetNameOption", out bval);
+            resource.noCMapSetNameOption = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noCMapOpenMap", out bval);
+            resource.noCMapOpenMap = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noCMapSaveMap", out bval);
+            resource.noCMapSaveMap = bval;
+            XmlPreferences.theXmlPreferences.GetPref("applicationPort", out ival);
+            resource.applicationPort = ival;
+            XmlPreferences.theXmlPreferences.GetPref("applicationHost", out val);
+            resource.applicationHost = val;
+            XmlPreferences.theXmlPreferences.GetPref("infoEnabled", out bval);
+            resource.infoEnabled = bval;
+            XmlPreferences.theXmlPreferences.GetPref("warningEnabled", out bval);
+            resource.warningEnabled = bval;
+            XmlPreferences.theXmlPreferences.GetPref("errorEnabled", out bval);
+            resource.errorEnabled = bval;
+            XmlPreferences.theXmlPreferences.GetPref("moduleInfoOpensMessage", out bval);
+            resource.moduleInfoOpensMessage = bval;
+            XmlPreferences.theXmlPreferences.GetPref("infoOpensMessage", out bval);
+            resource.infoOpensMessage = bval;
+            XmlPreferences.theXmlPreferences.GetPref("warningOpensMessage", out bval);
+            resource.warningOpensMessage = bval;
+            XmlPreferences.theXmlPreferences.GetPref("errorOpensMessage", out bval);
+            resource.errorOpensMessage = bval;
+            XmlPreferences.theXmlPreferences.GetPref("useWindowSpecs", out bval);
+            resource.useWindowSpecs = bval;
+            XmlPreferences.theXmlPreferences.GetPref("forceNetFileEncryption", out bval);
+            resource.forceNetFileEncryption = bval;
+            XmlPreferences.theXmlPreferences.GetPref("cryptKey", out val);
+            resource.cryptKey = val;
+            XmlPreferences.theXmlPreferences.GetPref("exitAfter", out bval);
+            resource.exitAfter = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noExecuteMenus", out bval);
+            resource.noExecuteMenus = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noConnectionMenus", out bval);
+            resource.noConnectionMenus = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noWindowsMenus", out bval);
+            resource.noWindowsMenus = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noExitOptions", out bval);
+            resource.noExitOptions = bval;
+            XmlPreferences.theXmlPreferences.GetPref("noImageMenus", out bval);
+            resource.noImageMenus = bval;
+            XmlPreferences.theXmlPreferences.GetPref("oemApplicationName", out val);
+            resource.oemApplicationName = val;
+            XmlPreferences.theXmlPreferences.GetPref("oemApplicationNameCode", out val);
+            resource.oemApplicationNameCode = val;
+            XmlPreferences.theXmlPreferences.GetPref("viewDataFile", out val);
+            resource.viewDataFile = val;
+            XmlPreferences.theXmlPreferences.GetPref("autoScrollVPE", out bval);
+            resource.autoScrollVPEInitVal = bval;
+            XmlPreferences.theXmlPreferences.GetPref("autoLayoutHeight", out ival);
+            resource.autoLayoutHeight = ival;
+            XmlPreferences.theXmlPreferences.GetPref("autoLayoutGroupSpacing", out ival);
+            resource.autoLayoutGroupSpacing = ival;
+            XmlPreferences.theXmlPreferences.GetPref("autoLayoutNodeSpacing", out ival);
+            resource.autoLayoutNodeSpacing = ival;
+            XmlPreferences.theXmlPreferences.GetPref("cosmoDir", out val);
+            resource.cosmoDir = val;
+            XmlPreferences.theXmlPreferences.GetPref("jdkDir", out val);
+            resource.jdkDir = val;
+            XmlPreferences.theXmlPreferences.GetPref("htmlDir", out val);
+            resource.htmlDir = val;
+            XmlPreferences.theXmlPreferences.GetPref("serverDir", out val);
+            resource.serverDir = val;
+            XmlPreferences.theXmlPreferences.GetPref("dxJarFile", out val);
+            resource.dxJarFile = val;
+            XmlPreferences.theXmlPreferences.GetPref("userHtmlDir", out val);
+            resource.userHtmlDir = val;
         }
 
         protected void setDefaultResources()
@@ -826,11 +1033,17 @@ namespace WinDX.UI
         }
 
 
-        protected override bool initialize(ref string[] argv)
+        public override bool initialize(ref string[] argv)
         {
             bool wasSetBusy = false;
 
             base.initialize(ref argv);
+
+            if (!DXApplication.DXApplicationClassInitialized)
+            {
+                installDefaultResources();
+                DXApplicationClassInitialized = true;
+            }
 
             if (resource.executiveModule == null)
                 resource.executiveModule = "lib/dx.mdf";
@@ -866,11 +1079,11 @@ namespace WinDX.UI
             }
 
             // Echo the resources.
-            if(resource.debugMode)
+            if (resource.debugMode)
             {
-                if(resource.port != 0)
+                if (resource.port != 0)
                     Console.WriteLine("port        = {0}", resource.port);
-                if(resource.memorySize != 0)
+                if (resource.memorySize != 0)
                     Console.WriteLine("memory size = {0}", resource.memorySize);
                 if (resource.server != null)
                     Console.WriteLine("server = {0}", resource.server);
@@ -1072,9 +1285,12 @@ namespace WinDX.UI
             serverInfo.memorySize = resource.memorySize;
             serverInfo.executiveFlags = "";
 
-            foreach (String arg in argv)
+            if (argv != null)
             {
-                serverInfo.executiveFlags += arg + " ";
+                foreach (String arg in argv)
+                {
+                    serverInfo.executiveFlags += arg + " ";
+                }
             }
 
             if (InDataViewerMode)
@@ -1106,45 +1322,43 @@ namespace WinDX.UI
 
                 // Initialize the StandIn allocator for the editor.
                 SIAllocatorDictionary.theSIAllocatorDictionary = new SIAllocatorDictionary();
-
-                // Move to the indicated directory
-                if (serverInfo.workingDirectory != null)
+            }
+            // Move to the indicated directory
+            if (serverInfo.workingDirectory != null)
+            {
+                try
                 {
-                    try
-                    {
-                        Directory.SetCurrentDirectory(serverInfo.workingDirectory);
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(e.Message, "Unable to set Working Directory");
-                    }
+                    Directory.SetCurrentDirectory(serverInfo.workingDirectory);
                 }
-
-                loadMDF();
-                loadIDF();
-                if (resource.userModules != null)
-                    loadUDF(resource.userModules, null, false);
-
-                // Decorator Styles
-                DecoratorStyle.BuildtheDecoratorStyleDictionary();
-
-                // load the initial set of user macros.
-                MacroDefinition.LoadMacroDirectories(resource.macros);
-
-                // Create the anchor window
-                if (!InEditMode)
+                catch (Exception e)
                 {
-                    if (InImageMode)
-                        anchor = newImageWindow(network);
-                    else if (InMenuBarMode)
-                        anchor = new DXAnchorWindow("dxAnchor", true, true);
-                    else
-                    {
-                        MessageBox.Show("Unrecognized anchor mode.", "Startup Error");
-                        Application.Exit();
-                    }
+                    MessageBox.Show(e.Message, "Unable to set Working Directory");
                 }
+            }
 
+            loadMDF();
+            loadIDF();
+            if (resource.userModules != null)
+                loadUDF(resource.userModules, null, false);
+
+            // Decorator Styles
+            DecoratorStyle.BuildtheDecoratorStyleDictionary();
+
+            // load the initial set of user macros.
+            MacroDefinition.LoadMacroDirectories(resource.macros);
+
+            // Create the anchor window
+            if (!InEditMode)
+            {
+                if (InImageMode)
+                    anchor = newImageWindow(network);
+                else if (InMenuBarMode)
+                    anchor = new DXAnchorWindow("dxAnchor", true, true);
+                else
+                {
+                    MessageBox.Show("Unrecognized anchor mode.", "Startup Error");
+                    Application.Exit();
+                }
                 // Initialize the anchor window so it can handle reading in the network
                 // before being managed.
                 if (applyWindowPlacements() ||
@@ -1156,63 +1370,73 @@ namespace WinDX.UI
                     setBusyCursor(true);
                     wasSetBusy = true;
                 }
-
-                // Create the message and debug windows
-                messageWindow = newMsgWin();
-
-                // If quested, read in the network.  This is after opening the anchor
-                // window because image nodes may wish to bind with the initial image
-                // window, etc.
-                if (resource.program != null)
-                    openFile(resource.program, resource.cfgfile);
-
-                if (InDataViewerMode)
-                {
-                    Node n = network.findNode("Import");
-                    if (n == null)
-                    {
-                        ErrorDialog ed = new ErrorDialog();
-                        ed.post("Can not find Import tool in viewing program.");
-                    }
-                    else
-                    {
-                        String s = resource.viewDataFile;
-                        Debug.Assert(s != null);
-                        n.setInputValue(1, s);
-                    }
-                }
-
-                if (resource.noAnchorAtStartup)
-                    anchor.Visible = true;
-                else if (anchor.Visible)
-                {
-                    anchor.Visible = false;
-                    setBusyCursor(true);
-                    wasSetBusy = true;
-                }
-
-                // Post the copyright message if the anchor window came up.
-                if (!resource.noAnchorAtStartup)
-                    postCopyrightNotice();
-
-                if (!resource.runUIOnly)
-                {
-                    // Connect to exec first
-                    DXChild c = startServer();
-
-                    completeConnection(c);
-                }
-
-                // If there is an application to talk to, connect to it.
-                if (resource.applicationPort != 0)
-                    connectToApplication(resource.applicationHost,
-                        resource.applicationPort);
-
-                if (wasSetBusy)
-                    setBusyCursor(false);
-
-                return true;
             }
+            else
+            {
+                anchor = newNetworkEditor(network);
+                if (anchor == null)
+                    return false;
+
+                anchor.Show();
+                setBusyCursor(true);
+                wasSetBusy = true;
+            }
+
+            // Create the message and debug windows
+            messageWindow = newMsgWin();
+
+            // If quested, read in the network.  This is after opening the anchor
+            // window because image nodes may wish to bind with the initial image
+            // window, etc.
+            if (resource.program != null)
+                openFile(resource.program, resource.cfgfile);
+
+            if (InDataViewerMode)
+            {
+                Node n = network.findNode("Import");
+                if (n == null)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Can not find Import tool in viewing program.");
+                }
+                else
+                {
+                    String s = resource.viewDataFile;
+                    Debug.Assert(s != null);
+                    n.setInputValue(1, s);
+                }
+            }
+
+            if (resource.noAnchorAtStartup)
+                anchor.Visible = true;
+            else if (anchor.Visible)
+            {
+                anchor.Visible = false;
+                setBusyCursor(true);
+                wasSetBusy = true;
+            }
+
+            // Post the copyright message if the anchor window came up.
+            if (!resource.noAnchorAtStartup)
+                postCopyrightNotice();
+
+            if (!resource.runUIOnly)
+            {
+                // Connect to exec first
+                DXChild c = startServer();
+
+                completeConnection(c);
+            }
+
+            // If there is an application to talk to, connect to it.
+            if (resource.applicationPort != 0)
+                connectToApplication(resource.applicationHost,
+                    resource.applicationPort);
+
+            if (wasSetBusy)
+                setBusyCursor(false);
+
+            return true;
         }
 
         public void highlightNodes(String path, HighlightType highlightType)
@@ -1338,7 +1562,25 @@ namespace WinDX.UI
         /// <returns></returns>
         public virtual EditorWindow newNetworkEditor(Network n)
         {
-            throw new Exception("Not Yet Implemented");
+            String msg = "";
+            Debug.Assert(n != null);
+
+            if (!this.appAllowsEditorAccess())
+            {
+                msg = "This invocation of Data Explorer does not allow editor " +
+                    "access (-edit). \n" +
+                    "Try image mode (-image).";
+                InfoDialog id = new InfoDialog();
+                id.post(msg);
+                return null;
+            }
+            bool is_anchor;
+            if (anchor == null)
+                is_anchor = true;
+            else
+                is_anchor = false;
+
+            return new EditorWindow(is_anchor, n);
         }
 
         public virtual Network newNetwork()
@@ -1347,11 +1589,16 @@ namespace WinDX.UI
         }
         public virtual Network newNetwork(bool nonJava)
         {
-            throw new Exception("Not Yet Implemented");
+            Network n;
+            if (nonJava)
+                n = new Network();
+            else
+                n = new JavaNet();
+            return n;
         }
         public virtual MsgWin newMsgWin()
         {
-            throw new Exception("Not Yet Implemented");
+            return new MsgWin();
         }
         public virtual ImageWindow newImageWindow(Network n)
         {
@@ -1552,7 +1799,7 @@ namespace WinDX.UI
         }
         public virtual bool appLimitsNetFileSelection()
         {
-            throw new Exception("Not Yet Implemented");
+            return resource.limitedNetFileSelection;
         }
 
         public virtual bool appAllowsPanelEdit()
@@ -1595,7 +1842,8 @@ namespace WinDX.UI
 
         public virtual bool appAllowsImageRWNetFile()
         {
-            throw new Exception("Not Yet Implemented");
+            return !isRestrictionLevel(Restriction.SOMEWHAT_RESTRICTED) &&
+                !resource.noImageRWNetFile;
         }
         public virtual bool appAllowsSavingNetFile()
         {
@@ -1628,7 +1876,8 @@ namespace WinDX.UI
 
         public virtual bool appAllowsEditorAccess()
         {
-            throw new Exception("Not Yet Implemented");
+            return !isRestrictionLevel(Restriction.MINIMALLY_RESTRICTED) &&
+                !resource.noEditorAccess;
         }
         public virtual bool appAllowsPGroupAssignmentChange()
         {
@@ -1702,7 +1951,10 @@ namespace WinDX.UI
         /// <returns></returns>
         public override String getInformalName()
         {
-            throw new Exception("Not Yet Implemented");
+            String s = getOEMApplicationName();
+            if (s == null)
+                s = "Data Explorer";
+            return s;
         }
 
         /// <summary>
@@ -1723,7 +1975,11 @@ namespace WinDX.UI
         /// <returns></returns>
         public override String getCopyrightNotice()
         {
-            throw new Exception("Not Yet Implemented");
+            String s = getOEMApplicationName();
+            if (s == null || s.Length == 0)
+                return global::WinDX.UI.Resources.CopyrightString;
+            else
+                return null;
         }
 
         /// <summary>
@@ -1750,7 +2006,7 @@ namespace WinDX.UI
         /// information saved in the .net or .cfg files. </returns>
         public virtual bool applyWindowPlacements()
         {
-            throw new Exception("Not Yet Implemented");
+            return !resource.noWindowPlacement;
         }
 
         public virtual String getCryptKey()

@@ -74,11 +74,10 @@ namespace WinDX.UI
     public abstract class BaseApplication
     {
         #region Application
-        private Server server = null;
         private static bool ApplicationClassInitialized = false;
         private int busyCursors = 0;
         private String name = null;
-        private Server thisServer = null;
+        public Server thisServer = null;
 
         private bool tooltip = false;
         private Form root = null;
@@ -131,6 +130,7 @@ namespace WinDX.UI
             
             name = className;
             aboutAppString = null;
+            thisServer = new Server();
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace WinDX.UI
                 return retargs;
 
             }
-            else
+            else 
                 return null;
         }
 
@@ -431,16 +431,20 @@ namespace WinDX.UI
         #endregion
 
 
-        protected virtual bool initialize(ref String[] argv)
+        public virtual bool initialize(ref String[] argv)
         {
             name = argv[0];
             thisServer.notifyClients(MsgCreate);
 
-            argv = parseCommand(argv);
+            String[] argsn = new String[argv.Length - 1];
+            for (int i = 1; i < argv.Length; i++)
+                argsn[i - 1] = argv[i];
+ 
+            argv = parseCommand(argsn);
 
             String pref;
             XmlPreferences.theXmlPreferences.GetPref("UIRoot", out pref);
-            if (pref == null)
+            if (pref == null || pref.Length == 0)
             {
                 String tmp = System.Environment.GetEnvironmentVariable("DXROOT");
                 if (tmp != null)

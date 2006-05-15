@@ -221,7 +221,7 @@ namespace WinDX.UI
         { // No implementation 
         }
 
-        public virtual bool isAllowedInMacro() { return true; }
+        public virtual bool IsAllowedInMacro() { return true; }
 
         /// <summary>
         /// Get a new parameter for the node n that corresponds to this node 
@@ -235,6 +235,9 @@ namespace WinDX.UI
         {
             throw new Exception("Not Yet Implemented");
         }
+
+        public void setMDFFlagERR_CONT() { setMDFFlagERR_CONT(true); }
+        public void setMDFFlagERR_CONT(bool val) { throw new Exception("Not Yet Implemented"); }
 
         public void setMDFFlagSWITCH() { setMDFFlagSWITCH(true); }
         public void setMDFFlagSWITCH(bool val)

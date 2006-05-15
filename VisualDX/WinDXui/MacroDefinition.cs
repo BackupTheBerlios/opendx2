@@ -89,7 +89,51 @@ namespace WinDX.UI
         public static bool LoadMacroDirectories(String path,
             bool replace, ref String errmsg, bool asSystemMacro)
         {
-            throw new Exception("Not yet implemented.");
+            bool wasEncoded;
+            bool return_code = true;
+
+            if (path == null || path.Length == 0)
+                return true;
+
+            List<String> toks = Utils.StringTokenizer(path, ";", null);
+
+            List<String> nets = new List<string>();
+            // Enumerate over the paths
+            foreach (String file in toks)
+            {
+                if (file.Length > 0)
+                {
+                    // for each path, locate all .net files and add them to nets.
+                    String[] netfiles = null;
+                    try
+                    {
+                        netfiles = Directory.GetFiles(file, "*.net");
+                        if (netfiles.Length > 0)
+                            nets.AddRange(netfiles);
+                    }
+                    catch (Exception)
+                    { }   
+                }
+            }
+
+            // At this point, we should have all the macros.
+            foreach (String file in nets)
+            {
+                StreamReader sw = Network.OpenNetworkFile(file, out wasEncoded);
+                if (sw == null)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Failed to load macro file {0}.", file);
+                    return_code = false;
+                }
+                else
+                {
+                    bool asMacro;
+                    MacroDefinition.LoadMacroFile(sw, file, replace, out asMacro, asSystemMacro);
+                    Network.CloseNetworkFile(sw, wasEncoded);
+                }
+            }
+            return return_code;
         }
 
         public MacroDefinition()
@@ -287,17 +331,17 @@ namespace WinDX.UI
             fileName = name;
         }
 
-        protected static bool LoadMacroFile(Stream file, String filename, bool replace)
+        protected static bool LoadMacroFile(StreamReader file, String filename, bool replace)
         {
             bool wasMacro;
             return LoadMacroFile(file, filename, replace, out wasMacro, false);
         }
-        protected static bool LoadMacroFile(Stream file, String filename, bool replace,
+        protected static bool LoadMacroFile(StreamReader file, String filename, bool replace,
             out bool wasMacro)
         {
             return LoadMacroFile(file, filename, replace, out wasMacro, false);
         }
-        protected static bool LoadMacroFile(Stream file, String filename, 
+        protected static bool LoadMacroFile(StreamReader file, String filename, 
             bool replace, out bool wasMacro, bool asSystemMacro)
         {
             if (DXApplication.theDXApplication.InDebugMode)

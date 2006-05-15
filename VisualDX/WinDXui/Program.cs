@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Resources;
+using System.Globalization;
 
 namespace WinDX.UI
 {
@@ -10,6 +12,13 @@ namespace WinDX.UI
         /// Global instances that must be declared in order to run.
         /// </summary>
         private static BaseApplication globalApp;
+        private static ResourceManager resources = new ResourceManager("WinDXui.StringsTable",
+                System.Reflection.Assembly.GetExecutingAssembly());
+
+        public static ResourceManager theResources
+        {
+            get { return resources; }
+        }
 
         public static BaseApplication theApplication
         {
@@ -26,16 +35,24 @@ namespace WinDX.UI
             Application.EnableVisualStyles();
 
             globalApp = new DXApplication("dx");
+            String[] args = Environment.GetCommandLineArgs();
+           globalApp.initialize(ref args);
 
-            InfoDialog wd = new InfoDialog();
-            wd.modalPost(theApplication.getAboutAppString());
+            //InfoDialog wd = new InfoDialog();
+            //wd.modalPost(theApplication.getAboutAppString());
 
-            String test = "{\"{a, b}\"}";
-            String resulting = Utils.FindDelimitedString(test, '{', '}', "\"");
+            //String test = "{\"{a, b}\"}";
+            //String resulting = Utils.FindDelimitedString(test, '{', '}', "\"");
 
-            MessageBox.Show(resulting);
+            //MessageBox.Show(resulting);
             //MessageBox.Show("see what happens");
             //Application.Run(new Form1());
+
+            DXAnchorWindow daw = new DXAnchorWindow("test", true, true);
+            Application.Run(daw);
+            //InfoDialog id = new InfoDialog();
+            //id.modalPost(theApplication.getAboutAppString());
+
         }
     }
 }

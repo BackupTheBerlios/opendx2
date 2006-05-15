@@ -6,18 +6,23 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace WinDX.UI
+namespace WinDXui
 {
-    public partial class EditorWindow : Form
+    public partial class test : Form
     {
-        public EditorWindow()
+        public test()
         {
             InitializeComponent();
+        }
+
+        private void helpOnContextCmd(object sender, EventArgs e)
+        {
 
         }
-        public EditorWindow(bool isAnchor, Network network)
+
+        private void productInformationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            InitializeComponent();
+
         }
     }
 }

@@ -8,14 +8,9 @@ using System.Windows.Forms;
 
 namespace WinDX.UI
 {
-    public partial class EditorWindow : Form
+    public partial class ControlPanelAccessDialog : Form
     {
-        public EditorWindow()
-        {
-            InitializeComponent();
-
-        }
-        public EditorWindow(bool isAnchor, Network network)
+        public ControlPanelAccessDialog()
         {
             InitializeComponent();
         }

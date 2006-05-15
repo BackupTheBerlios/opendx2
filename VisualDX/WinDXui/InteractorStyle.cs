@@ -204,7 +204,7 @@ namespace WinDX.UI
             styledict = GetInteractorStyleDictionary(interactor);
             if (styledict == null)
                 styledict = new Dictionary<string, InteractorStyle>();
-            theInteractorStyleDictionary.Add(interactor, styledict);
+            theInteractorStyleDictionary[interactor] = styledict;
 
             InteractorStyle istyle = new InteractorStyle(style, stylename, javaStyle, ia);
             styledict.Add(stylename, istyle);
@@ -272,7 +272,16 @@ namespace WinDX.UI
             GetInteractorStyleDictionary(String interactor)
         {
             Debug.Assert(theInteractorStyleDictionary != null);
-            return theInteractorStyleDictionary[interactor];
+            Dictionary<String, InteractorStyle> intstyle;
+            try
+            {
+                intstyle = theInteractorStyleDictionary[interactor];
+            }
+            catch (KeyNotFoundException)
+            {
+                return null;
+            }
+            return intstyle;
         }
 
         public InteractorStyle(Style s, String n, String javaStyle, InteractorAllocator ia)

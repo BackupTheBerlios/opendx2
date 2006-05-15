@@ -21,6 +21,8 @@ namespace WinDX.UI
         private bool dummy; // Is this a dummy parameter
         private String[] valueOptions;
 
+        public List<DXType> DXTypes { get { return types; } }
+
         private readonly String DUMMY_DESCRIPTION_STRING =
             "<<< Dummy parameter (do not edit) >>>";
 
@@ -247,7 +249,7 @@ namespace WinDX.UI
         /// than 1 type, always return the first type on the type list.
         /// </summary>
         /// <returns></returns>
-        DXTypeVals getDefaultType()
+        public DXTypeVals getDefaultType()
         {
             DXType dxtype;
             DXTypeVals type;

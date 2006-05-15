@@ -32,14 +32,14 @@ namespace WinDX.UI
                 c.notify(message);
             }
         }
-        public void notifyClients(Symbol message, Object msgdata)
+        public void notifyClients(Symbol message, String msgdata)
         {
             foreach (IClient c in clientList)
             {
                 c.notify(message, msgdata);
             }
         }
-        public void notifyClients(Symbol message, Object msgdata, String msg)
+        public void notifyClients(Symbol message, String msgdata, String msg)
         {
             foreach (IClient c in clientList)
             {

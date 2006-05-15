@@ -56,12 +56,12 @@ namespace WinDX.UI
             notify(message, null, null);
         }
 
-        public virtual void notify(Symbol message, Object msgdata)
+        public virtual void notify(Symbol message, String msgdata)
         {
             notify(message, msgdata, null);
         }
 
-        public virtual void notify(Symbol message, Object msgdata, String msg)
+        public virtual void notify(Symbol message, String msgdata, String msg)
         {
             if (message == Command.MsgActivate)
                 this.Active = true;

@@ -75,6 +75,15 @@ namespace WinDX.UI
             return (Symbol)symbolString.GetHashCode();
         }
 
+        public Symbol getSymbol(String symbolString)
+        {
+            if (ht.ContainsValue(symbolString))
+            {
+                return (Symbol)symbolString.GetHashCode();
+            }
+            throw new KeyNotFoundException();
+        }
+
         public String getSymbolString(Symbol symbol)
         {
             if (ht.ContainsKey(symbol))
