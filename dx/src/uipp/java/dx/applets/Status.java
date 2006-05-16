@@ -1,9 +1,13 @@
-//////////////////////////////////////////////////////////////////////////////
-//                        DX SOURCEFILE         //
-//////////////////////////////////////////////////////////////////////////////
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/applets/Status.java,v 1.2 2005/10/27 19:43:05 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/dx/applets/Status.java,v 1.3 2006/05/16 16:04:02 davidt Exp $
  */
 import java.applet.*;
 import java.lang.*;

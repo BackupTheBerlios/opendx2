@@ -1,16 +1,13 @@
-//////////////////////////////////////////////////////////////////////////////
-//                        I.B.M. CONFIDENTIAL                               //
-//      xxxx-yyy (c) COPYRIGHT IBM CORP. 1992   ALL RIGHTS RESERVED.        //
-//                                                                          //
-//    (I.B.M. CONFIDENTIAL-RESTRICTED when combined with the aggregated     //
-//                 OCO source materials for this program.)                  //
-//                        OCO SOURCE MATERIAL                               //
-//                   LICENSED MATERIALS-PROPERTY OF IBM.                    //
-//                                                                          //
-//////////////////////////////////////////////////////////////////////////////
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/Status.java,v 1.2 2005/10/27 19:43:04 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/Status.java,v 1.3 2006/05/16 16:04:02 davidt Exp $
  */
 import java.applet.*;
 import java.lang.*;
