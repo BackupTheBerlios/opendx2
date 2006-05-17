@@ -19,6 +19,9 @@
   interactor implementations.
 
  $Log: hwMemory.c,v $
+ Revision 1.4  2006/05/17 14:36:44  davidt
+ Remove word confidential in comments
+
  Revision 1.3  1999/05/10 15:45:35  gda
  Copyright message
 
@@ -42,9 +45,6 @@
 
  * Revision 8.0  1995/10/03  20:01:02  nsc
  * Copy of release 3.1 code
- *
- * Revision 7.3  1994/04/13  10:39:44  tjm
- * fixed spelling of CONFIDENTIAL in copyright notice
  *
  * Revision 7.2  94/03/31  11:25:20  tjm
  * added copyright notice
