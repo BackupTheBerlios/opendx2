@@ -1,17 +1,14 @@
-/****************************************************************************/
-/*                         I.B.M. CONFIDENTIAL                              */
-/*       xxxx-yyy (c) COPYRIGHT IBM CORP. 1993   ALL RIGHTS RESERVED.       */
-/*                                                                          */
-/*     (I.B.M. CONFIDENTIAL-RESTRICTED when combined with the aggregated    */
-/*                  OCO source materials for this program.)                 */
-/*                         OCO SOURCE MATERIAL                              */
-/*                    LICENSED MATERIALS-PROPERTY OF IBM.                   */
-/*                                                                          */
-/****************************************************************************/
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.8 2003/07/11 05:50:55 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.9 2006/05/17 14:35:17 davidt Exp $
  */
 #if defined(hp700) 
 #define _UINT64_T
