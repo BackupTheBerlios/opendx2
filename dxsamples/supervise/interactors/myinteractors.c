@@ -1,15 +1,10 @@
-/*********************************************************************/
-/*                                                                   */
-/*                     I.B.M. CONFIDENTIAL                           */
-/*   xxxx-yyy (c) COPYRIGHT IBM CORP. 1990   ALL RIGHTS RESERVED.    */
-/*                                                                   */
-/* (I.B.M. CONFIDENTIAL-RESTRICTED when combined with the aggregated */
-/*              OCO source materials for this program.)              */
-/*                     OCO SOURCE MATERIAL                           */
-/*                LICENSED MATERIALS-PROPERTY OF IBM.                */
-/*                                                                   */
-/*********************************************************************/
-
+/***********************************************************************/
+/* Open Visualization Data Explorer                                    */
+/* (C) Copyright IBM Corp. 1989,1999                                   */
+/* ALL RIGHTS RESERVED                                                 */
+/* This code licensed under the                                        */
+/*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
+/***********************************************************************/
 
 
 #include <dx/dx.h>
