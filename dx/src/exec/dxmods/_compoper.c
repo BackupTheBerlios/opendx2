@@ -911,7 +911,7 @@ ExecStricmp(
 		if (*s1 == '\0')
 		    break;
 	    }
-	    out[i] = (cc == ncmp || *s1 == '\0') ? 0 : (int) (toupper(*s1) - toupper(*s2));
+	    out[i] = (cc == ncmp) ? 0 : (int) (toupper(*s1) - toupper(*s2));
 	}
 	if (size0 != 1) ++j;
 	if (size1 != 1) ++k;
