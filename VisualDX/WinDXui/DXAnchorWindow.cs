@@ -19,12 +19,13 @@ namespace WinDX.UI
         protected ToolStripMenuItem windowsMenu;
 
         // File menu options
-        protected ToolStripMenuItem openOption;
+        protected DXToolStripMenuItem openOption;
+        protected ToolStripMenuItem recentOption;
         protected ToolStripMenuItem loadMacroOption;
         protected ToolStripMenuItem loadMDFOption;
-        protected ToolStripMenuItem saveOption;
-        protected ToolStripMenuItem saveAsOption;
-        protected ToolStripMenuItem closeOption;
+        protected DXToolStripMenuItem saveOption;
+        protected DXToolStripMenuItem saveAsOption;
+        protected DXToolStripMenuItem closeOption;
         protected ToolStripMenuItem settingsOption;
         protected ToolStripMenuItem saveCfgOption;
         protected ToolStripMenuItem openCfgOption;
@@ -97,26 +98,180 @@ namespace WinDX.UI
 
         protected override void createMenus(MenuStrip menu)
         {
-            base.createMenus(menu);
-            throw new Exception("Not Yet Implemented");
+            createFileMenu(menu);
+            createExecuteMenu(menu);
+            createWindowsMenu(menu);
+            createConnectionMenu(menu);
+            createHelpMenu(menu);
         }
         protected virtual void createFileMenu(MenuStrip menubar)
         {
-            throw new Exception("Not Yet Implemented");
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(DXWindow));
+
+            bool needSep = false;
+            SuspendLayout();
+            menubar.SuspendLayout();
+
+            fileMenu = new ToolStripMenuItem();
+            menubar.Items.Add(fileMenu);
+
+            if (DXApplication.theDXApplication.appAllowsImageRWNetFile())
+            {
+                openOption = new DXToolStripMenuItem("fileOpenOption", DXApplication.theDXApplication.openFileCmd);
+                recentOption = new ToolStripMenuItem();
+                createFileHistoryMenu(ref recentOption);
+
+                Network net = DXApplication.theDXApplication.network;
+                saveOption = new DXToolStripMenuItem("fileSaveOption", net.getSaveCommand());
+                saveAsOption = new DXToolStripMenuItem("fileSaveAsOption", net.getSaveAsCommand());
+                fileMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                    openOption,
+                    recentOption,
+                    saveOption,
+                    saveAsOption});
+                fileMenu.Name = "fileMenu";
+                saveOption.Name = "saveOption";
+                saveAsOption.Name = "saveAsOption";
+
+                resources.ApplyResources(fileMenu, "fileMenu");
+                resources.ApplyResources(openOption, "openOption");
+                resources.ApplyResources(recentOption, "recentOption");
+                resources.ApplyResources(saveOption, "saveOption");
+                resources.ApplyResources(saveAsOption, "saveAsOption");
+                needSep = true;
+            }
+            if (DXApplication.theDXApplication.appAllowsRWConfig())
+            {
+                Command openCfgCmd = DXApplication.theDXApplication.network.getOpenCfgCommand();
+                Command saveCfgCmd = DXApplication.theDXApplication.network.getSaveCfgCommand();
+                if (openCfgCmd != null || saveCfgCmd != null)
+                {
+                    settingsOption = new ToolStripMenuItem();
+                    settingsOption.Name = "settingsOption";
+                    fileMenu.DropDownItems.Add(settingsOption);
+                    resources.ApplyResources(settingsOption, "settingsOption");
+                    needSep = true;
+                }
+                if (saveCfgCmd != null)
+                {
+                    saveCfgOption = new ToolStripMenuItem();
+                    settingsOption.DropDownItems.Add(saveCfgOption);
+                    saveCfgOption.Name = "saveCfgOption";
+                    resources.ApplyResources(saveCfgOption, "saveCfgOption");
+                }
+                if (openCfgCmd != null)
+                {
+                    openCfgOption = new ToolStripMenuItem();
+                    settingsOption.DropDownItems.Add(openCfgOption);
+                    openCfgOption.Name = "openCfgOption";
+                    resources.ApplyResources(openCfgOption, "openCfgOption");
+                }
+
+            }
+            if (DXApplication.theDXApplication.appAllowsImageLoad())
+            {
+                if (needSep)
+                {
+                    ToolStripSeparator sep1 = new ToolStripSeparator();
+                    fileMenu.DropDownItems.Add(sep1);
+                }
+                loadMacroOption = new ToolStripMenuItem();
+                loadMDFOption = new ToolStripMenuItem();
+                fileMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                    loadMacroOption,
+                    loadMDFOption });
+                needSep = true;
+                loadMacroOption.Name = "loadMacroOption";
+                resources.ApplyResources(loadMacroOption, "loadMacroOption");
+                loadMDFOption.Name = "loadMDFOption";
+                resources.ApplyResources(loadMDFOption, "loadMDFOption");
+                
+            }
+            if (needSep)
+            {
+                ToolStripSeparator sep2 = new ToolStripSeparator();
+                fileMenu.DropDownItems.Add(sep2);
+            }
+            closeOption = new DXToolStripMenuItem("fileCloseOption", closeCmd);
+            fileMenu.DropDownItems.Add(closeOption);
+            closeOption.Name = "closeOption";
+
+            resources.ApplyResources(closeOption, "closeOption");
+
+            menubar.ResumeLayout();
+            menubar.PerformLayout();
+
+            ResumeLayout();
+            PerformLayout();
         }
         protected virtual void createWindowsMenu(MenuStrip menubar)
         {
-            throw new Exception("Not Yet Implemented");
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(DXWindow));
+
+            ToolStripSeparator sep1 = new ToolStripSeparator();
+
+            windowsMenu = new ToolStripMenuItem();
+            openVPEOption = new ToolStripMenuItem();
+            openAllControlPanelsOption = new ToolStripMenuItem();
+            openControlPanelByNameOption = new ToolStripMenuItem();
+            openAllColormapEditorsOption = new ToolStripMenuItem();
+            messageWindowOption = new ToolStripMenuItem();
+
+            SuspendLayout();
+            menubar.SuspendLayout();
+            menubar.Items.Add(windowsMenu);
+            windowsMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                openVPEOption,
+                openAllControlPanelsOption,
+                openControlPanelByNameOption,
+                openAllColormapEditorsOption,
+                messageWindowOption
+                 });
+
+            windowsMenu.Name = "windowsMenu";
+            resources.ApplyResources(this.windowsMenu, "windowsMenu");
+
+            openVPEOption.Name = "openVPEOption";
+            resources.ApplyResources(this.openVPEOption, "openVPEOption");
+
+            openAllControlPanelsOption.Name = "openAllControlPanelsOption";
+            resources.ApplyResources(this.openAllControlPanelsOption, "openAllControlPanelsOption");
+
+            openControlPanelByNameOption.Name = "openControlPanelByNameOption";
+            resources.ApplyResources(this.openControlPanelByNameOption, "openControlPanelByNameOption");
+
+            openAllColormapEditorsOption.Name = "openAllColormapEditorsOption";
+            resources.ApplyResources(this.openAllColormapEditorsOption, "openAllColormapEditorsOption");
+
+            messageWindowOption.Name = "messageWindowOption";
+            resources.ApplyResources(this.messageWindowOption, "messageWindowOption");
+
+            menubar.ResumeLayout();
+            menubar.PerformLayout();
+
+            ResumeLayout();
+            PerformLayout();
         }
         protected override void createHelpMenu(MenuStrip menu)
         {
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(DXWindow));
+
             base.createHelpMenu(menu);
-            throw new Exception("Not Yet Implemented");
+       
+            ToolStripSeparator sep1 = new ToolStripSeparator();
+            onVisualProgramOption = new ToolStripMenuItem();
+
+            helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
+                sep1, onVisualProgramOption});
+
+            onVisualProgramOption.Name = "onVisualProgramOption";
+            resources.ApplyResources(this.onVisualProgramOption, "onVisualProgramOption");
+
         }
-        protected override void createFileHistoryMenu(ToolStripMenuItem menuItem)
+        protected override void createFileHistoryMenu(ref ToolStripMenuItem menuItem)
         {
-            base.createFileHistoryMenu(menuItem);
-            throw new Exception("Not Yet Implemented");
+            if(DXApplication.theDXApplication.appAllowsImageRWNetFile())
+                base.createFileHistoryMenu(ref menuItem);
         }
 
         public bool postVPE()

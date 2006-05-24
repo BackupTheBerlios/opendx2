@@ -21,7 +21,7 @@ namespace WinDX.UI
         Nothing
     };
 
-    public class SequencerNode
+    public class SequencerNode : ShadowedOutputNode
     {
 
         #region Private Instance Variables
@@ -220,7 +220,8 @@ namespace WinDX.UI
         //
         // Constructor:
         //
-        public SequencerNode(NodeDefinition nd, Network net, int instnc)
+        public SequencerNode(NodeDefinition nd, Network net, int instnc) :
+            base(nd, net, instnc)
         { throw new Exception("not implemented yet"); }
 
 

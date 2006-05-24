@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows.Forms;
 using WinDX;
 using WinDXL;
+using System.IO;
 
 namespace dxconcsharp
 {

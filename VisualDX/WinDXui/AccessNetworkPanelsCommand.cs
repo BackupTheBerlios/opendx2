@@ -21,7 +21,7 @@ namespace WinDX.UI
         protected Network network;
         protected AccessPanelType accessType;
 
-        AccessNetworkPanelsCommand(String name,
+        public AccessNetworkPanelsCommand(String name,
             CommandScope scope, bool active, Network network,
             AccessPanelType how)
             : base(name, scope, active)

@@ -119,8 +119,8 @@ namespace WinDX.UI
             // At this point, we should have all the macros.
             foreach (String file in nets)
             {
-                StreamReader sw = Network.OpenNetworkFile(file, out wasEncoded);
-                if (sw == null)
+                FileStream fs = Network.OpenNetworkFile(file, out wasEncoded);
+                if (fs == null)
                 {
                     ErrorDialog ed = new ErrorDialog();
                     ed.post("Failed to load macro file {0}.", file);
@@ -129,8 +129,10 @@ namespace WinDX.UI
                 else
                 {
                     bool asMacro;
-                    MacroDefinition.LoadMacroFile(sw, file, replace, out asMacro, asSystemMacro);
-                    Network.CloseNetworkFile(sw, wasEncoded);
+                    StreamReader sr = new StreamReader(fs);
+                    MacroDefinition.LoadMacroFile(sr, file, replace, out asMacro, asSystemMacro);
+                    sr.Close();
+                    Network.CloseNetworkFile(fs, wasEncoded);
                 }
             }
             return return_code;
@@ -290,7 +292,7 @@ namespace WinDX.UI
             get { return initialRead; }
         }
 
-        public bool printNetworkBody(Stream s, PrintType ptype)
+        public bool printNetworkBody(StreamWriter s, PrintType ptype)
         {
             if (!loadNetworkBody())
                 return false;

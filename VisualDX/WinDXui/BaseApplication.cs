@@ -71,6 +71,14 @@ namespace WinDX.UI
         InputDerivesOutputCacheTag = 1 		// 'cache:1'
     };
 
+    public enum Alignment
+    {
+        None,
+        Beginning,
+        Center,
+        End
+    }
+
     public abstract class BaseApplication
     {
         #region Application

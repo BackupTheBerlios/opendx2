@@ -7,14 +7,14 @@
     <ProjectGuid>{805E5D41-131E-43D6-A429-AE8844679FD0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WinDXui</RootNamespace>
+    <RootNamespace>WinDX.UI</RootNamespace>
     <AssemblyName>WinDXui</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -23,7 +23,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessNetworkPanelsCommand.cs" />
+    <Compile Include="AnnotationGroupManager.cs" />
     <Compile Include="ApplicIF.cs" />
     <Compile Include="Ark.cs" />
     <Compile Include="ArkStandIn.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="Client.cs" />
     <Compile Include="CloseWindowCommand.cs" />
     <Compile Include="CmdEntry.cs" />
+    <Compile Include="ColormapNode.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandInterface.cs">
     </Compile>
@@ -75,6 +77,12 @@
     <Compile Include="DeferrableAction.cs" />
     <Compile Include="Definition.cs" />
     <Compile Include="DialInteractor.cs" />
+    <Compile Include="Dialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog.Designer.cs">
+      <DependentUpon>Dialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="DialogManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,11 +97,6 @@
     <Compile Include="DXAnchorWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DXAnchorWindow.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DXAnchorWindow.resx</DependentUpon>
-    </Compile>
     <Compile Include="DXApplication.cs">
     </Compile>
     <Compile Include="DXChild.cs" />
@@ -101,22 +104,18 @@
     <Compile Include="DXLinkHandler.cs" />
     <Compile Include="DXPacketIF.cs" />
     <Compile Include="DXTensor.cs" />
+    <Compile Include="DXToolStripMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DXType.cs" />
     <Compile Include="DXValue.cs" />
     <Compile Include="DXWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DXWindow.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DXWindow.resx</DependentUpon>
-    </Compile>
     <Compile Include="EditorWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EditorWindow.Designer.cs">
-      <DependentUpon>EditorWindow.cs</DependentUpon>
-    </Compile>
+    <Compile Include="EditorWorkSpace.cs" />
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +143,7 @@
     <Compile Include="LinkHandler.cs" />
     <Compile Include="MacroDefinition.cs" />
     <Compile Include="MacroNode.cs" />
+    <Compile Include="MacroParameterNode.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,8 +152,12 @@
     </Compile>
     <Compile Include="ModuleMessagingNode.cs" />
     <Compile Include="NDAllocatorDictionary.cs" />
+    <Compile Include="NewCommand.cs" />
     <Compile Include="NoUndoAnchorCommand.cs" />
     <Compile Include="NoUndoJavaNetCommand.cs" />
+    <Compile Include="NoUndoNetworkCommand.cs" />
+    <Compile Include="PageGroupManager.cs" />
+    <Compile Include="ShadowedOutputNode.cs" />
     <Compile Include="StringsTable.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -267,6 +271,7 @@
       <DependentUpon>ToolSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="TransmitterNode.cs" />
+    <Compile Include="UniqueNameNode.cs" />
     <Compile Include="Utils.cs">
     </Compile>
     <Compile Include="ValueInteractor.cs" />
@@ -278,6 +283,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WorkSpace.cs" />
+    <Compile Include="WorkSpaceGrid.cs" />
     <Compile Include="WorkSpaceInfo.cs" />
     <Compile Include="XmlPreferences.cs" />
   </ItemGroup>
@@ -287,16 +293,10 @@
       <DependentUpon>ControlPanelAccessDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DXAnchorWindow.resx">
-      <SubType>Designer</SubType>
       <DependentUpon>DXAnchorWindow.cs</DependentUpon>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DXAnchorWindow.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="DXWindow.resx">
-      <SubType>Designer</SubType>
       <DependentUpon>DXWindow.cs</DependentUpon>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DXWindow.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="EditorWindow.resx">
       <SubType>Designer</SubType>
@@ -311,6 +311,7 @@
       <LastGenOutput>StringsTable.Designer.cs</LastGenOutput>
       <CustomToolNamespace>WinDX.UI</CustomToolNamespace>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="MsgWin.resx">
       <SubType>Designer</SubType>
@@ -391,6 +392,13 @@
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
     <None Include="Resources\question.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WinDX\WinDX.vcproj">
+      <Project>{0F1ED2BD-B09B-4C83-83B2-7C83B20D325B}</Project>
+      <Name>WinDX</Name>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

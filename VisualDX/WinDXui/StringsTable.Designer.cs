@@ -39,7 +39,7 @@ namespace WinDX.UI {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WinDXui.StringsTable", typeof(StringsTable).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WinDX.UI.StringsTable", typeof(StringsTable).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

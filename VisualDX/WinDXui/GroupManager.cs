@@ -42,14 +42,22 @@ namespace WinDX.UI
     public abstract class GroupManager
     {
         protected bool dirty;
-        protected Dictionary<String, GroupRecord> groups;
+        protected Dictionary<String, GroupRecord> groups = new Dictionary<string,GroupRecord>();
         protected DXApplication app;
         protected Network network;
         protected Symbol groupID;
 
         protected GroupManager(Network network, Symbol groupID)
         {
-            throw new Exception("Not yet implemented.");
+            app = DXApplication.theDXApplication;
+            this.network = network;
+            setDirty();
+            this.groupID = groupID;
+        }
+
+        ~GroupManager()
+        {
+            clear();
         }
 
         protected abstract GroupRecord recordAllocator(Network net, String name);
@@ -59,7 +67,7 @@ namespace WinDX.UI
         /// </summary>
         public virtual void clear()
         {
-            throw new Exception("Not yet implemented.");
+            groups.Clear();
         }
 
         /// <summary>
@@ -187,15 +195,38 @@ namespace WinDX.UI
             return true;
         }
 
-        public virtual bool printComment(Stream s) { return true; }
-        public virtual bool printAssignment(Stream s) { return true; }
+        public virtual bool printComment(StreamWriter s) { return true; }
+        public virtual bool printAssignment(StreamWriter s) { return true; }
 
         public String getManagerName()
         {
-            throw new Exception("Not yet implemented.");
+            return SymbolManager.theSymbolManager.getSymbolString(this.groupID); 
         }
         public Symbol getManagerSymbol() { return groupID; }
         public virtual bool survivesMerging() { return false; }
 
+
+        public static Dictionary<String, GroupManager> BuildTheGroupManagerDictionary(Network net)
+        {
+            GroupManager gmgr;
+            Dictionary<String, GroupManager> groupManagers = new Dictionary<string, GroupManager>();
+            bool isMacro = net.IsMacro;
+            if (!isMacro || ProcessGroupManager.SupportsMacros)
+            {
+                gmgr = new ProcessGroupManager(net);
+                groupManagers.Add(gmgr.getManagerName(), gmgr);
+            }
+            if (!isMacro || PageGroupManager.SupportsMacros)
+            {
+                gmgr = new PageGroupManager(net);
+                groupManagers.Add(gmgr.getManagerName(), gmgr);
+            }
+            if (!isMacro || AnnotationGroupManager.SupportsMacros)
+            {
+                gmgr = new AnnotationGroupManager(net);
+                groupManagers.Add(gmgr.getManagerName(), gmgr);
+            }
+            return groupManagers;
+        }
     }
 }

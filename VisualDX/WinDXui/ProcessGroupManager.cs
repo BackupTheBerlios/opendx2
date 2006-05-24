@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace WinDX.UI
 {
@@ -38,7 +39,7 @@ namespace WinDX.UI
         /// <summary>
         /// The host-argument dictionary
         /// </summary>
-        protected Dictionary<String, ProcessHostRecord> arguments;
+        protected Dictionary<String, ProcessHostRecord> arguments = new Dictionary<string,ProcessHostRecord>();
 
         /// <summary>
         /// A dictionary of lists of host assignment.
@@ -78,7 +79,7 @@ namespace WinDX.UI
         public ProcessGroupManager(Network net)
             : base(net, SymbolManager.theSymbolManager.registerSymbol(ProcessGroup))
         {
-            throw new Exception("Not yet implemented");
+            assignment = null;
         }
 
         public static bool SupportsMacros = false;
@@ -91,7 +92,8 @@ namespace WinDX.UI
 
         public override void clear()
         {
-            throw new Exception("Not yet implemented");
+            base.clear();
+            clearArgument();
         }
 
         /// <summary>
@@ -178,7 +180,7 @@ namespace WinDX.UI
         }
         public void clearArgument()
         {
-            throw new Exception("Not yet implemented");
+            arguments.Clear();
         }
 
         /// <summary>
@@ -232,13 +234,13 @@ namespace WinDX.UI
             return base.parseComment(s, s2, c, net);
         }
 
-        public override bool printComment(System.IO.Stream s)
+        public override bool printComment(StreamWriter s)
         {
             throw new Exception("Not yet implemented");
             return base.printComment(s);
         }
 
-        public override bool printAssignment(System.IO.Stream s)
+        public override bool printAssignment(StreamWriter s)
         {
             throw new Exception("Not yet implemented");
             return base.printAssignment(s);

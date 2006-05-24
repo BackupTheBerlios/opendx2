@@ -16,6 +16,8 @@ namespace WinDX.UI
         private int val;
         public static readonly Symbol zero = new Symbol(-1);
 
+        public int Val { get { return val; } }
+
         public Symbol(int initialVal)
         {
             val = initialVal;
@@ -28,11 +30,11 @@ namespace WinDX.UI
         }
 
         public override int GetHashCode()
-        { return this.ToString().GetHashCode(); }
+        { return this.val; }
 
         public override bool Equals(object obj)
         {
-            if (obj is Symbol)
+            if (obj != null && obj is Symbol)
             {
                 if (((Symbol)obj).val == this.val)
                     return true;
@@ -59,37 +61,41 @@ namespace WinDX.UI
     /// </summary>
     public class SymbolManager
     {
-        private Hashtable ht;
+        private Dictionary<int, String> ht;
+        private Dictionary<String, int> rt;
+        private static int lastCode = 0;
 
         public SymbolManager()
         {
-            ht = new Hashtable();
+            ht = new Dictionary<int, String>();
+            rt = new Dictionary<String, int>();
         }
 
         public Symbol registerSymbol(String symbolString)
         {
             if (!ht.ContainsValue(symbolString))
             {
-                ht.Add(symbolString.GetHashCode(), symbolString);
+                ht.Add(lastCode, symbolString);
+                rt.Add(symbolString, lastCode++);
             }
-            return (Symbol)symbolString.GetHashCode();
+            return (Symbol)(lastCode-1);
         }
 
         public Symbol getSymbol(String symbolString)
         {
-            if (ht.ContainsValue(symbolString))
+            int val;
+            if (rt.TryGetValue(symbolString, out val) )
             {
-                return (Symbol)symbolString.GetHashCode();
+                return (Symbol) val;
             }
-            throw new KeyNotFoundException();
+            return Symbol.zero;
         }
 
         public String getSymbolString(Symbol symbol)
         {
-            if (ht.ContainsKey(symbol))
-            {
-                return (String)ht[symbol];
-            }
+            String val;
+            if (ht.TryGetValue(symbol.Val, out val))
+                return val;
             return null;
         }
 

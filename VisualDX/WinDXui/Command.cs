@@ -11,6 +11,8 @@ namespace WinDX.UI
     /// <summary>
     /// I've worked through this one.
     /// </summary>
+    /// 
+
     public abstract class Command
     {
         private static readonly bool CommandClassInitialized;
@@ -164,6 +166,7 @@ namespace WinDX.UI
             thisServer.notifyClients(MsgActivate);
         }
 
+        public virtual void deactivate() { deactivate(null); }
         public virtual void deactivate(String reason)
         {
             active = false;
@@ -322,6 +325,13 @@ namespace WinDX.UI
 
         public abstract bool doIt(CommandInterface ci);
         public abstract bool undoIt();
+
+        public void executeEvent(object sender, EventArgs e)
+        {
+            DXApplication.theDXApplication.startCommandInterfaceExecution();
+            execute();
+            DXApplication.theDXApplication.endCommandInterfaceExecution();
+        }
 
     }
 }

@@ -15,6 +15,7 @@ namespace WinDX.UI
     {
         protected Command command;
         private Object localData;
+        private ToolStripMenuItem menuItem;
 
         public Object LocalData
         {
@@ -27,7 +28,7 @@ namespace WinDX.UI
             throw new Exception("CommandInteface requires a command.");
         }
 
-        protected CommandInterface(String name, Command command)
+        public CommandInterface(String name, Command command, ToolStripMenuItem ctl)
         {
             if (command == null)
             {
@@ -38,6 +39,7 @@ namespace WinDX.UI
 
             this.name = name;
             this.command = command;
+            this.menuItem = ctl;
             command.registerClient(this);
         }
 
@@ -46,8 +48,12 @@ namespace WinDX.UI
 
         public bool Active
         {
-            get { return active; }
-            set { active = value; }
+            get
+            {
+                if (menuItem != null) return menuItem.Enabled;
+                else return false;
+            }
+            set { if(menuItem != null) menuItem.Enabled = value; }
         }
 	
 
@@ -68,7 +74,11 @@ namespace WinDX.UI
             else if (message == Command.MsgDeactivate)
                 this.Active = false;
             else if (message == Command.MsgDisassociate)
+            {
+                if (menuItem != null)
+                    menuItem.Click -= command.executeEvent;
                 this.command = null;
+            }
         }
 
         protected void executeCommand()

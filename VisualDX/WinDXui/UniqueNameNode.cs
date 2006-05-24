@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    public class TransmitterNode
+    public class UniqueNameNode
     {
     }
 }

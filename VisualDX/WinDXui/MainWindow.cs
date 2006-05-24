@@ -43,7 +43,7 @@ namespace WinDX.UI
         private Command helpTechSupportCmd = null;
 
         #region Help Menu Items
-        private ToolStripMenuItem helpToolStripMenuItem = null;
+        protected ToolStripMenuItem helpToolStripMenuItem = null;
         private ToolStripMenuItem onWindowOption = null;
         private ToolStripMenuItem onManualOption = null;
         private ToolStripMenuItem onHelpOption = null;
@@ -90,16 +90,7 @@ namespace WinDX.UI
         {
 
             menuBar = new MenuStrip();
-            menuBar.SuspendLayout();
             parent.SuspendLayout();
-
-            helpToolStripMenuItem = new ToolStripMenuItem();
-            helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            helpToolStripMenuItem.Text = "Help";
-
-            menuBar.Items.Add(helpToolStripMenuItem);
-            menuBar.ResumeLayout(false);
-            menuBar.PerformLayout();
 
             parent.Controls.Add(menuBar);
             parent.MainMenuStrip = menuBar;
@@ -186,7 +177,6 @@ namespace WinDX.UI
             Debug.Assert(workArea != null);
 
             commandArea = createCommandArea(this);
-            Debug.Assert(commandArea != null);
 
             this.Controls.Add(commandArea);
 

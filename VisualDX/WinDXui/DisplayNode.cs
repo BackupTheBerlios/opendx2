@@ -189,5 +189,14 @@ namespace WinDX.UI
         {
             throw new Exception("Not Yet Implemented");
         }
+
+        public void setLastImage(bool last)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+        public bool isLastImage()
+        {
+            throw new Exception("Not Yet Implemented");
+        }
     }
 }

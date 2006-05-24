@@ -117,23 +117,131 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="endExecuteOption" xml:space="preserve">
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="closeOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Q</value>
+  </data>
+  <data name="closeOption.Text" xml:space="preserve">
+    <value>&amp;Quit</value>
+  </data>
+  <data name="connectionMenu.Text" xml:space="preserve">
+    <value>&amp;Connection</value>
+  </data>
+  <data name="disconnectFromServerOption.Text" xml:space="preserve">
+    <value>&amp;Disconnect from Server</value>
+  </data>
+  <data name="endExecutionOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+End</value>
+  </data>
+  <data name="endExecutionOption.Text" xml:space="preserve">
     <value>&amp;End Execution</value>
   </data>
-  <data name="executeMenu" xml:space="preserve">
+  <data name="executeMenu.Text" xml:space="preserve">
     <value>E&amp;xecute</value>
   </data>
-  <data name="executeOnceOption" xml:space="preserve">
-    <value>Execute &amp;Once</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="executeOnceOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+E</value>
   </data>
-  <data name="executeOnChangeOption" xml:space="preserve">
+  <data name="executeOnceOption.Text" xml:space="preserve">
+    <value>Execute &amp;Once</value>
+  </data>
+  <data name="executeOnChangeOption.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+;</value>
+  </data>
+  <data name="executeOnChangeOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Oem1</value>
+  </data>
+  <data name="executeOnChangeOption.Text" xml:space="preserve">
     <value>Execute on &amp;Change</value>
   </data>
-  <data name="sequencerOption" xml:space="preserve">
+  <data name="fileMenu.Text" xml:space="preserve">
+    <value>&amp;File</value>
+  </data>
+  <data name="helpTutorialOption.Text" xml:space="preserve">
+    <value>T&amp;utorial...</value>
+  </data>
+  <data name="loadMacroOption.Text" xml:space="preserve">
+    <value>&amp;Load Macro...</value>
+  </data>
+  <data name="loadMDFOption.Text" xml:space="preserve">
+    <value>Load &amp;Module Description...</value>
+  </data>
+  <data name="messageWindowOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+M</value>
+  </data>
+  <data name="messageWindowOption.ShortcutKeys1" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+M</value>
+  </data>
+  <data name="messageWindowOption.Text" xml:space="preserve">
+    <value>Open &amp;Message Window</value>
+  </data>
+  <data name="onVisualProgramOption.Text" xml:space="preserve">
+    <value>&amp;Application Comment...</value>
+  </data>
+  <data name="openAllCOlormapEditorsOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+E</value>
+  </data>
+  <data name="openAllColormapEditorsOption.Text" xml:space="preserve">
+    <value>Open All Colormap &amp;Editors</value>
+  </data>
+  <data name="openAllControlPanelsOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+P</value>
+  </data>
+  <data name="openAllControlPanelsOption.Text" xml:space="preserve">
+    <value>Open &amp;All Control Panels</value>
+  </data>
+  <data name="openCfgOption.Text" xml:space="preserve">
+    <value>&amp;Load...</value>
+  </data>
+  <data name="openControlPanelByNameOption.Text" xml:space="preserve">
+    <value>Open Control Panle by &amp;Name</value>
+  </data>
+  <data name="openOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+O</value>
+  </data>
+  <data name="openOption.Text" xml:space="preserve">
+    <value>&amp;Open Program...</value>
+  </data>
+  <data name="openVPEOption.Text" xml:space="preserve">
+    <value>Open &amp;Visual Program Editor</value>
+  </data>
+  <data name="processGroupAssignmentOption.Text" xml:space="preserve">
+    <value>Execution Group Assignment...</value>
+  </data>
+  <data name="recentOption.Text" xml:space="preserve">
+    <value>&amp;Recent Programs</value>
+  </data>
+  <data name="resetServerOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Shift+R</value>
+  </data>
+  <data name="resetServerOption.Text" xml:space="preserve">
+    <value>&amp;Reset Server</value>
+  </data>
+  <data name="saveAsOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Shift+S</value>
+  </data>
+  <data name="saveAsOption.Text" xml:space="preserve">
+    <value>Save Program &amp;As...</value>
+  </data>
+  <data name="saveCfgOption.Text" xml:space="preserve">
+    <value>&amp;Save As...</value>
+  </data>
+  <data name="saveOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+S</value>
+  </data>
+  <data name="saveOption.Text" xml:space="preserve">
+    <value>&amp;Save Program</value>
+  </data>
+  <data name="sequencerOption.Text" xml:space="preserve">
     <value>&amp;Sequencer</value>
+  </data>
+  <data name="settingsOption.Text" xml:space="preserve">
+    <value>P&amp;rogram Settings</value>
+  </data>
+  <data name="startServerOption.Text" xml:space="preserve">
+    <value>&amp;Start Server...</value>
+  </data>
+  <data name="windowsMenu.Text" xml:space="preserve">
+    <value>&amp;Windows</value>
   </data>
 </root>

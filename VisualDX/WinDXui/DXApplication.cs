@@ -551,7 +551,7 @@ namespace WinDX.UI
 
         #region Protected Instance Properties/Variables
 
-        protected Form anchor = null;
+        protected DXWindow anchor = null;
         protected CommandScope commandScope = null;
         protected DXServerInfo serverInfo;
         protected DXExecCtl execCtl;
@@ -673,7 +673,7 @@ namespace WinDX.UI
         private ProcessGroupManager getProcessGroupManager()
         {
             return (ProcessGroupManager)
-                this.network.groupManagers[ProcessGroupManager.ProcessGroup];
+                this.network.getGroupManagers()[ProcessGroupManager.ProcessGroup];
         }
 
         #endregion
@@ -1284,6 +1284,7 @@ namespace WinDX.UI
             serverInfo.port = (resource.port == 0 ? 1900 : resource.port);
             serverInfo.memorySize = resource.memorySize;
             serverInfo.executiveFlags = "";
+            serverInfo.children = new List<DXChild>();
 
             if (argv != null)
             {
@@ -1466,12 +1467,112 @@ namespace WinDX.UI
 
         public void completeConnection(DXChild c)
         {
-            throw new Exception("Not Yet Implemented");
+            if (c != null)
+            {
+                switch (c.waitForConnection())
+                {
+                    case -1:
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Connection to server {0} failed: {1}",
+                            c.getServer(), c.failed());
+                        closeConnection(c);
+                        break;
+                    case 0:
+                        if (resource.executeProgram)
+                            getExecCtl().executeOnce();
+                        break;
+                    case 1:
+                        InfoDialog id = new InfoDialog();
+                        id.post("Connection to server {0} has been queued", c.getServer());
+                        break;
+                }
+            }
+            else if (!serverInfo.autoStart)
+            {
+                connectToServer(serverInfo.port, null);
+            }
+
+            // Let the application packet know that a new connection to
+            // the server has been created. 
+            if (applicationPacket != null)
+                applicationPacket.handleServerConnection();
+
+            if (resource.executeOnChange)
+                getExecCtl().enableExecOnChange();
         }
 
         public DXChild startServer()
         {
-            throw new Exception("Not Yet Implemented");
+            List<String> args = new List<String>();
+            int i = 0;
+
+            args.Add("dx");
+
+            if (serverInfo.autoStart)
+            {
+                args.Add("-exonly");
+                args.Add("-local");
+
+                if (serverInfo.memorySize > 0)
+                {
+                    args.Add("-memory");
+                    args.Add(serverInfo.memorySize.ToString());
+                }
+
+                if (serverInfo.executive != null)
+                {
+                    serverInfo.executive.Trim();
+                    if (serverInfo.executive.Length > 0)
+                    {
+                        args.Add("-exec");
+                        args.Add(serverInfo.executive);
+                    }
+                }
+
+                if (serverInfo.workingDirectory != null)
+                {
+                    serverInfo.workingDirectory.Trim();
+                    if (serverInfo.workingDirectory.Length > 0)
+                    {
+                        args.Add("-directory");
+                        if (serverInfo.workingDirectory.Contains(" ") &&
+                            !serverInfo.workingDirectory.Contains("\""))
+                            args.Add("\"" + serverInfo.workingDirectory + "\"");
+                        else
+                            args.Add(serverInfo.workingDirectory);
+                    }
+                }
+                
+                if (serverInfo.userModules != null && 
+                    serverInfo.userModules.Length > 0)
+                {
+                    args.Add("-mdf");
+                    args.Add(serverInfo.userModules);
+                }
+
+                if (serverInfo.executiveFlags != null)
+                {
+                    serverInfo.executiveFlags.Trim();
+                    if (serverInfo.executiveFlags.Length > 0)
+                        args.Add(serverInfo.executiveFlags);
+                }
+
+                String[] argArr = new String[args.Count];
+                for (int j = 0; j < args.Count; j++)
+                    argArr[j] = args[j];
+
+                DXChild c = new DXChild(serverInfo.server, argArr, false);
+                if (c.failed() != null)
+                {
+                    argArr[0] = this.getUIRoot() + "/bin/dx";
+                    c = new DXChild(serverInfo.server, argArr, false);
+                }
+
+                serverInfo.children.Insert(0, c);
+                return c;
+            }
+            else
+                return null;
         }
 
         public void setServer(String server)
@@ -1670,7 +1771,7 @@ namespace WinDX.UI
             throw new Exception("The method or operation is not implemented.");
         }
 
-        public Form getAnchor()
+        public DXWindow getAnchor()
         {
             return this.anchor;
         }
@@ -1791,7 +1892,8 @@ namespace WinDX.UI
         //
         public virtual bool appAllowsDXHelp()
         {
-            throw new Exception("Not Yet Implemented");
+            return (!resource.noDXHelp &&
+                getOEMApplicationName() == null);
         }
         public virtual bool appSuppressesStartupWindows()
         {
@@ -1808,7 +1910,8 @@ namespace WinDX.UI
         }
         public virtual bool appAllowsRWConfig()
         {
-            throw new Exception("Not Yet Implemented");
+            return !isRestrictionLevel(Restriction.FULLY_RESTRICTED) &&
+                !resource.noRWConfig;
         }
         public virtual bool appAllowsPanelAccess()
         {
@@ -1859,19 +1962,22 @@ namespace WinDX.UI
         }
         public virtual bool appAllowsImageLoad()
         {
-            throw new Exception("Not Yet Implemented");
+            return !isRestrictionLevel(Restriction.SOMEWHAT_RESTRICTED) &&
+                !resource.noImageLoad;
         }
         public virtual bool appAllowsImageSaving()
         {
-            throw new Exception("Not Yet Implemented");
+            return !isRestrictionLevel(Restriction.FULLY_RESTRICTED) &&
+                !resource.noImageSaving;
         }
         public virtual bool appAllowsImagePrinting()
         {
-            throw new Exception("Not Yet Implemented");
+            return !resource.noImagePrinting;
         }
         public virtual bool appLimitsImageOptions()
         {
-            throw new Exception("Not Yet Implemented");
+            return isRestrictionLevel(Restriction.MINIMALLY_RESTRICTED) ||
+                resource.limitImageOptions;
         }
 
         public virtual bool appAllowsEditorAccess()
@@ -1923,7 +2029,7 @@ namespace WinDX.UI
         }
         public bool appAllowsConnectionMenus()
         {
-            throw new Exception("Not Yet Implemented");
+            return !resource.noConnectionMenus;
         }
         public bool appAllowsWindowsMenus()
         {
@@ -2029,7 +2135,7 @@ namespace WinDX.UI
         }
         public void getRecentNets(out List<String> result)
         {
-            throw new Exception("Not Yet Implemented");
+            XmlPreferences.theXmlPreferences.GetPref("recentNets", out result);
         }
 
 

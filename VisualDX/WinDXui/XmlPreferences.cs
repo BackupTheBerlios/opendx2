@@ -274,6 +274,26 @@ namespace WinDX.UI
             return true;
         }
 
+        /// <summary>
+        /// Get a value for a specific preference name.
+        /// </summary>
+        /// <param name="prefName">the param name to query</param>
+        /// <param name="value">sets value to a list of strings for the pref</param>
+        /// <returns>true if pref found, false if not found</returns>
+        public bool GetPref(String prefName, out List<String> value)
+        {
+            String val;
+            bool gotPref = GetPref(prefName, out val);
+            if (!gotPref)
+            {
+                value = null;
+                return false;
+            }
+            //Now break the string into a list
+            value = Utils.StringTokenizer(val, "|", null);
+            return true;
+        }
+
         public bool SetPref(String prefName, String value, bool persist)
         {
             if (prefs == null)
