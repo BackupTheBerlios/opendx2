@@ -666,12 +666,12 @@ boolean _ParseInputLine(Dictionary*    mdf,
     // 
     //  Now that we have a parameter, parse the attributes if there are any.
     // 
-    if (begin_attributes) {
-        if (!_ParseParameterAttributes(input,begin_attributes)) {  
-	    ErrorMessage("Unrecognized input attribute(s) (%s) in MDF line %d\n"
-		, lineNumber);
-	    goto error;	
-	}
+	if (begin_attributes) {
+		if (!_ParseParameterAttributes(input,begin_attributes)) {  
+			ErrorMessage("Unrecognized input attribute(s) (%s) in MDF line %d\n",
+				begin_attributes, lineNumber);
+			goto error;	
+		}
     }
 
     /*
@@ -919,43 +919,43 @@ boolean _ParseOptionsLine(Dictionary*    mdf,
 //
 boolean ParseMDFOptions (ParameterDefinition* pd, char* p)
 {
-    /*
-     * Parse Selection  values (separated by ';').
-     */
+	/*
+	* Parse Selection  values (separated by ';').
+	*/
 
-    char *value = new char[STRLEN(p) + 1];
-    while (*p) { 
-	memset(value, 0, STRLEN(p) + 1);
-	SkipWhiteSpace(p);
-	char *from = p, *to = value;
-	while (*from && (*from != ';')) {
-	    if ((*from == '\\') && (*(from+1) == ';'))
-		from++;
-	    *to = *from; 
-	    from++;
-	    to++;
+	char *value = new char[STRLEN(p) + 1];
+	while (*p) { 
+		memset(value, 0, STRLEN(p) + 1);
+		SkipWhiteSpace(p);
+		char *from = p, *to = value;
+		while (*from && (*from != ';')) {
+			if ((*from == '\\') && (*(from+1) == ';'))
+				from++;
+			*to = *from; 
+			from++;
+			to++;
+		}
+		if (to > value) {
+			if(*from == ';')
+				*(to--) = '\0';
+			//
+			// Clip trailing white space.
+			//
+			if(IsWhiteSpace(to))
+				while ((to > value) && IsWhiteSpace(to))
+					*(to--) = '\0';
+			else if(*to)
+				*(++to) = '\0';
+		}
+		pd->addValueOption(value);
+		if(*from)
+			p = from+1; 
+		else
+			p = from;
 	}
-	if (to > value) {
-	    if(*from == ';')
-		*(to--) = '\0';
-	    //
-	    // Clip trailing white space.
-	    //
-	    if(IsWhiteSpace(to))
-		while ((to > value) && IsWhiteSpace(to))
-		    *(to--) = '\0';
-	    else if(*to)
-		*(++to) = '\0';
-	}
-	pd->addValueOption(value);
-	if(*from)
-	    p = from+1; 
-	else
-	    p = from;
-    }
 
-    delete[] value;
-    return TRUE;
+	delete[] value;
+	return TRUE;
 }
 
 
@@ -1024,7 +1024,7 @@ boolean _ParseRepeatLine(Dictionary*    mdf,
     if (value > cnt)  
     {
 	ErrorMessage
-	    ("The repeat value on line %d is greater than the number of prior %sparameters.",
+	    ("The repeat value on line %d is greater than the number of prior %s parameters.",
 	     lineNumber, ioname);
 
         if (io_state == ST_INPUT)
@@ -1085,631 +1085,631 @@ boolean _FinishNodeDefinition(Dictionary*    mdf,
 
 boolean ReadMDF(Dictionary* mdf, FILE*   input, boolean uionly)
 {
-    NodeDefinition *module;
-    int        state;
-    int        start;
-    int        end;
-    Symbol	category;
-    int        line_number;
-    boolean    parsed_flags, checked_flags=FALSE, finished;
-    boolean    parsed_category,  parsed_description, parsed_outboard;
-    boolean    checked_category=FALSE, checked_description=FALSE, checked_outboard=FALSE; 
-    boolean	parsed_loadable, checked_loadable=FALSE;
-    boolean	checked_repeat=FALSE;
-    boolean    get_another_line;
-    char*      p;
-    char       line[2048];
-    int		last_iostate;
-    
+	NodeDefinition *module;
+	int        state;
+	int        start;
+	int        end;
+	Symbol	category;
+	int        line_number;
+	boolean    parsed_flags, checked_flags=FALSE, finished;
+	boolean    parsed_category,  parsed_description, parsed_outboard;
+	boolean    checked_category=FALSE, checked_description=FALSE, checked_outboard=FALSE; 
+	boolean	parsed_loadable, checked_loadable=FALSE;
+	boolean	checked_repeat=FALSE;
+	boolean    get_another_line;
+	char*      p;
+	char       line[2048];
+	int		last_iostate;
 
-    ASSERT(mdf != NUL(Dictionary*));
-    ASSERT(input);
 
-    module           = NUL(NodeDefinition*);
-    line_number      = 0;
-    state            = ST_PACKAGE;
-    last_iostate = ST_NONE;
-    
-    finished         = FALSE;
-    get_another_line = TRUE;
-    parsed_description = parsed_outboard =  parsed_loadable =
-	parsed_category = parsed_flags = FALSE;
+	ASSERT(mdf != NUL(Dictionary*));
+	ASSERT(input);
 
-    for (;;)
-    {
-	if (get_another_line)
+	module           = NUL(NodeDefinition*);
+	line_number      = 0;
+	state            = ST_PACKAGE;
+	last_iostate = ST_NONE;
+
+	finished         = FALSE;
+	get_another_line = TRUE;
+	parsed_description = parsed_outboard =  parsed_loadable =
+		parsed_category = parsed_flags = FALSE;
+
+	for (;;)
 	{
-
-	    checked_description = parsed_description;
-	    checked_repeat	= /*parsed_repeat =*/ FALSE; 
-	    checked_loadable	= parsed_loadable;
-	    checked_outboard	= parsed_outboard;
-	    checked_category	= parsed_category;
-	    checked_flags	= parsed_flags;
-
-	    for (;;)
-	    {
-		/*
-		 * Get a line to parse.
-		 */
-		p = fgets(line, sizeof(line), input);
-		ASSERT(STRLEN(line) < 2048);
-		line_number++;
-
-		/*
-		 * If no more lines, exit.
-		 */
-		if (p == NUL(char*))
+		if (get_another_line)
 		{
-		    finished = TRUE;
-		    break;
+
+			checked_description = parsed_description;
+			checked_repeat	= /*parsed_repeat =*/ FALSE; 
+			checked_loadable	= parsed_loadable;
+			checked_outboard	= parsed_outboard;
+			checked_category	= parsed_category;
+			checked_flags	= parsed_flags;
+
+			for (;;)
+			{
+				/*
+				* Get a line to parse.
+				*/
+				p = fgets(line, sizeof(line), input);
+				ASSERT(STRLEN(line) < 2048);
+				line_number++;
+
+				/*
+				* If no more lines, exit.
+				*/
+				if (p == NUL(char*))
+				{
+					finished = TRUE;
+					break;
+				}
+
+				/*
+				* Skip leading whitespace.
+				*/
+				for(start = 0;
+					line[start] == ' ' OR line[start] == '\t' OR
+					line[start] == '\n' OR line[start] == '\r';
+				start++)
+					;
+
+				/*
+				* If the string is not all spaces and  not a comment exit.
+				*/
+				if (line[start] != '\0' AND line[start] != '#')
+					break;
+			}
+
+			if (NOT finished)
+			{
+				/*
+				* Remove trailing whitespace.
+				*/
+				for(end = STRLEN(line) - 1;
+					line[end] == ' ' OR line[end] == '\t' OR line[end] == '\n' OR line[end] == '\r';
+					end--)
+					;
+
+				line[end + 1] = '\0';
+			}
+		}
+		else
+		{
+			get_another_line = TRUE;
 		}
 
 		/*
-		 * Skip leading whitespace.
-		 */
-		for(start = 0;
-		    line[start] == ' ' OR line[start] == '\t' OR
-		    line[start] == '\n' OR line[start] == '\r';
-		    start++)
-		    ;
+		* If no more input, i.e. finished, then exit loop.
+		*/
+		if (finished)
+			break;
 
 		/*
-		 * If the string is not all spaces and  not a comment exit.
-		 */
-		if (line[start] != '\0' AND line[start] != '#')
-		    break;
-	    }
+		* Otherwise, parse according to the current state.
+		*/
+		switch(state)
+		{
+		case ST_PACKAGE:
+			/*
+			* Parse the standalone "PACKAGE" keyword.
+			*/
+			if (IsToken(line, "PACKAGE", start)) {
+				if (!_ParsePackageLine(line,line_number,start)) {
+					ErrorMessage
+						("Encountered error when parsing \"PACKAGE\" keyword "
+						"on line %d.",
+						line_number);
+					goto error;
+				}
+				// Continue to try and parse PACKAGE until we move to MODULE	
+			} else {
+				/*
+				* Don't get another line yet...
+				*/
+				get_another_line = FALSE;
+				state = ST_MODULE;
+			}
 
-	    if (NOT finished)
-	    {
-		/*
-		 * Remove trailing whitespace.
-		 */
-		for(end = STRLEN(line) - 1;
-		    line[end] == ' ' OR line[end] == '\t' OR line[end] == '\n' OR line[end] == '\r';
-		    end--)
-		    ;
-	    
-		line[end + 1] = '\0';
-	    }
-	}
-	else
-	{
-	    get_another_line = TRUE;
-	}
 
-	/*
-	 * If no more input, i.e. finished, then exit loop.
-	 */
-	if (finished)
-	    break;
+			break;
 
-	/*
-	 * Otherwise, parse according to the current state.
-	 */
-	switch(state)
-	{
-	  case ST_PACKAGE:
-	    /*
-	     * Parse the standalone "PACKAGE" keyword.
-	     */
-	    if (IsToken(line, "PACKAGE", start)) {
-		if (!_ParsePackageLine(line,line_number,start)) {
-		    ErrorMessage
-			("Encountered error when parsing \"PACKAGE\" keyword "
-			 "on line %d.",
-			 line_number);
-		    goto error;
+		case ST_MODULE:
+			/*
+			* Parse "MODULE" keyword.
+			*/
+			if (NOT IsToken(line, "MODULE", start))
+			{
+				ErrorMessage
+					("Encountered error when expecting \"MODULE\" keyword "
+					"on line %d.",
+					line_number);
+
+				goto error;
+			}
+
+			/*
+			* If a module definition has already begun, end it here.
+			*/
+			if (module)
+			{
+				if (!_FinishNodeDefinition(mdf, module))
+					delete module;
+			}
+
+			checked_description = parsed_description = FALSE;
+			checked_outboard	= parsed_outboard = FALSE;
+			checked_loadable	= parsed_loadable = FALSE;
+			checked_category	= parsed_category = FALSE;
+			checked_flags	= parsed_flags    = FALSE;
+			checked_repeat	= /*parsed_repeat   =*/ FALSE;
+
+			/*
+			* Add the module index to the module index list.
+			*/
+
+			if ( (module = _ParseModuleLine(mdf, line, line_number, start)) )
+			{
+				/*
+				* Next, parse category line.
+				*/
+				state = ST_CATEGORY;
+				if (uionly)
+					module->setUILoadedOnly();
+			}
+			else
+			{
+				goto error;
+			}
+			break;
+
+		case ST_CATEGORY:
+			/*
+			* Parse "CATEGORY" keyword.
+			*/
+			checked_category = TRUE;
+			if (IsToken(line, "CATEGORY", start))
+			{
+				/*
+				* Skip space.
+				*/
+				SkipWhiteSpace(line,start);
+
+				/*
+				* Add category name to the category name symbol table and
+				* remember the category index.
+				*/
+				category = theSymbolManager->registerSymbol(&line[start]);
+				if (!module) {
+					ErrorMessage
+						("Encountered unexpected \"CATEGORY\" on line %d.",
+						line_number);
+					goto error;
+				}
+
+				module->setCategory(category);
+				parsed_category = TRUE;
+
+				if (!parsed_description)
+					state = ST_DESCRIPTION;
+				else if (!parsed_outboard)
+					state = ST_OUTBOARD;
+				else if (!parsed_flags)
+					state = ST_FLAGS;
+				else
+					state = ST_INPUT;
+			}
+			else
+			{
+				/*
+				* No category specified; e.g., mark category field as such.
+				*/
+				module->setCategory(0);
+
+				/*
+				* Don't get another line yet...
+				*/
+				get_another_line = FALSE;
+				if (!checked_description)
+					state = ST_DESCRIPTION;
+				else if (!checked_outboard)
+					state = ST_OUTBOARD;
+				else if (!checked_flags)
+					state = ST_FLAGS;
+				else
+					state = ST_INPUT;
+			}
+
+
+			break;
+
+
+		case ST_DESCRIPTION:
+
+			checked_description = TRUE;
+
+			/*
+			* Parse "DESCRIPTION" keyword.
+			*/
+			if (IsToken(line, "DESCRIPTION", start))
+			{
+				/*
+				* Skip space.
+				*/
+				SkipWhiteSpace(line,start);
+
+				/*
+				* Store away the description string.
+				*/
+				module->setDescription(&line[start]);
+				parsed_description = TRUE;
+
+				if (!parsed_category)
+					state = ST_CATEGORY;
+				else if (!parsed_outboard)
+					state = ST_OUTBOARD;
+				else if (!parsed_flags)
+					state = ST_FLAGS;
+				else
+					state = ST_INPUT;
+			}
+			else
+			{
+				/*
+				* Don't get another line yet...
+				*/
+				get_another_line = FALSE;
+				if (!checked_category)
+					state = ST_CATEGORY;
+				else if (!checked_outboard)
+					state = ST_OUTBOARD;
+				else if (!checked_flags)
+					state = ST_FLAGS;
+				else
+					state = ST_INPUT;
+			}
+
+			break;
+
+		case ST_LOADABLE:
+
+			checked_loadable = TRUE;
+			/*
+			* Parse "LOADABLE" keyword.
+			*/
+			if (IsToken(line, "LOADABLE", start)) 
+			{
+				/*
+				* Skip space.
+				*/
+				SkipWhiteSpace(line,start);
+
+				/*
+				* Store away the description string.
+				*/
+				if (!_ParseLoadableLine(module, line, line_number, start))
+					goto error;
+				parsed_loadable = TRUE;
+
+				if (!parsed_category)
+					state = ST_CATEGORY;
+				else if (!parsed_description)
+					state = ST_DESCRIPTION;
+				else if (!parsed_flags)
+					state = ST_FLAGS;
+				else
+					state = ST_INPUT;
+			}
+			else
+			{
+				/*
+				* Don't get another line yet...
+				*/
+				get_another_line = FALSE;
+
+				if (!checked_category)
+					state = ST_CATEGORY;
+				else if (!checked_description)
+					state = ST_DESCRIPTION;
+				else if (!checked_flags)
+					state = ST_FLAGS;
+				else if (!checked_outboard)
+					state = ST_OUTBOARD;
+				else
+					state = ST_INPUT;
+			}
+			break;
+
+		case ST_OUTBOARD:
+
+			checked_outboard = TRUE;
+			/*
+			* Parse "OUTBOARD" keyword.
+			*/
+			if (IsToken(line, "OUTBOARD", start)) 
+			{
+				/*
+				* Skip space.
+				*/
+				SkipWhiteSpace(line,start);
+
+				/*
+				* Store away the description string.
+				*/
+				if (!_ParseOutboardLine(module, line, line_number, start))
+					goto error;
+				parsed_outboard = TRUE;
+
+				if (!parsed_category)
+					state = ST_CATEGORY;
+				else if (!parsed_description)
+					state = ST_DESCRIPTION;
+				else if (!parsed_flags)
+					state = ST_FLAGS;
+				else
+					state = ST_INPUT;
+			}
+			else
+			{
+				/*
+				* Don't get another line yet...
+				*/
+				get_another_line = FALSE;
+
+				if (!checked_loadable)
+					state = ST_LOADABLE;
+				else if (!checked_category)
+					state = ST_CATEGORY;
+				else if (!checked_description)
+					state = ST_DESCRIPTION;
+				else if (!checked_flags)
+					state = ST_FLAGS;
+				else
+					state = ST_INPUT;
+			}
+			break;
+
+		case ST_FLAGS:
+
+			checked_flags = TRUE;
+			/*
+			* Parse "FLAGS" keyword.
+			*/
+			if (IsToken(line, "FLAGS", start)) {
+
+				parsed_flags = TRUE;
+
+				if (strstr(line,"SWITCH")) module->setMDFFlagSWITCH();
+				if (strstr(line,"ERR_CONT")) module->setMDFFlagERR_CONT();
+				if (strstr(line,"PIN")) module->setMDFFlagPIN();
+				if (strstr(line,"SIDE_EFFECT")) module->setMDFFlagSIDE_EFFECT();
+				if (strstr(line,"PERSISTENT")) module->setMDFFlagPERSISTENT();
+				if (strstr(line,"ASYNC")) module->setMDFFlagASYNCHRONOUS();
+				if (strstr(line,"REROUTABLE")) module->setMDFFlagREROUTABLE();
+				if (strstr(line,"REACH")) module->setMDFFlagREACH();
+				if (strstr(line,"LOOP")) module->setMDFFlagLOOP();
+
+				if (!parsed_category)
+					state = ST_CATEGORY;
+				else if (!parsed_description)
+					state = ST_DESCRIPTION;
+				else if (!parsed_outboard)
+					state = ST_OUTBOARD;
+				else
+					state = ST_INPUT;
+			}
+			else
+			{
+				/*
+				* Don't get another line yet...
+				*/
+				get_another_line = FALSE;
+
+				if (!checked_category)
+					state = ST_CATEGORY;
+				else if (!checked_description)
+					state = ST_DESCRIPTION;
+				else if (!checked_outboard)
+					state = ST_OUTBOARD;
+				else
+					state = ST_INPUT;
+			}
+			break;
+
+		case ST_INPUT:
+			last_iostate = ST_INPUT;
+			if (IsToken(line, "INPUT", start))
+			{
+				if (_ParseInputLine(mdf, module, line, line_number, start))
+				{
+					/*
+					* Continue to parse input line.
+					*/
+					state = ST_INPUT;
+				}
+				else
+				{
+					goto error;
+				}
+			}
+			else
+			{
+				/*
+				* Don't get another line yet...
+				*/
+				get_another_line = FALSE;
+
+				/*
+				* If not successful, try parsing repeat line.
+				*/
+				if (checked_repeat)
+					state = ST_OUTPUT;
+				else
+					state = ST_OPTIONS;
+
+			}
+			break;
+
+
+		case ST_OUTPUT:
+			last_iostate = ST_OUTPUT;
+			if (IsToken(line, "OUTPUT", start))
+			{
+				if (_ParseOutputLine(mdf, module, line, line_number, start))
+				{
+					/*
+					* Continue to parse output line.
+					*/
+					state = ST_OUTPUT;
+				}
+				else
+				{
+					goto error;
+				}
+			}
+			else
+			{
+				/*
+				* Don't get another line yet...
+				*/
+				get_another_line = FALSE;
+
+				/*
+				* If not successful, assume end of module definition...
+				*/
+				state = ST_REPEAT;
+			}
+			break;
+
+		case ST_REPEAT: 
+			checked_repeat = TRUE;
+			if (IsToken(line, "REPEAT", start))
+			{
+				if (_ParseRepeatLine(mdf, module, line, line_number, 
+					start, last_iostate))
+				{
+					/*
+					* Next, parse output or module line.
+					*/
+					if (last_iostate == ST_INPUT)  {
+						state = ST_OUTPUT;
+					} else if (last_iostate == ST_OUTPUT)  {
+						state = ST_PACKAGE;
+					} else
+						ASSERT(0);
+					/*parsed_repeat = TRUE;*/
+					get_another_line = TRUE;
+				}
+				else
+				{
+					goto error;
+				}
+			}
+			else
+			{
+				/*
+				* Don't get another line yet...
+				*/
+				get_another_line = FALSE;
+
+				/*
+				* If not successful, try parsing output or module line.
+				*/
+				if (last_iostate == ST_INPUT) {
+					state = ST_INPUT;
+				} else if (last_iostate == ST_OUTPUT) { 
+					state = ST_PACKAGE;
+				} else 
+					ASSERT(0); 
+			}
+			break;
+
+		case ST_OPTIONS: 
+			ASSERT(last_iostate == ST_INPUT);
+			if (IsToken(line, "OPTIONS", start))
+			{
+				if (_ParseOptionsLine(mdf, module, line, line_number, start))
+				{
+					/*
+					* Next, parse another line of selections
+					*/
+					state = ST_OPTIONS;
+					get_another_line = TRUE;
+				}
+				else
+				{
+					goto error;
+				}
+			}
+			else
+			{
+				/*
+				* Don't get another line yet...
+				*/
+				get_another_line = FALSE;
+
+				/*
+				* If not successful, try parsing output or module line.
+				*/
+				if (!checked_repeat)
+					state = ST_REPEAT;
+				else
+					state = ST_INPUT;
+			}
+			break;
+
+
+		default:
+			ASSERT(FALSE);
 		}
-		// Continue to try and parse PACKAGE until we move to MODULE	
-	    } else {
-		/*
-		 * Don't get another line yet...
-		 */
-		get_another_line = FALSE;
-	    	state = ST_MODULE;
-	    }
+	}
 
-
-	    break;
-		
-	  case ST_MODULE:
-	    /*
-	     * Parse "MODULE" keyword.
-	     */
-	    if (NOT IsToken(line, "MODULE", start))
-	    {
-		ErrorMessage
-		    ("Encountered error when expecting \"MODULE\" keyword "
-		     "on line %d.",
-		     line_number);
-
-		goto error;
-	    }
-
-	    /*
-	     * If a module definition has already begun, end it here.
-	     */
-	    if (module)
-	    {
+	/*
+	* Finish the module definition.
+	*/
+	if (module)
+	{
 		if (!_FinishNodeDefinition(mdf, module))
-		    delete module;
-	    }
-
-	    checked_description = parsed_description = FALSE;
-	    checked_outboard	= parsed_outboard = FALSE;
-	    checked_loadable	= parsed_loadable = FALSE;
-	    checked_category	= parsed_category = FALSE;
-	    checked_flags	= parsed_flags    = FALSE;
-	    checked_repeat	= /*parsed_repeat   =*/ FALSE;
-	   
-	    /*
-	     * Add the module index to the module index list.
-	     */
-
-	    if ( (module = _ParseModuleLine(mdf, line, line_number, start)) )
-	    {
-		/*
-		 * Next, parse category line.
-		 */
-		state = ST_CATEGORY;
-		if (uionly)
-		    module->setUILoadedOnly();
-	    }
-	    else
-	    {
-		goto error;
-	    }
-	    break;
-
-	  case ST_CATEGORY:
-	    /*
-	     * Parse "CATEGORY" keyword.
-	     */
-	    checked_category = TRUE;
-	    if (IsToken(line, "CATEGORY", start))
-	    {
-		/*
-		 * Skip space.
-		 */
-		SkipWhiteSpace(line,start);
-
-		/*
-		 * Add category name to the category name symbol table and
-		 * remember the category index.
-		 */
-		category = theSymbolManager->registerSymbol(&line[start]);
-		if (!module) {
-		    ErrorMessage
-			("Encountered unexpected \"CATEGORY\" on line %d.",
-			 line_number);
-		    goto error;
-		}
-			
-		module->setCategory(category);
-	        parsed_category = TRUE;
-
-		if (!parsed_description)
-		    state = ST_DESCRIPTION;
-		else if (!parsed_outboard)
-		    state = ST_OUTBOARD;
-		else if (!parsed_flags)
-		    state = ST_FLAGS;
-		else
-		    state = ST_INPUT;
-	    }
-	    else
-	    {
-		/*
-		 * No category specified; e.g., mark category field as such.
-		 */
-		module->setCategory(0);
-		
-		/*
-		 * Don't get another line yet...
-		 */
-		get_another_line = FALSE;
-		if (!checked_description)
-		    state = ST_DESCRIPTION;
-		else if (!checked_outboard)
-		    state = ST_OUTBOARD;
-		else if (!checked_flags)
-		    state = ST_FLAGS;
-		else
-		    state = ST_INPUT;
-	    }
-
-
-	    break;
-
-
-	  case ST_DESCRIPTION:
-
-	    checked_description = TRUE;
-
-	    /*
-	     * Parse "DESCRIPTION" keyword.
-	     */
-	    if (IsToken(line, "DESCRIPTION", start))
-	    {
-		/*
-		 * Skip space.
-		 */
-		SkipWhiteSpace(line,start);
-
-		/*
-		 * Store away the description string.
-		 */
-		module->setDescription(&line[start]);
-	 	parsed_description = TRUE;
-
-		if (!parsed_category)
-		    state = ST_CATEGORY;
-		else if (!parsed_outboard)
-		    state = ST_OUTBOARD;
-		else if (!parsed_flags)
-		    state = ST_FLAGS;
-		else
-		    state = ST_INPUT;
-	    }
-	    else
-	    {
-		/*
-		 * Don't get another line yet...
-		 */
-		get_another_line = FALSE;
-		if (!checked_category)
-		    state = ST_CATEGORY;
-		else if (!checked_outboard)
-		    state = ST_OUTBOARD;
-		else if (!checked_flags)
-		    state = ST_FLAGS;
-		else
-		    state = ST_INPUT;
-	    }
-
-	    break;
-
-	  case ST_LOADABLE:
-
-	    checked_loadable = TRUE;
-	    /*
-	     * Parse "LOADABLE" keyword.
-	     */
-	    if (IsToken(line, "LOADABLE", start)) 
-	    {
-		/*
-		 * Skip space.
-		 */
-		SkipWhiteSpace(line,start);
-
-		/*
-		 * Store away the description string.
-		 */
-		if (!_ParseLoadableLine(module, line, line_number, start))
-		    goto error;
-		parsed_loadable = TRUE;
-
-		if (!parsed_category)
-		    state = ST_CATEGORY;
-		else if (!parsed_description)
-		    state = ST_DESCRIPTION;
-		else if (!parsed_flags)
-		    state = ST_FLAGS;
-		else
-		    state = ST_INPUT;
-	    }
-	    else
-	    {
-		/*
-		 * Don't get another line yet...
-		 */
-		get_another_line = FALSE;
-
-		if (!checked_category)
-		    state = ST_CATEGORY;
-		else if (!checked_description)
-		    state = ST_DESCRIPTION;
-		else if (!checked_flags)
-		    state = ST_FLAGS;
-		else if (!checked_outboard)
-		    state = ST_OUTBOARD;
-		else
-		    state = ST_INPUT;
-	    }
-	    break;
-
-	  case ST_OUTBOARD:
-
-	    checked_outboard = TRUE;
-	    /*
-	     * Parse "OUTBOARD" keyword.
-	     */
-	    if (IsToken(line, "OUTBOARD", start)) 
-	    {
-		/*
-		 * Skip space.
-		 */
-		SkipWhiteSpace(line,start);
-
-		/*
-		 * Store away the description string.
-		 */
-		if (!_ParseOutboardLine(module, line, line_number, start))
-		    goto error;
-		parsed_outboard = TRUE;
-
-		if (!parsed_category)
-		    state = ST_CATEGORY;
-		else if (!parsed_description)
-		    state = ST_DESCRIPTION;
-		else if (!parsed_flags)
-		    state = ST_FLAGS;
-		else
-		    state = ST_INPUT;
-	    }
-	    else
-	    {
-		/*
-		 * Don't get another line yet...
-		 */
-		get_another_line = FALSE;
-
-		if (!checked_loadable)
-		    state = ST_LOADABLE;
-		else if (!checked_category)
-		    state = ST_CATEGORY;
-		else if (!checked_description)
-		    state = ST_DESCRIPTION;
-		else if (!checked_flags)
-		    state = ST_FLAGS;
-		else
-		    state = ST_INPUT;
-	    }
-	    break;
-
-	  case ST_FLAGS:
-
-	    checked_flags = TRUE;
-	    /*
-	     * Parse "FLAGS" keyword.
-	     */
-	    if (IsToken(line, "FLAGS", start)) {
-
-		parsed_flags = TRUE;
-
-		if (strstr(line,"SWITCH")) module->setMDFFlagSWITCH();
-		if (strstr(line,"ERR_CONT")) module->setMDFFlagERR_CONT();
-		if (strstr(line,"PIN")) module->setMDFFlagPIN();
-		if (strstr(line,"SIDE_EFFECT")) module->setMDFFlagSIDE_EFFECT();
-		if (strstr(line,"PERSISTENT")) module->setMDFFlagPERSISTENT();
-		if (strstr(line,"ASYNC")) module->setMDFFlagASYNCHRONOUS();
-		if (strstr(line,"REROUTABLE")) module->setMDFFlagREROUTABLE();
-		if (strstr(line,"REACH")) module->setMDFFlagREACH();
-		if (strstr(line,"LOOP")) module->setMDFFlagLOOP();
-
-		if (!parsed_category)
-		    state = ST_CATEGORY;
-		else if (!parsed_description)
-		    state = ST_DESCRIPTION;
-		else if (!parsed_outboard)
-		    state = ST_OUTBOARD;
-		else
-		    state = ST_INPUT;
-	    }
-	    else
-	    {
-		/*
-		 * Don't get another line yet...
-		 */
-		get_another_line = FALSE;
-
-		if (!checked_category)
-		    state = ST_CATEGORY;
-		else if (!checked_description)
-		    state = ST_DESCRIPTION;
-		else if (!checked_outboard)
-		    state = ST_OUTBOARD;
-		else
-		    state = ST_INPUT;
-	    }
-	    break;
-
-	  case ST_INPUT:
-	    last_iostate = ST_INPUT;
-	    if (IsToken(line, "INPUT", start))
-	    {
-		if (_ParseInputLine(mdf, module, line, line_number, start))
-		{
-		    /*
-		     * Continue to parse input line.
-		     */
-		    state = ST_INPUT;
-		}
-		else
-		{
-		    goto error;
-		}
-	    }
-	    else
-	    {
-		/*
-		 * Don't get another line yet...
-		 */
-		get_another_line = FALSE;
-
-		/*
-		 * If not successful, try parsing repeat line.
-		 */
-		if (checked_repeat)
-		    state = ST_OUTPUT;
-		else
-		    state = ST_OPTIONS;
-
-	    }
-	    break;
-
-
-	  case ST_OUTPUT:
-	    last_iostate = ST_OUTPUT;
-	    if (IsToken(line, "OUTPUT", start))
-	    {
-		if (_ParseOutputLine(mdf, module, line, line_number, start))
-		{
-		    /*
-		     * Continue to parse output line.
-		     */
-		    state = ST_OUTPUT;
-		}
-		else
-		{
-		    goto error;
-		}
-	    }
-	    else
-	    {
-		/*
-		 * Don't get another line yet...
-		 */
-		get_another_line = FALSE;
-
-		/*
-		 * If not successful, assume end of module definition...
-		 */
-		state = ST_REPEAT;
-	    }
-	    break;
-
-	  case ST_REPEAT: 
-	    checked_repeat = TRUE;
-	    if (IsToken(line, "REPEAT", start))
-	    {
-		if (_ParseRepeatLine(mdf, module, line, line_number, 
-							start, last_iostate))
-		{
-		    /*
-		     * Next, parse output or module line.
-		     */
-		    if (last_iostate == ST_INPUT)  {
-		        state = ST_OUTPUT;
-		    } else if (last_iostate == ST_OUTPUT)  {
-		        state = ST_PACKAGE;
-		    } else
-			ASSERT(0);
-	    	    /*parsed_repeat = TRUE;*/
-		    get_another_line = TRUE;
-		}
-		else
-		{
-		    goto error;
-		}
-	    }
-	    else
-	    {
-		/*
-		 * Don't get another line yet...
-		 */
-		get_another_line = FALSE;
-
-		/*
-		 * If not successful, try parsing output or module line.
-		 */
-		 if (last_iostate == ST_INPUT) {
-		    state = ST_INPUT;
-		 } else if (last_iostate == ST_OUTPUT) { 
-		    state = ST_PACKAGE;
-		 } else 
-		    ASSERT(0); 
-	    }
-	    break;
-
-	  case ST_OPTIONS: 
-	    ASSERT(last_iostate == ST_INPUT);
-	    if (IsToken(line, "OPTIONS", start))
-	    {
-		if (_ParseOptionsLine(mdf, module, line, line_number, start))
-		{
-		    /*
-		     * Next, parse another line of selections
-		     */
-		    state = ST_OPTIONS;
-		    get_another_line = TRUE;
-		}
-		else
-		{
-		    goto error;
-		}
-	    }
-	    else
-	    {
-		/*
-		 * Don't get another line yet...
-		 */
-		get_another_line = FALSE;
-
-		/*
-		 * If not successful, try parsing output or module line.
-		 */
-		if (!checked_repeat)
-		    state = ST_REPEAT;
-		else
-		    state = ST_INPUT;
-	    }
-	    break;
-
-
-	  default:
-	    ASSERT(FALSE);
+			delete module;
 	}
-    }
 
-    /*
-     * Finish the module definition.
-     */
-    if (module)
-    {
-	if (!_FinishNodeDefinition(mdf, module))
-	    delete module;
-    }
-
-    return TRUE;
+	return TRUE;
 
 error:
-    if (module) delete module;
+	if (module) delete module;
 
-    return FALSE;
+	return FALSE;
 }
 
 boolean LoadMDFFile(const char *file, const char *mdftype, Dictionary *mdf,
-			boolean uionly)
+					boolean uionly)
 {
-    FILE *input;
-    boolean parsed;
+	FILE *input;
+	boolean parsed;
 
-    if (!file || !*file)
-        return TRUE;
+	if (!file || !*file)
+		return TRUE;
 
-    input = fopen(file, "r");
-    if (input != NUL(FILE*))
-    {
-	parsed = ReadMDF(mdf, input, uionly);
-	fclose(input);	    
-
-	if (NOT parsed)
+	input = fopen(file, "r");
+	if (input != NUL(FILE*))
 	{
-	    ErrorMessage("Error found in %s module definition file \"%s\".",
-			mdftype,file);
-	    return FALSE;
+		parsed = ReadMDF(mdf, input, uionly);
+		fclose(input);	    
+
+		if (NOT parsed)
+		{
+			ErrorMessage("Error found in %s module definition file \"%s\".",
+				mdftype,file);
+			return FALSE;
+		}
 	}
-    }
-    else
-    {
-	ErrorMessage ("Cannot open %s module description file \"%s\".", 
+	else
+	{
+		ErrorMessage ("Cannot open %s module description file \"%s\".", 
 			mdftype,file);
-	return FALSE;
-    }
-    return TRUE;
+		return FALSE;
+	}
+	return TRUE;
 }
 
 #ifdef NOT_YET

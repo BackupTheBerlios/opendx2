@@ -34,11 +34,10 @@ void WorkSpaceInfo::setDefaultConfiguration()
     this->prevent_overlap = FALSE;
     this->grid.setDefaultConfiguration();
 
-    if (this->workSpace)
-	this->workSpace->resize();
-
-    if (this->workSpace)
-	this->workSpace->installInfo(this);
+	if (this->workSpace) {
+		this->workSpace->resize();
+		this->workSpace->installInfo(this);
+	}
 }
 //
 // Parse a work space comment and return the information within.

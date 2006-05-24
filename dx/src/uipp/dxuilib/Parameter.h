@@ -266,7 +266,7 @@ class Parameter : public Base
     }
     boolean hasWriteableCacheability()
                 { return this->definition->hasWriteableCacheability(); }
-    boolean getDefaultCacheability()
+    Cacheability getDefaultCacheability()
                 { return this->definition->getDefaultCacheability(); }
 
     //

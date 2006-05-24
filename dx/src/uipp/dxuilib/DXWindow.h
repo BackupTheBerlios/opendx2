@@ -96,7 +96,7 @@ class DXWindow : public IBMMainWindow
     ToggleButtonInterface *toggleWindowStartupOption;
 
     // 
-    //  Adde help option pulldown support
+    //  Adds help option pulldown support
     // 
     CommandInterface	*helpTutorialOption;
 
