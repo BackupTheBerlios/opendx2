@@ -8,7 +8,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.9 2006/05/17 14:35:17 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.10 2006/05/25 17:12:21 davidt Exp $
  */
 #if defined(hp700) 
 #define _UINT64_T
@@ -102,6 +102,11 @@ JNIEXPORT jlong JNICALL Java_server_DXServer_DXLStartDX
 {
 char cmdstr[256];
 DXLConnection* dxl;
+	jclass newExcCls;
+	
+	(*env)->ExceptionDescribe(env);
+	(*env)->ExceptionClear(env);
+	newExcCls = (*env)->FindClass(env, "java/lang/IllegalArgumentException");
 
     const char *host = (*env)->GetStringUTFChars(env, jhost,0);
     const char *cmd = (*env)->GetStringUTFChars(env, jcmdstr,0);
@@ -112,10 +117,21 @@ DXLConnection* dxl;
     else
 	strcpy (cmdstr, cmd);
     dxl = DXLStartDX(cmdstr, host);
+        
     /* if (dxl) DXLSetMessageDebugging(dxl, 1); */
 
     (*env)->ReleaseStringUTFChars(env, jcmdstr, cmd);
     (*env)->ReleaseStringUTFChars(env, jhost, host);
+
+    /* Should now look at dxl and the errno to see what happened. */
+    /* If it returns null, then throw a java exception. */
+    if(dxl == NULL) {
+    	if(newExcCls == NULL)
+    		return 0;
+    	else
+    		(*env)->ThrowNew(env, newExcCls, "err starting dx server--check dxserver.hosts file.");
+    }
+
 
     return (long)dxl;
 }

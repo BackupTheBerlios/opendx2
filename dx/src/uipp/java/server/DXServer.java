@@ -425,8 +425,21 @@ public class DXServer extends Object
 
             if ( ce == null ) {
                 String host = DXServer.GetNextHost();
-                long dxlcon =
+                long dxlcon = 0;
+                try {
+                    dxlcon =
                     DXServer.DXLStartDX( "dx -optimize memory -execonly -processors 1 -highlight off", host );
+                } catch (Exception e) {
+                	System.out.println ( "Problem starting one of your hosts." );
+                	System.out.println ("Startup was: dx -optimize memory -execonly -processors 1 -highlight off :" + host); 
+            		System.exit( 1 );
+            	}
+            	if (dxlcon == 0) {
+            		System.out.println ( "Problem starting one of your hosts." );
+                	System.out.println ("Startup was: dx -optimize memory -execonly -processors 1 -highlight off :" + host); 
+            		System.exit( 1 );
+            	}
+                	
                 Long C = new Long( dxlcon );
                 ce = new ConnectionEntry( C );
                 CachedConns.put( C, ce );
