@@ -1230,7 +1230,7 @@ dnl don't require SHARED_LINK to be set going in, but if set, it overrides any s
         fi
         if test $ARCH = "linux" ; then
                 DX_RTL_CFLAGS=" -D_GNU_SOURCE -Dlinux"
-                DX_RTL_ALDFLAGS=" --shared"
+                DX_RTL_ALDFLAGS="-fPIC -shared"
 		DX_RTL_DXENTRY=" -eDXEntry"
         fi
         if test $ARCH = "freebsd" ; then
