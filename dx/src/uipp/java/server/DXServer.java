@@ -532,11 +532,15 @@ public class DXServer extends Object
                     String host;
 
                     while ( ( host = hbr.readLine() ) != null ) {
+                    	host = host.trim();
+                    	
                         if ( host.startsWith( "//" ) ) continue;
 
                         if ( host.startsWith( "!#" ) ) continue;
 
                         if ( host.startsWith( "#" ) ) continue;
+                        
+                        if ( host.length() == 0) continue;
 
                         HostNames.addElement( ( Object ) host );
                     }
