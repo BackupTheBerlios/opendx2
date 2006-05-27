@@ -11,7 +11,7 @@ namespace WinDX.UI
 
     public delegate ConfigurationDialog CDBAllocator(Form f, Node n);
 
-    class CDBAllocatorDictionary : Dictionary<Symbol, CDBAllocator>
+    class CDBAllocatorDictionary : Dictionary<String, CDBAllocator>
     {
         CDBAllocator defaultAlloc;
 
@@ -32,7 +32,7 @@ namespace WinDX.UI
         {
             try
             {
-                CDBAllocator a = this[namesym];
+                CDBAllocator a = findAllocator(namesym);
                 return a(f, n);
             }
             catch (KeyNotFoundException)
@@ -46,8 +46,7 @@ namespace WinDX.UI
             SymbolManager sm = SymbolManager.theSymbolManager;
             try
             {
-                Symbol s = sm.getSymbol(name);
-                return findAllocator(s);
+                return this[name];
             }
             catch (KeyNotFoundException)
             {
@@ -58,7 +57,8 @@ namespace WinDX.UI
         {
             try
             {
-                return this[name];
+                String s = SymbolManager.theSymbolManager.getSymbolString(name);
+                return this[s];
             }
             catch (KeyNotFoundException)
             {

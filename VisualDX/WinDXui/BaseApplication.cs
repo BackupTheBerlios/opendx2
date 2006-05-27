@@ -702,7 +702,8 @@ namespace WinDX.UI
         {
             // Let's just get this by finding the location of the UI path.
             String uiroot = "";
-            uiroot = Application.StartupPath;
+            if(!XmlPreferences.theXmlPreferences.GetPref("UIRoot", out uiroot))
+                uiroot = Application.StartupPath;
             return uiroot;
         }
 

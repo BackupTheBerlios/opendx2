@@ -175,7 +175,7 @@ namespace WinDX.UI
         /// <param name="s"></param>
         /// <param name="separators">The charactors to split over.</param>
         /// <param name="quotes">The characters used for grouping (not split within)</param>
-        /// <returns></returns>
+        /// <returns>A list of the tokenized strings. Separators are eaten, quotes are returned. </returns>
         public static List<String> StringTokenizer(String s, String separators, String[] quotes)
         {
             String seps;
@@ -404,6 +404,58 @@ namespace WinDX.UI
 
             Color c = Color.FromArgb(redi, greeni, bluei);
             return c;
+        }
+
+        /// <summary>
+        /// Take a string and insert newlines to make it multiple line.
+        /// </summary>
+        /// <param name="str">String to add newlines to</param>
+        /// <param name="avLength">The length preferred</param>
+        /// <param name="maxLength">The maximum length if no space found to break near preferred</param>
+        /// <returns></returns>
+        public static String WordWrap(String str, int avLength) { return WordWrap(str, avLength, avLength + 3); }
+        public static String WordWrap(String str, int avLength, int maxLength)
+        {
+            String newStr = "";
+            String subStr = "";
+            bool done = false;
+            int buf = maxLength - avLength;
+
+            String sub;
+            int startingAt = 0;
+
+            while (!done)
+            {                
+                if (startingAt > str.Length)
+                    done = true;
+
+                subStr = str.Substring(startingAt);
+                subStr.TrimStart();
+                if (subStr.Length > avLength + buf)
+                {
+                    sub = subStr.Substring(avLength - buf, 2 * buf);
+                    int ci = sub.IndexOf(' ');
+                    if (ci == -1)
+                    {
+                        newStr += subStr.Substring(0, avLength + buf) + Environment.NewLine;
+                        startingAt += avLength + buf;
+                    }
+                    else
+                    {
+                        newStr += subStr.Substring(0, avLength - buf + ci) + Environment.NewLine;
+                        startingAt += avLength - buf + ci;
+                    }
+                }
+                else
+                {
+                    newStr += str.Substring(startingAt);
+                    done = true;
+                }
+
+            }
+
+
+            return newStr;
         }
     }
 }

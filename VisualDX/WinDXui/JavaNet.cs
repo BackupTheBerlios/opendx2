@@ -21,7 +21,9 @@ namespace WinDX.UI
 
         ~JavaNet()
         {
-            throw new Exception("Not Yet Implemented");
+            if (html_f != null) html_f.Close();
+            if (make_f != null) make_f.Close();
+            if (applet_f != null) applet_f.Close();
         }
 
         protected static String[] UnsupportedTools;
@@ -37,10 +39,10 @@ namespace WinDX.UI
         protected String apple_file;
         protected String bean_file;
 
-        protected Stream html_f;
-        protected Stream make_f;
-        protected Stream applet_f;
-        protected Stream bean_f;
+        protected FileStream html_f;
+        protected FileStream make_f;
+        protected FileStream applet_f;
+        protected FileStream bean_f;
 
         protected bool setOutputName(String name)
         {

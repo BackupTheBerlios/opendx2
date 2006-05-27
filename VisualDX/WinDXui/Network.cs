@@ -492,7 +492,11 @@ namespace WinDX.UI
 
         ~Network()
         {
-            throw new Exception("Not Yet Implemented");
+            deleting = true;
+            clear(true);
+
+            DXApplication.theDXApplication.executingCmd.removeAutoCmd(newCmd);
+            DXApplication.theDXApplication.notExecutingCmd.removeAutoCmd(newCmd);
         }
 
         // Methods for extern "C" functions reference by yacc.

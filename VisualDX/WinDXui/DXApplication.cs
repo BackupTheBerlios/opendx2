@@ -315,6 +315,8 @@ namespace WinDX.UI
             executeOnceCmd.autoDeactivate(executeOnChangeCmd);
             notExecutingCmd.autoActivate(executeOnChangeCmd);
 
+            NDAllocatorDictionary.theNDAllocatorDictionary = new NDAllocatorDictionary();
+
             readFirstNetwork = false;
 
         }
@@ -347,7 +349,7 @@ namespace WinDX.UI
         /// <summary>
         /// List of User Macros
         /// </summary>
-        public List<Network> macroList;
+        public List<Network> macroList = new List<Network>();
         /// <summary>
         /// DX application commands
         /// </summary>

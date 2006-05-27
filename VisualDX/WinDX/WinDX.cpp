@@ -125,6 +125,8 @@ DXExec::DXExec() {
 }
 
 DXExec::~DXExec() {
+	dx->Terminate();
+
 	if(dxe)
 		delete dxe;
 	if(dx)

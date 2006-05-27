@@ -90,9 +90,10 @@ namespace WinDX.UI
             s = @"\]";
             rgx = new Regex(s);
             String fnlStr = rgx.Replace(newStr, @" ] ");
+            fnlStr = fnlStr.Trim();
 
             // Use split to split over space and get array of strings
-            String[] vals = fnlStr.Split(' ');
+            String[] vals = fnlStr.Split();
 
             List<double> scalarList = new List<double>();
             foreach (String ind in vals)
@@ -216,8 +217,15 @@ namespace WinDX.UI
                 {
                     sawValue = true;
                     // Add to vector
-                    double val = double.Parse(ind);
-                    scalarList.Add(val);
+                    try
+                    {
+                        double val = double.Parse(ind);
+                        scalarList.Add(val);
+                    }
+                    catch (FormatException)
+                    {
+                        return false;
+                    }
                 }
             }
             return true;
@@ -308,20 +316,18 @@ namespace WinDX.UI
             return true;
         }
 
-        public static bool IsTensor(String s, ref int index)
+        public static bool IsTensor(String s)
         {
             DXTensor t = new DXTensor();
             return (t.setValue(s));
         }
 
-        public static bool IsVector(String s, ref int index, ref int tuple)
+        public static bool IsVector(String s, ref int tuple)
         {
             DXTensor t = new DXTensor();
-            int tindex = index;
             if (t.setValue(s) && (t.getDimensions() == 1))
             {
                 tuple = t.getDimensionSize(1);
-                index = tindex;
                 return true;
             }
             return false;

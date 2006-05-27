@@ -34,6 +34,9 @@ namespace WinDX.UI
             Application.SetCompatibleTextRenderingDefault(false);
             Application.EnableVisualStyles();
 
+            //String test = "{\"{a, b}\"}";
+            //String resulting = Utils.FindDelimitedString(test, '{', '}', "\"");
+
             globalApp = new DXApplication("dx");
             String[] args = Environment.GetCommandLineArgs();
            globalApp.initialize(ref args);
@@ -41,8 +44,6 @@ namespace WinDX.UI
             //InfoDialog wd = new InfoDialog();
             //wd.modalPost(theApplication.getAboutAppString());
 
-            //String test = "{\"{a, b}\"}";
-            //String resulting = Utils.FindDelimitedString(test, '{', '}', "\"");
 
             //MessageBox.Show(resulting);
             //MessageBox.Show("see what happens");

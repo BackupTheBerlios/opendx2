@@ -57,7 +57,7 @@ namespace WinDX.UI
                 this.Parent = parent;
 
             createDialog();
-            this.messageLabel.Text = message;
+            this.messageLabel.Text = Utils.WordWrap(message, 50);
             if (title != null)
                 this.Text = title;
             Debug.Assert((cancelBtnNum >= 1) && (cancelBtnNum <= 3));
@@ -95,7 +95,7 @@ namespace WinDX.UI
                 this.Parent = parent;
 
             createDialog();
-            this.messageLabel.Text = message;
+            this.messageLabel.Text = Utils.WordWrap(message, 50);
             if (title != null)
                 this.Text = title;
             Debug.Assert((cancelBtnNum >= 1) && (cancelBtnNum <= 3));

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Diagnostics;
 
 namespace WinDX.UI
 {
@@ -24,8 +25,8 @@ namespace WinDX.UI
         private bool uiLoadedOnly;
 
         #region protected Instance Variables
-        protected List<ParameterDefinition> inputDefs;
-        protected List<ParameterDefinition> outputDefs;
+        protected List<ParameterDefinition> inputDefs = new List<ParameterDefinition>();
+        protected List<ParameterDefinition> outputDefs = new List<ParameterDefinition>();
         protected Symbol category;
         protected long mdf_flags;  // bits representing FLAGS statment in mdf.
         protected String description;  // A short description
@@ -64,7 +65,8 @@ namespace WinDX.UI
         /// <returns></returns>
         protected virtual SIAllocator getSIAllocator()
         {
-            throw new Exception("Not Yet Implemented");
+            // Causes the default definition in the SIAllocatorDictionary to be used.
+            return null;
         }
 
         /// <summary>
@@ -73,7 +75,8 @@ namespace WinDX.UI
         /// <returns></returns>
         protected virtual CDBAllocator getCDBAllocator()
         {
-            throw new Exception("Not Yet Implemented");
+            // Causes the default definition in the CDBAllocatorDictionary to be used.
+            return null;
         }
 
         /// <summary>
@@ -118,7 +121,10 @@ namespace WinDX.UI
         /// <param name="flag"></param>
         protected void setMDFFlag(bool val, MDFFLAGS flag)
         {
-            throw new Exception("Not Yet Implemented");
+            if (val)
+                mdf_flags |= (long) flag;
+            else
+                mdf_flags &= ~((long)flag);
         }
 
         #endregion
@@ -131,7 +137,10 @@ namespace WinDX.UI
         /// <param name="d"></param>
         public static void ResetInstanceNumbers(Dictionary<Symbol, NodeDefinition> d)
         {
-            throw new Exception("Not Yet Implemented");
+            foreach (KeyValuePair<Symbol, NodeDefinition> kvm in d)
+            {
+                kvm.Value.setNextInstance(0);
+            }
         }
 
         /// <summary>
@@ -142,17 +151,31 @@ namespace WinDX.UI
         /// <returns></returns>
         public static NodeDefinition AllocateDefinition()
         {
-            throw new Exception("Not Yet Implemented");
+            return new NodeDefinition();
         }
 
         public NodeDefinition()
         {
-            throw new Exception("Not Yet Implemented");
+            nodeInstanceNumbers = 0;
+            description = null;
+            input_repeats = 0;
+            output_repeats = 0;
+            writeableCacheability = true;
+            defaultCacheability = Cacheability.ModuleFullyCached;
+            mdf_flags = 0;
+            loadFile = null;
+            outboardHost = null;
+            outboardCommand = null;
+            userTool = true;
+            uiLoadedOnly = false;
         }
 
         ~NodeDefinition()
         {
-            throw new Exception("Not Yet Implemented");
+            NodeDefinition nd;
+            if(NodeDefinition.theNodeDefinitionDictionary.TryGetValue(this.NameSymbol, out nd))
+                if (nd == this)
+                    NodeDefinition.theNodeDefinitionDictionary.Remove(this.NameSymbol); 
         }
 
         public virtual bool IsDerivedFromMacro()
@@ -162,7 +185,7 @@ namespace WinDX.UI
 
         // Instance number manipulations
         public int newInstanceNumber() { return ++nodeInstanceNumbers; }
-        public void setNextInstance(int inst) { nodeInstanceNumbers = inst - 1; }
+        public void setNextInstance(int inst) { nodeInstanceNumbers = inst; }
         public int getCurrentInstance() { return nodeInstanceNumbers; }
 
         /// <summary>
@@ -180,12 +203,31 @@ namespace WinDX.UI
         /// n is indexed from 1.  If n is greater than the number of input/output 
         /// defintions then it is a repeatable parameter, in which case we 
         /// account for this to find the correct definition.
+        /// 
+        /// For C# we index from 0. There may be a problem here.
         /// </summary>
         /// <param name="n"></param>
         /// <returns></returns>
         public ParameterDefinition getInputDefinition(int n)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(n > 0);
+
+            if (n > InputCount)
+            {
+                Debug.Assert(input_repeats > 0);
+                if (input_repeats == 1)
+                {
+                    n = InputCount;
+                }
+                else
+                {
+                    int num = (((n - 1) - InputCount) % input_repeats) + 1;
+                    n = InputCount - input_repeats + num;
+                    Debug.Assert(n > InputCount - input_repeats);
+                    Debug.Assert(n <= InputCount);
+                }
+            }
+            return inputDefs[n-1];
         }
         public ParameterDefinition getOutputDefinition(int n)
         {
@@ -237,28 +279,28 @@ namespace WinDX.UI
         }
 
         public void setMDFFlagERR_CONT() { setMDFFlagERR_CONT(true); }
-        public void setMDFFlagERR_CONT(bool val) { throw new Exception("Not Yet Implemented"); }
+        public void setMDFFlagERR_CONT(bool val) { setMDFFlag(val, MDFFLAGS.ERR_CONT); }
 
         public void setMDFFlagSWITCH() { setMDFFlagSWITCH(true); }
         public void setMDFFlagSWITCH(bool val)
         {
-            throw new Exception("Not Yet Implemented");
+            setMDFFlag(val, MDFFLAGS.SWITCH);
         }
 
         public void setMDFFlagPIN() { setMDFFlagPIN(true); }
-        public void setMDFFlagPIN(bool val) { throw new Exception("Not Yet Implemented"); }
+        public void setMDFFlagPIN(bool val) { setMDFFlag(val, MDFFLAGS.PIN); }
         public void setMDFFlagSIDE_EFFECT() { setMDFFlagSIDE_EFFECT(true); }
-        public void setMDFFlagSIDE_EFFECT(bool val) { throw new Exception("Not Yet Implemented"); }
+        public void setMDFFlagSIDE_EFFECT(bool val) { setMDFFlag(val, MDFFLAGS.SIDE_EFFECT); }
         public void setMDFFlagASYNCHRONOUS() { setMDFFlagASYNCHRONOUS(true); }
-        public void setMDFFlagASYNCHRONOUS(bool val) { throw new Exception("Not Yet Implemented"); }
+        public void setMDFFlagASYNCHRONOUS(bool val) { setMDFFlag(val, MDFFLAGS.ASYNCHRONOUS); }
         public void setMDFFlagPERSISTENT() { setMDFFlagPERSISTENT(true); }
-        public void setMDFFlagPERSISTENT(bool val) { throw new Exception("Not Yet Implemented"); }
+        public void setMDFFlagPERSISTENT(bool val) { setMDFFlag(val, MDFFLAGS.PERSISTENT); }
         public void setMDFFlagREACH() { setMDFFlagREACH(true); }
-        public void setMDFFlagREACH(bool val) { throw new Exception("Not Yet Implemented"); }
+        public void setMDFFlagREACH(bool val) { setMDFFlag(val, MDFFLAGS.REACH); }
         public void setMDFFlagREROUTABLE() { setMDFFlagREROUTABLE(true); }
-        public void setMDFFlagREROUTABLE(bool val) { throw new Exception("Not Yet Implemented"); }
+        public void setMDFFlagREROUTABLE(bool val) { setMDFFlag(val, MDFFLAGS.REROUTABLE); }
         public void setMDFFlagLOOP() { setMDFFlagLOOP(true); }
-        public void setMDFFlagLOOP(bool val) { throw new Exception("Not Yet Implemented"); }
+        public void setMDFFlagLOOP(bool val) { setMDFFlag(val, MDFFLAGS.LOOP); }
 
         public void setUserTool() { userTool = true; }
         public void setUserTool(bool setting) { userTool = setting; }
@@ -270,7 +312,19 @@ namespace WinDX.UI
         /// </summary>
         public void completeDefinition()
         {
-            throw new Exception("Not Yet Implemented");
+            if (SIAllocatorDictionary.theSIAllocatorDictionary != null)
+            {
+                SIAllocator sia = getSIAllocator();
+                if (sia != null)
+                    SIAllocatorDictionary.theSIAllocatorDictionary.Add(NameString, sia);
+            }
+            if (CDBAllocatorDictionary.theCDBAllocatorDictionary != null)
+            {
+                CDBAllocator cdba = getCDBAllocator();
+                if (cdba != null)
+                    CDBAllocatorDictionary.theCDBAllocatorDictionary.Add(NameString, cdba);
+            }
+            finishDefinition();
         }
 
         /// <summary>

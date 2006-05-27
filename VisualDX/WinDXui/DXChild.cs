@@ -114,9 +114,7 @@ namespace WinDX.UI
         }
 
         ~DXChild()
-        {
-            throw new Exception("Not Yet Implemented");
-        }
+        { }
 
         public StreamReader StdInput { get { return stdin; } }
         public StreamWriter StdOutput { get { return stdout; } }

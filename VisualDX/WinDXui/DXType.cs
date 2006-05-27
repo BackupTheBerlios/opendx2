@@ -128,25 +128,7 @@ namespace WinDX.UI
         #endregion
 
         #region public constructors and initializers
-        public DXType() 
-        {
-            InitializeClass();
-
-            type = DXTypeVals.UndefinedType;
-            name = null;
-        }
-
-        public DXType(DXTypeVals type) 
-        {
-            InitializeClass();
-
-            type = DXTypeVals.UndefinedType;
-            name = null;
-
-            setType(type);
-        }
-
-        private void InitializeClass()
+        static DXType()
         {
             if (!DXTypeClassInitialized)
             {
@@ -156,10 +138,25 @@ namespace WinDX.UI
                 DXTypeClassInitialized = true;
             }
         }
+
+        public DXType() 
+        {
+            type = DXTypeVals.UndefinedType;
+            name = null;
+        }
+
+        public DXType(DXTypeVals type) 
+        {
+            this.type = DXTypeVals.UndefinedType;
+            name = null;
+
+            setType(type);
+        }
+
         #endregion
 
         protected static List<DXTypeName> TypeList;
-        protected static bool DXTypeClassInitialized;
+        protected static bool DXTypeClassInitialized = false;
 
         protected DXTypeVals type;
         protected String name;
@@ -240,7 +237,7 @@ namespace WinDX.UI
         /// <param name="value"></param>
         /// <param name="typelist"></param>
         /// <returns></returns>
-        public static bool ValueToType(String value, List<DXTypeName> typelist) 
+        public static bool ValueToType(String value, ref List<DXTypeName> typelist) 
         {
             int in_size = typelist.Count;
 

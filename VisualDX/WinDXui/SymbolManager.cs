@@ -77,8 +77,9 @@ namespace WinDX.UI
             {
                 ht.Add(lastCode, symbolString);
                 rt.Add(symbolString, lastCode++);
+                return (Symbol)(lastCode - 1);
             }
-            return (Symbol)(lastCode-1);
+            return (Symbol) rt[symbolString];
         }
 
         public Symbol getSymbol(String symbolString)

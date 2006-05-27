@@ -24,9 +24,9 @@ namespace WinDX.UI
             Debug.Assert(line != null);
             Debug.Assert(lineNumber > 0);
 
-            line.Trim();
+            line = line.Trim();
 
-            Regex rx = new Regex(@"^MODULE\s+([a-zA-Z_][0-9a-zA-Z_]*)$");
+            Regex rx = new Regex(@"^MODULE\s+([a-zA-Z_]\w*)$");
             Match m = rx.Match(line);
             if (!m.Success)
             {
@@ -36,7 +36,7 @@ namespace WinDX.UI
                 return null;
             }
             function = m.Groups[1].Value;
-            Symbol s = new Symbol(function.GetHashCode());
+            Symbol s = SymbolManager.theSymbolManager.registerSymbol(function);
             if (mdf.ContainsKey(s))
             {
                 ErrorDialog ed = new ErrorDialog();
@@ -61,21 +61,15 @@ namespace WinDX.UI
         public static bool ParseMDFTypes(ref ParameterDefinition param, String p, int lineNumber)
         {
             DXType input_type;
+            Regex reg = new Regex(" or ");
+            p = reg.Replace(p, " | ");
 
-            List<String> types = Utils.StringTokenizer(p, " \t", new String[] { "" });
-            for (int i = 0; i < types.Count; i++)
-            {
-                types[i].Trim();
-                if (types[i] == "or")
-                {
-                    types.RemoveAt(i);
-                    i--;
-                }
-            }
+            List<String> types = Utils.StringTokenizer(p, "|", new String[] { "" });
             DXTypeVals type;
             foreach (String str in types)
             {
-                type = DXType.StringToType(str);
+                String sstr = str.Trim();
+                type = DXType.StringToType(sstr);
                 if (type == DXTypeVals.UndefinedType)
                 {
                     ErrorDialog ed = new ErrorDialog();
@@ -157,7 +151,7 @@ namespace WinDX.UI
             Debug.Assert(line != null);
             Debug.Assert(lineNumber > 0);
 
-            line.Trim();
+            line = line.Trim();
             List<String> toks = Utils.StringTokenizer(line, ";", null);
             if (toks.Count < 1)
             {
@@ -179,7 +173,7 @@ namespace WinDX.UI
             Debug.Assert(line != null);
             Debug.Assert(lineNumber > 0);
 
-            line.Trim();
+            line = line.Trim();
             int sem = line.IndexOf(';');
             if (sem >= 0)
                 line = line.Substring(0, sem);
@@ -206,7 +200,7 @@ namespace WinDX.UI
 
             List<String> toks = Utils.StringTokenizer(line, ";", new String[] { "" });
 
-            if (toks.Count < 4)
+            if (toks.Count < 3)
             {
                 ErrorDialog ed = new ErrorDialog();
                 ed.post("Encountered an erroneous INPUT specification on line {0}.", lineNumber);
@@ -221,8 +215,8 @@ namespace WinDX.UI
             else
                 iname = toks[0];
 
-            iname.Trim();
-            Regex rx = new Regex(@"^([a-zA-Z_][0-9a-zA-Z_]*)$");
+            iname = iname.Trim();
+            Regex rx = new Regex(@"^([a-zA-Z_]\w*)$");
             Match m = rx.Match(iname);
             if (!m.Success)
             {
@@ -263,7 +257,7 @@ namespace WinDX.UI
             // If the value is equal to "(none)", then mark this parameter
             // as a required parameter.
 
-            toks[2].Trim();
+            toks[2] = toks[2].Trim();
             if (toks[2].StartsWith("("))
             { // A descriptive value
                 if (toks[2] == "(none)")
@@ -280,7 +274,11 @@ namespace WinDX.UI
             }
 
             // Add the fourth substring:  DESCRIPTION
-            input.setDescription(toks[3]);
+            // Description can be blank
+            if (toks.Count == 3)
+                input.setDescription("");
+            else
+                input.setDescription(toks[3]);
 
             module.addInput(input);
             return true;
@@ -314,7 +312,7 @@ namespace WinDX.UI
             else
                 iname = toks[0];
 
-            iname.Trim();
+            iname = iname.Trim();
             Regex rx = new Regex(@"^([a-zA-Z_][0-9a-zA-Z_]*)$");
             Match m = rx.Match(iname);
             if (!m.Success)
@@ -376,9 +374,9 @@ namespace WinDX.UI
             List<String> toks = Utils.StringTokenizer(line, ";", new string[] { "" });
             foreach (string tok in toks)
             {
-                tok.Trim();
-                if (tok.Length > 0)
-                    pd.addValueOption(tok);
+                String tokt = tok.Trim();
+                if (tokt.Length > 0)
+                    pd.addValueOption(tokt);
             }
             return true;
         }
@@ -392,7 +390,7 @@ namespace WinDX.UI
             Debug.Assert(lineNumber > 0);
             Debug.Assert(io_state == StateConstants.Input || io_state == StateConstants.Output);
 
-            line.Trim();
+            line = line.Trim();
             Regex rx = new Regex(@"^([0-9]+)$");
             Match m = rx.Match(line);
             if (!m.Success)
@@ -538,7 +536,7 @@ namespace WinDX.UI
                             break;
                         }
 
-                        p.Trim();
+                        p = p.Trim();
 
                         if (p.Length > 0 && p.ToCharArray()[0] != '#')
                             break;
@@ -561,7 +559,7 @@ namespace WinDX.UI
                         if (p.StartsWith("PACKAGE"))
                         {
                             p = p.Substring(7);
-                            p.TrimStart();
+                            p = p.TrimStart();
                             theDynamicPackageDictionary[p] = null;
                         }
                         else
@@ -611,7 +609,7 @@ namespace WinDX.UI
                         if (p.StartsWith("CATEGORY"))
                         {
                             String cat = p.Substring(8);
-                            cat.TrimStart();
+                            cat = cat.TrimStart();
                             category = SymbolManager.theSymbolManager.registerSymbol(cat);
                             if (module == null)
                             {
@@ -652,7 +650,7 @@ namespace WinDX.UI
                         if (p.StartsWith("DESCRIPTION"))
                         {
                             String desc = p.Substring(11);
-                            desc.TrimStart();
+                            desc = desc.TrimStart();
 
                             module.Description = desc;
                             parsed_description = true;
@@ -683,7 +681,7 @@ namespace WinDX.UI
                         if (p.StartsWith("LOADABLE"))
                         {
                             String load = p.Substring(8);
-                            load.TrimStart();
+                            load = load.TrimStart();
 
                             if (!ParseLoadableLine(ref module, load, line_number))
                                 return false;
@@ -719,7 +717,7 @@ namespace WinDX.UI
                         if (p.StartsWith("OUTBOARD"))
                         {
                             String outb = p.Substring(8);
-                            outb.TrimStart();
+                            outb = outb.TrimStart();
                             if (!ParseOutboardLine(ref module, outb, line_number))
                                 return false;
                             parsed_outboard = true;
@@ -793,7 +791,7 @@ namespace WinDX.UI
                         if (p.StartsWith("INPUT"))
                         {
                             String inp = p.Substring(5);
-                            inp.TrimStart();
+                            inp = inp.TrimStart();
                             if (ParseInputLine(mdf, ref module, inp, line_number))
                                 state = StateConstants.Input;
                             else
@@ -814,7 +812,7 @@ namespace WinDX.UI
                         if (p.StartsWith("OUTPUT"))
                         {
                             String outp = p.Substring(6);
-                            outp.TrimStart();
+                            outp = outp.TrimStart();
                             if (ParseOutputLine(mdf, ref module, outp, line_number))
                                 state = StateConstants.Output;
                             else
@@ -831,7 +829,7 @@ namespace WinDX.UI
                         if (p.StartsWith("REPEAT"))
                         {
                             String rep = p.Substring(6);
-                            rep.TrimStart();
+                            rep = rep.TrimStart();
                             if (ParseRepeatLine(mdf, ref module, rep, line_number, last_iostate))
                             {
                                 // Next, parse output or module line.
@@ -863,7 +861,7 @@ namespace WinDX.UI
                         if (p.StartsWith("OPTIONS"))
                         {
                             String opts = p.Substring(7);
-                            opts.TrimStart();
+                            opts = opts.TrimStart();
                             if (ParseOptionsLine(mdf, ref module, opts, line_number))
                             {
                                 state = StateConstants.Options;
@@ -918,7 +916,7 @@ namespace WinDX.UI
                     return false;
                 }
             }
-            catch (SystemException e)
+            catch (System.IO.IOException e)
             {
                 ErrorDialog ed = new ErrorDialog();
                 ed.post("Cannot open {0} module description file \"{1}\".", 

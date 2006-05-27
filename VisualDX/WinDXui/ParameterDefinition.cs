@@ -9,7 +9,7 @@ namespace WinDX.UI
 {
     public class ParameterDefinition : Definition
     {
-        private List<DXType> types;
+        private List<DXType> types = new List<DXType>();
         private String[] typeStrings; // If !null, contains type names
         private String description;
         private String default_value;
@@ -232,7 +232,7 @@ namespace WinDX.UI
         public bool setDefaultValue(String value)
         {
             List<DXType.DXTypeName> typelist = new List<DXType.DXTypeName>();
-            if (value != null && DXType.ValueToType(value, typelist) == false)
+            if (value != null && DXType.ValueToType(value, ref typelist) == false)
                 return false;
 
             descriptive_default = false;

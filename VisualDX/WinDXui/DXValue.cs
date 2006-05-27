@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace WinDX.UI
 {
@@ -22,11 +23,64 @@ namespace WinDX.UI
         /// <param name="str"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool IsValidValue(String str, DXTypeVals type) { throw new Exception("not yet implemented"); }
         public static bool IsValidValue(String str, DXType type)
         {
             Debug.Assert(str != null);
             return IsValidValue(str, type.getType());
+        }
+        public static bool IsValidValue(String str, DXTypeVals type)
+        {
+            bool result = false;
+            int tuple = 0;
+
+            if (str == null)
+                return false;
+
+            str = str.Trim();
+            str = str.ToLower();
+
+            if (str == "" || str == "null")
+                result = true;
+
+            else if (type == DXTypeVals.FlagType)
+            {
+                Regex r = new Regex(@"^(true|false|\d+)$");
+                result = r.IsMatch(str);
+            }
+            else if (type == DXTypeVals.IntegerType)
+            {
+                Regex r = new Regex(@"^(\+|-)?\d+$");
+                result = r.IsMatch(str);
+            }
+            else if (type == DXTypeVals.ScalarType)
+            {
+                Regex r = new Regex(@"^(\+|-)?(\d+\.\d*|\.\d+)([eE](\+|)?[0-9]+)?$");
+                result = r.IsMatch(str);
+            }
+            else if (type == DXTypeVals.VectorType)
+            {
+                result = DXTensor.IsVector(str, ref tuple);
+            }
+            else if (type == DXTypeVals.TensorType)
+            {
+                result = DXTensor.IsTensor(str);
+            }
+            else if (type == DXTypeVals.ValueType)
+            {
+                DXTypeVals value_type = DXTypeVals.UndefinedType;
+                result = IsValue(str, ref value_type);
+            }
+            else if (type == DXTypeVals.StringType)
+            {
+                Regex r = new Regex(@"^""[^""]*""$");
+                result = r.IsMatch(str);
+            }
+            else if (type == DXTypeVals.ObjectType)
+            {
+                result = IsObject(str);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -303,5 +357,217 @@ namespace WinDX.UI
         public bool Valid(String str, DXTypeVals type) { throw new Exception("Not Yet Implemented"); }
 
 
+        public static bool IsValue(String str, ref DXTypeVals type)
+        {
+            int tuple = 0;
+
+            if (str == null)
+                return false;
+
+            Regex r = new Regex(@"^(\+|-)?(\d+\.\d*|\.\d+)([eE](\+|)?[0-9]+)?$");
+            switch (type)
+            {
+                case DXTypeVals.ScalarType:
+                    return r.IsMatch(str);
+                    break;
+                case DXTypeVals.VectorType:
+                    return DXTensor.IsVector(str, ref tuple);
+                    break;
+                case DXTypeVals.TensorType:
+                    return DXTensor.IsTensor(str);
+                    break;
+                default:
+                    if (r.IsMatch(str))
+                    {
+                        type = DXTypeVals.ScalarType;
+                        return true;
+                    }
+                    if (DXTensor.IsVector(str, ref tuple))
+                    {
+                        type = DXTypeVals.VectorType;
+                        return true;
+                    }
+                    if (DXTensor.IsTensor(str))
+                    {
+                        type = DXTypeVals.TensorType;
+                        return true;
+                    }
+                    break;
+            }
+            return false;
+        }
+
+        public static bool IsObject(String str)
+        {
+            if (str == null)
+                return false;
+
+            // Match integer
+            Regex r = new Regex(@"^(\+|-)?\d+$");
+            if (r.IsMatch(str))
+                return true;
+
+            // Match Scalar
+            r = new Regex(@"^(\+|-)?(\d+\.\d*|\.\d+)([eE](\+|)?[0-9]+)?$");
+            if(r.IsMatch(str))
+                 return true;
+            
+            // Match Vector
+            int tuple = 0;
+            if(DXTensor.IsVector(str, ref tuple))
+                return true;
+            
+            if(DXTensor.IsTensor(str))
+                return true;
+
+            DXTypeVals value_type = DXTypeVals.UndefinedType;
+            if(IsValue(str, ref value_type))
+                return true;
+
+            r = new Regex(@"^""[^""]*""$");
+            if(r.IsMatch(str))
+                return true;
+
+            if (IsList(str, DXTypeVals.IntegerType))
+                return true;
+
+            if (IsList(str, DXTypeVals.ScalarType))
+                return true;
+
+            if (IsList(str, DXTypeVals.VectorType))
+                return true;
+
+            if (IsList(str, DXTypeVals.TensorType))
+                return true;
+
+            if (IsList(str, DXTypeVals.StringType))
+                return true;
+
+            return false;
+        }
+
+        public static bool IsListExplicit(String str, DXTypeVals type)
+        {
+            bool lexed;
+            int tuple = 0, first_tuple = -1;
+
+            if (str == null)
+                return false;
+
+            str = str.Trim();
+            if (!str.StartsWith("{") ||
+                !str.EndsWith("}"))
+                return false;
+
+            str = str.Substring(1);
+            str = str.Substring(0, str.Length -1);
+
+            DXTypeVals value_type = DXTypeVals.UndefinedType;
+
+            List<String> toks = Utils.StringTokenizer(str, " ,\t", new String[] { "\"", "[]" });
+            Regex r;
+
+            int elements = 0;
+            foreach (String tok in toks)
+            {
+                switch (type)
+                {
+                    case DXTypeVals.FlagType:
+                        r = new Regex(@"^(true|false|\d+)$");
+                        lexed = r.IsMatch(tok);
+                        break;
+                    case DXTypeVals.IntegerType:
+                        r = new Regex(@"^(\+|-)?\d+$");
+                        lexed = r.IsMatch(tok);
+                        break;
+                    case DXTypeVals.ScalarType:
+                        r = new Regex(@"^(\+|-)?(\d+\.\d*|\.\d+)([eE](\+|)?[0-9]+)?$");
+                        lexed = r.IsMatch(tok);
+                        break;
+                    case DXTypeVals.VectorType:
+                        lexed = DXTensor.IsVector(tok, ref tuple);
+                        if (elements == 0)
+                            first_tuple = tuple;
+                        else if (tuple != first_tuple)
+                            return false;
+                        break;
+                    case DXTypeVals.TensorType:
+                        lexed = DXTensor.IsTensor(tok);
+                        break;
+                    case DXTypeVals.ValueType:
+                        lexed = IsValue(str, ref value_type);
+                        break;
+                    case DXTypeVals.StringType:
+                        r = new Regex(@"^""[^""]*""$");
+                        lexed = r.IsMatch(tok);
+                        break;
+                    default:
+                        return false;
+                }
+                if (lexed)
+                    elements++;
+                else
+                    return false;
+            }
+            return true;
+        }
+
+        public static bool IsList(String str, DXTypeVals type)
+        {
+            bool r = IsListExplicit(str, type);
+            if (!r && ((type & DXTypeVals.ValueType) > 0))
+                r = IsListConstructor(str);
+            return r;
+        }
+
+        /// <summary>
+        /// A scalar list constructor is of the shape:
+        /// { 1 .. 5 : 2 }  -> { 1 3 5 }
+        /// Find out if the list is acceptable.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static bool IsListConstructor(String str)
+        {
+            bool lexed;
+
+            if (str == null)
+                return false;
+
+            str = str.Trim();
+            if (!str.StartsWith("{") ||
+                !str.EndsWith("}"))
+                return false;
+
+            str = str.Substring(1);
+            str = str.Substring(0, str.Length - 1);
+
+            List<String> toks = Utils.StringTokenizer(str, " \t", new String[] { "\"", "[]" });
+
+            Regex r = new Regex(@"^(\+|-)?(\d+\.\d*|\.\d+)([eE](\+|)?[0-9]+)?$");
+
+            if(toks.Count != 3 || toks.Count != 5)
+                return false;
+
+            if (!r.IsMatch(toks[0]))
+                return false;
+
+            if (toks[1] != "..")
+                return false;
+
+            if (!r.IsMatch(toks[2]))
+                return false;
+
+            if (toks.Count == 3)
+                return true;
+
+            if (toks[3] != ":")
+                return false;
+
+            if (!r.IsMatch(toks[4]))
+                return false;
+
+            return true;
+        }
     }
 }
