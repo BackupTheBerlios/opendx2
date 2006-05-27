@@ -271,26 +271,26 @@ boolean _IsList(const char* string,
 	boolean value_ok = FALSE;
 	switch (type) {
 	  default:
-		break;
+		  break;
 	  case DXType::ValueType:
-		switch (value_type) {
-		  default:
-			break;
-	  	  case DXType::VectorType:
-	  	  case DXType::TensorType: 
-			if (string[i] == '[') value_ok = TRUE;
-			break; 
-		}
-		// Fall through
+		  switch (value_type) {
+			default:
+				break;
+			case DXType::VectorType:
+			case DXType::TensorType: 
+				if (string[i] == '[') value_ok = TRUE;
+					break; 
+			}
+		  // Fall through
 	  case DXType::ScalarType:
-		//
-		// Make sure there is a separator
-		// If we don't do this, then '{.01.01.01}' is a scalar list.
-		//
-		if (!value_ok && !IsWhiteSpace(&string[i]) && 
-			(string[i] != ',') && (string[i] != '}'))
-		    return FALSE;
-	 	break;
+		  //
+		  // Make sure there is a separator
+		  // If we don't do this, then '{.01.01.01}' is a scalar list.
+		  //
+		  if (!value_ok && !IsWhiteSpace(&string[i]) && 
+			  (string[i] != ',') && (string[i] != '}'))
+			  return FALSE;
+		  break;
 	}
 	//
 	// Skip space.

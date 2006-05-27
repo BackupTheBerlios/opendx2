@@ -668,109 +668,109 @@ void Network::changeExistanceWork(Node *n, boolean adding)
     //
     boolean modify_application_commands = (this == theDXApplication->network);
 
-    if (adding) {
-	List dummy;
-	if (n) {
-	    dummy.appendElement((void*)n);
-	    iter.setList(dummy);
-	} else {
-	    iter.setList(this->nodeList);
-	}
-	while ( (n = (Node*)iter.getNext()) ) {
-	    if (!this->sequencer && n->isA(ClassSequencerNode))	
-		this->sequencer = (SequencerNode*)n;	
-	    n->initializeAfterNetworkMember();
-	    if (modify_application_commands) {
-		if (!theDXApplication->openAllColormapCmd->isActive() &&
-		    n->isA(ClassColormapNode))
-		    theDXApplication->openAllColormapCmd->activate();	
-	    }
-	    if (!hasCfg && n->hasCfgState())
-		hasCfg = TRUE;
-	}
-	this->newCmd->activate();
-	if (theDXApplication->appAllowsSavingNetFile(this))
-	    this->saveAsCmd->activate();
-	if (this->fileName) {
-	    if (theDXApplication->appAllowsSavingNetFile(this)) 
-		this->saveCmd->activate();
-	    if (hasCfg) {
-		if (theDXApplication->appAllowsSavingCfgFile() &&  
-		    this->saveCfgCmd) 
-		    this->saveCfgCmd->activate();
-		if (this->openCfgCmd) this->openCfgCmd->activate();
-	    }
-	}
-    } else {		// Not adding
-	if (n) {
-	    if (this->sequencer && n->isA(ClassSequencerNode))
-		this->sequencer = NULL;
-	    if (theDXApplication->openAllColormapCmd->isActive() &&
-		n->isA(ClassColormapNode))
-		if (modify_application_commands) {
-		    if (!this->containsClassOfNode(ClassColormapNode))
-			theDXApplication->openAllColormapCmd->deactivate();
+	if (adding) {
+		List dummy;
+		if (n) {
+			dummy.appendElement((void*)n);
+			iter.setList(dummy);
+		} else {
+			iter.setList(this->nodeList);
 		}
-	} else {
-	    if (modify_application_commands) {
-		if (theDXApplication->openAllColormapCmd->isActive() &&
-		    !this->containsClassOfNode(ClassColormapNode))
-		    theDXApplication->openAllColormapCmd->deactivate();
-	    }
-	    if (this->sequencer && 
-	 	!this->containsClassOfNode(ClassSequencerNode))
-		this->sequencer = NULL;	
-	}
+		while ( (n = (Node*)iter.getNext()) ) {
+			if (!this->sequencer && n->isA(ClassSequencerNode))	
+				this->sequencer = (SequencerNode*)n;	
+			n->initializeAfterNetworkMember();
+			if (modify_application_commands) {
+				if (!theDXApplication->openAllColormapCmd->isActive() &&
+					n->isA(ClassColormapNode))
+					theDXApplication->openAllColormapCmd->activate();	
+			}
+			if (!hasCfg && n->hasCfgState())
+				hasCfg = TRUE;
+		}
+		this->newCmd->activate();
+		if (theDXApplication->appAllowsSavingNetFile(this))
+			this->saveAsCmd->activate();
+		if (this->fileName) {
+			if (theDXApplication->appAllowsSavingNetFile(this)) 
+				this->saveCmd->activate();
+			if (hasCfg) {
+				if (theDXApplication->appAllowsSavingCfgFile() &&  
+					this->saveCfgCmd) 
+					this->saveCfgCmd->activate();
+				if (this->openCfgCmd) this->openCfgCmd->activate();
+			}
+		}
+	} else {		// Not adding
+		if (n) {
+			if (this->sequencer && n->isA(ClassSequencerNode))
+				this->sequencer = NULL;
+			if (theDXApplication->openAllColormapCmd->isActive() &&
+				n->isA(ClassColormapNode))
+				if (modify_application_commands) {
+					if (!this->containsClassOfNode(ClassColormapNode))
+						theDXApplication->openAllColormapCmd->deactivate();
+				}
+		} else {
+			if (modify_application_commands) {
+				if (theDXApplication->openAllColormapCmd->isActive() &&
+					!this->containsClassOfNode(ClassColormapNode))
+					theDXApplication->openAllColormapCmd->deactivate();
+			}
+			if (this->sequencer && 
+				!this->containsClassOfNode(ClassSequencerNode))
+				this->sequencer = NULL;	
+		}
 
-	iter.setList(this->nodeList); 
-	while (!hasCfg && (n = (Node*)iter.getNext()))  
-	    hasCfg = n->hasCfgState();
+		iter.setList(this->nodeList); 
+		while (!hasCfg && (n = (Node*)iter.getNext()))  
+			hasCfg = n->hasCfgState();
 
-	int count = this->nodeList.getSize();
-	int decorCount = this->decoratorList.getSize();
-	int groupCnt = 0;
-	GroupManager *gmgr;
-	DictionaryIterator di(*this->groupManagers);
-	while ( (gmgr = (GroupManager*)di.getNextDefinition()) )
-	    groupCnt+= gmgr->getGroupCount();
-	if ((count == 0) && (decorCount == 0) && (groupCnt == 0)) {
-	    this->newCmd->deactivate();
-	    this->saveCmd->deactivate();
-	    this->saveAsCmd->deactivate();
+		int count = this->nodeList.getSize();
+		int decorCount = this->decoratorList.getSize();
+		int groupCnt = 0;
+		GroupManager *gmgr;
+		DictionaryIterator di(*this->groupManagers);
+		while ( (gmgr = (GroupManager*)di.getNextDefinition()) )
+			groupCnt+= gmgr->getGroupCount();
+		if ((count == 0) && (decorCount == 0) && (groupCnt == 0)) {
+			this->newCmd->deactivate();
+			this->saveCmd->deactivate();
+			this->saveAsCmd->deactivate();
+		} 
+		if ((count == 0) || !hasCfg) {
+			if (this->saveCfgCmd) this->saveCfgCmd->deactivate();
+			if (this->openCfgCmd) this->openCfgCmd->deactivate();
+		}
 	} 
-	if ((count == 0) || !hasCfg) {
-	    if (this->saveCfgCmd) this->saveCfgCmd->deactivate();
-	    if (this->openCfgCmd) this->openCfgCmd->deactivate();
-	}
-    } 
 
-    // FIXME : where does this go? Does it belong in DisplayNode
-    //
-    // Adjust which DisplayNode is "last"
-    //
-    l = this->makeClassifiedNodeList(ClassDisplayNode);
+	// FIXME : where does this go? Does it belong in DisplayNode
+	//
+	// Adjust which DisplayNode is "last"
+	//
+	l = this->makeClassifiedNodeList(ClassDisplayNode);
 
-    if(l)
-    {
-	ListIterator li(*l);
-	Node        *node;
-
-	while ( (node = (Node*)li.getNext()) )
+	if(l)
 	{
-	    // If this is not the last DisplayNode...
-	    if(li.getPosition()-1 != l->getSize())
-	    {
-		if(((DisplayNode *)(node))->isLastImage())
-		   ((DisplayNode *)(node))->setLastImage(FALSE);
-	    }
-	    else
-	    {
-		if(!((DisplayNode *)(node))->isLastImage())
-		    ((DisplayNode *)(node))->setLastImage(TRUE);
-	    }
+		ListIterator li(*l);
+		Node        *node;
+
+		while ( (node = (Node*)li.getNext()) )
+		{
+			// If this is not the last DisplayNode...
+			if(li.getPosition()-1 != l->getSize())
+			{
+				if(((DisplayNode *)(node))->isLastImage())
+					((DisplayNode *)(node))->setLastImage(FALSE);
+			}
+			else
+			{
+				if(!((DisplayNode *)(node))->isLastImage())
+					((DisplayNode *)(node))->setLastImage(TRUE);
+			}
+		}
+		delete l;
 	}
-	delete l;
-    }
 }
 
 //
@@ -4985,21 +4985,21 @@ void Network::postHelpOnNetworkDialog()
 void Network::setNetworkComment(const char *comment)
 {
 
-    if (comment != this->comment) {
-	this->setDirty();
-	if (this->comment)
-	    delete this->comment;
-	if (comment && STRLEN(comment)) {
-	   this->comment = DuplicateString(comment);
-	} else {
-	   this->comment = NULL; 
+	if (comment != this->comment) {
+		this->setDirty();
+		if (this->comment)
+			delete this->comment;
+		if (comment && STRLEN(comment)) {
+			this->comment = DuplicateString(comment);
+		} else {
+			this->comment = NULL; 
+		}
 	}
-    }
 
-    if (this->comment && STRLEN(this->comment))
-	this->helpOnNetworkCmd->activate();
-    else 
-	this->helpOnNetworkCmd->deactivate();
+	if (this->comment && STRLEN(this->comment))
+		this->helpOnNetworkCmd->activate();
+	else 
+		this->helpOnNetworkCmd->deactivate();
 }
 
 //
