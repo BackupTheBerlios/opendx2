@@ -1095,6 +1095,7 @@ _dxf_parameters(dxObject o, attributeP old)
   char		optionsString[201];
   attributeP	new;
   dxObject 	obj;
+  Class class;
 
   ENTRY(("_dxf_parameters(0x%x, 0x%x)", o, old));
 
@@ -1117,7 +1118,8 @@ _dxf_parameters(dxObject o, attributeP old)
   /*
    * get texture map if there is one
    */
-  if ((obj = DXGetAttribute(o, "texture")) != NULL)
+   class = DXGetObjectClass(o);
+  if (class == CLASS_FIELD && (obj = DXGetAttribute(o, "texture")) != NULL)
   {
       if (new->texture)
 	  DXDelete(new->texture);
@@ -1425,8 +1427,10 @@ _dxf_deleteAttribute(attributeP att)
 {
   ENTRY(("_dxf_deleteAttribute(0x%x)", att));
 
-  if (att->texture)
+  if (att->texture) {
       DXDelete(att->texture);
+      att->texture = NULL;
+  }
 
   /* !!!!! should check for non-null */
   tdmFree(att);
