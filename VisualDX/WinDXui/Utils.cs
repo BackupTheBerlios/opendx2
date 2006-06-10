@@ -12,8 +12,8 @@ namespace WinDX.UI
 {
     class Utils
     {
-        const Int32 UnspecifiedPosition = 32767;
-        const Int32 UnspecifiedDimension = 32767;
+        public const Int32 UnspecifiedPosition = 32767;
+        public const Int32 UnspecifiedDimension = 32767;
 
         /// <summary>
         ///     ParseGeometryComment actually performs the Window placement and
@@ -35,7 +35,7 @@ namespace WinDX.UI
             ref int ypos, ref int xsize, ref int ysize, String tag)
         {
             Scanner scanner = new Scanner();
-            MatchCollection matches = null;
+            Match match = null;
             float norm_xsize, norm_ysize, norm_xpos, norm_ypos;
             Screen[] screens = Screen.AllScreens;
             int screen = -1;
@@ -44,44 +44,45 @@ namespace WinDX.UI
             if (tag == null)
                 tag = "window";
 
+            if (!line.StartsWith(" " + tag + ": position = ("))
+                return false;
+            
             String scanline;
-            scanline = String.Format(
-                @"{0}: position = \({{Single}}\, {{Single}}\)\, size = {{Single}}x{{Single}}, screen = {{Int32}}",
-                tag);
+            scanline = tag +
+                @":\s*position\s*=\s*\(\s*{Single}\s*\,\s*{Single}\s*\)\s*\,\s*size\s*=\s*{Single}\s*x\s*{Single}\s*,\s*screen\s*=\s*{Int32}";
 
             scanline = scanner.CreateRegexPattern(scanline);
             //scanner.Scan(line, scanline, targets);
             Regex reggie = new Regex(scanline);
 
-            matches = reggie.Matches(line);
-            if (matches.Count == 0)
+            match = reggie.Match(line);
+            if (!match.Success)
             {
-                scanline = String.Format(
-                @"{0}: position = \({{Single}}\, {{Single}}\)\, size = {{Single}}x{{Single}}",
-                tag);
+                scanline = tag +
+                @":\s*position\s*=\s*\(\s*{Single}\s*\,\s*{Single}\s*\)\s*\,\s*size\s*=\s*{Single}\s*x\s*{Single}";
                 scanline = scanner.CreateRegexPattern(scanline);
                 reggie = new Regex(scanline);
-                matches = reggie.Matches(line);
+                match = reggie.Match(line);
             }
 
-            if (matches.Count == 0)
+            if (!match.Success)
             {
                 WarningDialog wd = new WarningDialog();
                 wd.post("Bad comment found in file {0} line {1}", file, lineno);
                 return false;
             }
 
-            string sVal = matches[0].Groups[1].Captures[0].Value;
+            string sVal = match.Groups[1].Captures[0].Value;
             norm_xpos = float.Parse(sVal);
-            sVal = matches[0].Groups[2].Captures[0].Value;
+            sVal = match.Groups[2].Captures[0].Value;
             norm_ypos = float.Parse(sVal);
-            sVal = matches[0].Groups[3].Captures[0].Value;
+            sVal = match.Groups[3].Captures[0].Value;
             norm_xsize = float.Parse(sVal);
-            sVal = matches[0].Groups[4].Captures[0].Value;
+            sVal = match.Groups[4].Captures[0].Value;
             norm_ysize = float.Parse(sVal);
-            if (matches[0].Groups.Count == 6)
+            if (match.Groups.Count == 6)
             {
-                sVal = matches[0].Groups[5].Captures[0].Value;
+                sVal = match.Groups[5].Captures[0].Value;
                 screen = Int32.Parse(sVal);
             }
 
@@ -189,7 +190,10 @@ namespace WinDX.UI
                 seps = separators;
 
             if (quotes == null)
+            {
                 qts = "\"";
+                quotes = new String[] { "\"" };
+            }
             else
             {
                 qts = quotes[0];
@@ -456,6 +460,56 @@ namespace WinDX.UI
 
 
             return newStr;
+        }
+
+        /// <summary>
+        /// Return a single integer base of a full VersionNumber.
+        /// </summary>
+        /// <param name="maj"></param>
+        /// <param name="min"></param>
+        /// <param name="mic"></param>
+        /// <returns></returns>
+        public static int VersionNumber(int maj, int min, int mic)
+        {
+            return ((maj << 16) + (min << 8) + mic);
+        }
+
+        /// <summary>
+        /// Return the full file path given any type of file.
+        /// </summary>
+        /// <param name="oldpath"></param>
+        /// <returns></returns>
+        public static String GetFullFilePath(String oldpath)
+        {
+            Regex r = new Regex(@"^[A-Z]\:");
+            if (oldpath == null)
+                return null;
+
+            if (oldpath.Length == 0)
+            {
+                oldpath = System.Environment.CurrentDirectory;
+            }
+            else if (oldpath.ToCharArray()[0] == '.')
+            {
+                oldpath = System.Environment.CurrentDirectory + "\\" +
+                    oldpath;
+            }
+            else if (oldpath.ToCharArray()[0] == '~')
+            {
+                oldpath = Environment.GetFolderPath(Environment.SpecialFolder.Personal) +
+                    "\\" + oldpath;
+            }
+            else if (oldpath.ToCharArray()[0] == '\\')
+            {
+                // Nothing to do--could be a server share.
+            }
+            else if (!r.IsMatch(oldpath))
+            {
+                oldpath = Environment.CurrentDirectory + "\\" +
+                    oldpath;
+            }
+
+            return Path.GetFullPath(oldpath);
         }
     }
 }

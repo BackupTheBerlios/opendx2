@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace WinDX.UI
 {
     public class DisplayNode : DrivenNode
     {
+        public const int WHERE = 3;
+
         private static void HandleImageMessage(Object clientData, int id, String line)
         {
             throw new Exception("Not Yet Implemented");
@@ -21,7 +25,47 @@ namespace WinDX.UI
 
         private bool parseCommonComments(String comment, String file, int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            // Display title comment is of the form
+            // title: value = somestring
+            if (comment.StartsWith(" title:"))
+            {
+                int skipl = " title: value = ".Length;
+                setTitle(comment.Substring(skipl));
+                return true;
+            }
+            else if (comment.StartsWith(" depth:"))
+            {
+                // If we have an image window, then changing its depth will put the 
+                // proper value into our WHERE param.  If we don't then  we'll set it
+                // directly.
+                int depth;
+                Regex regex = new Regex(@" depth: value = (\d+)");
+                Match m = regex.Match(comment);
+                if (m.Success)
+                {
+                    depth = Int32.Parse(m.Groups[1].ToString());
+                    if (image != null)
+                        image.changeDepth(depth);
+                    else
+                        setDepth(depth);
+                }
+                return true;
+            }
+            else if (Utils.ParseGeometryComment(comment, file, lineno,
+           ref this.xpos, ref this.ypos, ref this.width, ref this.height, null))
+            {
+                ImageWindow w = image;
+                if (w != null && (this.xpos != Utils.UnspecifiedPosition) &&
+                    DXApplication.theDXApplication.applyWindowPlacements())
+                {
+                    // The comments, if they exist may cause a resize, but we don't
+                    // want to cause an execution that normally results from  a resize. 
+                    //
+                    w.setGeometry(this.xpos, this.ypos, this.width, this.height);
+                }
+                return true;
+            }
+            return false;
         }
 
         private int xpos, ypos, width, height;
@@ -52,7 +96,8 @@ namespace WinDX.UI
         }
         protected override bool netParseAuxComment(string comment, string filename, int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            return base.netParseAuxComment(comment, filename, lineno) ||
+                parseCommonComments(comment, filename, lineno);
         }
 
         protected override string inputValueString(int i, string prefix)
@@ -79,7 +124,38 @@ namespace WinDX.UI
         { return getUnassociatedImageWindow(alloc_one, true); }
         protected ImageWindow getUnassociatedImageWindow(bool alloc_one, bool canBeAnchor)
         {
-            throw new Exception("Not Yet Implemented");
+            List<ImageWindow> imageList = this.getNetwork().getImageList();
+            ImageWindow w = null;
+            DXWindow anchor = DXApplication.theDXApplication.getAnchor();
+
+            // If this can be the anchor window, then try and get it first.
+            if (canBeAnchor && anchor is ImageWindow && imageList.Contains((ImageWindow)anchor))
+            {
+                ImageWindow image_anchor = (ImageWindow)anchor;
+                Debug.Assert(image_anchor.IsAnchor);
+                if (!image_anchor.IsAssociatedWithNode)
+                    w = image_anchor;
+            }
+
+            // If the anchor window wasn't available, try for any other window.
+            if (w == null)
+            {
+                foreach (ImageWindow iw in imageList)
+                {
+                    if (!iw.IsAssociatedWithNode && (canBeAnchor || !iw.IsAnchor))
+                    {
+                        w = iw;
+                        break;
+                    }
+                }
+            }
+
+            if (alloc_one && (w == null))
+            {
+                w = DXApplication.theDXApplication.newImageWindow(this.getNetwork());
+                w.initialize();
+            }
+            return w;
         }
 
 
@@ -91,7 +167,7 @@ namespace WinDX.UI
         /// <param name="unmanage"></param>
         protected override void reflectStateChange(bool unmanage)
         {
-            throw new Exception("The method or operation is not implemented.");
+           // Nothing to do
         }
 
 
@@ -115,13 +191,58 @@ namespace WinDX.UI
         /// <param name="status"></param>
         protected override void ioParameterStatusChanged(bool input, int index, Node.NodeParameterStatusChange status)
         {
-            throw new Exception("Not Yet Implemented");
+            // If Where is wired up, then treat it the way we treat a user supplied window.
+            // This handles wiring, unwiring, and unsetting.  The case of setting (thru
+            // the cdb) is handled in this->setInputValue().  DisplayNodes still cling
+            // tenaciously to their ImageWindows.  If you run the net and dxui provides
+            // an ImageWindow for the DisplayNode, you won't be able to flip the Where
+            // param tab up and so dxui will always provide the ImageWindow and the only
+            // way to get around that is to delete the DisplayNode and place a new one.
+            if ((input) && (index == WHERE))
+            {
+                if (status == NodeParameterStatusChange.ParameterArkAdded)
+                {
+                    this.userSpecifiedWhere = true;
+                    if (this.image != null)
+                    {
+                        ImageWindow iw = this.image;
+                        this.image = null;
+                        if (iw.IsAnchor == false)
+                            iw = null;
+                    }
+                }
+                // Flipping the param tab up, might be considered a way to indicate
+                // that userSpecifiedWhere should be reset to FALSE.  This was not
+                // the behavior in 3.1.2.
+                // Set network dirty because changing userSpecifiedWhere requires 
+                // a call to DisplayNode::prepareToSend. 
+                //
+                else if (status == NodeParameterStatusChange.ParameterArkRemoved)
+                {
+                    this.userSpecifiedWhere = false;
+                }
+                else if (status == NodeParameterStatusChange.ParameterSetValueToDefaulting)
+                {
+                    this.userSpecifiedWhere = false;
+                    this.getNetwork().setDirty();
+                }
+            }
+            base.ioParameterStatusChanged(input, index, status);
         }
 
         public DisplayNode(NodeDefinition nd, Network net, int instnc) :
             base(nd, net, instnc)
         {
-            throw new Exception("Not Yet Implemented");
+            xpos = ypos = Utils.UnspecifiedPosition;
+            width = height = Utils.UnspecifiedDimension;
+            image = null;
+
+            // It's makes no sense to even think about creating an image window
+            // for a Display node in a macro.
+
+            userSpecifiedWhere = net.IsMacro;
+            title = null;
+            panelAccessManager = null;
         }
 
         public override void switchNetwork(Network from, Network to, bool silently)
@@ -146,7 +267,21 @@ namespace WinDX.UI
 
         public override bool initialize()
         {
-            throw new Exception("Not Yet Implemented");
+            base.initialize();
+            depth = 24;
+            windowId = 0;
+            lastImage = true;
+
+            panelAccessManager = new PanelAccessManager(getNetwork());
+
+            // Try to find an extant image window that isn't being used.
+            ImageWindow w = getUnassociatedImageWindow(false);
+            if (w != null)
+                associateImage(w);
+
+            Parameter p = getInputParameter(3);
+            p.setDirty();
+            return true;
         }
 
         public virtual void setTitle(String title) { setTitle(title, false); }
@@ -162,13 +297,36 @@ namespace WinDX.UI
 
         public void setDepth(int depth)
         {
-            throw new Exception("Not Yet Implemented");
+            if (depth != this.depth)
+            {
+                this.depth = depth;
+                if (this.image != null)
+                    setInputValue(WHERE, this.image.getDisplayString(), DXTypeVals.WhereType, true);
+            }
         }
         public int Depth { get { return depth; } }
 
-        public override DXTypeVals setInputValue(int index, string value, DXTypeVals type, bool send)
+        public override DXTypeVals setInputValue(int index, string value, 
+            DXTypeVals type, bool send)
         {
-            throw new Exception("Not Yet Implemented");
+            if (index == 3)
+            {
+                if (image == null)
+                {
+                    userSpecifiedWhere = true;
+                    DXTypeVals tmp = base.setInputValue(index, value, type, send);
+                    userSpecifiedWhere = (tmp != DXTypeVals.UndefinedType);
+                    return tmp;
+                }
+                else
+                {
+                    String cp = getInputTypeString(index);
+                    DXTypeVals retVal = base.setInputValue(index, cp, type, send); 
+                    return retVal;
+                }
+            }
+            else
+                return base.setInputValue(index, value, type, send);
         }
 
         public virtual bool associateImage(ImageWindow w)
@@ -192,11 +350,16 @@ namespace WinDX.UI
 
         public void setLastImage(bool last)
         {
-            throw new Exception("Not Yet Implemented");
+            if (this.lastImage != last)
+            {
+                lastImage = last;
+                if (this.image != null)
+                    notifyWhereChange(true);
+            }
         }
         public bool isLastImage()
         {
-            throw new Exception("Not Yet Implemented");
+            return lastImage;
         }
     }
 }

@@ -34,8 +34,8 @@ namespace WinDX.UI
             Application.SetCompatibleTextRenderingDefault(false);
             Application.EnableVisualStyles();
 
-            //String test = "{\"{a, b}\"}";
-            //String resulting = Utils.FindDelimitedString(test, '{', '}', "\"");
+            //String test = "{ 1 3, 4.5 \"fjd\", 7}";
+            //List<String> resulting = Utils.StringTokenizer(test, " \t,{}", null);
 
             globalApp = new DXApplication("dx");
             String[] args = Environment.GetCommandLineArgs();

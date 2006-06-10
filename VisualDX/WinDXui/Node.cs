@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace WinDX.UI
 {
@@ -27,6 +29,8 @@ namespace WinDX.UI
         };
 
         #region Private Instance Variables
+        private const String indent = "    ";
+
         /// <summary>
         /// Used only be the Network for sorting, graph analysis, etc.
         /// See isMarked(), setMarked() and clearMarked().
@@ -61,8 +65,8 @@ namespace WinDX.UI
         /// <summary>
         /// Current values and definitions for inputs and outputs
         /// </summary>
-        private List<Parameter> inputParameters;
-        private List<Parameter> outputParameters;
+        private List<Parameter> inputParameters = new List<Parameter>();
+        private List<Parameter> outputParameters = new List<Parameter>();
 
         /// <summary>
         /// Pointer to the UI standin for this node.
@@ -154,7 +158,45 @@ namespace WinDX.UI
         private DXTypeVals setIOValue(ref List<Parameter> io, int index,
             String value, DXTypeVals t, bool send, bool notify)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(index >= 1);
+
+            Parameter p = io[index-1];
+            Debug.Assert(p != null);
+
+            bool was_set = !p.IsDefaulting;
+
+            DXTypeVals type = DXTypeVals.UndefinedType;
+            if (t == DXTypeVals.UndefinedType)
+                type = p.setValue(value);
+            else if (p.setValue(value, t))
+                type = t;
+
+            // If a NULL value is found (i.e. clearing the value), then return the
+            // type as the default type for the parameter as "NULL" should match any
+            // type.
+            if (value == null)
+                type = p.getDefaultType();
+            if (type != DXTypeVals.UndefinedType)
+            {
+                // And now send the value to the executive if there is a connection.
+                // Note that we don't need to set the network dirty, because we can
+                // send the changes ourselves.
+                if (send)
+                {
+                    DXPacketIF pif = DXApplication.theDXApplication.getPacketIF();
+                    if (pif != null)
+                        sendValues(false);
+                }
+
+                // Let those who need to know that the value has changed.
+                if (notify)
+                {
+                    notifyIoParameterStatusChanged(io == inputParameters, index,
+                        was_set ? NodeParameterStatusChange.PatemeterSetValueChanged :
+                        NodeParameterStatusChange.ParameterValueChanged);
+                }
+            }
+            return type;
         }
 
         /// <summary>
@@ -185,7 +227,17 @@ namespace WinDX.UI
         /// <param name="dirty"></param>
         private void setIODirty(ref List<Parameter> io, int index, bool dirty)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(index >= 1);
+            Parameter p = io[index - 1];
+            Debug.Assert(p != null);
+
+            if (dirty)
+                p.setDirty();
+            else
+                p.clearDirty();
+
+            if (io == inputParameters && network.IsMacro)
+                network.setDirty();
         }
 
         /// <summary>
@@ -197,7 +249,11 @@ namespace WinDX.UI
         /// <returns></returns>
         private bool isIOConnected(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(index >= 1);
+            Parameter p = io[index - 1];
+            Debug.Assert(p != null);
+
+            return p.IsConnected;
         }
 
         /// <summary>
@@ -223,7 +279,11 @@ namespace WinDX.UI
         }
         private bool isIOCacheabilityWriteable(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+            p = io[index - 1];
+            Debug.Assert(p != null);
+            return p.HasWriteableCacheability;
         }
 
         /// <summary>
@@ -246,7 +306,12 @@ namespace WinDX.UI
         /// <returns></returns>
         private bool isIODefaulting(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+
+            p = io[index - 1];
+            Debug.Assert(p != null);
+            return p.IsDefaulting;
         }
 
         /// <summary>
@@ -361,7 +426,20 @@ namespace WinDX.UI
         /// <param name="v"></param>
         private void setIOVisibility(List<Parameter> io, int index, bool v)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+
+            p = io[index - 1];
+            Debug.Assert(p != null);
+
+            if (p.IsVisible == v)
+                return;
+
+            p.setVisibility(v);
+
+            notifyIoParameterStatusChanged(io == this.inputParameters, index,
+                (v ? NodeParameterStatusChange.ParameterBecomesVisible :
+                NodeParameterStatusChange.ParameterBecomesInvisible));
         }
 
         /// <summary>
@@ -382,7 +460,12 @@ namespace WinDX.UI
         /// <returns></returns>
         private bool isIOViewable(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+
+            p = io[index - 1];
+            Debug.Assert(p != null);
+            return p.IsViewable;
         }
 
         /// <summary>
@@ -440,7 +523,13 @@ namespace WinDX.UI
         /// <returns></returns>
         public List<Ark> getIOArks(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+
+            p = io[index-1];
+            Debug.Assert(p != null);
+
+            return p.Arks;
         }
         #endregion
 
@@ -481,7 +570,18 @@ namespace WinDX.UI
         /// <returns></returns>
         protected virtual bool addIOArk(List<Parameter> io, int index, Ark a)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+
+            p = io[index - 1];
+            Debug.Assert(p != null);
+            if (!p.addArk(a))
+                return false;
+
+            notifyIoParameterStatusChanged(io == inputParameters, index,
+                NodeParameterStatusChange.ParameterArkAdded);
+
+            return true;
         }
         protected virtual bool removeIOArk(List<Parameter> io, int index, Ark a)
         {
@@ -506,7 +606,54 @@ namespace WinDX.UI
         /// <returns></returns>
         protected virtual bool addRepeats(bool input)
         {
-            throw new Exception("Not Yet Implemented");
+            NodeDefinition nd = Definition;
+            ParameterDefinition pd;
+            List<Parameter> plist; 
+            int iocnt = 0;
+            int repeats = 0;
+
+            if (input)
+            {
+                repeats = nd.InputRepeatCount;
+                plist = inputParameters;
+                iocnt = InputCount;
+            }
+            else
+            {
+                repeats = nd.OutputRepeatCount;
+                plist = outputParameters;
+                iocnt = OutputCount;
+            }
+
+            Debug.Assert(repeats > 0);
+
+            network.setDirty();
+
+            for (int i = 1; i <= repeats; i++)
+            {
+                if (input)
+                    pd = nd.getInputDefinition(iocnt + i);
+                else
+                    pd = nd.getOutputDefinition(iocnt + i);
+
+                Parameter p = nd.newParameter(pd, this, iocnt + i);
+                plist.Add(p);
+                if (cdb != null)
+                {
+                    if (input)
+                        cdb.newInput(iocnt + i);
+                    else
+                        cdb.newOutput(iocnt + i);
+                }
+                if (standin != null)
+                {
+                    if (input)
+                        standin.addInput(iocnt + i);
+                    else
+                        standin.addOutput(iocnt + i);
+                }
+            }
+            return true;
         }
         protected virtual bool removeRepeats(bool input)
         {
@@ -515,21 +662,28 @@ namespace WinDX.UI
 
         protected Parameter getInputParameter(int i)
         {
-            return inputParameters[i];
+            return inputParameters[i-1];
         }
         protected Parameter getOutputParameter(int i)
         {
-            return outputParameters[i];
+            return outputParameters[i-1];
         }
 
-        protected virtual int strcatParameterNameLvalue(String s, Parameter p,
+        protected virtual String strcatParameterNameLvalue(Parameter p,
             String prefix, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            String ioname;
+            if (p.IsInput)
+                ioname = "in";
+            else
+                ioname = "out";
+
+            return String.Format("{0}{1}_{2}_{3}_{4}",
+                prefix, NameString, InstanceNumber, ioname, index);
         }
-        protected int strcatParameterValueString(String s, Parameter p, int index)
+        protected String strcatParameterValueString(Parameter p, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            return p.getValueString();
         }
 
         /// <summary>
@@ -549,7 +703,215 @@ namespace WinDX.UI
         protected virtual bool parseIOComment(bool input, String comment, 
             String filename, int lineno, bool valueOnly)
         {
-            throw new Exception("Not Yet Implemented");
+            Regex regex;
+            Match m;
+
+            int defaulting = 0, allowed_params, ionum = 0;
+            bool visible = true;
+            DXTypeVals type = DXTypeVals.UndefinedType, r = DXTypeVals.UndefinedType;
+            String ioname;
+            bool parse_error = false;
+
+            Debug.Assert(comment != null);
+
+            if (input)
+            {
+                if (!comment.StartsWith(" input["))
+                    return false;
+
+                if (valueOnly)
+                {
+                    regex = new Regex(@" input\[(\d+)\]: defaulting = (\d+)");
+                    m = regex.Match(comment);
+                    if (!m.Success)
+                        parse_error = true;
+                    else
+                    {
+                        ionum = Int32.Parse(m.Groups[1].ToString());
+                        defaulting = Int32.Parse(m.Groups[2].ToString());
+                    }
+                    type = DXTypeVals.UndefinedType;
+                }
+                else
+                {
+                    regex = new Regex(@" input\[(\d+)\]: defaulting = (\d+), visible = (\d+), type = (\d+)");
+                    m = regex.Match(comment);
+                    if (!m.Success)
+                    {
+                        regex = new Regex(@" input\[(\d+)\]: visible = (\d+)");
+                        m = regex.Match(comment);
+                        if (!m.Success)
+                        {
+                            regex = new Regex(@" input\[(\d+)\]: type = (\d+)");
+                            m = regex.Match(comment);
+                            if (!m.Success)
+                            {
+                                regex = new Regex(@" input\[(\d+)\]: defaulting (\d+), type = (\d+)");
+                                m = regex.Match(comment);
+                                if (!m.Success)
+                                    parse_error = true;
+                                else
+                                {
+                                    ionum = Int32.Parse(m.Groups[1].ToString());
+                                    defaulting = Int32.Parse(m.Groups[2].ToString());
+                                    type = (DXTypeVals)long.Parse(m.Groups[3].ToString());
+                                }
+                            }
+                            else
+                            {
+                                ionum = Int32.Parse(m.Groups[1].ToString());
+                                type = (DXTypeVals)long.Parse(m.Groups[2].ToString());
+                            }
+                        }
+                        else
+                        {
+                            ionum = Int32.Parse(m.Groups[1].ToString());
+                            visible = Int32.Parse(m.Groups[2].ToString()) > 0;
+                            defaulting = 1;
+                        }
+                    }
+                    else
+                    {
+                        ionum = Int32.Parse(m.Groups[1].ToString());
+                        defaulting = Int32.Parse(m.Groups[2].ToString());
+                        visible = Int32.Parse(m.Groups[3].ToString()) > 0;
+                        type = (DXTypeVals)long.Parse(m.Groups[4].ToString());
+                    }
+                }
+                ioname = "input";
+                allowed_params = InputCount;
+            }
+            else // An output
+            {
+                if (!comment.StartsWith(" output["))
+                    return false;
+
+                if (valueOnly)
+                {
+                    regex = new Regex(@" output\[(\d+)\]: defaulting = (\d+)");
+                    m = regex.Match(comment);
+                    if (!m.Success)
+                        parse_error = true;
+                    type = DXTypeVals.UndefinedType;
+                }
+                else
+                {
+                    regex = new Regex(@" output\[(\d+)\]: visible = (\d+), type = (\d+)");
+                    m = regex.Match(comment);
+                    if (!m.Success)
+                    {
+                        regex = new Regex(@" output\[(\d+)\]: type = (\d+)");
+                        m = regex.Match(comment);
+                        if (!m.Success)
+                        {
+                            regex = new Regex(@" output\[(\d+)\]: visible = (\d+)");
+                            m = regex.Match(comment);
+                            if (!m.Success)
+                                parse_error = true;
+                            else
+                            {
+                                ionum = Int32.Parse(m.Groups[1].ToString());
+                                visible = Int32.Parse(m.Groups[2].ToString())>0;
+                            }
+                        }
+                        else
+                        {
+                            ionum = Int32.Parse(m.Groups[1].ToString());
+                            type = (DXTypeVals)long.Parse(m.Groups[2].ToString());
+                        }
+                    }
+                    else
+                    {
+                        ionum = Int32.Parse(m.Groups[1].ToString());
+                        visible = Int32.Parse(m.Groups[2].ToString())>0;
+                        type = (DXTypeVals)long.Parse(m.Groups[3].ToString());
+                    }
+                }
+                ioname = "output";
+                allowed_params = OutputCount;
+            }
+            if (parse_error)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Can't parse {0} comment file {1} line {2}", ioname,
+                    filename, lineno);
+                return true;
+            }
+
+            // If the input paramter is out of bounds, then something is wrong...
+            if (ionum > allowed_params)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Bad {0} number ({1}) file {2} line {3}", input? "input":"output", ionum,
+                    filename, lineno);
+                return true;
+            }
+
+            // If parsed ok and node exists, convert value.
+            if (comment.Contains("value ="))
+            {
+                String value = comment.Substring(comment.IndexOf("value =") + 8).Trim();
+                
+                if (value != null && value != "")
+                {
+                    if (getNetwork().getNetMajorVersion() <= 1)
+                        type = DXType.ConvertVersionType(type);
+
+                    if (input)
+                    {
+                        if (value.StartsWith("(") && value.EndsWith(")"))
+                        {
+                            // Skip descriptive settings
+                            defaulting = 1;
+                            r = DXTypeVals.ObjectType;
+                        }
+                        else if (defaulting > 0)
+                        {
+                            r = setInputValue(ionum, value, type, false);
+                            if (r == DXTypeVals.UndefinedType &&
+                                type != DXTypeVals.UndefinedType)
+                                r = setInputValue(ionum, value, DXTypeVals.UndefinedType, false);
+                        }
+                        else
+                        {
+                            r = setInputValue(ionum, value, type, false);
+                            if (r == DXTypeVals.UndefinedType &&
+                                type != DXTypeVals.UndefinedType)
+                                r = setInputValue(ionum, value, DXTypeVals.UndefinedType, false);
+                        }
+                    }
+                    else
+                    {
+                        r = setOutputValue(ionum, value, type, false);
+                        if (r == DXTypeVals.UndefinedType &&
+                            type != DXTypeVals.UndefinedType)
+                            r = setOutputValue(ionum, value, DXTypeVals.UndefinedType, false);
+                    }
+                }
+
+                if (r == DXTypeVals.UndefinedType)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Encountered an erroneous input value (file {0}, line {1})",
+                        filename, lineno);
+                    return true;
+                }
+            }
+
+            if (!valueOnly)
+            {
+                if (input)
+                {
+                    setInputVisibility(ionum, visible);
+                }
+                else
+                {
+                    useAssignedOutputValue(ionum, false);
+                    setOutputVisibility(ionum, visible);
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -562,7 +924,167 @@ namespace WinDX.UI
         protected bool netParseNodeComment(String comment, String filename,
             int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            String node_name, labelstr;
+            int instance, x, y, n_inputs, n_outputs;
+
+            if (!comment.StartsWith(" node "))
+                return false;
+
+            Regex regex = new Regex(@" node (.*)\[(\d+)\]: x = (\d+), y = (\d+), inputs = (\d+), outputs = (\d+), label = (.*)");
+            Match m = regex.Match(comment);
+            if (!m.Success)
+            {
+                regex = new Regex(@" node (.*)\[(\d+)\]: x = (\d+), y = (\d+), inputs = (\d+), label = (.*)");
+                m = regex.Match(comment);
+                if (!m.Success)
+                {
+                    regex = new Regex(@" node (.*)\[(\d+)\]: x = (\d+), y = (\d+), label = (.*)");
+                    m = regex.Match(comment);
+                    if (!m.Success)
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Can not parse node comment at line {0} in file {1}", lineno, filename);
+                        return true;
+                    }
+                    else
+                    {
+                        node_name = m.Groups[1].ToString();
+                        instance = Int32.Parse(m.Groups[2].ToString());
+                        x = Int32.Parse(m.Groups[3].ToString());
+                        y = Int32.Parse(m.Groups[4].ToString());
+                        labelstr = m.Groups[5].ToString();
+                        n_inputs = InputCount;
+                        n_outputs = OutputCount;
+                    }
+                }
+                else
+                {
+                    node_name = m.Groups[1].ToString();
+                    instance = Int32.Parse(m.Groups[2].ToString());
+                    x = Int32.Parse(m.Groups[3].ToString());
+                    y = Int32.Parse(m.Groups[4].ToString());
+                    n_inputs = Int32.Parse(m.Groups[5].ToString());
+                    labelstr = m.Groups[6].ToString();
+                    n_outputs = OutputCount;
+                }
+            }
+            else
+            {
+                node_name = m.Groups[1].ToString();
+                instance = Int32.Parse(m.Groups[2].ToString());
+                x = Int32.Parse(m.Groups[3].ToString());
+                y = Int32.Parse(m.Groups[4].ToString());
+                n_inputs = Int32.Parse(m.Groups[5].ToString());
+                n_outputs = Int32.Parse(m.Groups[6].ToString());
+                labelstr = m.Groups[7].ToString();
+            }
+
+            Symbol s = SymbolManager.theSymbolManager.registerSymbol(node_name);
+            NodeDefinition nd;
+            if (!NodeDefinition.theNodeDefinitionDictionary.TryGetValue(s, out nd) || nd == null)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Undefined module {0} at line {1} in file {2}", 
+                    node_name, lineno, filename);
+                return false;
+            }
+
+            setLabelString(labelstr);
+
+            setInstanceNumber(instance);
+            setVpePosition(x, y);
+
+            // Count the inputs, if not the default and the inputs are repeatable 
+	        // then add some inputs. If there are fewer inputs in the file, silently 
+            // assume that this is an old network.
+
+            if (n_inputs != InputCount)
+            {
+                if (isInputRepeatable())
+                {
+                    int delta_inputs = n_inputs - InputCount;
+                    bool adding = delta_inputs > 0;
+                    if (!adding)
+                        delta_inputs = -delta_inputs;
+                    int sets;
+                    if (delta_inputs % InputRepeatCount != 0)
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Number of repeatable input parameters does not " +
+                            "divide number of parameters for module {0}", NameString);
+                        return true;
+                    }
+                    sets = delta_inputs / InputRepeatCount;
+                    for (int i = 0; i < sets; i++)
+                    {
+                        if (adding)
+                        {
+                            if (!addInputRepeats())
+                            {
+                                ErrorDialog ed = new ErrorDialog();
+                                ed.post("Can't add repeated input parameters");
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            if (!removeInputRepeats())
+                            {
+                                ErrorDialog ed = new ErrorDialog();
+                                ed.post("Can't remove repeated input parameters");
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (n_outputs != OutputCount)
+            {
+                if (isOutputRepeatable())
+                {
+                    int delta_outputs = n_outputs - OutputCount;
+                    bool adding = delta_outputs > 0;
+                    if (!adding)
+                        delta_outputs = -delta_outputs;
+                    int sets;
+                    if (delta_outputs % OutputRepeatCount != 0)
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Number of repeatable output parameters does not " +
+                            "divide number of parameters for module {0}", NameString);
+                        return true;
+                    }
+                    sets = delta_outputs / OutputRepeatCount;
+                    for (int i = 0; i < sets; i++)
+                    {
+                        if (adding)
+                        {
+                            if (!addOutputRepeats())
+                            {
+                                ErrorDialog ed = new ErrorDialog();
+                                ed.post("Can't add repeated output parameters");
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            if (!removeOutputRepeats())
+                            {
+                                ErrorDialog ed = new ErrorDialog();
+                                ed.post("Can't remove repeated output parameters");
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Increment the module instance count if the current node
+            // instance count is higher
+            if (instance > definition.getCurrentInstance())
+                definition.setNextInstance(instance + 1);
+
+            return true;
         }
 
         /// <summary>
@@ -576,7 +1098,43 @@ namespace WinDX.UI
         protected virtual bool netParseAuxComment(String comment,
             String filename, int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            return false;
+        }
+
+        protected String nodeNetNodeString(String prefix)
+        {
+            String name = definition.ExecModuleNameString;
+            Debug.Assert(name != null);
+
+            String outputs = outputParameterNamesString(prefix);
+
+            String module = indent + name;
+
+            String inputs = inputParameterNamesString(prefix, indent);
+
+            String gname = getGroupName(SymbolManager.theSymbolManager.getSymbol(ProcessGroupManager.ProcessGroup));
+
+            String attributes;
+            if (gname == null)
+            {
+                attributes = String.Format("{0}) [instance: {1}, cache: {2}];", indent,
+                    instanceNumber, (long)nodeCacheability);
+            }
+            else
+            {
+                attributes = String.Format("{0}) [instance: {1}, cache: {2}, group: \"{3}\"];",
+                    indent, instanceNumber, (long)nodeCacheability, gname);
+            }
+            String s = "";
+            if (OutputCount != 0)
+            {
+                s = (outputs == null ? "" : outputs) + " = \n";
+            }
+            s += module + "\n";
+            s += (inputs == null ? "" : inputs) + "\n";
+            s += attributes;
+
+            return s;
         }
 
         /// <summary>
@@ -587,7 +1145,7 @@ namespace WinDX.UI
         /// <returns></returns>
         protected virtual String netNodeString(String prefix)
         {
-            throw new Exception("Not Yet Implemented");
+            return nodeNetNodeString(prefix);
         }
 
         /// <summary>
@@ -599,11 +1157,11 @@ namespace WinDX.UI
         /// <returns></returns>
         protected virtual String netBeginningOfMacroNodeString(String prefix)
         {
-            throw new Exception("Not Yet Implemented");
+            return null;
         }
         protected virtual String netEndOfMacroNodeString(String prefix)
         {
-            throw new Exception("Not Yet Implemented");
+            return null;
         }
 
         /// <summary>
@@ -622,9 +1180,40 @@ namespace WinDX.UI
         {
             return ioValueString(outputParameters, i, prefix);
         }
-        protected virtual String valueString(String prefix)
+        /// <summary>
+        /// Some other node sub-subclasses need to call this parent method.
+        /// </summary>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        protected String nodeValuesString(String prefix)
         {
-            throw new Exception("Not Yet Implemented");
+            String s = "";
+
+            if (!network.IsMacro)
+            {
+                for (int i = 1; i <= InputCount; i++)
+                {
+                    String buf = inputValueString(i, prefix);
+                    if (buf != null)
+                        s += buf + "\n";
+                }
+            }
+            for (int i = 1; i <= OutputCount; i++)
+            {
+                String buf = outputValueString(i, prefix);
+                if (buf != null)
+                    s += buf + "\n";
+            }
+
+            if (s.Length == 0)
+                return null;
+
+            return s;
+        }
+
+        protected virtual String valuesString(String prefix)
+        {
+            return nodeValuesString(prefix);
         }
 
         /// <summary>
@@ -649,7 +1238,32 @@ namespace WinDX.UI
         protected void setIODefaultingStatus(int index, bool input,
             bool defaulting, bool send, bool notify)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            if (input)
+                p = getInputParameter(index);
+            else
+                p = getOutputParameter(index);
+
+            bool was_defaulting = p.IsDefaulting;
+            if (was_defaulting == defaulting)
+                return;
+
+            p.setUnconnectedDefaultingStatus(defaulting);
+
+            // And now send the value to the executive if there is a connection.
+            // Note that we don't need to set the network dirty, because we can
+            // send the changes ourselves.
+            if (send)
+            {
+                DXPacketIF pif = DXApplication.theDXApplication.getPacketIF();
+                if (pif != null)
+                    sendValues(false);
+            }
+
+            Debug.Assert(!p.IsConnected);
+            if (notify)
+                this.notifyIoParameterStatusChanged(input, index, 
+                    NodeParameterStatusChange.ParameterSetValueToDefaulting);
         }
 
         /// <summary>
@@ -662,7 +1276,47 @@ namespace WinDX.UI
         protected virtual void ioParameterStatusChanged(bool input, int index,
             NodeParameterStatusChange status)
         {
-            throw new Exception("Not Yet Implemented");
+            // If we have Configuration Dialog, let it know the value, arc or 
+            // visibility was changed.
+            if (cdb != null)
+            {
+                if (input)
+                    cdb.changeInput(index);
+                else
+                    cdb.changeOutput(index);
+            }
+
+            // Now notify all nodes receiving this output that the value has changed.
+            if (!input && ((long)(status & NodeParameterStatusChange.ParameterValueChanged) > 0))
+            {
+                foreach (Ark a in getOutputArks(index))
+                {
+                    int in_index = 0;
+                    Node n = a.getDestinationNode(out in_index);
+                    n.notifyIoParameterStatusChanged(true, in_index, status);
+                }
+            }
+
+            // Let the standin know about this. We don't notify StandIns about
+            // arc changes since they are the ones that generate them. 
+            if (standin != null && ((long)(status & NodeParameterStatusChange.ParameterArkChanged) == 0))
+                standin.ioStatusChange(index, !input, status);
+
+            // Tell the network that it has changed. 
+
+            // If this is an input and the tool is in a macro, then we must always
+            // resend the macro defnition because input values are contained within
+            // the macro definition.  Otherwise we only need to mark the network
+            // dirty if an arc has changed.
+            if (input && network.IsMacro)
+                network.setDirty();
+            else
+            {
+                if ((long)(status & NodeParameterStatusChange.ParameterArkChanged) > 0)
+                    network.setDirty();
+                else
+                    network.setFileDirty();
+            }
         }
 
         /// <summary>
@@ -675,7 +1329,8 @@ namespace WinDX.UI
         protected void notifyIoParameterStatusChanged(bool input, int index,
             NodeParameterStatusChange status)
         {
-            throw new Exception("Not Yet Implemented");
+            if (!network.IsDeleted)
+                ioParameterStatusChanged(input, index, status);
         }
 
 
@@ -694,12 +1349,76 @@ namespace WinDX.UI
         protected virtual String inputParameterNamesString(String varprefix,
             String indent)
         {
-            throw new Exception("Not Yet Implemented");
+            String name = NameString;
+            Debug.Assert(name != null);
+
+            int num_params = inputParameters.Count;
+            if (num_params == 0)
+                return null;
+
+            if (indent == null)
+                indent = "";
+
+            String retstr = "";
+
+            for (int i = 1; i <= num_params; i++)
+            {
+                String buf = "";
+                Parameter p = getInputParameter(i);
+                if (p.IsConnected)
+                {
+                    Ark a = p.getArk(1);
+                    Debug.Assert(a != null);
+                    int param;
+                    Node onode = a.getSourceNode(out param);
+                    Debug.Assert(onode != null);
+                    buf = indent + varprefix + onode.NameString + "_" + onode.InstanceNumber.ToString() +
+                        "_out_" + param.ToString();
+                }
+                else
+                {
+                    if (network.IsMacro)
+                        buf = indent + getInputValueString(i);
+                    else
+                        buf = indent + varprefix + name + "_" + instanceNumber.ToString() + "_in_" +
+                            i.ToString();
+                }
+                if (i != num_params)
+                    buf += ",\n";
+
+                retstr += buf;
+            }
+            return retstr;
         }
 
         protected virtual String outputParameterNamesString(String prefix)
         {
-            throw new Exception("Not Yet Implemented");
+            if (OutputCount == 0)
+                return null;
+
+            String name = NameString;
+            Debug.Assert(name != null);
+
+            int num_params = outputParameters.Count;
+
+            String newprefix = prefix + name + "_" + instanceNumber.ToString() + "_out_";
+            String retstr = "";
+
+            for (int i = 1; i <= num_params; i++)
+            {
+                Parameter p = getOutputParameter(i);
+                Debug.Assert(p != null);
+                String buf = "";
+
+                if (getNodeCacheability() == p.getCacheability())
+                    buf = newprefix + i.ToString() + (i == num_params ? "" : ",\n");
+                else
+                    buf = newprefix + i.ToString() + "[cache: " + ((int)p.getCacheability()).ToString() +
+                        (i == num_params ? "" : ",\n");
+
+                retstr += buf;
+            }
+            return retstr;
         }
 
         protected bool netPrintCommentHeader(StreamWriter s)
@@ -762,7 +1481,7 @@ namespace WinDX.UI
         /// <returns></returns>
         protected virtual bool hasModuleMessageProtocol()
         {
-            throw new Exception("Not Yet Implemented");
+            return false;
         }
 
         /// <summary>
@@ -773,7 +1492,7 @@ namespace WinDX.UI
         /// <returns></returns>
         protected virtual bool expectingModuleMessage()
         {
-            throw new Exception("Not Yet Implemented");
+            return false;
         }
 
         /// <summary>
@@ -788,7 +1507,14 @@ namespace WinDX.UI
         /// <returns></returns>
         protected virtual String getModuleMessageIdString()
         {
-            throw new Exception("Not Yet Implemented");
+            if (moduleMessageId == null)
+            {
+                String name = NameString;
+                name += "_" + InstanceNumber.ToString();
+                moduleMessageId = name;
+            }
+
+            return moduleMessageId;
         }
 
         /// <summary>
@@ -799,7 +1525,7 @@ namespace WinDX.UI
         /// </summary>
         protected virtual void prepareToSendNode()
         {
-            throw new Exception("Not Yet Implemented");
+            //Intentionally left blank
         }
 
         /// <summary>
@@ -812,7 +1538,7 @@ namespace WinDX.UI
         /// <param name="p"></param>
         protected virtual void prepareToSendValue(int index, Parameter p)
         {
-            throw new Exception("Not Yet Implemented");
+            //Intentionally left blank
         }
 
         /// <summary>
@@ -845,7 +1571,22 @@ namespace WinDX.UI
 
         protected virtual void setIOCacheability(List<Parameter> io, int index, Cacheability c)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+
+            p = io[index - 1];
+            Debug.Assert(p != null);
+
+            if (c != p.getCacheability())
+            {
+                bool r = isIOCacheabilityWriteable(io, index);
+                Debug.Assert(r);
+
+                p.setCacheability(c);
+                getNetwork().setDirty();
+                if (cdb != null)
+                    cdb.changeOutput(index);
+            }
         }
 
         #endregion
@@ -854,7 +1595,18 @@ namespace WinDX.UI
 
         public Node(NodeDefinition nd, Network net, int inst)
         {
-            throw new Exception("Not Yet Implemented");
+            network = net;
+            instanceNumber = inst;
+            setDefinition(nd);
+            vpe_xpos = vpe_ypos = 0;
+            labelSymbol = Symbol.zero;
+            standin = null;
+            cdb = null;
+            moduleMessageId = null;
+            nodeCacheability = nd.DefaultCacheability;
+            buildParameterLists();
+            marked = false;
+            layout_information = null;
         }
 
         /// <summary>
@@ -875,7 +1627,9 @@ namespace WinDX.UI
 
         public virtual void setDefinition(NodeDefinition nd)
         {
-            throw new Exception("Not Yet Implemented");
+            definition = nd;
+            if (instanceNumber < 1)
+                instanceNumber = nd.newInstanceNumber();
         }
         public virtual void updateDefinition()
         {
@@ -889,7 +1643,42 @@ namespace WinDX.UI
         /// <returns></returns>
         public bool buildParameterLists()
         {
-            throw new Exception("Not Yet Implemented");
+            int ninputs, noutputs, i;
+            Parameter p;
+            ParameterDefinition pd;
+            NodeDefinition nd = Definition;
+            ninputs = nd.InputCount;
+
+            for (i = 1; i <= ninputs; i++)
+            {
+                pd = nd.getInputDefinition(i);
+                Debug.Assert(pd != null);
+
+                p = nd.newParameter(pd, this, i);
+                Debug.Assert(p != null);
+
+                bool r = appendInput(p);
+                Debug.Assert(r); // FIXME: handle error
+            }
+            if (nd.IsInputRepeatable)
+                addRepeats(true);
+
+            noutputs = nd.OutputCount;
+            for (i = 1; i <= noutputs; i++)
+            {
+                pd = nd.getOutputDefinition(i);
+                Debug.Assert(pd != null);
+
+                p = nd.newParameter(pd, this, i);
+                Debug.Assert(p != null);
+
+                bool r = appendOutput(p);
+                Debug.Assert(r);
+            }
+            if (nd.IsOutputRepeatable)
+                addRepeats(false);
+
+            return true;
         }
 
         /// <summary>
@@ -903,7 +1692,7 @@ namespace WinDX.UI
         /// <returns></returns>
         public virtual bool initialize()
         {
-            throw new Exception("Not Yet Implemented");
+            return true;
         }
 
 
@@ -922,18 +1711,44 @@ namespace WinDX.UI
             return this.definition.NameSymbol;
         }
 
+        /// <summary>
+        /// Non-virtualized method of setLabelString so sub-sub classes can call it.
+        /// </summary>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public bool nodeSetLabelString(String label)
+        {
+            labelSymbol = SymbolManager.theSymbolManager.registerSymbol(label);
+            if (cdb != null)
+                cdb.changeLabel();
+            if (getStandIn() != null)
+                getStandIn().notifyLabelChange();
+            return true;
+        }
+
         public virtual bool setLabelString(String label)
         {
-            throw new Exception("Not Yet Implemented");
+            labelSymbol = SymbolManager.theSymbolManager.registerSymbol(label);
+            if (cdb != null)
+                cdb.changeLabel();
+            if (getStandIn() != null)
+                getStandIn().notifyLabelChange();
+            return true;
         }
-        public virtual String getLabelString()
+        public virtual String LabelString
         {
-            throw new Exception("Not Yet Implemented");
+            get
+            {
+                throw new Exception("Not Yet Implemented");
+            }
         }
 
         public void setVpePosition(int x, int y)
         {
-            throw new Exception("Not Yet Implemented");
+            vpe_xpos = x;
+            vpe_ypos = y;
+            if (standin != null)
+                standin.Location = new System.Drawing.Point(x, y);
         }
 
         /// <summary>
@@ -973,11 +1788,23 @@ namespace WinDX.UI
         }
         public bool isInputRepeatable()
         {
-            throw new Exception("Not Yet Implemented");
+            NodeDefinition def = Definition;
+            if (!def.IsInputRepeatable)
+                return false;
+            int icnt = InputCount;
+            int rcnt = icnt - (def.InputCount - def.InputRepeatCount);
+            int sets = rcnt / def.InputRepeatCount;
+            return (sets < MAX_INPUT_SETS);
         }
         public bool isOutputRepeatable()
         {
-            throw new Exception("Not Yet Implemented");
+            NodeDefinition def = Definition;
+            if (!def.IsOutputRepeatable)
+                return false;
+            int icnt = OutputCount;
+            int rcnt = icnt - (def.OutputCount - def.OutputRepeatCount);
+            int sets = rcnt / def.OutputRepeatCount;
+            return (sets < MAX_OUTPUT_SETS);
         }
 
         // Manage inputs
@@ -1279,7 +2106,8 @@ namespace WinDX.UI
         {
             if (this.standin != null)
             {
-                standin.getXYPosition(out x, out y);
+                x = standin.Location.X;
+                y = standin.Location.Y;
                 vpe_xpos = x;
                 vpe_ypos = y;
             }
@@ -1301,11 +2129,17 @@ namespace WinDX.UI
         /// <returns></returns>
         public virtual bool netParseComment(String comment, String file, int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(comment != null);
+
+            return netParseNodeComment(comment, file, lineno) ||
+                parseIOComment(true, comment, file, lineno) ||
+                parseIOComment(false, comment, file, lineno) ||
+                parseGroupComment(comment, file, lineno) ||
+                netParseAuxComment(comment, file, lineno);
         }
         public virtual bool cfgParseComment(String comment, String file, int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            return cfgParseNodeLeader(comment, file, lineno);
         }
 
         /// <summary>
@@ -1316,7 +2150,7 @@ namespace WinDX.UI
         /// <returns></returns>
         public virtual bool cfgPrintNode(StreamWriter sw, PrintType destination)
         {
-            throw new Exception("Not Yet Implemented");
+            return true;
         }
 
         /// <summary>
@@ -1338,7 +2172,42 @@ namespace WinDX.UI
         public bool netPrintNode(StreamWriter sw, PrintType destination, String prefix,
             PacketIF.PacketIFCallback callback, Object clientdata)
         {
-            throw new Exception("Not Yet Implemented");
+            DXPacketIF pif = DXApplication.theDXApplication.getPacketIF();
+            bool r = true;
+
+            if (destination == PrintType.PrintFile || destination == PrintType.PrintCut ||
+                destination == PrintType.PrintCPBuffer)
+            {
+                if (!netPrintCommentHeader(sw))
+                    return false;
+            }
+            else if (pif != null)
+            {
+                // We have a connection to the executive/server
+                //
+                // If this node has a message protocol with the executive, then
+                // update any state associated with the protocol.
+                if (hasModuleMessageProtocol())
+                    updateModuleMessageProtocol(pif);
+
+                prepareToSendNode();
+            }
+            String s = netNodeString(prefix);
+
+            if (destination == PrintType.PrintFile || destination == PrintType.PrintCut ||
+                destination == PrintType.PrintCPBuffer)
+            {
+                sw.Write(s);
+                if (callback != null)
+                    callback(clientdata, s);
+            }
+            else
+            {
+                Debug.Assert(destination == PrintType.PrintExec);
+                pif.sendBytes(s);
+            }
+
+            return r;
         }
 
         /// <summary>
@@ -1362,7 +2231,23 @@ namespace WinDX.UI
         public bool netPrintBeginningOfMacroNode(StreamWriter sw, PrintType destination,
             String prefix, PacketIF.PacketIFCallback callback, Object clientdata)
         {
-            throw new Exception("Not Yet Implemented");
+            String s = netBeginningOfMacroNodeString(prefix);
+            if (s == null)
+                return true;
+
+            if (destination == PrintType.PrintFile || destination == PrintType.PrintCut ||
+                destination == PrintType.PrintCPBuffer)
+            {
+                sw.Write(s);
+                if (callback != null)
+                    callback(clientdata, s);
+            }
+            else
+            {
+                DXApplication.theDXApplication.getPacketIF().sendBytes(s);
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -1382,7 +2267,27 @@ namespace WinDX.UI
         public bool netPrintEndOfMacroNode(StreamWriter sw, PrintType destination,
             String prefix, PacketIF.PacketIFCallback callback, Object clientdata)
         {
-            throw new Exception("Not Yet Implemented");
+            bool r = true;
+
+            String s = netEndOfMacroNodeString(prefix);
+            if (s == null)
+                return true;
+
+            if (destination == PrintType.PrintFile || destination == PrintType.PrintCut ||
+                destination == PrintType.PrintCPBuffer)
+            {
+                sw.Write(s);
+                if (callback != null)
+                    callback(clientdata, s);
+            }
+            else
+            {
+                Debug.Assert(destination == PrintType.PrintExec);
+                DXPacketIF pif = DXApplication.theDXApplication.getPacketIF();
+                pif.sendBytes(s);
+            }
+
+            return r;
         }
 
 
@@ -1418,7 +2323,60 @@ namespace WinDX.UI
         public virtual bool sendValues() { return sendValues(true); }
         public virtual bool sendValues(bool ignoreDirty)
         {
-            throw new Exception("Not Yet Implemented");
+            DXPacketIF pif = DXApplication.theDXApplication.getPacketIF();
+            String names = "";
+            String values = "";
+
+            if (pif == null)
+                return true;
+
+            String prefix = network.getPrefix();
+            int cnt = InputCount;
+            bool valAdded = false;
+
+            if (!network.IsMacro)
+            {
+                for (int i = 1; i <= cnt; i++)
+                {
+                    Parameter p = inputParameters[i - 1];
+                    if (p == null)
+                        break;
+                    if (p.IsNeededValue(ignoreDirty))
+                    {
+                        // Do any work that is necessary before sending the value.
+                        prepareToSendValue(i, p);
+                        names += (valAdded ? ", " : "") + strcatParameterNameLvalue(p, prefix, i);
+
+                        values += (valAdded ? ", " : "") + strcatParameterValueString(p, i);
+                        valAdded = true;
+                        p.clearDirty();
+                    }
+                }
+            }
+
+            cnt = OutputCount;
+            for (int i = 1; i <= cnt; i++)
+            {
+                Parameter p = outputParameters[i - 1];
+                if (p == null)
+                    break;
+                if (p.IsNeededValue(ignoreDirty))
+                {
+                    prepareToSendValue(i, p);
+
+                    names += (valAdded ? ", " : "") + strcatParameterNameLvalue(p, prefix, i);
+
+                    values += (valAdded ? ", " : "") + strcatParameterValueString(p, i);
+                    valAdded = true;
+                    p.clearDirty();
+                }
+            }
+            if (names.Length > 0)
+            {
+                String s = names + " = " + values + ";";
+                pif.send(PacketIF.PacketType.FOREGROUND, s);
+            }
+            return true;
         }
 
         /// <summary>
@@ -1567,7 +2525,7 @@ namespace WinDX.UI
         /// </summary>
         public virtual void setDefaultCfgState()
         {
-            throw new Exception("Not Yet Implemented");
+            // Nothing purposely here.
         }
 
         /// <summary>
@@ -1577,7 +2535,7 @@ namespace WinDX.UI
         /// <returns></returns>
         public virtual bool hasCfgState()
         {
-            throw new Exception("Not Yet Implemented");
+            return false;
         }
 
         /// <summary>
@@ -1687,6 +2645,9 @@ namespace WinDX.UI
 
         #region Public Instances and Properties
 
+        public const int MAX_INPUT_SETS = 21;
+        public const int MAX_OUTPUT_SETS = 21;
+
         public bool IsMarked
         {
             get { return marked; }
@@ -1728,34 +2689,101 @@ namespace WinDX.UI
         {
             get { return definition.HasWriteableCacheability; }
         }
+        Cacheability getNodeCacheability() { return this.nodeCacheability; }
+        public void setNodeCacheability(Cacheability val)
+        {
+            if (val != nodeCacheability)
+            {
+                nodeCacheability = val;
+                getNetwork().setDirty();
+            }
+        }
 
         public int InstanceNumber { get { return instanceNumber; } }
 
         #endregion 
 
         #region IGroupedObject
+        protected Dictionary<Symbol, GroupRecord> groups;
 
         public void addToGroup(String group, Symbol groupID)
         {
-            throw new Exception("Not Yet Implemented");
+            String groupStr = SymbolManager.theSymbolManager.getSymbolString(groupID);
+            GroupManager gmgr = getNetwork().getGroupManagers()[groupStr];
+            Debug.Assert(gmgr != null);
+
+            if (!gmgr.hasGroup(group))
+                gmgr.createGroup(group, getNetwork());
+
+            GroupRecord grec = gmgr.getGroup(group);
+            Debug.Assert(grec != null);
+
+            setGroupName(grec, groupID);
         }
+
         public String getGroupName(Symbol groupID)
         {
-            throw new Exception("Not Yet Implemented");
+            GroupRecord grec = null;
+            if (groups == null) return null;
+
+            groups.TryGetValue(groupID, out grec);
+            if (grec == null) return null;
+
+            return grec.Name;
         }
+
         public virtual Network getNetwork() { return network; }
 
         public virtual bool parseGroupComment(String comment, String filename, int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            Dictionary<String, GroupManager> groupManagers = getNetwork().getGroupManagers();
+            int count = groupManagers.Count;
+            bool group_comment = false;
+            GroupManager gmgr = null;
+            foreach (KeyValuePair<String, GroupManager> kvp in groupManagers)
+            {
+                gmgr = kvp.Value;
+                String mgr_name = " " + gmgr.getManagerName() + " group:";
+                if (comment.StartsWith(mgr_name))
+                {
+                    group_comment = true;
+                    break;
+                }
+            }
+            if (!group_comment) return false;
+            String group_name = comment.Substring(comment.IndexOf(":") + 1).Trim();
+            if (group_name.Length == 0)
+                return false;
+
+            addToGroup(group_name, gmgr.getManagerSymbol());
+            return true;
         }
         public virtual bool printGroupComment(Stream s)
         {
             throw new Exception("Not Yet Implemented");
         }
-        public virtual void setGroupName(GroupRecord gr, Symbol groupID)
+        public virtual void setGroupName(GroupRecord groupRec, Symbol groupID)
         {
-            throw new Exception("Not Yet Implemented");
+            GroupRecord grec = null;
+
+            if (groups != null)
+                groups.TryGetValue(groupID, out grec);
+            else if (groupRec != null)
+                groups = new Dictionary<Symbol, GroupRecord>();
+
+            if (grec != null)
+            {
+                if (groupRec != null)
+                    groups[groupID] = groupRec;
+                else
+                    groups.Remove(groupID);
+            }
+            else if (groupRec != null)
+            {
+                groups.Add(groupID, groupRec);
+            }
+
+            getNetwork().setDirty();
         }
 
         protected Dictionary<Symbol, GroupRecord> group;

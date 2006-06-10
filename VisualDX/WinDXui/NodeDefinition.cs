@@ -90,7 +90,8 @@ namespace WinDX.UI
         }
         protected virtual Node newNode(Network net, int instance)
         {
-            throw new Exception("Not Yet Implemented");
+            Node m = new Node(this, net, instance);
+            return m;
         }
 
         /// <summary>
@@ -100,7 +101,48 @@ namespace WinDX.UI
         /// <returns></returns>
         protected String getMDFHeaderString()
         {
-            throw new Exception("Not Yet Implemented");
+            String header = "MODULE " + NameString + "\n";
+            String host = DefaultOutboardHost;
+            if (CategoryString != null)
+            {
+                header += "CATEGORY " + CategoryString + "\n";
+            }
+            if (Description != null)
+            {
+                header += "DESCRIPTION " + Description + "\n";
+            }
+            if (IsOutboard)
+            {
+                header += "OUTBOARD \"" + OutboardCommand + "\" ; " + (host == null ? "" : host) + "\n";
+            }
+            else if (IsDynamicallyLoaded)
+            {
+                header += "LOADABLE " + DynamicLoadFile + "\n";
+            }
+            if (mdf_flags > 0)
+            {
+                header += "FLAGS";
+                if (IsMDFFlagERR_CONT)
+                    header += " ERR_CONT";
+                if (IsMDFFlagSWITCH)
+                    header += " SWITCH";
+                if (IsMDFFlagPIN)
+                    header += " PIN";
+                if (IsMDFFlagLOOP)
+                    header += " LOOP";
+                if (IsMDFFlagSIDE_EFFECT)
+                    header += " SIDE_EFFECT";
+                if (IsMDFFlagPERSISTENT)
+                    header += " PERSISTENT";
+                if (IsMDFFlagASYNCHRONOUS)
+                    header += " ASYNC";
+                if (IsMDFFlagREACH)
+                    header += " REACH";
+                if (IsMDFFlagREROUTABLE)
+                    header += " REROUTABLE";
+                header += "\n";
+            }
+            return header;
         }
 
         /// <summary>
@@ -110,7 +152,28 @@ namespace WinDX.UI
         /// <returns></returns>
         protected String getMDFParameterString(bool inputs)
         {
-            throw new Exception("Not Yet Implemented");
+            String param = "";
+            List<ParameterDefinition> defs;
+            if (inputs)
+                defs = inputDefs;
+            else
+                defs = outputDefs;
+
+            foreach (ParameterDefinition pd in defs)
+            {
+                String line = pd.getMDFString();
+                param += line;
+            }
+
+            if (inputs && IsInputRepeatable)
+            {
+                param += "REPEAT " + InputRepeatCount.ToString() + "\n";
+            }
+            else if (!inputs && IsOutputRepeatable)
+            {
+                param += "REPEAT " + OutputRepeatCount.ToString() + "\n";
+            }
+            return param;
         }
 
 
@@ -231,7 +294,25 @@ namespace WinDX.UI
         }
         public ParameterDefinition getOutputDefinition(int n)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(n > 0);
+            int cnt = OutputCount;
+
+            if (n > cnt)
+            {
+                Debug.Assert(output_repeats > 0);
+                if (output_repeats == 1)
+                {
+                    n = cnt;
+                }
+                else
+                {
+                    int num = (((n - 1) - cnt) % output_repeats) + 1;
+                    n = cnt - output_repeats + num;
+                    Debug.Assert(n > cnt - output_repeats);
+                    Debug.Assert(n <= cnt);
+                }
+            }
+            return outputDefs[n-1];
         }
 
         public void setWriteableCacheability(bool v)
@@ -256,7 +337,22 @@ namespace WinDX.UI
         }
         public virtual Node createNewNode(Network net, int instance)
         {
-            throw new Exception("Not Yet Implemented");
+            if (!IsAllowedInMacro() && net.IsMacro)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("The {0} node is not allowed in a macro.",
+                    NameString);
+                return null;
+            }
+            Node n = this.newNode(net, instance);
+            if (n != null)
+            {
+                if (!n.initialize())
+                {
+                    n = null;
+                }
+            }
+            return n;
         }
 
         public virtual void finishDefinition()
@@ -275,7 +371,7 @@ namespace WinDX.UI
         /// <returns></returns>
         public virtual Parameter newParameter(ParameterDefinition pd, Node n, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            return new Parameter(pd);
         }
 
         public void setMDFFlagERR_CONT() { setMDFFlagERR_CONT(true); }
@@ -395,12 +491,19 @@ namespace WinDX.UI
 
         public virtual String ExecModuleNameString
         {
-            get { throw new Exception("Not Yet Implemented"); }
+            get { return NameString; }
         }
 
         public String getMDFString()
         {
-            throw new Exception("Not Yet Implemented");
+            String header = getMDFHeaderString();
+            String inputs = getMDFParameterString(true);
+            String outputs = getMDFParameterString(false);
+
+            Debug.Assert(header != null);
+
+            String mdf = header + (inputs == null ? "" : inputs) + (outputs == null ? "" : outputs);
+            return mdf;
         }
 
         /// <summary>
@@ -451,7 +554,7 @@ namespace WinDX.UI
 
         public bool IsOutboard
         {
-            get { throw new Exception("Not Yet Implemented"); }
+            get { return outboardCommand != null; }
         }
 
         public String DefaultOutboardHost
@@ -473,7 +576,7 @@ namespace WinDX.UI
         }
         public bool IsDynamicallyLoaded
         {
-            get { throw new Exception("Not Yet Implemented"); }
+            get { return loadFile != null; }
         }
 
         public bool IsUserTool

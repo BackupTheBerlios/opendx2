@@ -47,7 +47,7 @@ namespace WinDXui
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.cascade1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cascade2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.form = new System.Windows.Forms.TableLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -165,16 +165,17 @@ namespace WinDXui
             this.cascade2ToolStripMenuItem.Name = "cascade2ToolStripMenuItem";
             resources.ApplyResources(this.cascade2ToolStripMenuItem, "cascade2ToolStripMenuItem");
             // 
-            // form
+            // label1
             // 
-            resources.ApplyResources(this.form, "form");
-            this.form.Name = "form";
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
             // 
             // test
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.form);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "test";
@@ -205,6 +206,6 @@ namespace WinDXui
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem cascade1ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cascade2ToolStripMenuItem;
-        private System.Windows.Forms.TableLayoutPanel form;
+        private System.Windows.Forms.Label label1;
     }
 }

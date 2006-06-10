@@ -81,7 +81,23 @@ namespace WinDX.UI
         public bool setMessageIdParameter() { return setMessageIdParameter(0); }
         public bool setMessageIdParameter(int id_index)
         {
-            throw new Exception("Not Yet Implemented");
+            String id = getModuleMessageIdString();
+
+            if (id_index == 0)
+            {
+                id_index = getMessageIdParamNumber();
+                if (id_index == 0)
+                    return true;
+            }
+
+            if (setInputValue(id_index, id, DXTypeVals.StringType, false) ==
+                DXTypeVals.UndefinedType)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Error setting message id string for node {0}, check ui.mdf",
+                    NameString);
+            }
+            return true;
         }
 
         /// <summary>
@@ -100,7 +116,26 @@ namespace WinDX.UI
         /// <param name="status"></param>
         protected override void ioParameterStatusChanged(bool input, int index, Node.NodeParameterStatusChange status)
         {
-            throw new Exception("Not Yet Implemented");
+            if (input && (long)(status & NodeParameterStatusChange.ParameterArkChanged) > 0)
+            {
+                bool driven = IsDataDriven();
+                if (driven)
+                {
+                    for (int i = 1; i <= OutputCount; i++)
+                        setOutputDirty(i);
+                    // Don't need to send them because the network will get marked
+                    // dirty as a result of an arc change.
+                }
+            }
+
+            base.ioParameterStatusChanged(input, index, status);
+
+            // Update the UI visuals for this node when ever any of our viewable
+            // input arcs or values change, which may lead to a sensitivity change 
+            //  on one of the UI visuals for this node. 
+            if (input && ((long)(status & NodeParameterStatusChange.ParameterVisibilityChanged) == 0) &&
+                isInputViewable(index))
+                notifyVisualsOfStateChange();
         }
 
 
@@ -171,7 +206,9 @@ namespace WinDX.UI
         public DrivenNode(NodeDefinition nd, Network net, int instnc) :
             base(nd, net, instnc)
         {
-            throw new Exception("Not Yet Implemented");
+            visualNotificationDeferrals = 0;
+            visualsNeedNotification = false;
+            handlingLongMessage = false;
         }
 
         /// <summary>
@@ -183,7 +220,13 @@ namespace WinDX.UI
         /// <returns></returns>
         public virtual bool IsDataDriven()
         {
-            throw new Exception("Not Yet Implemented");
+            bool driven = false;
+            for (int i = 1; !driven && i <= InputCount; i++)
+            {
+                if (isInputViewable(i))
+                    driven = !isInputDefaulting(i);
+            }
+            return driven;
         }
 
 
@@ -196,7 +239,13 @@ namespace WinDX.UI
         public void notifyVisualsOfStateChange() { notifyVisualsOfStateChange(false); }
         public void notifyVisualsOfStateChange(bool unmanage)
         {
-            throw new Exception("Not Yet Implemented");
+            if (!isVisualNotificationDeferred())
+            {
+                visualsNeedNotification = false;
+                reflectStateChange(unmanage);
+            }
+            else
+                visualsNeedNotification = true;
         }
 
 

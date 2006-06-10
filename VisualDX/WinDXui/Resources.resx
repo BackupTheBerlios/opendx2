@@ -154,8 +154,26 @@
   <data name="MINOR_VERSION" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="NETFILE_MAJOR_VERSION" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="NETFILE_MICRO_VERSION" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="NETFILE_MINOR_VERSION" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="OpenDX_Splash" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\OpenDX-Splash.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PIF_MAJOR_VERSION" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="PIF_MICRO_VERSION" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PIF_MINOR_VERSION" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="PRODUCT_NAME" xml:space="preserve">
     <value>Open Visualization Data Explorer</value>

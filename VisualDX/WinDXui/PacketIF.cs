@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Threading;
+using System.IO;
 
 namespace WinDX.UI
 {
@@ -159,6 +160,16 @@ namespace WinDX.UI
         public bool DeferPacketHandling
         {
             get { return deferPacketHandling; }
+        }
+
+        public StreamWriter getStreamWriter()
+        {
+            if (streamWriter == null)
+            {
+                NetworkStream networkStream = new NetworkStream(socket);
+                streamWriter = new StreamWriter(networkStream);
+            }
+            return streamWriter;
         }
 
         #endregion
@@ -483,6 +494,7 @@ namespace WinDX.UI
 
         private bool error;
         private Socket socket;
+        private StreamWriter streamWriter;
         private bool deferPacketHandling;
         private bool endReceiving;
         private PacketIFCallback echoCallback;
@@ -680,7 +692,7 @@ namespace WinDX.UI
         #region protected Instance Variables
 
         protected String line;
-        protected List<PacketHandler> handlers;
+        protected List<PacketHandler> handlers = new List<PacketHandler>();
 
         #endregion
 
@@ -734,10 +746,10 @@ namespace WinDX.UI
             ioc = line.IndexOf('|', ioc + 1);
             if (ioc < 0)
                 iocerr = true;
+             
+            String data = line.Substring(ioc+1, data_length);
 
-            String data = line.Substring(ioc + 1, data_length);
-
-            if ((line.ToCharArray())[ioc + 1 + data_length + 1] != '|' || iocerr)
+            if ((line.ToCharArray())[ioc + data_length + 1] != '|' || iocerr)
             {
                 ErrorDialog ed = new ErrorDialog();
                 ed.post("Unknown packet type \"{0}\" encountered", toks[1]);
@@ -895,7 +907,7 @@ namespace WinDX.UI
             // to line. Don't forget about the left over data in
             // buffer.
 
-            String curline = Encoding.ASCII.GetString(buffer);
+            String curline = Encoding.ASCII.GetString(buffer).TrimEnd(new char[] { '\0' });
 
 
             while (!deferPacketHandling)
@@ -907,7 +919,7 @@ namespace WinDX.UI
                 {
                     int posN = curline.IndexOf('\n');
                     line += curline.Substring(0, posN);
-                    curline = curline.Substring(posN + 2);
+                    curline = curline.Substring(posN + 1);
                     parsePacket();
                     line = "";
                 }

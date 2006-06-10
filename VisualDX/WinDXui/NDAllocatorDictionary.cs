@@ -17,6 +17,18 @@ namespace WinDX.UI
         {
             defaultAlloc = NodeDefinition.AllocateDefinition;
             this.Add("Display", DisplayDefinition.AllocateDefinition);
+            this.Add("Image", ImageDefinition.AllocateDefinition);
+
+            this.Add("Colormap", ColormapDefinition.AllocateDefinition);
+            this.Add("Sequencer", SequencerDefinition.AllocateDefinition);
+
+            this.Add("Compute", ComputeDefinition.AllocateDefinition);
+            this.Add("Echo", EchoDefinition.AllocateDefinition);
+            this.Add("Print", PrintDefinition.AllocateDefinition);
+
+            this.Add("Probe", ProbeDefinition.AllocateDefinition);
+            this.Add("ProbeList", ProbeDefinition.AllocateDefinition);
+            this.Add("Pick", PickDefinition.AllocateDefinition);
 
         }
 

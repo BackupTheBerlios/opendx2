@@ -17,27 +17,28 @@ namespace WinDX.UI
 
         // Execute option pulldown support
         protected ToolStripMenuItem executeMenu;
-        protected ToolStripMenuItem executeOnceOption;
-        protected ToolStripMenuItem executeOnChangeOption;
-        protected ToolStripMenuItem endExecutionOption;
-        protected ToolStripMenuItem sequencerOption;
+        protected DXToolStripMenuItem executeOnceOption;
+        protected DXToolStripMenuItem executeOnChangeOption;
+        protected DXToolStripMenuItem endExecutionOption;
+        protected DXToolStripMenuItem sequencerOption;
 
         // Connect option pulldown support
         protected ToolStripMenuItem connectionMenu;
-        protected ToolStripMenuItem startServerOption;
-        protected ToolStripMenuItem disconnectFromServerOption;
-        protected ToolStripMenuItem resetServerOption;
-        protected ToolStripMenuItem processGroupAssignmentOption;
+        protected DXToolStripMenuItem startServerOption;
+        protected DXToolStripMenuItem disconnectFromServerOption;
+        protected DXToolStripMenuItem resetServerOption;
+        protected DXToolStripMenuItem processGroupAssignmentOption;
 
         // Options menu
         protected Command toggleWindowStartupCmd;
-        protected ToolStripMenuItem toggleWindowStartupOption;
+        protected DXToolStripMenuItem toggleWindowStartupOption;
 
         // Adds help option pulldown support
         protected ToolStripMenuItem helpTutorialOption;
 
         // File history menus
         protected ToolStripMenuItem fileHistoryOption;
+        protected CascadeAutoToolStripMenuItem recentMenu;
         List<ToolStripMenuItem> file_history_buttons;
         List<Command> file_history_commands;
 
@@ -55,7 +56,8 @@ namespace WinDX.UI
                 ComponentResourceManager resources = new ComponentResourceManager(typeof(DXWindow));
 
                 ToolStripSeparator sep1 = new ToolStripSeparator();
-                helpTutorialOption = new ToolStripMenuItem();
+                helpTutorialOption = new DXToolStripMenuItem("helpTutorialOption",
+                    DXApplication.theDXApplication.helpTutorialCmd);
 
                 helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
                     sep1,
@@ -71,10 +73,14 @@ namespace WinDX.UI
 
             ToolStripSeparator sep1 = new ToolStripSeparator();
             executeMenu = new ToolStripMenuItem();
-            executeOnceOption = new ToolStripMenuItem();
-            executeOnChangeOption = new ToolStripMenuItem();
-            endExecutionOption = new ToolStripMenuItem();
-            sequencerOption = new ToolStripMenuItem();
+            executeOnceOption = new DXToolStripMenuItem("executeOnceOption",
+                DXApplication.theDXApplication.executeOnceCmd);
+            executeOnChangeOption = new DXToolStripMenuItem("executeOnChangeOption",
+                DXApplication.theDXApplication.executeOnChangeCmd);
+            endExecutionOption = new DXToolStripMenuItem("endExecutionOption",
+                DXApplication.theDXApplication.endExecutionCmd);
+            sequencerOption = new DXToolStripMenuItem("sequencerOption",
+                DXApplication.theDXApplication.openSequencerCmd);
 
             SuspendLayout();
             menubar.SuspendLayout();
@@ -121,10 +127,14 @@ namespace WinDX.UI
 
             ToolStripSeparator sep1 = new ToolStripSeparator();
             connectionMenu = new ToolStripMenuItem();
-            startServerOption = new ToolStripMenuItem();
-            disconnectFromServerOption = new ToolStripMenuItem();
-            resetServerOption = new ToolStripMenuItem();
-            processGroupAssignmentOption = new ToolStripMenuItem();
+            startServerOption = new DXToolStripMenuItem("startServerOption",
+                DXApplication.theDXApplication.connectedToServerCmd);
+            disconnectFromServerOption = new DXToolStripMenuItem("disconnectFromServerOption",
+                DXApplication.theDXApplication.disconnectedFromServerCmd);
+            resetServerOption = new DXToolStripMenuItem("resetServerOption",
+                DXApplication.theDXApplication.resetServerCmd);
+            processGroupAssignmentOption = new DXToolStripMenuItem("processGroupAssignmentOption",
+                DXApplication.theDXApplication.assignProcessGroupCmd);
 
             SuspendLayout();
             menubar.SuspendLayout();
@@ -159,39 +169,47 @@ namespace WinDX.UI
             PerformLayout();
         }
 
-        protected virtual void createFileHistoryMenu(ref ToolStripMenuItem menuItem)
+        protected virtual void createFileHistoryMenu(ref CascadeAutoToolStripMenuItem menuItem, 
+            ref ToolStripMenuItem parentMenuItem)
         {
             if (!IsAnchor)
                 return;
 
-            List<String> recent_nets;
-            DXApplication.theDXApplication.getRecentNets(out recent_nets);
-
-            menuItem.Paint += new PaintEventHandler(buildFileHistoryMenu);
-
+            //List<String> recent_nets;
+            //DXApplication.theDXApplication.getRecentNets(out recent_nets);
+            recentMenu = menuItem;
+            parentMenuItem.DropDownOpening += new EventHandler(buildFileHistoryMenu);
         }
 
-        protected virtual void buildFileHistoryMenu(object sender, PaintEventArgs e)
+        protected virtual void buildFileHistoryMenu(object sender, EventArgs e)
         {
             ToolStripMenuItem recentOptions = (ToolStripMenuItem) sender;
             List<String> recent_nets;
             DXApplication.theDXApplication.getRecentNets(out recent_nets);
 
+            if (recentMenu == null)
+                return;
+
             if (recent_nets == null || recent_nets.Count == 0)
             {
-                recentOptions.Enabled = false;
+                recentMenu.DropDownItems.Clear();
                 return;
             }
-
-            ToolStripMenuItem[] files = new ToolStripMenuItem[recent_nets.Count];
-            for (int i = 0; i < recent_nets.Count; i++)
+            else
             {
-                files[i].Name = recent_nets[i];
-                files[i].Text = recent_nets[i];
-                // Need to add command to open here.
+
+                ToolStripMenuItem[] files = new ToolStripMenuItem[recent_nets.Count];
+                for (int i = 0; i < recent_nets.Count; i++)
+                {
+                    files[i] = new ToolStripMenuItem();
+                    files[i].Name = String.Format("File_{0}", i);
+                    files[i].Text = recent_nets[i];
+                    // Need to add command to open here.
+                }
+                recentMenu.DropDownItems.Clear();
+                recentMenu.DropDownItems.AddRange(files);
+                recentMenu.Enabled = true;
             }
-            recentOptions.DropDownItems.Clear();
-            recentOptions.DropDownItems.AddRange(files);
         }
 
 
@@ -346,9 +364,19 @@ namespace WinDX.UI
         /// <summary>
         /// Called by the MainWindow CloseCallback
         /// </summary>
-        public virtual void closeWindow()
+        public override void closeWindow()
         {
-            throw new Exception("Not Yet Implemented");
+            if (DXApplication.theDXApplication.appAllowsExitOptions())
+            {
+                if (anchor)
+                    DXApplication.theDXApplication.exitCmd.execute();
+                else
+                    Close();
+            }
+            else
+            {
+                WindowState = FormWindowState.Minimized;
+            }
         }
 
         /// <summary>

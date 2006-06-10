@@ -103,6 +103,11 @@ namespace WinDX.UI
         public void installWorkSpaceInfo(ref WorkSpaceInfo info) {}
         public void completeNewNetwork() { }
         public void resetWindowTitle() { }
+        public void beginPageChange() { }
+        public void endPageChange() { }
+        public void newDecorator(Decorator dec) { newDecorator(dec, null); }
+        public void newDecorator(Decorator dec, EditorWorkSpace where) { }
+        public void newNode(Node node, EditorWorkSpace where) { }
 
     }
 }

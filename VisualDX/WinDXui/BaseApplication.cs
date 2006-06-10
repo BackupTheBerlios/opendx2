@@ -365,9 +365,9 @@ namespace WinDX.UI
             XmlPreferences.theXmlPreferences.SetDefault("oemLicenseCode", XmlPreferences.PrefType.TypeString, "");
             XmlPreferences.theXmlPreferences.SetDefault("viewDataFile", XmlPreferences.PrefType.TypeString, "");
             XmlPreferences.theXmlPreferences.SetDefault("autoScrollVPE", XmlPreferences.PrefType.TypeBool, "true");
-            XmlPreferences.theXmlPreferences.SetDefault("autoLayoutHeight", XmlPreferences.PrefType.TypeInt, "0");
-            XmlPreferences.theXmlPreferences.SetDefault("autoLayoutGroupSpacing", XmlPreferences.PrefType.TypeInt, "0");
-            XmlPreferences.theXmlPreferences.SetDefault("autoLayoutNodeSpacing", XmlPreferences.PrefType.TypeInt, "0");
+            XmlPreferences.theXmlPreferences.SetDefault("autoLayoutHeight", XmlPreferences.PrefType.TypeInt, "90", true);
+            XmlPreferences.theXmlPreferences.SetDefault("autoLayoutGroupSpacing", XmlPreferences.PrefType.TypeInt, "30", true);
+            XmlPreferences.theXmlPreferences.SetDefault("autoLayoutNodeSpacing", XmlPreferences.PrefType.TypeInt, "15", true);
             XmlPreferences.theXmlPreferences.SetDefault("cosmoDir", XmlPreferences.PrefType.TypeString, "");
             XmlPreferences.theXmlPreferences.SetDefault("jdkDir", XmlPreferences.PrefType.TypeString, "");
             XmlPreferences.theXmlPreferences.SetDefault("htmlDir", XmlPreferences.PrefType.TypeString, "");
@@ -694,6 +694,11 @@ namespace WinDX.UI
             return root;
         }
 
+        public virtual void setRootForm(Form root)
+        {
+            this.root = root;
+        }
+
         private String aboutAppString = null;
         protected String techSupportString = null;
         private List<String> noWizards = null;
@@ -751,13 +756,31 @@ namespace WinDX.UI
             return techSupportString;
         }
 
-        String getHelpDirectory()
+        public String getHelpDirectory()
         {
             String helpDir = getUIRoot() + "/help";
             return helpDir;
         }
 
-        String getHTMLDirectory()
+        public String getTmpDirectory()
+        {
+            String tmp = System.IO.Path.GetTempPath();
+            if (tmp != null && tmp.Length > 0)
+                return tmp;
+
+            tmp = System.Environment.GetEnvironmentVariable("TMP");
+            if (tmp != null && tmp.Length > 0)
+                return tmp;
+
+            tmp = System.Environment.GetEnvironmentVariable("TEMP");
+            if (tmp != null && tmp.Length > 0)
+                return tmp;
+
+            throw new Exception("Cannot get Temporary Directory, please consult developers.");
+            return null;
+        }
+
+        public String getHTMLDirectory()
         {
             String htmlDir = getUIRoot() + "/html";
             return htmlDir;

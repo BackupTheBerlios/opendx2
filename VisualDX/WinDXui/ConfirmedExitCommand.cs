@@ -26,7 +26,7 @@ namespace WinDX.UI
         {
             foreach (Network net in application.macroList)
             {
-                if (net.IsMacro && net.saveToFileRequired)
+                if (net.IsMacro && net.SaveToFileRequired)
                     return true;
             }
             return false;
@@ -37,7 +37,7 @@ namespace WinDX.UI
             SaveMacroCommand cmd = null, first = null, last = null;
             foreach (Network net in application.macroList)
             {
-                if (net.IsMacro && net.saveToFileRequired)
+                if (net.IsMacro && net.SaveToFileRequired)
                 {
                     cmd = (SaveMacroCommand) net.getDefinition().getSaveCmd();
                     if (first == null)

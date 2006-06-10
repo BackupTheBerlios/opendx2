@@ -169,7 +169,8 @@ namespace WinDX.UI
                 this.Name = "DialogManager";
                 this.ShowIcon = false;
                 this.Text = "Dialog";
-                this.TopMost = true;
+                this.TopLevel = true;
+                this.ShowInTaskbar = false;
                 this.tableLayoutPanel1.ResumeLayout(false);
                 this.tableLayoutPanel1.PerformLayout();
                 ((System.ComponentModel.ISupportInitialize)(this.iconBox)).EndInit();

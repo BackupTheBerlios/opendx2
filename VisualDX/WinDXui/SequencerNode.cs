@@ -53,6 +53,7 @@ namespace WinDX.UI
 
         bool ignoreFirstFrameMsg;
         bool transmitted;    /* frame values transmitted?    */
+        public bool Transmitted { get { return transmitted; } set { transmitted = value; } }
         //
         // Indicates if this node has ever been executed
         // (even across different executions of the User Interface).  This is

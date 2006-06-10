@@ -13,7 +13,7 @@ namespace WinDX.UI
 
         protected override bool needsConfirmation()
         {
-            return network.saveToFileRequired;
+            return network.SaveToFileRequired;
         }
         protected override void doPreAction()
         {

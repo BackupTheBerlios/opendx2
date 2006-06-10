@@ -16,6 +16,7 @@ namespace WinDX.UI
         protected Object data = null;
         protected Form lastParent = null;
         protected String name = null;
+        private static int numOpenDialogs = 0;
 
         public DialogManager()
         {
@@ -52,9 +53,15 @@ namespace WinDX.UI
     String okLabel, String cancelLabel, String helpLabel, int cancelBtnNum)
         {
             if (parent == null)
-                this.Parent = MainProgram.theApplication.getRootForm();
+            {
+                //this.Parent = MainProgram.theApplication.getRootForm();
+                this.Owner = MainProgram.theApplication.getRootForm();
+            }
             else
-                this.Parent = parent;
+            {
+                //this.Parent = parent;
+                this.Owner = parent;
+            }
 
             createDialog();
             this.messageLabel.Text = Utils.WordWrap(message, 50);
@@ -77,11 +84,23 @@ namespace WinDX.UI
                 this.helpButton.Click += new EventHandler(helpCallback);
 
             if (okCallback != null)
+            {
                 this.okButton.Click += new EventHandler(okCallback);
+                this.okButton.Tag = clientData;
+            }
             if (cancelCallback != null)
+            {
                 this.cancelButton.Click += new EventHandler(cancelCallback);
+                this.okButton.Tag = clientData;
+            }
+
+            this.StartPosition = FormStartPosition.Manual;
+            int x = parent.Location.X + (int)((parent.Width - this.Width) / 2.0) + numOpenDialogs * 5;
+            int y = parent.Location.Y + (int)((parent.Height - this.Height) / 2.0) + numOpenDialogs * 5;
+            this.Location = new Point(x, y);
 
             this.Show();
+            numOpenDialogs ++;
         }
 
         public void modalPost(Form parent, String message,
@@ -90,9 +109,13 @@ namespace WinDX.UI
             String okLabel, String cancelLabel, String helpLabel, int cancelBtnNum)
         {
             if (parent == null)
-                this.Parent = MainProgram.theApplication.getRootForm();
+            {
+                this.Owner = MainProgram.theApplication.getRootForm();
+            }
             else
-                this.Parent = parent;
+            {
+                this.Owner = parent;
+            }
 
             createDialog();
             this.messageLabel.Text = Utils.WordWrap(message, 50);
@@ -116,12 +139,29 @@ namespace WinDX.UI
                 this.helpButton.Click += new EventHandler(helpCallback);
 
             if (okCallback != null)
+            {
                 this.okButton.Click += new EventHandler(okCallback);
+                this.okButton.Tag = clientData;
+            }
             if (cancelCallback != null)
+            {
                 this.cancelButton.Click += new EventHandler(cancelCallback);
+                this.cancelButton.Tag = clientData;
+            }
 
+            this.StartPosition = FormStartPosition.Manual;
+            int x = parent.Location.X + (int)((parent.Width - this.Width) / 2.0) + numOpenDialogs * 5;
+            int y = parent.Location.Y + (int)((parent.Height - this.Height) / 2.0) + numOpenDialogs * 5;
+            this.Location = new Point(x, y);
+
+            numOpenDialogs++;
             this.ShowDialog();
+        }
 
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            numOpenDialogs--;
         }
     }
 }

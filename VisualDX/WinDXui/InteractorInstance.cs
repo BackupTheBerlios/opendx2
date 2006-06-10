@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class InteractorInstance
+    public class InteractorInstance
     {
 
     }

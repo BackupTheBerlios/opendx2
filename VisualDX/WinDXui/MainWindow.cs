@@ -38,18 +38,18 @@ namespace WinDX.UI
 
         protected CommandScope commandScope;
 
-        private Command helpOnWindowCmd = null;
-        private Command helpAboutAppCmd = null;
-        private Command helpTechSupportCmd = null;
+        public Command helpOnWindowCmd = null;
+        public Command helpAboutAppCmd = null;
+        public Command helpTechSupportCmd = null;
 
         #region Help Menu Items
         protected ToolStripMenuItem helpToolStripMenuItem = null;
-        private ToolStripMenuItem onWindowOption = null;
-        private ToolStripMenuItem onManualOption = null;
-        private ToolStripMenuItem onHelpOption = null;
-        private ToolStripMenuItem aboutAppOption = null;
+        private DXToolStripMenuItem onWindowOption = null;
+        private DXToolStripMenuItem onManualOption = null;
+        private DXToolStripMenuItem onHelpOption = null;
+        private DXToolStripMenuItem aboutAppOption = null;
         private ToolStripSeparator sep1 = null;
-        private ToolStripMenuItem techSupportOption = null;
+        private DXToolStripMenuItem techSupportOption = null;
 
         #endregion
 
@@ -110,9 +110,16 @@ namespace WinDX.UI
         /// <summary>
         /// Window close callback.
         /// </summary>
-        public virtual void closeCallback(Object sender, EventArgs e)
+        public virtual void closeCallback(Object sender, CancelEventArgs e)
         {
-            // No implementation at this level.
+            closeWindow();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            e.Cancel = true;
+            base.OnClosing(e);
+            closeWindow();
         }
 
         private void CommonConstructor()
@@ -125,7 +132,11 @@ namespace WinDX.UI
 
             Visible = false;
             if (hasMenuBar)
+            {
                 commandScope = new CommandScope();
+                helpOnWindowCmd = new UIComponentHelpCommand("helpOnWindow", null,
+                    true, this);
+            }
             else
                 commandScope = null;
 
@@ -169,7 +180,7 @@ namespace WinDX.UI
         /// </summary>
         public virtual void initialize()
         {
-            FormClosing += new FormClosingEventHandler(closeCallback);
+            //FormClosing += new FormClosingEventHandler(closeCallback);
             this.HelpRequested += new System.Windows.Forms.HelpEventHandler(Help.helpOn);
 
 
@@ -187,6 +198,8 @@ namespace WinDX.UI
             }
 
             Size = new Size(1000, 800);
+
+            MainProgram.theApplication.setRootForm(this);
 
             if (global::WinDX.UI.Resources.startup != null)
                 Icon = global::WinDX.UI.Resources.startup;
@@ -258,13 +271,17 @@ namespace WinDX.UI
 
             ComponentResourceManager resources = new ComponentResourceManager(typeof(MainWindow));
 
+            this.helpAboutAppCmd = new HelpMenuCommand("helpAboutApp", null, true, HelpMenuCommand.HelpType.AboutApp);
+            this.helpTechSupportCmd = new HelpMenuCommand("helpTechSupport", null, true,
+                HelpMenuCommand.HelpType.TechSupport);
+
             helpToolStripMenuItem = new ToolStripMenuItem();
-            onWindowOption = new ToolStripMenuItem();
-            onManualOption = new ToolStripMenuItem();
-            onHelpOption = new ToolStripMenuItem();
-            aboutAppOption = new ToolStripMenuItem();
+            onWindowOption = new DXToolStripMenuItem("onWindowOption", this.helpOnWindowCmd);
+            onManualOption = new DXToolStripMenuItem("onManualOption", DXApplication.theDXApplication.genericHelpCmd);
+            onHelpOption = new DXToolStripMenuItem("onHelpOption", DXApplication.theDXApplication.genericHelpCmd);
+            aboutAppOption = new DXToolStripMenuItem("aboutAppOption", this.helpAboutAppCmd);
             sep1 = new ToolStripSeparator();
-            techSupportOption = new ToolStripMenuItem();
+            techSupportOption = new DXToolStripMenuItem("techSupportOption", this.helpTechSupportCmd);
 
             menuBar.SuspendLayout();
             SuspendLayout();
@@ -283,21 +300,21 @@ namespace WinDX.UI
             // onWindowOption
             // 
             onWindowOption.Name = "onWindowOption";
-            onWindowOption.Click += new EventHandler(Help.helpOn);
+            //onWindowOption.Click += new EventHandler(Help.helpOn);
             resources.ApplyResources(this.onWindowOption, "onWindowOption");
 
             // 
             // onManualOption
             // 
             onManualOption.Name = "onManualOption";
-            onManualOption.Click += new EventHandler(Help.helpOn);
+            //onManualOption.Click += new EventHandler(Help.helpOn);
             resources.ApplyResources(this.onManualOption, "onManualOption");
 
             // 
             // onHelpOption
             // 
             onHelpOption.Name = "onHelpOption";
-            onHelpOption.Click += new EventHandler(Help.helpOn);
+            //onHelpOption.Click += new EventHandler(Help.helpOn);
             resources.ApplyResources(this.onHelpOption, "onHelpOption");
 
             if (addAboutApp)
@@ -312,14 +329,14 @@ namespace WinDX.UI
                 // aboutAppOption
                 // 
                 aboutAppOption.Name = "aboutAppOption";
-                aboutAppOption.Click += new EventHandler(Help.helpOn);
+                //aboutAppOption.Click += new EventHandler(Help.helpOn);
                 resources.ApplyResources(this.aboutAppOption, "aboutAppOption");
 
                 // 
                 // techSupportOption
                 // 
                 techSupportOption.Name = "techSupportOption";
-                techSupportOption.Click += new EventHandler(Help.helpOn);
+                //techSupportOption.Click += new EventHandler(Help.helpOn);
                 resources.ApplyResources(this.techSupportOption, "techSupportOption");
 
             }
@@ -351,7 +368,7 @@ namespace WinDX.UI
 
         public virtual void closeWindow()
         {
-            this.Hide();
+            this.Close();
         }
     }
 }

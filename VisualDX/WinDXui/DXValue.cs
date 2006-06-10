@@ -8,7 +8,7 @@ namespace WinDX.UI
 {
     class DXValue
     {
-        protected DXType type;
+        protected DXType type = new DXType();
         protected bool defined;
 
         String str;
@@ -96,7 +96,59 @@ namespace WinDX.UI
         /// <param name="type"></param>
         /// <returns></returns>
         public static String CoerceValue(String val, DXTypeVals type)
-        { throw new Exception("Not yet implemented."); }
+        {
+            String s;
+            bool failed = true;
+
+            if (type == DXTypeVals.ValueType)
+            {
+                s = DXValue.CoerceValue(val, DXTypeVals.VectorType);
+            }
+            else
+            {
+                s = val.Trim();
+
+                if ((type == DXTypeVals.StringType) || (type == DXTypeVals.WhereType))
+                {
+                    s = "\"" + s + "\"";
+                }
+                else if (type == DXTypeVals.ListType)
+                {
+                    s = "{" + s + "}";
+                }
+                else if (type == DXTypeVals.TensorType || type == DXTypeVals.VectorType)
+                {
+                    s = "[" + s + "]";
+                }
+
+                if (!DXValue.IsValidValue(s, type))
+                    failed = true;
+                else
+                    failed = false;
+
+                // Try and coerce a list with a single element (i.e. coerce both the
+                // element and the overall value.
+                if (failed && (long)(type & DXTypeVals.ListType) > 0)
+                {
+                    DXTypeVals basetype = type & DXTypeVals.ListTypeMask;
+                    String p = DXValue.CoerceValue(val, basetype);
+                    if (p != null)
+                    {
+                        String p2 = DXValue.CoerceValue(p, type);
+                        if (p2 != null)
+                        {
+                            s = p2;
+                            failed = false;
+                        }
+                    }
+                }
+                if (failed)
+                {
+                    s = null;
+                }
+            }
+            return s;
+        }
 
         /// <summary>
         /// Get the next item from a list of the given type.
@@ -272,7 +324,19 @@ namespace WinDX.UI
         }
 
         public void clear()
-        { throw new Exception("Not yet implemented"); }
+        {
+            if (str != null)
+                str = null;
+
+            integer = 0;
+            scalar = 0.0;
+
+            if (tensor != null)
+                tensor = null;
+
+            defined = false;
+            this.type.setType(DXTypeVals.UndefinedType);
+        }
 
         /// <summary>
         /// Assigns a string value of the specified type (DXType constant).
@@ -282,8 +346,141 @@ namespace WinDX.UI
         /// <param name="str"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public bool setValue(String str, DXTypeVals type)
-        { throw new Exception("Not yet implemented"); }
+        public bool setValue(String strp, DXTypeVals typep)
+        {
+            bool result = false;
+
+            if (DXValue.IsValidValue(strp, typep))
+            {
+                this.clear();
+                this.type.setType(typep);
+
+                this.str = strp;
+                if (String.Compare(str, "NULL", true) == 0)
+                {
+                    this.type.setType(typep);
+                }
+                else
+                {
+                    // Convert the string to internal, native form according to type
+                    double d; int v;
+                    switch (typep)
+                    {
+                        case DXTypeVals.FlagType:
+                            // The executive dow not recognize 'true' or 'false', so
+                            // we convert them to integer values.
+                            if (String.Compare(strp, "false", true) == 0)
+                            {
+                                this.integer = 0; this.scalar = 0;
+                                this.str = "0";
+                            }
+                            else if (String.Compare(strp, "true", true) == 0)
+                            {
+                                this.integer = 1; this.scalar = 1;
+                                this.str = "1";
+                            }
+                            else
+                            {
+                                v = int.Parse(strp); this.integer = v;
+                                d = double.Parse(strp); this.scalar = d;
+                            }
+                            break;
+
+                        case DXTypeVals.IntegerType:
+                            v = int.Parse(strp); this.integer = v;
+                            d = double.Parse(strp); this.scalar = d;
+                            break;
+
+                        case DXTypeVals.ScalarType:
+                            d = double.Parse(strp); this.scalar = d;
+                            if (strp.Contains("."))
+                                this.str = this.scalar.ToString();
+                            break;
+
+                        case DXTypeVals.VectorType:
+                            tensor = new DXTensor();
+                            result = tensor.setValue(strp);
+                            Debug.Assert(result);
+                            break;
+
+                        case DXTypeVals.TensorType:
+                        case DXTypeVals.ValueType:
+                        case DXTypeVals.StringType:
+                        case DXTypeVals.ObjectType:
+                        case DXTypeVals.WhereType:
+                        case DXTypeVals.DescriptionType:
+                            break;
+
+                        default:
+                            if ((typep & DXTypeVals.ListType) > 0)
+                            {
+                                List<String> toks;
+                                String buf;
+                                switch (typep & DXTypeVals.ListTypeMask)
+                                {
+                                    case DXTypeVals.ScalarType:
+                                        // Convert '{ 1 2.0000 3.3 }' into '{ 1.0 2.0 3.3 }'
+                                        // Ignore lists specified with the elipsis '{ 1..2: 3}'
+                                        if (this.str.Contains(":") || this.str.Contains(".."))
+                                            break;
+                                        toks = Utils.StringTokenizer(strp, " ,\t{}", null);
+                                        buf = "{ ";
+                                        foreach (String tok in toks)
+                                        {
+                                            buf += double.Parse(tok).ToString() + " ";
+                                        }
+                                        buf += "}";
+                                        this.str = buf;
+                                        break;
+
+                                    case DXTypeVals.IntegerType:
+                                        // Ignore lists specified with the ellipsis '{ 1..2:3 }'
+                                        if (this.str.Contains(":") || this.str.Contains(".."))
+                                            break;
+                                        toks = Utils.StringTokenizer(strp, " ,\t{}", null);
+                                        buf = "{ ";
+                                        foreach (String tok in toks)
+                                        {
+                                            buf += int.Parse(tok).ToString() + " ";
+                                        }
+                                        buf += "}";
+                                        this.str = buf;
+                                        break;
+
+                                    case DXTypeVals.StringType:
+                                        toks = Utils.StringTokenizer(strp, " ,\t{}", null);
+                                        buf = "{ ";
+                                        foreach (String tok in toks)
+                                        {
+                                            buf += tok + " ";
+                                        }
+                                        buf += "}";
+                                        this.str = buf;
+                                        break;
+
+                                    case DXTypeVals.FlagType:
+                                    case DXTypeVals.VectorType:
+                                    case DXTypeVals.TensorType:
+                                    case DXTypeVals.ValueType:
+                                        break;
+                                }
+                            }
+                            else if ((long)(typep & DXTypeVals.UserType1) > 0 ||
+                                (long)(typep & DXTypeVals.UserType2) > 0 ||
+                                (long)(typep & DXTypeVals.UserType4) > 0 ||
+                                (long)(typep & DXTypeVals.UserType5) > 0 ||
+                                (long)(typep & DXTypeVals.UserType6) > 0)
+                            { }
+                            else
+                                Debug.Assert(false);
+                            break;
+                    }
+                }
+                return true;
+            }
+            else
+                return false;
+        }
 
         public bool setValue(String str, DXType type)
         {
@@ -332,7 +529,7 @@ namespace WinDX.UI
         /// </summary>
         /// <returns></returns>
         public String getValueString()
-        { throw new Exception("Not yet implemented");}
+        { return (this.str != null ? this.str : "NULL"); }
 
         public DXTypeVals getType() { throw new Exception("Not Yet Implemented"); }
         public String getTypeName() { throw new Exception("Not Yet Implemented"); }

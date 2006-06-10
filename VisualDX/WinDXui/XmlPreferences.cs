@@ -13,6 +13,7 @@ namespace WinDX.UI
         private XmlDocument prefs;
         private bool fileExisted = false;
         private XmlNode root = null;
+        private const int MaxStoredList = 10;
 
         public XmlPreferences()
         {
@@ -32,14 +33,14 @@ namespace WinDX.UI
                 prefs.Load(reader);
                 fileExisted = true;
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 Console.WriteLine("Corrupted prefs file--try deleting");
             }
 
             reader.Close();
             root = prefs.SelectSingleNode("PREFS");
-            if (root != null)
+            if (root == null)
             {
                 XmlElement elem = prefs.CreateElement("PREFS");
                 prefs.AppendChild(elem);
@@ -77,15 +78,19 @@ namespace WinDX.UI
                 String lookup = "DXUIPREF[@Persistent='true']";
                 XmlNodeList nl = root.SelectNodes(lookup);
 
-                XmlDocument doc = new XmlDocument();
-                XmlElement elem = doc.CreateElement("PREFS");
-                for (int i = 0; i < nl.Count; i++)
-                    elem.AppendChild(doc.ImportNode(nl.Item(i), true));
+                if (nl.Count > 0)
+                {
+                    XmlDocument doc = new XmlDocument();
+                    XmlElement elem = doc.CreateElement("PREFS");
+                    doc.AppendChild(elem);
+                    for (int i = 0; i < nl.Count; i++)
+                        elem.AppendChild(doc.ImportNode(nl.Item(i), true));
 
-                doc.Save(filename);
-                fileExisted = true;
+                    doc.Save(filename);
+                    fileExisted = true;
+                }
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 Console.WriteLine("Couldn't write file--check permissions.");
             }
@@ -124,7 +129,7 @@ namespace WinDX.UI
                 XmlNode n2 = n.SelectSingleNode("VALUE");
                 val = n2.InnerText;
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 Console.WriteLine("Corrupted prefs file--try deleting it");
             }
@@ -210,7 +215,7 @@ namespace WinDX.UI
                 XmlNode n2 = n.SelectSingleNode("VALUE");
                 val = n2.InnerText;
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 Console.WriteLine("Corrupted prefs file--try deleting it");
             }
@@ -250,7 +255,7 @@ namespace WinDX.UI
                 n2 = n.SelectSingleNode("TYPE");
                 typeS = n2.InnerText;
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 Console.WriteLine("Corrupted prefs file--try deleting it");
             }
@@ -294,6 +299,31 @@ namespace WinDX.UI
             return true;
         }
 
+        /// <summary>
+        /// Add a preference value to the list of values all ready existing.
+        /// </summary>
+        /// <param name="prefName"></param>
+        /// <param name="value"></param>
+        /// <param name="persist"></param>
+        /// <returns></returns>
+        public bool AddListPref(String prefName, String value) { return AddListPref(prefName, value, true); }
+        public bool AddListPref(String prefName, String value, bool persist)
+        {
+            String curPrefVal;
+            if (GetPref(prefName, out curPrefVal))
+            {
+                List<String> valueL = Utils.StringTokenizer(curPrefVal, "|", null);
+                valueL.Add(value);
+                String newval = "";
+                for (int i = 0; i < valueL.Count - 1; i++)
+                    newval += valueL[i] + "|";
+                newval += valueL[valueL.Count - 1];
+                return SetPref(prefName, newval, persist);
+            }
+            else
+                return SetPref(prefName, value, persist);
+        }
+
         public bool SetPref(String prefName, String value, bool persist)
         {
             if (prefs == null)
@@ -321,7 +351,7 @@ namespace WinDX.UI
                         elem.AppendChild(val);
                         root.ReplaceChild(elem, n);
                     }
-                    catch (XmlException e)
+                    catch (XmlException)
                     {
                         return false;
                     }
@@ -398,7 +428,7 @@ namespace WinDX.UI
                         elem.AppendChild(tp);
                         root.ReplaceChild(elem, n);
                     }
-                    catch (XmlException e)
+                    catch (XmlException)
                     {
                         return false;
                     }
@@ -453,12 +483,12 @@ namespace WinDX.UI
                     elem.AppendChild(val);
                     root.AppendChild(elem);
                 }
-                catch (XmlException e)
+                catch (XmlException)
                 {
                     return false;
                 }
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 return false;
             }
@@ -475,6 +505,10 @@ namespace WinDX.UI
         /// <param name="value"></param>
         /// <returns></returns>
         public bool SetDefault(String prefName, PrefType type, String value)
+        {
+            return SetDefault(prefName, type, value, false);
+        }
+        public bool SetDefault(String prefName, PrefType type, String value, bool persistent)
         {
             if (prefs == null)
                 return false;
@@ -506,7 +540,10 @@ namespace WinDX.UI
                 {
                     XmlElement elem = prefs.CreateElement("DXUIPREF");
                     elem.SetAttribute("Name", prefName);
-                    elem.SetAttribute("Persistent", "false");
+                    if(persistent)
+                        elem.SetAttribute("Persistent", "true");
+                    else
+                        elem.SetAttribute("Persistent", "false");
                     XmlElement val = prefs.CreateElement("VALUE");
                     val.InnerText = value;
                     elem.AppendChild(val);

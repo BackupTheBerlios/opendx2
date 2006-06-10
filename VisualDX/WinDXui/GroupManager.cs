@@ -94,7 +94,7 @@ namespace WinDX.UI
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        GroupRecord getGroup(String name)
+        public GroupRecord getGroup(String name)
         {
             return groups[name];
         }

@@ -10,6 +10,11 @@ namespace WinDX.UI
 {
     public partial class Interactor : UserControl
     {
+        public enum Status {
+            InteractorSelected = 1,
+            InteractorDeselected = 2
+        };
+
         public Interactor()
         {
             InitializeComponent();
@@ -23,5 +28,6 @@ namespace WinDX.UI
         {
             throw new Exception("Not Yet Implemented");
         }
+
     }
 }

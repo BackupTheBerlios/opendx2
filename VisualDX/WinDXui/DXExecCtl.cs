@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Diagnostics;
 
 namespace WinDX.UI
 {
@@ -23,9 +24,64 @@ namespace WinDX.UI
         { throw new Exception("Not implemented"); }
 
         void beginSingleExecution(bool update_macros)
-        { throw new Exception("Not implemented"); }
+        {
+            DXApplication.theDXApplication.thisServer.notifyClients(DXApplication.MsgExecute);
+            if (update_macros && inExecOnChange() && !isExecOnChangeSuspended())
+                suspendExecOnChange();
+
+            DXApplication.theDXApplication.clearErrorList();
+
+            if (update_macros)
+                updateMacros();
+
+            isCurrentlyExecuting = true;
+
+            DXApplication.theDXApplication.executingCmd.execute();
+        }
         void endLastExecution(bool resume)
-        { throw new Exception("Not implemented"); }
+        {
+            isCurrentlyExecuting = false;
+            SequencerNode sequencer = DXApplication.theDXApplication.network.sequencer;
+            Symbol msg = Symbol.zero;
+
+            if (vcrIsExecuting)
+            {
+                if (sequencer.isStepMode())
+                    vcrIsExecuting = false;
+            }
+
+            if ((resume || resumeExecOnChangeAfterExecution) &&
+                (isExecOnChangeSuspended()))
+            {
+                resumeExecOnChange();
+            }
+            else if (inExecOnChange() && !isExecOnChangeSuspended())
+            {
+                if (hwExecuting <= 0)
+                    msg = DXApplication.MsgStandBy;
+            }
+
+            // If a request to exit ExecOnChange mode was requested during an
+            // execution, then do it now.
+            if (endExecOnChangePending)
+            {
+                endExecOnChangePending = false;
+                endExecOnChange();
+                msg = Symbol.zero;
+            }
+
+            resumeExecOnChangeAfterExecution = false;
+
+            // Set activation of execution dependent commands.
+            DXApplication.theDXApplication.notExecutingCmd.execute();
+
+            // Indicate the nodes that had errors.
+            // FIXME: only do this if there are errors.
+            DXApplication.theDXApplication.refreshErrorIndicators();
+
+            if (msg != Symbol.zero)
+                DXApplication.theDXApplication.thisServer.notifyClients(msg);
+        }
 
         bool endExecOnChangePending;
         #endregion
@@ -52,14 +108,68 @@ namespace WinDX.UI
         //
         // Constructor:
         //
-        DXExecCtl() { throw new Exception("Not implemented"); }
+        public DXExecCtl()
+        {
+            forceNetworkResend = true;
+            forceParameterResend = true;
+            execOnChange = false;
+            execOnChangeSuspensions = 0;
+            isCurrentlyExecuting = false;
+            vcrIsExecuting = false;
+            resumeExecOnChangeAfterExecution = false;
+            endExecOnChangePending = false;
+        }
 
 
         //
         // Enter/leave execute on change mode.
         //
         public void newConnection()
-        { throw new Exception("Not implemented"); }
+        {
+            DXPacketIF p = DXApplication.theDXApplication.getPacketIF();
+            Debug.Assert(p != null);
+            p.setHandler(PacketIF.PacketType.INTERRUPT,
+                DXExecCtl.ExecComplete,
+                DXApplication.theDXApplication.getExecCtl(),
+                "stop");
+
+            // highlighting handlers for HW rendering
+            hwExecuting = 0;
+            hwBusy = false;
+            p.setHandler(PacketIF.PacketType.INFORMATION,
+                DXExecCtl.HWBeginMessage,
+                this, "HW:  begin");
+
+            p.setHandler(PacketIF.PacketType.INFORMATION,
+                DXExecCtl.HWEndMessage,
+                this, "HW:  end");
+
+            p.setHandler(PacketIF.PacketType.INFORMATION,
+                DXExecCtl.BGBeginMessage,
+                this, "BG:  begin");
+
+            p.setHandler(PacketIF.PacketType.INFORMATION,
+                DXExecCtl.BGEndMessage,
+                this, "BG:  end");
+
+            SequencerNode sequencer = DXApplication.theDXApplication.network.sequencer;
+            if (sequencer != null)
+                sequencer.Transmitted = false;
+
+            if (inExecOnChange())
+            {
+                updateMacros(true);
+                resumeExecOnChange();
+            }
+            execOnChange = false;
+            endLastExecution(false);
+
+            forceNetworkResend = true;
+            forceParameterResend = true;
+            execOnChangeSuspensions = 0;
+            isCurrentlyExecuting = false;
+            vcrIsExecuting = false;
+        }
         public void suspendExecOnChange()
         { throw new Exception("Not implemented"); }
 
@@ -82,11 +192,68 @@ namespace WinDX.UI
         public void enableExecOnChange()
         { throw new Exception("Not implemented"); }
 
+        public void updateMacros()
+        { updateMacros(false); }
         public void updateMacros(bool force)
-        { throw new Exception("Not implemented"); }
+        {
+            DXPacketIF p = DXApplication.theDXApplication.getPacketIF();
+            if (p == null)
+                return;
+
+            bool forcenet = force || forceNetworkResend;
+            bool forceparam = force || forceParameterResend;
+
+            bool resume = false;
+
+            if (inExecOnChange() && !isExecOnChangeSuspended())
+            {
+                suspendExecOnChange();
+                resume = true;
+            }
+
+            forceNetworkResend = false;
+            forceParameterResend = false;
+
+            ProcessGroupManager pmgr = (ProcessGroupManager)
+                DXApplication.theDXApplication.network.getGroupManagers()[ProcessGroupManager.ProcessGroup];
+
+            if (pmgr != null && pmgr.IsDirty)
+                pmgr.sendAssignment(ProcessGroupManager.Function.ATTACH);
+
+            foreach (Network n in DXApplication.theDXApplication.macroList)
+            {
+                bool dirty = n.IsDirty;
+                if (forcenet || dirty)
+                    n.sendNetwork();
+                if (forceparam || dirty)
+                    n.sendValues(forceparam);
+            }
+
+            Network n1 = DXApplication.theDXApplication.network;
+            if (forcenet || n1.IsDirty)
+                n1.sendNetwork();
+            if (forceparam || n1.IsDirty)
+                n1.sendValues(forceparam);
+
+            SequencerNode sequencer = n1.sequencer;
+            if (sequencer != null && (force || !sequencer.Transmitted))
+                vcrTransmit();
+
+            if (resume)
+                resumeExecOnChange();
+        }
 
         public void executeOnce()
-        { throw new Exception("Not implemented"); }
+        {
+            DXPacketIF p = DXApplication.theDXApplication.getPacketIF();
+            if (p == null)
+                return;
+
+            beginSingleExecution(true);
+            String s = DXApplication.theDXApplication.network.NameString;
+            s += "();\n";
+            p.send(PacketIF.PacketType.FOREGROUND, s, DXExecCtl.ExecComplete, null);
+        }
 
 
         public bool inExecOnChange()
@@ -115,7 +282,37 @@ namespace WinDX.UI
         // Will take you out of execute on change if in it, and
         // terminate the current execution.
         public void terminateExecution()
-        { throw new Exception("Not implemented"); }
+        {
+            if (!isCurrentlyExecuting && !execOnChange)
+                return;
+
+            if (vcrIsExecuting)
+            {
+                vcrIsExecuting = false;
+                vcrCommand(SequencerDirection.Pause, false);
+            }
+
+            Symbol msg;
+            DXPacketIF p = DXApplication.theDXApplication.getPacketIF();
+            if (p == null)
+            {
+                msg = DXApplication.MsgExecuteDone;
+                DXApplication.theDXApplication.notExecutingCmd.execute();
+            }
+            else
+            {
+                msg = Symbol.zero;
+                p.send(PacketIF.PacketType.INTERRUPT);
+                p.send(PacketIF.PacketType.FOREGROUND, "Executive(\"nop\");",
+                    DXExecCtl.ExecComplete, null);
+                p.sendImmediate("sync");
+                DXApplication.theDXApplication.executeOnChangeCmd.activate();
+            }
+            execOnChange = false;
+            isCurrentlyExecuting = false;
+            if (msg != Symbol.zero)
+                DXApplication.theDXApplication.thisServer.notifyClients(msg);
+        }
         public void updateMacro(Network n)
         { throw new Exception("Not implemented"); }
 
@@ -124,7 +321,17 @@ namespace WinDX.UI
         // after a reset.
         //
         public void forceFullResend()
-        { throw new Exception("Not implemented"); }
+        {
+            forceNetworkResend = true;
+            forceParameterResend = true;
+            GroupManager pmgr =
+                DXApplication.theDXApplication.network.getGroupManagers()[ProcessGroupManager.ProcessGroup];
+            if (pmgr != null) pmgr.setDirty();
+
+            SequencerNode sequencer = DXApplication.theDXApplication.network.sequencer;
+            if (sequencer != null)
+                sequencer.Transmitted = false;
+        }
 
 
         #endregion

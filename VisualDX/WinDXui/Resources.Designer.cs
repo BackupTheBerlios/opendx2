@@ -152,10 +152,64 @@ namespace WinDX.UI {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to 3.
+        /// </summary>
+        internal static string NETFILE_MAJOR_VERSION {
+            get {
+                return ResourceManager.GetString("NETFILE_MAJOR_VERSION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.
+        /// </summary>
+        internal static string NETFILE_MICRO_VERSION {
+            get {
+                return ResourceManager.GetString("NETFILE_MICRO_VERSION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2.
+        /// </summary>
+        internal static string NETFILE_MINOR_VERSION {
+            get {
+                return ResourceManager.GetString("NETFILE_MINOR_VERSION", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap OpenDX_Splash {
             get {
                 object obj = ResourceManager.GetObject("OpenDX_Splash", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2.
+        /// </summary>
+        internal static string PIF_MAJOR_VERSION {
+            get {
+                return ResourceManager.GetString("PIF_MAJOR_VERSION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.
+        /// </summary>
+        internal static string PIF_MICRO_VERSION {
+            get {
+                return ResourceManager.GetString("PIF_MICRO_VERSION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.
+        /// </summary>
+        internal static string PIF_MINOR_VERSION {
+            get {
+                return ResourceManager.GetString("PIF_MINOR_VERSION", resourceCulture);
             }
         }
         

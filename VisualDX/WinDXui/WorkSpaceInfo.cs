@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace WinDX.UI
 {
@@ -62,7 +63,28 @@ namespace WinDX.UI
 
         public bool parseComment(String comment, String filename, int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            int w, h;
+
+            if (grid.parseComment(comment, filename, lineno))
+                return true;
+
+            if (!comment.StartsWith(" workspace:"))
+                return false;
+
+            Regex regex = new Regex(@" workspace: width = (\d+), height = (\d+)");
+            Match m = regex.Match(comment);
+            if (!m.Success)
+                return false;
+
+            w = Int32.Parse(m.Groups[1].ToString());
+            h = Int32.Parse(m.Groups[2].ToString());
+
+            if (w > MIN_WIDTH)
+                this.width = w;
+            if (h > MIN_HEIGHT)
+                this.height = h;
+
+            return true;
         }
 
         public bool isGridActive() { return grid.Active; }

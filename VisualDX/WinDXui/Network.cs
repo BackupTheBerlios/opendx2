@@ -4,6 +4,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace WinDX.UI
 {
@@ -22,8 +24,9 @@ namespace WinDX.UI
             public static Dictionary<String, Definition> redefined_modules;
             public static int parse_mode;
             public static bool main_macro_parsed;
+            public static int lineno;
 
-            ParseState() { }
+            internal ParseState() { }
             public void initializeForParse(Network n, int mode, 
                 String filename) 
             {
@@ -38,6 +41,7 @@ namespace WinDX.UI
                 node_error_occured = false;
                 stop_parsing = false;
                 control_panel = null;
+                lineno = 0;
 
                 if (mode == _PARSE_NETWORK)
                 {
@@ -113,7 +117,7 @@ namespace WinDX.UI
 
         private static Decorator lastObjectParsed;
 
-        private ParseState parseState;
+        private ParseState parseState = new ParseState();
         private bool fileHadGetOrSetNodes;
         private static List<TransmitterNode> RenameTransmitterList;
 
@@ -312,7 +316,22 @@ namespace WinDX.UI
         /// Return true if the network is different from that on disk, and the
         /// application allows saving of .net and .cfg files.
         /// </summary>
-        public bool saveToFileRequired { get { throw new Exception("Not Yet Implemented"); } }
+        public bool SaveToFileRequired
+        {
+            get
+            {
+                int count = NodeCount + decoratorList.Count;
+                foreach (KeyValuePair<String, GroupManager> kvm in groupManagers)
+                {
+                    count += kvm.Value.GroupCount;
+                }
+
+                return IsFileDirty && (count > 0) &&
+                    DXApplication.theDXApplication.appAllowsSavingNetFile(this) &&
+                    DXApplication.theDXApplication.appAllowsSavingCfgFile() &&
+                    !netFileWasEncoded;
+            }
+        }
 
         #endregion
 
@@ -330,10 +349,10 @@ namespace WinDX.UI
 
         #region Protected Methods
 
-        protected bool parse(String filename) { return false;  }
+        protected bool parse(StreamReader file) { return true;  }
         protected bool cfgParseComment(String name, String file, int lineno) 
         { return false; }
-        protected void resetImageCount() { throw new Exception("Not Yet Implemented"); }
+        protected void resetImageCount() { imageCount = 0; }
 
         /// <summary>
         /// Deletes a given panel from the panel list.
@@ -499,82 +518,411 @@ namespace WinDX.UI
             DXApplication.theDXApplication.notExecutingCmd.removeAutoCmd(newCmd);
         }
 
-        // Methods for extern "C" functions reference by yacc.
-        private void parseComment(String comment)
-        {
-            throw new Exception("Not Yet Implemented");
-        }
-        private void parseFunctionID(String name)
-        {
-            throw new Exception("Not Yet Implemented");
-        }
-        private void parseArgument(String name, bool isVarname)
-        {
-            throw new Exception("Not Yet Implemented");
-        }
-        private void parseLValue(String name)
-        {
-            throw new Exception("Not Yet Implemented");
-        }
-        private void parseRValue(String name)
-        {
-            throw new Exception("Not Yet Implemented");
-        }
-        private void parseStringAttribute(String name, String value)
-        {
-            throw new Exception("Not Yet Implemented");
-        }
-        private void parseIntAttribute(String name, String value)
-        {
-            throw new Exception("Not Yet Implemented");
-        }
-        private void parseEndOfMacroDefinition()
-        {
-            throw new Exception("Not Yet Implemented");
-        }
-
         // Parse all .net file comments.
         private void parseVersionComment(String comment, bool netfile)
         {
-            throw new Exception("Not Yet Implemented");
+            int net_major = 0, net_minor = 0, net_micro = 0;
+            Regex regex = new Regex(@" version: (\d+).(\d+).(\d+) \(format\), (\d+).(\d+).(\d+)");
+            Match m = regex.Match(comment);
+
+            if (netfile)
+            {
+                if (!m.Success)
+                {
+                    Regex regex2 = new Regex(@" version: (\d+).(\d+).(\d+)");
+                    Match m2 = regex2.Match(comment);
+                    if (!m2.Success)
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Invalid version comment at {0}:{1}", ParseState.parse_file,
+                            ParseState.lineno);
+                        ParseState.error_occured = true;
+                        return;
+                    }
+                    net_major = Int32.Parse(m.Groups[1].ToString());
+                    net_minor = Int32.Parse(m.Groups[2].ToString());
+                    net_micro = Int32.Parse(m.Groups[3].ToString());
+                }
+                else
+                {
+                    net_major = Int32.Parse(m.Groups[1].ToString());
+                    net_minor = Int32.Parse(m.Groups[2].ToString());
+                    net_micro = Int32.Parse(m.Groups[3].ToString());
+                    dxVersion.major = Int16.Parse(m.Groups[4].ToString());
+                    dxVersion.minor = Int16.Parse(m.Groups[5].ToString());
+                    dxVersion.micro = Int16.Parse(m.Groups[6].ToString());
+                }
+                netVersion.major = (short)net_major;
+                netVersion.minor = (short)net_minor;
+                netVersion.micro = (short)net_micro;
+            }
+            else
+            {
+                if (!m.Success)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Invalid version comment at {0}:{1}", ParseState.parse_file,
+                        ParseState.lineno);
+                    ParseState.error_occured = true;
+                    return;
+                }
+            }
+
+            if ((net_major > 2) && 
+                (net_major > Int32.Parse(global::WinDX.UI.Resources.NETFILE_MAJOR_VERSION)))
+            {
+                String buf;
+                if (netfile)
+                {
+                    if (IsMacro)
+                    {
+                        MacroDefinition md = getDefinition();
+                        buf = "The macro " + md.NameString;
+                    }
+                    else
+                        buf = "This visual program";
+                }
+                else
+                    buf = "This configuration file";
+                ErrorDialog ed = new ErrorDialog();
+                buf += "was saved in an incompatible format by a release of " + 
+                    DXApplication.theDXApplication.getInformalName() + " (version " +
+                    dxVersion.major.ToString() + "." + dxVersion.minor.ToString() + "." +
+                    dxVersion.micro.ToString() + ") that is more recent than this version (" + 
+                    DXApplication.theDXApplication.getInformalName() +
+                    global::WinDX.UI.Resources.MAJOR_VERSION + "." +
+                    global ::WinDX.UI.Resources.MINOR_VERSION + "." +
+                    global::WinDX.UI.Resources.MICRO_VERSION + ")" +
+                    ". Contact your support center if you would like to obtain a version " +
+                    "of " + DXApplication.theDXApplication.getInformalName() + "that can support" +
+                    " this visual program.";
+
+                ed.post(buf);
+            }
         }
+
         private bool netParseComments(String comment, String file, int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            // if .net node comment...
+            // This signifies the beginning of the node comments
+            if (comment.StartsWith(" node"))
+            {
+                netParseNodeComment(comment);
+            }
+            else if (comment.StartsWith(" version"))
+            {
+                netParseVersionComment(comment);
+            }
+            else if (comment.StartsWith(" MODULE"))
+            {
+                netParseMODULEComment(comment);
+            }
+            else if (comment.StartsWith(" CATEGORY"))
+            {
+                netParseCATEGORYComment(comment);
+            }
+            else if (comment.StartsWith(" pgroup assignment"))
+            {
+                Dictionary<String, GroupManager> dict = groupManagers;
+                GroupManager gmgr;
+                if (groupManagers.TryGetValue(ProcessGroupManager.ProcessGroup, out gmgr))
+                    gmgr.parseComment(comment, ParseState.parse_file, ParseState.lineno, this);
+            }
+            else if (comment.StartsWith(" page assignment"))
+            {
+                GroupManager gmgr;
+                if (groupManagers.TryGetValue(PageGroupManager.PageGroup, out gmgr))
+                    gmgr.parseComment(comment, ParseState.parse_file, ParseState.lineno, this);
+            }
+            else if (comment.StartsWith(" DESCRIPTION"))
+            {
+                netParseDESCRIPTIONComment(comment);
+            }
+            else if (comment.StartsWith(" comment: "))
+            {
+                netParseCommentComment(comment);
+            }
+            else if (comment.StartsWith(" macro "))
+            {
+                netParseMacroComment(comment);
+            }
+            else if (comment == " network: end of macro body")
+            {
+                ParseState.main_macro_parsed = true;
+                parseState.parse_state = _PARSED_NONE;
+            }
+            else if (comment.StartsWith(" decorator") ||
+      comment.StartsWith(" annotation") ||
+      comment.StartsWith(" resource"))
+            {
+                if (!parseDecoratorComment(comment, ParseState.parse_file,
+                    ParseState.lineno))
+                    ParseState.error_occured = true;
+                else
+                    this.parseState.parse_sub_state = _SUB_PARSED_DECORATOR;
+            }
+            else if (comment.Contains(" group:") &&
+           this.parseState.parse_sub_state == _SUB_PARSED_DECORATOR)
+            {
+                if (!parseDecoratorComment(comment,
+                    ParseState.parse_file, ParseState.lineno))
+                    ParseState.error_occured = true;
+            }
+            else if (this.parseState.parse_state == _PARSED_NODE &&
+                (parseState.parse_sub_state == _SUB_PARSED_NODE) &&
+                comment.Contains(" group:") &&
+                (parseState.node_error_occured == false))
+            {
+                if (!parseState.node.netParseComment(comment, ParseState.parse_file, ParseState.lineno))
+                {
+                    WarningDialog wd = new WarningDialog();
+                    wd.post("Unrecognized comment at line {0} of file {1} (ignoring)",
+                        lineno, file);
+                }
+            }
+            else if (comment.StartsWith(" workspace"))
+            {
+                if (!workSpaceInfo.parseComment(comment, ParseState.parse_file,
+                    ParseState.lineno))
+                {
+                    ParseState.error_occured = true;
+                }
+                parseState.parse_state = _PARSED_WORKSPACE;
+            }
+            else if (parseState.parse_state == _PARSED_NODE &&
+           parseState.node_error_occured == false)
+            {
+                if (!parseState.node.netParseComment(comment,
+                    ParseState.parse_file, ParseState.lineno))
+                {
+                    WarningDialog wd = new WarningDialog();
+                    wd.post("Unrecognized comment at line {0} of file {1} (ignoring)",
+                        lineno, file);
+                }
+                else
+                {
+                    parseState.parse_sub_state = _SUB_PARSED_NODE;
+                }
+            }
+            else if (parseState.parse_state == _PARSED_WORKSPACE)
+            {
+                if (!workSpaceInfo.parseComment(comment, ParseState.parse_file, ParseState.lineno))
+                {
+                    WarningDialog wd = new WarningDialog();
+                    wd.post("Unrecognized comment at line {0} of file {1} (ignoring)",
+                        lineno, file);
+                }
+            }
+            else if (parseState.parse_state == _PARSED_NODE)
+            {
+                WarningDialog wd = new WarningDialog();
+                wd.post("Unrecognized comment at line {0} of file {1} (ignoring)",
+                    lineno, file);
+            }
+
+            return ParseState.error_occured == false;
         }
+
         private void netParseMacroComment(String comment)
         {
             throw new Exception("Not Yet Implemented");
         }
         private void netParseMODULEComment(String comment)
         {
-            throw new Exception("Not Yet Implemented");
+            Regex regex = new Regex(@" MODULE (.*)");
+            Match m = regex.Match(comment);
+
+            if (!m.Success)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Invalid MODULE comment at {0}:{1}",
+                    ParseState.parse_file, ParseState.lineno);
+                ParseState.error_occured = true;
+                return;
+            }
+
+            name = SymbolManager.theSymbolManager.registerSymbol(m.Groups[1].ToString());
+            if (prefix != null)
+                prefix = null;
         }
         private void netParseVersionComment(String comment)
         {
-            throw new Exception("Not Yet Implemented");
+            parseVersionComment(comment, true);
         }
         private void netParseCATEGORYComment(String comment)
         {
-            throw new Exception("Not Yet Implemented");
+            Regex regex = new Regex(@" CATEGORY (.*)");
+            Match m = regex.Match(comment);
+
+            if (!m.Success)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Invalid CATEGORY comment at {0}:{1}",
+                    ParseState.parse_file, ParseState.lineno);
+                ParseState.error_occured = true;
+                return;
+            }
+            setCategory(m.Groups[1].ToString(), false);
         }
         private void netParseDESCRIPTIONComment(String comment)
         {
-            throw new Exception("Not Yet Implemented");
+            Regex regex = new Regex(@" DESCRIPTION (.*)");
+            Match m = regex.Match(comment);
+
+            if (!m.Success)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Invalid DESCRIPTION comment at {0}:{1}",
+                    ParseState.parse_file, ParseState.lineno);
+                ParseState.error_occured = true;
+                return;
+            }
+            setDescription(m.Groups[1].ToString(), false);
         }
         private void netParseCommentComment(String comment)
         {
-            throw new Exception("Not Yet Implemented");
+            if (ParseState.stop_parsing)
+                return;
+
+            this.comment = comment.Substring(10);
+            setNetworkComment(this.comment);
         }
         private void netParseNodeComment(String comment)
         {
-            throw new Exception("Not Yet Implemented");
+            if (!comment.StartsWith(" node "))
+                return;
+
+            if (parseState.node != null)
+                addNode(parseState.node);
+
+            parseState.node = null;
+            parseState.node_error_occured = false;
+
+            Regex regex = new Regex(@" node (.*)\[(\d+)\]:");
+            Match m = regex.Match(comment);
+            if (!m.Success)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Can't parse 'node' comment (file {0}, line {1})",
+                    ParseState.parse_file, ParseState.lineno);
+                parseState.node_error_occured = true;
+                ParseState.error_occured = true;
+                return;
+            }
+
+            NodeDefinition nd = null;
+            Symbol s = SymbolManager.theSymbolManager.registerSymbol(m.Groups[1].ToString());
+            if (!NodeDefinition.theNodeDefinitionDictionary.TryGetValue(s, out nd))
+            {
+                ParseState.undefined_modules.Add(m.Groups[1].ToString(), null);
+                parseState.node_error_occured = true;
+                ParseState.error_occured = true;
+                return;
+            }
+            parseState.node = nd.createNewNode(this, Int32.Parse(m.Groups[2].ToString()));
+            if (parseState.node == null)
+            {
+                ParseState.error_occured = true;
+                parseState.node_error_occured = true;
+                return;
+            }
+
+            // Determine if the node definition has changed.
+            Regex r2 = new Regex(@"inputs = (\d+)");
+            Match m2 = r2.Match(comment);
+            if (m2.Success)
+            {
+                int inputs = Int32.Parse(m2.Groups[1].ToString());
+                if (nd.IsUserTool && !nd.IsInputRepeatable && (inputs != nd.InputCount))
+                {
+                    ParseState.redefined_modules.Add(nd.NameString, null);
+                }
+            }
+            r2 = new Regex(@"outputs = (\d+)");
+            m2 = r2.Match(comment);
+            if (m2.Success)
+            {
+                int outputs = Int32.Parse(m2.Groups[1].ToString());
+                if (nd.IsUserTool && nd.IsOutputRepeatable && (outputs != nd.OutputCount))
+                {
+                    ParseState.redefined_modules.Add(nd.NameString, null);
+                }
+            }
+            Symbol sym = nd.NameSymbol;
+            if ((sym == NDAllocatorDictionary.GetNodeNameSymbol) ||
+                (sym == NDAllocatorDictionary.SetNodeNameSymbol))
+                fileHadGetOrSetNodes = true;
+
+            parseState.input_index = 0;
+            parseState.output_index = 0;
+
+            // 'node' comment parsed successfully: set the parse state.
+            parseState.parse_state = _PARSED_NODE;
+
+            // Now ask the node to parse the rest of the information.
+            if (!parseState.node.netParseComment(comment,
+                ParseState.parse_file, ParseState.lineno))
+            {
+                WarningDialog wd = new WarningDialog();
+                wd.post("Unrecognized comment at line {0} of file {1} (ignoring)",
+                    ParseState.lineno, ParseState.parse_file);
+            }
         }
 
         // Parse all .cfg file comments.
         private bool cfgParseComments(String comment, String file, int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            if (comment.StartsWith(" interactor"))
+                cfgParseInteractorComment(comment);
+            else if (comment.StartsWith(" panel["))
+                cfgParsePanelComment(comment);
+            else if (comment.StartsWith(" version"))
+                cfgParseVersionComment(comment);
+            else if (getNetMajorVersion() < 3 && comment.StartsWith(" vcr"))
+            {
+                Node vcr = sequencer;
+                if (vcr != null && vcr.cfgParseComment(comment, file, lineno))
+                    parseState.parse_state = _PARSED_VCR;
+                else
+                    ParseState.error_occured = true;
+            }
+            else if (parseState.parse_state == _PARSED_NODE ||
+       parseState.parse_state == _PARSED_INTERACTOR)
+            {
+                if (parseState.node_error_occured == false &&
+                    !parseState.node.cfgParseComment(comment, file, lineno))
+                {
+                    WarningDialog wd = new WarningDialog();
+                    wd.post("Unrecognized comment at line {0} of file {1} (ignoring)",
+                        lineno, file);
+                }
+            }
+            else if (parseState.parse_state == _PARSED_PANEL)
+            {
+                Debug.Assert(parseState.control_panel != null);
+                if (!parseState.control_panel.cfgParseComment(comment, file, lineno))
+                {
+                    WarningDialog wd = new WarningDialog();
+                    wd.post("Unrecognized comment at line {0} of file {1} (ignoring)",
+                        lineno, file);
+                }
+            }
+            else if (parseState.parse_state == _PARSED_NETWORK_CFG)
+            {
+                if (!cfgParseComment(comment, file, lineno))
+                {
+                    WarningDialog wd = new WarningDialog();
+                    wd.post("Unrecognized comment at line {0} of file {1} (ignoring)",
+                        lineno, file);
+                }
+            }
+            // The 'time:' comment (in the .cfg file) signifies the beginning of the application's cfg comments.
+            else if (comment.StartsWith(" time:"))
+            {
+                parseState.parse_state = _PARSED_NETWORK_CFG;
+            }
+
+            return (ParseState.error_occured == false);
         }
         private void cfgParsePanelComment(String comment)
         {
@@ -590,12 +938,32 @@ namespace WinDX.UI
         }
         private void cfgParseVersionComment(String comment)
         {
-            throw new Exception("Not Yet Implemented");
+            parseVersionComment(comment, false);
         }
 
         private int visitNodes(Node n)
         {
-            throw new Exception("Not Yet Implemented");
+            for (int i = 1; i <= n.InputCount; i++)
+            {
+                if (n.isInputConnected(i))
+                {
+                    // Visit each upstream node. 
+                    // Note, we don't need to sort the arcs to get a deterministic 
+                    // sort, because we are going upstream instead of downstream
+                    // (i.e. there is one arc per input).
+                    foreach (Ark a in n.getInputArks(i))
+                    {
+                        int paramInd;
+                        Node n2 = a.getSourceNode(out paramInd);
+                        if (!n2.IsMarked)
+                            visitNodes(n2);
+                    }
+                }
+            }
+            n.setMarked();
+            nodeList.Add(n);
+
+            return 0;
         }
         private bool markAndCheckForCycle(Node srcNode, Node dstNode)
         {
@@ -999,7 +1367,14 @@ namespace WinDX.UI
         public Symbol getNameSymbol() { return name; }
         public String getPrefix()
         {
-            throw new Exception("Not Yet Implemented");
+            if (prefix == null)
+            {
+                Debug.Assert(name != Symbol.zero);
+                String s = SymbolManager.theSymbolManager.getSymbolString(name);
+                Debug.Assert(s != null);
+                prefix = s + "_";
+            }
+            return prefix;
         }
         public String getNetworkComment()
         {
@@ -1034,7 +1409,240 @@ namespace WinDX.UI
         public virtual bool printHeader(StreamWriter sw, PrintType dest,
             PacketIF.PacketIFCallback echoCallback, Object echoClientData)
         {
-            throw new Exception("Not Yet Implemented");
+            DXPacketIF pif = DXApplication.theDXApplication.getPacketIF();
+            String s;
+            if (dest == PrintType.PrintFile || dest == PrintType.PrintCut || dest == PrintType.PrintCPBuffer)
+            {
+                s = "//\n";
+                String datePatt = @"ddd MMM dd HH:mm:ss yyyy";
+                s += "// time: " + System.DateTime.Now.ToString(datePatt);
+                s += "//\n";
+                s += String.Format("// version: {0}.{1}.{2} (format), {3}.{4}.{5} (DX)\n//\n",
+                global::WinDX.UI.Resources.NETFILE_MAJOR_VERSION,
+                global::WinDX.UI.Resources.NETFILE_MINOR_VERSION,
+                global::WinDX.UI.Resources.NETFILE_MICRO_VERSION,
+                global::WinDX.UI.Resources.MAJOR_VERSION,
+                global::WinDX.UI.Resources.MINOR_VERSION,
+                global::WinDX.UI.Resources.MICRO_VERSION);
+
+                s += "//\n";
+                sw.Write(s);
+                if (echoCallback != null)
+                    echoCallback(echoClientData, s);
+
+                // Print the referenced
+                bool inline_defined = false;
+
+                if (dest == PrintType.PrintFile &&
+                    !printMacroReferences(sw, false, echoCallback, echoClientData))
+                    return false;
+
+                s = "";
+
+                if (IsMacro)
+                    s += "// Begin MDF\n";
+
+                s += "// MODULE " + SymbolManager.theSymbolManager.getSymbolString(name) + "\n";
+                if (category != Symbol.zero)
+                    s += "// CATEGORY " + (getCategoryString() == null ? " " : getCategoryString()) + "\n";
+                if (description != null && description.Length > 0)
+                    s += "// DESCRIPTION " + description + "\n";
+
+                sw.Write(s);
+                if (echoCallback != null)
+                    echoCallback(echoClientData, s);
+
+                s = "";
+
+                if (IsMacro)
+                {
+                    for (int i = 1; i < getInputCount(); i++)
+                    {
+                        ParameterDefinition pd = getInputDefinition(i);
+                        String[] strings = pd.getTypeStrings();
+                        String types = "";
+                        for (int j = 0; j < strings.Length; j++)
+                        {
+                            types += strings[j] + " or ";
+                        }
+                        types = types.Substring(0, types.Length - 4);
+
+                        String visattr;
+                        String dflt = pd.DefaultValue;
+                        if (pd.IsRequired)
+                            dflt = "(none)";
+                        else if (dflt == null || dflt.Length == 0 || dflt == "NULL")
+                            dflt = "(no default)";
+                        if (!pd.IsViewable)
+                            visattr = "[visible:2]";
+                        else
+                        {
+                            if (pd.DefaultVisibility)
+                                visattr = "";
+                            else
+                                visattr = "[visible:0]";
+                        }
+                        s += "// INPUT " + pd.NameString + visattr + "; " + types + "; " +
+                            (dflt != null ? dflt : "(no default)") + "; " +
+                            (pd.Description != null ? pd.Description : " ") + "\n";
+
+                        String[] options = pd.getValueOptions();
+                        if (options != null && options.Length > 0)
+                        {
+                            s += "// OPTIONS";
+                            for (int k = 0; k < options.Length; k++)
+                            {
+                                s += " " + options[k] + " ;";
+                            }
+                            s = s.Substring(0, s.Length - 2);
+                            s += "\n";
+                        }
+                    }
+                    for (int i = 1; i < getOutputCount(); i++)
+                    {
+                        ParameterDefinition pd = getOutputDefinition(i);
+                        {
+                            String[] strings = pd.getTypeStrings();
+                            String types = "";
+                            for (int j = 0; j < strings.Length; j++)
+                            {
+                                types += strings[j] + " or ";
+                            }
+                            types = types.Substring(0, types.Length - 4);
+
+                            String visattr = "";
+                            if (!pd.IsViewable)
+                                visattr = "[visible:2]";
+                            else
+                            {
+                                if (pd.DefaultVisibility)
+                                    visattr = "";
+                                else
+                                    visattr = "[visible:0]";
+                            }
+
+                            s += "// OUTPUT " + pd.NameString + visattr + "; " + types + "; " +
+                                (pd.Description == null ? " " : pd.Description) + "\n";
+                        }
+                    }
+                }
+                s += "// End MDF\n";
+                sw.Write(s);
+                if (echoCallback != null)
+                    echoCallback(echoClientData, s);
+
+                s = "";
+
+                // Print comments
+
+                if (comment != null)
+                {
+                    String compcomment = comment;
+                    if (compcomment.EndsWith("\n"))
+                        compcomment = compcomment.Substring(0, compcomment.Length - 1);
+                    Regex regex = new Regex(@"\n");
+                    compcomment = regex.Replace(compcomment, "\n// comment: ");
+                    s += "//\n// comment: ";
+                    s += compcomment + "\n";
+                }
+
+                sw.Write(s);
+                if (echoCallback != null)
+                    echoCallback(echoClientData, s);
+
+                s = "";
+
+                Symbol psym = SymbolManager.theSymbolManager.getSymbol(ProcessGroupManager.ProcessGroup);
+                foreach (KeyValuePair<String, GroupManager> kvp in this.groupManagers)
+                {
+                    if (psym == kvp.Value.getManagerSymbol())
+                    {
+                        if ((dest == PrintType.PrintExec) || (dest == PrintType.PrintFile))
+                            if (!IsMacro)
+                                if (!kvp.Value.printComment(sw))
+                                    return false;
+                    }
+                    else
+                    {
+                        if (!kvp.Value.printComment(sw))
+                            return false;
+                    }
+                }
+
+                workSpaceInfo.printComments(sw);
+                s = "//\n";
+                sw.Write(s);
+                if (echoCallback != null)
+                    echoCallback(echoClientData, s);
+            }
+
+            s = "macro " + SymbolManager.theSymbolManager.getSymbolString(name) + "(\n";
+
+            if (dest == PrintType.PrintFile || dest == PrintType.PrintCut || dest == PrintType.PrintCPBuffer)
+            {
+                sw.Write(s);
+                if (echoCallback != null)
+                    echoCallback(echoClientData, s);
+            }
+            else
+            {
+                pif.sendBytes(s);
+            }
+            s = "";
+
+            for (int i = 1; IsMacro && i <= getInputCount(); i++)
+            {
+                ParameterDefinition pd = getInputDefinition(i);
+                if (pd.NameSymbol == Symbol.zero)
+                    s += (i == 1 ? " " : ",") + "dummy\n";
+                else if (pd.DefaultDescriptive || pd.IsRequired || pd.DefaultValue == null ||
+                    pd.DefaultValue == "NULL")
+                    s += (i == 1 ? " " : ",") + pd.NameString + "\n";
+                else
+                    s += (i == 1 ? " " : ",") + pd.NameString + " = " + pd.DefaultValue + "\n";
+            }
+            s += ") -> (\n";
+
+            if (dest == PrintType.PrintFile || dest == PrintType.PrintCut || dest == PrintType.PrintCPBuffer)
+            {
+                sw.Write(s);
+                if (echoCallback != null)
+                    echoCallback(echoClientData, s);
+            }
+            else
+            {
+                pif.sendBytes(s);
+            }
+
+            s = "";
+            for (int i = 1; IsMacro && i <= getOutputCount(); i++)
+            {
+                ParameterDefinition pd = getOutputDefinition(i);
+                if (pd.NameSymbol == Symbol.zero)
+                    s += (i == 1 ? " " : ",") + "dummy\n";
+                else
+                    s += (i == 1 ? " " : ",") + pd.NameString + "\n";
+            }
+
+            s += ") {\n";
+            if (dest == PrintType.PrintFile || dest == PrintType.PrintCut || dest == PrintType.PrintCPBuffer)
+            {
+                sw.Write(s);
+                if (echoCallback != null)
+                    echoCallback(echoClientData, s);
+            }
+            else
+            {
+                pif.sendBytes(s);
+            }
+
+            foreach (Node n in nodeList)
+            {
+                if (!n.netPrintBeginningOfMacroNode(sw, dest, prefix,
+                    echoCallback, echoClientData))
+                    return false;
+            }
+            return true;
         }
 
         public virtual bool printBody(StreamWriter sw, PrintType dest)
@@ -1044,7 +1652,40 @@ namespace WinDX.UI
         public virtual bool printBody(StreamWriter sw, PrintType dest,
             PacketIF.PacketIFCallback echoCallback, Object echoClientData)
         {
-            throw new Exception("Not Yet Implemented");
+            String prefix = getPrefix();
+
+            if (editor != null && IsDirty)
+                sortNetwork();
+
+            resetImageCount();
+
+            foreach (Node n in nodeList)
+            {
+                StandIn si = n.getStandIn();
+                if (dest == PrintType.PrintFile ||
+                    dest == PrintType.PrintExec ||
+                    (dest == PrintType.PrintCPBuffer && selectionOwner.nodeIsInInstanceList(n)) ||
+                    (dest == PrintType.PrintCut && si != null && si.IsSelected))
+                {
+                    if (!n.netPrintNode(sw, dest, prefix, echoCallback, echoClientData))
+                        return false;
+                }
+            }
+
+            if (!(dest == PrintType.PrintExec || dest == PrintType.PrintCPBuffer))
+            {
+                foreach (Decorator dec in decoratorList)
+                {
+                    if ((dest == PrintType.PrintFile) ||
+                        (dest == PrintType.PrintCut && dec.IsSelected))
+                    {
+                        if (!dec.printComment(sw))
+                            return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
 
@@ -1055,7 +1696,31 @@ namespace WinDX.UI
         public virtual bool printTrailer(StreamWriter sw, PrintType dest,
             PacketIF.PacketIFCallback echoCallback, Object echoClientData)
         {
-            throw new Exception("Not Yet Implemented");
+            if (dest == PrintType.PrintFile || dest == PrintType.PrintCut || dest == PrintType.PrintCPBuffer)
+            {
+                sw.Write("// network: end of macro body\n");
+            }
+
+            foreach (Node n in nodeList)
+            {
+                if(!n.netPrintEndOfMacroNode(sw, dest, prefix, echoCallback, echoClientData))
+                    return false;
+            }
+
+            String s = "}\n";
+            DXPacketIF pif = DXApplication.theDXApplication.getPacketIF();
+            if (dest == PrintType.PrintFile || dest == PrintType.PrintCut || dest == PrintType.PrintCPBuffer)
+            {
+                sw.Write(s);
+                if (echoCallback == null)
+                    echoCallback(echoClientData, s);
+            }
+            else
+            {
+                Debug.Assert(dest == PrintType.PrintExec);
+                pif.sendBytes(s);
+            }
+            return true;
         }
 
         public virtual bool printValues(StreamWriter sw, PrintType dest)
@@ -1064,12 +1729,43 @@ namespace WinDX.UI
         }
         public virtual bool sendNetwork()
         {
-            throw new Exception("Not Yet Implemented");
+            if (deferrableSendNetwork.isActionDeferred())
+            {
+                deferrableSendNetwork.requestAction(null);
+                return true;
+            }
+
+            DXPacketIF pi = DXApplication.theDXApplication.getPacketIF();
+            if (pi == null)
+                return true;
+
+            PacketIF.PacketIFCallback cb = null;
+            Object cbData = null;
+
+            if (!netFileWasEncoded)
+                cb = pi.getEchoCallback(ref cbData);
+
+            pi.sendMacroStart();
+            if (!printHeader(pi.getStreamWriter(), PrintType.PrintExec, cb, cbData))
+                return false;
+            if (!printBody(pi.getStreamWriter(), PrintType.PrintExec, cb, cbData))
+                return false;
+            if (!printTrailer(pi.getStreamWriter(), PrintType.PrintExec, cb, cbData))
+                return false;
+            pi.sendMacroEnd();
+
+            clearDirty();
+            return true;
         }
         public virtual bool sendValues() { return sendValues(false); }
         public virtual bool sendValues(bool force)
         {
-            throw new Exception("Not Yet Implemented");
+            foreach (Node n in nodeList)
+            {
+                if (!n.sendValues(force))
+                    return false;
+            }
+            return true;
         }
 
 
@@ -1081,11 +1777,23 @@ namespace WinDX.UI
         /// <returns></returns>
         public static String FilenameToNetname(String filename)
         {
-            throw new Exception("Not Yet Implemented");
+            if (filename.EndsWith(".net", true, CultureInfo.InvariantCulture))
+            {
+                return filename;
+            }
+            else
+                filename += ".net";
+            return filename;
         }
         public static String FilenameToCfgname(String filename)
         {
-            throw new Exception("Not Yet Implemented");
+            if (filename.EndsWith(".cfg", true, CultureInfo.InvariantCulture))
+            {
+                return filename;
+            }
+            else
+                filename += ".cfg";
+            return filename;
         }
 
         /// <summary>
@@ -1103,7 +1811,45 @@ namespace WinDX.UI
         public bool openCfgFile(String name, bool openStartup) { return openCfgFile(name, openStartup, true); }
         public bool openCfgFile(String name, bool openStartup, bool send)
         {
-            throw new Exception("Not Yet Implemented");
+            bool ret = true;
+            if (IsMacro)
+                return true;
+
+            String cfgfile = FilenameToCfgname(name);
+
+            FileStream fs = null;
+            try
+            {
+                fs = new FileStream(cfgfile, FileMode.Open);
+            }
+            catch (Exception)
+            {
+
+            }
+            if (fs != null)
+            {
+                clearCfgInformation();
+                parseState.initializeForParse(this, _PARSE_CONFIGURATION, cfgfile);
+                readingNetwork = true;
+                StreamReader sr = new StreamReader(fs);
+                bool stopped_parsing = parse(sr);
+                sr.Close();
+                if (openStartup)
+                    openControlPanel(-1);
+                if (send)
+                    sendValues(false);
+                ret = !stopped_parsing;
+                readingNetwork = false;
+                parseState.cleanupAfterParse();
+            }
+            else
+            {
+                ret = false;
+            }
+            if (fs != null)
+                fs.Close();
+
+            return ret;
         }
         public bool saveCfgFile(String name)
         {
@@ -1126,7 +1872,35 @@ namespace WinDX.UI
         }
         public void sortNetwork()
         {
-            throw new Exception("Not Yet Implemented");
+            if (nodeList.Count <= 1)
+                return;
+
+            List<Node> tmpNodeList = new List<Node>();
+            // Sort the nodes so the visitation is deterministic.
+            NodeNameComparer nnc = new NodeNameComparer();
+            nodeList.Sort(nnc);
+            for (int i = 0; i < nodeList.Count; i++)
+            {
+                tmpNodeList.Add(nodeList[i]);
+                nodeList[i].clearMarked();
+            }
+            nodeList.Clear();
+
+            // Now that we have a copy of the sorted list, visit all the nodes.
+            foreach (Node n in tmpNodeList)
+                if (!n.IsMarked)
+                    visitNodes(n);
+        }
+
+        public class NodeNameComparer : IComparer<Node>
+        {
+            public int Compare(Node x, Node y)
+            {
+                int r = String.Compare(x.NameString, y.NameString);
+                if (r == 0)
+                    r = x.InstanceNumber - y.InstanceNumber;
+                return r;
+            }
         }
 
         public bool checkForCycle(Node srcNode, Node dstNode)
@@ -1139,7 +1913,140 @@ namespace WinDX.UI
         { return readNetwork(netfile, cfgfile, false); }
         public virtual bool readNetwork(String netfile, String cfgfile, bool ignoreUndefinedModules)
         {
-            throw new Exception("Not Yet Implemented");
+            Decorator dec;
+            bool enc;
+
+            Network.ParseState.ignoreUndefinedModules = ignoreUndefinedModules;
+
+            netfile = Network.FilenameToNetname(netfile);
+            FileStream fs = OpenNetworkFile(netfile, out enc);
+            StreamReader sr = new StreamReader(fs);
+
+            // If there is an editor and this net file is encoded, then don't 
+            // allow reading the .net.  Note, to catch all cases, we must also 
+            // not allow creating of Editor's for encoded nets that have already
+            // been read in (i.e. in image mode).  
+            // See DXApplication::newNetworkEditor() and/or EditorWindow::manage().
+            if (getEditor() != null && WasNetFileEncoded)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("This visual program is encoded and is therefore not viewable with the VPE");
+                if (sr != null)
+                    sr.Close();
+                sr = null;
+            }
+
+            if (sr == null)
+            {
+                clear();
+                return false;
+            }
+
+            fileName = netfile;
+
+            readingNetwork = true;
+            prepareForNewNetwork();
+            parseState.initializeForParse(this, _PARSE_NETWORK, netfile);
+            bool parse_terminated = parseAntlr(sr);
+            //bool parse_terminated = parse(sr);
+            completeNewNetwork();
+            readingNetwork = false;
+            sr.Close();
+            CloseNetworkFile(fs, enc);
+            parseState.cleanupAfterParse();
+
+            if (parse_terminated)
+            {
+                clear();
+                return false;
+            }
+
+            // Parse the .cfg file if it exists.
+            if (cfgfile == null || cfgfile == "")
+            {
+                cfgfile = netfile.Substring(0, netfile.LastIndexOf('.'));
+                cfgfile += "CFG";
+            }
+            openCfgFile(cfgfile, false, false);
+
+            if (!DXApplication.theDXApplication.InEditMode &&
+                !DXApplication.theDXApplication.appSuppressesStartupWindows())
+            {
+                openControlPanel(-1);
+
+                if ((sequencer != null) && (sequencer.isStartup()))
+                    postSequencer();
+            }
+
+            if (editor != null)
+            {
+                // turn line routing off before adding multiple vpe comments because
+                // each one can cause a line reroute.
+                bool hasdec = (decoratorList.Count > 0);
+                if (hasdec)
+                {
+                    editor.beginPageChange();
+                    foreach (Decorator decr in decoratorList)
+                    {
+                        editor.newDecorator(decr);
+                    }
+                    editor.endPageChange();
+                }
+            }
+            setDirty();
+
+            // Mark the network file dirty if there were redefined modules.
+            if (Network.ParseState.redefined_modules.Count > 0)
+                setFileDirty();
+            else
+                clearFileDirty();
+
+            // Generate one collective error message for redefined modules.
+            GenerateModuleMessage(Network.ParseState.redefined_modules,
+                "The following tools have been redefined",
+                false);
+
+            String msg;
+            // Generate one collective error message for undefined modules.
+            if (getNameString() == "main")
+                msg = "The main visual program contains undefined tools.\n" +
+                    "Reload the visual program after loading the following tools";
+            else
+                msg = String.Format("Macro {0} contains undefined tools.\nReload macro {1} after loading the following tools",
+                    getNameString(), getNameString());
+            GenerateModuleMessage(Network.ParseState.undefined_modules, msg, true);
+
+            // These three are 0.0.0 unless they were parsed out of the .net
+            // which doesn't contain DX version numbers until DX 2.0.2
+            int dx_major = getDXMajorVersion();
+            int dx_minor = getDXMinorVersion();
+            int dx_micro = getDXMicroVersion();
+            int dx_version = Utils.VersionNumber(dx_major, dx_minor, dx_micro);
+
+            // Version checking was added after version 2.0.2 of Data Explorer
+            if (!ParseState.issued_version_error &&
+                (dx_version > Utils.VersionNumber(2, 0, 2)))
+            {
+                int net_major = getNetMinorVersion();
+                int net_minor = getNetMinorVersion();
+                if (Utils.VersionNumber(net_major, net_minor, 0) >
+                    Utils.VersionNumber(Int32.Parse(global::WinDX.UI.Resources.NETFILE_MAJOR_VERSION),
+                Int32.Parse(global::WinDX.UI.Resources.NETFILE_MINOR_VERSION), 0))
+                {
+                    String name = DXApplication.theDXApplication.getInformalName();
+                    WarningDialog wd = new WarningDialog();
+                    wd.post("{0}{1} was saved in a format defined by a release of {2} (version {3}.{4}.{5}). Contact your support center if you would like to obtain a version of {6} that can fully support this visual program.",
+                        (IsMacro ? "The macro " : "The visual program "),
+                        (IsMacro ? getDefinition().NameString : ""),
+                        name, dx_major, dx_minor, dx_micro,
+                        global::WinDX.UI.Resources.MAJOR_VERSION,
+                        global::WinDX.UI.Resources.MINOR_VERSION,
+                        global::WinDX.UI.Resources.MICRO_VERSION,
+                        name);
+                }
+            }
+            renameTransmitters();
+            return true;
         }
 
         public static FileStream OpenNetworkFile(String netfile, out bool wasEncoded)
@@ -1149,7 +2056,22 @@ namespace WinDX.UI
         }
         public static FileStream OpenNetworkFile(String netfile, out bool wasEncoded, ref String errmsg)
         {
-            throw new Exception("Not Yet Implemented");
+            // No encoding included with this version yet.
+            wasEncoded = false;
+            FileStream fs;
+            try
+            {
+                fs = new FileStream(netfile, FileMode.Open);
+            }
+            catch (Exception e)
+            {
+                errmsg = String.Format("Error opening file {0}: {1}", netfile, e.ToString());
+                ErrorDialog ed = new ErrorDialog();
+                ed.post(errmsg);
+                return null;
+            }
+
+            return fs;
         }
 
         public FileStream openNetworkFile(String netfile)
@@ -1159,17 +2081,20 @@ namespace WinDX.UI
         }
         public FileStream openNetworkFile(String netfile, ref String errmsg)
         {
-            throw new Exception("Not Yet Implemented");
+            return OpenNetworkFile(netfile, out netFileWasEncoded, ref errmsg);
         }
 
 
         public static void CloseNetworkFile(FileStream sw, bool wasEncoded)
         {
-            throw new Exception("Not Yet Implemented");
+            if (wasEncoded)
+            { throw new Exception("Encoded not handled yet."); }
+            else
+                sw.Close();
         }
         public void closeNetworkFile(FileStream sw)
         {
-            throw new Exception("Not Yet Implemented");
+            CloseNetworkFile(sw, WasNetFileEncoded);
         }
 
 
@@ -1190,7 +2115,13 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
-        public void setDirty() { throw new Exception("Not Yet Implemented"); }
+        public void setDirty()
+        {
+            dirty = true;
+            fileDirty = true;
+
+            DXApplication.theDXApplication.getExecCtl().terminateExecution();
+        }
         public void clearDirty() { dirty = false; }
         public void setFileDirty() { fileDirty = true; }
         public void setFileDirty(bool val) { fileDirty = val; }
@@ -1206,7 +2137,20 @@ namespace WinDX.UI
         public void addNode(Node node) { addNode(node, null); }
         public void addNode(Node node, EditorWorkSpace where)
         {
-            throw new Exception("Not Yet Implemented");
+            setDirty();
+
+            // This should make finding connected nodes quicker, but leaves 
+            // this->nodeList unsorted (see this->completeNewNetwork()).
+
+            if (readingNetwork)
+                nodeList.Insert(0, node);
+            else
+                nodeList.Add(node);
+
+            if (editor != null)
+                editor.newNode(node, where);
+
+            deferrableAddNode.requestAction(node);
         }
         public void deleteNode(Node node) { deleteNode(node, true); }
         public void deleteNode(Node node, bool undefer)
@@ -1215,7 +2159,13 @@ namespace WinDX.UI
         }
         public Node findNode(Symbol name, int instance)
         {
-            throw new Exception("Not Yet Implemented");
+            foreach (Node n in nodeList)
+            {
+                if ((n.getNameSymbol() == name) &&
+                    ((n.InstanceNumber == instance) || (instance == 0)))
+                    return n;
+            }
+            return null;
         }
 
         public Node findNode(String name) { int pos = 0; return findNode(name, ref pos, false); }
@@ -1394,9 +2344,12 @@ namespace WinDX.UI
             get { return deleting; }
         }
 
-        public int getNodeCount()
+        public int NodeCount
         {
-            throw new Exception("Not Yet Implemented");
+            get
+            {
+                return nodeList.Count;
+            }
         }
 
         /// <summary>
@@ -1587,7 +2540,27 @@ namespace WinDX.UI
         }
         public void renameTransmitters()
         {
-            throw new Exception("Not Yet Implemented");
+            if (Network.RenameTransmitterList == null)
+                return;
+            int size = Network.RenameTransmitterList.Count;
+            if (size == 0) return;
+
+            String msg;
+            if (size > 1)
+            {
+                if (IsMacro)
+                    msg = String.Format("The following Transmitters in macro {0} were renamed due to name conflicts:",
+                        getNameString());
+                else
+                    msg = "The following Transmitters were renamed due to name conflicts:";
+            }
+
+            foreach (TransmitterNode tn in Network.RenameTransmitterList)
+            {
+                String new_name;
+                new_name = String.Format("{0}_xcvr", tn.LabelString);
+
+            }
         }
         public void addEditorMessage(String msg)
         {
@@ -1722,7 +2695,7 @@ namespace WinDX.UI
                     if (dn.isLastImage())
                         dn.setLastImage(false);
                 }
-                dn = (DisplayNode) nodeList[nodeList.Count - 1];
+                dn = (DisplayNode) nl[nl.Count - 1];
                 if (dn.isLastImage())
                     dn.setLastImage(true);
             }
@@ -1760,6 +2733,345 @@ namespace WinDX.UI
             get { return SymbolManager.theSymbolManager.getSymbolString(name); }
         }
 
+        public bool parseAntlr(StreamReader sr)
+        {
+            bool result;
+
+            result = true;
+            //try
+            //{
+                NetLexer lexer = new NetLexer(sr);
+                NetParser parser = new NetParser(lexer);
+                parser.start();
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorDialog ed = new ErrorDialog();
+            //    ed.post("Unable to parse file {0}, reason: {1}", fileName, e.Message);
+            //    result = false;
+            //}
+
+            if (ParseState.stop_parsing || ParseState.error_occured)
+            {
+                result = false;
+            }
+
+            // Only nodes found in the .net file are added to the network.
+            if (result && ParseState.parse_mode == _PARSE_NETWORK &&
+                parseState.node != null)
+            {
+                addNode(this.parseState.node);
+                parseState.node = null;
+            }
+            else if ((parseState.node != null) && ParseState.parse_mode == _PARSE_NETWORK)
+            {
+                addNode(parseState.node);
+                parseState.node = null;
+            }
+
+            return ParseState.stop_parsing;
+        }
+
+        public void ParseEndOfMacroDefinition()
+        {
+            if (ParseState.stop_parsing)
+                return;
+            ParseState.main_macro_parsed = true;
+        }
+
+        public void ParseFunctionID(String name)
+        {
+            if (ParseState.stop_parsing)
+                return;
+
+            // Suppress further processing if the first macro has already been parsed.
+            if (ParseState.main_macro_parsed)
+                return;
+
+            this.parseState.output_index = 0;
+        }
+
+        public void ParseComment(String comment)
+        {
+            // Suppress further processing if first macro has already been parsed.
+            if (ParseState.main_macro_parsed)
+                return;
+
+            // If black comment
+            if (comment == null || comment.Trim().Length == 0)
+                return;
+
+            if (ParseState.parse_mode == _PARSE_NETWORK)
+                this.netParseComments(comment, ParseState.parse_file, ParseState.lineno);
+            else if (ParseState.parse_mode == _PARSE_CONFIGURATION)
+                this.cfgParseComment(comment, ParseState.parse_file, ParseState.lineno);
+        }
+
+        public void ParseRValue(String name)
+        {
+            bool parse_error = false;
+            String macro, str, type;
+            int instance, parameter;
+
+            if (this.parseState.node == null || ParseState.stop_parsing)
+                return;
+
+            if (ParseState.main_macro_parsed)
+                return;
+
+            List<String> toks = Utils.StringTokenizer(name, "_", new string[] { "" });
+            if (toks.Count != 5)
+                parse_error = true;
+
+            macro = toks[0];
+            str = toks[1];
+            instance = Int32.Parse(toks[2]);
+            type = toks[3];
+            parameter = Int32.Parse(toks[4]);
+
+            if (parse_error || type == "out")
+                return;
+
+            Node n;
+            bool found = false;
+            Symbol s_of_out = SymbolManager.theSymbolManager.registerSymbol(str);
+            n = findNode(s_of_out, instance);
+            if (n != null)
+            {
+                if (n.OutputCount < parameter)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Cannot connect output {0} of {1} to {2}, too many outputs (in {3}, line {4})",
+                        parameter, str, this.parseState.node.NameString,
+                        ParseState.parse_file, ParseState.lineno);
+                }
+                else if (this.parseState.node.InputCount < 1)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Cannot connect input {0} of {1} to {2}, too many inputs (in {3}, line {4})",
+                        this.parseState.input_index, this.parseState.node.NameString, str,
+                        ParseState.parse_file, ParseState.lineno);
+
+                }
+                else
+                {
+                    new Ark(n, parameter, this.parseState.node, 1);
+                    this.parseState.node.setInputVisibility(1, true);
+                    n.setOutputVisibility(parameter, true);
+                }
+                found = true;
+            }
+            if (!found && ParseState.ignoreUndefinedModules)
+            {
+                ParseState.undefined_modules.Add(str, null);
+                ParseState.error_occured = true;
+                return;
+            }
+        }
+
+        public void ParseStringAttribute(String name, String value)
+        {
+            if (ParseState.stop_parsing)
+                return;
+
+            if (name != "pgroup")
+                return;
+
+            this.parseState.node.addToGroup(value, 
+                SymbolManager.theSymbolManager.getSymbol(ProcessGroupManager.ProcessGroup));
+
+        }
+
+        public void ParseIntAttribute(String name, int value)
+        {
+            if (this.parseState.node == null || ParseState.stop_parsing)
+                return;
+
+            if (this.parseState.output_index > 0)
+            {
+                if (name == "cache")
+                {
+                    switch (value)
+                    {
+                        case 0:
+                            parseState.node.setOutputCacheability(parseState.output_index,
+                                Cacheability.ModuleNotCached);
+                            break;
+                        case 1:
+                            parseState.node.setOutputCacheability(parseState.output_index,
+                                Cacheability.ModuleFullyCached);
+                            break;
+                        case 2:
+                            parseState.node.setOutputCacheability(parseState.output_index,
+                                Cacheability.ModuleCacheOnce);
+                            break;
+                    }
+                }
+            }
+            else if (parseState.parse_state == _PARSED_NODE)
+            {
+                if (name == "cache")
+                {
+                    switch (value)
+                    {
+                        case 0:
+                            parseState.node.setNodeCacheability(Cacheability.ModuleNotCached);
+                            break;
+                        case 1:
+                            parseState.node.setNodeCacheability(Cacheability.ModuleFullyCached);
+                            break;
+                        case 2:
+                            parseState.node.setNodeCacheability(Cacheability.ModuleCacheOnce);
+                            break;
+                    }
+                }
+            }
+        }
+
+        public void ParseArgument(String name, bool isVarname)
+        {
+            String macro, module = "", type = "";
+            int instance = 0, parameter = 0;
+
+            bool parse_error = false;
+
+            if (ParseState.stop_parsing || ParseState.main_macro_parsed)
+                return;
+
+            if (this.parseState.node == null)
+                return;
+
+            this.parseState.input_index++;
+
+            if (!isVarname)
+                return;
+
+            List<String> toks = Utils.StringTokenizer(name, "_", new string[] { "" });
+            if (toks.Count == 5)
+            {
+                macro = toks[0];
+                module = toks[1];
+                instance = Int32.Parse(toks[2]);
+                type = toks[3];
+                parameter = Int32.Parse(toks[4]);
+            }
+            else if (toks.Count == 4)
+            {
+                macro = "";
+                module = toks[0];
+                instance = Int32.Parse(toks[1]);
+                type = toks[2];
+                parameter = Int32.Parse(toks[3]);
+            }
+            else
+                parse_error = true;
+
+            if (parse_error && name != "NULL")
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Error parsing tool input {0} (in {1}, line {2})",
+                    name, ParseState.parse_file, ParseState.lineno);
+                ParseState.error_occured = true;
+                return;
+            }
+
+            if (type != "out")
+            {
+                if (type != "in")
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Error parsing tool input {0} (in {1}, line {2})",
+                        name, ParseState.parse_file, ParseState.lineno);
+                    ParseState.error_occured = true;
+                }
+                return;
+            }
+
+            // If this node does not have enough inputs, and they were not added
+            // earlier because this is a .net without the number of inputs in the 
+            // comment, then add a set of input repeats.
+            if (this.parseState.input_index >
+                this.parseState.node.InputCount)
+            {
+                if (this.parseState.node.isInputRepeatable() &&
+                    getNetMajorVersion() == 0)
+                {
+                    this.parseState.node.addInputRepeats();
+                }
+                else
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Node {0} had unexpeceted number of inputs, file {1}, line {2}",
+                        this.parseState.node.NameString,
+                        ParseState.parse_file, ParseState.lineno);
+                    ParseState.error_occured = true;
+                    return;
+                }
+            }
+
+            // The following is for 'out' input parameters ONLY!
+
+            Symbol s_of_out = SymbolManager.theSymbolManager.registerSymbol(module);
+            //  Skip any nodes that are 'connected to themselves' such as
+            //  the Colormap module which does something like the following... 
+            //    Colormap_1_out_1 = f(a);
+            //    Colormap_1_out_1 = g(Colormap_1_out_1);
+            //		....
+            //  If the names and instances are the same then we assume we have
+            //  the above situation.
+            if ((this.parseState.node.getNameSymbol() == s_of_out) &&
+                parseState.node.InstanceNumber == instance)
+                return;
+
+            Node n = null;
+            bool found = false;
+
+            n = this.findNode(s_of_out, instance);
+            if (n != null)
+            {
+                if (n.OutputCount < parameter)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Cannot connect output {0} of {1} to {2}, too many outputs (in {3}, line {4}",
+                        parameter, module, parseState.node.NameString,
+                        ParseState.parse_file, ParseState.lineno);
+                }
+                else if (this.parseState.node.InputCount <
+                    this.parseState.input_index)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Cannot connect input {0} of {1} to {2}, too many inputs (in {3}, line {4})",
+                        parseState.input_index, parseState.node.NameString,
+                        module, ParseState.parse_file, ParseState.lineno);
+                }
+                else
+                {
+                    // Connect output parameter to input of this.parseState.node
+                    new Ark(n, parameter, this.parseState.node, this.parseState.input_index);
+                    this.parseState.node.setInputVisibility(this.parseState.input_index, true);
+                    n.setOutputVisibility(parameter, true);
+                }
+                found = true;
+            }
+            if (!found && ParseState.ignoreUndefinedModules)
+            {
+                ParseState.undefined_modules.Add(module, null);
+                ParseState.error_occured = true;
+                return;
+            }
+        }
+
+        public void ParseLValue(String name)
+        {
+            if (ParseState.stop_parsing)
+                return;
+
+            if (ParseState.main_macro_parsed)
+                return;
+
+            if (name.Contains("_out_"))
+                ++parseState.output_index;
+        }
         #endregion
     }
 }

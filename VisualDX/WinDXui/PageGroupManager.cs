@@ -32,6 +32,7 @@ namespace WinDX.UI
     }
     class PageGroupManager : GroupManager
     {
+        public const String PageGroup = "page";
 
         protected override GroupRecord recordAllocator(Network net, String name)
         {

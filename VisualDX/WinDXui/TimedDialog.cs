@@ -11,12 +11,13 @@ namespace WinDX.UI
 {
     public partial class TimedDialog : Form
     {
-        static Timer popDownTimer = new Timer();
+        static System.Windows.Forms.Timer popDownTimer = new System.Windows.Forms.Timer();
         static Form dialog = null;
 
         protected TimedDialog()
         {
             InitializeComponent();
+
             Bitmap buttonimg = global::WinDX.UI.Resources.OpenDX_Splash;
             this.ImageButton.Image = buttonimg;
         }
@@ -26,6 +27,7 @@ namespace WinDX.UI
         {
             dialog = this;
             InitializeComponent();
+
             Bitmap buttonimg = global::WinDX.UI.Resources.OpenDX_Splash;
             this.ImageButton.Image = buttonimg;
 
@@ -33,6 +35,9 @@ namespace WinDX.UI
                 this.Parent = MainProgram.theApplication.getRootForm();
             else
                 this.Parent = parent;
+
+            this.StartPosition = FormStartPosition.CenterScreen;
+
             this.messageLabel.Text = message;
             this.Text = title;
 
@@ -40,7 +45,8 @@ namespace WinDX.UI
             popDownTimer.Interval = timeout;
             popDownTimer.Start();
 
-            this.ShowDialog();
+            this.Show();
+            this.Refresh();
         }
 
         public static void Popdown(Object myObject, EventArgs myEventArgs)

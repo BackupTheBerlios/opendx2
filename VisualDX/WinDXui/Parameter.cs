@@ -9,7 +9,7 @@ namespace WinDX.UI
     {
         private ParameterDefinition definition;
         private DXValue value;
-        private List<Ark> arcs;                     // List of parameters that where connected too
+        private List<Ark> arcs = new List<Ark>();   // List of parameters that where connected too
         private bool defaultingWhenUnconnected;     // Should we use the default value.
         private bool viewable;                      // Is this parameter's tab exposable.
         private bool visible;                       // Is this paramater's tab visible.
@@ -29,21 +29,54 @@ namespace WinDX.UI
         /// <returns>t/f indicating whether the value was successfully set</returns>
         protected bool coerceAndSetValue(String value, DXTypeVals type)
         {
-            throw new Exception("Not Yet Implemented");
+            String s = DXValue.CoerceValue(value, type);
+            bool r = false;
+            if (s != null)
+            {
+                r = this.value.setValue(s, type);
+            }
+            return r;
         }
 
         public Parameter(ParameterDefinition pd)
         {
-            throw new Exception("Not Yet Implemented");
+            definition = pd;
+            value = null;
+            dirty = true;
+            defaultingWhenUnconnected = true;
+            if (pd != null)
+            {
+                visible = pd.DefaultVisibility;
+                cacheability = pd.DefaultCacheability;
+            }
+            else
+            {
+                visible = true;
+                cacheability = Cacheability.OutputFullyCached;
+            }
         }
 
         public bool addArk(Ark a)
         {
-            throw new Exception("Not Yet Implemented");
+            arcs.Add(a);
+
+            // If this is the first arc and this is an output parameter,
+            // be sure it gets sent on the next execution (assuming someone
+            // asks this parameter if it needs to be sent).
+            if (arcs.Count == 1 && !IsInput)
+                setDirty();
+
+            return true;
         }
         public bool removeArk(Ark a) { return arcs.Remove(a); }
-        public Ark getArk(int i) { return arcs[i]; }
+        /// <summary>
+        /// getArk is indexed from 1.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public Ark getArk(int i) { return arcs[i-1]; }
         public bool IsConnected { get { return arcs.Count > 0; } }
+        public List<Ark> Arks { get { return arcs; } }
 
         // Manipulate the exposability and visibility
         public void setVisibility(bool v) { visible = (IsViewable && v); }
@@ -58,7 +91,7 @@ namespace WinDX.UI
             }
         }
         public void clearVisible() { visible = false; }
-        bool IsViewable
+        public bool IsViewable
         {
             get
             {
@@ -74,16 +107,37 @@ namespace WinDX.UI
         public bool IsNeededValue() { return IsNeededValue(true); }
         public bool IsNeededValue(bool ignoreDirty)
         {
-            throw new Exception("Not Yet Implemented");
+            if (definition.IsInput)
+            {
+                if (!IsConnected)
+                    return ignoreDirty || IsDirty;
+            }
+            else if (IsConnected)
+            {
+                return ignoreDirty || IsDirty;
+            }
+            return false;
         }
         public bool IsRequired { get { return definition.IsRequired; } }
 
         public bool IsInput { get { return definition.IsInput; } }
-        public bool IsDefaulting { get { throw new Exception("Not Yet Implemented"); } }
+        public bool IsDefaulting
+        {
+            get
+            {
+                if (IsInput && IsConnected) return false;
+                else
+                    return defaultingWhenUnconnected;
+            }
+        }
         public void setUnconnectedDefaultingStatus() { setUnconnectedDefaultingStatus(true); }
         public void setUnconnectedDefaultingStatus(bool defaulting)
         {
-            throw new Exception("Not Yet Implemented");
+            if (defaultingWhenUnconnected != defaulting)
+            {
+                setDirty();
+                defaultingWhenUnconnected = defaulting;
+            }
         }
 
         /// <summary>
@@ -95,10 +149,46 @@ namespace WinDX.UI
         /// <param name="t"></param>
         /// <param name="coerce"></param>
         /// <returns></returns>
-        public bool setValue(String v, DXTypeVals t) { return setValue(v, t, true); }
-        public bool setValue(String v, DXTypeVals t, bool coerce)
+        public bool setValue(String value, DXTypeVals type) { return setValue(value, type, true); }
+        public bool setValue(String value, DXTypeVals type, bool coerce)
         {
-            throw new Exception("Not Yet Implemented");
+            bool success = false;
+            if (this.value == null)
+                this.value = new DXValue();
+
+            if (type == DXTypeVals.UndefinedType && value == null)
+            {
+                this.value = null;
+                success = true;
+            }
+            else
+            {
+                ParameterDefinition pd = this.Definition;
+                bool typeMatch = false;
+                foreach (DXType dxt in pd.getTypes())
+                {
+                    if (DXType.MatchType(type, dxt.getType()))
+                    {
+                        typeMatch = true;
+                        break;
+                    }
+                }
+                if (typeMatch && (
+                       this.value.setValue(value, type) ||
+                       (coerce && this.coerceAndSetValue(value, type))))
+                    success = true;
+                else
+                    success = false;
+            }
+            if (success)
+            {
+                setDirty();
+                if (type == DXTypeVals.UndefinedType && value == null)
+                    setUnconnectedDefaultingStatus(true);
+                else
+                    setUnconnectedDefaultingStatus(false);
+            }
+            return success;
         }
 
         /// <summary>
@@ -108,7 +198,38 @@ namespace WinDX.UI
         /// <returns></returns>
         public DXTypeVals setValue(String v)
         {
-            throw new Exception("Not Yet Implemented");
+            DXTypeVals type;
+            ParameterDefinition pd;
+
+            if (v == null)
+            {
+                if (setValue(null, DXTypeVals.UndefinedType))
+                    return DXTypeVals.UndefinedType;
+                else if (this.HasValue)
+                    return this.ValueType;
+                else
+                    return DXTypeVals.UndefinedType;
+            }
+
+            pd = Definition;
+            Debug.Assert(pd != null);
+
+            // Try matching the value to the type without coersion first. 
+            foreach (DXType dxtype in pd.getTypes())
+            {
+                type = dxtype.getType();
+                if (setValue(v, type, false))
+                    return type;
+            }
+
+            // If the above didn't work, lets try and coerce the values
+            foreach (DXType dxtype in pd.getTypes())
+            {
+                type = dxtype.getType();
+                if (setValue(v, type, true))
+                    return type;
+            }
+            return DXTypeVals.UndefinedType;
         }
 
         /// <summary>
@@ -260,7 +381,7 @@ namespace WinDX.UI
         public bool IsFullyCached { get { return cacheability == Cacheability.OutputFullyCached; } }
         public void setCacheability(Cacheability c)
         {
-            Debug.Assert(IsInput);
+            Debug.Assert(!IsInput);
             if (cacheability != c)
             {
                 cacheability = c;

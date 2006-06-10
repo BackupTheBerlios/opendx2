@@ -50,7 +50,7 @@ namespace WinDX.UI
                 pf = MainProgram.theApplication.getRootForm();
 
             QuestionDialog qd = new QuestionDialog();
-            qd.modalPost(parent, dialogQuestion, dialogTitle,
+            qd.modalPost(pf, dialogQuestion, dialogTitle,
                 this, ok_Click, null, null, null, null,
                 null, 2);
 

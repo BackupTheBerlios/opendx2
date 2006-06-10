@@ -15,7 +15,7 @@ namespace WinDX.UI
         private StreamWriter stderr;
         private int child;
         private DXExec dxexec; 
-        private int queued;
+        private bool queued;
         private String errorString = null;
         private int lineSize;
         private String outLine;
@@ -33,7 +33,7 @@ namespace WinDX.UI
             dxexec = new DXExec();
             try
             {
-                //child = (int) dxexec.StartThread(av);
+                child = (int) dxexec.StartThread(av);
             }
             catch (Exception)
             {
@@ -69,9 +69,9 @@ namespace WinDX.UI
             }
 
             if (block && result)
-                queued = 1;
+                queued = true;
             else
-                queued = 0;
+                queued = false;
 
             return result;
         }
@@ -134,11 +134,27 @@ namespace WinDX.UI
 
         public int waitForConnection()
         {
+            // We may need to read the std i/o to find out which port was
+            // used.
+            if (this.IsQueued)
+                this.unQueue();
+            DXApplication.theDXApplication.connectToServer(1900, this);
             return 0;
         }
 
-        public int IsQueued { get { return queued; } }
-        public void unQueue() { throw new Exception("Not Yet Implemented"); }
+        public bool IsQueued { get { return queued; } }
+        public void unQueue()
+        {
+            if (this.stdout != null)
+            {
+                throw new Exception("not yet implemented.");
+            }
+            if (this.stderr != null)
+            {
+                throw new Exception("not yet implemented.");
+            }
+            queued = false;
+        }
         public String failed() { return errorString; }
         public String getServer() { return server; }
         public static bool HostIsLocal(String host)

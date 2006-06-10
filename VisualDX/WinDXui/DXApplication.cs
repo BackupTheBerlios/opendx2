@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace WinDX.UI
 {
@@ -233,6 +234,11 @@ namespace WinDX.UI
             applicationPacket = null;
             messageWindow = null;
 
+            genericHelpCmd = new HelpMenuCommand("genericAppHelp",
+                null, true, HelpMenuCommand.HelpType.GenericHelp);
+            helpTutorialCmd = new HelpMenuCommand("helpTutorial",
+                null, true, HelpMenuCommand.HelpType.HelpTutorial);
+
             quitCmd = new ConfirmedQuitCommand("quit", commandScope,
                 true, this);
             exitCmd = new ConfirmedExitCommand("exit", commandScope,
@@ -260,7 +266,7 @@ namespace WinDX.UI
                 commandScope, true);
             executingCmd = new NoOpCommand("executingCmd", commandScope, true);
             notExecutingCmd = new NoOpCommand("notExecutingCmd", commandScope, true);
-            connectedToServerCmd = new NoUndoDXAppCommand("Start Server",
+            connectToServerCmd = new NoUndoDXAppCommand("Start Server",
                 commandScope, true, this, CommandType.StartServer);
             resetServerCmd = new NoUndoDXAppCommand("Reset Server",
                 commandScope, false, this, CommandType.ResetServer);
@@ -353,6 +359,10 @@ namespace WinDX.UI
         /// <summary>
         /// DX application commands
         /// </summary>
+        /// 
+        public Command genericHelpCmd;
+        public Command helpTutorialCmd;
+
         public Command quitCmd;
         public Command exitCmd;
         public Command openFileCmd;
@@ -556,13 +566,13 @@ namespace WinDX.UI
         protected DXWindow anchor = null;
         protected CommandScope commandScope = null;
         protected DXServerInfo serverInfo;
-        protected DXExecCtl execCtl;
+        protected DXExecCtl execCtl = new DXExecCtl();
 
         protected ApplicIF applicationPacket;
 
         protected MsgWin messageWindow;
 
-        protected List<String> errorList;
+        protected List<String> errorList = new List<string>();
         #endregion
 
         #region Private Static Properties/Variables
@@ -653,16 +663,26 @@ namespace WinDX.UI
             Console.WriteLine("DXLink::" + echoString);
         }
 
-        private static void QueuedPacketAccept(Object data)
+        private static void QueuedPacketAccept(Object sender, System.EventArgs e)
         {
-            DXPacketIF p = (DXPacketIF)data;
-            theDXApplication.packetIFAccept(p);
+            Control c = (Control)sender;
+            if (c.Tag is DXPacketIF)
+            {
+                DXPacketIF p = (DXPacketIF)c.Tag;
+                theDXApplication.packetIFAccept(p);
+            } else 
+                throw new Exception("Something went wrong, c.Tag not correct.");
         }
 
-        private static void QueuedPacketCancel(Object data)
+        private static void QueuedPacketCancel(Object sender, System.EventArgs e)
         {
-            DXPacketIF p = (DXPacketIF)data;
-            theDXApplication.packetIFCancel(p);
+            Control c = (Control)sender;
+            if (c.Tag is DXPacketIF)
+            {
+                DXPacketIF p = (DXPacketIF)c.Tag;
+                theDXApplication.packetIFCancel(p);
+            } else
+                throw new Exception("Something went wrong, c.Tag not correct.");
         }
 
         private bool getAutoScrollInitialValue()
@@ -752,9 +772,13 @@ namespace WinDX.UI
             }
         }
 
-        protected virtual void clearErrorList()
+        public virtual void clearErrorList()
         {
-            throw new Exception("Not Yet Implemented");
+            foreach (String s in errorList)
+            {
+                highlightNodes(s, HighlightType.REMOVEHIGHLIGHT);
+            }
+            errorList.Clear();
         }
 
         /// <summary>
@@ -771,7 +795,8 @@ namespace WinDX.UI
         /// <param name="pif"></param>
         protected virtual void flushExecutiveDictionaries(DXPacketIF pif)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(pif != null);
+            pif.send(PacketIF.PacketType.FOREGROUND, "Executive(\"flush dictionary\");\n");
         }
 
         /// <summary>
@@ -780,7 +805,20 @@ namespace WinDX.UI
         /// <param name="p"></param>
         protected virtual void packetIFAccept(DXPacketIF p)
         {
-            throw new Exception("Not Yet Implemented");
+            serverInfo.queuedPackets.Remove(p);
+            if (serverInfo.packet != null)
+            {
+                serverInfo.packet = null;
+                disconnectedFromServerCmd.execute();
+            }
+            serverInfo.packet = p;
+
+            p.initializePacketIO();
+
+            connectedToServerCmd.execute();
+            sendNewMDFToServer(NodeDefinition.theNodeDefinitionDictionary);
+
+            getExecCtl().newConnection();
         }
 
         /// <summary>
@@ -790,7 +828,6 @@ namespace WinDX.UI
         /// </summary>
         protected virtual void installDefaultResources()
         {
-            setDefaultResources();
             String val;
             bool bval;
             int ival;
@@ -1001,15 +1038,6 @@ namespace WinDX.UI
             resource.userHtmlDir = val;
         }
 
-        protected void setDefaultResources()
-        {
-            XmlPreferences.theXmlPreferences.SetDefault("standInBackground", XmlPreferences.PrefType.TypeString, "#5F9EA0");
-            XmlPreferences.theXmlPreferences.SetDefault("executionHighlightForeground", XmlPreferences.PrefType.TypeString, "#00FF7E");
-            XmlPreferences.theXmlPreferences.SetDefault("backgroundExecutionForeground", XmlPreferences.PrefType.TypeString, "#7E7EB4");
-            XmlPreferences.theXmlPreferences.SetDefault("errorHighlightForeground", XmlPreferences.PrefType.TypeString, "#FF9B00");
-            XmlPreferences.theXmlPreferences.SetDefault("InsensitiveColor", XmlPreferences.PrefType.TypeString, "#888888");
-        }
-
         #endregion
 
 
@@ -1031,7 +1059,16 @@ namespace WinDX.UI
 
         public override void shutdownApplication()
         {
-            throw new Exception("The method or operation is not implemented.");
+            runApplication = false;
+
+            if (InEditMode && appAllowsSavingNetFile())
+            {
+                String defFile = "";
+                getApplicationDefaultsFileName(ref defFile);
+
+                XmlPreferences.theXmlPreferences.WritePrefs(defFile);
+            }
+            Application.Exit();
         }
 
 
@@ -1259,6 +1296,10 @@ namespace WinDX.UI
                 }
             }
 
+            // Post the copyright message if the anchor window came up.
+            if (!resource.noAnchorAtStartup)
+                postCopyrightNotice();
+
             // Validate the resources and options
             if (InEditMode && !appAllowsEditorAccess())
             {
@@ -1287,6 +1328,7 @@ namespace WinDX.UI
             serverInfo.memorySize = resource.memorySize;
             serverInfo.executiveFlags = "";
             serverInfo.children = new List<DXChild>();
+            serverInfo.queuedPackets = new List<DXPacketIF>();
 
             if (argv != null)
             {
@@ -1419,10 +1461,6 @@ namespace WinDX.UI
                 wasSetBusy = true;
             }
 
-            // Post the copyright message if the anchor window came up.
-            if (!resource.noAnchorAtStartup)
-                postCopyrightNotice();
-
             if (!resource.runUIOnly)
             {
                 // Connect to exec first
@@ -1459,7 +1497,55 @@ namespace WinDX.UI
         }
         public int connectToServer(int port, DXChild c)
         {
-            throw new Exception("Not Yet Implemented");
+            bool wasQueued = false;
+            String server;
+
+            if (c != null)
+            {
+                server = c.getServer();
+                if (!c.IsQueued)
+                {
+                    serverInfo.children.Remove(c);
+                    c.unQueue();
+                }
+            }
+            else
+            {
+                server = serverInfo.server;
+            }
+            DXPacketIF p = new DXPacketIF(server, port, DXChild.HostIsLocal(server));
+            if (DXApplication.resource.debugMode)
+                p.setEchoCallback(DXApplication.DebugEchoCallback, "need to get stderr");
+
+            if (p.Error)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Connection to {0} failed.", server);
+                p = null;
+                return 0;
+            }
+
+            clearErrorList();
+            if (serverInfo.packet == null)
+            {
+                if (wasQueued)
+                {
+                    InfoDialog id = new InfoDialog();
+                    id.post("Your connection to {0} has been accepted.", server);
+                }
+                packetIFAccept(p);
+            }
+            else
+            {
+                serverInfo.queuedPackets.Insert(0, p);
+                QuestionDialog qd = new QuestionDialog();
+                String s = String.Format("Your connection to server {0} has been accepted. Do you want to disconnect from {0} and connect to it?",
+                    server, serverInfo.server);
+                qd.modalPost(this.getRootForm(), s, null, p, DXApplication.QueuedPacketAccept, 
+                    DXApplication.QueuedPacketCancel, null, "Yes", "No", null, 2);
+                    
+            }
+            return 1;
         }
 
         public void closeConnection(DXChild c)
@@ -1586,6 +1672,10 @@ namespace WinDX.UI
         public DXExecCtl getExecCtl() { return this.execCtl; }
 
 
+        public virtual bool openFile(String netfile)
+        {
+            return openFile(netfile, null);
+        }
         public virtual bool openFile(String netfile,
             String cfgfile)
         {
@@ -1594,7 +1684,31 @@ namespace WinDX.UI
         public virtual bool openFile(String netfile,
             String cfgfile, bool resetTheServer)
         {
-            throw new Exception("Not Yet Implemented");
+            Network net = this.network;
+            bool execOnChange = getExecCtl().inExecOnChange();
+            bool result;
+
+            if (execOnChange)
+                getExecCtl().suspendExecOnChange();
+
+            if (resetTheServer)
+                resetServer();
+
+            // We can't do this until after resetting the server, because
+            // it has to clean up its windows too.
+            net.clear();
+
+            if ((result = net.readNetwork(netfile, cfgfile)) == false)
+            {
+                if (execOnChange)
+                {
+                    getExecCtl().updateMacros();
+                    getExecCtl().resumeExecOnChange();
+                }
+                appendReferencedFile(netfile);
+            }
+            readFirstNetwork = true;
+            return result;
         }
 
         public virtual bool saveFile(String netfile)
@@ -1610,7 +1724,29 @@ namespace WinDX.UI
 
         public virtual bool resetServer()
         {
-            throw new Exception("Not Yet Implemented");
+            getExecCtl().terminateExecution();
+
+            clearErrorList();
+
+            markNetworksDirty();
+            thisServer.notifyClients(MsgServerDisconnected);
+
+            DXPacketIF pif = getPacketIF();
+            if (pif != null)
+            {
+                flushExecutiveDictionaries(pif);
+
+                pif.send(PacketIF.PacketType.FOREGROUND, "Trace(\"memory\", 0);\n");
+
+                String message = String.Format("Executive(\"version {0} {1} {2}\");\n",
+                global::WinDX.UI.Resources.PIF_MAJOR_VERSION,
+                global::WinDX.UI.Resources.PIF_MINOR_VERSION,
+                global::WinDX.UI.Resources.PIF_MICRO_VERSION);
+
+                pif.send(PacketIF.PacketType.FOREGROUND, message);
+            }
+
+            return true;
         }
         public bool postStartServerDialog()
         {
@@ -1622,8 +1758,21 @@ namespace WinDX.UI
         }
         public void postOpenNetworkDialog()
         {
-            throw new Exception("Not Yet Implemented");
+            OpenFileDialog openNetworkDialog = new OpenFileDialog();
+            openNetworkDialog.Filter = "Network Files (*.net)|*.NET";
+            openNetworkDialog.FilterIndex = 0;
+
+            openNetworkDialog.FileOk += new System.ComponentModel.CancelEventHandler(OpenNetworkDialog_FileOk);
+            openNetworkDialog.ShowDialog(this.anchor);
+
         }
+        void OpenNetworkDialog_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            OpenFileDialog ofd = (OpenFileDialog)sender;
+            DXApplication.theDXApplication.getExecCtl().terminateExecution();
+            DXApplication.theDXApplication.openFile(ofd.FileName);
+        }
+
         public void postLoadMDFDialog()
         {
             throw new Exception("Not Yet Implemented");
@@ -1737,7 +1886,8 @@ namespace WinDX.UI
         //
         public void markNetworksDirty()
         {
-            throw new Exception("The method or operation is not implemented.");
+            // This also effectively marks the parameters as dirty.
+            getExecCtl().forceFullResend();
         }
 
         public bool doesInfoOpenMessage()
@@ -1779,7 +1929,7 @@ namespace WinDX.UI
         }
         public bool appAllowsConfirmedQuit()
         {
-            throw new Exception("The method or operation is not implemented.");
+            return !resource.noConfirmedQuit;
         }
         public bool disconnectFromServer()
         {
@@ -1886,7 +2036,54 @@ namespace WinDX.UI
         public void sendNewMDFToServer(Dictionary<Symbol, NodeDefinition> newdefs,
             ref Dictionary<Symbol, NodeDefinition> current)
         {
-            throw new Exception("Not Yet Implemented");
+            String buf;
+            bool sent_stuff = false;
+            DXPacketIF pif = getPacketIF();
+
+            if (pif == null)
+                return;
+
+            Debug.Assert(newdefs != null);
+            foreach (KeyValuePair<Symbol, NodeDefinition> kvp in newdefs)
+            {
+                NodeDefinition nd = kvp.Value;
+                bool outboard = nd.IsOutboard;
+                bool dynamic = nd.IsDynamicallyLoaded;
+
+                // The following requires that the exec sees the -mdf options
+                // that the UI sees.
+                bool send = (outboard || dynamic) && nd.UILoadedOnly;
+
+                // See if a definition already existed and if the outboardness or 
+                // the dynamicity changes (e.g. outboard -> inboard) we must resend
+                // the new definition.
+                if (!send && current != null)
+                {
+                    Symbol s = nd.NameSymbol;
+                    NodeDefinition olddef;
+                    if (current.TryGetValue(s, out olddef))
+                    {
+                        send = (olddef.IsOutboard != outboard ||
+                            olddef.IsDynamicallyLoaded != dynamic);
+                    }
+                }
+
+                // If we're supposed to send this definition and the node has one,
+                // then lets send it.
+                String mdf = nd.getMDFString();
+                if (send && mdf != null)
+                {
+                    Regex regex = new Regex(@"""");
+                    mdf = regex.Replace(mdf, @"\\""");
+                    regex = new Regex(@"\n");
+                    mdf = regex.Replace(mdf, @"\\\n");
+                    buf = "Executive(\"mdf string\",\"" + mdf + "\");\n";
+                    pif.send(PacketIF.PacketType.FOREGROUND, buf);
+                    sent_stuff = true;
+                }
+            }
+
+
         }
 
         //
@@ -1956,11 +2153,12 @@ namespace WinDX.UI
         }
         public virtual bool appAllowsSavingNetFile(Network net)
         {
-            throw new Exception("Not Yet Implemented");
+            return appAllowsSavingCfgFile() &&
+                (net == null || !net.WasNetFileEncoded);
         }
         public virtual bool appAllowsSavingCfgFile()
         {
-            throw new Exception("Not Yet Implemented");
+            return (InEditMode || appAllowsImageRWNetFile());
         }
         public virtual bool appAllowsImageLoad()
         {
@@ -2023,7 +2221,7 @@ namespace WinDX.UI
         }
         public bool appAllowsExitOptions()
         {
-            throw new Exception("Not Yet Implemented");
+            return !resource.noExitOptions;
         }
         public bool appAllowsExecuteMenus()
         {
@@ -2095,7 +2293,13 @@ namespace WinDX.UI
         /// </summary>
         public void refreshErrorIndicators()
         {
-            throw new Exception("Not Yet Implemented");
+            if (errorList.Count == 0)
+                return;
+
+            foreach (String s in errorList)
+            {
+                highlightNodes(s, HighlightType.ERRORHIGHLIGHT);
+            }
         }
 
         public virtual bool printComment(Stream s)
@@ -2129,7 +2333,17 @@ namespace WinDX.UI
 
         public void appendReferencedFile(String file)
         {
-            throw new Exception("Not Yet Implemented");
+            // Don't include files that go in /tmp.  These are files
+            // that are created as a result of Cut,Copy,Paste and 
+            // Drag-n-Drop and shouldn't be recorded here.
+            String tmpdir = getTmpDirectory();
+            if (file.StartsWith(tmpdir))
+            {
+                return;
+            }
+
+            String cp = Utils.GetFullFilePath(file);
+            XmlPreferences.theXmlPreferences.AddListPref("recentNets", cp);
         }
         public void removeReferencedFile(String file)
         {

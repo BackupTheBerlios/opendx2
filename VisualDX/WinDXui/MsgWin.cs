@@ -32,5 +32,10 @@ namespace WinDX.UI
         {
             throw new Exception("Not yet implemented.");
         }
+
+        public void infoOpen()
+        {
+            throw new Exception("Not Yet Implemented");
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace WinDX.UI
         }
         public String MatchString
         {
-            get { return MatchString; }
+            get { return matchString; }
         }
 
         private PacketIF.PacketHandlerCallback callback;

@@ -287,7 +287,7 @@ namespace WinDX.UI
         }
 
         // Get the INPUT/OUTPUT entry in the MDF for this parameter.
-        String getMDFString()
+        public String getMDFString()
         {
             int i, typecnt = getTypes().Count;
             String[] typeNames = getTypeStrings();

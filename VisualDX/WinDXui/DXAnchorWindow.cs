@@ -20,23 +20,23 @@ namespace WinDX.UI
 
         // File menu options
         protected DXToolStripMenuItem openOption;
-        protected ToolStripMenuItem recentOption;
-        protected ToolStripMenuItem loadMacroOption;
-        protected ToolStripMenuItem loadMDFOption;
+        protected CascadeAutoToolStripMenuItem recentOption;
+        protected DXToolStripMenuItem loadMacroOption;
+        protected DXToolStripMenuItem loadMDFOption;
         protected DXToolStripMenuItem saveOption;
         protected DXToolStripMenuItem saveAsOption;
         protected DXToolStripMenuItem closeOption;
         protected ToolStripMenuItem settingsOption;
-        protected ToolStripMenuItem saveCfgOption;
-        protected ToolStripMenuItem openCfgOption;
+        protected DXToolStripMenuItem saveCfgOption;
+        protected DXToolStripMenuItem openCfgOption;
         protected Command closeCmd;
 
         // Window menu options
-        protected ToolStripMenuItem openAllControlPanelsOption;
-        protected ToolStripMenuItem openControlPanelByNameOption;
-        protected ToolStripMenuItem openAllColormapEditorsOption;
-        protected ToolStripMenuItem messageWindowOption;
-        protected ToolStripMenuItem openVPEOption;
+        protected DXToolStripMenuItem openAllControlPanelsOption;
+        protected CascadeAutoToolStripMenuItem openControlPanelByNameOption;
+        protected DXToolStripMenuItem openAllColormapEditorsOption;
+        protected DXToolStripMenuItem messageWindowOption;
+        protected DXToolStripMenuItem openVPEOption;
         Command openVPECmd;
 
         // Help menu options
@@ -118,8 +118,8 @@ namespace WinDX.UI
             if (DXApplication.theDXApplication.appAllowsImageRWNetFile())
             {
                 openOption = new DXToolStripMenuItem("fileOpenOption", DXApplication.theDXApplication.openFileCmd);
-                recentOption = new ToolStripMenuItem();
-                createFileHistoryMenu(ref recentOption);
+                recentOption = new CascadeAutoToolStripMenuItem(fileMenu);
+                createFileHistoryMenu(ref recentOption, ref fileMenu);
 
                 Network net = DXApplication.theDXApplication.network;
                 saveOption = new DXToolStripMenuItem("fileSaveOption", net.getSaveCommand());
@@ -154,14 +154,14 @@ namespace WinDX.UI
                 }
                 if (saveCfgCmd != null)
                 {
-                    saveCfgOption = new ToolStripMenuItem();
+                    saveCfgOption = new DXToolStripMenuItem("saveCfgOption", saveCfgCmd);
                     settingsOption.DropDownItems.Add(saveCfgOption);
                     saveCfgOption.Name = "saveCfgOption";
                     resources.ApplyResources(saveCfgOption, "saveCfgOption");
                 }
                 if (openCfgCmd != null)
                 {
-                    openCfgOption = new ToolStripMenuItem();
+                    openCfgOption = new DXToolStripMenuItem("saveCfgOption", openCfgCmd);
                     settingsOption.DropDownItems.Add(openCfgOption);
                     openCfgOption.Name = "openCfgOption";
                     resources.ApplyResources(openCfgOption, "openCfgOption");
@@ -175,8 +175,10 @@ namespace WinDX.UI
                     ToolStripSeparator sep1 = new ToolStripSeparator();
                     fileMenu.DropDownItems.Add(sep1);
                 }
-                loadMacroOption = new ToolStripMenuItem();
-                loadMDFOption = new ToolStripMenuItem();
+                loadMacroOption = new DXToolStripMenuItem("fileLoadMacroOption", 
+                    DXApplication.theDXApplication.loadMacroCmd);
+                loadMDFOption = new DXToolStripMenuItem("fileLoadMDFOption",
+                    DXApplication.theDXApplication.loadMDFCmd);
                 fileMenu.DropDownItems.AddRange(new ToolStripItem[] {
                     loadMacroOption,
                     loadMDFOption });
@@ -211,11 +213,14 @@ namespace WinDX.UI
             ToolStripSeparator sep1 = new ToolStripSeparator();
 
             windowsMenu = new ToolStripMenuItem();
-            openVPEOption = new ToolStripMenuItem();
-            openAllControlPanelsOption = new ToolStripMenuItem();
-            openControlPanelByNameOption = new ToolStripMenuItem();
-            openAllColormapEditorsOption = new ToolStripMenuItem();
-            messageWindowOption = new ToolStripMenuItem();
+            openVPEOption = new DXToolStripMenuItem("openVPEOption", openVPECmd);
+            openAllControlPanelsOption = new DXToolStripMenuItem("openAllControlPanelsOption",
+                DXApplication.theDXApplication.network.getOpenAllPanelsCommand());
+            openControlPanelByNameOption = new CascadeAutoToolStripMenuItem(windowsMenu);
+            openAllColormapEditorsOption = new DXToolStripMenuItem("openAllColormapEditorsOptions",
+                DXApplication.theDXApplication.openAllColormapCmd);
+            messageWindowOption = new DXToolStripMenuItem("messageWindowOption",
+                DXApplication.theDXApplication.messageWindowCmd);
 
             SuspendLayout();
             menubar.SuspendLayout();
@@ -268,10 +273,11 @@ namespace WinDX.UI
             resources.ApplyResources(this.onVisualProgramOption, "onVisualProgramOption");
 
         }
-        protected override void createFileHistoryMenu(ref ToolStripMenuItem menuItem)
+        protected override void createFileHistoryMenu(ref CascadeAutoToolStripMenuItem menuItem,
+            ref ToolStripMenuItem parentMenuItem)
         {
             if(DXApplication.theDXApplication.appAllowsImageRWNetFile())
-                base.createFileHistoryMenu(ref menuItem);
+                base.createFileHistoryMenu(ref menuItem, ref parentMenuItem);
         }
 
         public bool postVPE()

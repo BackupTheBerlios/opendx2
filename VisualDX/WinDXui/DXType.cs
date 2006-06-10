@@ -65,6 +65,30 @@ namespace WinDX.UI
         UserType6 = 0x40000000	// user-defined
     };
 
+    public enum DXTypeOldVals : long
+    {
+        Value = 0x0000003d,
+        Str = 0x00000040,
+        Camera = 0x00000080,
+        Light = 0x00000100,
+        Field = 0x00000800,
+        Geometry_Field = 0x01001800,
+        Image = 0x00002800,
+        Color_Field = 0x00004800,
+        Scalar_Field = 0x00008800,
+        Vector_Field = 0x00010800,
+        Data_Field = 0x00020800,
+        Series = 0x00100800,
+        Field_Series = 0x00300800,
+        Group = 0x01000800,
+        Value_Group = 0x03000800,
+        Value_List_Group = 0x05000800,
+        Field_Group = 0x09000800,
+        List = 0x10000000,
+        Object = 0x3fffffff,
+        Description = 0x40000000
+    };
+
     public class DXType
     {
         #region structs and enums
@@ -306,7 +330,44 @@ namespace WinDX.UI
         /// <returns></returns>
         public static DXTypeVals ConvertVersionType(DXTypeVals t)
         {
-            throw new Exception("Not implemented function");
+            DXTypeVals r;
+            bool waslist = false;
+
+            DXTypeOldVals ot = (DXTypeOldVals)t;
+
+            if (((long)t & (long)DXTypeOldVals.List) > 0)
+            {
+                waslist = true;
+                t = (DXTypeVals)((long)t & (long)~DXTypeOldVals.List);
+            }
+            switch (ot)
+            {
+                case DXTypeOldVals.Value: r = DXTypeVals.ValueType; break;
+                case DXTypeOldVals.Str: r = DXTypeVals.StringType; break;
+                case DXTypeOldVals.Camera: r = DXTypeVals.CameraType; break;
+                case DXTypeOldVals.Light: r = DXTypeVals.LightType; break;
+                case DXTypeOldVals.Geometry_Field: r = DXTypeVals.GeometryFieldType; break;
+                case DXTypeOldVals.Color_Field: r = DXTypeVals.ColorFieldType; break;
+                case DXTypeOldVals.Scalar_Field: r = DXTypeVals.ScalarType; break;
+                case DXTypeOldVals.Vector_Field: r = DXTypeVals.VectorType; break;
+                case DXTypeOldVals.Data_Field: r = DXTypeVals.DataFieldType; break;
+                case DXTypeOldVals.Image: r = DXTypeVals.ImageType; break;
+                case DXTypeOldVals.Series: r = DXTypeVals.SeriesType; break;
+                case DXTypeOldVals.Field_Series: r = DXTypeVals.FieldType; break;
+                case DXTypeOldVals.Group: r = DXTypeVals.GroupType; break;
+                case DXTypeOldVals.Value_Group: r = DXTypeVals.ValueGroupType; break;
+                case DXTypeOldVals.Value_List_Group: r = DXTypeVals.ValueListGroupType; break;
+                case DXTypeOldVals.Field_Group: r = DXTypeVals.FieldType; break;
+                case DXTypeOldVals.Object: r = DXTypeVals.ObjectType; break;
+                case DXTypeOldVals.Description: r = DXTypeVals.DescriptionType; break;
+                default:
+                    r = t;
+                    break;
+            }
+            if (waslist)
+                r = r | DXTypeVals.ListType;
+
+            return r;
         }
 
         /// <summary>

@@ -47,15 +47,24 @@
     <Compile Include="BaseApplication.cs">
     </Compile>
     <Compile Include="BinaryParameter.cs" />
+    <Compile Include="CascadeAutoToolStripMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CDBAllocatorDictionary.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="CloseWindowCommand.cs" />
     <Compile Include="CmdEntry.cs" />
+    <Compile Include="ColormapDefinition.cs" />
     <Compile Include="ColormapNode.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandInterface.cs">
     </Compile>
     <Compile Include="CommandScope.cs" />
+    <Compile Include="ComputeCDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ComputeDefinition.cs" />
+    <Compile Include="ComputeNode.cs" />
     <Compile Include="ConfigurationDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,14 +74,18 @@
     <Compile Include="ConfirmedCommand.cs" />
     <Compile Include="ConfirmedExitCommand.cs" />
     <Compile Include="ConfirmedQuitCommand.cs" />
-    <Compile Include="ControlPanel.cs" />
+    <Compile Include="ControlPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ControlPanelAccessDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ControlPanelAccessDialog.Designer.cs">
       <DependentUpon>ControlPanelAccessDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Decorator.cs" />
+    <Compile Include="Decorator.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DecoratorStyle.cs" />
     <Compile Include="DeferrableAction.cs" />
     <Compile Include="Definition.cs" />
@@ -102,6 +115,7 @@
     <Compile Include="DXChild.cs" />
     <Compile Include="DXExecCtl.cs" />
     <Compile Include="DXLinkHandler.cs" />
+    <Compile Include="DXNetTokenTypes.cs" />
     <Compile Include="DXPacketIF.cs" />
     <Compile Include="DXTensor.cs" />
     <Compile Include="DXToolStripMenuItem.cs">
@@ -112,6 +126,8 @@
     <Compile Include="DXWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="EchoDefinition.cs" />
+    <Compile Include="EchoNode.cs" />
     <Compile Include="EditorWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +141,11 @@
     <Compile Include="GroupManager.cs" />
     <Compile Include="Help.cs" />
     <Compile Include="HelpMenuCommand.cs" />
+    <Compile Include="ImageCDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageDefinition.cs" />
+    <Compile Include="ImageNode.cs" />
     <Compile Include="ImageWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -140,6 +161,9 @@
     <Compile Include="InteractorInstance.cs" />
     <Compile Include="InteractorStyle.cs" />
     <Compile Include="JavaNet.cs" />
+    <Compile Include="LabeledStandIn.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="LinkHandler.cs" />
     <Compile Include="MacroDefinition.cs" />
     <Compile Include="MacroNode.cs" />
@@ -152,11 +176,22 @@
     </Compile>
     <Compile Include="ModuleMessagingNode.cs" />
     <Compile Include="NDAllocatorDictionary.cs" />
+    <Compile Include="NetLexer.cs" />
+    <Compile Include="NetParser.cs" />
     <Compile Include="NewCommand.cs" />
     <Compile Include="NoUndoAnchorCommand.cs" />
     <Compile Include="NoUndoJavaNetCommand.cs" />
     <Compile Include="NoUndoNetworkCommand.cs" />
     <Compile Include="PageGroupManager.cs" />
+    <Compile Include="PickDefinition.cs" />
+    <Compile Include="PickNode.cs" />
+    <Compile Include="PrintDefinition.cs" />
+    <Compile Include="PrintNode.cs" />
+    <Compile Include="ProbeDefinition.cs" />
+    <Compile Include="ProbeNode.cs" />
+    <Compile Include="ReceiverNode.cs" />
+    <Compile Include="SequencerDefinition.cs" />
+    <Compile Include="ShadowedOutputDefinition.cs" />
     <Compile Include="ShadowedOutputNode.cs" />
     <Compile Include="StringsTable.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -240,9 +275,12 @@
     <Compile Include="Server.cs" />
     <Compile Include="SIAllocatorDictionary.cs" />
     <Compile Include="SliderInteractor.cs" />
-    <Compile Include="StandIn.cs" />
+    <Compile Include="StandIn.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="StepperInteractor.cs" />
     <Compile Include="SymbolManager.cs" />
+    <Compile Include="Tab.cs" />
     <Compile Include="test.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -270,7 +308,9 @@
     <Compile Include="ToolSelector.Designer.cs">
       <DependentUpon>ToolSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="TransferStyle.cs" />
     <Compile Include="TransmitterNode.cs" />
+    <Compile Include="UIComponentHelpCommand.cs" />
     <Compile Include="UniqueNameNode.cs" />
     <Compile Include="Utils.cs">
     </Compile>
@@ -394,6 +434,10 @@
     <None Include="Resources\question.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\antlr-2.7.6\lib\csharp\antlr.runtime\antlr.runtime.csproj">
+      <Project>{CB7CC882-ED47-46C0-AAAE-7A437F22F1C6}</Project>
+      <Name>antlr.runtime</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WinDX\WinDX.vcproj">
       <Project>{0F1ED2BD-B09B-4C83-83B2-7C83B20D325B}</Project>
       <Name>WinDX</Name>

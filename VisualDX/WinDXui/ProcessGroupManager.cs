@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Diagnostics;
 
 namespace WinDX.UI
 {
@@ -217,9 +218,76 @@ namespace WinDX.UI
         /// send commands to the executive
         /// </summary>
         /// <param name="func"></param>
-        public void sendAssignment(int func)
+        public void sendAssignment(Function func)
         {
-            throw new Exception("Not yet implemented");
+            DXPacketIF p = app.getPacketIF();
+            if (p == null)
+                return;
+
+            setDirty(false);
+            if (assignment == null)
+                return;
+
+            String fs = "";
+
+            switch (func)
+            {
+                case Function.ATTACH:
+                    fs = "group attach";
+                    dirty = false;
+                    break;
+
+                case Function.DETACH:
+                    fs = "group detach";
+                    break;
+
+                default:
+                    Debug.Assert(false);
+                    break;
+            }
+
+            foreach(KeyValuePair<String, List<String>> kvp in assignment)
+            {
+                String host = kvp.Key;
+                clearArgumentDirty(host);
+                String args = getArgument(host);
+                List<String> list = kvp.Value;
+                String grouplist = "";
+
+                bool first = true;
+
+                foreach (String group in list)
+                {
+                    if (first)
+                        first = false;
+                    else
+                        grouplist += ",";
+
+                    clearGroupHostDirty(group);
+                    if (func == Function.DETACH)
+                        grouplist += "\"";
+
+                    grouplist += group;
+
+                    if (func == Function.DETACH)
+                        grouplist += "\"";
+                }
+
+                String cmd;
+
+                if (func == Function.ATTACH)
+                {
+                    if (args != null)
+                        cmd = "Executive(\"" + fs + "\",{\"" + grouplist + ": " + host + " " + args + "\"});\n";
+                    else
+                        cmd = "Executive(\"" + fs + "\",{\"" + grouplist + ": " + host + "\"});\n";
+                }
+                else
+                    cmd = "Executive(\"" + fs + "\",{" + grouplist + "});\n";
+
+                p.send(PacketIF.PacketType.FOREGROUND, cmd);
+                p.sendImmediate("sync");
+            }
         }
 
         public void updateAssignment()

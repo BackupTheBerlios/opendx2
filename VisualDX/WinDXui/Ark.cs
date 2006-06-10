@@ -20,16 +20,17 @@ namespace WinDX.UI
             fromParameter = fp;
             to = toNode;
             toParameter = tp;
-            throw new Exception("Not fully implemented.");
+            from.addOutputArk(this, fp);
+            to.addInputArk(this, tp);
         }
 
-        public Node getSourceNode(ref int param)
+        public Node getSourceNode(out int param)
         {
             param = fromParameter;
             return from;
         }
 
-        public Node getDestinationNode(ref int param)
+        public Node getDestinationNode(out int param)
         {
             param = toParameter;
             return to;
