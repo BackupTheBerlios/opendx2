@@ -177,25 +177,30 @@ _dxf_ExCheckPacket(char *packet, int length)
 
 Error _dxf_ExSPack (int type, int seqnumber, Pointer data, int len)
 {
-    char packet[MAX_UI_PACKET];
+    /* char packet[MAX_UI_PACKET]; */
+    char * packet;
     int length;
+    int SLOP = 256;
+    int bufSize;
 
     if ((! _dxd_exRemote) && (!_dxd_exRemoteSlave))
 	return (OK);
 
+    bufSize = len + SLOP;
+    packet = (char*) DXAllocate( bufSize );
+    if( !packet )
+        _dxf_ExDie("Could not allocate memory for packet");
+
     if (data)
-	length = (int) sprintf (packet, "|%d|%s|%d|%s|\n",
+	length = snprintf (packet, bufSize, "|%d|%s|%d|%s|\n",
 			        seqnumber, packtype[type], len, (char *)data);
     else
-	length = (int) sprintf (packet, "|%d|%s|%d||\n",
+	length = snprintf (packet, bufSize, "|%d|%s|%d||\n",
 			        seqnumber, packtype[type], 0);
 
-#ifndef DXD_PRINTF_RETURNS_COUNT
-    /*
-     * Since the sun version of sprintf returns a pointer NOT the count ...
-     */
-    length = strlen (packet);
-#endif
+    if( length >= bufSize ){
+        _dxf_ExDie("Packet buffer not big enough.");
+    }
 
     if(_dxd_exRemoteSlave) {
         UIPackage pck;
@@ -208,6 +213,8 @@ Error _dxf_ExSPack (int type, int seqnumber, Pointer data, int len)
     }
     else 
         _dxf_ExCheckPacket(packet, length);
+
+    DXFree(packet);
 
     return (OK);
 }

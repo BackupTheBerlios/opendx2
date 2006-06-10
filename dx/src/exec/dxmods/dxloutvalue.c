@@ -34,7 +34,7 @@ Error m_DXLOutput(Object in[], Object out[])
 
     if (!VALUE) {
         value = "";
-    } else if (!_dxf_ConvertObjectsToStringValues(&VALUE,1,&value)) {
+    } else if (!_dxf_ConvertObjectsToStringValues(&VALUE,1,&value,1)) {
         DXSetError(ERROR_BAD_PARAMETER,"#10200","value");
         goto error; 
     }

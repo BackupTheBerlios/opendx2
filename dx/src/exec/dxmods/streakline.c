@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.8 2006/01/03 17:02:25 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/streakline.c,v 1.9 2006/06/10 16:33:58 davidt Exp $:
  */
  
 #include <dxconfig.h>
@@ -106,10 +106,10 @@ static Error       Streakline(CacheObject, int, float);
 static Error       StreakTask(Pointer);
 static Error       GetFrameData(Object, Object, CacheObject);
 static Error       TraceFrame(Pointer);
-static Error       InitFrame(float *, float *, float *);
+static Error       InitFrame(Vector *, Vector *, Vector *);
 static Error       UpdateFrame(float *, float *, float *,
 				float *, float *, float *,
-				float *, float *, float *);
+				Vector *, Vector *, Vector *);
 static void        RotateAroundVector(Vector *, float, float, float *);
 static int 	   ZeroVector(VECTOR_TYPE *, int nDim);
 static int         IsRegular(Object);
@@ -1042,11 +1042,11 @@ TraceFrame(Pointer ptr)
     Field	 prev;
     Array        nArray = NULL, bArray = NULL;
     Array        vArray, tArray, pArray;
-    float        *points, *vectors, *curls0=NULL, *curls1=NULL,
+    float        *points, *vecarr, *curls0=NULL, *curls1=NULL,
     		 *normals, *binormals, *time;
     int          i, nVectors, nDim, seg;
     Object       dattr = NULL;
-    float 	 fn[3], fb[3], ft[3];
+    Vector       fn, fb, ft, vectors;
 
     field = NULL; prev = NULL;
     for (seg = 0; NULL != (next = DXGetSeriesMember(s, seg, NULL)); seg++)
@@ -1101,9 +1101,12 @@ TraceFrame(Pointer ptr)
     if (nDim < 3)
 	goto done;
 
-    vectors = (float *)DXGetArrayData(vArray);
-    if (! vectors)
+    vecarr = (float *)DXGetArrayData(vArray);
+    if (! vecarr)
 	goto error;
+	vectors.x = vecarr[0];
+	vectors.y = vecarr[1];
+	vectors.z = vecarr[2];
 
     tArray = (Array)DXGetComponentValue(field, "time");
     if (! tArray)
@@ -1143,31 +1146,33 @@ TraceFrame(Pointer ptr)
      */
     if (prev)
     {
-	fn[0] = cs->norm[0];   fn[1] = cs->norm[1];   fn[2] = cs->norm[2];
-	fb[0] = cs->binorm[0]; fb[1] = cs->binorm[1]; fb[2] = cs->binorm[2];
-	ft[0] = cs->tan[0];    ft[1] = cs->tan[1];    ft[2] = cs->tan[2];
+	fn.x = cs->norm[0];   fn.y = cs->norm[1];   fn.z = cs->norm[2];
+	fb.x = cs->binorm[0]; fb.y = cs->binorm[1]; fb.z = cs->binorm[2];
+	ft.x = cs->tan[0];    ft.y = cs->tan[1];    ft.z = cs->tan[2];
 
 	GetTail((Object)prev, "normals", (Pointer)normals);
 	GetTail((Object)prev, "binormals", (Pointer)binormals);
     }
     else
     {
-	if (! InitFrame(vectors, fn, fb))
+	if (! InitFrame(&vectors, &fn, &fb))
 	    goto error;
 
-	ft[0] = vectors[0]; ft[1] = vectors[1]; ft[2] = vectors[2];
+	vecarr[0] = vectors.x; vecarr[1] = vectors.y; vecarr[2] = vectors.z;
+	
+	ft.x = vectors.x; ft.y = vectors.y; ft.z = vectors.z;
 
-	_dxfvector_normalize_3D((Vector *)fn, (Vector *)fn);
-	_dxfvector_normalize_3D((Vector *)fb, (Vector *)fb);
-	_dxfvector_normalize_3D((Vector *)ft, (Vector *)ft);
+	_dxfvector_normalize_3D(&fn, &fn);
+	_dxfvector_normalize_3D(&fb, &fb);
+	_dxfvector_normalize_3D(&ft, &ft);
 
-	normals[0]   = fn[0]; normals[1]   = fn[1]; normals[2]   = fn[2];
-	binormals[0] = fb[0]; binormals[1] = fb[1]; binormals[2] = fb[2];
+	normals[0]   = fn.x; normals[1]   = fn.y; normals[2]   = fn.z;
+	binormals[0] = fb.x; binormals[1] = fb.y; binormals[2] = fb.z;
     }
     
     for (i = 1; i < nVectors; i++)
     {
-	points += 3; time += 1; vectors += 3; normals += 3; binormals += 3;
+	points += 3; time += 1; vecarr += 3; normals += 3; binormals += 3;
 
 	if (flag)
 	{
@@ -1190,21 +1195,21 @@ TraceFrame(Pointer ptr)
 	    curls0 += 3;
 	    curls1 += 3;
 
-	    if (! UpdateFrame(points, vectors, avcurl, time, normals,
-				binormals, fn, fb, ft))
+	    if (! UpdateFrame(points, vecarr, avcurl, time, normals,
+				binormals, &fn, &fb, &ft))
 		goto error;
 	}
 	else
 	{
-	    if (! UpdateFrame(points, vectors, NULL, time, normals,
-				binormals, fn, fb, ft))
+	    if (! UpdateFrame(points, vecarr, NULL, time, normals,
+				binormals, &fn, &fb, &ft))
 		goto error;
 	}
     }
 
-    cs->norm[0]   = fn[0]; cs->norm[1]   = fn[1]; cs->norm[2]   = fn[2];
-    cs->binorm[0] = fb[0]; cs->binorm[1] = fb[1]; cs->binorm[2] = fb[2];
-    cs->tan[0]    = ft[0]; cs->tan[1]    = ft[1]; cs->tan[2]    = ft[2];
+    cs->norm[0]   = fn.x; cs->norm[1]   = fn.y; cs->norm[2]   = fn.z;
+    cs->binorm[0] = fb.x; cs->binorm[1] = fb.y; cs->binorm[2] = fb.z;
+    cs->tan[0]    = ft.x; cs->tan[1]    = ft.y; cs->tan[2]    = ft.z;
 
     dattr = (Object)DXNewString("positions");
     if (! dattr)
@@ -1917,53 +1922,53 @@ ZeroVector(VECTOR_TYPE *v, int n)
 }
 
 static Error
-InitFrame(float *v, float *n, float *b)
+InitFrame(Vector *v, Vector *n, Vector *b)
 {
-    n[0] = n[1] = n[2] = 0.0;
+    n->x = n->y = n->y = 0.0;
 
-    if (v[0] == 0.0 && v[1] == 0.0 && v[2] == 0.0)
+    if (v->x == 0.0 && v->y == 0.0 && v->z == 0.0)
     {
-	n[0] = 0.0; n[1] = 0.0; n[2] = 0.0;
-	b[0] = 0.0; b[1] = 0.0; b[2] = 0.0;
+	n->x = 0.0; n->y = 0.0; n->z = 0.0;
+	b->x = 0.0; b->y = 0.0; b->z = 0.0;
 	return OK;
     }
     
-    if (v[0] == 0.0 && v[1] == 0.0 && v[2] > 0.0)
-	n[0] = 1.0;
-    else if (v[0] == 0.0 && v[1] == 0.0 && v[2] < 0.0)
-	n[0] = -1.0;
-    else if (v[0] == 0.0 && v[1] > 0.0 && v[2] == 0.0)
-	n[2] = 1.0;
-    else if (v[0] == 0.0 && v[1] < 0.0 && v[2] == 0.0)
-	n[2] = -1.0;
-    else if (v[0] > 0.0 && v[1] == 0.0 && v[2] == 0.0)
-	n[1] = 1.0;
-    else if (v[0] < 0.0 && v[1] == 0.0 && v[2] == 0.0)
-	n[1] = -1.0;
+    if (v->x == 0.0 && v->y == 0.0 && v->z > 0.0)
+	n->x = 1.0;
+    else if (v->x == 0.0 && v->y == 0.0 && v->z < 0.0)
+	n->x = -1.0;
+    else if (v->x == 0.0 && v->y > 0.0 && v->z == 0.0)
+	n->z = 1.0;
+    else if (v->x == 0.0 && v->y < 0.0 && v->z == 0.0)
+	n->z = -1.0;
+    else if (v->x > 0.0 && v->y == 0.0 && v->z == 0.0)
+	n->y = 1.0;
+    else if (v->x < 0.0 && v->y == 0.0 && v->z == 0.0)
+	n->y = -1.0;
     else
     {
 	float d;
 
-	if (v[2] != 0.0)
+	if (v->z != 0.0)
 	{
-	    n[0] = n[1] = 1.0;
-	    n[2] = -(v[0] + v[1]) / v[2];
+	    n->x = n->y = 1.0;
+	    n->z = -(v->x + v->y) / v->z;
 	}
-	else if (v[1] != 0.0)
+	else if (v->y != 0.0)
 	{
-	    n[0] = n[2] = 1.0;
-	    n[1] = -(v[0] + v[2]) / v[1];
+	    n->x = n->z = 1.0;
+	    n->y = -(v->x + v->z) / v->y;
 	}
     
-	d = 1.0 / sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+	d = 1.0 / sqrt(n->x*n->x + n->y*n->y + n->z*n->z);
 	
-	n[0] *= d;
-	n[1] *= d;
-	n[2] *= d;
+	n->x *= d;
+	n->y *= d;
+	n->z *= d;
     }
 
-    _dxfvector_cross_3D((Vector *)v, (Vector *)n, (Vector *)b);
-    _dxfvector_normalize_3D((Vector *)b, (Vector *)b);
+    _dxfvector_cross_3D(v, n, b);
+    _dxfvector_normalize_3D(b, b);
 
     return OK;
 }
@@ -1975,13 +1980,13 @@ InitFrame(float *v, float *n, float *b)
 
 #define VecMat(a, b, c)				\
 {						\
-    float x = *(a+0);				\
-    float y = *(a+1);				\
-    float z = *(a+2);				\
+    float x = a->x;				\
+    float y = a->y;				\
+    float z = a->z;				\
 						\
-    *(c+0) = x*(b)[0] + y*(b)[3] + z*(b)[6];    \
-    *(c+1) = x*(b)[1] + y*(b)[4] + z*(b)[7];    \
-    *(c+2) = x*(b)[2] + y*(b)[5] + z*(b)[8];    \
+    c->x = x*(b)[0] + y*(b)[3] + z*(b)[6];    \
+    c->y = x*(b)[1] + y*(b)[4] + z*(b)[7];    \
+    c->z = x*(b)[2] + y*(b)[5] + z*(b)[8];    \
 }
 
 #define MatMat(a, b, c)				\
@@ -1993,13 +1998,13 @@ InitFrame(float *v, float *n, float *b)
 
 static Error
 UpdateFrame(float *p, float *v, float *c, float *t, float *n, float *b, 
-					float *fn, float *fb, float *ft)
+					Vector *fn, Vector *fb, Vector *ft)
 {
     float  twist;
     float  mTwist[9], mBend[9];
-    float  cross[3], len, cA;
+    float  len, cA;
     int	   bend = 0;
-    float  nt[3];
+    Vector v1, v2, vv, cross, nt;
 
 
     /*
@@ -2007,14 +2012,23 @@ UpdateFrame(float *p, float *v, float *c, float *t, float *n, float *b,
      */
     if (c != NULL)
     {
-	float step[3];
+	Vector step;
+	Vector vc;
+	
+	vc.x = c[0]; vc.y = c[1]; vc.z = c[2];
 
-	_dxfvector_subtract_3D((Vector *)p, (Vector *)(p-3), (Vector *)step);
+	v1.x = p[0]; v1.y = p[1]; v1.z = p[2];
+	v2.x = (p-3)[0]; v2.y = (p-3)[1]; v2.z = (p-3)[2];
+	_dxfvector_subtract_3D(&v1, &v2, &step);
 
-	twist = 0.5 * _dxfvector_dot_3D((Vector *)step, (Vector *)c);
+	twist = 0.5 * _dxfvector_dot_3D(&step, &vc);
 	if (twist != 0.0)
 	{
-	    RotateAroundVector((Vector *)ft, cos(twist), sin(twist), mTwist);
+		float fna[3], fba[3];
+		fna[0] = fn->x; fna[1] = fn->y; fna[2] = fn->z;
+		fba[0] = fb->x; fba[1] = fb->y; fba[2] = fb->z;
+		
+	    RotateAroundVector(ft, cos(twist), sin(twist), mTwist);
 
 	    VecMat(fn, mTwist, fn);
 	    VecMat(fb, mTwist, fb);
@@ -2026,11 +2040,12 @@ UpdateFrame(float *p, float *v, float *c, float *t, float *n, float *b,
      * vertex.  If its zero length, just leave the frame of reference
      * alone.
      */
-    len = _dxfvector_length_3D((Vector *)v);
+    vv.x = v[0]; vv.y = v[1]; vv.z = v[2];
+    len = _dxfvector_length_3D(&vv);
     if (len == 0.0)
     {
-	n[0] = fn[0]; n[1] = fn[1]; n[2] = fn[2];
-	b[0] = fb[0]; b[1] = fb[1]; b[2] = fb[2];
+	n[0] = fn->x; n[1] = fn->y; n[2] = fn->z;
+	b[0] = fb->x; b[1] = fb->y; b[2] = fb->z;
 	return OK;
     }
     
@@ -2038,8 +2053,8 @@ UpdateFrame(float *p, float *v, float *c, float *t, float *n, float *b,
      * DXDot the incoming and outgoing tangents to determine
      * whether a bend occurs.
      */
-    _dxfvector_scale_3D((Vector *)v, 1.0/len, (Vector *)nt);
-    cA = _dxfvector_dot_3D((Vector *)nt, (Vector *)ft);
+    _dxfvector_scale_3D(&vv, 1.0/len, &nt);
+    cA = _dxfvector_dot_3D(&nt, ft);
 
     /*
      * If there's a bend angle...
@@ -2053,8 +2068,8 @@ UpdateFrame(float *p, float *v, float *c, float *t, float *n, float *b,
 	/*
 	 * DXNormalize the bend axis
 	 */
-	_dxfvector_cross_3D((Vector *)nt, (Vector *)ft, (Vector *)cross);
-	_dxfvector_normalize_3D((Vector *)cross, (Vector *)cross);
+	_dxfvector_cross_3D(&nt, ft, &cross);
+	_dxfvector_normalize_3D(&cross, &cross);
 
 	/*
 	 * Rotate the incoming frame of reference by half the angle to
@@ -2064,7 +2079,7 @@ UpdateFrame(float *p, float *v, float *c, float *t, float *n, float *b,
 	cA = cos(angle);
 	sA = sin(angle);
 
-	RotateAroundVector((Vector *)cross, cA, sA, mBend);
+	RotateAroundVector(&cross, cA, sA, mBend);
 
 	VecMat(fn, mBend, fn);
 	VecMat(fb, mBend, fb);
@@ -2073,8 +2088,8 @@ UpdateFrame(float *p, float *v, float *c, float *t, float *n, float *b,
 	/*
 	 * Now we have the vertex frame of reference
 	 */
-	n[0] = fn[0]; n[1] = fn[1]; n[2] = fn[2];
-	b[0] = fb[0]; b[1] = fb[1]; b[2] = fb[2];
+	n[0] = fn->x; n[1] = fn->y; n[2] = fn->z;
+	b[0] = fb->x; b[1] = fb->y; b[2] = fb->z;
 
 	/*
 	 * If there was a bend, perform the second half of the rotation
@@ -2089,14 +2104,14 @@ UpdateFrame(float *p, float *v, float *c, float *t, float *n, float *b,
 	 * Outgoing tangent is normalized exiting segment vector.  Also
 	 * normalize the frame normal and binormal.
 	 */
-	_dxfvector_normalize_3D((Vector *)fn, (Vector *)fn);
-	_dxfvector_normalize_3D((Vector *)fb, (Vector *)fb);
-	ft[0] = nt[0]; ft[1] = nt[1]; ft[2] = nt[2];
+	_dxfvector_normalize_3D(fn, fn);
+	_dxfvector_normalize_3D(fb, fb);
+	ft->x = nt.x; ft->y = nt.y; ft->z = nt.z;
     }
     else
     {
-	n[0] = fn[0]; n[1] = fn[1]; n[2] = fn[2];
-	b[0] = fb[0]; b[1] = fb[1]; b[2] = fb[2];
+	n[0] = fn->x; n[1] = fn->y; n[2] = fn->z;
+	b[0] = fb->x; b[1] = fb->y; b[2] = fb->z;
     }
 
     return OK;

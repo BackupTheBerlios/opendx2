@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/echo.h,v 1.1 2000/08/24 20:04:28 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/echo.h,v 1.2 2006/06/10 16:33:58 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -17,7 +17,7 @@
 
 #include <dx/dx.h>
 
-Error _dxf_ConvertObjectsToStringValues(Object *, int, char **);
+Error _dxf_ConvertObjectsToStringValues(Object *, int, char **, int);
 
 #endif /* _ECHO_H_ */
 

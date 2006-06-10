@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/echo.c,v 1.5 2000/08/24 20:04:28 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/echo.c,v 1.6 2006/06/10 16:33:58 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -30,6 +30,9 @@ struct einfo {
     int atend;
     char *mp;
     char *msgbuf;
+
+    int bufSize;
+    int reallocFlag;
 };
 
 static int EndCheck(struct einfo *ep)
@@ -39,13 +42,23 @@ static int EndCheck(struct einfo *ep)
 
     if ((ep->mp - ep->msgbuf) >= ep->maxlen) {
 
-        ep->atend = 1;
+        if( ep->reallocFlag){
+	  int currLen = ep->mp - ep->msgbuf;
+	  ep->bufSize *= 2;
+	  ep->msgbuf = (char*) DXReAllocate( ep->msgbuf, ep->bufSize );
+	  ep->mp = ep->msgbuf + currLen;
+	  ep->maxlen = ep->bufSize - SLOP;
+	  return 0;
+        }
+        else {
+          ep->atend = 1;
 
-        sprintf(ep->mp, " <msg too long> ");
-        while(*ep->mp) 
+          sprintf(ep->mp, " <msg too long> ");
+          while(*ep->mp) 
             ep->mp++;
         
-        return 1;
+          return 1;
+        }
     }
     
     return 0;
@@ -87,7 +100,7 @@ m_Echo(Object *in, Object *out)
 	return OK;
 
 
-    if (!_dxf_ConvertObjectsToStringValues(in,incount,&echo_string))
+    if (!_dxf_ConvertObjectsToStringValues(in,incount,&echo_string,1))
 	goto error;
 
     /* prevent messages from being mangled if they start with # */
@@ -376,9 +389,10 @@ static void ps(struct einfo *ep, char *cp)
         if (EndCheck(ep))
             return;
     }
+    *ep->mp = '\0';
 }
 
-Error _dxf_ConvertObjectsToStringValues(Object *in, int nobj, char **retstr)
+Error _dxf_ConvertObjectsToStringValues(Object *in, int nobj, char **retstr, int rf)
 {
     struct einfo ei;
     int input, items, rank, shape[100];
@@ -395,6 +409,8 @@ Error _dxf_ConvertObjectsToStringValues(Object *in, int nobj, char **retstr)
     ei.msgbuf = (char *)DXAllocateZero(MSGLEN+SLOP);
     if (!ei.msgbuf)
  	goto error;	
+    ei.bufSize = MSGLEN+SLOP;
+    ei.reallocFlag = rf;
 
     /* loop through input, adding to the end of the accumulated string
      *  each time.  since we used DXAllocateZero, the first time through

@@ -899,14 +899,18 @@ PacketIF::parsePacket()
 	int               i=0;
 	int               j;
 	int               k;
-	char              token[4096];
+	char              *token;
 
+	// Guarantee token always long enough.
+	token = new char[strlen(this->line)+1];
+	
 	/*
 	* Skip past the first vertical bar.
 	*/
 	if (this->line[i++] != '|')
 	{
 		ErrorMessage("Format error (1) encountered in packet.");
+		delete token;
 		return;
 	}
 
@@ -928,6 +932,7 @@ PacketIF::parsePacket()
 	if (this->line[i++] != '|')
 	{
 		ErrorMessage("Format error (2) encountered in packet.");
+		delete token;
 		return;
 	}
 
@@ -949,6 +954,7 @@ PacketIF::parsePacket()
 	if (type >= _packet_type_count - 1)
 	{
 		ErrorMessage("Unknown packet type \"%s\" encountered.", token);
+		delete token;
 		return;
 	}
 
@@ -958,6 +964,7 @@ PacketIF::parsePacket()
 	if (this->line[i++] != '|')
 	{
 		ErrorMessage("Format error (3) encountered in packet.");
+		delete token;
 		return;
 	}
 
@@ -979,6 +986,7 @@ PacketIF::parsePacket()
 	if (this->line[i++] != '|')
 	{
 		ErrorMessage("Format error (4) encountered in packet.");
+		delete token;
 		return;
 	}
 
@@ -997,6 +1005,7 @@ PacketIF::parsePacket()
 	if (this->line[i] != '|')
 	{
 		ErrorMessage("Format error (5) encountered in packet.");
+		delete token;
 		return;
 	}
 
@@ -1114,6 +1123,7 @@ PacketIF::parsePacket()
 			delete h;
 		}
 	}
+	delete token;
 }
 
 

@@ -1,3 +1,29 @@
+Add the capability to be able to pass much larger
+strings through the packet handlers. This will 
+accomodate sending full html pages through as responses
+to clicks in Java Explorer.
+
+Corrected a problem where some code would cause
+problems when the compiler optimized aliasing (Bug #196)
+
+Set the shared library flags to reflect the more
+updated compilers on Linux (Bug #208)
+
+Correct a Java Explorer server problem where a blank
+line in dxserver.hosts would cause the server to die.
+
+Fix a case for stricmp in Compute where the function
+would return success when a was a prefix of b.
+
+Added an option to Lookup to allow a different return
+value if the item was not found.
+
+Add a fix for hardware texture mapping where an error
+would sometimes occur stating that the 'uv' component
+didn't exist when it obviously did. This manifested
+itself quite easily--just turn on AutoAxes with a
+texture mapped field.
+
 4.4.0
 ===============
 Fix for colors in the Colormap Editor when the OS's

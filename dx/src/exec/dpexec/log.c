@@ -76,11 +76,16 @@ void _dxf_ExLogClose()
 void
 DXqmessage (char *input_who, char *message, va_list args)
 {
-    char	buf[MSG_BUFLEN];
+    /*char	buf[MSG_BUFLEN];*/
+    char	*buf;
+    int		bufSize;
+    int		spaceLeft;
+    int		n2;
     char	*who, whobuf[512];
     int		n;
     int		ptype;
     int		level;
+	int		mlen;
 
     who = input_who;
 
@@ -118,6 +123,9 @@ DXqmessage (char *input_who, char *message, va_list args)
         }
     }
 
+    bufSize = MSG_BUFLEN;
+    buf=DXAllocate(bufSize);
+
     if (who && strcmp(who, "MESSAGE"))
     {
         if (*who == '*')
@@ -154,13 +162,17 @@ DXqmessage (char *input_who, char *message, va_list args)
 	}
 #endif
 
-#if DXD_PRINTF_RETURNS_COUNT
-    n += vsprintf (buf + n, message, args);
-#else
-    vsprintf (buf + n, message, args);
-    n += strlen(buf + n);
-#endif
-
+    mlen = strlen(message);
+    spaceLeft = bufSize - n - 1;
+    n2 = vsnprintf(buf + n, spaceLeft, message, args);
+    if( n2 >= spaceLeft ){
+        bufSize += ( bufSize>n2 ? bufSize : n2 ) + 1;
+        buf = DXReAllocate( buf, bufSize );
+        spaceLeft = bufSize - n - 1;
+	n2 = vsnprintf(buf + n, spaceLeft, message, args);
+    }
+    n += n2;
+    
     buf[n] = '\n';
     buf[n+1] = '\000';
 
@@ -264,6 +276,8 @@ clean_up:
     }
     else if (_dxd_exContext != NULL)
 	_dxf_ExQMessage(ptype, _dxd_exContext->graphId, n+1, buf);
+
+    DXFree(buf);
 }
 
 
@@ -286,6 +300,7 @@ _dxf_ExQMessage(int ptype, int graphId, int len, char *buf)
 
 	while ((c = strchr (buf, '\n')) != 0)
 	    *c = ' ';
+
         _dxf_ExSPack (ptype, graphId, buf, len-1);
     }
 }		
