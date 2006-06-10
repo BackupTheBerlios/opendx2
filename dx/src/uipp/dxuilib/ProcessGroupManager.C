@@ -357,22 +357,22 @@ void ProcessGroupManager::sendAssignment(int function)
 
             first = TRUE;
             li.setList(*list);
-            while( (group = (char*)li.getNext()) )
-	    {
-	    	this->clearGroupHostDirty(group);
-                if(first)
-                    first = FALSE;
-                else
-                    strcat(grouplist, ",");
+			while( (group = (char*)li.getNext()) )
+			{
+				this->clearGroupHostDirty(group);
+				if(first)
+					first = FALSE;
+				else
+					strcat(grouplist, ",");
 
-		if(function == DETACH)
-		    strcat(grouplist, "\"");	
-			
-                strcat(grouplist, group);
+				if(function == DETACH)
+					strcat(grouplist, "\"");	
 
-		if(function == DETACH)
-		    strcat(grouplist, "\"");	
-	   }
+				strcat(grouplist, group);
+
+				if(function == DETACH)
+					strcat(grouplist, "\"");	
+			}
 
            cmd = new char[STRLEN("exective( ), ")
                           + STRLEN(func)

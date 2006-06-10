@@ -1279,255 +1279,255 @@ int _output_index;		/* current output param index	  */
 // extension.
 //
 boolean Network::readNetwork(const char *netFile, const char *cfgFile,
-			     boolean ignoreUndefinedModules)
+							 boolean ignoreUndefinedModules)
 {
-    Decorator *dec;
-    ListIterator it;
+	Decorator *dec;
+	ListIterator it;
 
-    FILE *f;
-    int	namesize;
-    char *netfile, *cfgfile;
+	FILE *f;
+	int	namesize;
+	char *netfile, *cfgfile;
 
-    Network::ParseState::ignoreUndefinedModules = ignoreUndefinedModules;
-   
-    netfile = Network::FilenameToNetname(netFile);
+	Network::ParseState::ignoreUndefinedModules = ignoreUndefinedModules;
 
-    f = this->openNetworkFILE(netfile);
+	netfile = Network::FilenameToNetname(netFile);
 
-    //
-    // If there is an editor and this net file is encoded, then don't 
-    // allow reading the .net.  Note, to catch all cases, we must also 
-    // not allow creating of Editor's for encoded nets that have already
-    // been read in (i.e. in image mode).  
-    // See DXApplication::newNetworkEditor() and/or EditorWindow::manage().
-    //
-    if (this->getEditor() && this->wasNetFileEncoded()) {
-	ErrorMessage("This visual program is encoded and is "
+	f = this->openNetworkFILE(netfile);
+
+	//
+	// If there is an editor and this net file is encoded, then don't 
+	// allow reading the .net.  Note, to catch all cases, we must also 
+	// not allow creating of Editor's for encoded nets that have already
+	// been read in (i.e. in image mode).  
+	// See DXApplication::newNetworkEditor() and/or EditorWindow::manage().
+	//
+	if (this->getEditor() && this->wasNetFileEncoded()) {
+		ErrorMessage("This visual program is encoded and is "
 			"therefore not viewable with the VPE");
-	if (f) {
-	    this->closeNetworkFILE(f);	
-	    f = NULL;
+		if (f) {
+			this->closeNetworkFILE(f);	
+			f = NULL;
+		}
 	}
-    }
 
-    if (!f) {
-	delete netfile;
-	this->clear();
-	return FALSE;
-    }
+	if (!f) {
+		delete netfile;
+		this->clear();
+		return FALSE;
+	}
 
-    if (this->fileName != NULL)
-    	delete this->fileName;
-    this->fileName = netfile;
+	if (this->fileName != NULL)
+		delete this->fileName;
+	this->fileName = netfile;
 
 #ifdef NoParseState
-    //
-    // Initialize the undefined/redefined modules dictionaries.
-    //
-    if (_undefined_modules)
-	_undefined_modules->clear();
-    else
-	_undefined_modules = new Dictionary;
-    if (_redefined_modules)
-	_redefined_modules->clear();
-    else
-	_redefined_modules = new Dictionary;
-#endif
-
-    //
-    // Parse the .net file
-    //
-    this->readingNetwork = TRUE;
-    this->prepareForNewNetwork();
-#ifdef NoParseState
-    _parse_mode = _PARSE_NETWORK;
-    _parse_file = netfile;
-#else
-    this->parseState.initializeForParse(this,_PARSE_NETWORK,netfile);
-#endif
-    boolean parse_terminated =  this->parse(f);
-    this->completeNewNetwork();
-    this->readingNetwork = FALSE;
-    this->closeNetworkFILE(f);	
-#ifdef NoParseState
-#else
-    this->parseState.cleanupAfterParse();
-#endif
-
-    if (parse_terminated)  {
-	this->clear();
-	return FALSE;
-    }
-
-    //
-    // Parse the .cfg file if it exists.
-    //
-    if (!cfgFile) {
-	namesize = STRLEN(netfile);
-	cfgfile = DuplicateString(netfile);
-#ifndef DXD_OS_NON_UNIX          //SMH for NT we'll should handle upper case as well
-	ASSERT(netfile[namesize-4] == NetExtension[0]); 
-	       cfgfile[namesize-4]  = CfgExtension[0];
-	ASSERT(netfile[namesize-3] == NetExtension[1]); 
-	       cfgfile[namesize-3]  = CfgExtension[1];
-	ASSERT(netfile[namesize-2] == NetExtension[2]); 
-	       cfgfile[namesize-2]  = CfgExtension[2];
-	ASSERT(netfile[namesize-1] == NetExtension[3]); 
-	       cfgfile[namesize-1]  = CfgExtension[3];
-#else
-	ASSERT(netfile[namesize-4] == NetExtension[0]);
-	       cfgfile[namesize-4]  = CfgExtension[0];
-	if (netfile[namesize-3] == NetExtension[1])
-	{
-	    cfgfile[namesize-3]  = CfgExtension[1];
-	    ASSERT(netfile[namesize-2] == NetExtension[2]);
-		    cfgfile[namesize-2]  = CfgExtension[2];
-	    ASSERT(netfile[namesize-1] == NetExtension[3]);
-		    cfgfile[namesize-1]  = CfgExtension[3];
-	}
-	else if (netfile[namesize-3] == NetExtensionUpper[1])
-	{
-	    cfgfile[namesize-3]  = CfgExtensionUpper[1];
-	    ASSERT(netfile[namesize-2] == NetExtensionUpper[2]);
-                cfgfile[namesize-2]  = CfgExtensionUpper[2];
-        ASSERT(netfile[namesize-1] == NetExtensionUpper[3]);
-                cfgfile[namesize-1]  = CfgExtensionUpper[3];
-	}
+	//
+	// Initialize the undefined/redefined modules dictionaries.
+	//
+	if (_undefined_modules)
+		_undefined_modules->clear();
 	else
-	{
-	    fprintf(stderr,"Internal error detected at \"%s\":%d.\n",
-					    __FILE__,__LINE__);
-	}
+		_undefined_modules = new Dictionary;
+	if (_redefined_modules)
+		_redefined_modules->clear();
+	else
+		_redefined_modules = new Dictionary;
 #endif
-    } else
-	cfgfile = (char*)cfgFile;
-    
-    this->openCfgFile(cfgfile, FALSE, FALSE);
 
-    if (cfgfile != cfgFile)
-	delete cfgfile;
+	//
+	// Parse the .net file
+	//
+	this->readingNetwork = TRUE;
+	this->prepareForNewNetwork();
+#ifdef NoParseState
+	_parse_mode = _PARSE_NETWORK;
+	_parse_file = netfile;
+#else
+	this->parseState.initializeForParse(this,_PARSE_NETWORK,netfile);
+#endif
+	boolean parse_terminated =  this->parse(f);
+	this->completeNewNetwork();
+	this->readingNetwork = FALSE;
+	this->closeNetworkFILE(f);	
+#ifdef NoParseState
+#else
+	this->parseState.cleanupAfterParse();
+#endif
 
-    //
-    // If we are in image mode then open control panels that are marked
-    // as 'startup' control panels and the sequencer if it exists.
-    //
-    if (!theDXApplication->inEditMode() && 
-	!theDXApplication->appSuppressesStartupWindows()) {
-	ListIterator iterator;
+	if (parse_terminated)  {
+		this->clear();
+		return FALSE;
+	}
+
+	//
+	// Parse the .cfg file if it exists.
+	//
+	if (!cfgFile) {
+		namesize = STRLEN(netfile);
+		cfgfile = DuplicateString(netfile);
+#ifndef DXD_OS_NON_UNIX          //SMH for NT we'll should handle upper case as well
+		ASSERT(netfile[namesize-4] == NetExtension[0]); 
+		cfgfile[namesize-4]  = CfgExtension[0];
+		ASSERT(netfile[namesize-3] == NetExtension[1]); 
+		cfgfile[namesize-3]  = CfgExtension[1];
+		ASSERT(netfile[namesize-2] == NetExtension[2]); 
+		cfgfile[namesize-2]  = CfgExtension[2];
+		ASSERT(netfile[namesize-1] == NetExtension[3]); 
+		cfgfile[namesize-1]  = CfgExtension[3];
+#else
+		ASSERT(netfile[namesize-4] == NetExtension[0]);
+		cfgfile[namesize-4]  = CfgExtension[0];
+		if (netfile[namesize-3] == NetExtension[1])
+		{
+			cfgfile[namesize-3]  = CfgExtension[1];
+			ASSERT(netfile[namesize-2] == NetExtension[2]);
+			cfgfile[namesize-2]  = CfgExtension[2];
+			ASSERT(netfile[namesize-1] == NetExtension[3]);
+			cfgfile[namesize-1]  = CfgExtension[3];
+		}
+		else if (netfile[namesize-3] == NetExtensionUpper[1])
+		{
+			cfgfile[namesize-3]  = CfgExtensionUpper[1];
+			ASSERT(netfile[namesize-2] == NetExtensionUpper[2]);
+			cfgfile[namesize-2]  = CfgExtensionUpper[2];
+			ASSERT(netfile[namesize-1] == NetExtensionUpper[3]);
+			cfgfile[namesize-1]  = CfgExtensionUpper[3];
+		}
+		else
+		{
+			fprintf(stderr,"Internal error detected at \"%s\":%d.\n",
+				__FILE__,__LINE__);
+		}
+#endif
+	} else
+		cfgfile = (char*)cfgFile;
+
+	this->openCfgFile(cfgfile, FALSE, FALSE);
+
+	if (cfgfile != cfgFile)
+		delete cfgfile;
+
+	//
+	// If we are in image mode then open control panels that are marked
+	// as 'startup' control panels and the sequencer if it exists.
+	//
+	if (!theDXApplication->inEditMode() && 
+		!theDXApplication->appSuppressesStartupWindows()) {
+			ListIterator iterator;
 
 #if USE_WINDOW_STARTUP
-	//
-	// Do the image windows. 
-	//
-	ImageWindow *iw;
-	iterator.setList(this->imageList);
-	while(iw = (ImageWindow*)iterator.getNext()) {
-	    if (iw->isStartup())
-	        iw->manage();
-	}
+			//
+			// Do the image windows. 
+			//
+			ImageWindow *iw;
+			iterator.setList(this->imageList);
+			while(iw = (ImageWindow*)iterator.getNext()) {
+				if (iw->isStartup())
+					iw->manage();
+			}
 #endif
 
-	//
-	// Do the startup control panels.
-	//
-	this->openControlPanel(-1);
+			//
+			// Do the startup control panels.
+			//
+			this->openControlPanel(-1);
 
-	//
-	// Do the sequencer. 
-	//
-	if ((this->sequencer) && (this->sequencer->isStartup()))
-	   this->postSequencer();
-    }
-
-    if (this->editor) {
-	//
-	// turn line routing off before adding multiple vpe comments because
-	// each one can cause a line reroute.
-	//
-	boolean hasdec = (this->decoratorList.getSize() > 0);
-	if (hasdec) {
-	    this->editor->beginPageChange();
-	    FOR_EACH_NETWORK_DECORATOR (this, dec, it) {
-		this->editor->newDecorator(dec);
-	    }
-	    this->editor->endPageChange();
+			//
+			// Do the sequencer. 
+			//
+			if ((this->sequencer) && (this->sequencer->isStartup()))
+				this->postSequencer();
 	}
-    }
 
-    this->setDirty();
+	if (this->editor) {
+		//
+		// turn line routing off before adding multiple vpe comments because
+		// each one can cause a line reroute.
+		//
+		boolean hasdec = (this->decoratorList.getSize() > 0);
+		if (hasdec) {
+			this->editor->beginPageChange();
+			FOR_EACH_NETWORK_DECORATOR (this, dec, it) {
+				this->editor->newDecorator(dec);
+			}
+			this->editor->endPageChange();
+		}
+	}
+
+	this->setDirty();
 
 
-    //
-    // Mark the network file dirty if there were redefined modules.
-    //
-    if (Network::ParseState::redefined_modules->getSize() > 0)
-	this->setFileDirty();
-    else
-	this->clearFileDirty();
+	//
+	// Mark the network file dirty if there were redefined modules.
+	//
+	if (Network::ParseState::redefined_modules->getSize() > 0)
+		this->setFileDirty();
+	else
+		this->clearFileDirty();
 
-    /*
-     * Generate one collective error message for redefined modules.
-     */
-    GenerateModuleMessage(Network::ParseState::redefined_modules, 
-				"The following tools have been redefined",
-				FALSE);
+	/*
+	* Generate one collective error message for redefined modules.
+	*/
+	GenerateModuleMessage(Network::ParseState::redefined_modules, 
+		"The following tools have been redefined",
+		FALSE);
 
-    /*
-     * Generate one collective error message for undefined modules.
-     */
-    char msg[1024];
-    if (!strcmp(this->getNameString(), "main")) 
-      SPRINTF(msg,
-	  "The main visual program contains undefined tools.\n"
-	    "Reload the visual program after loading the following tools");
-    else
-      SPRINTF(msg,
-	  "Macro %s contains undefined tools.\n"
-	  "Reload macro %s after loading the following tools",
-		      this->getNameString(), this->getNameString());
-    GenerateModuleMessage(Network::ParseState::undefined_modules, msg, TRUE);
+	/*
+	* Generate one collective error message for undefined modules.
+	*/
+	char msg[1024];
+	if (!strcmp(this->getNameString(), "main")) 
+		SPRINTF(msg,
+		"The main visual program contains undefined tools.\n"
+		"Reload the visual program after loading the following tools");
+	else
+		SPRINTF(msg,
+		"Macro %s contains undefined tools.\n"
+		"Reload macro %s after loading the following tools",
+		this->getNameString(), this->getNameString());
+	GenerateModuleMessage(Network::ParseState::undefined_modules, msg, TRUE);
 
-    //
-    // These three are 0.0.0 unless they were parsed out of the .net
-    // which doesn't contain DX version numbers until DX 2.0.2
-    //
-    int dx_major = this->getDXMajorVersion();
-    int dx_minor = this->getDXMinorVersion();
-    int dx_micro = this->getDXMicroVersion();
-    int dx_version =   VERSION_NUMBER( dx_major, dx_minor, dx_micro); 
-    //
-    // Version checking was added after version 2.0.2 of Data Explorer
-    //
-    if (!ParseState::issued_version_error && 
-			(dx_version > VERSION_NUMBER(2,0,2))) {
-        int net_major = this->getNetMajorVersion();
-	int net_minor = this->getNetMinorVersion();
-	// int net_micro = this->getNetMicroVersion();
-        // int net_version =   VERSION_NUMBER( net_major, net_minor, net_micro); 
-	if (VERSION_NUMBER(net_major, net_minor,0) > 
-	    VERSION_NUMBER(NETFILE_MAJOR_VERSION,NETFILE_MINOR_VERSION,0)) {
-	    const char *name = theDXApplication->getInformalName();
-	    WarningMessage(
-	      "%s%s was saved in a format defined by\n"
-	      "a release of %s (version %d.%d.%d) that is\n"
-	      "more recent than this version (%d.%d.%d).\n"
-	      "Contact your support center if you would like to obtain a\n"
-	      "version of %s that can fully support this visual program." ,
-                    (this->isMacro()?"The macro " : "The visual program "),
-                    (this->isMacro()?this->getDefinition()->getNameString():""),
-		    name,dx_major,dx_minor,dx_micro,
-		    DX_MAJOR_VERSION,DX_MINOR_VERSION,DX_MICRO_VERSION,
-		    name);
-	} 
-    }
+	//
+	// These three are 0.0.0 unless they were parsed out of the .net
+	// which doesn't contain DX version numbers until DX 2.0.2
+	//
+	int dx_major = this->getDXMajorVersion();
+	int dx_minor = this->getDXMinorVersion();
+	int dx_micro = this->getDXMicroVersion();
+	int dx_version =   VERSION_NUMBER( dx_major, dx_minor, dx_micro); 
+	//
+	// Version checking was added after version 2.0.2 of Data Explorer
+	//
+	if (!ParseState::issued_version_error && 
+		(dx_version > VERSION_NUMBER(2,0,2))) {
+			int net_major = this->getNetMajorVersion();
+			int net_minor = this->getNetMinorVersion();
+			// int net_micro = this->getNetMicroVersion();
+			// int net_version =   VERSION_NUMBER( net_major, net_minor, net_micro); 
+			if (VERSION_NUMBER(net_major, net_minor,0) > 
+				VERSION_NUMBER(NETFILE_MAJOR_VERSION,NETFILE_MINOR_VERSION,0)) {
+					const char *name = theDXApplication->getInformalName();
+					WarningMessage(
+						"%s%s was saved in a format defined by\n"
+						"a release of %s (version %d.%d.%d) that is\n"
+						"more recent than this version (%d.%d.%d).\n"
+						"Contact your support center if you would like to obtain a\n"
+						"version of %s that can fully support this visual program." ,
+						(this->isMacro()?"The macro " : "The visual program "),
+						(this->isMacro()?this->getDefinition()->getNameString():""),
+						name,dx_major,dx_minor,dx_micro,
+						DX_MAJOR_VERSION,DX_MINOR_VERSION,DX_MICRO_VERSION,
+						name);
+			} 
+	}
 
-    //
-    // Fixup name conflicts with Transmitters/Receivers read in from old nets.
-    // (Must be done after readingNetwork is reset to FALSE, and dirty bit is cleared.)
-    //
-    this->renameTransmitters();
+	//
+	// Fixup name conflicts with Transmitters/Receivers read in from old nets.
+	// (Must be done after readingNetwork is reset to FALSE, and dirty bit is cleared.)
+	//
+	this->renameTransmitters();
 
-    return TRUE;
+	return TRUE;
 
 }
 
@@ -1874,63 +1874,63 @@ int response;
 
 void Network::parseVersionComment(const char* comment, boolean netfile)
 {
-    int  items_parsed;
-    int  net_major=0;
-    int  net_minor=0;
-    int  net_micro=0;
-    int  dx_major=0;
-    int  dx_minor=0;
-    int  dx_micro=0;
+	int  items_parsed;
+	int  net_major=0;
+	int  net_minor=0;
+	int  net_micro=0;
+	int  dx_major=0;
+	int  dx_minor=0;
+	int  dx_micro=0;
 
-    ASSERT(comment);
+	ASSERT(comment);
 
-    items_parsed =
-	sscanf(comment, " version: %d.%d.%d (format), %d.%d.%d", 
-			&net_major, &net_minor, &net_micro,
-			&dx_major, &dx_minor, &dx_micro);
+	items_parsed =
+		sscanf(comment, " version: %d.%d.%d (format), %d.%d.%d", 
+		&net_major, &net_minor, &net_micro,
+		&dx_major, &dx_minor, &dx_micro);
 
-    if (netfile) {
-	if (items_parsed != 6)
-	{
-	    items_parsed =
-		sscanf(comment, " version: %d.%d.%d", 
-				    &net_major, &net_minor, &net_micro);
-	    if (items_parsed != 3)
-	    {
-	    
-		ErrorMessage("Invalid version comment at %s:%d", 
-					    Network::ParseState::parse_file, 
-						yylineno);
-		Network::ParseState::error_occurred = TRUE;
-		return;
-	    }
+	if (netfile) {
+		if (items_parsed != 6)
+		{
+			items_parsed =
+				sscanf(comment, " version: %d.%d.%d", 
+				&net_major, &net_minor, &net_micro);
+			if (items_parsed != 3)
+			{
+
+				ErrorMessage("Invalid version comment at %s:%d", 
+					Network::ParseState::parse_file, 
+					yylineno);
+				Network::ParseState::error_occurred = TRUE;
+				return;
+			}
+		} else {
+			//
+			// Some sample .net file went out marked as DX version 2.1.100.
+			// This happened when we decided to make the rcs 7.0.2 branch,
+			// into the refresh release 2.1.5.  At the time the 7.0.2 branch 
+			// was a "developer's" branch and thus marked as
+			// version 2.1.100.  This fixes the information message that
+			// pops up with version 3.x and later versions of dxui that
+			// tells what version of DX the .net was saved with.
+			//
+			if ((dx_major == 2) && (dx_minor == 1) && (dx_micro == 100))
+				dx_micro = 5;
+			this->dxVersion.major = dx_major;
+			this->dxVersion.minor = dx_minor;
+			this->dxVersion.micro = dx_micro;
+		}
+		this->netVersion.major = net_major;
+		this->netVersion.minor = net_minor;
+		this->netVersion.micro = net_micro;
 	} else {
-	    //
-	    // Some sample .net file went out marked as DX version 2.1.100.
-	    // This happened when we decided to make the rcs 7.0.2 branch,
-	    // into the refresh release 2.1.5.  At the time the 7.0.2 branch 
- 	    // was a "developer's" branch and thus marked as
-	    // version 2.1.100.  This fixes the information message that
-	    // pops up with version 3.x and later versions of dxui that
-	    // tells what version of DX the .net was saved with.
-	    //
-	    if ((dx_major == 2) && (dx_minor == 1) && (dx_micro == 100))
-		 dx_micro = 5;
-	    this->dxVersion.major = dx_major;
-	    this->dxVersion.minor = dx_minor;
-	    this->dxVersion.micro = dx_micro;
+		if (items_parsed != 6) {
+			ErrorMessage("Invalid version comment at %s:%d", 
+				Network::ParseState::parse_file, yylineno);
+			Network::ParseState::error_occurred = TRUE;
+			return;
+		}
 	}
-	this->netVersion.major = net_major;
-	this->netVersion.minor = net_minor;
-	this->netVersion.micro = net_micro;
-    } else {
-	if (items_parsed != 6) {
-		ErrorMessage("Invalid version comment at %s:%d", 
-					    Network::ParseState::parse_file, yylineno);
-		Network::ParseState::error_occurred = TRUE;
-		return;
-	}
-    }
 
 
     //
@@ -2376,42 +2376,42 @@ boolean Network::netParseComments(const char *comment, const char *filename,
     /*
      * If .net workspace comment...
      */
-    else if (EqualSubstring(comment, " workspace", 10)) 
-    {
-        if (!this->workSpaceInfo.parseComment(comment, 
-				Network::ParseState::parse_file, yylineno)) {
-	    Network::ParseState::error_occurred      = TRUE;
+	else if (EqualSubstring(comment, " workspace", 10)) 
+	{
+		if (!this->workSpaceInfo.parseComment(comment, 
+			Network::ParseState::parse_file, yylineno)) {
+				Network::ParseState::error_occurred      = TRUE;
+		}
+		this->parseState.parse_state = _PARSED_WORKSPACE;
 	}
-	this->parseState.parse_state = _PARSED_WORKSPACE;
-    }
-    else if (this->parseState.parse_state == _PARSED_NODE && 
-			this->parseState.node_error_occurred == FALSE) {
-	if (!this->parseState.node->netParseComment(comment,
+	else if (this->parseState.parse_state == _PARSED_NODE && 
+		this->parseState.node_error_occurred == FALSE) {
+			if (!this->parseState.node->netParseComment(comment,
 				Network::ParseState::parse_file, yylineno)) {
-	    WarningMessage("Unrecognized comment at line %d of file %s"
-			   " (ignoring)",
-			lineno,filename);
-	} else {
+					WarningMessage("Unrecognized comment at line %d of file %s"
+						" (ignoring)",
+						lineno,filename);
+			} else {
 #if WORKSPACE_PAGES
-	    this->parseState.parse_sub_state = _SUB_PARSED_NODE;
+				this->parseState.parse_sub_state = _SUB_PARSED_NODE;
 #endif
+			}
+	} 
+	else if (this->parseState.parse_state == _PARSED_WORKSPACE) 
+	{
+		if (!this->workSpaceInfo.parseComment(comment, 
+			Network::ParseState::parse_file, yylineno)) {
+				WarningMessage("Unrecognized comment at line %d of file %s"
+					" (ignoring)",
+					lineno,filename);
+		}
 	}
-    } 
-    else if (this->parseState.parse_state == _PARSED_WORKSPACE) 
-    {
-        if (!this->workSpaceInfo.parseComment(comment, 
-				Network::ParseState::parse_file, yylineno)) {
-	    WarningMessage("Unrecognized comment at line %d of file %s"
-			   " (ignoring)",
+	else if (this->parseState.parse_state == _PARSED_NODE) {
+		WarningMessage("Unrecognized comment at line %d of file %s (ignoring)",
 			lineno,filename);
+		//this->parseState.node_error_occurred = TRUE;
+		//this->parseState.error_occurred      = TRUE;
 	}
-    }
-    else if (this->parseState.parse_state == _PARSED_NODE) {
-	WarningMessage("Unrecognized comment at line %d of file %s (ignoring)",
-			lineno,filename);
-	//this->parseState.node_error_occurred = TRUE;
-	//this->parseState.error_occurred      = TRUE;
-    }
 
     return (Network::ParseState::error_occurred == FALSE);
 
@@ -3697,339 +3697,339 @@ boolean Network::printNetwork(FILE *f, PrintType dest)
 boolean Network::printHeader(FILE *f,
 			     PrintType dest,
 			     PacketIFCallback echoCallback,
-			     void *echoClientData)
+				 void *echoClientData)
 {
-    DXPacketIF *pif = theDXApplication->getPacketIF();
-    char s[1000];
-    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer)
-    {
-	SPRINTF(s, "//\n");
-	if (fputs(s, f) < 0) return FALSE;
-	if (echoCallback)
-	    (*echoCallback)(echoClientData, s);
-	time_t t = time((time_t*)NULL);
-	SPRINTF(s, "// time: %s", ctime(&t));
-	if (fputs(s, f) < 0) return FALSE;
-	if (echoCallback)
-	    (*echoCallback)(echoClientData, s);
-	SPRINTF(s, "//\n");
-	if (fputs(s, f) < 0) return FALSE;
-	if (echoCallback)
-	    (*echoCallback)(echoClientData, s);
-	SPRINTF(s, 
+	DXPacketIF *pif = theDXApplication->getPacketIF();
+	char s[1000];
+	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer)
+	{
+		SPRINTF(s, "//\n");
+		if (fputs(s, f) < 0) return FALSE;
+		if (echoCallback)
+			(*echoCallback)(echoClientData, s);
+		time_t t = time((time_t*)NULL);
+		SPRINTF(s, "// time: %s", ctime(&t));
+		if (fputs(s, f) < 0) return FALSE;
+		if (echoCallback)
+			(*echoCallback)(echoClientData, s);
+		SPRINTF(s, "//\n");
+		if (fputs(s, f) < 0) return FALSE;
+		if (echoCallback)
+			(*echoCallback)(echoClientData, s);
+		SPRINTF(s, 
 #ifdef BETA_VERSION
-		"// version: %d.%d.%d (format), %d.%d.%d (DX Beta)\n//\n",
+			"// version: %d.%d.%d (format), %d.%d.%d (DX Beta)\n//\n",
 #else
-		"// version: %d.%d.%d (format), %d.%d.%d (DX)\n//\n",
+			"// version: %d.%d.%d (format), %d.%d.%d (DX)\n//\n",
 #endif
-	    NETFILE_MAJOR_VERSION,
-	    NETFILE_MINOR_VERSION,
-	    NETFILE_MICRO_VERSION,
-	    DX_MAJOR_VERSION,
-	    DX_MINOR_VERSION,
-	    DX_MICRO_VERSION);
-	if (fputs(s, f) < 0) return FALSE;
-	if (echoCallback)
-	    (*echoCallback)(echoClientData, s);
-	SPRINTF(s, "//\n");
-	if (fputs(s, f) < 0) return FALSE;
-	if (echoCallback)
-	    (*echoCallback)(echoClientData, s);
-
-  	//
-  	// Print the referenced 
-  	//
-	int inline_define = FALSE;
-#ifdef DEBUG
-	if (getenv("DXINLINE"))
-	    inline_define = TRUE;
-#endif
-	if ((dest == PrintFile) &&
-	    !this->printMacroReferences(f, inline_define,
-						echoCallback,echoClientData))
-	    return FALSE;
-
-	if (this->isMacro())
-	{
-	    SPRINTF(s, "// Begin MDF\n");
-	    if (fputs(s, f) < 0) return FALSE;
-	    if (echoCallback)
-		(*echoCallback)(echoClientData, s);
-	}
-
-	SPRINTF(s, "// MODULE %s\n", theSymbolManager->getSymbolString(this->name));
-	if (fputs(s, f) < 0) return FALSE;
-	if (echoCallback)
-	    (*echoCallback)(echoClientData, s);
-	if (this->category)
-	{
-	    SPRINTF(s, "// CATEGORY %s\n", this->getCategoryString());
-	    if (fputs(s, f) < 0) return FALSE;
-	    if (echoCallback)
-		(*echoCallback)(echoClientData, s);
-	}
-	if (this->description && STRLEN(this->description) > 0)
-	{
-	    SPRINTF(s, "// DESCRIPTION %s\n", 
-		this->getDescriptionString() ? this->getDescriptionString() : " ");
-	    if (fputs(s, f) < 0) return FALSE;
-	    if (echoCallback)
-		(*echoCallback)(echoClientData, s);
-	}
-	if (this->isMacro())
-	{
-	    int i;
-	    for (i = 1; i <= this->getInputCount(); ++i)
-	    {
-		ParameterDefinition *pd = this->getInputDefinition(i);
-		{
-		    const char * const *strings = pd->getTypeStrings();
-		    const char *visattr;
-		    int length = 0;
-		    int j;
-		    for (j = 0; strings[j] != NULL; ++j)
-			length += STRLEN(strings[j]) + 5;
-		    char *types = new char[length];
-		    strcpy(types, strings[0]);
-		    for (j = 1; strings[j] != NULL; ++j)
-		    {
-			strcat(types, " or ");
-			strcat(types, strings[j]);
-		    }
-
-		    const char *dflt = pd->getDefaultValue();
-		    if (pd->isRequired())
-			dflt = "(none)";
-		    else if (!dflt || (*dflt == '\0') || 
-					EqualString(dflt,"NULL"))
-			dflt = "(no default)";
-		    if (!pd->isViewable()) {
-			visattr="[visible:2]";
-		    } else {
-			if (pd->getDefaultVisibility())
-			    visattr="";
-			else
-			    visattr="[visible:0]";
-		    }
-		    SPRINTF(s, "// INPUT %s%s; %s; %s; %s\n",
-			pd->getNameString(),
-			visattr,
-			types,
-			dflt? dflt: "(no default)",
-			pd->getDescription() ? pd->getDescription() : " ");
-		    delete types;
-		    if (fputs(s, f) < 0) return FALSE;
-		    if (echoCallback)
+			NETFILE_MAJOR_VERSION,
+			NETFILE_MINOR_VERSION,
+			NETFILE_MICRO_VERSION,
+			DX_MAJOR_VERSION,
+			DX_MINOR_VERSION,
+			DX_MICRO_VERSION);
+		if (fputs(s, f) < 0) return FALSE;
+		if (echoCallback)
+			(*echoCallback)(echoClientData, s);
+		SPRINTF(s, "//\n");
+		if (fputs(s, f) < 0) return FALSE;
+		if (echoCallback)
 			(*echoCallback)(echoClientData, s);
 
-		    // If the input parameter has option values...
-		    const char *const *options = pd->getValueOptions();
-		    if (options && options[0]) {
-			int option_count = 0;
-			while (options[option_count]) option_count++;
-			strcpy (s, "// OPTIONS");
-			int slen = strlen(s);
-			int one_less = option_count - 1;
-			for (int i=0; i<one_less; i++) {
-			    SPRINTF (&s[slen], " %s ;", options[i]);
-			    slen+= strlen(options[i]) + 3;
-			    option_count++;
-			}
-			SPRINTF (&s[slen], " %s\n", options[one_less]);
+		//
+		// Print the referenced 
+		//
+		int inline_define = FALSE;
+#ifdef DEBUG
+		if (getenv("DXINLINE"))
+			inline_define = TRUE;
+#endif
+		if ((dest == PrintFile) &&
+			!this->printMacroReferences(f, inline_define,
+			echoCallback,echoClientData))
+			return FALSE;
+
+		if (this->isMacro())
+		{
+			SPRINTF(s, "// Begin MDF\n");
 			if (fputs(s, f) < 0) return FALSE;
 			if (echoCallback)
-			    (*echoCallback)(echoClientData, s);
-		    }
+				(*echoCallback)(echoClientData, s);
 		}
-	    }
-	    for (i = 1; i <= this->getOutputCount(); ++i)
-	    {
-		ParameterDefinition *pd = this->getOutputDefinition(i);
-		{
-		    const char * const *strings = pd->getTypeStrings();
-		    const char *visattr;
-		    int length = 0;
-		    int j;
-		    for (j = 0; strings[j] != NULL; ++j)
-			length += STRLEN(strings[j]) + 5;
-		    char *types = new char[length];
-		    strcpy(types, strings[0]);
-		    for (j = 1; strings[j] != NULL; ++j)
-		    {
-			strcat(types, " or ");
-			strcat(types, strings[j]);
-		    }
 
-		    if (!pd->isViewable()) {
-			visattr="[visible:2]";
-		    } else {
-			if (pd->getDefaultVisibility())
-			    visattr="";
-			else
-			    visattr="[visible:0]";
-		    }
-		    SPRINTF(s, "// OUTPUT %s%s; %s; %s\n",
-			pd->getNameString(),
-			visattr,
-			types,
-			pd->getDescription() ? pd->getDescription() : " ");
-		    delete types;
-		}
-	        if (fputs(s, f) < 0) return FALSE;
+		SPRINTF(s, "// MODULE %s\n", theSymbolManager->getSymbolString(this->name));
+		if (fputs(s, f) < 0) return FALSE;
 		if (echoCallback)
-		    (*echoCallback)(echoClientData, s);
-	    }
-	    SPRINTF(s, "// End MDF\n");
-	    if (fputs(s, f) < 0) return FALSE;
-	    if (echoCallback)
-		(*echoCallback)(echoClientData, s);
-	}
-  	//
-  	// Print comments 
-  	// FIXME: do we care that annotated stuff does not go through 
-	//	the echoCallback?
-  	//
-	if (this->comment) {
-	    if (fprintf(f,"//\n// comment: ") < 0)
-        	return FALSE;
-	    int i, len=STRLEN(this->comment);
-	    for (i=0 ; i<len ; i++) {
-		char c = this->comment[i];
-		if (putc(c, f) == EOF)
-		    return FALSE;
-		if ((c == '\n') && (i+1 != len)) {
-		    if (fprintf(f,"// comment: ") < 0)
-			return FALSE;
+			(*echoCallback)(echoClientData, s);
+		if (this->category)
+		{
+			SPRINTF(s, "// CATEGORY %s\n", this->getCategoryString());
+			if (fputs(s, f) < 0) return FALSE;
+			if (echoCallback)
+				(*echoCallback)(echoClientData, s);
 		}
-            }
-	    if (fprintf(f,"\n") < 0)
-		return FALSE;
-	}
+		if (this->description && STRLEN(this->description) > 0)
+		{
+			SPRINTF(s, "// DESCRIPTION %s\n", 
+				this->getDescriptionString() ? this->getDescriptionString() : " ");
+			if (fputs(s, f) < 0) return FALSE;
+			if (echoCallback)
+				(*echoCallback)(echoClientData, s);
+		}
+		if (this->isMacro())
+		{
+			int i;
+			for (i = 1; i <= this->getInputCount(); ++i)
+			{
+				ParameterDefinition *pd = this->getInputDefinition(i);
+				{
+					const char * const *strings = pd->getTypeStrings();
+					const char *visattr;
+					int length = 0;
+					int j;
+					for (j = 0; strings[j] != NULL; ++j)
+						length += STRLEN(strings[j]) + 5;
+					char *types = new char[length];
+					strcpy(types, strings[0]);
+					for (j = 1; strings[j] != NULL; ++j)
+					{
+						strcat(types, " or ");
+						strcat(types, strings[j]);
+					}
+
+					const char *dflt = pd->getDefaultValue();
+					if (pd->isRequired())
+						dflt = "(none)";
+					else if (!dflt || (*dflt == '\0') || 
+						EqualString(dflt,"NULL"))
+						dflt = "(no default)";
+					if (!pd->isViewable()) {
+						visattr="[visible:2]";
+					} else {
+						if (pd->getDefaultVisibility())
+							visattr="";
+						else
+							visattr="[visible:0]";
+					}
+					SPRINTF(s, "// INPUT %s%s; %s; %s; %s\n",
+						pd->getNameString(),
+						visattr,
+						types,
+						dflt? dflt: "(no default)",
+						pd->getDescription() ? pd->getDescription() : " ");
+					delete types;
+					if (fputs(s, f) < 0) return FALSE;
+					if (echoCallback)
+						(*echoCallback)(echoClientData, s);
+
+					// If the input parameter has option values...
+					const char *const *options = pd->getValueOptions();
+					if (options && options[0]) {
+						int option_count = 0;
+						while (options[option_count]) option_count++;
+						strcpy (s, "// OPTIONS");
+						int slen = strlen(s);
+						int one_less = option_count - 1;
+						for (int i=0; i<one_less; i++) {
+							SPRINTF (&s[slen], " %s ;", options[i]);
+							slen+= strlen(options[i]) + 3;
+							option_count++;
+						}
+						SPRINTF (&s[slen], " %s\n", options[one_less]);
+						if (fputs(s, f) < 0) return FALSE;
+						if (echoCallback)
+							(*echoCallback)(echoClientData, s);
+					}
+				}
+			}
+			for (i = 1; i <= this->getOutputCount(); ++i)
+			{
+				ParameterDefinition *pd = this->getOutputDefinition(i);
+				{
+					const char * const *strings = pd->getTypeStrings();
+					const char *visattr;
+					int length = 0;
+					int j;
+					for (j = 0; strings[j] != NULL; ++j)
+						length += STRLEN(strings[j]) + 5;
+					char *types = new char[length];
+					strcpy(types, strings[0]);
+					for (j = 1; strings[j] != NULL; ++j)
+					{
+						strcat(types, " or ");
+						strcat(types, strings[j]);
+					}
+
+					if (!pd->isViewable()) {
+						visattr="[visible:2]";
+					} else {
+						if (pd->getDefaultVisibility())
+							visattr="";
+						else
+							visattr="[visible:0]";
+					}
+					SPRINTF(s, "// OUTPUT %s%s; %s; %s\n",
+						pd->getNameString(),
+						visattr,
+						types,
+						pd->getDescription() ? pd->getDescription() : " ");
+					delete types;
+				}
+				if (fputs(s, f) < 0) return FALSE;
+				if (echoCallback)
+					(*echoCallback)(echoClientData, s);
+			}
+			SPRINTF(s, "// End MDF\n");
+			if (fputs(s, f) < 0) return FALSE;
+			if (echoCallback)
+				(*echoCallback)(echoClientData, s);
+		}
+		//
+		// Print comments 
+		// FIXME: do we care that annotated stuff does not go through 
+		//	the echoCallback?
+		//
+		if (this->comment) {
+			if (fprintf(f,"//\n// comment: ") < 0)
+				return FALSE;
+			int i, len=STRLEN(this->comment);
+			for (i=0 ; i<len ; i++) {
+				char c = this->comment[i];
+				if (putc(c, f) == EOF)
+					return FALSE;
+				if ((c == '\n') && (i+1 != len)) {
+					if (fprintf(f,"// comment: ") < 0)
+						return FALSE;
+				}
+			}
+			if (fprintf(f,"\n") < 0)
+				return FALSE;
+		}
 
 #if WORKSPACE_PAGES
-	// Print all the group assignments.
-	// Handle the process group specially
-	// FIXME: do we care that annotated stuff does not go through
-	//	the echoCallback?
-	//
-	DictionaryIterator di(*this->groupManagers);
-	GroupManager *gmgr;
-	Symbol psym = theSymbolManager->getSymbol(PROCESS_GROUP);
-	while ( (gmgr = (GroupManager*)di.getNextDefinition()) ) {
-	    if (psym == gmgr->getManagerSymbol()) {
-		if ((dest == PrintExec) || (dest == PrintFile)) 
-		    if (!this->isMacro()) 
-			if (!gmgr->printComment(f))
-			    return FALSE;
-	    } else {
-		if (!gmgr->printComment(f))
-		    return FALSE;
-	    }
-	}
+		// Print all the group assignments.
+		// Handle the process group specially
+		// FIXME: do we care that annotated stuff does not go through
+		//	the echoCallback?
+		//
+		DictionaryIterator di(*this->groupManagers);
+		GroupManager *gmgr;
+		Symbol psym = theSymbolManager->getSymbol(PROCESS_GROUP);
+		while ( (gmgr = (GroupManager*)di.getNextDefinition()) ) {
+			if (psym == gmgr->getManagerSymbol()) {
+				if ((dest == PrintExec) || (dest == PrintFile)) 
+					if (!this->isMacro()) 
+						if (!gmgr->printComment(f))
+							return FALSE;
+			} else {
+				if (!gmgr->printComment(f))
+					return FALSE;
+			}
+		}
 #else
-	//
-	// Print the process group assignment.
-	//
-	if ((dest == PrintExec) || (dest == PrintFile))
-	    if (!this->isMacro() && 
-		!theDXApplication->PGManager->printComment(f))
-		return FALSE;
+		//
+		// Print the process group assignment.
+		//
+		if ((dest == PrintExec) || (dest == PrintFile))
+			if (!this->isMacro() && 
+				!theDXApplication->PGManager->printComment(f))
+				return FALSE;
 #endif
 
-	//
-	// Print workspace information 
-	//
-        this->workSpaceInfo.printComments(f);
-	SPRINTF(s, "//\n");
-	if (fputs(s, f) < 0) return FALSE;
-	if (echoCallback)
-	    (*echoCallback)(echoClientData, s);
+		//
+		// Print workspace information 
+		//
+		this->workSpaceInfo.printComments(f);
+		SPRINTF(s, "//\n");
+		if (fputs(s, f) < 0) return FALSE;
+		if (echoCallback)
+			(*echoCallback)(echoClientData, s);
 
-    }
-    //SMH all sprintfs in the remainder of this routine were changed to
-    //    remember length of formatted string in variable l
-
-    int l = SPRINTF(s, "macro %s(\n",
-	theSymbolManager->getSymbolString(this->name));
-
-    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-	if (fputs(s, f) < 0) return FALSE;
-	if (echoCallback) (*echoCallback)(echoClientData, s);
-    } else {
-	ASSERT(dest==PrintExec);
-	pif->sendBytes(s);
-    }
-
-    int i;
-    for (i = 1; this->isMacro() && i <= this->getInputCount(); ++i)
-    {
-	ParameterDefinition *param = this->getInputDefinition(i);
-	if (param->getNameSymbol() == -1)
-	    l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), "dummy");
-	else if (param->isDefaultDescriptive() ||
-		param->isRequired() ||
-		param->getDefaultValue() == NULL ||
-		EqualString(param->getDefaultValue(), "NULL"))
-	    l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), param->getNameString());
-	else
-	    l = SPRINTF(s, "%c%s = %s\n", (i == 1? ' ': ','),
-		param->getNameString(), param->getDefaultValue());
-	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-	    if (fputs(s, f) < 0) return FALSE;
-	    if (echoCallback) (*echoCallback)(echoClientData, s);
-	} else {
-	    ASSERT(dest==PrintExec);
-	    pif->sendBytes(s);
 	}
-    }
-    l = SPRINTF(s, ") -> (\n");
+	//SMH all sprintfs in the remainder of this routine were changed to
+	//    remember length of formatted string in variable l
 
-    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-        if (fputs(s, f) < 0) return FALSE;
-	if (echoCallback) (*echoCallback)(echoClientData, s);
-    } else {
-	ASSERT(dest==PrintExec);
-	pif->sendBytes(s);
-    }
-
-    for (i = 1; this->isMacro() && i <= this->getOutputCount(); ++i)
-    {
-	ParameterDefinition *param = this->getOutputDefinition(i);
-	if (param->getNameSymbol() == -1)
-	    l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), "dummy");
-	else
-	    l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), param->getNameString());
+	int l = SPRINTF(s, "macro %s(\n",
+		theSymbolManager->getSymbolString(this->name));
 
 	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-	    if (fputs(s, f) < 0) return FALSE;
-	    if (echoCallback) (*echoCallback)(echoClientData, s);
+		if (fputs(s, f) < 0) return FALSE;
+		if (echoCallback) (*echoCallback)(echoClientData, s);
 	} else {
-	    ASSERT(dest==PrintExec);
-	    pif->sendBytes(s);
+		ASSERT(dest==PrintExec);
+		pif->sendBytes(s);
 	}
 
-    }
-    l = SPRINTF(s, ") {\n");
-    if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
-	if (fputs(s, f) < 0) return FALSE;
-	if (echoCallback) (*echoCallback)(echoClientData, s);
-    } else {
-	ASSERT(dest==PrintExec);
-	pif->sendBytes(s);
-    }
+	int i;
+	for (i = 1; this->isMacro() && i <= this->getInputCount(); ++i)
+	{
+		ParameterDefinition *param = this->getInputDefinition(i);
+		if (param->getNameSymbol() == -1)
+			l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), "dummy");
+		else if (param->isDefaultDescriptive() ||
+			param->isRequired() ||
+			param->getDefaultValue() == NULL ||
+			EqualString(param->getDefaultValue(), "NULL"))
+			l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), param->getNameString());
+		else
+			l = SPRINTF(s, "%c%s = %s\n", (i == 1? ' ': ','),
+			param->getNameString(), param->getDefaultValue());
+		if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
+			if (fputs(s, f) < 0) return FALSE;
+			if (echoCallback) (*echoCallback)(echoClientData, s);
+		} else {
+			ASSERT(dest==PrintExec);
+			pif->sendBytes(s);
+		}
+	}
+	l = SPRINTF(s, ") -> (\n");
+
+	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
+		if (fputs(s, f) < 0) return FALSE;
+		if (echoCallback) (*echoCallback)(echoClientData, s);
+	} else {
+		ASSERT(dest==PrintExec);
+		pif->sendBytes(s);
+	}
+
+	for (i = 1; this->isMacro() && i <= this->getOutputCount(); ++i)
+	{
+		ParameterDefinition *param = this->getOutputDefinition(i);
+		if (param->getNameSymbol() == -1)
+			l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), "dummy");
+		else
+			l = SPRINTF(s, "%c%s\n", (i == 1? ' ': ','), param->getNameString());
+
+		if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
+			if (fputs(s, f) < 0) return FALSE;
+			if (echoCallback) (*echoCallback)(echoClientData, s);
+		} else {
+			ASSERT(dest==PrintExec);
+			pif->sendBytes(s);
+		}
+
+	}
+	l = SPRINTF(s, ") {\n");
+	if (dest == PrintFile || dest == PrintCut || dest == PrintCPBuffer) {
+		if (fputs(s, f) < 0) return FALSE;
+		if (echoCallback) (*echoCallback)(echoClientData, s);
+	} else {
+		ASSERT(dest==PrintExec);
+		pif->sendBytes(s);
+	}
 
 
-    Node *n;
-    ListIterator li;
-    const char *prefix = this->getPrefix();
-    FOR_EACH_NETWORK_NODE(this, n, li)
-    {
-	if (!n->netPrintBeginningOfMacroNode(f, dest, prefix,
-					     echoCallback, echoClientData))
-	    return FALSE;
-    }
+	Node *n;
+	ListIterator li;
+	const char *prefix = this->getPrefix();
+	FOR_EACH_NETWORK_NODE(this, n, li)
+	{
+		if (!n->netPrintBeginningOfMacroNode(f, dest, prefix,
+			echoCallback, echoClientData))
+			return FALSE;
+	}
 
-    return TRUE;
+	return TRUE;
 }
 boolean Network::printBody(FILE *f,
 			   PrintType dest,

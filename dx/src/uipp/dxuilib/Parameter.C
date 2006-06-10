@@ -146,44 +146,45 @@ Type Parameter::setValue(const char *value)
 }
 boolean Parameter::setValue(const char *value, Type type, boolean coerce)
 {
-    boolean success;
+	boolean success;
 
-    if (!this->value) 
-	this->value = new DXValue;
+	if (!this->value) 
+		this->value = new DXValue;
 
 
-    if (type == DXType::UndefinedType AND NOT value) {
-    	if (this->value) delete this->value;
-	this->value = NUL(DXValue*);
-	success = TRUE;
-    } else {
-	ParameterDefinition *pd = this->getDefinition();
-	ListIterator li(*pd->getTypes());
-	DXType *dxt;
-	boolean typeMatch = FALSE;
-	while( (dxt = (DXType*)li.getNext()) )
-	    if (dxt->MatchType(type, dxt->getType()))
-	    {
-		typeMatch = TRUE;
-		break;
-	    }
-	if (typeMatch && (
-		   this->value->setValue(value, type)  ||
-		   (coerce && this->coerceAndSetValue(value,type)))) {
-	    success = TRUE;
-	} else
-	    success = FALSE;
-    }
+	if (type == DXType::UndefinedType AND NOT value) {
+		if (this->value) delete this->value;
+		this->value = NUL(DXValue*);
+		success = TRUE;
+	} else {
+		ParameterDefinition *pd = this->getDefinition();
+		ListIterator li(*pd->getTypes());
+		DXType *dxt;
+		boolean typeMatch = FALSE;
+		while( (dxt = (DXType*)li.getNext()) )
+			if (dxt->MatchType(type, dxt->getType()))
+			{
+				typeMatch = TRUE;
+				break;
+			}
 
-    if (success) {
-	this->setDirty();
-	if (type == DXType::UndefinedType AND NOT value)
-	    this->setUnconnectedDefaultingStatus(TRUE);
-	else
-	    this->setUnconnectedDefaultingStatus(FALSE);
-    }
+		if (typeMatch && (
+			this->value->setValue(value, type)  ||
+			(coerce && this->coerceAndSetValue(value,type)))) {
+				success = TRUE;
+		} else
+			success = FALSE;
+	}
 
-    return success;
+	if (success) {
+		this->setDirty();
+		if (type == DXType::UndefinedType AND NOT value)
+			this->setUnconnectedDefaultingStatus(TRUE);
+		else
+			this->setUnconnectedDefaultingStatus(FALSE);
+	}
+
+	return success;
 }
 //
 // Set the stored value.  

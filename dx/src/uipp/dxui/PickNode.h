@@ -63,9 +63,9 @@ class PickNode : public ProbeNode
     virtual boolean setLabelString(const char *label);
 
     virtual void setCursorValue(int cursor, double x, double y, double z = 0.0);
-    virtual void resetCursor();
-
-    virtual void pickFrom(Node *n);
+    
+	void resetCursor();
+    void pickFrom(Node *n);
 
     //
     // Determine if this node is a node of the given class

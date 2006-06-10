@@ -110,8 +110,7 @@ ParameterDefinition *NodeDefinition::getInputDefinition(int n)
 	if (repeats == 1) {
 	    n = cnt;
 	} else {
-	    int num = n - cnt; 
-	    num = (((n-1) - cnt) % repeats) + 1;
+	    int num = (((n-1) - cnt) % repeats) + 1;
 	    n = cnt - repeats + num ;
 	    ASSERT(n > cnt - repeats);
 	    ASSERT(n <= cnt);
@@ -135,8 +134,7 @@ ParameterDefinition *NodeDefinition::getOutputDefinition(int n)
 	if (repeats == 1) {
 	    n = cnt;
 	} else {
-	    int num = n - cnt; 
-	    num = (((n-1) - cnt) % repeats) + 1;
+	    int num = (((n-1) - cnt) % repeats) + 1;
 	    n = cnt - repeats + num ;
 	    ASSERT(n > cnt - repeats);
 	    ASSERT(n <= cnt);

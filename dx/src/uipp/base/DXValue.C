@@ -791,165 +791,165 @@ void DXValue::clear()
 // returns FALSE otherwise.
 //
 boolean DXValue::setValue(const char* string,
-			  const Type  type)
+						  const Type  type)
 {
-    int i;
-    boolean r;
-    ASSERT(this);
+	int i;
+	boolean r;
+	ASSERT(this);
 
-    if (DXValue::IsValidValue(string, type))
-    {
-	//
-	// Avoid the case where string and this->string are the same.
-	//
-	char *s = DuplicateString(string);
-
-	//
-	// Clear the value and reset the type.
-	//
-	this->clear();
-	this->type.setType(type);
-
-	//
-	// Save the string representation of the value (ALWAYS!!!).
-	//
-	this->string = s;	
-	string = (const char*) s;	// in case string == this->string
-
-	//
-	// Special case NULL value.
-	//
-	i = 0;
-	if (_IsNULL(string, i))
+	if (DXValue::IsValidValue(string, type))
 	{
-	    // Allow NULL to match any type.
-	    this->type.setType(type);
-	}
-	else
-	{
-	    //
-	    // Convert the string to internal, native form according to type.
-	    //
-	    char *newval, *p, buf[64];
-	    int index;
-	    switch(type)
-	    {
-	      case DXType::FlagType:
-		// 
-		//  The executive does not recognize 'true' or 'false', so
-		//  we convert them to integer values.
-		// 
-		if (strstr(string,"false"))  {
-		    this->integer = 0; this->scalar = 0;
-		    delete this->string;
-		    this->string = DuplicateString("0");
-		} else if (strstr(string,"true")) {
-		    this->integer = 1; this->scalar = 1;
-		    delete this->string;
-		    this->string = DuplicateString("1");
-		} else {
-		    sscanf(string, "%d",  &this->integer);
-		    sscanf(string, "%lg", &this->scalar);
-		}
-		break;
+		//
+		// Avoid the case where string and this->string are the same.
+		//
+		char *s = DuplicateString(string);
 
-	      case DXType::IntegerType:
-		sscanf(string, "%d", &this->integer);
-		sscanf(string, "%lg", &this->scalar);
-		break;
+		//
+		// Clear the value and reset the type.
+		//
+		this->clear();
+		this->type.setType(type);
 
-	      case DXType::ScalarType:
-		sscanf(string, "%lg", &this->scalar);
-		if (!strchr(string,'.')) {
-		    //
-		    // Need to make sure that the string representation, really
-		    // represents a floating point number and not an integer.
-		    //
-		    delete this->string;
-		    this->string = DXValue::FormatDouble(this->scalar);
-		}
-		
-		break;
+		//
+		// Save the string representation of the value (ALWAYS!!!).
+		//
+		this->string = s;	
+		string = (const char*) s;	// in case string == this->string
 
-	      case DXType::VectorType:
-		this->tensor = new DXTensor;
-		r = this->tensor->setValue(string);
-		ASSERT(r);
-		break;
-
-	      case DXType::TensorType:
-	      case DXType::ValueType:
-	      case DXType::StringType:
-	      case DXType::ObjectType:
-	      case DXType::WhereType:
-	      case DXType::DescriptionType:
-		break;
-
-	      default:
-		if (type & DXType::ListType)
+		//
+		// Special case NULL value.
+		//
+		i = 0;
+		if (_IsNULL(string, i))
 		{
-		    switch(type & DXType::ListTypeMask)
-		    {
-		      case DXType::ScalarType:
-			//
-			// Convert '{ 1 2.0000 3.3 }' into '{ 1.0 2.0 3.3 }'
-			// Ignore lists specified with the elipsis '{ 1..2: 3}'
-			//
-			if (strchr(this->string,':'))
-			    break;
-			newval = new char[STRLEN(this->string) + 1024];
-			index = -1;
-			strcpy(newval,"{ ");
-			p = newval + STRLEN(newval);
-			while (DXValue::NextListItem(this->string,
-						&index,type, buf, 64)) {
-			    if (strchr(buf,'.')) {
-				// Already has a decimal, just copy.
-				sprintf(p,"%s ",buf);
-			    } else {
-				double d = (double)atof(buf);
-				this->FormatDouble(d,p);
-				strcat(p," ");
-			    }
-			    clip_trailing_zeros(p);
-			    p += STRLEN(p);
-			}	
-			strcat(p,"}");
-			delete this->string;
-			// Copy this so we don't waste space (1024 above).
-			this->string = DuplicateString(newval); 
-			delete newval;
-			break;
-		      case DXType::IntegerType:
-		      case DXType::FlagType:
-		      case DXType::VectorType:
-		      case DXType::TensorType:
-		      case DXType::ValueType:
-		      case DXType::StringType:
-			break;
-		    }
-		}
-		else if (type & DXType::UserType1 OR
-			 type & DXType::UserType2 OR
-			 type & DXType::UserType4 OR
-			 type & DXType::UserType5 OR
-			 type & DXType::UserType6)
-		{
+			// Allow NULL to match any type.
+			this->type.setType(type);
 		}
 		else
 		{
-		    ASSERT(FALSE);
-		}
-		break;
-	    }
-	}
+			//
+			// Convert the string to internal, native form according to type.
+			//
+			char *newval, *p, buf[64];
+			int index;
+			switch(type)
+			{
+			case DXType::FlagType:
+				// 
+				//  The executive does not recognize 'true' or 'false', so
+				//  we convert them to integer values.
+				// 
+				if (strstr(string,"false"))  {
+					this->integer = 0; this->scalar = 0;
+					delete this->string;
+					this->string = DuplicateString("0");
+				} else if (strstr(string,"true")) {
+					this->integer = 1; this->scalar = 1;
+					delete this->string;
+					this->string = DuplicateString("1");
+				} else {
+					sscanf(string, "%d",  &this->integer);
+					sscanf(string, "%lg", &this->scalar);
+				}
+				break;
 
-	return TRUE;
-    }
-    else
-    {
-	return FALSE;
-    }
+			case DXType::IntegerType:
+				sscanf(string, "%d", &this->integer);
+				sscanf(string, "%lg", &this->scalar);
+				break;
+
+			case DXType::ScalarType:
+				sscanf(string, "%lg", &this->scalar);
+				if (!strchr(string,'.')) {
+					//
+					// Need to make sure that the string representation, really
+					// represents a floating point number and not an integer.
+					//
+					delete this->string;
+					this->string = DXValue::FormatDouble(this->scalar);
+				}
+
+				break;
+
+			case DXType::VectorType:
+				this->tensor = new DXTensor;
+				r = this->tensor->setValue(string);
+				ASSERT(r);
+				break;
+
+			case DXType::TensorType:
+			case DXType::ValueType:
+			case DXType::StringType:
+			case DXType::ObjectType:
+			case DXType::WhereType:
+			case DXType::DescriptionType:
+				break;
+
+			default:
+				if (type & DXType::ListType)
+				{
+					switch(type & DXType::ListTypeMask)
+					{
+					case DXType::ScalarType:
+						//
+						// Convert '{ 1 2.0000 3.3 }' into '{ 1.0 2.0 3.3 }'
+						// Ignore lists specified with the elipsis '{ 1..2: 3}'
+						//
+						if (strchr(this->string,':'))
+							break;
+						newval = new char[STRLEN(this->string) + 1024];
+						index = -1;
+						strcpy(newval,"{ ");
+						p = newval + STRLEN(newval);
+						while (DXValue::NextListItem(this->string,
+							&index,type, buf, 64)) {
+								if (strchr(buf,'.')) {
+									// Already has a decimal, just copy.
+									sprintf(p,"%s ",buf);
+								} else {
+									double d = (double)atof(buf);
+									this->FormatDouble(d,p);
+									strcat(p," ");
+								}
+								clip_trailing_zeros(p);
+								p += STRLEN(p);
+						}	
+						strcat(p,"}");
+						delete this->string;
+						// Copy this so we don't waste space (1024 above).
+						this->string = DuplicateString(newval); 
+						delete newval;
+						break;
+					case DXType::IntegerType:
+					case DXType::FlagType:
+					case DXType::VectorType:
+					case DXType::TensorType:
+					case DXType::ValueType:
+					case DXType::StringType:
+						break;
+					}
+				}
+				else if (type & DXType::UserType1 OR
+					type & DXType::UserType2 OR
+					type & DXType::UserType4 OR
+					type & DXType::UserType5 OR
+					type & DXType::UserType6)
+				{
+				}
+				else
+				{
+					ASSERT(FALSE);
+				}
+				break;
+			}
+		}
+
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
 }
 
 
@@ -1244,78 +1244,78 @@ char *DXValue::FormatNumber(double val, int decimals)
 //
 char *DXValue::CoerceValue(const char *value, Type type)
 {
-    char *s;
+	char *s;
 
-    if (type == DXType::ValueType) {
-	s = DXValue::CoerceValue(value,DXType::VectorType);
-    } else {
-        char *p = (char*)value;
-	int cnt, end;
-        boolean failed;
-
-	SkipWhiteSpace(p);
-	cnt = STRLEN(p);
-	s = new char[cnt+3];
-	if (cnt) {
-	    s[0] = ' ';
-	    strcpy(&s[1],p);
-	    cnt = STRLEN(s);
-
-	    // Skip trailing white space.
-	    while (s[--cnt] == ' ' || s[cnt] == '\t') continue;
-
-	    end = cnt+1;
-	    s[end+1] = '\0';
+	if (type == DXType::ValueType) {
+		s = DXValue::CoerceValue(value,DXType::VectorType);
 	} else {
-	    end = 1;
-	    s[2]='\0';
-	}
+		char *p = (char*)value;
+		int cnt, end;
+		boolean failed;
 
+		SkipWhiteSpace(p);
+		cnt = STRLEN(p);
+		s = new char[cnt+3];
+		if (cnt) {
+			s[0] = ' ';
+			strcpy(&s[1],p);
+			cnt = STRLEN(s);
 
-	//
-	// window must be surrounded by quotes just a string is.
-	//
-	if ((type == DXType::StringType) || (type == DXType::WhereType)) {
-	    s[0]   = '"';
-	    s[end] = '"';
-	} else if (type & DXType::ListType) {
-	    s[0]   = '{';
-	    s[end] = '}';
-	} else if ((type == DXType::TensorType) ||
-               (type == DXType::VectorType)) {
-	    s[0]   = '[';
-	    s[end] = ']';
-	} else {	// Allow anything that does not need syntax help
-	    strcpy(s,p);
-	}
+			// Skip trailing white space.
+			while (s[--cnt] == ' ' || s[cnt] == '\t') continue;
 
-	if (!DXValue::IsValidValue(s,type)) 
-	    failed = TRUE;
-	else
-	    failed = FALSE;
-	
-	//
-  	// Try and coerce a list with a single element (i.e. coerce both the
-	// element and the overall value).
-	//
-	if (failed && (type & DXType::ListType)) {
-	    Type basetype = type & DXType::ListTypeMask;
-	    if ((p = DXValue::CoerceValue(value,basetype))) {
-		char *p2  = DXValue::CoerceValue(p,type);
-		if (p2) {
-		    delete s;
-		    s = p2;
-		    failed = FALSE;
+			end = cnt+1;
+			s[end+1] = '\0';
+		} else {
+			end = 1;
+			s[2]='\0';
 		}
-		delete p;
-	    }
+
+
+		//
+		// window must be surrounded by quotes just a string is.
+		//
+		if ((type == DXType::StringType) || (type == DXType::WhereType)) {
+			s[0]   = '"';
+			s[end] = '"';
+		} else if (type & DXType::ListType) {
+			s[0]   = '{';
+			s[end] = '}';
+		} else if ((type == DXType::TensorType) ||
+			(type == DXType::VectorType)) {
+				s[0]   = '[';
+				s[end] = ']';
+		} else {	// Allow anything that does not need syntax help
+			strcpy(s,p);
+		}
+
+		if (!DXValue::IsValidValue(s,type)) 
+			failed = TRUE;
+		else
+			failed = FALSE;
+
+		//
+		// Try and coerce a list with a single element (i.e. coerce both the
+		// element and the overall value).
+		//
+		if (failed && (type & DXType::ListType)) {
+			Type basetype = type & DXType::ListTypeMask;
+			if ((p = DXValue::CoerceValue(value,basetype))) {
+				char *p2  = DXValue::CoerceValue(p,type);
+				if (p2) {
+					delete s;
+					s = p2;
+					failed = FALSE;
+				}
+				delete p;
+			}
+		}
+		if (failed) {
+			delete s;
+			s = NULL;
+		}
 	}
-	if (failed) {
-	    delete s;
-	    s = NULL;
-	}
-    }
-    return s;
+	return s;
 }
 //
 //  Append a list item to a list value. 

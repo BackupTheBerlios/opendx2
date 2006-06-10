@@ -3486,7 +3486,7 @@ boolean DXApplication::openFile(const char *netfile, const char *cfgfile,
 
     //
     // We can't do this until after resetting the server, because
-    // it has to clean up it windows too.
+    // it has to clean up its windows too.
     //
     network->clear();
 

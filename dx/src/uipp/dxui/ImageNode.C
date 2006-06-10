@@ -1090,38 +1090,38 @@ const char *ImageNode::getPickIdentifier()
 boolean ImageNode::netParseComment(const char* comment,
 				   const char *file, int lineno)
 {
-    int major;
-    int minor;
-    int micro;
-    char buf[1024];
+	int major;
+	int minor;
+	int micro;
+	char buf[1024];
 
-    if (this->getNetwork()->getDXMajorVersion() < 3)
-    {
-	const char *n = strstr(comment, "input[");
-	if (n)
+	if (this->getNetwork()->getDXMajorVersion() < 3)
 	{
-	    int in, len = (n - comment) + 6;
-	    memcpy(buf, comment, len);
-	    sscanf(comment+len, "%d", &in);
-	    sprintf(buf+len, "%d%s",
-		translateInputs[in], strchr(comment+len, ']'));
-	    comment = (const char *)buf;
+		const char *n = strstr(comment, "input[");
+		if (n)
+		{
+			int in, len = (n - comment) + 6;
+			memcpy(buf, comment, len);
+			sscanf(comment+len, "%d", &in);
+			sprintf(buf+len, "%d%s",
+				translateInputs[in], strchr(comment+len, ']'));
+			comment = (const char *)buf;
+		}
 	}
-    }
-	
-    this->getNetwork()->getVersion(major, minor, micro);
 
-    //
-    // version 2 net files after 2.0.0 require translation of 
-    // flags from 1/2 to 0/1 
-    //
-    if (major == 2 && minor >= 0 && micro >= 1)
-	this->translating = TRUE;
-    boolean res =
-	this->DisplayNode::netParseComment(comment, file, lineno);
-    this->translating = FALSE;
+	this->getNetwork()->getVersion(major, minor, micro);
 
-    return res;
+	//
+	// version 2 net files after 2.0.0 require translation of 
+	// flags from 1/2 to 0/1 
+	//
+	if (major == 2 && minor >= 0 && micro >= 1)
+		this->translating = TRUE;
+	boolean res =
+		this->DisplayNode::netParseComment(comment, file, lineno);
+	this->translating = FALSE;
+
+	return res;
 }
 
 boolean ImageNode::netPrintAuxComment(FILE *f)
@@ -1350,45 +1350,45 @@ char *cp = 0;
 boolean ImageNode::parseCommonComments(const char *comment, const char *file,
                                 int lineno)
 {
-    char mode[128];
-    char *cp = " internal caching:";
+	char mode[128];
+	char *cp = " internal caching:";
 
-    if (sscanf(comment," interaction mode = %[^\n]",mode) == 1) 
-    {
-        this->setInteractionMode((const char *)mode);
+	if (sscanf(comment," interaction mode = %[^\n]",mode) == 1) 
+	{
+		this->setInteractionMode((const char *)mode);
 
-	//
-	// Now since this is the last comment, ask the ImageWindow 
-	// to refresh its state from our new cfg state. 
-	//
-        ImageWindow *img = this->image;
-	if (img) 
-	    img->updateFromNewCfgState();
-	
-	return TRUE;
-    } else if (EqualSubstring(comment,cp,strlen(cp))) {
-	int cacheval, items;
-	items = sscanf (comment, " internal caching: %d", &cacheval);
-	if (items == 1) {
-	    switch (cacheval) {
+		//
+		// Now since this is the last comment, ask the ImageWindow 
+		// to refresh its state from our new cfg state. 
+		//
+		ImageWindow *img = this->image;
+		if (img) 
+			img->updateFromNewCfgState();
+
+		return TRUE;
+	} else if (EqualSubstring(comment,cp,strlen(cp))) {
+		int cacheval, items;
+		items = sscanf (comment, " internal caching: %d", &cacheval);
+		if (items == 1) {
+			switch (cacheval) {
 		case 0:
-		    this->setInternalCacheability (InternalsNotCached);
-		    break;
+			this->setInternalCacheability (InternalsNotCached);
+			break;
 		case 1:
-		    this->setInternalCacheability (InternalsFullyCached);
-		    break;
+			this->setInternalCacheability (InternalsFullyCached);
+			break;
 		case 2:
-		    this->setInternalCacheability (InternalsCacheOnce);
-		    break;
+			this->setInternalCacheability (InternalsCacheOnce);
+			break;
 		default:
-		    return FALSE; 
-		    break;
-	    }
-	    return TRUE;
+			return FALSE; 
+			break;
+			}
+			return TRUE;
+		}
 	}
-    }
 
-    return FALSE;
+	return FALSE;
 }
 
 
@@ -1839,27 +1839,27 @@ void ImageNode::setTitle(const char *title, boolean fromServer)
     //
     // Hands off the param if it's connected.
     //
-    if (!this->isInputConnected(IMAGENAME)) {
-	if ((!title) || (!title[0])) {
-	    this->useDefaultInputValue(IMAGENAME, FALSE);
-	} else {
-	    if ((fromServer) && (this->isInputDefaulting(IMAGENAME))) {
-		this->setInputAttributeFromServer (IMAGENAME,title,DXType::StringType);
-	    } else {
-		const char *v = this->getInputValueString (IMAGENAME);
-		if (!EqualString (v, title))
-		    this->setInputValue (IMAGENAME, title, DXType::StringType, FALSE);
-	    }
+	if (!this->isInputConnected(IMAGENAME)) {
+		if ((!title) || (!title[0])) {
+			this->useDefaultInputValue(IMAGENAME, FALSE);
+		} else {
+			if ((fromServer) && (this->isInputDefaulting(IMAGENAME))) {
+				this->setInputAttributeFromServer (IMAGENAME,title,DXType::StringType);
+			} else {
+				const char *v = this->getInputValueString (IMAGENAME);
+				if (!EqualString (v, title))
+					this->setInputValue (IMAGENAME, title, DXType::StringType, FALSE);
+			}
+		}
 	}
-    }
-    if ((title) && (title[0]=='\"')) {
-	char *tmpbuf = DuplicateString(&title[1]);
-	if (tmpbuf[strlen(tmpbuf)-1] == '\"') tmpbuf[strlen(tmpbuf)-1] = '\0';
-	this->DisplayNode::setTitle(tmpbuf, fromServer);
-	delete tmpbuf;
-    } else {
-	this->DisplayNode::setTitle(title, fromServer);
-    }
+	if ((title) && (title[0]=='\"')) {
+		char *tmpbuf = DuplicateString(&title[1]);
+		if (tmpbuf[strlen(tmpbuf)-1] == '\"') tmpbuf[strlen(tmpbuf)-1] = '\0';
+		this->DisplayNode::setTitle(tmpbuf, fromServer);
+		delete tmpbuf;
+	} else {
+		this->DisplayNode::setTitle(title, fromServer);
+	}
 }
  
 
@@ -1886,25 +1886,25 @@ const char *ImageNode::getTitle()
     // Make sure the value is a valid string and strip off the quotes
     // and use it, if it is.
     //
-    if (this->getInputSetValueType(IMAGENAME) == DXType::StringType) {
-	const char *v = this->getInputValueString (IMAGENAME);
-	if (!v || !v[0] || EqualString(v,"NULL"))
-	    return this->DisplayNode::getTitle();
-    
-	char *t = FindDelimitedString(v,'"','"');
-	if (!t) 
-	    return this->DisplayNode::getTitle();
-		
-	if (this->title)
-	    delete this->title;
+	if (this->getInputSetValueType(IMAGENAME) == DXType::StringType) {
+		const char *v = this->getInputValueString (IMAGENAME);
+		if (!v || !v[0] || EqualString(v,"NULL"))
+			return this->DisplayNode::getTitle();
 
-	int tlen = STRLEN(t);
-	t[tlen - 1] = '\0';			// Strip last quote
-    	this->title = DuplicateString(t + 1);	// Copy and strip first quote
-	delete t;
-	return this->title;
-    } else 
-	return this->DisplayNode::getTitle();
+		char *t = FindDelimitedString(v,'"','"');
+		if (!t) 
+			return this->DisplayNode::getTitle();
+
+		if (this->title)
+			delete this->title;
+
+		int tlen = STRLEN(t);
+		t[tlen - 1] = '\0';			// Strip last quote
+		this->title = DuplicateString(t + 1);	// Copy and strip first quote
+		delete t;
+		return this->title;
+	} else 
+		return this->DisplayNode::getTitle();
 }
 
 boolean ImageNode::hardwareMode()

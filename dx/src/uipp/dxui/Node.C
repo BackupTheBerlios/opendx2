@@ -1292,377 +1292,377 @@ boolean Node::netParsePgrpComment(const char* comment,
 // Parse an 'input[i]' or 'output[i]' .net file comment. 
 //
 boolean Node::parseIOComment(boolean input, const char* comment,
-                const char* filename, int lineno, boolean valueOnly)
+							 const char* filename, int lineno, boolean valueOnly)
 {
-    int      defaulting = 0, allowed_params, items_parsed, ionum, r, type_tmp;
-    int  visible = TRUE;
-    Type     type = DXType::UndefinedType;
-    char     *value, *ioname;
-    boolean	parse_error = FALSE;
-    
-    ASSERT(comment);
+	int      defaulting = 0, allowed_params, items_parsed, ionum, r, type_tmp;
+	int  visible = TRUE;
+	Type     type = DXType::UndefinedType;
+	char     *value, *ioname;
+	boolean	parse_error = FALSE;
 
-    if (input) {
-	if (!EqualSubstring(" input[",comment,7))
-	    return FALSE;
+	ASSERT(comment);
 
-	if (valueOnly) {
-	    if (sscanf(comment, " input[%d]: defaulting = %d", 
+	if (input) {
+		if (!EqualSubstring(" input[",comment,7))
+			return FALSE;
+
+		if (valueOnly) {
+			if (sscanf(comment, " input[%d]: defaulting = %d", 
 				&ionum, &defaulting) != 2)
-		parse_error = TRUE;
-	    type = DXType::UndefinedType;
-	} else {
-	    items_parsed = sscanf(comment,
-		" input[%d]: defaulting = %d, visible = %d, type = %d", 
-					&ionum, &defaulting, &visible, &type_tmp);
-	    type = (Type) type_tmp;
-	    
-	    if (items_parsed != 4) {
-		// Invisibility added 3/30/93
-		items_parsed = sscanf(comment, " input[%d]: visible = %d", 
-						    &ionum, &visible);
-		if (items_parsed != 2) {
-		    // Backwards compatibility added 3/25/93
-		    items_parsed = sscanf(comment, " input[%d]: type = %d", 
-					    &ionum, &type_tmp);
-		    type = (Type) type_tmp;
-		    
-		    if (items_parsed != 2) {
+				parse_error = TRUE;
+			type = DXType::UndefinedType;
+		} else {
 			items_parsed = sscanf(comment,
-				    " input[%d]: defaulting = %d, type = %d", 
-					    &ionum, &defaulting, &type_tmp);
+				" input[%d]: defaulting = %d, visible = %d, type = %d", 
+				&ionum, &defaulting, &visible, &type_tmp);
 			type = (Type) type_tmp;
-			if (items_parsed != 3) 
-			    parse_error = TRUE;
-		    } 
-		}
-		else 
-		{
-		    defaulting = 1;
-		}
-	    }
-	}
-        ioname = "input";
-        allowed_params = this->getInputCount();
-    } else {	// An output
 
-	if (!EqualSubstring(" output[",comment,8))
-	    return FALSE;
-
-	if (valueOnly) {
-	    if (sscanf(comment, " output[%d]: defaulting = %d", 
-						&ionum, &defaulting) != 2)
-		parse_error = TRUE;
-	    type = DXType::UndefinedType;
-	} else {
-	    // Invisibility added 3/30/93
-	    items_parsed = sscanf(comment, 
-				" output[%d]: visible = %d, type = %d", 
-					    &ionum, &visible, &type_tmp);
-	    type = (Type) type_tmp;
-	    
-	    if (items_parsed != 3) {
-
-		items_parsed = sscanf(comment, " output[%d]: type = %d", 
+			if (items_parsed != 4) {
+				// Invisibility added 3/30/93
+				items_parsed = sscanf(comment, " input[%d]: visible = %d", 
+					&ionum, &visible);
+				if (items_parsed != 2) {
+					// Backwards compatibility added 3/25/93
+					items_parsed = sscanf(comment, " input[%d]: type = %d", 
 						&ionum, &type_tmp);
-		type = (Type) type_tmp;
-		
-		if (items_parsed != 2) {
-		    items_parsed = sscanf(comment, " output[%d]: visible = %d", 
-						    &ionum, &visible);
-		    if (items_parsed != 2)
-			parse_error = TRUE;
+					type = (Type) type_tmp;
+
+					if (items_parsed != 2) {
+						items_parsed = sscanf(comment,
+							" input[%d]: defaulting = %d, type = %d", 
+							&ionum, &defaulting, &type_tmp);
+						type = (Type) type_tmp;
+						if (items_parsed != 3) 
+							parse_error = TRUE;
+					} 
+				}
+				else 
+				{
+					defaulting = 1;
+				}
+			}
 		}
-	    }
+		ioname = "input";
+		allowed_params = this->getInputCount();
+	} else {	// An output
+
+		if (!EqualSubstring(" output[",comment,8))
+			return FALSE;
+
+		if (valueOnly) {
+			if (sscanf(comment, " output[%d]: defaulting = %d", 
+				&ionum, &defaulting) != 2)
+				parse_error = TRUE;
+			type = DXType::UndefinedType;
+		} else {
+			// Invisibility added 3/30/93
+			items_parsed = sscanf(comment, 
+				" output[%d]: visible = %d, type = %d", 
+				&ionum, &visible, &type_tmp);
+			type = (Type) type_tmp;
+
+			if (items_parsed != 3) {
+
+				items_parsed = sscanf(comment, " output[%d]: type = %d", 
+					&ionum, &type_tmp);
+				type = (Type) type_tmp;
+
+				if (items_parsed != 2) {
+					items_parsed = sscanf(comment, " output[%d]: visible = %d", 
+						&ionum, &visible);
+					if (items_parsed != 2)
+						parse_error = TRUE;
+				}
+			}
+		}
+		ioname = "output";
+		allowed_params = this->getOutputCount();
 	}
-        ioname = "output";
-        allowed_params = this->getOutputCount();
-    }
 
-    if (parse_error)
-    {
-	ErrorMessage ("Can't parse %s comment file %s line %d", 
-				ioname, filename, lineno);
-	return TRUE;
-    }
-    /*
-     * If the input parameter is out of bounds, then something is wrong...
-     */
-    if (ionum > allowed_params)	
-    {
-	ErrorMessage ("Bad %s number (%d) file %s line %d", 
-		      input? "input": "output", ionum, filename, lineno);
-	return TRUE;
-    }
-
- 
-
-    /*
-     * If parsed ok and node exists, convert value.
-     */
-    value = (char *) strstr(comment, "value =");
-    if (value != NUL(char*))
-    {
-	value = strchr(value,'=') + 2;
-
-	//
-	// When we went to the C++ ui, the bit masks for types changed.
-	// If we're reading a pre-UI++ network then convert the types.
-	// valueOnly was added in version 3.
-	//
-	if (this->getNetwork()->getNetMajorVersion() <= 1)
-	    type = DXType::ConvertVersionType(type);
+	if (parse_error)
+	{
+		ErrorMessage ("Can't parse %s comment file %s line %d", 
+			ioname, filename, lineno);
+		return TRUE;
+	}
+	/*
+	* If the input parameter is out of bounds, then something is wrong...
+	*/
+	if (ionum > allowed_params)	
+	{
+		ErrorMessage ("Bad %s number (%d) file %s line %d", 
+			input? "input": "output", ionum, filename, lineno);
+		return TRUE;
+	}
 
 
-	if (input) {
-	    if (value[0] == '(' && value[STRLEN(value)-1] == ')') {
-		// Skip descriptive settings
-		defaulting = 1;
-		r = DXType::ObjectType;
+
+	/*
+	* If parsed ok and node exists, convert value.
+	*/
+	value = (char *) strstr(comment, "value =");
+	if (value != NUL(char*))
+	{
+		value = strchr(value,'=') + 2;
+
+		//
+		// When we went to the C++ ui, the bit masks for types changed.
+		// If we're reading a pre-UI++ network then convert the types.
+		// valueOnly was added in version 3.
+		//
+		if (this->getNetwork()->getNetMajorVersion() <= 1)
+			type = DXType::ConvertVersionType(type);
+
+
+		if (input) {
+			if (value[0] == '(' && value[STRLEN(value)-1] == ')') {
+				// Skip descriptive settings
+				defaulting = 1;
+				r = DXType::ObjectType;
 #if 11
-	    } else if (defaulting) {
+			} else if (defaulting) {
 #else
-	    //
-	    // This check for NULL shouldn't really be necessary, except
-	    // that there is a bug somewhere in ConfigurationDialog
-	    // that seems too risky to fix just before 3.1
-	    // Bug is as follows, 
-	    //   1) Place Echo
-	    //   2) Open CDB and type NULL into first param
-	    //   3) Save net
-	    //   4) Read in net.
-	    //   5) Execute and nothing goes in MsgWin, which is correct
-	    //   6) Open CDB, note non-null value in CDB and execute and get
-	    //	  	a different result.
-	    //
-	    } else if (defaulting || EqualString(value,"NULL")) {
+				//
+				// This check for NULL shouldn't really be necessary, except
+				// that there is a bug somewhere in ConfigurationDialog
+				// that seems too risky to fix just before 3.1
+				// Bug is as follows, 
+				//   1) Place Echo
+				//   2) Open CDB and type NULL into first param
+				//   3) Save net
+				//   4) Read in net.
+				//   5) Execute and nothing goes in MsgWin, which is correct
+				//   6) Open CDB, note non-null value in CDB and execute and get
+				//	  	a different result.
+				//
+			} else if (defaulting || EqualString(value,"NULL")) {
 #endif
-	        r = this->setInputSetValue(ionum, value, type, FALSE);
-		if (r == DXType::UndefinedType && 
-				type != DXType::UndefinedType) 	
-		    r = this->setInputSetValue(ionum, value, 
+				r = this->setInputSetValue(ionum, value, type, FALSE);
+				if (r == DXType::UndefinedType && 
+					type != DXType::UndefinedType) 	
+					r = this->setInputSetValue(ionum, value, 
 					DXType::UndefinedType, FALSE);
-	    } else {
-	        r = this->setInputValue(ionum, value, type, FALSE);
-		if (r == DXType::UndefinedType && 
-				type != DXType::UndefinedType) 	
-		    r = this->setInputValue(ionum, value, 
+			} else {
+				r = this->setInputValue(ionum, value, type, FALSE);
+				if (r == DXType::UndefinedType && 
+					type != DXType::UndefinedType) 	
+					r = this->setInputValue(ionum, value, 
 					DXType::UndefinedType, FALSE);
-	    }
-	} else {
-	    r = this->setOutputValue(ionum, value, type, FALSE);
-	    if (r == DXType::UndefinedType && 
-			    type != DXType::UndefinedType) 	
-		r = this->setOutputValue(ionum, value, DXType::UndefinedType, 
-								FALSE);
-	}
-      
-	if (r == DXType::UndefinedType) {
-	    ErrorMessage(
-		"Encountered an erroneous input value (file %s, line %d)",
-			    filename, lineno);
-	    return TRUE;
-	}
-    }
-		
-    if (!valueOnly) {
-	if (input) {
-	    this->setInputVisibility(ionum, (boolean)visible);
-	} else {	// Outputs always use the value found in the file
-	    this->useAssignedOutputValue(ionum, FALSE);
-	    this->setOutputVisibility(ionum, (boolean)visible);
-	}
-    }
-    
+			}
+		} else {
+			r = this->setOutputValue(ionum, value, type, FALSE);
+			if (r == DXType::UndefinedType && 
+				type != DXType::UndefinedType) 	
+				r = this->setOutputValue(ionum, value, DXType::UndefinedType, 
+				FALSE);
+		}
 
-    return TRUE;
+		if (r == DXType::UndefinedType) {
+			ErrorMessage(
+				"Encountered an erroneous input value (file %s, line %d)",
+				filename, lineno);
+			return TRUE;
+		}
+	}
+
+	if (!valueOnly) {
+		if (input) {
+			this->setInputVisibility(ionum, (boolean)visible);
+		} else {	// Outputs always use the value found in the file
+			this->useAssignedOutputValue(ionum, FALSE);
+			this->setOutputVisibility(ionum, (boolean)visible);
+		}
+	}
+
+
+	return TRUE;
 
 }
 
 
 boolean Node::netParseNodeComment(const char* comment,
-                const char* filename, int lineno)
+								  const char* filename, int lineno)
 {
-    int        items_parsed;
-    NodeDefinition *nd;
-    int        instance;
-    int        x;
-    int        y;
-    int        n_inputs;
-    int        n_outputs;
-    int        i;
-    char       node_name[1024];
-    char       labelstr[1024];
+	int        items_parsed;
+	NodeDefinition *nd;
+	int        instance;
+	int        x;
+	int        y;
+	int        n_inputs;
+	int        n_outputs;
+	int        i;
+	char       node_name[1024];
+	char       labelstr[1024];
 
-    /*
-     * Parse the comment.
-     */
+	/*
+	* Parse the comment.
+	*/
 
-    if (!EqualSubstring(" node ",comment,6))
-	return FALSE;
+	if (!EqualSubstring(" node ",comment,6))
+		return FALSE;
 
-    items_parsed =	// Version DX/6000 2.0 style comments 
-	    sscanf
+	items_parsed =	// Version DX/6000 2.0 style comments 
+		sscanf
 		(comment,
-		 " node %[^[][%d]: x = %d, y = %d, inputs = %d, outputs = %d, label = %[^\n]",
-		 node_name,
-		 &instance,
-		 &x,
-		 &y,
-		 &n_inputs,
-		 &n_outputs,
-		 labelstr);
+		" node %[^[][%d]: x = %d, y = %d, inputs = %d, outputs = %d, label = %[^\n]",
+		node_name,
+		&instance,
+		&x,
+		&y,
+		&n_inputs,
+		&n_outputs,
+		labelstr);
 
-    if (items_parsed != 7) {	// Try pre Version DX/6000 2.0 style comments
-	items_parsed =	// Version DX/6000 1.2 style comments 
-	    sscanf
-		(comment,
-		 " node %[^[][%d]: x = %d, y = %d, inputs = %d, label = %[^\n]",
-		 node_name,
-		 &instance,
-		 &x,
-		 &y,
-		 &n_inputs,
-		 labelstr);
+	if (items_parsed != 7) {	// Try pre Version DX/6000 2.0 style comments
+		items_parsed =	// Version DX/6000 1.2 style comments 
+			sscanf
+			(comment,
+			" node %[^[][%d]: x = %d, y = %d, inputs = %d, label = %[^\n]",
+			node_name,
+			&instance,
+			&x,
+			&y,
+			&n_inputs,
+			labelstr);
 
-	if (items_parsed != 6) {// Try pre Version DX/6000 1.2 style comments
-	    items_parsed =
-		sscanf(comment,
-		       " node %[^[][%d]: x = %d, y = %d, label = %[^\n]",
-		       node_name,
-		       &instance,
-		       &x,
-		       &y,
-		       labelstr);
-	    if (items_parsed != 5)
-	    {
-		// FIXME : should be ModelessErrorMessageDialog 
+		if (items_parsed != 6) {// Try pre Version DX/6000 1.2 style comments
+			items_parsed =
+				sscanf(comment,
+				" node %[^[][%d]: x = %d, y = %d, label = %[^\n]",
+				node_name,
+				&instance,
+				&x,
+				&y,
+				labelstr);
+			if (items_parsed != 5)
+			{
+				// FIXME : should be ModelessErrorMessageDialog 
 #ifdef NOT_YET
-		ErrorMessage
-		    ("#10001", "node", filename, lineno);
-		_error_occurred = TRUE;
+				ErrorMessage
+					("#10001", "node", filename, lineno);
+				_error_occurred = TRUE;
 #else
-		ErrorMessage("Can not parse node comment at "
-				"line %d in file %s",
-				lineno, filename);
+				ErrorMessage("Can not parse node comment at "
+					"line %d in file %s",
+					lineno, filename);
 #endif
-		return TRUE;
-	    }
+				return TRUE;
+			}
+		}
 	}
-    }
 
-    /*
-     * Get definition for this node. 
-     */
-    nd = (NodeDefinition*) 
+	/*
+	* Get definition for this node. 
+	*/
+	nd = (NodeDefinition*) 
 		theNodeDefinitionDictionary->findDefinition(node_name);
-    if (!nd) {
-	ErrorMessage("Undefined module %s at line %d in file %s",
+	if (!nd) {
+		ErrorMessage("Undefined module %s at line %d in file %s",
 			node_name, lineno, filename); 
-	return FALSE;
-    }
-
-//    printf ("Number of inputs found = %d, number defined = %d\n",
-//		n_inputs, this->definition->getInputCount());
-    /*
-     * If old syle comment, set number of inputs to that of module definition.
-     */
-    if (items_parsed < 7)
-	n_outputs = this->getOutputCount();
-    if (items_parsed < 6)
-	n_inputs =  this->getInputCount();
-
-    //
-    // Set the label for this module.
-    //
-    this->setLabelString(labelstr);
- 
-    /*
-     * Set the instance number in the node.
-     */
-    this->setInstanceNumber(instance);
-    this->setVpePosition(x,y);
-
-   
-    /*
-     * Count the inputs, if not the default and the inputs are repeatable 
-     * then add some inputs.
-     * If there are fewer inputs in the file, silently assume that
-     * this is an old network.
-     */
-    if (n_inputs != this->getInputCount()) {
-        if (this->isInputRepeatable()) {
-	    int delta_inputs = n_inputs - this->getInputCount();
-	    boolean adding = delta_inputs > 0;
-	    if (!adding) 
-		delta_inputs = -delta_inputs;
-	    int sets; 
-	    if (delta_inputs % this->getInputRepeatCount() != 0) {
-		ErrorMessage("Number of repeatable input parameters does not "
-			     "divide number of parameters for module %s",
-			     this->getNameString());
-	  	return TRUE;
-	    }
-	    sets = delta_inputs/getInputRepeatCount();
-	    for (i=0  ; i<sets ; i++) {
-		if (adding) {
-		    if (!this->addInputRepeats()) {
-			ErrorMessage("Can't add repeated input parameters");
-			return TRUE;
-		    }
-		} else {
-		    if (!this->removeInputRepeats()) {
-			ErrorMessage("Can't remove repeated input parameters");
-			return TRUE;
-		    }
-		}
-	    }
+		return FALSE;
 	}
-	// else expect the network parser to recognize that the definition
-	// has changed and indicate so.	
-    }
 
-    if (n_outputs != this->getOutputCount()) {
-        if (this->isOutputRepeatable()) {
-	    int delta_outputs = n_outputs - this->getOutputCount();
-	    boolean adding = delta_outputs > 0;
-	    if (!adding) 
-		delta_outputs = -delta_outputs;
-	    int sets; 
-	    if (delta_outputs % this->getOutputRepeatCount() != 0) {
-		ErrorMessage("Number of repeatable output parameters does "
-			     "not divide number of parameters for module %s",
-			     this->getNameString());
-	  	return TRUE;
-	    }
-	    sets = delta_outputs/getOutputRepeatCount();
-	    for (i=0  ; i<sets ; i++) {
-		if (adding) {
-		    if (!this->addOutputRepeats()) {
-			ErrorMessage("Can't add repeated output parameters");
-			return TRUE;
-		    }
-		} else {
-		    if (!this->removeOutputRepeats()) {
-			ErrorMessage("Can't remove repeated output parameters");
-			return TRUE;
-		    }
+	//    printf ("Number of inputs found = %d, number defined = %d\n",
+	//		n_inputs, this->definition->getInputCount());
+	/*
+	* If old syle comment, set number of inputs to that of module definition.
+	*/
+	if (items_parsed < 7)
+		n_outputs = this->getOutputCount();
+	if (items_parsed < 6)
+		n_inputs =  this->getInputCount();
+
+	//
+	// Set the label for this module.
+	//
+	this->setLabelString(labelstr);
+
+	/*
+	* Set the instance number in the node.
+	*/
+	this->setInstanceNumber(instance);
+	this->setVpePosition(x,y);
+
+
+	/*
+	* Count the inputs, if not the default and the inputs are repeatable 
+	* then add some inputs.
+	* If there are fewer inputs in the file, silently assume that
+	* this is an old network.
+	*/
+	if (n_inputs != this->getInputCount()) {
+		if (this->isInputRepeatable()) {
+			int delta_inputs = n_inputs - this->getInputCount();
+			boolean adding = delta_inputs > 0;
+			if (!adding) 
+				delta_inputs = -delta_inputs;
+			int sets; 
+			if (delta_inputs % this->getInputRepeatCount() != 0) {
+				ErrorMessage("Number of repeatable input parameters does not "
+					"divide number of parameters for module %s",
+					this->getNameString());
+				return TRUE;
+			}
+			sets = delta_inputs/getInputRepeatCount();
+			for (i=0  ; i<sets ; i++) {
+				if (adding) {
+					if (!this->addInputRepeats()) {
+						ErrorMessage("Can't add repeated input parameters");
+						return TRUE;
+					}
+				} else {
+					if (!this->removeInputRepeats()) {
+						ErrorMessage("Can't remove repeated input parameters");
+						return TRUE;
+					}
+				}
+			}
 		}
-	    }
+		// else expect the network parser to recognize that the definition
+		// has changed and indicate so.	
 	}
-	// else expect the network parser to recognize that the definition
-	// has changed and indicate so.	
-    }
+
+	if (n_outputs != this->getOutputCount()) {
+		if (this->isOutputRepeatable()) {
+			int delta_outputs = n_outputs - this->getOutputCount();
+			boolean adding = delta_outputs > 0;
+			if (!adding) 
+				delta_outputs = -delta_outputs;
+			int sets; 
+			if (delta_outputs % this->getOutputRepeatCount() != 0) {
+				ErrorMessage("Number of repeatable output parameters does "
+					"not divide number of parameters for module %s",
+					this->getNameString());
+				return TRUE;
+			}
+			sets = delta_outputs/getOutputRepeatCount();
+			for (i=0  ; i<sets ; i++) {
+				if (adding) {
+					if (!this->addOutputRepeats()) {
+						ErrorMessage("Can't add repeated output parameters");
+						return TRUE;
+					}
+				} else {
+					if (!this->removeOutputRepeats()) {
+						ErrorMessage("Can't remove repeated output parameters");
+						return TRUE;
+					}
+				}
+			}
+		}
+		// else expect the network parser to recognize that the definition
+		// has changed and indicate so.	
+	}
 
 
-    /*
-     * Increment the module instance count if the current
-     * node instance count is higher.
-     */
-    if (instance > this->definition->getCurrentInstance())
-	this->definition->setNextInstance(instance+1);
+	/*
+	* Increment the module instance count if the current
+	* node instance count is higher.
+	*/
+	if (instance > this->definition->getCurrentInstance())
+		this->definition->setNextInstance(instance+1);
 
-    return TRUE;
+	return TRUE;
 
 }
 

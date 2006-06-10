@@ -96,64 +96,64 @@ boolean PickNode::isA(Symbol classname)
 }
 
 void PickNode::setCursorValue(int cursor,
-    double x, double y, double /* z ignored */)
+							  double x, double y, double /* z ignored */)
 {
-    char s[100];
-    const char *value = this->getInputValueString(PICK_PTS);
+	char s[100];
+	const char *value = this->getInputValueString(PICK_PTS);
 
-    this->incrementIndex();
+	this->incrementIndex();
 
-    sprintf(s, "[%g, %g]", x, y);
-    if (this->isInputDefaulting(PICK_PTS) || 
-	value == NULL || EqualString(value, "NULL") || *value == '\0')
-    {
-	char newValue[102];
-	strcpy(newValue, "{");
-	strcat(newValue, s);
-	strcat(newValue, "}");
-	this->setInputValue(PICK_PTS, newValue);
-    }
-    else if (cursor == -1)
-    {
-	char *newValue = new char[STRLEN(value) + 102];
-	strcpy(newValue, value);
-	char *brace = strchr(newValue, '}');
-	ASSERT(brace);
-	*brace = '\0';
-	strcat(newValue, ",");
-	strcat(newValue, s);
-	strcat(newValue, "}");
-	this->setInputValue(PICK_PTS, newValue);
-	delete newValue;
-    }
-    else
-    {
-	char *newValue = new char[STRLEN(value) + 102];
-	const char *term = strchr(value, '[');
-	strcpy (newValue, "{");
-	for (int i = 0; i < cursor; ++i)
+	sprintf(s, "[%g, %g]", x, y);
+	if (this->isInputDefaulting(PICK_PTS) || 
+		value == NULL || EqualString(value, "NULL") || *value == '\0')
 	{
-	    ASSERT(term);
-	    int termLen;
-	    const char *end = strchr(term, ']');
-	    ASSERT(end);
-	    termLen = end - term + 1;
-	    strncat(newValue, term, termLen);
-	    strcat(newValue, ",");
-	    term = strchr(end, '[');
+		char newValue[102];
+		strcpy(newValue, "{");
+		strcat(newValue, s);
+		strcat(newValue, "}");
+		this->setInputValue(PICK_PTS, newValue);
 	}
-	strcat(newValue, s);
-	if (term)
+	else if (cursor == -1)
 	{
-	    strcat(newValue, ",");
-	    strcat(newValue, term);
+		char *newValue = new char[STRLEN(value) + 102];
+		strcpy(newValue, value);
+		char *brace = strchr(newValue, '}');
+		ASSERT(brace);
+		*brace = '\0';
+		strcat(newValue, ",");
+		strcat(newValue, s);
+		strcat(newValue, "}");
+		this->setInputValue(PICK_PTS, newValue);
+		delete newValue;
 	}
 	else
-	    strcat(newValue, "}");
+	{
+		char *newValue = new char[STRLEN(value) + 102];
+		const char *term = strchr(value, '[');
+		strcpy (newValue, "{");
+		for (int i = 0; i < cursor; ++i)
+		{
+			ASSERT(term);
+			int termLen;
+			const char *end = strchr(term, ']');
+			ASSERT(end);
+			termLen = end - term + 1;
+			strncat(newValue, term, termLen);
+			strcat(newValue, ",");
+			term = strchr(end, '[');
+		}
+		strcat(newValue, s);
+		if (term)
+		{
+			strcat(newValue, ",");
+			strcat(newValue, term);
+		}
+		else
+			strcat(newValue, "}");
 
-	this->setInputValue(PICK_PTS, newValue);
-	delete newValue;
-    }
+		this->setInputValue(PICK_PTS, newValue);
+		delete newValue;
+	}
 
 }
 
