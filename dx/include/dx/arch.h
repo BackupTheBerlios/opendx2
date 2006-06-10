@@ -536,6 +536,11 @@ union wait{
 
 #if defined(intelnt) || defined(WIN32)
 
+#ifdef snprintf
+#undef snprintf
+#define snprintf _snprintf
+#endif
+
 #if defined(alloca)
 #undef alloca
 #endif
