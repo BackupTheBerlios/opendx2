@@ -538,8 +538,13 @@ union wait{
 
 #ifdef snprintf
 #undef snprintf
-#define snprintf _snprintf
 #endif
+#define snprintf _snprintf
+
+#ifdef vsnprintf
+#undef vsnprintf
+#endif
+#define vsnprintf _vsnprintf
 
 #if defined(alloca)
 #undef alloca
