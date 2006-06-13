@@ -1,3 +1,7 @@
+Add the ability to set the Integer, Scalar and
+Vector Interactor default caclulated output to the
+min, max as well as the default midpoint.
+
 Add the capability to be able to pass much larger
 strings through the packet handlers. This will 
 accomodate sending full html pages through as responses
