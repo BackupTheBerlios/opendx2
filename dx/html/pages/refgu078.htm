@@ -91,7 +91,14 @@ integer outputs
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">input dependent
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40%">defines interpretation of delta
 input
-</TD></TR><TR>
+</TD></TR>
+			<tr>
+				<td align="LEFT" valign="TOP" width="20%"><B><TT><STRONG>start</STRONG></TT></B></td>
+				<td align="LEFT" valign="TOP" width="20%">string</td>
+				<td align="LEFT" valign="TOP" width="20%">&quot;midpoint&quot;</td>
+				<td align="LEFT" valign="TOP" width="40%">describes how the default output should be calculated</td>
+			</tr>
+			<TR>
 <TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%"><TT><STRONG>label</STRONG></TT>
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">string
 </TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="20%">&quot;Integer&quot;
@@ -140,11 +147,7 @@ when the corresponding input tabs are up.
 current
 input. If <TT><STRONG>refresh</STRONG></TT> = 0 (the default), the output
 is recomputed only if the current output does not lie within the range
-of the current <TT><STRONG>data</STRONG></TT>.
-The default for the output of the interactor is the midpoint of
-<TT><STRONG>min</STRONG></TT> and <TT><STRONG>max</STRONG></TT>.
-
-</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>min</STRONG></TT>
+of the current <TT><STRONG>data</STRONG></TT>. The default for the output of the interactor is defined by the start parameter.</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>min</STRONG></TT>
 &nbsp;and&nbsp; <TT><STRONG>max</STRONG></TT>
 </B></TD><TD><P>specify the minimum and maximum values of the interactor&#39;s
 integer output.
@@ -190,7 +193,12 @@ The default is:
 <LI>"absolute" in all other cases.
 </UL>
 </UL>
-</TD></TR><TR VALIGN="TOP"><TD><P><B><TT><STRONG>label</STRONG></TT>
+</TD></TR>
+			<tr valign="TOP">
+				<td><b><tt><strong>start</strong></tt></b></td>
+				<td>specifies how the default output should be calculated. Can be &quot;minimum&quot;, &quot;midpoint&quot; or &quot;maximum&quot; (midpoint sets the value to the midpoint between min and max.)</td>
+			</tr>
+			<TR VALIGN="TOP"><TD><P><B><TT><STRONG>label</STRONG></TT>
 </B></TD><TD><P>is the global label of all instances of the corresponding
 interactor
 stand-in.
