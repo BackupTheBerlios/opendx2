@@ -15,7 +15,7 @@
 #include "scalar.h"
 #include "interact.h"
 
-static Error float_reset(float ,float ,int ,float *);
+static Error float_reset(float ,float , int, start_type, float *);
 
 int 
 m_Scalar(Object *in, Object *out)
@@ -30,9 +30,9 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
    struct einfo ei;
    float min,max,valtemp;
    float incr, *val=NULL;
-   char *label, *id, *incrmethod;
+   char *label, *id, *incrmethod, *startstr;
    int i,decimal,item=0,change=0,range,nitem=-1;
-   int change1,change4,change5,changen=0,req_param=1;
+   int change1,change4,change5,changen=0,req_param=1,start=START_MIDPOINT;
    method_type method;
    Object idobj=NULL;
    int iprint[MAXPRINT], msglen=0,shape[1];
@@ -185,8 +185,25 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
       else
          item = 11;
    }
-   else
+   else {
       item=1;
+      if(in[9]) {
+		  if (!DXExtractString(in[9],&startstr)){
+			 DXSetError(ERROR_BAD_PARAMETER,"#10200","start");
+			 goto error1;
+		   }
+		   if (!strncmp("minimum",startstr,7))
+			  start = START_MINIMUM;
+		   else if (!strncmp("midpoint",startstr,8))
+			  start = START_MIDPOINT;
+		   else if (!strncmp("maximum",startstr,7))
+			  start = START_MAXIMUM;
+		   else{
+			  DXSetError(ERROR_BAD_PARAMETER,"#10480","start");
+			  goto error1;
+		   }
+      }
+   }
 
    if (in[3]) {
       if (req_param==0){
@@ -213,7 +230,7 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
    if (refresh == 1){
          if (nitem != -1) item=nitem;
          val = (float *)DXAllocate(sizeof(float) *item);
-         float_reset(min,max,item,val);
+         float_reset(min,max,item,start,val);
          iprint[4]=1;
    }
    else{
@@ -232,7 +249,7 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
       if (req_param==1 && changen==1){
          if (nitem != -1) item=nitem;
          val = (float *)DXAllocate(sizeof(float) *item);
-         float_reset(min,max,item,val);
+         float_reset(min,max,item,start,val);
          iprint[4]=1;
       }
       else if (change==1){ 
@@ -246,7 +263,7 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
 		  if (nitem!=-1) item = nitem;
                   DXFree((Pointer)val);
                   val = (float *)DXAllocate(sizeof(float) *item);
-                  float_reset(min,max,item,val);
+                  float_reset(min,max,item,start,val);
                   iprint[4]=1;
                   break;
                }
@@ -269,7 +286,7 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
        * and send messages for everything */
       if (nitem != -1) item = nitem;
       val = (float *)DXAllocate(sizeof(float)*item);
-      float_reset(min,max,item,val);
+      float_reset(min,max,item,start,val);
       iprint[4]=1;
    }
    else{
@@ -304,6 +321,8 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
 	 msglen += (NUMBER_CHARS + NAME_CHARS);
    }
    if (in[7]) 
+      msglen = msglen + NAME_CHARS + METHOD_CHARS;
+   if (!islist && in[9])
       msglen = msglen + NAME_CHARS + METHOD_CHARS;
 
    ei.maxlen = msglen;
@@ -349,6 +368,12 @@ Error _dxfscalar_base(Object *in, Object *out, int islist)
       if (method==ABSOLUTE) sprintf(ei.mp, "method=\"absolute\"");
       else if(method==PERCENT) sprintf(ei.mp, "method=\"relative\"");
       else sprintf(ei.mp, "method=\"rounded\"");
+      while(*ei.mp) ei.mp++;
+   }
+   if (!islist && in[9]){
+      if(start==START_MINIMUM) sprintf(ei.mp, "start=\"minimum\"");
+      else if(start==START_MIDPOINT) sprintf(ei.mp, "start=\"midpoint\"");
+      else sprintf(ei.mp, "start=\"maximum\"");
       while(*ei.mp) ei.mp++;
    }
    if (iprint[5]>0 && strlen(label)>0){
@@ -398,13 +423,19 @@ error1:
 }
 
 static 
-Error float_reset(float min, float max, int item, float *value)
+Error float_reset(float min, float max, int item, start_type start, float *value)
 {
    int i;
    
    if (item==1){
-      value[0] = (max+min)/2.0;
+      if(start==START_MINIMUM)
+          value[0] = min;
+      else if(start==START_MIDPOINT)
+          value[0] = (max+min)/2.0;
+      else
+          value[0] = max;
       return OK;
+   
    }
    for (i=0; i<item; i++)
       value[i] = i*((max-min)/(item-1)) +min;

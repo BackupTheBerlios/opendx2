@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/interact.h,v 1.7 2003/07/11 05:50:35 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/interact.h,v 1.8 2006/06/13 15:08:35 davidt Exp $
  */
 
 #include <dxconfig.h>
@@ -43,6 +43,12 @@ typedef enum {
         PERCENT = 2,
         ABSOLUTE = 3
 } method_type;
+
+typedef enum {
+		START_MINIMUM = 1,
+		START_MIDPOINT = 2,
+		START_MAXIMUM = 3
+} start_type;
 
 struct einfo {
     int maxlen;

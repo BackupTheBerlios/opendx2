@@ -22,7 +22,7 @@ extern Array DXScalarConvert(Array ); /* from libdx/stats.h */
 static Error vec_minmax(Object, int , int *,int , float *, float *); 
 static Error constant_minmax(Array , Type ,int ,float *, float *);
 static Error IsInvalid(Object, InvalidComponentHandle *);
-static Error vec_reset(float *, float *, int , int , int , float *);
+static Error vec_reset(float *, float *, int , int , int , start_type, float *);
 static Error setoutput(float *, int , int , int , int , Object *);
 static int isthisint(float *,int ,int );
 
@@ -41,8 +41,8 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
    float *min, *max, *incr;
    int *decimal;
    float *val,min1,max1,incr1;
-   char *label, *id, *incrmethod;
-   int i,item=0,change=0,j,n,nitem=-1,range=0,isint=0;
+   char *label, *id, *incrmethod, *startstr;
+   int i,item=0,change=0,j,n,nitem=-1,range=0,isint=0, start=START_MIDPOINT;
    int rank=1,dim=3,size,valdim,dec1;
    int change1,change4,change5,changen=0,req_param=1 /*,decimalzero=1*/;
    method_type method;
@@ -288,8 +288,25 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
       else
          item = 11;
    }
-   else
+   else {
       item=1;
+      if(in[9]) {
+		  if (!DXExtractString(in[9],&startstr)){
+			 DXSetError(ERROR_BAD_PARAMETER,"#10200","start");
+			 goto error1;
+		   }
+		   if (!strncmp("minimum",startstr,7))
+			  start = START_MINIMUM;
+		   else if (!strncmp("midpoint",startstr,8))
+			  start = START_MIDPOINT;
+		   else if (!strncmp("maximum",startstr,7))
+			  start = START_MAXIMUM;
+		   else{
+			  DXSetError(ERROR_BAD_PARAMETER,"#10480","start");
+			  goto error1;
+		   }
+      }
+   }
 
    if (in[3]) {
       if (req_param==0){
@@ -317,7 +334,7 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
    if (refresh == 1){
       if (nitem >=0) item=nitem;
       val = (float *)DXAllocate(sizeof(float)*item *dim);
-      if (!vec_reset(min,max,item,dim,-1,val)) 
+      if (!vec_reset(min,max,item,dim,-1,start,val)) 
          goto error1;
       ip[4]=1;
    }
@@ -337,7 +354,7 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
          /* if dimension or number of items change, reset */
          if (nitem >=0) item=nitem;
          val = (float *)DXAllocate(sizeof(float)*item *dim);
-         if (!vec_reset(min,max,item,dim,-1,val)) 
+         if (!vec_reset(min,max,item,dim,-1,start,val)) 
             goto error1;
          ip[4]=1;
       }
@@ -376,7 +393,7 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
                      if (nitem >=0) item=nitem;
 		     DXFree((Pointer)val);
                      val = (float *)DXAllocate(sizeof(float)*item *dim);
-                     if (!vec_reset(min,max,item,dim,-1,val))
+                     if (!vec_reset(min,max,item,dim,-1,start,val))
                         goto error1;
                      ip[4]=1;
    		     break;
@@ -404,7 +421,7 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
       /* first time placed */
       if (nitem>=0) item=nitem;
       val = (float *)DXAllocate(sizeof(float)*item*dim);
-      if (!vec_reset(min,max,item,dim,-1,val))
+      if (!vec_reset(min,max,item,dim,-1,start,val))
          goto error1;
       ip[4]=1;
    }
@@ -457,6 +474,8 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
    }
    if (in[7])
       msglen += (NAME_CHARS + METHOD_CHARS);
+   if (!islist && in[9])
+      msglen = msglen + NAME_CHARS + METHOD_CHARS;
    
    msglen += NAME_CHARS; /* for the dim statement */
 
@@ -512,6 +531,12 @@ Error _dxfvector_base(Object *in, Object *out, int islist)
       if (method==ABSOLUTE) sprintf(ei.mp, "method=\"absolute\"");
       else if(method==PERCENT) sprintf(ei.mp, "method=\"relative\"");
       else sprintf(ei.mp, "method=\"rounded\"");
+      while(*ei.mp) ei.mp++;
+   }
+   if (!islist && in[9]){
+      if(start==START_MINIMUM) sprintf(ei.mp, "start=\"minimum\"");
+      else if(start==START_MIDPOINT) sprintf(ei.mp, "start=\"midpoint\"");
+      else sprintf(ei.mp, "start=\"maximum\"");
       while(*ei.mp) ei.mp++;
    }
    if (ip[5]==1 && strlen(label)>0){
@@ -821,16 +846,34 @@ Error constant_minmax(Array a, Type type, int dim, float *min, float *max)
 }
 
 static
-Error vec_reset(float *min,float *max,int item,int dim,int offset,float *value)
+Error vec_reset(float *min,float *max,int item,int dim,int offset, start_type start,float *value)
 {
    int i,j;
    
    if (item==1){
-      if (offset >= 0)
-	value[offset] = (max[offset] +min[offset])/2.0;
-      else{
-         for (j=0; j<dim; j++)
-            value[j] = (max[j] +min[j])/2.0;
+      if (start==START_MINIMUM){
+          if (offset >= 0)
+              value[offset] = min[offset];
+          else {
+              for (j=0; j<dim; j++)
+                  value[j] = min[j];
+          }
+      }
+      else if (start==START_MIDPOINT) {
+		  if (offset >= 0)
+			  value[offset] = (max[offset] +min[offset])/2.0;
+		  else{
+			 for (j=0; j<dim; j++)
+				value[j] = (max[j] +min[j])/2.0;
+		  }
+      }
+      else {
+          if (offset >= 0)
+              value[offset] = max[offset];
+          else {
+              for (j=0; j<dim; j++)
+                  value[j] = max[j];
+          }
       }
       return OK;
    }

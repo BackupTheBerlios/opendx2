@@ -1793,7 +1793,8 @@ INPUT delta [visible:0,cache:2]; scalar ; (input dependent) ; the interactor inc
 INPUT method [visible:0,cache:2]; string ; (rounded, relative or absolute) ; how to interpret delta input
 OPTIONS rounded; relative; absolute
 INPUT reserved2 [visible:2] ; integer ; 0 ; reserved for later use.
-INPUT reserved3 [visible:2] ; integer ; 0 ; reserved for later use.
+INPUT start [visible:0] ; string ; (minimum, midpoint or maximum) ; start value of this interactor
+OPTIONS minimum; midpoint; maximum
 INPUT label [visible:0, cache:2] ; string ; "Integer" ; global name applied to interactor instances
 OUTPUT output; integer; interactor output
 
@@ -1810,7 +1811,7 @@ INPUT max [visible:0,cache:2] ; integer; (max of data) ; maximum of output
 INPUT delta [visible:0,cache:2]; scalar ; (input dependent) ; the interactor increment
 INPUT method [visible:0,cache:2]; string ; (rounded, relative or absolute) ; how to interpret delta input
 OPTIONS rounded; relative; absolute
-INPUT reserved2 [visible:2] ; integer; (input dependent) ; reserved for later.
+INPUT reserved2 [visible:2] ; integer; (input dependent) ; reserved for later use.
 INPUT nitems [visible:0,cache:2] ; integer ; 11 ; number of items in initial list
 INPUT label [visible:0, cache:2] ; string ; "IntegerList" ; global name applied to interactor instances
 OUTPUT output; integer list; interactor output
@@ -1829,7 +1830,8 @@ INPUT delta [visible:0,cache:2]; scalar ; (input dependent) ; the interactor inc
 INPUT method [visible:0,cache:2]; string ; (rounded, relative or absolute) ; how to interpret delta input
 OPTIONS rounded; relative; absolute
 INPUT decimals [visible:0,cache:2] ; integer; (input dependent) ; number of decimal places to be displayed
-INPUT reserved2 [visible:2] ; scalar ; 0 ; reserved for later use.
+INPUT start [visible:0] ; string ; (minimum, midpoint or maximum) ; start value of this interactor
+OPTIONS minimum; midpoint; maximum
 INPUT label [visible:0, cache:2] ; string ; "Scalar" ; global name applied to interactor instances
 OUTPUT output; scalar; interactor output
 
@@ -1869,7 +1871,8 @@ INPUT delta [visible:0,cache:2]; scalar or vector ; (input dependent) ; the inte
 INPUT method [visible:0,cache:2]; string ; (rounded, relative or absolute) ; how to interpret delta input
 OPTIONS rounded; relative; absolute
 INPUT decimals [visible:0,cache:2] ; integer or vector; (input dependent) ; number of decimal places to show in vector components
-INPUT reserved2 [visible:2] ; vector ; [0 0 0] ; reserved for later use.
+INPUT start [visible:0] ; string ; (minimum, midpoint or maximum) ; start value of this interactor
+OPTIONS minimum; midpoint; maximum
 INPUT label [visible:0, cache:2] ; string ; "Vector" ; global name applied to interactor instances
 OUTPUT output; vector; interactor output
 

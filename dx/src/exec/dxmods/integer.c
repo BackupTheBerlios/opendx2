@@ -15,7 +15,7 @@
 #include "integer.h"
 #include "interact.h"
 
-static Error int_reset(float , float , int , int *);
+static Error int_reset(float , float , int, start_type, int *);
 
 int 
 m_Integer(Object *in, Object *out)
@@ -30,9 +30,9 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
    struct einfo ei;
    float min,max,valtemp;
    float val,incr;
-   char *label, *id, *incrmethod;
+   char *label, *id, *incrmethod, *startstr;
    int i,item=0,change=0,range,nitem=-1;
-   int change1,change4,change5,changen=0,req_param=1;
+   int change1,change4,change5,changen=0,req_param=1, start=START_MIDPOINT;
    int *ival,iincr,imax,imin;
    method_type method;
    Object idobj=NULL;
@@ -177,8 +177,25 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
       else
          item = 11;
    }
-   else
+   else {
       item=1;
+      if(in[9]) {
+		  if (!DXExtractString(in[9],&startstr)){
+			 DXSetError(ERROR_BAD_PARAMETER,"#10200","start");
+			 goto error1;
+		   }
+		   if (!strncmp("minimum",startstr,7))
+			  start = START_MINIMUM;
+		   else if (!strncmp("midpoint",startstr,8))
+			  start = START_MIDPOINT;
+		   else if (!strncmp("maximum",startstr,7))
+			  start = START_MAXIMUM;
+		   else{
+			  DXSetError(ERROR_BAD_PARAMETER,"#10480","start");
+			  goto error1;
+		   }
+      }
+   }
 
    if (in[3]) {
       if (req_param==0){
@@ -207,7 +224,7 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
    if (refresh == 1){
          if (nitem != -1) item=nitem;
          ival = (int *)DXAllocate(sizeof(int) *item);
-         int_reset(min,max,item,ival);
+         int_reset(min,max,item,start,ival);
          iprint[4]=1;
    }
    else {
@@ -224,7 +241,7 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
          /* number of list items changes, reset */
          if (nitem != -1) item=nitem;
          ival = (int *)DXAllocate(sizeof(int) *item);
-         int_reset(min,max,item,ival);
+         int_reset(min,max,item,start,ival);
          iprint[4]=1;
       }
       else if (change == 1){
@@ -242,7 +259,7 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
 	          if (nitem!=-1) item=nitem;
 		  DXFree((Pointer)ival);
 		  ival = (int *)DXAllocate(sizeof(int) *item);
-                  if (!int_reset(min,max,item,ival))
+                  if (!int_reset(min,max,item,start,ival))
                      goto error;
                   iprint[4]=1;
                   break;
@@ -266,7 +283,7 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
       /* first time */
       if (nitem != -1) item = nitem;
       ival = (int *)DXAllocate(sizeof(int) *item);
-      int_reset(min,max,item,ival);
+      int_reset(min,max,item,start,ival);
       iprint[4]=1;
    }
    else{ 
@@ -303,6 +320,8 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
    }
    if (in[7])
       msglen += (METHOD_CHARS + NAME_CHARS);
+   if (!islist && in[9])
+      msglen = msglen + NAME_CHARS + METHOD_CHARS;
 
    /* Print out the message
     * min,max,new value(s)
@@ -353,6 +372,12 @@ Error _dxfinteger_base(Object *in, Object *out, int islist)
       else sprintf(ei.mp, "method=\"rounded\"");
       while(*ei.mp) ei.mp++;
    }
+   if (!islist && in[9]){
+      if(start==START_MINIMUM) sprintf(ei.mp, "start=\"minimum\"");
+      else if(start==START_MIDPOINT) sprintf(ei.mp, "start=\"midpoint\"");
+      else sprintf(ei.mp, "start=\"maximum\"");
+      while(*ei.mp) ei.mp++;
+   }
 
    if (strlen(ei.msgbuf) > MAX_MSGLEN){
     DXSetError(ERROR_DATA_INVALID,"#10920");
@@ -391,12 +416,17 @@ error1:
 }
  
 static
-Error int_reset(float min, float max, int item, int *ivalue)
+Error int_reset(float min, float max, int item, start_type start, int *ivalue)
 {
    int i;
    
    if (item==1){
-      ivalue[0] = (max+min)/2.0;
+      if(start==START_MINIMUM)
+          ivalue[0] = min;
+      else if(start==START_MIDPOINT)
+          ivalue[0] = (max+min)/2.0;
+      else
+          ivalue[0] = max;
       return OK;
    }
    for (i=0; i<item; i++)
