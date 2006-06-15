@@ -341,11 +341,6 @@ namespace WinDX.UI
 
         #endregion
 
-        #region Public Instance Methods
-
-        public String getFileName() { return ""; }
-
-        #endregion
 
         #region Protected Methods
 
@@ -1158,7 +1153,25 @@ namespace WinDX.UI
         /// <param name="panelInstance"></param>
         public void openControlPanel(int panelInstance)
         {
-            throw new Exception("Not Yet Implemented");
+            if (panelInstance < 0)
+            {
+                foreach (ControlPanel panel in panelList)
+                {
+                    if (panel.IsStartup)
+                        panel.Show();
+                }
+            }
+            else if (panelInstance == 0)
+            {
+                foreach (ControlPanel panel in panelList)
+                    panel.Show();
+            }
+            else
+            {
+                ControlPanel panel = getPanelByInstance(panelInstance);
+                if (panel != null)
+                    panel.Show();
+            }
         }
 
 
@@ -1965,7 +1978,7 @@ namespace WinDX.UI
             if (cfgfile == null || cfgfile == "")
             {
                 cfgfile = netfile.Substring(0, netfile.LastIndexOf('.'));
-                cfgfile += "CFG";
+                cfgfile += ".cfg";
             }
             openCfgFile(cfgfile, false, false);
 

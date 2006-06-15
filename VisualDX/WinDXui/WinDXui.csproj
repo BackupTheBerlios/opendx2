@@ -175,12 +175,14 @@
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="ModuleMessagingNode.cs" />
+    <Compile Include="MWClearCmd.cs" />
     <Compile Include="NDAllocatorDictionary.cs" />
     <Compile Include="NetLexer.cs" />
     <Compile Include="NetParser.cs" />
     <Compile Include="NewCommand.cs" />
     <Compile Include="NoUndoAnchorCommand.cs" />
     <Compile Include="NoUndoJavaNetCommand.cs" />
+    <Compile Include="NoUndoMWCmd.cs" />
     <Compile Include="NoUndoNetworkCommand.cs" />
     <Compile Include="PageGroupManager.cs" />
     <Compile Include="PickDefinition.cs" />
@@ -334,9 +336,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DXAnchorWindow.resx">
       <DependentUpon>DXAnchorWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="DXWindow.resx">
       <DependentUpon>DXWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="EditorWindow.resx">
       <SubType>Designer</SubType>

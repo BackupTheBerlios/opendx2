@@ -28,7 +28,7 @@ namespace WinDX.UI
         protected override void doPreAction()
         {
             Network net = application.network;
-            String fname = net.getFileName();
+            String fname = net.FileName;
 
             if (fname != null)
             {

@@ -35,7 +35,7 @@ namespace WinDX.UI
                     network.postNameDialog();
                     break;
                 case NetworkCommandType.SaveNetwork:
-                    network.saveNetwork(network.getFileName());
+                    network.saveNetwork(network.FileName);
                     break;
                 case NetworkCommandType.SaveNetworkAs:
                     if (network.IsNetworkSavable)

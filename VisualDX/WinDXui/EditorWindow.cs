@@ -108,6 +108,8 @@ namespace WinDX.UI
         public void newDecorator(Decorator dec) { newDecorator(dec, null); }
         public void newDecorator(Decorator dec, EditorWorkSpace where) { }
         public void newNode(Node node, EditorWorkSpace where) { }
+        public void highlightNodes(DXApplication.HighlightType type) { }
+        public void highlightNode(String name, int instance, DXApplication.HighlightType type) { }
 
     }
 }

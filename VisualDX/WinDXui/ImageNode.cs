@@ -172,18 +172,31 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
-        private static bool SendString(Object o, PacketIF.PacketIFCallback pif, 
-            StreamWriter sw, String str, bool a)
+        private static bool SendString(Object callbackData, PacketIF.PacketIFCallback callback, 
+            StreamWriter sw, String str, bool viasocket)
         {
-            throw new Exception("Not Yet Implemented");
+            if (!viasocket)
+            {
+                sw.Write(str);
+                if (callback != null)
+                    callback(callbackData, str);
+            }
+            else
+            {
+                DXApplication.theDXApplication.getPacketIF().sendBytes(str);
+            }
+            return true;
         }
-        private static void FormatMacro(StreamWriter sw, PacketIF.PacketIFCallback pif, Object o,
-            String[] s, bool a)
+        private static void FormatMacro(StreamWriter sw, PacketIF.PacketIFCallback callback, 
+            Object callbackData, String[] s, bool viasocket)
         {
-            throw new Exception("Not Yet Implemented");
+            foreach (String str in s)
+            {
+                SendString(callbackData, callback, sw, str, viasocket);
+            }
         }
 
-        protected static String[] GifMacroTxt;
+        protected static String[] GifMacroTxt = new String[] { "test" };
         protected static String[] VrmlMacroTxt;
         protected static String[] ImageMacroTxt;
         protected static String[] DXMacroTxt;
@@ -201,10 +214,457 @@ namespace WinDX.UI
         protected bool macroDirty;
         protected virtual bool sendMacro(DXPacketIF pif)
         {
-            throw new Exception("Not Yet Implemented");
+            Object cbdata = null;
+            PacketIF.PacketIFCallback cb = pif.getEchoCallback(ref cbdata);
+            StreamWriter sw = pif.getStreamWriter();
+            bool viasocket = true;
+
+            if (getNetwork().isJavified())
+            {
+                pif.sendMacroStart();
+                FormatMacro(sw, cb, cbdata, ImageNode.GifMacroTxt, viasocket);
+                pif.sendMacroEnd();
+
+                pif.sendMacroStart();
+                FormatMacro(sw, cb, cbdata, ImageNode.VrmlMacroTxt, viasocket);
+                pif.sendMacroEnd();
+
+                pif.sendMacroStart();
+                FormatMacro(sw, cb, cbdata, ImageNode.DXMacroTxt, viasocket);
+                pif.sendMacroEnd();
+            }
+
+            pif.sendMacroStart();
+            bool sts = printMacro(pif.getStreamWriter(), cb, cbdata, true);
+            pif.sendMacroEnd();
+
+            return sts;
         }
-        protected virtual bool printMacro(StreamWriter sw, PacketIF.PacketIFCallback pif,
-            Object callbackData, bool viasocket) { throw new Exception("Not Yet Implemented"); }
+        protected bool printMacro(StreamWriter sw, PacketIF.PacketIFCallback pif,
+            Object callbackData, bool viasocket)
+        {
+            Cacheability cacheability = InternalCacheability;
+            int cacheflag = (cacheability == Cacheability.InternalsNotCached) ? 0 :
+                (cacheability == Cacheability.InternalsFullyCached) ? 1 : 2;
+
+            // If the network is intended for use under DXServer use the
+            // new image macro.  Using the old image macro is a cheap way
+            // of avoiding bugs in the new image macro.  A better way
+            // to handle this is to make sure the new one doesn't have any
+            // bugs in it.  Problem is the new is so big that it will
+            // probably be a performance hit.
+
+            if (getNetwork().isJavified())
+            {
+                FormatMacro(sw, pif, callbackData, ImageNode.ImageMacroTxt, viasocket);
+            }
+            else
+            {
+                String str = "macro Image(\n" +
+                    "        id,\n" +
+                    "        object,\n" +
+                    "        where,\n" +
+                    "        useVector,\n" +
+                    "        to,\n" +
+                    "        from,\n" +
+                    "        width,\n" +
+                    "        resolution,\n" +
+                    "        aspect,\n" +
+                    "        up,\n" +
+                    "        viewAngle,\n" +
+                    "        perspective,\n" +
+                    "        options,\n" +
+                    "        buttonState = 1,\n" +
+                    "        buttonUpApprox = \"none\",\n" +
+                    "        buttonDownApprox = \"none\",\n" +
+                    "        buttonUpDensity = 1,\n" +
+                    "        buttonDownDensity = 1,\n" +
+                    "        renderMode = 0,\n";
+                SendString(callbackData, pif, sw, str, viasocket);
+                str = "        defaultCamera,\n" +
+                    "        reset,\n" +
+                    "        backgroundColor,\n" +
+                    "        throttle,\n" +
+                    "        RECenable = 0,\n" +
+                    "        RECfile,\n" +
+                    "        RECformat,\n" +
+                    "        RECresolution,\n" +
+                    "        RECaspect,\n" +
+                    "        AAenable = 0,\n" +
+                    "        AAlabels,\n" +
+                    "        AAticks,\n" +
+                    "        AAcorners,\n" +
+                    "        AAframe,\n" +
+                    "        AAadjust,\n" +
+                    "        AAcursor,\n" +
+                    "        AAgrid,\n" +
+                    "        AAcolors,\n" +
+                    "        AAannotation,\n" +
+                    "        AAlabelscale,\n";
+                SendString(callbackData, pif, sw, str, viasocket);
+                str = "        AAfont,\n" +
+                    "        interactionMode,\n" +
+                    "        title,\n" +
+                    "        AAxTickLocs,\n" +
+                    "        AAyTickLocs,\n" +
+                    "        AAzTickLocs,\n" +
+                    "        AAxTickLabels,\n" +
+                    "        AAyTickLabels,\n" +
+                    "        AAzTickLabels,\n" +
+                    "        webOptions) -> (\n" +
+                    "        object,\n" +
+                    "        camera,\n" +
+                    "        where)\n{\n";
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                // Begin macro body.
+                str = "    ImageMessage(\n" + 
+                    "        id,\n" + 
+                    "        backgroundColor,\n" + 
+                    "        throttle,\n" + 
+                    "        RECenable,\n" + 
+                    "        RECfile,\n" + 
+                    "        RECformat,\n" + 
+                    "        RECresolution,\n" + 
+                    "        RECaspect,\n" + 
+                    "        AAenable,\n" + 
+                    "        AAlabels,\n" + 
+                    "        AAticks,\n" + 
+                    "        AAcorners,\n" + 
+                    "        AAframe,\n" + 
+                    "        AAadjust,\n" + 
+                    "        AAcursor,\n" + 
+                    "        AAgrid,\n" + 
+                    "        AAcolors,\n" + 
+                    "        AAannotation,\n" + 
+                    "        AAlabelscale,\n";
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = "        AAfont,\n" + 
+                    "        AAxTickLocs,\n" + 
+                    "        AAyTickLocs,\n" + 
+                    "        AAzTickLocs,\n" + 
+                    "        AAxTickLabels,\n" + 
+                    "        AAyTickLabels,\n" + 
+                    "        AAzTickLabels,\n" + 
+                    "        interactionMode,\n" + 
+                    "        title,\n" + 
+                    "        renderMode,\n" + 
+                    "        buttonUpApprox,\n" + 
+                    "        buttonDownApprox,\n" + 
+                    "        buttonUpDensity,\n" + 
+                    String.Format("        buttonDownDensity) [instance: 1, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                // Generate a call to Camera or AutoCamera module.
+                str = "    autoCamera =\n" + 
+	                "        AutoCamera(\n" + 
+	                "            object,\n" + 
+	                "            \"front\",\n" + 
+	                "            object,\n" + 
+	                "            resolution,\n" + 
+	                "            aspect,\n" + 
+	                "            [0,1,0],\n" + 
+	                "            perspective,\n" + 
+	                "            viewAngle,\n" + 
+	                String.Format("            backgroundColor) [instance: 1, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = "    realCamera =\n" + 
+	                "        Camera(\n" + 
+	                "            to,\n" + 
+	                "            from,\n" + 
+	                "            width,\n" + 
+	                "            resolution,\n" + 
+	                "            aspect,\n" + 
+	                "            up,\n" + 
+	                "            perspective,\n" + 
+	                "            viewAngle,\n" + 
+	                String.Format("            backgroundColor) [instance: 1, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = "    coloredDefaultCamera = \n" + 
+	                "	 UpdateCamera(defaultCamera,\n" + 
+	                String.Format("            background=backgroundColor) [instance: 1, cache: {0}];\n", cacheflag) +
+                    "    nullDefaultCamera =\n" + 
+	                "        Inquire(defaultCamera,\n" + 
+	                String.Format("            \"is null + 1\") [instance: 1, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = "    resetCamera =\n" + 
+	                "        Switch(\n" + 
+	                "            nullDefaultCamera,\n" + 
+	                "            coloredDefaultCamera,\n" + 
+	                String.Format("            autoCamera) [instance: 1, cache: {0}];\n", cacheflag) +
+	                "    resetNull = \n" + 
+	                "        Inquire(\n" + 
+	                "            reset,\n" + 
+	                String.Format("            \"is null + 1\") [instance: 2, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = "    reset =\n" + 
+	                "        Switch(\n" + 
+	                "            resetNull,\n" + 
+	                "            reset,\n" + 
+	                String.Format("            0) [instance: 2, cache: {0}];\n", cacheflag) +
+	                "    whichCamera =\n" + 
+	                "        Compute(\n" + 
+	                "            \"($0 != 0 || $1 == 0) ? 1 : 2\",\n" + 
+	                "            reset,\n" + 
+	                String.Format("            useVector) [instance: 1, cache: {0}];\n", cacheflag) +
+                    "    camera = Switch(\n" + 
+	                "            whichCamera,\n" + 
+	                "            resetCamera,\n" + 
+	                String.Format("            realCamera) [instance: 3, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+	            /*
+	             * Generate a call to AutoAxes module.
+	             */
+	
+                str = "    AAobject =\n" + 
+	                "        AutoAxes(\n" + 
+	                "            object,\n" + 
+	                "            camera,\n" + 
+	                "            AAlabels,\n" + 
+	                "            AAticks,\n" + 
+	                "            AAcorners,\n" + 
+	                "            AAframe,\n" + 
+	                "            AAadjust,\n" + 
+	                "            AAcursor,\n" + 
+	                "            AAgrid,\n" + 
+	                "            AAcolors,\n" + 
+	                "            AAannotation,\n" + 
+	                "            AAlabelscale,\n" + 
+	                "            AAfont,\n" + 
+	                "            AAxTickLocs,\n" + 
+	                "            AAyTickLocs,\n" + 
+	                "            AAzTickLocs,\n" + 
+	                "            AAxTickLabels,\n" + 
+	                "            AAyTickLabels,\n";
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = String.Format("            AAzTickLabels) [instance: 1, cache: {0}];\n", cacheflag)+
+                    "    switchAAenable = Compute(\"$0+1\",\n" + 
+                    String.Format("	     AAenable) [instance: 2, cache: {0}];\n", cacheflag) +
+	                "    object = Switch(\n" + 
+	                "	     switchAAenable,\n" + 
+	                "	     object,\n" + 
+	                String.Format("	     AAobject) [instance:4, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+	            /*
+	             * Generate a call to the Approximation Switch module.
+	             */
+	            str = "    SWapproximation_options =\n" + 
+	                "        Switch(\n" +  
+	                "            buttonState,\n" + 
+	                "            buttonUpApprox,\n" + 
+	                String.Format("            buttonDownApprox) [instance: 5, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+	            /*
+	             * Generate a call to the Density Switch module.
+	             */
+	            str = "    SWdensity_options =\n" + 
+	                "        Switch(\n" +  
+	                "            buttonState,\n" + 
+	                "            buttonUpDensity,\n" + 
+	                String.Format("            buttonDownDensity) [instance: 6, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+	           /*
+	            * Generate a call to the Approximation Format module.
+                */
+                str = "    HWapproximation_options =\n" + 
+	                "        Format(\n" +  
+	                "            \"%s,%s\",\n" + 
+	                "            buttonDownApprox,\n" + 
+	                String.Format("            buttonUpApprox) [instance: 1, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                /*
+                 * Generate a call to the Density Format module.
+                 */
+                str = "    HWdensity_options =\n" + 
+	                "        Format(\n" +  
+	                "            \"%d,%d\",\n" + 
+	                "            buttonDownDensity,\n" + 
+	                String.Format("            buttonUpDensity) [instance: 2, cache: {0}];\n", cacheflag) +
+	                "    switchRenderMode = Compute(\n" + 
+	                "	     \"$0+1\",\n" + 
+	                String.Format("	     renderMode) [instance: 3, cache: {0}];\n", cacheflag) +
+	                "    approximation_options = Switch(\n" + 
+	                "	     switchRenderMode,\n" + 
+	                "            SWapproximation_options,\n" + 
+	                "	     HWapproximation_options)" + 
+	                String.Format(" [instance: 7, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = "    density_options = Switch(\n" + 
+	                "	     switchRenderMode,\n" + 
+	                "            SWdensity_options,\n" + 
+	                String.Format("            HWdensity_options) [instance: 8, cache: {0}];\n", cacheflag) +
+	                "    renderModeString = Switch(\n" + 
+	                "            switchRenderMode,\n" + 
+	                "            \"software\",\n" + 
+	                String.Format("            \"hardware\")[instance: 9, cache: {0}];\n", cacheflag) +
+	                "    object_tag = Inquire(\n" + 
+	                "            object,\n" +
+	                String.Format("            \"object tag\")[instance: 3, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                /*
+                 * Generate a call to Options module.
+                 */
+                str = "    annoted_object =\n" + 
+                    "        Options(\n" +  
+                    "            object,\n" + 
+                    "            \"send boxes\",\n" + 
+                    "            0,\n" + 
+                    "            \"cache\",\n" + 
+                    String.Format("            {0},\n", (cacheflag == (int)Cacheability.InternalsFullyCached ? 1 : 0))+
+                    "            \"object tag\",\n" + 
+                    "            object_tag,\n" + 
+                    "            \"ddcamera\",\n" + 
+                    "            whichCamera,\n" + 
+                    "            \"rendering approximation\",\n" + 
+                    "            approximation_options,\n" + 
+                    "            \"render every\",\n" + 
+                    "            density_options,\n" + 
+                    "            \"button state\",\n" + 
+                    "            buttonState,\n" + 
+                    "            \"rendering mode\",\n" + 
+                    String.Format("            renderModeString) [instance: 1, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = "    RECresNull =\n" + 
+                    "        Inquire(\n" + 
+                    "            RECresolution,\n" + 
+                    String.Format("            \"is null + 1\") [instance: 4, cache: {0}];\n", cacheflag) +
+                    "    ImageResolution =\n" + 
+                    "        Inquire(\n" + 
+                    "            camera,\n" + 
+                    String.Format("            \"camera resolution\") [instance: 5, cache: {0}];\n", cacheflag)+
+                    "    RECresolution =\n" + 
+                    "        Switch(\n" + 
+                    "            RECresNull,\n" + 
+                    "            RECresolution,\n";
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = String.Format("            ImageResolution) [instance: 10, cache: {0}];\n", cacheflag) +
+	                "    RECaspectNull =\n" + 
+	                "        Inquire(\n" + 
+	                "            RECaspect,\n" + 
+	                String.Format("            \"is null + 1\") [instance: 6, cache: {0}];\n", cacheflag) +
+	                "    ImageAspect =\n" + 
+	                "        Inquire(\n" + 
+	                "            camera,\n" + 
+	                String.Format("            \"camera aspect\") [instance: 7, cache: {0}];\n", cacheflag) +
+	                "    RECaspect =\n" + 
+	                "        Switch(\n" + 
+	                "            RECaspectNull,\n" + 
+	                "            RECaspect,\n" + 
+	                String.Format("            ImageAspect) [instance: 11, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = "    switchRECenable = Compute(\n" + 
+	                "          \"$0 == 0 ? 1 : (($2 == $3) && ($4 == $5)) ? ($1 == 1 ? 2 : 3) : 4\",\n" +  
+	                "            RECenable,\n" + 
+	                "            switchRenderMode,\n" + 
+	                "            RECresolution,\n" + 
+	                "            ImageResolution,\n" + 
+	                "            RECaspect,\n" + 
+	                String.Format("	     ImageAspect) [instance: 4, cache: {0}];\n", cacheflag) +
+	                "    NoRECobject, RECNoRerenderObject, RECNoRerHW, RECRerenderObject = " +
+			        "Route(switchRECenable, annoted_object);\n";
+                SendString(callbackData, pif, sw, str, viasocket);
+
+	            /*
+	             * If no recording is specified, just use Display
+	             */
+                str = "    Display(\n" + 
+	                "        NoRECobject,\n" + 
+	                "        camera,\n" + 
+	                "        where,\n" + 
+	                String.Format("        throttle) [instance: 1, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+	            /*
+	             * If recording is used, but no rerendering is required,
+	             * use Render followed by DIsplay and Write Image
+	             */
+                str = "    image =\n" + 
+	                "        Render(\n" + 
+	                "            RECNoRerenderObject,\n" + 
+	                String.Format("            camera) [instance: 1, cache: {0}];\n", cacheflag) +
+	                "    Display(\n" + 
+	                "        image,\n" + 
+	                "        NULL,\n" + 
+	                "        where,\n" + 
+	                String.Format("        throttle) [instance: 2, cache: {0}];\n", cacheflag) +
+	                "    WriteImage(\n" + 
+	                "        image,\n" + 
+	                "        RECfile,\n" + 
+	                String.Format("        RECformat) [instance: 1, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+	            /*
+	             * If recording is used in a hardware window, but no rerendering is required,
+	             * use Display and ReadImageWindow.
+	             */
+                str = "    rec_where = Display(\n" + 
+	                "        RECNoRerHW,\n" + 
+	                "        camera,\n" + 
+	                "        where,\n" + 
+	                String.Format("        throttle) [instance: 1, cache: {0}];\n", 0/*cacheflag*/)  +
+	                "    rec_image = ReadImageWindow(\n" + 
+	                String.Format("        rec_where) [instance: 1, cache: {0}];\n", cacheflag) + 
+	                "    WriteImage(\n" + 
+	                "        rec_image,\n" + 
+	                "        RECfile,\n" + 
+	                String.Format("        RECformat) [instance: 1, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+	            /*
+	             * If recording, and rerendering *is* required, use Display 
+	             * for the image window and Render and WriteImage along with
+	             * the updated camera for the saved image
+	             */
+                str = "    RECupdateCamera =\n" + 
+	                "	UpdateCamera(\n" + 
+	                "	    camera,\n" + 
+	                "	    resolution=RECresolution,\n" + 
+	                String.Format("	    aspect=RECaspect) [instance: 2, cache: {0}];\n", cacheflag) +
+	                "    Display(\n" + 
+	                "        RECRerenderObject,\n" + 
+	                "        camera,\n" + 
+	                "        where,\n" + 
+	                String.Format("        throttle) [instance: 1, cache: {0}];\n", cacheflag);
+                SendString(callbackData, pif, sw, str, viasocket);
+
+                str = "    RECRerenderObject =\n" +
+                    "	ScaleScreen(\n" +
+                    "	    RECRerenderObject,\n" +
+                    "	    NULL,\n" +
+                    "	    RECresolution,\n" +
+                    String.Format("	    camera) [instance: 1, cache: {0}];\n", cacheflag) +
+                    "    image =\n" +
+                    "        Render(\n" +
+                    "            RECRerenderObject,\n" +
+                    String.Format("            RECupdateCamera) [instance: 2, cache: {0}];\n", cacheflag) +
+                    "    WriteImage(\n" +
+                    "        image,\n" +
+                    "        RECfile,\n" +
+                    String.Format("        RECformat) [instance: 2, cache: {0}];\n", cacheflag) +
+                //
+                // End macro body.
+                //
+	                "}\n";
+                SendString(callbackData, pif, sw, str, viasocket);
+            }
+            return true;
+        }
 
         // Fields for handling and storing parts of the image messages
         // sent from the executive.
@@ -786,10 +1246,32 @@ namespace WinDX.UI
             return result;
         }
 
-        public bool sendValues() { return sendValues(true); }
-        public bool sendValues(bool ignoreDirty)
+        public override bool sendValues() { return sendValues(true); }
+        public override bool sendValues(bool ignoreDirty)
         {
-            throw new Exception("Not Yet Implemented");
+            bool sendMacro = true;
+            foreach (ImageWindow w in getNetwork().getImageList())
+            {
+                if (w == this.image)
+                {
+                    sendMacro = true;
+                    break;
+                }
+                else if (w.getAssociatedNode() is ImageNode)
+                {
+                    sendMacro = false;
+                    break;
+                }
+            }
+
+            if (sendMacro && (ignoreDirty || macroDirty))
+            {
+                DXPacketIF pif = DXApplication.theDXApplication.getPacketIF();
+                if (pif == null || !this.sendMacro(pif))
+                    return false;
+                macroDirty = false;
+            }
+            return base.sendValues(ignoreDirty);
         }
 
         public override bool printValues(StreamWriter sw, string prefix, PrintType dest)
@@ -1031,8 +1513,27 @@ namespace WinDX.UI
 
         public override void setDefaultCfgState()
         {
-            throw new Exception("Not Yet Implemented");
-            base.setDefaultCfgState();
+            saveInteractionMode = DirectInteractionMode.NONE;
+
+            // Before resetting internal caching, check the net version number.
+            // If it's 3.1.1 or later, then proceed.  We're preventing this reset
+            // for older nets because older versions of dx did not write internal cache
+            // value into both .net and .cfg files.  They wrote it only into the .net file.
+            // So if we reset here, then we'll be throwing out the saved value.  For current
+            // versions of dxui, it's OK to reset because we'll find a cache value in the 
+            // .cfg file.
+
+            Network net = getNetwork();
+            int net_major = net.getNetMajorVersion();
+            int net_minor = net.getNetMinorVersion();
+            int net_micro = net.getNetMicroVersion();
+            int net_version = Utils.VersionNumber(net_major, net_minor, net_micro);
+            int fixed_version = Utils.VersionNumber(3, 1, 1);
+            if (net_version >= fixed_version)
+            {
+                ImageDefinition imnd = (ImageDefinition) Definition;
+                internalCache = imnd.DefaultInternalCacheability;
+            }
         }
 
         public override DXTypeVals setInputSetValue(int index, string value)

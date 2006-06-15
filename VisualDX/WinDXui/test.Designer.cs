@@ -47,7 +47,7 @@ namespace WinDXui
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.cascade1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cascade2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label1 = new System.Windows.Forms.Label();
+            this.errorBox = new System.Windows.Forms.ListBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -165,20 +165,25 @@ namespace WinDXui
             this.cascade2ToolStripMenuItem.Name = "cascade2ToolStripMenuItem";
             resources.ApplyResources(this.cascade2ToolStripMenuItem, "cascade2ToolStripMenuItem");
             // 
-            // label1
+            // errorBox
             // 
-            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            resources.ApplyResources(this.label1, "label1");
-            this.label1.Name = "label1";
+            resources.ApplyResources(this.errorBox, "errorBox");
+            this.errorBox.BackColor = System.Drawing.SystemColors.Control;
+            this.errorBox.FormattingEnabled = true;
+            this.errorBox.Items.AddRange(new object[] {
+            resources.GetString("errorBox.Items"),
+            resources.GetString("errorBox.Items1")});
+            this.errorBox.Name = "errorBox";
             // 
             // test
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.errorBox);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "test";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -206,6 +211,6 @@ namespace WinDXui
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem cascade1ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cascade2ToolStripMenuItem;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ListBox errorBox;
     }
 }

@@ -39,7 +39,7 @@ namespace WinDX.UI
 
             globalApp = new DXApplication("dx");
             String[] args = Environment.GetCommandLineArgs();
-           globalApp.initialize(ref args);
+            globalApp.initialize(ref args);
 
             //InfoDialog wd = new InfoDialog();
             //wd.modalPost(theApplication.getAboutAppString());
@@ -49,8 +49,9 @@ namespace WinDX.UI
             //MessageBox.Show("see what happens");
             //Application.Run(new Form1());
 
-            DXAnchorWindow daw = new DXAnchorWindow("test", true, true);
-            Application.Run(daw);
+            //DXAnchorWindow daw = new DXAnchorWindow("test", true, true);
+            System.Diagnostics.Debug.Assert(globalApp.getAnchorForm() != null);
+            Application.Run(globalApp.getAnchorForm());
             //InfoDialog id = new InfoDialog();
             //id.modalPost(theApplication.getAboutAppString());
 

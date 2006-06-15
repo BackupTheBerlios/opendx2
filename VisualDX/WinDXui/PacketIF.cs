@@ -66,11 +66,13 @@ namespace WinDX.UI
                         {
                             Thread.Sleep(1000);
                             if (p.DeferPacketHandling)
-                                MainProgram.theApplication.getRootForm().BeginInvoke(idleProcess);
+                                MainProgram.theApplication.getAnchorForm().BeginInvoke(idleProcess);
                         }
                         else
                         {
-                            MainProgram.theApplication.getRootForm().BeginInvoke(processSocket);
+                            Form rootForm = MainProgram.theApplication.getAnchorForm();
+                            if(rootForm != null && rootForm.IsHandleCreated)
+                                MainProgram.theApplication.getAnchorForm().BeginInvoke(processSocket);
                         }
                     }
                     Thread.Sleep(1000);
@@ -85,7 +87,7 @@ namespace WinDX.UI
         public delegate void PacketIFCallback(Object obj, String line);
         public delegate bool StallingHandler(Object clientData);
 
-        public enum PacketType
+        public enum PacketType : int
         {
             INTERRUPT = 1,
             SYSTEM = 2,
@@ -222,6 +224,11 @@ namespace WinDX.UI
                 socket.Close();
                 socket = null;
             }
+            if (streamWriter != null)
+            {
+                streamWriter.Close();
+                streamWriter = null;
+            }
 
             removeInputHandler();
 
@@ -230,13 +237,13 @@ namespace WinDX.UI
             if (linkHandler != null)
                 linkHandler = null;
 
-            foreach (PacketHandler h in handlers)
-            {
-                handlers.Remove(h);
-            }
+            if (handlers != null)
+                foreach (PacketHandler h in handlers)
+                    handlers.Remove(h);
 
-            foreach (QueuedPacket qp in output_queue)
-                output_queue.Remove(qp);
+            if(output_queue != null)
+                foreach (QueuedPacket qp in output_queue)
+                    output_queue.Remove(qp);
 
         }
 
@@ -282,29 +289,33 @@ namespace WinDX.UI
             if (clientData == null)
                 Console.WriteLine("null client data\n");
 
+            PacketHandler pexist = null;
             foreach (PacketHandler p in handlers)
             {
                 if (p.Type == type && p.match(matchString))
-                    break;
-                if (callback == null)
                 {
-                    if (p != null)
-                    {
-                        handlers.Remove(p);
-                    }
+                    pexist = p;
+                    break;
+                }
+            }
+            if (callback == null)
+            {
+                if (pexist != null)
+                {
+                    handlers.Remove(pexist);
+                }
+            }
+            else
+            {
+                PacketHandler h = new PacketHandler(true, type, 0, callback,
+                    clientData, matchString);
+                if (pexist != null)
+                {
+                    handlers.Remove(pexist);
+                    handlers.Add(h);
                 }
                 else
-                {
-                    PacketHandler h = new PacketHandler(true, type, 0, callback,
-                        clientData, matchString);
-                    if (p != null)
-                    {
-                        handlers.Remove(p);
-                        handlers.Add(h);
-                    }
-                    else
-                        handlers.Add(h);
-                }
+                    handlers.Add(h);
             }
         }
 
@@ -1047,16 +1058,18 @@ namespace WinDX.UI
 
             String s;
             if (data.Length > 0)
-                s = String.Format("{0}|{1}|{2}|{3}\n", packetId,
+                s = String.Format("|{0}|{1}|{2}|{3}|\n", packetId,
                 PacketIF.PacketTypes[(int)type],
                 data.Length,
                 data);
             else
-                s = String.Format("{0}|{1}|{2}\n", packetId,
+                s = String.Format("|{0}|{1}|{2}||\n", packetId,
                     PacketIF.PacketTypes[(int)type], 0);
             try
             {
-                socket.Send(Encoding.ASCII.GetBytes(s));
+                char[] ca = s.ToCharArray();
+                byte[] sb = Encoding.ASCII.GetBytes(s);
+                socket.Send(sb);
             }
             catch (Exception e)
             {
@@ -1066,7 +1079,7 @@ namespace WinDX.UI
             if (echoCallback != null)
             {
                 String echo_string =
-                    String.Format("(0} [{1}]: ", packetId, PacketIF.PacketTypes[(int)type]);
+                    String.Format("{0} [{1}] ", packetId, PacketIF.PacketTypes[(int)type]);
                 if (data != null && data.Length > 0)
                     echo_string += data + data.Length;
                 echoCallback(echoClientData, echo_string);

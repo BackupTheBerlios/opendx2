@@ -1108,7 +1108,7 @@ namespace WinDX.UI
 
             String outputs = outputParameterNamesString(prefix);
 
-            String module = indent + name;
+            String module = indent + name + "(";
 
             String inputs = inputParameterNamesString(prefix, indent);
 

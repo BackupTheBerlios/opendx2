@@ -8,7 +8,7 @@ namespace dxuics
 	/// <summary>
 	/// Summary description for UIComponent.
 	/// </summary>
-	public abstract class UIComponent : Base
+	public abstract class UIComponent
 	{
 		public const string ClassUIComponent = "UIComponent";
 		private bool		deactivated;
@@ -229,12 +229,5 @@ namespace dxuics
 
 		public bool isActivated() { return this.active; }
 
-		//
-		// Returns a pointer to the class name.
-		//
-		public override string getClassName() 
-		{
-			return ClassUIComponent;
-		}
 	}
 }

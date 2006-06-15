@@ -50,7 +50,7 @@ namespace WinDX.UI
 
             if (fds != null && fds.IndexOf("MSGERRUP") >= 0)
             {
-                if (DXApplication.theDXApplication.doesErrorOpenMessage &&
+                if (DXApplication.theDXApplication.DoesErrorOpenMessage &&
                     !DXApplication.theDXApplication.MessageWindow.Visible)
                 {
                     DXApplication.theDXApplication.MessageWindow.Visible = true;
@@ -93,7 +93,7 @@ namespace WinDX.UI
 
             line = line.Substring(ioc + 1);
             String name = DXApplication.theDXApplication.network.NameString;
-            if (line.StartsWith(name))
+            if (!line.StartsWith(name))
                 return;
             ioc = line.IndexOf('/');
             Debug.Assert(ioc >= 0);
@@ -110,7 +110,7 @@ namespace WinDX.UI
 
             line = line.Substring(ioc + 1);
             String name = DXApplication.theDXApplication.network.NameString;
-            if (line.StartsWith(name))
+            if (!line.StartsWith(name))
                 return;
             ioc = line.IndexOf('/');
             Debug.Assert(ioc >= 0);

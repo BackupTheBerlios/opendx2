@@ -149,7 +149,9 @@ namespace WinDX.UI
         private void MainWindow_Load(object sender, EventArgs e)
         {
             if (!isInitialized)
+            {
                 initialize();
+            }
 
             if (DXApplication.theDXApplication.inWizardMode())
                 postWizard();
@@ -180,6 +182,8 @@ namespace WinDX.UI
         /// </summary>
         public virtual void initialize()
         {
+            isInitialized = true;
+
             //FormClosing += new FormClosingEventHandler(closeCallback);
             this.HelpRequested += new System.Windows.Forms.HelpEventHandler(Help.helpOn);
 
@@ -189,18 +193,15 @@ namespace WinDX.UI
 
             commandArea = createCommandArea(this);
 
-            this.Controls.Add(commandArea);
+            if(commandArea != null)
+                this.Controls.Add(commandArea);
 
             if (hasMenuBar)
             {
                 createMenuBar(this);
                 createMenus(menuBar);
             }
-
-            Size = new Size(1000, 800);
-
-            MainProgram.theApplication.setRootForm(this);
-
+            
             if (global::WinDX.UI.Resources.startup != null)
                 Icon = global::WinDX.UI.Resources.startup;
         }
@@ -246,8 +247,9 @@ namespace WinDX.UI
             {
                 if (!Visible)
                 {
-                    if (IsInitialized)
+                    if (!IsInitialized)
                         initialize();
+                    Visible = true;
                     this.Show();
                 }
             }

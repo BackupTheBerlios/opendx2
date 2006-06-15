@@ -96,7 +96,7 @@ namespace WinDX.UI
         //
         // Set the buttons that indicate the direction of play.
         //
-        private void setPlayDirection(SequencerDirection dir)
+        public void setPlayDirection(SequencerDirection dir)
         { throw new Exception("not implemented yet"); }
         private void setForwardPlay()
         { throw new Exception("not implemented yet"); }

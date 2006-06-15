@@ -16,8 +16,28 @@ namespace WinDX.UI
         { throw new Exception("Not implemented"); }
         static void HWEndMessage(Object clientData, int id, Object p)
         { throw new Exception("Not implemented"); }
-        static void ExecComplete(Object clientData, int id, Object p)
-        { throw new Exception("Not implemented"); }
+        static void ExecComplete(Object clientData, int id, String p)
+        {
+            DXExecCtl ctl = DXApplication.theDXApplication.getExecCtl();
+            SequencerNode sequencer = DXApplication.theDXApplication.network.sequencer;
+
+            // During VCR executing we turn off green lights and pop up
+            // the Play button ONLY when we receive "stop" command.
+            if (ctl.vcrIsExecuting && p != "stop")
+                return;
+
+            ctl.endLastExecution(true);
+
+            if (ctl.vcrIsExecuting)
+            {
+                if (sequencer != null)
+                    sequencer.setPlayDirection(SequencerDirection.Directionless);
+                ctl.vcrIsExecuting = false;
+            }
+
+            if (!ctl.inExecOnChange() && ctl.hwExecuting <= 0)
+                DXApplication.theDXApplication.thisServer.notifyClients(DXApplication.MsgExecuteDone);
+        }
         static void ResumeExecOnChange(Object clientData, int id, Object p)
         { throw new Exception("Not implemented"); }
         static void ResetVcrNextFrame(Object clientData, int id, Object p)

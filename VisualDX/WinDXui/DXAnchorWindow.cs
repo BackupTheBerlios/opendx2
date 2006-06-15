@@ -304,7 +304,7 @@ namespace WinDX.UI
         public void resetWindowTitle()
         {
             String vpe_name = DXApplication.theDXApplication.getInformalName();
-            String file = DXApplication.theDXApplication.network.getFileName();
+            String file = DXApplication.theDXApplication.network.FileName;
             String title = "";
 
 
@@ -316,6 +316,12 @@ namespace WinDX.UI
                 title = vpe_name;
 
             this.Text = title;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            throw new Exception("Not Yet Implemented");
+            base.OnClosing(e);
         }
     }
 }

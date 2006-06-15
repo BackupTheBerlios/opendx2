@@ -9,6 +9,9 @@ using namespace System;
 using namespace WinDX;
 using namespace System::Runtime::InteropServices;
 
+// Pass in the array of args from the command line. 
+// If args is null, then we will query the command line
+// args and build it from that.
 void DXExec::SetupCommandLine(array<String^> ^args) {
 	if(dxe)
 		delete dxe;
@@ -17,12 +20,7 @@ void DXExec::SetupCommandLine(array<String^> ^args) {
 	dxe = new DXEnvironment();
 
 	if(args && args->GetLength(0) != 0) {
-		array<String ^> ^arguments = Environment::GetCommandLineArgs();
-		allargs = gcnew array<String^>(arguments->GetLength(0) + args->GetLength(0));
-		for(int i=0; i < arguments->GetLength(0); i++)
-			allargs[i] = arguments[i];
-		for(int i=0; i < args->GetLength(0); i++)
-			allargs[i+arguments->GetLength(0)] = args[i];
+		allargs = args;
 	} else {
 		allargs = Environment::GetCommandLineArgs();
 	}

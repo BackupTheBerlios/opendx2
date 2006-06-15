@@ -74,11 +74,12 @@ namespace WinDX.UI
         }
         public NDAllocator findAllocator(Symbol name)
         {
-            try
+            NDAllocator ndout;
+            if(this.TryGetValue(name, out ndout))
             {
-                return this[name];
+                return ndout;
             }
-            catch (KeyNotFoundException)
+            else
             {
                 return defaultAlloc;
             }

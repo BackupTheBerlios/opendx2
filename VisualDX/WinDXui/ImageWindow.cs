@@ -10,6 +10,8 @@ namespace WinDX.UI
 {
     public partial class ImageWindow : DXWindow
     {
+        private Node node;
+
         public ImageWindow(bool isAnchor, Network network)
             : base("imageWindow", isAnchor, DXApplication.theDXApplication.appAllowsImageMenus())
         {
@@ -24,7 +26,6 @@ namespace WinDX.UI
 
         // Not implemented below this line
         public void resetWindowTitle() { }
-        public bool IsAssociatedWithNode { get { return false; } }
         public void changeDepth(int depth) { }
         public void setGeometry(int x, int y, int w, int h) { }
         public String getDisplayString() { return null; }
@@ -77,6 +78,13 @@ namespace WinDX.UI
         // the associated ImageNode. 
         //
         public void updateFromNewCfgState() { }
+
+        // Associates an Image or Display style node with an ImageWindow.
+        // Returns TRUE if there wasn't another node already associated, FALSE
+        // if there was.
+        public bool associateNode(Node n) { node = n; return true; }
+        public Node getAssociatedNode() { return this.node; }
+        public bool IsAssociatedWithNode { get { return (node != null); } }
 
 
     }

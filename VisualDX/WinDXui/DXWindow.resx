@@ -166,6 +166,9 @@
   <data name="loadMDFOption.Text" xml:space="preserve">
     <value>Load &amp;Module Description...</value>
   </data>
+  <data name="logOption.Text" xml:space="preserve">
+    <value>&amp;Log...</value>
+  </data>
   <data name="messageWindowOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+M</value>
   </data>
@@ -174,6 +177,15 @@
   </data>
   <data name="messageWindowOption.Text" xml:space="preserve">
     <value>Open &amp;Message Window</value>
+  </data>
+  <data name="msgCloseOption.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+W</value>
+  </data>
+  <data name="msgCloseOption.Text" xml:space="preserve">
+    <value>&amp;Close</value>
+  </data>
+  <data name="msgSaveOption.Text" xml:space="preserve">
+    <value>&amp;Save As...</value>
   </data>
   <data name="onVisualProgramOption.Text" xml:space="preserve">
     <value>&amp;Application Comment...</value>

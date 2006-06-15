@@ -347,9 +347,9 @@ namespace WinDX.UI
             XmlPreferences.theXmlPreferences.SetDefault("warningEnabled", XmlPreferences.PrefType.TypeBool, "true");
             XmlPreferences.theXmlPreferences.SetDefault("errorEnabled", XmlPreferences.PrefType.TypeBool, "true");
             XmlPreferences.theXmlPreferences.SetDefault("moduleInfoOpensMessage", XmlPreferences.PrefType.TypeBool, "true");
-            XmlPreferences.theXmlPreferences.SetDefault("infoOpenMessage", XmlPreferences.PrefType.TypeBool, "false");
-            XmlPreferences.theXmlPreferences.SetDefault("warningOpenMessage", XmlPreferences.PrefType.TypeBool, "false");
-            XmlPreferences.theXmlPreferences.SetDefault("errorOpenMessage", XmlPreferences.PrefType.TypeBool, "true");
+            XmlPreferences.theXmlPreferences.SetDefault("infoOpensMessage", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("warningOpensMessage", XmlPreferences.PrefType.TypeBool, "false");
+            XmlPreferences.theXmlPreferences.SetDefault("errorOpensMessage", XmlPreferences.PrefType.TypeBool, "true");
             XmlPreferences.theXmlPreferences.SetDefault("useWindowSpecs", XmlPreferences.PrefType.TypeBool, "false");
             XmlPreferences.theXmlPreferences.SetDefault("forceNetFileEncryption", XmlPreferences.PrefType.TypeBool, "false");
             XmlPreferences.theXmlPreferences.SetDefault("cryptKey", XmlPreferences.PrefType.TypeString, "");
@@ -478,7 +478,7 @@ namespace WinDX.UI
             if (c != null)
             {
                 TimedDialog copyright = new TimedDialog("copyrightMessage",
-                    MainProgram.theApplication.getRootForm(), 
+                    MainProgram.theApplication.getAnchorForm(), 
                     c, "Welcome", 5000);
             }
         }
@@ -689,12 +689,12 @@ namespace WinDX.UI
 
         #region IBMApplication
 
-        public Form getRootForm()
+        public Form getAnchorForm()
         {
             return root;
         }
 
-        public virtual void setRootForm(Form root)
+        public virtual void setAnchorForm(Form root)
         {
             this.root = root;
         }

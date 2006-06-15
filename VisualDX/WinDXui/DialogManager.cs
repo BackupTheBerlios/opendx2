@@ -34,7 +34,7 @@ namespace WinDX.UI
         public void post(String fmt, params Object[] list)
         {
             String s = String.Format(fmt, list);
-            post(MainProgram.theApplication.getRootForm(),
+            post(MainProgram.theApplication.getAnchorForm(),
                 s, null, null, null, null, null,
                 null, null, null, 2);
         }
@@ -42,7 +42,7 @@ namespace WinDX.UI
         public void modalPost(String fmt, params Object[] list)
         {
             String s = String.Format(fmt, list);
-            modalPost(MainProgram.theApplication.getRootForm(),
+            modalPost(MainProgram.theApplication.getAnchorForm(),
                 s, null, null, null, null, null,
                 null, null, null, 2);
         }
@@ -55,7 +55,7 @@ namespace WinDX.UI
             if (parent == null)
             {
                 //this.Parent = MainProgram.theApplication.getRootForm();
-                this.Owner = MainProgram.theApplication.getRootForm();
+                this.Owner = MainProgram.theApplication.getAnchorForm();
             }
             else
             {
@@ -110,7 +110,7 @@ namespace WinDX.UI
         {
             if (parent == null)
             {
-                this.Owner = MainProgram.theApplication.getRootForm();
+                this.Owner = MainProgram.theApplication.getAnchorForm();
             }
             else
             {

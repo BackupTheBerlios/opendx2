@@ -32,15 +32,14 @@ namespace WinDX.UI
             // 
             // MainWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(292, 273);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            //this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            //this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            //this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            //this.ClientSize = new System.Drawing.Size(292, 273);
+            //this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "MainWindow";
             this.Text = "MainWindow";
             this.ResumeLayout(false);
-
         }
 
         #endregion

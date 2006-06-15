@@ -32,7 +32,7 @@ namespace WinDX.UI
             this.ImageButton.Image = buttonimg;
 
             if (parent == null)
-                this.Parent = MainProgram.theApplication.getRootForm();
+                this.Parent = MainProgram.theApplication.getAnchorForm();
             else
                 this.Parent = parent;
 

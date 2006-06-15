@@ -47,7 +47,7 @@ namespace WinDX.UI
         {
             Form pf = parent;
             if (parent == null)
-                pf = MainProgram.theApplication.getRootForm();
+                pf = MainProgram.theApplication.getAnchorForm();
 
             QuestionDialog qd = new QuestionDialog();
             qd.modalPost(pf, dialogQuestion, dialogTitle,

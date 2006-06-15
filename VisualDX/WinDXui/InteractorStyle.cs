@@ -273,15 +273,14 @@ namespace WinDX.UI
         {
             Debug.Assert(theInteractorStyleDictionary != null);
             Dictionary<String, InteractorStyle> intstyle;
-            try
+            if(theInteractorStyleDictionary.TryGetValue(interactor, out intstyle))
             {
-                intstyle = theInteractorStyleDictionary[interactor];
+                return intstyle;
             }
-            catch (KeyNotFoundException)
+            else
             {
                 return null;
             }
-            return intstyle;
         }
 
         public InteractorStyle(Style s, String n, String javaStyle, InteractorAllocator ia)

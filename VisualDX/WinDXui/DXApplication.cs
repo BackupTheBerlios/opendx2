@@ -516,14 +516,6 @@ namespace WinDX.UI
         {
             get { return resource.errorEnabled; }
         }
-        public bool DoesWarningOpenMessage
-        {
-            get { return resource.warningOpensMessage && IsWarningEnabled; }
-        }
-        public bool DoesErrorOpenMessage
-        {
-            get { return resource.errorOpensMessage && IsErrorEnabled; }
-        }
 
         String CosmoDir
         {
@@ -1165,7 +1157,7 @@ namespace WinDX.UI
                     Console.WriteLine("suppress startup windows");
 
                 if (resource.applicationPort != 0)
-                    Console.WriteLine("application port = %d", resource.applicationPort);
+                    Console.WriteLine("application port = {0}", resource.applicationPort);
                 if (resource.applicationHost != null)
                     Console.WriteLine("application host = {0}", resource.applicationHost);
 
@@ -1181,7 +1173,7 @@ namespace WinDX.UI
                 if (resource.printImagePageSize != null)
                     Console.WriteLine("print image page size = '{0}'",
                         resource.printImagePageSize);
-                Console.WriteLine("print image resolution = %d",
+                Console.WriteLine("print image resolution = {0}",
                         resource.printImageResolution);
 
                 //
@@ -1193,7 +1185,7 @@ namespace WinDX.UI
                 if (resource.saveImagePageSize != null)
                     Console.WriteLine("save image page size = '{0}'",
                         resource.saveImagePageSize);
-                Console.WriteLine("save image resolution = %d",
+                Console.WriteLine("save image resolution = {0}",
                         resource.saveImageResolution);
 
                 //
@@ -1243,13 +1235,13 @@ namespace WinDX.UI
                 // automatic graph layout
                 //
                 if (resource.autoLayoutHeight > 0)
-                    Console.WriteLine("automatic graph layout height = %d",
+                    Console.WriteLine("automatic graph layout height = {0}",
                     resource.autoLayoutHeight);
                 if (resource.autoLayoutGroupSpacing > 0)
-                    Console.WriteLine("automatic graph layout group spacing = %d",
+                    Console.WriteLine("automatic graph layout group spacing = {0}",
                     resource.autoLayoutGroupSpacing);
                 if (resource.autoLayoutNodeSpacing > 0)
-                    Console.WriteLine("automatic graph layout node spacing = %d",
+                    Console.WriteLine("automatic graph layout node spacing = {0}",
                     resource.autoLayoutNodeSpacing);
             }
 
@@ -1408,9 +1400,13 @@ namespace WinDX.UI
                 // before being managed.
                 if (applyWindowPlacements() ||
                     resource.noAnchorAtStartup)
-                { }
+                {
+                    anchor.Show();
+                    anchor.Visible = true;
+                }
                 else
                 {
+                    anchor.Show();
                     anchor.Visible = true;
                     setBusyCursor(true);
                     wasSetBusy = true;
@@ -1453,10 +1449,12 @@ namespace WinDX.UI
             }
 
             if (resource.noAnchorAtStartup)
-                anchor.Visible = true;
-            else if (anchor.Visible)
             {
-                anchor.Visible = false;
+                anchor.Show();
+            }
+            else if (!anchor.Visible)
+            {
+                anchor.Show();
                 setBusyCursor(true);
                 wasSetBusy = true;
             }
@@ -1482,7 +1480,31 @@ namespace WinDX.UI
 
         public void highlightNodes(String path, HighlightType highlightType)
         {
-            throw new Exception("Not Yet Implemented");
+            String name;
+            int instance;
+
+            path = GetErrorNode(path, out name, out instance);
+
+            EditorWindow editor = network.getEditor();
+            if (editor != null)
+            {
+                editor.highlightNode(name, instance, highlightType);
+            }
+
+            while (path != null && path.Length > 0)
+            {
+                String netname = name;
+                path = GetErrorNode(path, out name, out instance);
+                foreach (Network n in macroList)
+                {
+                    if (n.NameString == netname &&
+                        n.getEditor() != null)
+                    {
+                        n.getEditor().highlightNode(name, instance, highlightType);
+                        break;
+                    }
+                }
+            }
         }
 
         public void notifyPanelChanged()
@@ -1541,7 +1563,7 @@ namespace WinDX.UI
                 QuestionDialog qd = new QuestionDialog();
                 String s = String.Format("Your connection to server {0} has been accepted. Do you want to disconnect from {0} and connect to it?",
                     server, serverInfo.server);
-                qd.modalPost(this.getRootForm(), s, null, p, DXApplication.QueuedPacketAccept, 
+                qd.modalPost(this.getAnchorForm(), s, null, p, DXApplication.QueuedPacketAccept, 
                     DXApplication.QueuedPacketCancel, null, "Yes", "No", null, 2);
                     
             }
@@ -1863,7 +1885,50 @@ namespace WinDX.UI
 
         public virtual void addErrorList(String line)
         {
-            throw new Exception("Not Yet Implemented");
+            int chr = line.IndexOf('/');
+            int second_slash = -1;
+            String newline = null;
+            if(chr >= 0)
+                newline = line.Substring(chr);
+
+            if (newline != null && (second_slash = newline.IndexOf('/')) >= 0)
+            {
+                String name = network.getNameString();
+                if (!newline.StartsWith(name))
+                    return;
+
+                String node_id = newline.Substring(second_slash);
+                errorList.Add(node_id);
+
+                // Don't highlight until after execution.
+                // Highlighting is now done in DXExecCtl::endLastExecution() by
+                // calling this->refreshErrorIndicators().
+                if (!getExecCtl().isExecuting())
+                    highlightNodes(node_id, HighlightType.ERRORHIGHLIGHT);
+            }
+            else if (line.Contains("PEER ABORT - "))
+            {
+                // One of the distributed peers aborted abnormally.
+                // Unhighlight all the modules.
+                // FIXME: If we don't unhighlight, the aborted module is still
+                // highlighted green, so we could go through the process group
+                // and mark the greens modules as error modules.
+                Network n = this.network;
+                EditorWindow e = n.getEditor();
+                if (e != null)
+                    e.highlightNodes(HighlightType.REMOVEHIGHLIGHT);
+
+                foreach (Network mn in macroList)
+                {
+                    e = mn.getEditor();
+                    if (e != null)
+                        e.highlightNodes(HighlightType.REMOVEHIGHLIGHT);
+                }
+
+                // This is similar to a disconnect, so make sure the user knows.
+                ErrorDialog ed = new ErrorDialog();
+                ed.post(line.Substring(line.IndexOf("PEER ABORT - ") + 13));
+            }
         }
 
         /// <summary>
@@ -1890,21 +1955,26 @@ namespace WinDX.UI
             getExecCtl().forceFullResend();
         }
 
-        public bool doesInfoOpenMessage()
+        public bool DoesInfoOpenMessage
         {
-            return doesInfoOpenMessage(false);
+            get
+            {
+                return doesInfoOpenMessage(false);
+            }
         }
         public bool doesInfoOpenMessage(bool fromModule)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return (resource.infoOpensMessage ||
+                (fromModule && resource.moduleInfoOpensMessage)) &&
+                IsInfoEnabled;
         }
-        public bool doesWarningOpenMessage()
+        public bool DoesWarningOpenMessage
         {
-            throw new Exception("The method or operation is not implemented.");
+            get { return resource.warningOpensMessage && IsWarningEnabled; }
         }
-        public bool doesErrorOpenMessage
+        public bool DoesErrorOpenMessage
         {
-            get { throw new Exception("Not yet implemented."); }
+            get { return resource.errorOpensMessage && IsErrorEnabled; }
         }
         public int doesErrorOpenVpe(Network n)
         {
@@ -2096,7 +2166,7 @@ namespace WinDX.UI
         }
         public virtual bool appSuppressesStartupWindows()
         {
-            throw new Exception("Not Yet Implemented");
+            return resource.suppressStartupWindows;
         }
         public virtual bool appLimitsNetFileSelection()
         {
@@ -2354,6 +2424,36 @@ namespace WinDX.UI
             XmlPreferences.theXmlPreferences.GetPref("recentNets", out result);
         }
 
+        public static String GetErrorNode(String path, out String name, out int instance)
+        {
+            String namep;
+            Regex regex = new Regex(@"(.*):(\d+)");
+            Match m = regex.Match(path);
+            if (!m.Success)
+            {
+                name = "";
+                instance = 0;
+                return null;
+            }
+            name = m.Groups[1].Value;
+            instance = int.Parse(m.Groups[2].Value);
+
+            int loc = name.IndexOf('_') - 1;
+            if (loc >= 0)
+            {
+                namep = name.Substring(loc);
+                if (namep.StartsWith("_Image"))
+                    name = "Image";
+            }
+
+            loc = path.IndexOf('/');
+            if (loc >= 0)
+                path = path.Substring(loc);
+            else
+                path = null;
+
+            return path;
+        }
 
         #endregion
     }

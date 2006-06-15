@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxconcsharp", "dxconcsharp\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dxui", "dxui\dxui.vcproj", "{0E555511-1CC6-4202-AB49-9438777FB623}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dxuics", "dxuics\dxuics.csproj", "{0147EBF1-C55A-43F8-8320-B9610D89CCFA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{243A0809-A8AF-4D86-8F92-9FC01F0678B1}"
 	ProjectSection(SolutionItems) = preProject
 		README.txt = README.txt
@@ -157,16 +155,6 @@ Global
 		{0E555511-1CC6-4202-AB49-9438777FB623}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{0E555511-1CC6-4202-AB49-9438777FB623}.Release|Win32.ActiveCfg = Release|Win32
 		{0E555511-1CC6-4202-AB49-9438777FB623}.Release|Win32.Build.0 = Release|Win32
-		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{0147EBF1-C55A-43F8-8320-B9610D89CCFA}.Release|Win32.ActiveCfg = Release|Any CPU
 		{0F1ED2BD-B09B-4C83-83B2-7C83B20D325B}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{0F1ED2BD-B09B-4C83-83B2-7C83B20D325B}.Debug|Mixed Platforms.ActiveCfg = Release|Win32
 		{0F1ED2BD-B09B-4C83-83B2-7C83B20D325B}.Debug|Mixed Platforms.Build.0 = Release|Win32

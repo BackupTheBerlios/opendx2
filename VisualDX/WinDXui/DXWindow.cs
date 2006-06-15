@@ -281,8 +281,11 @@ namespace WinDX.UI
         public DXWindow(String name, bool isAnchor, bool usesMenuBar)
             : base(name, usesMenuBar)
         {
-            this.Load += new EventHandler(DXWindow_Load);
             anchor = isAnchor;
+            if(isAnchor)
+                MainProgram.theApplication.setAnchorForm(this);
+
+            this.Load += new EventHandler(DXWindow_Load);
             startup = false;
             Debug.Assert(!usesMenuBar || commandScope != null);
         }
@@ -371,7 +374,7 @@ namespace WinDX.UI
                 if (anchor)
                     DXApplication.theDXApplication.exitCmd.execute();
                 else
-                    Close();
+                    Hide();
             }
             else
             {

@@ -66,7 +66,7 @@ namespace WinDX.UI
                         ret = false;
                     else
                     {
-                        seq_node.openDefaultWindow(application.getRootForm());
+                        seq_node.openDefaultWindow(application.getAnchorForm());
                         ret = true;
                     }
                     break;
