@@ -23,6 +23,11 @@ static Matrix Identity = {
                               { 0.0, 0.0, 1.0 }}
                          };
 
+typedef struct _WindowsPixels {
+	int width;
+	int height;
+	byte * pixels; } WindowsPixels;
+
 #if 0
 #include <dl.h>
 #include <sys/stat.h>
@@ -346,17 +351,25 @@ m_Display(Object *in, Object *out)
 		uint DX_DISPLAYREADY;
 		HWND window;
 		char *win = arg2;
-		int bytes;
+		unsigned char* bytes;
+		WindowsPixels wp;
+		int width, height;
 
 		DX_DISPLAYREADY = RegisterWindowMessage("DX_DISPLAY_READY");
 		win+=2;
 		if(ui_window && !message(image, arg2, buttonState, ddcamera, object))
 			goto error;
 		// If doing 64 bit, will need to worry about changing atoi to atoi64
+		if (!DXGetImageBounds(image, NULL, NULL, &width, &height))
+            goto error;
+
 		bytes = _dxf_GetWindowsPixels(image, NULL);
+		wp.pixels = bytes;
+		wp.width = width;
+		wp.height = height;
 		window = (HWND) atoi(win); //parse after ## of arg1
 		if(window && bytes) {
-			if(PostMessage(window, DX_DISPLAYREADY, bytes, 0)==0){
+			if(PostMessage(window, DX_DISPLAYREADY, &wp, 0)==0){
 				/* Error */
 				TCHAR szBuf[80]; 
 				LPVOID lpMsgBuf;

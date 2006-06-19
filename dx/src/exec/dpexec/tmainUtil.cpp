@@ -268,7 +268,7 @@ int DXEnvironment::Setup(const int argc, char **argv) {
 	numparams = n;
 
 	/* now parse the paramters */
-	try {
+	//try {
 		string exhighlight = "-B";
 
 		for(i=0; i<numparams; i++) {
@@ -524,10 +524,11 @@ int DXEnvironment::Setup(const int argc, char **argv) {
 
 		addExFlag(exhighlight); // Since highlight can only be turned off with the flag.
 
-	} catch(char *err) {
-		printf("%s\n", err);
-		exit(1);
-	}
+	//} 
+	//catch(char *err) {
+	//	printf("%s\n", err);
+	//	exit(1);
+	//}
 
 	strcat_s(path, MAXENV, ";");
 	strcat_s(path, MAXENV, magickhome.c_str());
