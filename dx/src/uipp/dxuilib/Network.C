@@ -1161,23 +1161,23 @@ void Network::closeControlPanel(int panelInstance, boolean do_unmanage)
 //
 void Network::openControlPanel(int panelInstance)
 {
-    ControlPanel* panel;
+	ControlPanel* panel;
 
-    if (panelInstance < 0) {
-	ListIterator iterator(this->panelList);
-	while ( (panel = (ControlPanel*) iterator.getNext()) ) {
-	    if (panel->isStartup())
-	        panel->manage();
+	if (panelInstance < 0) {
+		ListIterator iterator(this->panelList);
+		while ( (panel = (ControlPanel*) iterator.getNext()) ) {
+			if (panel->isStartup())
+				panel->manage();
+		}
+	} else if (panelInstance == 0 ) {
+		ListIterator  iterator(this->panelList);
+		while ( (panel = (ControlPanel*)iterator.getNext()) )
+			panel->manage();
+	} else {
+		panel = this->getPanelByInstance(panelInstance);
+		if (panel)
+			panel->manage();
 	}
-    } else if (panelInstance == 0 ) {
-        ListIterator  iterator(this->panelList);
-    	while ( (panel = (ControlPanel*)iterator.getNext()) )
-		panel->manage();
-    } else {
-	panel = this->getPanelByInstance(panelInstance);
-	if (panel)
-	    panel->manage();
-    }
 }
 //
 // Open the given panel group indicated by groupIndex.

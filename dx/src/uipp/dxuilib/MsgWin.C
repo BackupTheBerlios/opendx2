@@ -463,173 +463,173 @@ void MsgWin::infoOpen()
 
 void MsgWin::addError(const char *error)
 {
-    ASSERT(error);
-    if (!theDXApplication->isErrorEnabled())
-	return;
-    if (!error)
-	return;
-    if (!this->isInitialized())
-	this->initialize();
+	ASSERT(error);
+	if (!theDXApplication->isErrorEnabled())
+		return;
+	if (!error)
+		return;
+	if (!this->isInitialized())
+		this->initialize();
 
-    this->flushBuffer();
+	this->flushBuffer();
 
-    if (this->firstMsg)
-    {
-	this->firstMsg = FALSE;
-	if (this->logFile)
+	if (this->firstMsg)
 	{
-	    fputs("Begin Execution\n", this->logFile);
-	    fflush(this->logFile);
-	}
-	XmString s = XmStringCreate("Begin Execution", "oblique");
-	XmListAddItemUnselected(this->list, s, 0);
-	XmStringFree(s);
-	int itemCount;
-	XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-	XmListSetBottomPos(this->list, itemCount);
-
-	this->clearCmd->activate();
-    }
-
-    //
-    // Manage it before we save the error message, otherwise manage()
-    // causes DXWindow::manage() to do a notify(BeginExecution) which clears 
-    // the list of lines.
-    //
-    if (theDXApplication->doesErrorOpenMessage() && !this->isManaged())
-	this->manage();
-
-    //
-    // If this is a module error, change the format and report it.
-    //  0:  ERROR:  2::/main:0/Compute:0: Bad parameter: expression must be a string
-    //
-    char net[100];
-    int  inst;
-    const char *topNet = theDXApplication->network->getNameString();
-    int l;
-    if (sscanf(error, " %*d:  ERROR:  %*d::/%[^:]:%d/%n", net, &inst, &l) == 2 &&
-	EqualString(net, topNet))
-    {
-	char *line = new char[STRLEN(error)+1];
-	char *p = line;
-	const char *o = error + l;
-	boolean names = TRUE;
-	boolean skipDigits = FALSE;
-	boolean moreNames = TRUE;
-	while(names && *o)
-	{
-	    if (!skipDigits && *o == ':')
-	    {
-		skipDigits = TRUE;
-		if (moreNames)
+		this->firstMsg = FALSE;
+		if (this->logFile)
 		{
-		    *p++ = *o++;
-		    *p++ = ' ';
+			fputs("Begin Execution\n", this->logFile);
+			fflush(this->logFile);
 		}
-		else
-		    o++;
-	    }
-	    else if (*o == '/')
-	    {
-		skipDigits = FALSE;
-		o++;
-	    }
-	    else if (skipDigits && isdigit(*o))
-		o++;
-	    else if (skipDigits && *o == ':')
-	    {
-		names = FALSE;
-		o++;
-	    }
-	    else
-	    {
-		const char *colon = strchr(o, ':');
-		if (moreNames)
+		XmString s = XmStringCreate("Begin Execution", "oblique");
+		XmListAddItemUnselected(this->list, s, 0);
+		XmStringFree(s);
+		int itemCount;
+		XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+		XmListSetBottomPos(this->list, itemCount);
+
+		this->clearCmd->activate();
+	}
+
+	//
+	// Manage it before we save the error message, otherwise manage()
+	// causes DXWindow::manage() to do a notify(BeginExecution) which clears 
+	// the list of lines.
+	//
+	if (theDXApplication->doesErrorOpenMessage() && !this->isManaged())
+		this->manage();
+
+	//
+	// If this is a module error, change the format and report it.
+	//  0:  ERROR:  2::/main:0/Compute:0: Bad parameter: expression must be a string
+	//
+	char net[100];
+	int  inst;
+	const char *topNet = theDXApplication->network->getNameString();
+	int l;
+	if (sscanf(error, " %*d:  ERROR:  %*d::/%[^:]:%d/%n", net, &inst, &l) == 2 &&
+		EqualString(net, topNet))
+	{
+		char *line = new char[STRLEN(error)+1];
+		char *p = line;
+		const char *o = error + l;
+		boolean names = TRUE;
+		boolean skipDigits = FALSE;
+		boolean moreNames = TRUE;
+		while(names && *o)
 		{
-		    char modName[100];
-		    strncpy(modName, o, colon - o);
-		    modName[colon - o] = '\0';
-		    char netName[100];
-		    if (sscanf(modName, "%*[^_]_%[^_]_%*d", netName) == 1)
-		    {
-			strcpy(p, netName);
-			p += STRLEN(netName);
-			*p++ = ':';
-			moreNames = FALSE;
-		    }
-		    else
-		    {
-			strncpy(p, modName, colon-o);
-			p += colon-o;
-		    }
+			if (!skipDigits && *o == ':')
+			{
+				skipDigits = TRUE;
+				if (moreNames)
+				{
+					*p++ = *o++;
+					*p++ = ' ';
+				}
+				else
+					o++;
+			}
+			else if (*o == '/')
+			{
+				skipDigits = FALSE;
+				o++;
+			}
+			else if (skipDigits && isdigit(*o))
+				o++;
+			else if (skipDigits && *o == ':')
+			{
+				names = FALSE;
+				o++;
+			}
+			else
+			{
+				const char *colon = strchr(o, ':');
+				if (moreNames)
+				{
+					char modName[100];
+					strncpy(modName, o, colon - o);
+					modName[colon - o] = '\0';
+					char netName[100];
+					if (sscanf(modName, "%*[^_]_%[^_]_%*d", netName) == 1)
+					{
+						strcpy(p, netName);
+						p += STRLEN(netName);
+						*p++ = ':';
+						moreNames = FALSE;
+					}
+					else
+					{
+						strncpy(p, modName, colon-o);
+						p += colon-o;
+					}
+				}
+				o = colon;
+			}
 		}
-		o = colon;
-	    }
+		*p = '\0';
+
+		if (this->logFile)
+		{
+			fputs("ERROR: ", this->logFile);
+			fputs(line, this->logFile);
+			fputs(o, this->logFile);
+			fputc('\n', this->logFile);
+		}
+		XmString errorString = XmStringCreate("ERROR: ", "bold");
+		XmString nameString = XmStringCreate((char*)line, "bold");
+		XmString text = XmStringCreate((char*)o, "oblique");
+		XmString firstHalf = XmStringConcat(errorString, nameString);
+		XmString s = XmStringConcat(firstHalf, text);
+		XmStringFree(errorString);
+		XmStringFree(nameString);
+		XmStringFree(firstHalf);
+		XmStringFree(text);
+		delete[] line;
+
+		XmListAddItemUnselected(this->list, s, 0);
+		XmStringFree(s);
+		int itemCount;
+		XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+		XmListSetBottomPos(this->list, itemCount);
+
+		this->clearCmd->activate();
+
+		SelectableLine *l = new SelectableLine;
+		XtVaGetValues(this->list, XmNitemCount, &l->position, NULL);
+		l->line = DuplicateString(error);
+		this->selectableLines.appendElement((void*)l);
 	}
-	*p = '\0';
-
-	if (this->logFile)
-	{
-	    fputs("ERROR: ", this->logFile);
-	    fputs(line, this->logFile);
-	    fputs(o, this->logFile);
-	    fputc('\n', this->logFile);
-	}
-	XmString errorString = XmStringCreate("ERROR: ", "bold");
-	XmString nameString = XmStringCreate((char*)line, "bold");
-	XmString text = XmStringCreate((char*)o, "oblique");
-	XmString firstHalf = XmStringConcat(errorString, nameString);
-	XmString s = XmStringConcat(firstHalf, text);
-	XmStringFree(errorString);
-	XmStringFree(nameString);
-	XmStringFree(firstHalf);
-	XmStringFree(text);
-	delete[] line;
-
-	XmListAddItemUnselected(this->list, s, 0);
-	XmStringFree(s);
-	int itemCount;
-	XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-	XmListSetBottomPos(this->list, itemCount);
-
-	this->clearCmd->activate();
-
-	SelectableLine *l = new SelectableLine;
-	XtVaGetValues(this->list, XmNitemCount, &l->position, NULL);
-	l->line = DuplicateString(error);
-	this->selectableLines.appendElement((void*)l);
-    }
-    else
-    {
-	if (this->logFile)
-	{
-	    fputs(error, this->logFile);
-	    fputc('\n', this->logFile);
-	}
-	XmString s = XmStringCreate((char*)error, "bold");
-
-	XmListAddItemUnselected(this->list, s, 0);
-	XmStringFree(s);
-	int itemCount;
-	XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
-	XmListSetBottomPos(this->list, itemCount);
-
-	this->clearCmd->activate();
-    }
-    if (theDXApplication->doesErrorOpenMessage())
-    {
-	if (!this->beenBeeped)
-	{
-	    XBell(XtDisplay(this->getRootWidget()), 0);
-	    XFlush(XtDisplay(this->getRootWidget()));
-	    this->beenBeeped = TRUE;
-	}
-	if (!this->isManaged())
-	    this->manage();
 	else
-	    XRaiseWindow(XtDisplay(this->getRootWidget()),
-		   XtWindow(this->getRootWidget()));
-    }
+	{
+		if (this->logFile)
+		{
+			fputs(error, this->logFile);
+			fputc('\n', this->logFile);
+		}
+		XmString s = XmStringCreate((char*)error, "bold");
+
+		XmListAddItemUnselected(this->list, s, 0);
+		XmStringFree(s);
+		int itemCount;
+		XtVaGetValues(this->list, XmNitemCount, &itemCount, NULL);
+		XmListSetBottomPos(this->list, itemCount);
+
+		this->clearCmd->activate();
+	}
+	if (theDXApplication->doesErrorOpenMessage())
+	{
+		if (!this->beenBeeped)
+		{
+			XBell(XtDisplay(this->getRootWidget()), 0);
+			XFlush(XtDisplay(this->getRootWidget()));
+			this->beenBeeped = TRUE;
+		}
+		if (!this->isManaged())
+			this->manage();
+		else
+			XRaiseWindow(XtDisplay(this->getRootWidget()),
+			XtWindow(this->getRootWidget()));
+	}
 
 }
 void MsgWin::addWarning(const char *warning)

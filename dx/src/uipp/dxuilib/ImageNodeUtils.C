@@ -1275,37 +1275,37 @@ boolean ImageNode::SendString(void* callbackData, PacketIFCallback cb, FILE* f, 
 
 void ImageNode::FormatMacro (FILE* f, PacketIFCallback cb, void* cbd, String mac[], boolean viasocket)
 {
-    int i = 0;
+	int i = 0;
 #   define FMBUFSIZE 90
-    char tmpbuf[FMBUFSIZE];
-    int buflen = 0;
-    while (mac[i]) {
-	int length = strlen(mac[i]);
-	if ((buflen + length) >= FMBUFSIZE - 1) {
-	    if (buflen > 0) {
+	char tmpbuf[FMBUFSIZE];
+	int buflen = 0;
+	while (mac[i]) {
+		int length = strlen(mac[i]);
+		if ((buflen + length) >= FMBUFSIZE - 1) {
+			if (buflen > 0) {
+				tmpbuf[buflen++] = '\n'; tmpbuf[buflen] = '\0';
+				SendString (cbd, cb, f, tmpbuf, viasocket);
+				//fwrite (tmpbuf, 1, buflen, f);
+				//fflush(f);
+				buflen = 0;
+			} else {
+				SendString (cbd, cb, f, mac[i], viasocket);
+				i++;
+				//fwrite (mac[i++], 1, length, f);
+				//fflush(f);
+			}
+		} else {
+			strcpy (&tmpbuf[buflen], mac[i]);
+			i++;
+			buflen+= length;
+		}
+	}
+	if (buflen > 0) {
 		tmpbuf[buflen++] = '\n'; tmpbuf[buflen] = '\0';
 		SendString (cbd, cb, f, tmpbuf, viasocket);
 		//fwrite (tmpbuf, 1, buflen, f);
 		//fflush(f);
-		buflen = 0;
-	    } else {
-		SendString (cbd, cb, f, mac[i], viasocket);
-		i++;
-		//fwrite (mac[i++], 1, length, f);
-		//fflush(f);
-	    }
-	} else {
-	    strcpy (&tmpbuf[buflen], mac[i]);
-	    i++;
-	    buflen+= length;
 	}
-    }
-    if (buflen > 0) {
-	tmpbuf[buflen++] = '\n'; tmpbuf[buflen] = '\0';
-	SendString (cbd, cb, f, tmpbuf, viasocket);
-	//fwrite (tmpbuf, 1, buflen, f);
-	//fflush(f);
-    }
 }
 
 boolean ImageNode::sendMacro(DXPacketIF *pif)

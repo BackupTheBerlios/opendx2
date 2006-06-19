@@ -3282,60 +3282,60 @@ void DXApplication::refreshErrorIndicators()
 void DXApplication::addErrorList(char *line)
 
 {
-    char *newLine = strchr(line, '/');
-    char *p, *second_slash;
-    //
-    // Don't handle errors that result from script commands typed directly to  
-    // the executive (i.e. commands without networks) like errors that come
-    // from within a network.
-    //
-    if (newLine && (second_slash = strchr(newLine+1,'/')))
-    {
-        newLine++;
-	const char *name = this->network->getNameString();
-        if (!EqualSubstring(newLine,name,STRLEN(name)))
-            return;
+	char *newLine = strchr(line, '/');
+	char *p, *second_slash;
+	//
+	// Don't handle errors that result from script commands typed directly to  
+	// the executive (i.e. commands without networks) like errors that come
+	// from within a network.
+	//
+	if (newLine && (second_slash = strchr(newLine+1,'/')))
+	{
+		newLine++;
+		const char *name = this->network->getNameString();
+		if (!EqualSubstring(newLine,name,STRLEN(name)))
+			return;
 
-        char *node_id = second_slash + 1;
+		char *node_id = second_slash + 1;
 
-        this->errorList.appendElement((void*)DuplicateString(node_id));
-	//
-	// Don't highlight until after execution.
-	// Highlighting is now done in DXExecCtl::endLastExecution() by
-	// calling this->refreshErrorIndicators().
-	//
-	if (!this->getExecCtl()->isExecuting())
-	    this->highlightNodes(node_id,EditorWindow::ERRORHIGHLIGHT);
-    }
-    // We don't need to save errors that aren't relevant to a tool placed
-    // on the canvas, so comment out the following. 
-    //else
-    //{
-    //j  this->errorList.appendElement((void*)DuplicateString(line));
-    //}
-    else if ( (p = strstr(line,"PEER ABORT - ")) ) {
-	//	
-	// One of the distributed peers aborted abnormally.
-	// Unhighlight all the modules.
-	// FIXME: If we don't unhighlight, the aborted module is still
-	// highlighted green, so we could go through the process group
-	// and mark the greens modules as error modules.
-	//
-	Network *n = this->network;
-	ListIterator li(this->macroList);
-	while (n) {
-	    EditorWindow *e = n->getEditor();
-	    if (e)
-		e->highlightNodes(EditorWindow::REMOVEHIGHLIGHT);	
-	    n = (Network*)li.getNext();    
+		this->errorList.appendElement((void*)DuplicateString(node_id));
+		//
+		// Don't highlight until after execution.
+		// Highlighting is now done in DXExecCtl::endLastExecution() by
+		// calling this->refreshErrorIndicators().
+		//
+		if (!this->getExecCtl()->isExecuting())
+			this->highlightNodes(node_id,EditorWindow::ERRORHIGHLIGHT);
 	}
-	// this->refreshErrorIndicators();	
+	// We don't need to save errors that aren't relevant to a tool placed
+	// on the canvas, so comment out the following. 
+	//else
+	//{
+	//j  this->errorList.appendElement((void*)DuplicateString(line));
+	//}
+	else if ( (p = strstr(line,"PEER ABORT - ")) ) {
+		//	
+		// One of the distributed peers aborted abnormally.
+		// Unhighlight all the modules.
+		// FIXME: If we don't unhighlight, the aborted module is still
+		// highlighted green, so we could go through the process group
+		// and mark the greens modules as error modules.
+		//
+		Network *n = this->network;
+		ListIterator li(this->macroList);
+		while (n) {
+			EditorWindow *e = n->getEditor();
+			if (e)
+				e->highlightNodes(EditorWindow::REMOVEHIGHLIGHT);	
+			n = (Network*)li.getNext();    
+		}
+		// this->refreshErrorIndicators();	
 
-	//
-	// This is similar to a disconnect, so make sure the user knows.
-	//
-	ErrorMessage(p+STRLEN("PEER ABORT - "));	
-    }
+		//
+		// This is similar to a disconnect, so make sure the user knows.
+		//
+		ErrorMessage(p+STRLEN("PEER ABORT - "));	
+	}
 
 }
 
