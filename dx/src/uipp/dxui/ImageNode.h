@@ -174,7 +174,7 @@ class ImageNode : public DisplayNode
 		       const char *value,
 		       Type t = DXType::UndefinedType,
 		       boolean send = TRUE);
-    boolean sendValues(boolean ignoreDirty = TRUE);
+    virtual boolean sendValues(boolean ignoreDirty = TRUE);
     virtual boolean	printValues(FILE *f, const char *prefix, PrintType dest);
     virtual boolean associateImage(ImageWindow *w);
 

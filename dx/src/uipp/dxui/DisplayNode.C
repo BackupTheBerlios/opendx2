@@ -209,67 +209,67 @@ DisplayNode::setInputValue(int index,
 boolean
 DisplayNode::associateImage(ImageWindow *w)
 {
-    if (w == NULL) { 
-	if (this->image == NULL)
-	    return TRUE; // Stop recursion with ImageWindow::associateNode()
-	w = this->image;
-	if (!w->associateNode(NULL))
-            return FALSE;
-	this->image = NULL;
-    } else {
-	if (this->image != NULL)
-	    return FALSE;
-    
-	if (!w->associateNode(this))
-	    return FALSE;
+	if (w == NULL) { 
+		if (this->image == NULL)
+			return TRUE; // Stop recursion with ImageWindow::associateNode()
+		w = this->image;
+		if (!w->associateNode(NULL))
+			return FALSE;
+		this->image = NULL;
+	} else {
+		if (this->image != NULL)
+			return FALSE;
 
-	this->image = w;
-    }
+		if (!w->associateNode(this))
+			return FALSE;
 
-    if (this->title != NULL && this->image != NULL)
-	this->image->setWindowTitle(this->title);
-//    if (this->image != NULL)
-//	this->image->changeDepth(this->depth);
+		this->image = w;
+	}
 
-    return TRUE;
+	if (this->title != NULL && this->image != NULL)
+		this->image->setWindowTitle(this->title);
+	//    if (this->image != NULL)
+	//	this->image->changeDepth(this->depth);
+
+	return TRUE;
 }
 
 void DisplayNode::prepareToSendValue(int index, Parameter *p)
 {
-    if (!this->userSpecifiedWhere)
-    {
-	// Create a new Image Window if necessary.
-	if (this->image == NULL)
+	if (!this->userSpecifiedWhere)
 	{
-	    this->openImageWindow(FALSE);
+		// Create a new Image Window if necessary.
+		if (this->image == NULL)
+		{
+			this->openImageWindow(FALSE);
+		}
+		if (p->isInput() && index == 3)
+		{
+			char *s = this->image->getDisplayString();
+			this->Node::setInputValue(index,
+				s,
+				DXType::WhereType,
+				FALSE);
+			int newWindowId;
+			sscanf(s, "%*[^#]##%d", &newWindowId);
+			if (this->windowId != newWindowId)
+			{
+				char message[1000];
+				sprintf(message, "IMAGE:  ##%d", this->windowId);
+				DXPacketIF *pif = theDXApplication->getPacketIF();
+				pif->setHandler(DXPacketIF::INFORMATION,
+					NULL,
+					(void*)this,
+					message);
+				this->windowId = newWindowId;
+				sprintf(message, "IMAGE:  ##%d", this->windowId);
+				pif->setHandler(DXPacketIF::INFORMATION,
+					DisplayNode::HandleImageMessage,
+					(void*)this,
+					message);
+			}
+		}
 	}
-	if (p->isInput() && index == 3)
-	{
-	    char *s = this->image->getDisplayString();
-	    this->Node::setInputValue(index,
-					    s,
-					    DXType::WhereType,
-					    FALSE);
-	    int newWindowId;
-	    sscanf(s, "%*[^#]##%d", &newWindowId);
-	    if (this->windowId != newWindowId)
-	    {
-		char message[1000];
-		sprintf(message, "IMAGE:  ##%d", this->windowId);
-		DXPacketIF *pif = theDXApplication->getPacketIF();
-		pif->setHandler(DXPacketIF::INFORMATION,
-				NULL,
-				(void*)this,
-				message);
-		this->windowId = newWindowId;
-		sprintf(message, "IMAGE:  ##%d", this->windowId);
-		pif->setHandler(DXPacketIF::INFORMATION,
-				DisplayNode::HandleImageMessage,
-				(void*)this,
-				message);
-	    }
-	}
-    }
 }
 
 void DisplayNode::prepareToSendNode()

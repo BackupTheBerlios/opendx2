@@ -475,30 +475,31 @@ Type ImageNode::setInputSetValue(int index,
 
 boolean ImageNode::sendValues(boolean ignoreDirty)
 {
-    ListIterator li(*this->getNetwork()->getImageList());
-    ImageWindow *w;
-    boolean sendMacro = TRUE;	// This shouldn't be necessary, 
-				// the loop should catch all cases.
-    while( (w = (ImageWindow*)li.getNext()) )
-	if (w == this->image)
+	ListIterator li(*this->getNetwork()->getImageList());
+	ImageWindow *w;
+	boolean sendMacro = TRUE;	// This shouldn't be necessary, 
+	// the loop should catch all cases.
+	while( (w = (ImageWindow*)li.getNext()) )
+		if (w == this->image)
+		{
+			sendMacro = TRUE;
+			break;
+		}
+		else if (w->getAssociatedNode() != NULL &&
+			w->getAssociatedNode()->isA(ClassImageNode))
+		{
+			sendMacro = FALSE;
+			break;
+		}
+
+	if (sendMacro && (ignoreDirty || this->macroDirty))
 	{
-	    sendMacro = TRUE;
-	    break;
+		DXPacketIF *pif = theDXApplication->getPacketIF();
+		if (pif == NULL || !this->sendMacro(pif))
+			return FALSE;
+		this->macroDirty = FALSE;
 	}
-	else if (w->getAssociatedNode() != NULL &&
-	    w->getAssociatedNode()->isA(ClassImageNode))
-	{
-	    sendMacro = FALSE;
-	    break;
-	}
-    if (sendMacro && (ignoreDirty || this->macroDirty))
-    {
-	DXPacketIF *pif = theDXApplication->getPacketIF();
-	if (pif == NULL || !this->sendMacro(pif))
-	    return FALSE;
-	this->macroDirty = FALSE;
-    }
-    return this->DisplayNode::sendValues(ignoreDirty);
+	return this->DisplayNode::sendValues(ignoreDirty);
 }
 
 //
