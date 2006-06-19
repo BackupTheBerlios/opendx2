@@ -52,7 +52,7 @@ const char *AssertMsgString = "Internal error detected at \"%s\":%d.\n";
 //	return 0;
 //}
 
-
+[STAThread]
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPTSTR    lpCmdLine,
