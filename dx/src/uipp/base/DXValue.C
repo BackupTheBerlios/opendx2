@@ -1273,7 +1273,7 @@ char *DXValue::CoerceValue(const char *value, Type type)
 
 
 		//
-		// window must be surrounded by quotes just a string is.
+		// window must be surrounded by quotes just as string is.
 		//
 		if ((type == DXType::StringType) || (type == DXType::WhereType)) {
 			s[0]   = '"';
