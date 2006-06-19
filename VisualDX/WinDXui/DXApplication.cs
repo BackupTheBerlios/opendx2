@@ -1809,6 +1809,8 @@ namespace WinDX.UI
         {
             throw new Exception("Not Yet Implemented");
         }
+        public String ServerName { get { return serverInfo.server; } }
+
         public void setServerParameters(int autoStart, String server,
             String executive, String workingDirectory,
             String executiveFlags, int port, int memorySize)
@@ -1876,7 +1878,16 @@ namespace WinDX.UI
         }
         public virtual ImageWindow newImageWindow(Network n)
         {
-            throw new Exception("Not Yet Implemented");
+            bool is_anchor;
+
+            Debug.Assert(n != null);
+
+            if (this.anchor == null)
+                is_anchor = true;
+            else
+                is_anchor = false;
+
+            return new ImageWindow(is_anchor, n);
         }
         public virtual ControlPanel newControlPanel(Network n)
         {
@@ -2307,7 +2318,7 @@ namespace WinDX.UI
         }
         public bool appAllowsImageMenus()
         {
-            throw new Exception("Not Yet Implemented");
+            return !resource.noImageMenus;
         }
 
         public bool dxlAppNotifySaveNet()
@@ -2448,7 +2459,7 @@ namespace WinDX.UI
 
             loc = path.IndexOf('/');
             if (loc >= 0)
-                path = path.Substring(loc);
+                path = path.Substring(loc+1);
             else
                 path = null;
 

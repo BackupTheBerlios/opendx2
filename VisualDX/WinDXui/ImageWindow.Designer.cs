@@ -1,3 +1,7 @@
+using System.Windows.Forms;
+using System.ComponentModel;
+using System.Drawing;
+
 namespace WinDX.UI
 {
     partial class ImageWindow
@@ -28,9 +32,35 @@ namespace WinDX.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Text = "ImageWindow";
+            pictureBox = new PictureBox();
+            ((ISupportInitialize)(pictureBox)).BeginInit();
+            this.SuspendLayout();
+
+            pictureBox.Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
+                | AnchorStyles.Left) | AnchorStyles.Right)));
+            pictureBox.BackColor = Color.White;
+            pictureBox.Location = new Point(0, 27);
+            pictureBox.Name = "pictureBox";
+            pictureBox.Size = new Size(640, 480);
+            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox.TabIndex = 0;
+            pictureBox.TabStop = false;
+
+            // Will probably need to add the code for callbacks when the picture box
+            // changes.
+
+            //this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new Size(640, 480);
+            this.Controls.Add(pictureBox);
+            this.DoubleBuffered = true;
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            this.ResumeLayout();
+            if (!IsAnchor)
+                this.ShowIcon = false;
+            //this.ResumeLayout(false);
+            //this.PerformLayout();
+
         }
 
         #endregion

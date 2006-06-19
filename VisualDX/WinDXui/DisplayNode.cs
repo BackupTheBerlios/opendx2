@@ -13,7 +13,8 @@ namespace WinDX.UI
 
         private static void HandleImageMessage(Object clientData, int id, String line)
         {
-            throw new Exception("Not Yet Implemented");
+            DisplayNode n = (DisplayNode)clientData;
+            n.handleImageMessage(id, line);
         }
 
         private PanelAccessManager panelAccessManager;
@@ -79,15 +80,59 @@ namespace WinDX.UI
 
         protected virtual void handleImageMessage(int id, String line)
         {
-            throw new Exception("Not Yet Implemented");
+            Regex regex = new Regex(@"\d+:  IMAGE:  ##\d+: (\d+)x(\d+)");
+            Match m = regex.Match(line);
+            int x = Int32.Parse(m.Groups[1].Value);
+            int y = Int32.Parse(m.Groups[2].Value);
+
+            image.newCamera(x, y);
+            if (!image.Visible)
+            {
+                image.sensitizeChangeImageName(true);
+                image.Show();
+            }
         }
-        protected void prepareToSendValue(int index, Parameter p)
+       
+        protected override void prepareToSendValue(int index, Parameter p)
         {
-            throw new Exception("Not Yet Implemented");
+            if (!userSpecifiedWhere)
+            {
+                // Create a new ImageWindow if necessary.
+                if (image == null)
+                {
+                    openImageWindow(false);
+                }
+                if (p.IsInput && index == 3)
+                {
+                    String s = image.getDisplayString();
+                    base.setInputValue(index, s, DXTypeVals.WhereType, false);
+                    Regex regex = new Regex(@".*##(\d+)");
+                    Match m = regex.Match(s);
+                    int newWindowId = Int32.Parse(m.Groups[1].Value);
+                    if (this.windowId != newWindowId)
+                    {
+                        String message = String.Format("IMAGE:  ##{0}", windowId);
+                        DXPacketIF pif = DXApplication.theDXApplication.getPacketIF();
+                        pif.setHandler(PacketIF.PacketType.INFORMATION, null, this, message);
+                        windowId = newWindowId;
+                        message = String.Format("IMAGE:  ##{0}", windowId);
+                        pif.setHandler(PacketIF.PacketType.INFORMATION, DisplayNode.HandleImageMessage,
+                            this, message);
+                    }
+                }
+            }
         }
-        protected void prepareToSendNode()
+
+        protected override void prepareToSendNode()
         {
-            throw new Exception("Not Yet Implemented");
+            if (!userSpecifiedWhere)
+            {
+                if (image == null)
+                    openImageWindow(false);
+
+                if (!isInputSet(3))
+                    notifyWhereChange(false);
+            }
         }
 
         protected override bool netPrintAuxComment(StreamWriter s)
@@ -320,7 +365,7 @@ namespace WinDX.UI
                 }
                 else
                 {
-                    String cp = getInputTypeString(index);
+                    String cp = getInputValueString(index);
                     DXTypeVals retVal = base.setInputValue(index, cp, type, send); 
                     return retVal;
                 }
@@ -331,16 +376,69 @@ namespace WinDX.UI
 
         public virtual bool associateImage(ImageWindow w)
         {
-            throw new Exception("Not Yet Implemented");
+            if (w == null)
+            {
+                if (image == null)
+                    return true;
+                w = image;
+                if (!w.associateNode(null))
+                    return false;
+                image = null;
+            }
+            else
+            {
+                if (image != null)
+                    return false;
+
+                if (!w.associateNode(this))
+                    return false;
+
+                image = w;
+            }
+
+            if (title != null && image != null)
+                image.Text = title;
+            return true;
         }
+
         public void notifyWhereChange(bool send)
         {
-            throw new Exception("Not Yet Implemented");
+            setInputValue(3, "", DXTypeVals.WhereType, send);
+            windowId = 0;
         }
+
         public virtual void openImageWindow() { openImageWindow(true); }
         public virtual void openImageWindow(bool manage)
         {
-            throw new Exception("Not Yet Implemented");
+            ImageWindow w = this.image;
+            if (w == null)
+            {
+                if (userSpecifiedWhere)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("The user interface can not open the Image window for the {0} " +
+                        "tool because it has the input parameter '{1}' set and " +
+                        "therefore does not own the window.", NameString, getInputNameString(3));
+                    return;
+                }
+                else
+                {
+                    w = getUnassociatedImageWindow();
+                    Debug.Assert(w != null);
+                    associateImage(w);
+                    userSpecifiedWhere = false;
+                    notifyWhereChange(manage);
+                }
+
+                if (xpos != Utils.UnspecifiedPosition &&
+                    DXApplication.theDXApplication.applyWindowPlacements())
+                {
+                    w.setGeometry(xpos, ypos, width, height);
+                }
+            }
+            image.sensitizeChangeImageName(true);
+            if (manage)
+                w.Show();
         }
 
         public override void setGroupName(GroupRecord gr, Symbol groupID)

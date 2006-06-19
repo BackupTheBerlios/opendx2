@@ -25,7 +25,7 @@ namespace WinDX
                 typePatterns.Add("Int64", @"(-[0-9]+|[0-9]+)");
                 typePatterns.Add("UInt64", @"([0-9]+)");
                 typePatterns.Add("Single", @"([-|+]?[0-9]*[.]?[0-9]+)");
-                typePatterns.Add("Double", @"([-|+]?[0-9]*[.]?[0-9]+)");
+                typePatterns.Add("Double", @"([-|+]?[0-9]*[.]?[0-9]+(?:[eE][-+]?[0-9]+)?)");
                 typePatterns.Add("Boolean", @"(true|false)");
                 typePatterns.Add("Byte", @"([0-9]{1,3})");
                 typePatterns.Add("SByte", @"(-[0-9]{1,3}|[0-9]{1,3})");

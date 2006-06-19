@@ -323,7 +323,13 @@ namespace WinDX.UI
         /// <returns></returns>
         private bool isIOSet(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+
+            p = io[index - 1];
+            Debug.Assert(p != null);
+
+            return p.HasValue;
         }
 
         /// <summary>
@@ -334,7 +340,13 @@ namespace WinDX.UI
         /// <returns></returns>
         private String getIOValueString(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+
+            p = io[index - 1];
+            Debug.Assert(p != null);
+
+            return p.getValueString();
         }
 
         /// <summary>
@@ -359,7 +371,11 @@ namespace WinDX.UI
         private String getNetworkIONameString(int index,
             bool input)
         {
-            throw new Exception("Not Yet Implemented");
+            String prefix = network.getPrefix();
+
+            return String.Format("{0}{1}_{2}_{3}_{4}", prefix,
+                NameString, instanceNumber, (input ? "in" : "out"),
+                index);
         }
 
         /// <summary>
@@ -391,9 +407,15 @@ namespace WinDX.UI
         /// <param name="io"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        private String getIOTypeStrings(List<Parameter> io, int index)
+        private String[] getIOTypeStrings(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+
+            p = io[index - 1];
+            Debug.Assert(p != null);
+
+            return p.getTypeStrings();
         }
 
         /// <summary>
@@ -1875,11 +1897,11 @@ namespace WinDX.UI
             return getNetworkIONameString(index, false);
         }
 
-        public String getInputTypeString(int index)
+        public String[] getInputTypeStrings(int index)
         {
             return getIOTypeStrings(inputParameters, index);
         }
-        public String getOutputTypeStrings(int index)
+        public String[] getOutputTypeStrings(int index)
         {
             return getIOTypeStrings(outputParameters, index);
         }
@@ -2036,7 +2058,33 @@ namespace WinDX.UI
         public virtual DXTypeVals setInputSetValue(int index, String value, DXTypeVals type,
             bool send)
         {
-            throw new Exception("Not Yet Implemented");
+            bool was_defaulting = isInputDefaulting(index);
+
+            // If the parameter is already set (i.e. tab down) then just do
+            // a normal set and return.
+            if (!was_defaulting)
+                return setInputValue(index, value, type, send);
+
+            // First set the value, don't send it and don't do notification (this
+            // is the same as a normal set except we don't do notification).
+            type = setIOValue(ref inputParameters, index, value, type, false, false);
+
+            if (type != DXTypeVals.UndefinedType)
+            {
+                // Second, set the parameter back to defaulting, but again, don't
+                // do notification (again, this is the same as a normal setting of 
+                // a parameter to defaulting, but no notification).
+                setIODefaultingStatus(index, true, true, false, false);
+
+                // Third, clear the parameter's dirty bit as we are only changing
+                // the set value (i.e. not the value the exec knows about).
+                clearInputDirty(index);
+
+                // Now do the notification that we've jumped through hoops to
+                // get right!
+                notifyIoParameterStatusChanged(true, index, NodeParameterStatusChange.PatemeterSetValueChanged);
+            }
+            return type;
         }
 
         public virtual DXTypeVals setInputValue(int index, String value)
@@ -2385,7 +2433,41 @@ namespace WinDX.UI
         /// </summary>
         public void sendValuesQuietly()
         {
-            throw new Exception("Not Yet Implemented");
+            DXPacketIF pif = DXApplication.theDXApplication.getPacketIF();
+
+            String msg;
+            String varname;
+            String varval;
+
+            if (pif == null)
+                return;
+
+            for (int i = 1; i <= InputCount; i++)
+            {
+                Parameter p = getInputParameter(i);
+                if (p.IsNeededValue(false))
+                {
+                    varname = getNetworkInputNameString(i);
+                    varval = getInputValueString(i);
+                    msg = String.Format("Executive(\"assign noexecute\", \"{0}\", {1});",
+                        varname, varval);
+                    pif.send(PacketIF.PacketType.FOREGROUND, msg);
+                    p.clearDirty();
+                }
+            }
+            for (int i = 1; i <= OutputCount; i++)
+            {
+                Parameter p = getOutputParameter(i);
+                if (p.IsNeededValue(false))
+                {
+                    varname = getNetworkOutputNameString(i);
+                    varval = getOutputValueString(i);
+                    msg = String.Format("Executive(\"assign noexecute\", \"{0}\", {1};",
+                        varname, varval);
+                    pif.send(PacketIF.PacketType.FOREGROUND, msg);
+                    p.clearDirty();
+                }
+            }
         }
 
         /// <summary>

@@ -95,8 +95,8 @@ namespace WinDX.UI
             }
 
             this.StartPosition = FormStartPosition.Manual;
-            int x = parent.Location.X + (int)((parent.Width - this.Width) / 2.0) + numOpenDialogs * 5;
-            int y = parent.Location.Y + (int)((parent.Height - this.Height) / 2.0) + numOpenDialogs * 5;
+            int x = this.Owner.Location.X + (int)((this.Owner.Width - this.Width) / 2.0) + numOpenDialogs * 5;
+            int y = this.Owner.Location.Y + (int)((this.Owner.Height - this.Height) / 2.0) + numOpenDialogs * 5;
             this.Location = new Point(x, y);
 
             this.Show();
@@ -150,8 +150,8 @@ namespace WinDX.UI
             }
 
             this.StartPosition = FormStartPosition.Manual;
-            int x = parent.Location.X + (int)((parent.Width - this.Width) / 2.0) + numOpenDialogs * 5;
-            int y = parent.Location.Y + (int)((parent.Height - this.Height) / 2.0) + numOpenDialogs * 5;
+            int x = this.Owner.Location.X + (int)((this.Owner.Width - this.Width) / 2.0) + numOpenDialogs * 5;
+            int y = this.Owner.Location.Y + (int)((this.Owner.Height - this.Height) / 2.0) + numOpenDialogs * 5;
             this.Location = new Point(x, y);
 
             numOpenDialogs++;

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace WinDX.UI
 {
@@ -25,6 +26,8 @@ namespace WinDX.UI
         public TimedDialog(String name, Form parent,
             String message, String title, int timeout)
         {
+            Regex regex = new Regex(@"\\n");
+            message = regex.Replace(message, Environment.NewLine);
             dialog = this;
             InitializeComponent();
 

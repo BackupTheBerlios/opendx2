@@ -37,9 +37,8 @@ namespace WinDX.UI
                 return false;
 
             str = str.Trim();
-            str = str.ToLower();
-
-            if (str == "" || str == "null")
+            
+            if (str == "" || str.ToLower() == "null")
                 result = true;
 
             else if (type == DXTypeVals.FlagType)
@@ -79,7 +78,26 @@ namespace WinDX.UI
             {
                 result = IsObject(str);
             }
+            else if (type == DXTypeVals.ListType)
+            {
+                DXTypeVals list_type = type & DXTypeVals.ListTypeMask;
 
+                result = IsList(str, list_type);
+            }
+            else if (type == DXTypeVals.WhereType)
+            {
+                Regex r = new Regex(@"^""[^""]*""$");
+                result = r.IsMatch(str);
+            }
+            else if (type == DXTypeVals.UserType1 ||
+           type == DXTypeVals.UserType2 ||
+           type == DXTypeVals.UserType4 ||
+           type == DXTypeVals.UserType5 ||
+           type == DXTypeVals.UserType6 ||
+           type == DXTypeVals.DescriptionType)
+            {
+                return true;
+            }
             return result;
         }
 
@@ -106,7 +124,10 @@ namespace WinDX.UI
             }
             else
             {
-                s = val.Trim();
+                if (val == null)
+                    s = "";
+                else
+                    s = val.Trim();
 
                 if ((type == DXTypeVals.StringType) || (type == DXTypeVals.WhereType))
                 {
@@ -531,10 +552,23 @@ namespace WinDX.UI
         public String getValueString()
         { return (this.str != null ? this.str : "NULL"); }
 
-        public DXTypeVals getType() { throw new Exception("Not Yet Implemented"); }
-        public String getTypeName() { throw new Exception("Not Yet Implemented"); }
-        public int getInteger() { throw new Exception("Not Yet Implemented"); }
-        public double getScalar() { throw new Exception("Not Yet Implemented"); }
+        public DXTypeVals getType() { return type.getType(); }
+        public String getTypeName() { return type.getName(); }
+        public int getInteger()
+        {
+            if (type.getType() != DXTypeVals.IntegerType ||
+                type.getType() != DXTypeVals.FlagType)
+                throw new FormatException("Error converting to integer DXValue.");
+
+            return this.integer;
+        }
+        public double getScalar()
+        {
+            if (type.getType() != DXTypeVals.ScalarType)
+                throw new FormatException("Error converting to scalar DXValue.");
+
+            return this.scalar;
+        }
         public double getVectorComponentValue(int component) { throw new Exception("Not Yet Implemented"); }
 
         /// <summary>

@@ -318,10 +318,5 @@ namespace WinDX.UI
             this.Text = title;
         }
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            throw new Exception("Not Yet Implemented");
-            base.OnClosing(e);
-        }
     }
 }
