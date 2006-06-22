@@ -1612,196 +1612,196 @@ void ImageWindow::setDisplayGlobe()
 char *ImageWindow::getDisplayString()
 {
 #if defined(HAVE_SYS_UTSNAME_H)
-    struct
-    utsname   name;
+	struct
+		utsname   name;
 #else
-    #define HOST_NAMELEN 33
-    char *cp;
-    struct    _dummy_utsname 
-              {
-                char    nodename[HOST_NAMELEN];
-              } name;
+#define HOST_NAMELEN 33
+	char *cp;
+	struct    _dummy_utsname 
+	{
+		char    nodename[HOST_NAMELEN];
+	} name;
 #endif   
-    Window    window;
-    Window    child;
-    boolean   frame_buffer;
-    int       x;
-    int       y;
-    char*     display;
-    char      host[64];
-    char      unit[16];
-    static char      string[512];
+	Window    window;
+	Window    child;
+	boolean   frame_buffer;
+	int       x;
+	int       y;
+	char*     display;
+	char      host[64];
+	char      unit[16];
+	static char      string[512];
 
-    if (this->execute_after_resize_to) XtRemoveTimeOut (this->execute_after_resize_to);
-    this->execute_after_resize_to = 0;
+	if (this->execute_after_resize_to) XtRemoveTimeOut (this->execute_after_resize_to);
+	this->execute_after_resize_to = 0;
 
-    //
-    // If there is a pending resize, then make sure it gets
-    // processed first so that the proper WHERE param is sent.
-    //
-    if (this->hasPendingWindowPlacement()) {
-	if (this->reset_eor_wp) XtRemoveWorkProc (this->reset_eor_wp);
-	this->reset_eor_wp = 0;
-	this->setGeometry(this->pending_resize_x, this->pending_resize_y,
-	    this->pending_resize_width, this->pending_resize_height);
-	this->setExecuteOnResize(TRUE);
-    }
+	//
+	// If there is a pending resize, then make sure it gets
+	// processed first so that the proper WHERE param is sent.
+	//
+	if (this->hasPendingWindowPlacement()) {
+		if (this->reset_eor_wp) XtRemoveWorkProc (this->reset_eor_wp);
+		this->reset_eor_wp = 0;
+		this->setGeometry(this->pending_resize_x, this->pending_resize_y,
+			this->pending_resize_width, this->pending_resize_height);
+		this->setExecuteOnResize(TRUE);
+	}
 
-    /*
-     * Determine whether we're working with a frame buffer or not....
-     */
-    window = XtWindow(this->getCanvas());
-	    
-    frame_buffer = this->state.frameBuffer;
+	/*
+	* Determine whether we're working with a frame buffer or not....
+	*/
+	window = XtWindow(this->getCanvas());
 
-    DisplayNode *in = (DisplayNode *)this->node;
-    /*
-     * Determine the X server host.
-     */
-    display = DisplayString(theApplication->getDisplay());
+	frame_buffer = this->state.frameBuffer;
+
+	DisplayNode *in = (DisplayNode *)this->node;
+	/*
+	* Determine the X server host.
+	*/
+	display = DisplayString(theApplication->getDisplay());
 #if	defined(DXD_WIN)
 	/* 
-     	as DISPLAY Enviroment is haveing some king of problen with EXCEED...
-		if DISPLAY is set to be DXPENT:0 (which is hostname:o), DXUI startup
-		gives an error "Unable to open CONNECT Strean". This problem is also
-		encountered while running EXCEED samples also.
+	as DISPLAY Enviroment is haveing some king of problen with EXCEED...
+	if DISPLAY is set to be DXPENT:0 (which is hostname:o), DXUI startup
+	gives an error "Unable to open CONNECT Strean". This problem is also
+	encountered while running EXCEED samples also.
 
-		If it is set to be "localhost:o" than eEXEC fails in "gethostname()".
+	If it is set to be "localhost:o" than eEXEC fails in "gethostname()".
 
 	*/
 #endif
-    if (display)
-    {
+	if (display)
+	{
 #if defined(HAVE_SYS_UTSNAME_H)
-	if (uname(&name) < 0)
+		if (uname(&name) < 0)
 #else
-        if (gethostname(name.nodename, HOST_NAMELEN) < 0)
+		if (gethostname(name.nodename, HOST_NAMELEN) < 0)
 #endif
-	{
-	    return NULL;
-	}
+		{
+			return NULL;
+		}
 #if !defined(HAVE_SYS_UTSNAME_H)
-        cp = strchr(name.nodename,'.');
-        if (cp != NULL) 
-        {
-            *cp = '\0';
-        }
+		cp = strchr(name.nodename,'.');
+		if (cp != NULL) 
+		{
+			*cp = '\0';
+		}
 #endif
-	const char *serverHost;
-	theDXApplication->getServerParameters(NULL, &serverHost,
-	    NULL, NULL, NULL, NULL, NULL);
-	if (sscanf(display, "%[^:]:%s", host, unit) == 2)
-	{
-	    const char* group_name =
+		const char *serverHost;
+		theDXApplication->getServerParameters(NULL, &serverHost,
+			NULL, NULL, NULL, NULL, NULL);
+		if (sscanf(display, "%[^:]:%s", host, unit) == 2)
+		{
+			const char* group_name =
 #if WORKSPACE_PAGES
-		in->getGroupName(theSymbolManager->getSymbol(PROCESS_GROUP));
+				in->getGroupName(theSymbolManager->getSymbol(PROCESS_GROUP));
 #else
-		in->getGroupName();
+				in->getGroupName();
 #endif
 #ifdef	DXD_OS_NON_UNIX
-	    if(!DXChild::HostIsLocal(serverHost))
+			if(!DXChild::HostIsLocal(serverHost))
 #else
-	    if (EqualString(host, "unix") &&
-		(group_name != NULL ||
-		 !DXChild::HostIsLocal(serverHost)))
+			if (EqualString(host, "unix") &&
+				(group_name != NULL ||
+				!DXChild::HostIsLocal(serverHost)))
 #endif
-	    {
-		display = new char[ STRLEN(name.nodename) + STRLEN(unit) + 4];
-		SPRINTF(display, "%s:%s", name.nodename, unit);
-	    }
-	    else
-	    {
-		display = DuplicateString(display);
-	    }
-	}
-	else if (sscanf(display, ":%s", unit) == 1)
-	{
-	    const char* group_name =
+			{
+				display = new char[ STRLEN(name.nodename) + STRLEN(unit) + 4];
+				SPRINTF(display, "%s:%s", name.nodename, unit);
+			}
+			else
+			{
+				display = DuplicateString(display);
+			}
+		}
+		else if (sscanf(display, ":%s", unit) == 1)
+		{
+			const char* group_name =
 #if WORKSPACE_PAGES
-		in->getGroupName(theSymbolManager->getSymbol(PROCESS_GROUP));
+				in->getGroupName(theSymbolManager->getSymbol(PROCESS_GROUP));
 #else
-		in->getGroupName();
+				in->getGroupName();
 #endif
-	    if (group_name != NULL || !DXChild::HostIsLocal(serverHost))
-	    {
+			if (group_name != NULL || !DXChild::HostIsLocal(serverHost))
+			{
 
-		display = new char[STRLEN(name.nodename) + STRLEN(unit) + 4];
-		SPRINTF(display, "%s:%s", name.nodename, unit);
-	    }
-	    else
-	    {
-		display = DuplicateString(display);
-	    }
+				display = new char[STRLEN(name.nodename) + STRLEN(unit) + 4];
+				SPRINTF(display, "%s:%s", name.nodename, unit);
+			}
+			else
+			{
+				display = DuplicateString(display);
+			}
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 	else
 	{
-	    return NULL;
-	}
-    }
-    else
-    {
-	(void)gethostname(host, 63);
+		(void)gethostname(host, 63);
 #if defined(HAVE_SYS_UTSNAME_H)
-        if (uname(&name) < 0)
+		if (uname(&name) < 0)
 #else
-        if (gethostname(name.nodename, HOST_NAMELEN) < 0)
+		if (gethostname(name.nodename, HOST_NAMELEN) < 0)
 #endif
-        {
-            return NULL;
-        }
+		{
+			return NULL;
+		}
 #if !defined(HAVE_SYS_UTSNAME_H)
-        cp = strchr(name.nodename,'.');
-        if (cp != NULL) 
-        {
-            *cp = '\0';
-        }
+		cp = strchr(name.nodename,'.');
+		if (cp != NULL) 
+		{
+			*cp = '\0';
+		}
 #endif
 
-	display = new char[STRLEN(name.nodename) + STRLEN(unit) + 4];
-	SPRINTF(display, "%s:0", name.nodename);
-    }
+		display = new char[STRLEN(name.nodename) + STRLEN(unit) + 4];
+		SPRINTF(display, "%s:0", name.nodename);
+	}
 
-    /*
-     * Compose the display string accordingly.
-     */
-    if (!frame_buffer)
-    {
-	SPRINTF(string, "X%d,%s,##%ld", 
-	    in->getDepth(), display, window);
-    }
-    else
-    {
-	XTranslateCoordinates
-	    (XtDisplay(this->getCanvas()),
-	     XtWindow(this->getCanvas()),
-	     RootWindowOfScreen(XtScreen(this->getCanvas())),
-	     0, 0,
-	     &x, &y,
-	     &child);
-	     
+	/*
+	* Compose the display string accordingly.
+	*/
+	if (!frame_buffer)
+	{
+		SPRINTF(string, "X%d,%s,##%ld", 
+			in->getDepth(), display, window);
+	}
+	else
+	{
+		XTranslateCoordinates
+			(XtDisplay(this->getCanvas()),
+			XtWindow(this->getCanvas()),
+			RootWindowOfScreen(XtScreen(this->getCanvas())),
+			0, 0,
+			&x, &y,
+			&child);
+
 #ifdef FB_FLAG
-	unsigned int flag = 0x00000000;
-	if(in->isLastImage())
-	    flag |= FB_WHERE_SWAP;
+		unsigned int flag = 0x00000000;
+		if(in->isLastImage())
+			flag |= FB_WHERE_SWAP;
 
-	SPRINTF(string,
-		"FB,%s,%d,%d,##%d,%#010x",
-		display,
-		(in->isLastImage() ? x : -(1 + x)),
-		y,
-		window,
-		flag);
+		SPRINTF(string,
+			"FB,%s,%d,%d,##%d,%#010x",
+			display,
+			(in->isLastImage() ? x : -(1 + x)),
+			y,
+			window,
+			flag);
 #endif
-	SPRINTF(string,
-		"FB,%s,%d,%d,##%ld",
-		display,
-		(in->isLastImage() ? x : -(1 + x)),
-		y,
-		window);
-    }
-    delete display;
+		SPRINTF(string,
+			"FB,%s,%d,%d,##%ld",
+			display,
+			(in->isLastImage() ? x : -(1 + x)),
+			y,
+			window);
+	}
+	delete display;
 
-    return string;
+	return string;
 }
 extern "C" void ImageWindow_RedrawCB(Widget	drawingArea,
 			   XtPointer	clientData,

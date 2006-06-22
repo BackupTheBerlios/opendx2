@@ -850,161 +850,161 @@ void ImageNode::getDensity(boolean up, int &density)
 
 void ImageNode::handleImageMessage(int id, const char *line)
 {
-    double to[3];
-    double from[3];
-    double up[3];
-    double w;
-    double a;
-    int x, y;
-    double box[4][3];
-    double aamat[4][4];
-    char s[100];
-    ImageWindow *iw = this->image;
-    int button, ddcamera, n;
+	double to[3];
+	double from[3];
+	double up[3];
+	double w;
+	double a;
+	int x, y;
+	double box[4][3];
+	double aamat[4][4];
+	char s[100];
+	ImageWindow *iw = this->image;
+	int button, ddcamera, n;
 
-    ASSERT(iw);
+	ASSERT(iw);
 
-    aamat[0][3] = 0.0;
-    aamat[1][3] = 0.0;
-    aamat[2][3] = 0.0;
-    aamat[3][3] = 1.0;
-
-    
-    // FIXME: Greg added aamat to the message on 5/14 and to preserve
-    // runability I'm doing 2 sscanfs.  One of these should go away
-    // after the next successful nightly build.
-    n = sscanf(line,
-	"%*d:  IMAGE:  ##%*d %dx%d %[^=]=%lg "
-	"aspect=%lf from=(%lf,%lf,%lf) to=(%lf,%lf,%lf) up=(%lf,%lf,%lf) "
-	"box=(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf) "
-	"aamat=(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf) "
-	"ddcamera=%d button=%d",
-	&x, &y,
-	s,
-	&w, &a,
-	&from[0], &from[1], &from[2],
-	&to[0], &to[1], &to[2],
-	&up[0], &up[1], &up[2],
-	&box[3][0], &box[3][1], &box[3][2],
-	&box[2][0], &box[2][1], &box[2][2],
-	&box[1][0], &box[1][1], &box[1][2],
-	&box[0][0], &box[0][1], &box[0][2],
-	&aamat[0][0], &aamat[0][1], &aamat[0][2],
-	&aamat[1][0], &aamat[1][1], &aamat[1][2],
-	&aamat[2][0], &aamat[2][1], &aamat[2][2],
-	&aamat[3][0], &aamat[3][1], &aamat[3][2],
-	&ddcamera, &button);
-    if (n != 40)
-    {
-	n = sscanf(line,
-	"%*d:  IMAGE:  ##%*d %dx%d %[^=]=%lg "
-	"aspect=%lf from=(%lf,%lf,%lf) to=(%lf,%lf,%lf) up=(%lf,%lf,%lf) "
-	"box=(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf) "
-	"ddcamera=%d button=%d",
-	&x, &y,
-	s,
-	&w, &a,
-	&from[0], &from[1], &from[2],
-	&to[0], &to[1], &to[2],
-	&up[0], &up[1], &up[2],
-	&box[3][0], &box[3][1], &box[3][2],
-	&box[2][0], &box[2][1], &box[2][2],
-	&box[1][0], &box[1][1], &box[1][2],
-	&box[0][0], &box[0][1], &box[0][2],
-	&ddcamera, &button);
-
-	aamat[0][0] = 1.0;
-	aamat[0][1] = 0.0;
-	aamat[0][2] = 0.0;
 	aamat[0][3] = 0.0;
-	aamat[1][0] = 0.0;
-	aamat[1][1] = 1.0;
-	aamat[1][2] = 0.0;
 	aamat[1][3] = 0.0;
-	aamat[2][0] = 0.0;
-	aamat[2][1] = 0.0;
-	aamat[2][2] = 1.0;
 	aamat[2][3] = 0.0;
-	aamat[3][0] = 0.0;
-	aamat[3][1] = 0.0;
-	aamat[3][2] = 0.0;
 	aamat[3][3] = 1.0;
-    }
 
 
-    if ((n == 28) || (n == 40))
-    {
-	int persp;
-	double viewAngle;
-
-	if (EqualString(s, "width"))
-	    persp = FALSE;
-	else
-	    persp = TRUE;
-
-	double xdiff = from[0] - to[0];
-	double ydiff = from[1] - to[1];
-	double zdiff = from[2] - to[2];
-	double dist = sqrt(xdiff * xdiff + ydiff * ydiff + zdiff * zdiff);
-
-	if (persp)
+	// FIXME: Greg added aamat to the message on 5/14 and to preserve
+	// runability I'm doing 2 sscanfs.  One of these should go away
+	// after the next successful nightly build.
+	n = sscanf(line,
+		"%*d:  IMAGE:  ##%*d %dx%d %[^=]=%lg "
+		"aspect=%lf from=(%lf,%lf,%lf) to=(%lf,%lf,%lf) up=(%lf,%lf,%lf) "
+		"box=(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf) "
+		"aamat=(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf) "
+		"ddcamera=%d button=%d",
+		&x, &y,
+		s,
+		&w, &a,
+		&from[0], &from[1], &from[2],
+		&to[0], &to[1], &to[2],
+		&up[0], &up[1], &up[2],
+		&box[3][0], &box[3][1], &box[3][2],
+		&box[2][0], &box[2][1], &box[2][2],
+		&box[1][0], &box[1][1], &box[1][2],
+		&box[0][0], &box[0][1], &box[0][2],
+		&aamat[0][0], &aamat[0][1], &aamat[0][2],
+		&aamat[1][0], &aamat[1][1], &aamat[1][2],
+		&aamat[2][0], &aamat[2][1], &aamat[2][2],
+		&aamat[3][0], &aamat[3][1], &aamat[3][2],
+		&ddcamera, &button);
+	if (n != 40)
 	{
-	    //
-	    // fov = width/dist;
-	    //
-	    viewAngle = atan(w / 2) * 360 / 3.1415926;
-	    w = dist * w;
+		n = sscanf(line,
+			"%*d:  IMAGE:  ##%*d %dx%d %[^=]=%lg "
+			"aspect=%lf from=(%lf,%lf,%lf) to=(%lf,%lf,%lf) up=(%lf,%lf,%lf) "
+			"box=(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf)(%lf,%lf,%lf) "
+			"ddcamera=%d button=%d",
+			&x, &y,
+			s,
+			&w, &a,
+			&from[0], &from[1], &from[2],
+			&to[0], &to[1], &to[2],
+			&up[0], &up[1], &up[2],
+			&box[3][0], &box[3][1], &box[3][2],
+			&box[2][0], &box[2][1], &box[2][2],
+			&box[1][0], &box[1][1], &box[1][2],
+			&box[0][0], &box[0][1], &box[0][2],
+			&ddcamera, &button);
+
+		aamat[0][0] = 1.0;
+		aamat[0][1] = 0.0;
+		aamat[0][2] = 0.0;
+		aamat[0][3] = 0.0;
+		aamat[1][0] = 0.0;
+		aamat[1][1] = 1.0;
+		aamat[1][2] = 0.0;
+		aamat[1][3] = 0.0;
+		aamat[2][0] = 0.0;
+		aamat[2][1] = 0.0;
+		aamat[2][2] = 1.0;
+		aamat[2][3] = 0.0;
+		aamat[3][0] = 0.0;
+		aamat[3][1] = 0.0;
+		aamat[3][2] = 0.0;
+		aamat[3][3] = 1.0;
 	}
-	else
+
+
+	if ((n == 28) || (n == 40))
 	{
-	    viewAngle = atan((w / 2) / dist) * 360 / 3.1415926;
+		int persp;
+		double viewAngle;
+
+		if (EqualString(s, "width"))
+			persp = FALSE;
+		else
+			persp = TRUE;
+
+		double xdiff = from[0] - to[0];
+		double ydiff = from[1] - to[1];
+		double zdiff = from[2] - to[2];
+		double dist = sqrt(xdiff * xdiff + ydiff * ydiff + zdiff * zdiff);
+
+		if (persp)
+		{
+			//
+			// fov = width/dist;
+			//
+			viewAngle = atan(w / 2) * 360 / 3.1415926;
+			w = dist * w;
+		}
+		else
+		{
+			viewAngle = atan((w / 2) / dist) * 360 / 3.1415926;
+		}
+
+		enum DirectInteractionMode imode = this->image->getInteractionMode();
+
+		if (ddcamera == 1 || button == 1)
+		{
+			/*
+			* If in navigate mode, then to, from and up are
+			* set elsewhere.
+			*/
+			if (imode != NAVIGATE || ddcamera == 1)
+			{
+				this->setTo(to, FALSE);
+				this->setFrom(from, FALSE);
+				this->setUp(up, FALSE);
+			}
+
+			this->setResolution(x, y, FALSE);
+			this->setWidth(w, FALSE);
+			this->setAspect(a, FALSE);
+			this->setBox(box, FALSE);
+			this->setProjection(persp, FALSE);
+			this->setViewAngle(viewAngle, FALSE);
+			this->enableVector(TRUE, FALSE);
+			this->sendValuesQuietly();
+			iw->newCamera(box, aamat, from, to, up, x, y, w, persp, viewAngle);
+		}
+		else if (!iw->cameraIsInitialized() || imode == NAVIGATE)
+			iw->newCamera(box, aamat, from, to, up, x, y, w, persp, viewAngle);
+
+		iw->allowDirectInteraction(TRUE);
+
+		if (this->savedInteractionMode != NONE)  {
+			iw->setInteractionMode(this->savedInteractionMode);
+			this->savedInteractionMode = NONE;
+		}
 	}
-
-	enum DirectInteractionMode imode = this->image->getInteractionMode();
-
-	if (ddcamera == 1 || button == 1)
+	else if (sscanf(line,
+		"%*d:  IMAGE:  ##%*d %dx%d",
+		&x, &y) == 2)
 	{
-            /*
-             * If in navigate mode, then to, from and up are
-             * set elsewhere.
-             */
-            if (imode != NAVIGATE || ddcamera == 1)
-            {
-                this->setTo(to, FALSE);
-                this->setFrom(from, FALSE);
-                this->setUp(up, FALSE);
-            }
+		this->setResolution(x, y, FALSE);
 
-	    this->setResolution(x, y, FALSE);
-	    this->setWidth(w, FALSE);
-	    this->setAspect(a, FALSE);
-	    this->setBox(box, FALSE);
-	    this->setProjection(persp, FALSE);
-	    this->setViewAngle(viewAngle, FALSE);
-	    this->enableVector(TRUE, FALSE);
-	    this->sendValuesQuietly();
-	    iw->newCamera(box, aamat, from, to, up, x, y, w, persp, viewAngle);
+		iw->allowDirectInteraction(FALSE);
+
+		iw->clearFrameBufferOverlay();
 	}
-        else if (!iw->cameraIsInitialized() || imode == NAVIGATE)
-            iw->newCamera(box, aamat, from, to, up, x, y, w, persp, viewAngle);
-
-	iw->allowDirectInteraction(TRUE);
-
-	if (this->savedInteractionMode != NONE)  {
-	    iw->setInteractionMode(this->savedInteractionMode);
-	    this->savedInteractionMode = NONE;
-	}
-    }
-    else if (sscanf(line,
-	"%*d:  IMAGE:  ##%*d %dx%d",
-	&x, &y) == 2)
-    {
-	this->setResolution(x, y, FALSE);
-
-	iw->allowDirectInteraction(FALSE);
-
-	iw->clearFrameBufferOverlay();
-    }
 }
 
 boolean ImageNode::associateImage(ImageWindow *w)
