@@ -103,11 +103,6 @@
 /* hardware rendering is an option? */
 #define DXD_CAN_HAVE_HW_RENDERING 1
 
-#if defined(HAVE_LIBGL) || defined(HAVE_LIBGLWSTATI)
-/* is hardware sensitive to vertex orientation of 1st triangle in strip? */
-#define DXD_HW_TMESH_ORIENT_SENSITIVE 1
-#endif
-
 /* supports full IEEE standard floating point, including under/overflow */
 #define DXD_STANDARD_IEEE 1
 
@@ -392,6 +387,9 @@ char *strrstr(char *, char *);
 /* can you use rlimit to stop the exec from creating a huge core file? */
 #define DXD_HAS_RLIMIT 1
 
+/* is hardware sensitive to vertex orientation of 1st triangle in strip? */
+#define DXD_HW_TMESH_ORIENT_SENSITIVE 1
+
 /* Does the X server behave correctly for a move of a XGL window */
 #define DXD_HW_XSERVER_MOVE_OK 1
 
@@ -446,6 +444,9 @@ char *strrstr(char *, char *);
 
 /* can you use rlimit to stop the exec from creating a huge core file? */
 #define DXD_HAS_RLIMIT 1
+
+/* is hardware sensitive to vertex orientation of 1st triangle in strip? */
+#define DXD_HW_TMESH_ORIENT_SENSITIVE 1
 
 /* can use the crypt system call for data encryption */
 #define DXD_HAS_CRYPT  1

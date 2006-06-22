@@ -166,9 +166,6 @@ static int other_index[3][3] =
   }
 
 
-#if defined(DXD_HW_TMESH_ORIENT_SENSITIVE)
-#define RevNextTri(tri) {tri = -1;}
-#else
 /*
  *  If the hardware does not require that the initial triangles in all the
  *  strips are oriented consistently, then we can try to lengthen the
@@ -209,7 +206,6 @@ static int other_index[3][3] =
       }                                                                      \
     }                                                                        \
   }
-#endif /* defined(DXD_HW_TMESH_ORIENT_SENSITIVE) */
 
 
 #define Bytes(ntri) (int)(ntri/8+1)
@@ -445,9 +441,14 @@ _dxf_trisToTmesh (xfieldT *xf, tdmChildGlobalP globals)
   int i, j, k, p, tp ;         /* misc. loop indices */
   TMesh tmesh = NULL;
   dxObject tmesho = NULL;
-
+  char * tmesh_or_sens;
+  int orsens = 0;
 
   ENTRY(("_dxf_trisToTmesh(0x%x)", xf));
+  tmesh_or_sens = (char *)getenv("DX_HW_TMESH_ORIENT_SENSITIVE");
+  if(tmesh_or_sens) {
+      sscanf(tmesh_or_sens, "%d", &orsens);
+  }
 
   tmesho = (dxObject)_dxf_QueryObject(MESHHASH, (dxObject)xf->field);
   if (tmesho)
@@ -516,13 +517,23 @@ PRINT(("invalid connections: %d",
 	  i0 = init_i0; i1 = init_i1; i2 = init_i2;
 	  rev_start = nPtsInStrip ;
 	  rev_pts = 0;             /* keep track of pts we collect backwards  */
-	  RevNextTri(tri);         /* move BACK to PREV triangle              */
+          if(orsens)
+              tri = -1;
+          else
+	  {
+              RevNextTri(tri);         /* move BACK to PREV triangle          */
+          }
+              
 	  while (tri >= 0)         /* while there's a valid triangle to add...*/
 	    {
 	      AddPoint(tri,i0);    /*      add another triangle to the strip  */
 	      rev_pts++;           /*      another backward point             */
 	      MarkTri(tri);        /*      mark it as used                    */
-	      RevNextTri(tri);     /*      move BACK to PREV triangle         */
+              if(orsens)
+                  tri = -1;
+              else {
+	          RevNextTri(tri);     /*      move BACK to PREV triangle    */
+              }
 	    }
 
 	  /* allocate temporary points of appropriate size */
