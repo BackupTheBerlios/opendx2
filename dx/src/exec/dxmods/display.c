@@ -23,10 +23,17 @@ static Matrix Identity = {
                               { 0.0, 0.0, 1.0 }}
                          };
 
+#if defined(DX_NATIVE_WINDOWS)
+/* This structure is defined to allow PostMessage to send a Windows
+ * message back to a window with the information needed to extract
+ * the actual image. 
+ */
 typedef struct _WindowsPixels {
+	int numBytes;
 	int width;
 	int height;
 	byte * pixels; } WindowsPixels;
+#endif
 
 #if 0
 #include <dl.h>
@@ -364,9 +371,12 @@ m_Display(Object *in, Object *out)
             goto error;
 
 		bytes = _dxf_GetWindowsPixels(image, NULL);
+		wp.numBytes = width * height * 3;
 		wp.pixels = bytes;
 		wp.width = width;
 		wp.height = height;
+		printf("pixels ptr: %p\n", wp.pixels);
+		fflush(stdout);
 		window = (HWND) atoi(win); //parse after ## of arg1
 		if(window && bytes) {
 			if(PostMessage(window, DX_DISPLAYREADY, &wp, 0)==0){
