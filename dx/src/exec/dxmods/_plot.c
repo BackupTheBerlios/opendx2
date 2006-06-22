@@ -1274,7 +1274,7 @@ Object _dxfAxes2D(Pointer p)
 
 
    if (dofixedfontsize) {
-      fs = fixedfontsize;
+      fs = ABS(scale.x)*fixedfontsize;
    } else {
    /* If we're just doing the right hand side, then use the size already
       decided on by the left hand side */
