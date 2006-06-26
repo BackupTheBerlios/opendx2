@@ -436,10 +436,11 @@ TnoneCppNnoneOnone(xfieldP xf, int ppc, int ci, int *trans)
   static float  fscratch[3];
   static int    iscratch;
   static int    p;
+  GETOPACITY(0);
 
   for (p = 0; p < ppc; p++) {
     GETCOLOR(trans[p]);
-    SENDCOLOR;
+    SENDCOLOROPACITY;
     SENDPOSITION(trans[p]);
   }
 }
@@ -466,8 +467,8 @@ TnoneCppNnoneOpp(xfieldP xf, int ppc, int ci, int *trans)
   static int    p;
 
   for (p = 0; p < ppc; p++) {
-    GETOPACITY(trans[p]);
     GETCOLOR(trans[p]);
+    GETOPACITY(trans[p]);
     SENDCOLOROPACITY;
     SENDPOSITION(trans[p]);
   }
@@ -494,11 +495,12 @@ TnoneCppNpfOnone(xfieldP xf, int ppc, int ci, int *trans)
   static float  fscratch[3];
   static int    iscratch;
   static int    p;
+  GETOPACITY(0);
 
   for (p = 0; p < ppc; p++) {
     GETCOLOR(trans[p]);
     APPLY_LIGHTING;
-    SENDCOLOR;
+    SENDCOLOROPACITY;
     SENDPOSITION(trans[p]);
   }
 }
@@ -526,8 +528,8 @@ TnoneCppNpfOpp(xfieldP xf, int ppc, int ci, int *trans)
   static int    p;
 
   for (p = 0; p < ppc; p++) {
-    GETOPACITY(trans[p]);
     GETCOLOR(trans[p]);
+    GETOPACITY(trans[p]);
     APPLY_LIGHTING;
     SENDCOLOROPACITY;
     SENDPOSITION(trans[p]);
@@ -556,11 +558,12 @@ TnoneCppNppOnone(xfieldP xf, int ppc, int ci, int *trans)
   static float  fscratch[3];
   static int    iscratch;
   static int    p;
+  GETOPACITY(0);
 
   for (p = 0; p < ppc; p++) {
     GETCOLOR(trans[p]);
     APPLY_LIGHTING;
-    SENDCOLOR;
+    SENDCOLOROPACITY;
     SENDNORMAL(trans[p]);
     SENDPOSITION(trans[p]);
   }
@@ -590,8 +593,8 @@ TnoneCppNppOpp(xfieldP xf, int ppc, int ci, int *trans)
   static int    p;
 
   for (p = 0; p < ppc; p++) {
-    GETOPACITY(trans[p]);
     GETCOLOR(trans[p]);
+    GETOPACITY(trans[p]);
     APPLY_LIGHTING;
     SENDCOLOROPACITY;
     SENDNORMAL(trans[p]);
@@ -623,11 +626,12 @@ TnoneCppNpcOnone(xfieldP xf, int ppc, int ci, int *trans)
   static int    iscratch;
   static int    p;
   SENDNORMAL(ci);
+  GETOPACITY(0);
 
   for (p = 0; p < ppc; p++) {
     GETCOLOR(trans[p]);
     APPLY_LIGHTING;
-    SENDCOLOR;
+    SENDCOLOROPACITY;
     SENDPOSITION(trans[p]);
   }
 }
@@ -657,8 +661,8 @@ TnoneCppNpcOpp(xfieldP xf, int ppc, int ci, int *trans)
   SENDNORMAL(ci);
 
   for (p = 0; p < ppc; p++) {
-    GETOPACITY(trans[p]);
     GETCOLOR(trans[p]);
+    GETOPACITY(trans[p]);
     APPLY_LIGHTING;
     SENDCOLOROPACITY;
     SENDPOSITION(trans[p]);
@@ -688,8 +692,9 @@ TnoneCpcNnoneOnone(xfieldP xf, int ppc, int ci, int *trans)
   static float  fscratch[3];
   static int    iscratch;
   static int    p;
+  GETOPACITY(0);
   GETCOLOR(ci);
-  SENDCOLOR;
+  SENDCOLOROPACITY;
 
   for (p = 0; p < ppc; p++) {
     SENDPOSITION(trans[p]);
@@ -731,8 +736,8 @@ TnoneCpcNnoneOpc(xfieldP xf, int ppc, int ci, int *trans)
   static float  fscratch[3];
   static int    iscratch;
   static int    p;
-  GETOPACITY(ci);
   GETCOLOR(ci);
+  GETOPACITY(ci);
   SENDCOLOROPACITY
 
   for (p = 0; p < ppc; p++) {
@@ -747,8 +752,9 @@ TnoneCpcNpfOnone(xfieldP xf, int ppc, int ci, int *trans)
   static int    iscratch;
   static int    p;
   GETCOLOR(ci);
+  GETOPACITY(0);
   APPLY_LIGHTING;
-  SENDCOLOR;
+  SENDCOLOROPACITY;
 
   for (p = 0; p < ppc; p++) {
     SENDPOSITION(trans[p]);
@@ -792,8 +798,8 @@ TnoneCpcNpfOpc(xfieldP xf, int ppc, int ci, int *trans)
   static float  fscratch[3];
   static int    iscratch;
   static int    p;
-  GETOPACITY(ci);
   GETCOLOR(ci);
+  GETOPACITY(ci);
   APPLY_LIGHTING;
   SENDCOLOROPACITY
 
@@ -809,8 +815,9 @@ TnoneCpcNppOnone(xfieldP xf, int ppc, int ci, int *trans)
   static int    iscratch;
   static int    p;
   GETCOLOR(ci);
+  GETOPACITY(0);
   APPLY_LIGHTING;
-  SENDCOLOR;
+  SENDCOLOROPACITY;
 
   for (p = 0; p < ppc; p++) {
     SENDNORMAL(trans[p]);
@@ -857,8 +864,8 @@ TnoneCpcNppOpc(xfieldP xf, int ppc, int ci, int *trans)
   static float  fscratch[3];
   static int    iscratch;
   static int    p;
-  GETOPACITY(ci);
   GETCOLOR(ci);
+  GETOPACITY(ci);
   APPLY_LIGHTING;
   SENDCOLOROPACITY
 
@@ -875,8 +882,9 @@ TnoneCpcNpcOnone(xfieldP xf, int ppc, int ci, int *trans)
   static int    iscratch;
   static int    p;
   GETCOLOR(ci);
+  GETOPACITY(0);
   APPLY_LIGHTING;
-  SENDCOLOR;
+  SENDCOLOROPACITY;
   SENDNORMAL(ci);
 
   for (p = 0; p < ppc; p++) {
@@ -923,8 +931,8 @@ TnoneCpcNpcOpc(xfieldP xf, int ppc, int ci, int *trans)
   static float  fscratch[3];
   static int    iscratch;
   static int    p;
-  GETOPACITY(ci);
   GETCOLOR(ci);
+  GETOPACITY(ci);
   APPLY_LIGHTING;
   SENDCOLOROPACITY
   SENDNORMAL(ci);
@@ -1449,8 +1457,8 @@ TppCppNnoneOpp(xfieldP xf, int ppc, int ci, int *trans)
   static int    p;
 
   for (p = 0; p < ppc; p++) {
-    GETOPACITY(trans[p]);
     GETCOLOR(trans[p]);
+    GETOPACITY(trans[p]);
     SENDCOLOROPACITY;
     SENDUV(trans[p]);
     SENDPOSITION(trans[p]);
@@ -1517,8 +1525,8 @@ TppCppNpfOpp(xfieldP xf, int ppc, int ci, int *trans)
   static int    p;
 
   for (p = 0; p < ppc; p++) {
-    GETOPACITY(trans[p]);
     GETCOLOR(trans[p]);
+    GETOPACITY(trans[p]);
     APPLY_LIGHTING;
     SENDCOLOROPACITY;
     SENDUV(trans[p]);
@@ -1589,8 +1597,8 @@ TppCppNppOpp(xfieldP xf, int ppc, int ci, int *trans)
   static int    p;
 
   for (p = 0; p < ppc; p++) {
-    GETOPACITY(trans[p]);
     GETCOLOR(trans[p]);
+    GETOPACITY(trans[p]);
     APPLY_LIGHTING;
     SENDCOLOROPACITY;
     SENDUV(trans[p]);
@@ -1664,8 +1672,8 @@ TppCppNpcOpp(xfieldP xf, int ppc, int ci, int *trans)
   SENDNORMAL(ci);
 
   for (p = 0; p < ppc; p++) {
-    GETOPACITY(trans[p]);
     GETCOLOR(trans[p]);
+    GETOPACITY(trans[p]);
     APPLY_LIGHTING;
     SENDCOLOROPACITY;
     SENDUV(trans[p]);
@@ -1748,8 +1756,8 @@ TppCpcNnoneOpc(xfieldP xf, int ppc, int ci, int *trans)
   static float  uvscratch[2];
   static int    iscratch;
   static int    p;
-  GETOPACITY(ci);
   GETCOLOR(ci);
+  GETOPACITY(ci);
   SENDCOLOROPACITY
 
   for (p = 0; p < ppc; p++) {
@@ -1817,8 +1825,8 @@ TppCpcNpfOpc(xfieldP xf, int ppc, int ci, int *trans)
   static float  uvscratch[2];
   static int    iscratch;
   static int    p;
-  GETOPACITY(ci);
   GETCOLOR(ci);
+  GETOPACITY(ci);
   APPLY_LIGHTING;
   SENDCOLOROPACITY
 
@@ -1890,8 +1898,8 @@ TppCpcNppOpc(xfieldP xf, int ppc, int ci, int *trans)
   static float  uvscratch[2];
   static int    iscratch;
   static int    p;
-  GETOPACITY(ci);
   GETCOLOR(ci);
+  GETOPACITY(ci);
   APPLY_LIGHTING;
   SENDCOLOROPACITY
 
@@ -1964,8 +1972,8 @@ TppCpcNpcOpc(xfieldP xf, int ppc, int ci, int *trans)
   static float  uvscratch[2];
   static int    iscratch;
   static int    p;
-  GETOPACITY(ci);
   GETCOLOR(ci);
+  GETOPACITY(ci);
   APPLY_LIGHTING;
   SENDCOLOROPACITY
   SENDNORMAL(ci);

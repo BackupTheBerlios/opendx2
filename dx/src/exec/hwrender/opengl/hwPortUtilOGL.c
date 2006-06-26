@@ -12,7 +12,7 @@
 #ifndef HELPERCODE
 
 /*---------------------------------------------------------------------------*\
-$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.16 2006/01/04 22:00:53 davidt Exp $
+$Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/hwrender/opengl/hwPortUtilOGL.c,v 1.17 2006/06/26 21:27:23 davidt Exp $
 
 Author:  Ellen Ball
 
@@ -170,13 +170,13 @@ static Error
 }
 
 #define OPACITY(offset)							\
-  *(float *)((xf->omap) ?                                               \
+    ((xf->omap) ? *(float *)                                            \
       DXGetArrayEntry(xf->omap,                                         \
-	  *(char *) DXGetArrayEntry(xf->opacities, offset, &iscratch),  \
-	  fscratch) :                                                   \
-      DXGetArrayEntry(xf->opacities,                                    \
-	  offset,                                                       \
-	  fscratch))
+          *(char *) DXGetArrayEntry(xf->opacities, offset, &iscratch),  \
+          fscratch) :                                                   \
+      ((xf->opacities) ?                                		\
+          *(float *) DXGetArrayEntry(xf->opacities, offset, fscratch)   \
+          : 1.0f ))
 
 #if defined(alphax)
 #undef _dxf_SERVICES_FLAGS
@@ -284,7 +284,7 @@ static int depthMaskState;
 
 #define SENDCOLOR							\
 {									\
-    glColor3fv(color);							\
+    glColor4fv(color);							\
 }
 
 #define SENDCOLOROPACITY						\
@@ -294,7 +294,7 @@ static int depthMaskState;
 
 #define GETOPACITY(offset)						\
 {									\
-  color[3] = OPACITY(offset);						\
+      color[3] = OPACITY(offset);					\
 }
 
 #define SENDPERFIELD(lit) 						\
@@ -306,8 +306,10 @@ static int depthMaskState;
   else									\
       separateAmbientAndDiffuse = 1;					\
 									\
-  if(xf->colorsDep == dep_field)              				\
+  if(xf->colorsDep == dep_field){              				\
      GETCOLOR(0);							\
+     color[3] = 1.0f;							\
+  }									\
   if(xf->opacitiesDep == dep_field)            				\
   {									\
     GETOPACITY(0);							\
@@ -493,7 +495,7 @@ static Error points (xfieldP xf, helperFunc helper,
 	     translu = 0;
 	     break;
          case dep_field:
-	     translu = OPACITY(0) < 1.0f;
+	         translu = OPACITY(0) < 1.0f;
              break;
          default:
 	     break;
