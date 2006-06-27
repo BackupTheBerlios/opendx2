@@ -31,7 +31,7 @@ _dxfSetCameraProjection(Camera c, float *p)
     t.A[0][0] = p[ 0]; t.A[0][1] = p[ 1]; t.A[0][3] = p[ 2];
     t.A[1][0] = p[ 4]; t.A[1][1] = p[ 5]; t.A[1][3] = p[ 6];
     t.A[2][0] = p[ 8]; t.A[2][1] = p[ 9]; t.A[2][3] = p[10];
-    t.b[0]    = p[12]; t.b[2]    = p[13]; t.b[2]    = p[14];
+    t.b[0]    = p[12]; t.b[1]    = p[13]; t.b[2]    = p[14];
 
     c->m = c->rot = t;
     return c;
