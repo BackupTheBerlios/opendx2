@@ -322,11 +322,7 @@ space, but it must be able to allocate them at contiguous virtual memory
 addresses.
 
 		<P>
-		<H5><U>DX_SOCKET_BUFSIZE</U></H5>
-		
-		allows the user to specify the size of the send and recieve buffers for the socket connection between the UI and the exec. This value is clamped to the max allowed by the system. This can fix a problem where the executive and UI hang involving a deadlock situation in the socket communication. The value assigned to it is passed as the parameter to setsockopt for SOL_SNDBUF and SOL_RCVBUF. A typcial increased value may be 262144.
-
-		<H5></H5>
+		<H5><U>DX_HW_TMESH_ORIENT_SENSITIVE</U></H5>allows the user to set how triangle meshes are generated. If not set, then dx will try and extend a mesh by flipping triangles. This can cause problems with two sided hardware rendering. If set to a value other than 0, then the meshes will not be extended. <H5></H5>
 		<H5><U>DX_SMALL_ARENA_FACTOR</U></H5>
 		allows the user to specify the ratio between the large and small arena. The value must be set greater than 0 and up to 8. Typically the small arena is 1/16 of the large arena, setting this environment variable to 8 will make dx allocate an equal amount of memory to the large and small arena. 
 		<P></P>
