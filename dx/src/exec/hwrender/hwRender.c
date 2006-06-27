@@ -262,8 +262,10 @@ _dxfRedrawInActiveContext (dxObject r, Camera c, char *displayString)
         }
     }
 
+    {
 	DEFWINDATA(&(globals->win));        
     _dxfDrawMonoInCurrentContext(globals, OBJECT, CAMERA, 1);
+    }
 
     if(cacheObject) {
         /* delete the working reference  */
