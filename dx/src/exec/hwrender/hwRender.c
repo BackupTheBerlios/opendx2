@@ -190,8 +190,6 @@ _dxfRedrawInActiveContext (dxObject r, Camera c, char *displayString)
 	/* Need to build up the globals then call _dxfDraw() */
 	tdmChildGlobalP globals = NULL;
     tdmParsedFormatT *pFormat = NULL;
-    DEFWINDATA(&(globals->win));
-
 
 	    if (!c && !DXGetImageBounds(r,NULL,NULL,NULL,NULL))
         goto error;
@@ -263,7 +261,8 @@ _dxfRedrawInActiveContext (dxObject r, Camera c, char *displayString)
             }
         }
     }
-        
+
+	DEFWINDATA(&(globals->win));        
     _dxfDrawMonoInCurrentContext(globals, OBJECT, CAMERA, 1);
 
     if(cacheObject) {
