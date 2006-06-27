@@ -187,40 +187,40 @@ void DrivenNode::execModuleMessageHandler(int id, const char *line)
     ASSERT(p);
     p = strchr(p+1,':');	// Skip over 'Node-name_%d:'
     ASSERT(p);
-    if (!this->handlingLongMessage && EqualString(p,":  begin")) {
-	//
-	// Begin handling a long message.
-	//
-	this->handlingLongMessage = TRUE;
-	//
-	// Don't notify visuals during a long message. 
-	//
-	do_notify = FALSE;
-    } else if (EqualString(p,":  end")) {
-	//
-	// End of long message  encountered. 
-	//
-	this->handlingLongMessage = FALSE;
-	//
-	// Always notify visuals after a long message.
-	//
-	do_notify = TRUE;
-    } else {
-	//
-	// Handle both long and short messages. 
-	// Only do notification on short messages.
-	//
-	values = this->handleNodeMsgInfo(line);
-	do_notify = (!this->handlingLongMessage && values > 0);
-    }
+	if (!this->handlingLongMessage && EqualString(p,":  begin")) {
+		//
+		// Begin handling a long message.
+		//
+		this->handlingLongMessage = TRUE;
+		//
+		// Don't notify visuals during a long message. 
+		//
+		do_notify = FALSE;
+	} else if (EqualString(p,":  end")) {
+		//
+		// End of long message  encountered. 
+		//
+		this->handlingLongMessage = FALSE;
+		//
+		// Always notify visuals after a long message.
+		//
+		do_notify = TRUE;
+	} else {
+		//
+		// Handle both long and short messages. 
+		// Only do notification on short messages.
+		//
+		values = this->handleNodeMsgInfo(line);
+		do_notify = (!this->handlingLongMessage && values > 0);
+	}
 
-    //
-    // Notify the visuals if requested. 
-    //
-    if (do_notify)
-	this->notifyVisualsOfStateChange();
+	//
+	// Notify the visuals if requested. 
+	//
+	if (do_notify)
+		this->notifyVisualsOfStateChange();
 
-    this->undeferVisualNotification(TRUE);
+	this->undeferVisualNotification(TRUE);
 }
 //
 // Return TRUE/FALSE, indicating whether or not we expect to receive

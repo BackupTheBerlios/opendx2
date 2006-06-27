@@ -6200,35 +6200,35 @@ char stylename[128];
     // The following is a special case for stateful resource comments.
     // Currently they are associated only with Decorators but that
     // will change.
-    if (!strncmp(" resource",comment,9)) {
-	if (!lastObjectParsed)
-	    return FALSE;
-	return lastObjectParsed->parseResourceComment (comment, filename, lineno);
-    } else if (!strncmp(" annotation", comment, 11)) {
-	if (!lastObjectParsed)
-	    return FALSE;
-	return lastObjectParsed->parseComment (comment, filename, lineno);
-    }
+	if (!strncmp(" resource",comment,9)) {
+		if (!lastObjectParsed)
+			return FALSE;
+		return lastObjectParsed->parseResourceComment (comment, filename, lineno);
+	} else if (!strncmp(" annotation", comment, 11)) {
+		if (!lastObjectParsed)
+			return FALSE;
+		return lastObjectParsed->parseComment (comment, filename, lineno);
+	}
 
 #if WORKSPACE_PAGES
-    if (strstr(comment, " group:"))   {
-	int i;
-	int count = this->groupManagers->getSize();
-	boolean group_comment = FALSE;
-	GroupManager *gmgr = NUL(GroupManager*);
-	for (i=1; i<=count; i++) {
-	    gmgr = (GroupManager*)this->groupManagers->getDefinition(i);
-	    const char *mgr_name = gmgr->getManagerName();
-	    char buf[128];
-	    sprintf (buf, " %s group:", mgr_name);
-	    if (EqualSubstring (buf, comment, strlen(buf))) {
-		group_comment = TRUE;
-		break;
-	    }
+	if (strstr(comment, " group:"))   {
+		int i;
+		int count = this->groupManagers->getSize();
+		boolean group_comment = FALSE;
+		GroupManager *gmgr = NUL(GroupManager*);
+		for (i=1; i<=count; i++) {
+			gmgr = (GroupManager*)this->groupManagers->getDefinition(i);
+			const char *mgr_name = gmgr->getManagerName();
+			char buf[128];
+			sprintf (buf, " %s group:", mgr_name);
+			if (EqualSubstring (buf, comment, strlen(buf))) {
+				group_comment = TRUE;
+				break;
+			}
+		}
+		if (group_comment)
+			return lastObjectParsed->parseComment (comment, filename, lineno);
 	}
-	if (group_comment)
-	    return lastObjectParsed->parseComment (comment, filename, lineno);
-    }
 #endif
 
  
@@ -6265,58 +6265,57 @@ char stylename[128];
     }
 
 
-    Dictionary *dict;
-    DecoratorStyle *ds;
-    if (!parsed) {
-	ErrorMessage("Unrecognized 'decorator' comment (file %s, line %d)",
-					    filename, lineno);
-	return FALSE;
-    } else {
+	Dictionary *dict;
+	DecoratorStyle *ds;
+	if (!parsed) {
+		ErrorMessage("Unrecognized 'decorator' comment (file %s, line %d)",
+			filename, lineno);
+		return FALSE;
+	} 
 	dict = DecoratorStyle::GetDecoratorStyleDictionary (stylename);
 	DictionaryIterator di(*dict);
 
 	if (items_parsed == 1) {
-	    ds = (DecoratorStyle *)di.getNextDefinition();
-	    if (!ds) {
-		ErrorMessage("Unrecognized 'decorator' type (file %s, line %d)",
-					filename, lineno);
-		return FALSE;
-	    }
-	} else {
-	    while ( (ds = (DecoratorStyle*)di.getNextDefinition()) ) {
-		if (EqualString (decoType, ds->getNameString())) {
-		    break;
+		ds = (DecoratorStyle *)di.getNextDefinition();
+		if (!ds) {
+			ErrorMessage("Unrecognized 'decorator' type (file %s, line %d)",
+				filename, lineno);
+			return FALSE;
 		}
-	    }
-	    if (!ds) {
-		ErrorMessage("Unrecognized 'decorator' type (file %s, line %d)",
-					filename, lineno);
+	} else {
+		while ( (ds = (DecoratorStyle*)di.getNextDefinition()) ) {
+			if (EqualString (decoType, ds->getNameString())) {
+				break;
+			}
+		}
+		if (!ds) {
+			ErrorMessage("Unrecognized 'decorator' type (file %s, line %d)",
+				filename, lineno);
 
-		di.setList(*dict);
-		ds = (DecoratorStyle*)di.getNextDefinition();
-		if (!ds) return FALSE;
-	    }
+			di.setList(*dict);
+			ds = (DecoratorStyle*)di.getNextDefinition();
+			if (!ds) return FALSE;
+		}
 	}
-    }
- 
-    ASSERT(ds);
-    Decorator *d;
-    d = ds->createDecorator (TRUE);
-    d->setStyle (ds);
-    DecoratorInfo* dnd = new DecoratorInfo (this, (void*)this,
-	(DragInfoFuncPtr)Network::SetOwner,
-	(DragInfoFuncPtr)Network::DeleteSelections,
-	(DragInfoFuncPtr)Network::Select);
-    d->setDecoratorInfo (dnd);
- 
-    if (!d->parseComment (comment, filename, lineno))
-	ErrorMessage("Unrecognized 'decorator' comment (file %s, line %d)",
-					    filename, lineno);
- 
-    this->addDecoratorToList ((void *)d);
-    lastObjectParsed = d;
- 
-    return TRUE;
+
+	ASSERT(ds);
+	Decorator *d;
+	d = ds->createDecorator (TRUE);
+	d->setStyle (ds);
+	DecoratorInfo* dnd = new DecoratorInfo (this, (void*)this,
+		(DragInfoFuncPtr)Network::SetOwner,
+		(DragInfoFuncPtr)Network::DeleteSelections,
+		(DragInfoFuncPtr)Network::Select);
+	d->setDecoratorInfo (dnd);
+
+	if (!d->parseComment (comment, filename, lineno))
+		ErrorMessage("Unrecognized 'decorator' comment (file %s, line %d)",
+		filename, lineno);
+
+	this->addDecoratorToList ((void *)d);
+	lastObjectParsed = d;
+
+	return TRUE;
 }
 
 void Network::SetOwner(void *b)

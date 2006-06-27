@@ -843,20 +843,20 @@ void Node::updateModuleMessageProtocol(DXPacketIF *pif)
 {
     const char *id = this->getModuleMessageIdString();
 
-    if (this->expectingModuleMessage()) {
-	//
-	// Install a callback to handle messages from the module 
-	//
-	pif->setHandler(DXPacketIF::INFORMATION,
-		    Node::ExecModuleMessageHandler,
-		    (void*)this, id);
-    } else  {
-	//
-	// Remove the handler in case it was previously installed.
-	//
-	pif->setHandler(DXPacketIF::INFORMATION,
+	if (this->expectingModuleMessage()) {
+		//
+		// Install a callback to handle messages from the module 
+		//
+		pif->setHandler(DXPacketIF::INFORMATION,
+			Node::ExecModuleMessageHandler,
+			(void*)this, id);
+	} else  {
+		//
+		// Remove the handler in case it was previously installed.
+		//
+		pif->setHandler(DXPacketIF::INFORMATION,
 			NULL,   (void*)this, id);
-    }
+	}
 }
 //
 // Return TRUE/FALSE, indicating whether or not we support a message protocol 
