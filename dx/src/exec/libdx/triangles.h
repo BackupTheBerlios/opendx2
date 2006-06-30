@@ -13,7 +13,7 @@
 #endif
 
 /* to avoid overflow on fp->int */
-#define MAX (DXD_MAX_INT/2)
+#define DXD_MAX_INT_2 (DXD_MAX_INT/2)
 
 /*
  * The following is a kludge relating to to whether or not the
@@ -52,9 +52,9 @@
     x3+=ox, y3+=oy;							$\
 									$\
     /* avoid overflow - XXX check performance impact */			$\
-    if (x1<-MAX || x1>MAX || y1<-MAX || y1>MAX ||			$\
-      x2<-MAX || x2>MAX || y2<-MAX || y2>MAX ||				$\
-      x3<-MAX || x3>MAX || y3<-MAX || y3>MAX)				$\
+    if (x1<-DXD_MAX_INT_2 || x1>DXD_MAX_INT_2 || y1<-DXD_MAX_INT_2 || y1>DXD_MAX_INT_2 ||			$\
+      x2<-DXD_MAX_INT_2 || x2>DXD_MAX_INT_2 || y2<-DXD_MAX_INT_2 || y2>DXD_MAX_INT_2 ||				$\
+      x3<-DXD_MAX_INT_2 || x3>DXD_MAX_INT_2 || y3<-DXD_MAX_INT_2 || y3>DXD_MAX_INT_2)				$\
 	DXErrorReturn(ERROR_BAD_PARAMETER,				$\
 		"camera causes numerical overflow");			$\
 									$\
@@ -190,9 +190,9 @@
     x3+=ox, y3+=oy;							$\
 									$\
     /* avoid overflow - XXX check performance impact */			$\
-    if (x1<-MAX || x1>MAX || y1<-MAX || y1>MAX ||			$\
-      x2<-MAX || x2>MAX || y2<-MAX || y2>MAX ||				$\
-      x3<-MAX || x3>MAX || y3<-MAX || y3>MAX)				$\
+    if (x1<-DXD_MAX_INT_2 || x1>DXD_MAX_INT_2 || y1<-DXD_MAX_INT_2 || y1>DXD_MAX_INT_2 ||			$\
+      x2<-DXD_MAX_INT_2 || x2>DXD_MAX_INT_2 || y2<-DXD_MAX_INT_2 || y2>DXD_MAX_INT_2 ||				$\
+      x3<-DXD_MAX_INT_2 || x3>DXD_MAX_INT_2 || y3<-DXD_MAX_INT_2 || y3>DXD_MAX_INT_2)				$\
 	DXErrorReturn(ERROR_BAD_PARAMETER,				$\
 		"camera causes numerical overflow");			$\
 									$\

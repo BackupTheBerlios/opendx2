@@ -96,7 +96,7 @@ static Error _gammaCorrectColors(xfieldP xf, double gamma, int isLit);
  */
 
 #define get(comp) {							     \
- *(Pointer*)&xf->comp = DXCreateArrayHandle(xf->CAT(comp,_array));           \
+ xf->comp = DXCreateArrayHandle(xf->CAT(comp,_array));                       \
  if (!xf->comp) {						             \
    EXIT(("returning NULL"));			     			     \
    return ERROR; 						             \

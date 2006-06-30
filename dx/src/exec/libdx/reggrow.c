@@ -973,7 +973,8 @@ ShrinkPartition(Pointer ptr)
     int		dcstrides[3], dpstrides[3], *dstrides = NULL;
     int		pmaxi[3], cmaxi[3], *maxi = NULL;
     int		dep, ref;
-    char	*toShrink[256], *toReplace[256], nS, nR;
+    char	*toShrink[256], *toReplace[256];
+    int 	 nS, nR;
 
     partition  = ((struct regShrinkTask *)ptr)->partition;
 
@@ -1028,6 +1029,11 @@ ShrinkPartition(Pointer ptr)
     for (i = 0; NULL != (array = GetEArray(partition, i, &name)); i++)
 	if (strncmp(name, "original", 8))
 	{
+		if(nR > 255 || nS > 255)
+		{
+			DXSetError(ERROR_INTERNAL, "reggrow out of memory");
+			goto error;
+		}
 	    SetOrigName(origName, name);
 	    if (DXGetComponentValue(partition, origName))
 	    {

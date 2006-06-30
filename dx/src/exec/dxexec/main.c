@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 /* real entry point, calls DXmain() immediately */
-extern DXmain(int argc, char **argv, char **envp);
+extern int DXmain(int argc, char **argv, char **envp);
 
 #if defined(intelnt) || defined(WIN32)
 #include <dx/arch.h>

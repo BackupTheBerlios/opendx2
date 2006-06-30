@@ -34,12 +34,12 @@ ResourceManager::~ResourceManager()
 {
     ListIterator iter(this->multi_valued);
     Symbol s;
-    while (s=(Symbol)iter.getNext()) {
+    while ((s=(Symbol)iter.getNext())) {
 	List* values = (List*)this->resources.findDefinition(s);
 	if (!values) continue;
 	ListIterator viter(*values);
 	char* value;
-	while (value=(char*)viter.getNext()) {
+	while ((value=(char*)viter.getNext())) {
 	    delete value;
 	}
 	delete values;
@@ -144,7 +144,7 @@ void ResourceManager::saveListResource(Symbol key)
     ListIterator iter(*values);
     Symbol v;
     boolean first = TRUE;
-    while (v=(Symbol)(long)iter.getNext()) {
+    while ((v=(Symbol)(long)iter.getNext())) {
 	const char* str = theSymbolManager->getSymbolString(v);
 	if (!first) {
 	    spec[os++] = VALUE_SEPARATOR;
@@ -184,7 +184,7 @@ void ResourceManager::getValue (const char* resource, List& result)
     if (!values) return ;
     ListIterator iter(*values);
     const void* v;
-    while (v=iter.getNext()) result.appendElement(v);
+    while ((v=iter.getNext())) result.appendElement(v);
 }
 
 void ResourceManager::initializeValue(Symbol key)

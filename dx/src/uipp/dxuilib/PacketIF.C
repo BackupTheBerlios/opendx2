@@ -433,7 +433,7 @@ PacketIF::~PacketIF()
 		XtRemoveWorkProc(this->output_queue_wpid);
 	ListIterator li(this->output_queue);
 	QueuedPacket* qp;
-	while (qp = (QueuedPacket*)li.getNext())
+	while ((qp=(QueuedPacket*)li.getNext()))
 		delete qp;
 }
 

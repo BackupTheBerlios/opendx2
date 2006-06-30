@@ -1263,7 +1263,7 @@ _sendLinkCamera(tdmChildGlobalP globals,
   DXGetBackgroundColor(CAMERA, &bkgnd);
   DXSetBackgroundColor(c, bkgnd);
     
-  _dxfCacheState(ORIGINALWHERE, NULL, c, 0);
+  _dxfCacheState(ORIGINALWHERE, NULL, (dxObject)c, 0);
 }
 
 void

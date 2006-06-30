@@ -477,7 +477,7 @@ void EditorWorkSpace::restorePosition ()
 //
 void EditorWorkSpace::doPosChangeAction (Widget ww, XtPointer callData)
 {
-    static int previous_time_stamp = 0;
+    static Time previous_time_stamp = 0;
     this->WorkSpace::doPosChangeAction(ww,callData);
     XmWorkspacePositionChangeCallbackStruct* cbs = 
 	(XmWorkspacePositionChangeCallbackStruct*)callData;

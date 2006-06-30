@@ -219,7 +219,7 @@ typedef struct tdmDrawPortS {
   void	(*SwapBuffers) (void *ctx, Window);
 #endif
   void	(*WriteApproxBackstore) (void *win, int camw, int camh);
-  void	(*WritePixelRect) (void* win, unsigned long *buf, 
+  void	(*WritePixelRect) (void* win, unsigned char *buf, 
 			   int x, int y,int w, int h);
 
   /* End of functions available in 2.0 and 2.0.1 */

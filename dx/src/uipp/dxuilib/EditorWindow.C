@@ -7420,7 +7420,7 @@ void EditorWindow::clearUndoList()
 {
     if (this->undo_list.getSize() == 0) return;
     UndoableAction* undoable;
-    while (undoable = (UndoableAction*)this->undo_list.pop()) 
+    while ((undoable=(UndoableAction*)this->undo_list.pop())) 
 	delete undoable;
     this->undo_list.clear();
     this->setUndoActivation();
@@ -7449,7 +7449,7 @@ boolean EditorWindow::undo()
     ListIterator iter;
     const char* couldnt_undo = NUL(const char*);
     int count = 0;
-    while (undoable = (UndoableAction*)this->undo_list.pop()) {
+    while ((undoable=(UndoableAction*)this->undo_list.pop())) {
 	if (undoable->isSeparator()) break;
 	undoable->prepare();
 	undo_candidates.appendElement(undoable);
@@ -7474,7 +7474,7 @@ boolean EditorWindow::undo()
     }
 
     boolean first_in_list = TRUE;
-    while (undoable = (UndoableAction*)short_stack.pop()) {
+    while ((undoable=(UndoableAction*)short_stack.pop())) {
 	undoable->undo(first_in_list);
 	first_in_list = FALSE;
     }
@@ -7516,7 +7516,7 @@ void EditorWindow::setUndoActivation()
 	if (current_size >= check_when) {
 	    int saved = 0;
 	    Stack tmpStack;
-	    while (undoable = (UndoableAction*)this->undo_list.pop()) {
+	    while ((undoable=(UndoableAction*)this->undo_list.pop())) {
 		if (undoable->isSeparator()) {
 		    saved++;
 		    tmpStack.push(undoable);
@@ -7526,7 +7526,7 @@ void EditorWindow::setUndoActivation()
 		    break;
 		}
 	    }
-	    while (undoable = (UndoableAction*)this->undo_list.pop()) 
+	    while ((undoable=(UndoableAction*)this->undo_list.pop())) 
 		delete undoable;
 
 	    while(undoable = (UndoableAction*)tmpStack.pop()) {

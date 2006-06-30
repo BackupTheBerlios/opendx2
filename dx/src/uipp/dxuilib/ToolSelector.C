@@ -208,7 +208,7 @@ void ToolSelector::buildTreeModel()
 #if defined(DONT_USE_ALL_IN_THE_LIST)
     Symbol alpha = theSymbolManager->getSymbol(ALPHABETIZED);
 #endif
-    while (cat = citer.getNextSymbol()) {
+    while ((cat=citer.getNextSymbol())) {
 #if defined(DONT_USE_ALL_IN_THE_LIST)
 	if (cat == alpha) continue;
 #endif
@@ -219,7 +219,7 @@ void ToolSelector::buildTreeModel()
 	    this->categoryDictionary.findDefinition(cat);
 	DictionaryIterator titer(*tools);
 	Symbol tool;
-	while (tool = titer.getNextSymbol()) {
+	while ((tool=titer.getNextSymbol())) {
 	    cnode->addChild(new ToolNode(tool, cnode, this));
 	}
 
@@ -236,7 +236,7 @@ void ToolSelector::buildTreeModel()
     // use of dxui, that tool isn't loaded and its category doesn't exist.
     //
     ListIterator iter(expanded_categories);
-    while (cat=(Symbol)(long)iter.getNext()) {
+    while ((cat=(Symbol)(long)iter.getNext())) {
 	if (this->categoryDictionary.findDefinition(cat)) continue;
 	const char* cp = theSymbolManager->getSymbolString(cat);
 	//printf ("%s[%d] Warning: bad value(%s) in resource %s\n",
@@ -481,7 +481,7 @@ void ToolView::getSearchableNodes(List& nodes_to_search)
     ListIterator iter(*kids);;
     TreeNode* kid;
     boolean found = FALSE;
-    while (kid = (TreeNode*)iter.getNext()) {
+    while ((kid=(TreeNode*)iter.getNext())) {
 	if (kid->getDefinition() == alpha) {
 	    if (kid->isExpanded() == FALSE) {
 		List* nodes = kid->getChildren();
@@ -539,7 +539,7 @@ TreeNode* ToolSelector::getToolNode (TreeNode* node, Symbol tool)
 	if (kids) {
 	    ListIterator iter(*kids);
 	    TreeNode* tn;
-	    while (tn=(TreeNode*)iter.getNext()) {
+	    while ((tn=(TreeNode*)iter.getNext())) {
 		TreeNode* n = this->getToolNode(tn, tool);
 		if (n) return n;
 	    }
@@ -556,7 +556,7 @@ CategoryNode* ToolSelector::getCategoryNode (TreeNode* node, Symbol cat)
 	if (kids) {
 	    ListIterator iter(*kids);
 	    TreeNode* tn;
-	    while (tn=(TreeNode*)iter.getNext()) {
+	    while ((tn=(TreeNode*)iter.getNext())) {
 		CategoryNode* catNode = this->getCategoryNode(tn, cat);
 		if (catNode) return catNode;
 	    }
@@ -598,7 +598,7 @@ void ToolSelector::help()
 	ListIterator iter(*categories);
 	iter.getNext();
 	TreeNode* cat;
-	while (cat=(TreeNode*)iter.getNext()) {
+	while ((cat=(TreeNode*)iter.getNext())) {
 	    if (cat->isExpanded()) {
 		tools = cat->getString();
 		break;

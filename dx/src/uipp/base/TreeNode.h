@@ -81,7 +81,7 @@ class CategoryNode: public TreeNode {
 	virtual ~CategoryNode() {
 	    ListIterator iter(this->kids);
 	    TreeNode* node;
-	    while (node=(TreeNode*)iter.getNext()) {
+	    while ((node=(TreeNode*)iter.getNext())) {
 		delete node;
 	    }
 	}

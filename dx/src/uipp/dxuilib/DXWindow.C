@@ -129,10 +129,10 @@ DXWindow::~DXWindow()
     //
     ListIterator iter(this->file_history_buttons);
     ButtonInterface* bi;
-    while (bi=(ButtonInterface*)iter.getNext()) delete bi;
+    while ((bi=(ButtonInterface*)iter.getNext())) delete bi;
     iter.setList(this->file_history_commands);
     Command* cmd;
-    while (cmd=(Command*)iter.getNext()) delete cmd;
+    while ((cmd=(Command*)iter.getNext())) delete cmd;
 }
 void DXWindow::beginExecution()
 {
@@ -762,7 +762,7 @@ void DXWindow::buildFileHistoryMenu()
 
     ListIterator iter(this->file_history_buttons);
     ButtonInterface* bi;
-    while (bi=(ButtonInterface*)iter.getNext()) {
+    while ((bi=(ButtonInterface*)iter.getNext())) {
 	bi->unmanage();
 	delete bi;
     }
@@ -770,7 +770,7 @@ void DXWindow::buildFileHistoryMenu()
 
     iter.setList(this->file_history_commands);
     Command* cmd;
-    while (cmd=(Command*)iter.getNext()) delete cmd;
+    while ((cmd=(Command*)iter.getNext())) delete cmd;
     this->file_history_commands.clear();
 
     Widget menu_parent = this->file_history_cascade->getMenuItemParent();
@@ -806,7 +806,7 @@ void DXWindow::buildFileHistoryMenu()
 	List baseNames;
 	iter.setList(recent_nets);
 	Symbol s;
-	while (s=(Symbol)(long)iter.getNext()) {
+	while ((s=(Symbol)(long)iter.getNext())) {
 	    cmd = new OpenFileCommand(s);
 	    this->file_history_commands.appendElement(cmd);
 	    bi = new ButtonInterface(menu_parent, "openFile", cmd);
@@ -818,7 +818,7 @@ void DXWindow::buildFileHistoryMenu()
 	    boolean unique = TRUE;
 	    ListIterator biter(baseNames);
 	    const char* cmprtr;
-	    while (cmprtr = (const char*)biter.getNext()) {
+	    while ((cmprtr = (const char*)biter.getNext())) {
 		if ((cmprtr!=cp) && (EqualString(cmprtr, cp))) {
 		    unique = FALSE;
 		    break;
@@ -832,7 +832,7 @@ void DXWindow::buildFileHistoryMenu()
 	}
 	iter.setList(baseNames);
 	char* cp;
-	while (cp=(char*)iter.getNext()) delete cp;
+	while ((cp=(char*)iter.getNext())) delete cp;
     }
 }
 

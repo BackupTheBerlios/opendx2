@@ -276,7 +276,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 
     // exclude the nodes that aren't in the current page
     li.setList((List&)nodes);
-    while (n = (Node*)li.getNext()) {
+    while ((n=(Node*)li.getNext())) {
 	StandIn* si = n->getStandIn();
 	if (!si) continue;
 	if (si->getWorkSpace() != workSpace) continue;
@@ -292,7 +292,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
     int reflow_size=nodeList.getSize();
     reflow = (Node**)malloc(sizeof(Node*) * reflow_size);
     li.setList(nodeList);
-    while (n = (Node*)li.getNext()) {
+    while ((n=(Node*)li.getNext())) {
 	reflow[reflow_count++] = n;
     }
     ASSERT (reflow_count == reflow_size);
@@ -337,7 +337,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	if (ni->getLayoutGroup()) continue;
 	LayoutGroup* group = new LayoutGroup(this->layout_groups.getSize());
 	this->layout_groups.appendElement(group);
-	while (n=(Node*)iter.getNext()) {
+	while ((n=(Node*)iter.getNext())) {
 	    NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
 	    info->setLayoutGroup(group);
 	}
@@ -397,7 +397,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	Node* node;
 	boolean separated = TRUE;
 	int y;
-	while (node=(Node*)iter.getNext()) {
+	while ((node=(Node*)iter.getNext())) {
 	    NodeInfo* ninfo = (NodeInfo*)node->getLayoutInformation();
 	    if (!ninfo->isPositioned()) continue;
 	    int dummy;
@@ -507,7 +507,7 @@ boolean GraphLayout::entireGraph(WorkSpace* workSpace, const List& nodes, const 
 	    List* arcs = (List*)n->getInputArks(j);
 	    Ark* arc;
 	    ListIterator iter(*arcs);
-	    while (arc = (Ark*)iter.getNext()) {
+	    while ((arc=(Ark*)iter.getNext())) {
 		ArkStandIn *asi = arc->getArkStandIn();
 		delete asi;
 		si->addArk (this->editor, arc);
@@ -533,7 +533,7 @@ cleanup:
     //
     ListIterator iter(this->layout_groups);
     LayoutGroup* g;
-    while (g = (LayoutGroup*)iter.getNext()) delete g;
+    while ((g=(LayoutGroup*)iter.getNext())) delete g;
     this->layout_groups.clear();
 
     //
@@ -541,7 +541,7 @@ cleanup:
     //
     VPEAnnotator* dec;
     iter.setList(decorators_in_current_page);
-    while (dec = (VPEAnnotator*)iter.getNext()) {
+    while ((dec=(VPEAnnotator*)iter.getNext())) {
 	dec->setLayoutInformation(NUL(AnnotationInfo*));
     }
     return retval;
@@ -581,7 +581,7 @@ boolean GraphLayout::hasConnectedOutputs(Node *n, Node* other_than)
 	    boolean others_found = FALSE;
 	    ListIterator iter(*outputs);
 	    Ark* arc;
-	    while (arc = (Ark*)iter.getNext()) {
+	    while ((arc=(Ark*)iter.getNext())) {
 		Node* destination = arc->getDestinationNode(dummy);
 		if (destination != other_than) {
 		    others_found = TRUE;
@@ -612,7 +612,7 @@ boolean GraphLayout::nodeCanMoveTo (Node* n, int x, int y)
     ListIterator iter(*connected_nodes);
     Node* target;
     int tw, th, tx, ty;
-    while (target = (Node*)iter.getNext()) {
+    while ((target=(Node*)iter.getNext())) {
 	NodeInfo* target_info = (NodeInfo*)target->getLayoutInformation();
 	if (target_info == info) continue;
 	if (!target_info->isPositioned()) continue;
@@ -653,7 +653,7 @@ boolean GraphLayout::CanMoveTo (LayoutInfo* info, int x, int y, Node* reflow[], 
 	ListIterator iter(*decorators);
 	LayoutInfo* target_info;
 	VPEAnnotator* dec;
-	while (dec = (VPEAnnotator*)iter.getNext()) {
+	while ((dec=(VPEAnnotator*)iter.getNext())) {
 	    target_info = (LayoutInfo*)dec->getLayoutInformation();
 	    if (target_info == info) continue;
 	    if (!target_info->isPositioned()) continue;
@@ -747,7 +747,7 @@ boolean GraphLayout::computeBoundingBox (Node* reflow[], int reflow_count,
     if (decorators) {
 	ListIterator iter(*decorators);
 	VPEAnnotator* dec;
-	while (dec=(VPEAnnotator*)iter.getNext()) {
+	while ((dec=(VPEAnnotator*)iter.getNext())) {
 	    LayoutInfo* info = (LayoutInfo*)dec->getLayoutInformation();
 	    info->getXYPosition (x,y);
 	    info->getXYSize(w,h);
@@ -768,7 +768,7 @@ boolean GraphLayout::computeBoundingBox (List& nodes,
     maxx = maxy = -99999999;
     ListIterator li(nodes);
     Node* n;
-    while (n = (Node*)li.getNext()) {
+    while ((n=(Node*)li.getNext())) {
 	LayoutInfo* linfo = (LayoutInfo*)n->getLayoutInformation();
 	ASSERT (linfo->isPositioned());
 	int x,y,w,h;
@@ -793,7 +793,7 @@ void GraphLayout::repositionDecorators(List& decorators, boolean sef, Node* refl
     boolean same_event_flag = sef;
     int decx, decy; 
     VPEAnnotator* dec;
-    while (dec=(VPEAnnotator*)decs.getNext()) {
+    while ((dec=(VPEAnnotator*)decs.getNext())) {
 	this->editor->saveLocationForUndo(dec, FALSE, same_event_flag);
 	same_event_flag = TRUE;
 	AnnotationInfo* ainfo = (AnnotationInfo*)dec->getLayoutInformation();
@@ -846,7 +846,7 @@ Ark* GraphLayout::IsSingleInputNoOutputNode (Node* n, boolean& shares_an_output,
 	if (!inputs) continue;
 	if (!inputs->getSize()) continue;
 	ListIterator arcs(*inputs);
-	while (arc = (Ark*)arcs.getNext()) {
+	while ((arc=(Ark*)arcs.getNext())) {
 	    if (!input_arc) {
 		// test for the output has only 1 destination node
 		int output;
@@ -879,7 +879,7 @@ boolean GraphLayout::positionDestBesideSibling (Ark* arc, int& x, int& y, boolea
     List* arcs = (List*)source->getOutputArks(output);
     ListIterator iter(*arcs);
     Ark* oa;
-    while (oa=(Ark*)iter.getNext()) {
+    while ((oa=(Ark*)iter.getNext())) {
 	Node* dst = oa->getDestinationNode(dummy);
 	if (dst == destination) continue;
 
@@ -954,7 +954,7 @@ void GraphLayout::bottomUpTraversal (Node* visit_parents_of, int current_depth, 
 	List* inputs = (List*)visit_parents_of->getInputArks(input);
 	ListIterator iter(*inputs);
 	Ark* arc;
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    int output;
 	    Node* source = arc->getSourceNode(output);
 	    NodeInfo* sinfo = (NodeInfo*)source->getLayoutInformation();
@@ -1021,7 +1021,7 @@ void GraphLayout::adjustAncestorHops (Node* parent, int new_hop_count, int& min)
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	Ark* arc;
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* source = arc->getSourceNode(output);
 	    NodeInfo* linfo = (NodeInfo*)source->getLayoutInformation();
 	    if (new_hop_count < linfo->getGraphDepth()) {
@@ -1049,7 +1049,7 @@ void GraphLayout::adjustDescendantHops(Node* parent, int new_hop_count)
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	Ark* arc;
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* dest = arc->getDestinationNode(input);
 	    boolean dummy;
 	    if (GraphLayout::IsSingleInputNoOutputNode(dest, dummy, FALSE)) {
@@ -1080,7 +1080,7 @@ int GraphLayout::computeRequiredHopsTo(Node* n)
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	Ark* arc;
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    int count = this->computeRequiredHopsTo(arc->getSourceNode(output));
 	    max_count = MAX(count+1, max_count);
 	}
@@ -1100,7 +1100,7 @@ int GraphLayout::computeRequiredHopsToSiblingsOf (Node* n)
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	Ark* arc;
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* source = arc->getSourceNode(dummy);
 
 	    int output_count = source->getOutputCount();
@@ -1113,7 +1113,7 @@ int GraphLayout::computeRequiredHopsToSiblingsOf (Node* n)
 		ListIterator it(*oarcs);
 		Ark* oarc;
 		// for each of those nodes fetch required hops
-		while (oarc = (Ark*)it.getNext()) {
+		while ((oarc=(Ark*)it.getNext())) {
 		    Node* dest = oarc->getDestinationNode(dummy);
 		    max_hop_count = MAX(max_hop_count, this->computeRequiredHopsTo(dest));
 		}
@@ -1243,7 +1243,7 @@ boolean GraphLayout::spreadOutSpaghettiFrom (Node* n, int& min)
 	ListIterator iter(*arcs);
 	int input;
 	Node* arc_dest = NUL(Node*);
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* dest = arc->getDestinationNode(input);
 	    NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
 	    int cnctn_count = this->countConnectionsBetween(n,dest,FALSE);
@@ -1292,7 +1292,7 @@ void GraphLayout::fixForTooManyReceivers(Node* n, int& min)
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	Ark* arc;
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* source = arc->getSourceNode(dummy);
 	    if (wide_nodes.isMember(source)) continue;
 	    if (!this->hasNoCloserDescendant(source,n)) continue;
@@ -1318,7 +1318,7 @@ void GraphLayout::fixForTooManyReceivers(Node* n, int& min)
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	Ark* arc;
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* source = arc->getSourceNode(dummy);
 	    if (state == 3) {
 		if ((!this->hasConnectedInputs(source)) && (!had_inputs)) 
@@ -1377,7 +1377,7 @@ boolean GraphLayout::hasNoCloserDescendant (Node* source, Node* dest)
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	Ark* arc;
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* destination = arc->getDestinationNode(dummy);
 	    if (destination == dest) continue;
 	    NodeInfo* info = (NodeInfo*)destination->getLayoutInformation();
@@ -1442,7 +1442,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	List original;
 	Node* node;
 	ListIterator iter(*connected);
-	while (node = (Node*)iter.getNext()) {
+	while ((node=(Node*)iter.getNext())) {
 	    LayoutInfo* info = (LayoutInfo*)node->getLayoutInformation();
 	    if (info->isPositioned()) {
 		if (!placed.isMember(node)) original.appendElement(node);
@@ -1457,7 +1457,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	xdelta = -minx2;
 	ydelta = -miny2;
 	ListIterator iter(placed);
-	while (n = (Node*)iter.getNext()) {
+	while ((n=(Node*)iter.getNext())) {
 	    NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
 	    int x,y;
 	    info->getXYPosition(x,y);
@@ -1487,7 +1487,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
     //
     List crossing_arcs;
     ListIterator iter(placed);
-    while (n=(Node*)iter.getNext()) {
+    while ((n=(Node*)iter.getNext())) {
 	int input_count = n->getInputCount();
 	int output_count = n->getOutputCount();
 	int input, output;
@@ -1497,7 +1497,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	    if (!arks) continue;
 	    ListIterator li(*arks);
 	    Ark* arc;
-	    while (arc=(Ark*)li.getNext()) {
+	    while ((arc=(Ark*)li.getNext())) {
 		Node* source = arc->getSourceNode(output);
 		NodeInfo* sinfo = (NodeInfo*)source->getLayoutInformation();
 		if (!sinfo->isPositioned()) continue;
@@ -1513,7 +1513,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	    if (!arks) continue;
 	    ListIterator li(*arks);
 	    Ark* arc;
-	    while (arc=(Ark*)li.getNext()) {
+	    while ((arc=(Ark*)li.getNext())) {
 		Node* dest = arc->getDestinationNode(input);
 		NodeInfo* dinfo = (NodeInfo*)dest->getLayoutInformation();
 		if (!dinfo->isPositioned()) continue;
@@ -1628,7 +1628,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 	    ListIterator iter(*arcs);
 	    Node* other_dst = NUL(Node*);
 	    int oinput;
-	    while (arc = (Ark*)iter.getNext()) {
+	    while ((arc=(Ark*)iter.getNext())) {
 		other_dst = arc->getDestinationNode(oinput);
 		if (other_dst == dst) continue;
 		if (placed.isMember(other_dst)) continue;
@@ -1710,7 +1710,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
 		//ListIterator iter(*connected);
 		ListIterator iter(placed);
 		Node* n;
-		while (n=(Node*)iter.getNext()) {
+		while ((n=(Node*)iter.getNext())) {
 		    NodeInfo* info = (NodeInfo*)n->getLayoutInformation();
 		    int nx,ny;
 		    info->getXYPosition(nx,ny);
@@ -1752,7 +1752,7 @@ void GraphLayout::repositionNewPlacements (Node* root, boolean disjoint, List& p
     // perform the translation
     //
     iter.setList(placed);
-    while (n=(Node*)iter.getNext()) {
+    while ((n=(Node*)iter.getNext())) {
 	NodeInfo* linfo = (NodeInfo*)n->getLayoutInformation();
 	int x,y;
 	ASSERT (linfo->isPositioned());
@@ -1775,7 +1775,7 @@ void GraphLayout::prepareAnnotationPlacement(List& decorators, Node* reflow[], i
     ListIterator decs;
     VPEAnnotator* dec;
     decs.setList((List&)all_decorators);
-    while (dec = (VPEAnnotator*)decs.getNext()) {
+    while ((dec=(VPEAnnotator*)decs.getNext())) {
 	if (dec->getWorkSpace() != workSpace) continue;
 	decorators.appendElement(dec);
 	AnnotationInfo* ai = new AnnotationInfo();
@@ -2023,7 +2023,7 @@ void LayoutGroup::initialize(List* nodes)
 {
     ListIterator iter(*nodes);
     Node* n;
-    while (n = (Node*)iter.getNext()) {
+    while ((n=(Node*)iter.getNext())) {
 	NodeInfo* linfo = (NodeInfo*)n->getLayoutInformation();
 	int x,y,w,h;
 	linfo->getOriginalXYPosition(x,y);
@@ -2090,7 +2090,7 @@ void GraphLayout::repositionGroups(Node* reflow[], int reflow_count)
     ListIterator gi(this->layout_groups);
     LayoutGroup* group;
     int gcnt = 0;
-    while  (group = (LayoutGroup*)gi.getNext()) groups[gcnt++] = group;
+    while  ((group=(LayoutGroup*)gi.getNext())) groups[gcnt++] = group;
     qsort (groups, gcnt, sizeof(LayoutGroup*), LayoutGroup::Comparator);
     int gx=0,gy=0;
     int prevy2 = 0;
@@ -2181,7 +2181,7 @@ void NodeInfo::BuildList(Node* n, List* nodes)
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	Ark* arc;
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* source = arc->getSourceNode(dummy);
 	    NodeInfo::BuildList(source, nodes);
 	}
@@ -2194,7 +2194,7 @@ void NodeInfo::BuildList(Node* n, List* nodes)
 	if (!arcs) continue;
 	ListIterator iter(*arcs);
 	Ark* arc;
-	while (arc = (Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* destination = arc->getDestinationNode(dummy);
 	    NodeInfo::BuildList(destination, nodes);
 	}
@@ -2334,7 +2334,7 @@ void LayoutRow::sort()
     ListIterator iter(this->nodes);
     Node* n;
     int i = 0;
-    while (n=(Node*)iter.getNext()) this->node_array[i++] = n;
+    while ((n=(Node*)iter.getNext())) this->node_array[i++] = n;
     qsort (this->node_array, size, sizeof(Node*), LayoutRow::SortByDestinationX);
     this->sorted_by_destination_x = TRUE;
     this->sorted_by_x = FALSE;
@@ -2375,7 +2375,7 @@ SlotList::~SlotList()
 {
     ListIterator li(*this);
     Slot* slot;
-    while (slot=(Slot*)li.getNext()) delete slot;
+    while ((slot=(Slot*)li.getNext())) delete slot;
 }
 //
 // Return x if that location is empty.  Otherwise return the next location to
@@ -2385,7 +2385,7 @@ int SlotList::isAvailable (int x, boolean left)
 {
     ListIterator li(*this);
     Slot *slot, *prev=NUL(Slot*);
-    while (slot=(Slot*)li.getNext()) {
+    while ((slot=(Slot*)li.getNext())) {
 	if ((slot->min <= x) && (slot->max >= x)) return x;
 	if ((slot->min >= x) && (left)) {
 	    // this assert says that we can't request something less
@@ -2474,7 +2474,7 @@ void SlotList::occupy (int x, int width)
 	    prev = slot;
 	}
 	ListIterator iter(to_delete);
-	while (slot=(Slot*)iter.getNext()) {
+	while ((slot=(Slot*)iter.getNext())) {
 	    ASSERT(this->removeElement(slot));
 	    delete slot;
 	}
@@ -2698,7 +2698,7 @@ void GraphLayout::getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs
 	ListIterator li(*inputs);
 	Ark* arc;
 	int dummy;
-	while (arc = (Ark*)li.getNext()) {
+	while ((arc=(Ark*)li.getNext())) {
 	    Node* src = arc->getSourceNode(output);
 	    LayoutInfo* linfo = (LayoutInfo*)src->getLayoutInformation();
 	    if (linfo->isPositioned()) continue;
@@ -2732,7 +2732,7 @@ void GraphLayout::getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs
 	List to_add;
 	List to_remove;
 	Ark* arc;
-	while (arc=(Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* src = arc->getSourceNode(output);
 	    Node* dst = arc->getDestinationNode(input);
 	    int cnt = this->countConnectionsBetween(src, dst);
@@ -2747,7 +2747,7 @@ void GraphLayout::getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs
 		if (!inputs) continue;
 		ListIterator li(*inputs);
 		Ark* ia;
-		while (ia=(Ark*)li.getNext()) {
+		while ((ia=(Ark*)li.getNext())) {
 		    int output2;
 		    Node* source = ia->getSourceNode(output2);
 		    if (source == src) {
@@ -2773,7 +2773,7 @@ void GraphLayout::getSpecialAncestorsOf (Node* root, List& ancestors, List& arcs
 	    }
 	}
 	iter.setList(to_remove);
-	while (arc=(Ark*)iter.getNext()) 
+	while ((arc=(Ark*)iter.getNext())) 
 	    arcs.removeElement(arc);
 	iter.setList(to_add);
 	while (arc=(Ark*)iter.getNext()) 
@@ -2821,7 +2821,7 @@ void SlotList::clear()
 {
     ListIterator iter(*this);
     Slot* slot;
-    while (slot=(Slot*)iter.getNext()) delete slot;
+    while ((slot=(Slot*)iter.getNext())) delete slot;
     this->List::clear();
     this->appendElement(new Slot(-999999, 999999));
 }
@@ -2838,7 +2838,7 @@ int GraphLayout::countConnectionsBetween (Node* source, Node* dest, boolean coun
 	if (!arks) continue;
 	ListIterator iter(*arks);
 	Ark* arc;
-	while (arc=(Ark*)iter.getNext()) {
+	while ((arc=(Ark*)iter.getNext())) {
 	    Node* destination = arc->getDestinationNode(input);
 	    if (destination == dest) {
 		if (count_consecutive) {

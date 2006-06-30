@@ -5430,7 +5430,7 @@ List		swapToNodes;	  // transferred to this network.
 		List* arcs = (List*)fromNode->getInputArks(input);
 		ListIterator iter(*arcs);
 		Ark* arc;
-		while (arc = (Ark*)iter.getNext()) {
+		while ((arc=(Ark*)iter.getNext())) {
 		    int output;
 		    Node* source = arc->getSourceNode(output);
 		    // if source is remaining...
@@ -5462,7 +5462,7 @@ List		swapToNodes;	  // transferred to this network.
 		List* arcs = (List*)fromNode->getOutputArks(output);
 		ListIterator iter(*arcs);
 		Ark* arc;
-		while (arc = (Ark*)iter.getNext()) {
+		while ((arc=(Ark*)iter.getNext())) {
 		    int input;
 		    Node* dest = arc->getDestinationNode(input);
 		    if (swapFromNodes.isMember(dest)) continue;
