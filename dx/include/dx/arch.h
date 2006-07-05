@@ -726,7 +726,7 @@ int getopt(int,char**,char*);
 #define DXD_MAX_INT      2147483647
 #define DXD_MIN_INT     -2147483648
 
-#define DXD_MAX_UINT     4294967295
+#define DXD_MAX_UINT     4294967295U
 
 /* same whether denormalized numbers are supported nor not */
 #define DXD_MAX_FLOAT       ((float)3.40282346638528860e+38)
