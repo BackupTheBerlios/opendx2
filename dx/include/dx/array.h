@@ -241,6 +241,16 @@ general it is preferable to use these routines where possible, because
 more Data Explorer functions support these cases efficiently.
 */
 
+Array DXTrimItems(Array a, int nitems);
+/**
+\index{DXTrimItems}
+It may desirable to remove elements at the end of an array to shrink 
+the array without having to copy it. {\tt DXTrimItems()} will make the
+array nitems long removing items from the end of the array and 
+automatically calling {\tt DXTrim()} to free the extra array memory.
+**/
+
+
 Array DXMakeGridPositionsV(int n, int *counts, float *origin, float *deltas);
 Array DXMakeGridPositions(int n, ...);
 /**

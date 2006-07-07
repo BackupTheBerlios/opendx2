@@ -71,7 +71,9 @@ sets an error code.
 		<P><TT><STRONG>#include &lt;dx/dx.h&gt;</STRONG></TT></P>
 		<P><TT><STRONG>Array DXTrimItems(Array a, int nitems)</STRONG></TT></P>
 		<P><STRONG>Functional Details</STRONG></P>
-		<P>It may desirable to remove elements at the end of an array to shrink the array without having to copy it. DXTrim items will remove nitems from the end of the array and automatically call <TT><STRONG>DXTrim </STRONG></TT>to free the extra array memory.</P>
+		<P>It may desirable to remove elements at the end of an array to shrink the array without having to copy it. 
+		<TT><STRONG>DXTrimItems</TT></STRONG>  will make the array nitems long removing items 
+		from the end of the array and  automatically calling <TT><STRONG>DXTrim</STRONG></TT> to free the extra array memory.</P>
 		<P><STRONG>Return Value</STRONG></P>
 		<P>Returns <TT><STRONG>a</STRONG></TT> or returns <TT><STRONG>NULL</STRONG></TT> and sets an error code. </P>
 		<P><STRONG>See Also</STRONG></P>
