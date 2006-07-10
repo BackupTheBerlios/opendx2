@@ -692,6 +692,9 @@ static int quad_coords (QuadArgs *args)
     b  = b13 = (x *y1 + x1*y3 + x3*y  - y *x1 - y1*x3 - y3*x );
     b += b32 = (x *y3 + x3*y2 + x2*y  - y *x3 - y3*x2 - y2*x );
     b += b21 = (x *y2 + x2*y1 + x1*y  - y *x2 - y2*x1 - y1*x );
+	
+	if(b == 0.0)
+	return ZERO_AREA;
 
     if ((b13 >= 0.0 && b32 >= 0.0 && b21 >= 0.0) ||
 	(b13 <= 0.0 && b32 <= 0.0 && b21 <= 0.0) ||
