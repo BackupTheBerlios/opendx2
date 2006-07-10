@@ -6,7 +6,7 @@
 /*    "IBM PUBLIC LICENSE - Open Visualization Data Explorer"          */
 /***********************************************************************/
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinetopo.c,v 1.6 2003/07/11 05:50:34 davidt Exp $:
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/exec/dxmods/_refinetopo.c,v 1.7 2006/07/10 21:39:58 davidt Exp $:
  */
 
 #include <dxconfig.h>
@@ -311,7 +311,7 @@ Cubes2Tetrahedra(Field field)
 }
 
 #define TETRA(t, a, b, c, d)	\
-{				\
+{						\
     *(t)++ = (a);		\
     *(t)++ = (b);		\
     *(t)++ = (c);		\
@@ -532,14 +532,76 @@ error:
     return NULL;
 }
 
+static
+double _dxf_TetDeterminant ( int p, int q, int r, int s, Point *geom )
+{
+   /*
+    * Calculate the geometric determinate of a tetrahedron.
+    * The expression below is the matrix we are 'determining', with 'g'
+    * representing geometry, p,q,r,s representing tetrahedral connection indices.
+    *
+    * +-----------------------+-----------------------------------------+
+    * |   a11  a12  a13  a14  |   1.0      1.0      1.0      1.0        |
+    * |   a21  a22  a23  a24  |   g[p].x   g[q].x   g[r].x   g[s].x     |
+    * |   a31  a32  a33  a34  |   g[p].y   g[q].y   g[r].y   g[s].y     |
+    * |   a41  a42  a43  a44  |   g[p].z   g[q].z   g[r].z   g[s].z     |
+    * +-----------------------+-----------------------------------------+
+    */
+
+    double  a11, a12, a13, a14,   a21, a22, a23, a24, 
+            a31, a32, a33, a34,   a41, a42, a43, a44;
+
+    double  d;
+
+    DXASSERTGOTO ( geom != NULL );
+
+    a11=1.0;           a12=1.0;           a13=1.0;           a14=1.0;
+    a21=geom[p].x; a22=geom[q].x; a23=geom[r].x; a24=geom[s].x;
+    a31=geom[p].y; a32=geom[q].y; a33=geom[r].y; a34=geom[s].y;
+    a41=geom[p].z; a42=geom[q].z; a43=geom[r].z; a44=geom[s].z;
+
+    d = a11*(a22*(a33*a44-a43*a34)-a23*(a32*a44-a42*a34)+a24*(a32*a43-a42*a33))
+       -a12*(a21*(a33*a44-a43*a34)-a23*(a31*a44-a41*a34)+a24*(a31*a43-a41*a33))
+       +a13*(a21*(a32*a44-a42*a34)-a22*(a31*a44-a41*a34)+a24*(a31*a42-a41*a32))
+      -a14*(a21*(a32*a43-a42*a33)-a22*(a31*a43-a41*a33)+a23*(a31*a42-a41*a32));
+      
+    d = ( fabs(d) < DXD_MIN_FLOAT ) ? 0 : d;
+    
+    return d;
+}
+
+#define TETRA2(nt, t, a, b, c, d, points)	\
+{						\
+    if(!(a==b || b==c || c==d || a==c || a==d || b==d)) {  \
+    	if(_dxf_TetDeterminant ( a, b, c, d, points ) != 0) { \
+    		nt++;          \
+    		*(t)++ = (a);		\
+    		*(t)++ = (b);		\
+    		*(t)++ = (c);		\
+    		*(t)++ = (d);		\
+    	} 				\
+    }                   \
+}
+
+#define TETDATA(dOut, dIn, dSize, a,b,c,d, points) \
+{												\
+    if(!(a==b || b==c || c==d || a==c || a==d || b==d)) {  \
+    	if(_dxf_TetDeterminant ( a,b,c,d, points ) != 0) { \
+			memcpy(dOut, dIn, dSize); 			\
+			dOut += dSize; 						\
+		} 										\
+	} 											\
+}
+
 static Field
 IrregCubes2Tetrahedra(Field field)
 {
-    Array  cArrayIn, cArrayOut, dIn, dOut;
-    int    i, j, k, vPerE;
-    int    nCubes, *cubes;
+    Array  pArray, cArrayIn, cArrayOut, dIn, dOut;
+    int    i, j, k, vPerE, nDim;
+    int    nCubes, *cubes, *cubeStart;
     int    nTetras, *tetras;
     int    dataSize;
+    Point  *positions;
     char   *dataIn, *dataOut;
     Object attr;
     char   *str, *name;
@@ -550,10 +612,27 @@ IrregCubes2Tetrahedra(Field field)
     tetras    = NULL;
     dataOut   = NULL;
 
+    pArray   = (Array)DXGetComponentValue(field, "positions");
     cArrayIn = (Array)DXGetComponentValue(field, "connections");
 
-    if (! cArrayIn)
+    if (!pArray || ! cArrayIn)
 	return field;
+	
+	DXGetArrayInfo(pArray, NULL, NULL, NULL, NULL, &nDim);
+
+    if (! DXTypeCheckV(pArray, TYPE_FLOAT, CATEGORY_REAL, 1, NULL))
+    {
+	DXSetError(ERROR_DATA_INVALID, "#11383");
+	return NULL;
+    }
+
+    if (nDim != 3)
+    {
+	DXSetError(ERROR_DATA_INVALID, "#11002", "cubes");
+	return NULL;
+    }
+    
+    positions = (Point *)DXGetArrayData(pArray);
 
     if (! DXTypeCheckV((Array)cArrayIn, TYPE_INT, CATEGORY_REAL, 1, NULL))
     {
@@ -574,7 +653,7 @@ IrregCubes2Tetrahedra(Field field)
     if (! iinvalids)
 	goto error;
 
-    cubes = (int *)DXGetArrayData(cArrayIn);
+    cubeStart = cubes = (int *)DXGetArrayData(cArrayIn);
 
     nTetras = nCubes * 6;
 
@@ -594,30 +673,33 @@ IrregCubes2Tetrahedra(Field field)
     if (! tetras)
 	goto error;
 
+	nTetras = 0;
     for (i = 0; i < nCubes; i++)
     {
+    	int tAdded = nTetras;
+    	
+        TETRA2(nTetras, tetras, cubes[0], cubes[3], cubes[5], cubes[1], positions);
+        TETRA2(nTetras, tetras, cubes[5], cubes[2], cubes[7], cubes[3], positions);
+        TETRA2(nTetras, tetras, cubes[5], cubes[4], cubes[7], cubes[2], positions);
+        TETRA2(nTetras, tetras, cubes[5], cubes[3], cubes[0], cubes[2], positions);
+        TETRA2(nTetras, tetras, cubes[5], cubes[2], cubes[0], cubes[4], positions);
+        TETRA2(nTetras, tetras, cubes[4], cubes[2], cubes[6], cubes[7], positions);
 
-        TETRA(tetras, cubes[0], cubes[3], cubes[5], cubes[1]);
-        TETRA(tetras, cubes[5], cubes[2], cubes[7], cubes[3]);
-        TETRA(tetras, cubes[5], cubes[4], cubes[7], cubes[2]);
-        TETRA(tetras, cubes[5], cubes[3], cubes[0], cubes[2]);
-        TETRA(tetras, cubes[5], cubes[2], cubes[0], cubes[4]);
-        TETRA(tetras, cubes[4], cubes[2], cubes[6], cubes[7]);
-
-	if (DXIsElementInvalid(iinvalids, i))
-	{
-	    int j;
-
-	    for (j = 6*i; j < 6*(i+1); j++)
-		if (! DXSetElementInvalid(oinvalids, j))
-		    goto error;
-	}
-
-
+		tAdded = nTetras - tAdded;
+		
+		if (DXIsElementInvalid(iinvalids, i))
+		{
+			int j;
 	
+			for (j = nTetras-tAdded; j < nTetras; j++)
+			if (! DXSetElementInvalid(oinvalids, j))
+				goto error;
+		}
 
       cubes += 8;
     }
+    
+    cArrayOut = DXTrimItems(cArrayOut, nTetras);
 
     j = 0;
     while (NULL != (dIn=(Array)DXGetEnumeratedComponentValue(field, j++, &name)))
@@ -652,7 +734,7 @@ IrregCubes2Tetrahedra(Field field)
 
 	    if (DXQueryConstantArray(dIn, NULL, NULL))
 	    {
-		dOut = (Array)DXNewConstantArrayV(6*nCubes, 
+		dOut = (Array)DXNewConstantArrayV(nTetras, 
 			DXGetConstantArrayData(dIn), t, c, r, s);
 	    }
 	    else
@@ -671,14 +753,17 @@ IrregCubes2Tetrahedra(Field field)
 		if (! dataIn || ! dataOut)
 		    goto error;
 		
+		cubes = cubeStart;
 		for (i = 0; i < nCubes; i++)
 		{
-		    for (k = 0; k < 6; k++)
-		    {
-			memcpy(dataOut, dataIn, dataSize);
-			dataOut += dataSize;
-		    }
+			TETDATA(dataOut, dataIn, dataSize, cubes[0], cubes[3], cubes[5], cubes[1], positions);
+			TETDATA(dataOut, dataIn, dataSize, cubes[5], cubes[2], cubes[7], cubes[3], positions);
+			TETDATA(dataOut, dataIn, dataSize, cubes[5], cubes[4], cubes[7], cubes[2], positions);
+			TETDATA(dataOut, dataIn, dataSize, cubes[5], cubes[3], cubes[0], cubes[2], positions);
+			TETDATA(dataOut, dataIn, dataSize, cubes[5], cubes[2], cubes[0], cubes[4], positions);
+			TETDATA(dataOut, dataIn, dataSize, cubes[4], cubes[2], cubes[6], cubes[7], positions);
 		    dataIn += dataSize;
+		    cubes += 8;
 		}
 	    }
 
