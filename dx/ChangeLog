@@ -1,3 +1,12 @@
+4.4.2
+=================
+Fix a bug with hardware rendering where turning
+on the transparency for all surfaces caused problems
+with opaque surfaces within some GL codes.
+
+Fix a bug in the quad interpolator where some
+results could be returned as NAN.
+
 Make it possible to change the way TMESH's are
 generated. See docs for environment variable:
 DX_HW_TMESH_ORIENT_SENSITIVE.
