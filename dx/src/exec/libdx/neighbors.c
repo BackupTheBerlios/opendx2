@@ -29,6 +29,12 @@ struct hash {		/* entry per face */
     short count;	/* number of occurences */
 };
 
+struct hasharray {
+	struct hash* hashelements;
+	int numels;
+	int existing;
+};
+
 #define SORT(a,b) {int t; if (a<b) t=a, a=b, b=t;}
 
 Array
@@ -514,122 +520,348 @@ cubeface(Cube cube, int i)
 Array
 _dxf_CubeNeighbors(Field f)
 {
-    Array a;
-    int ncubes, nhash;
-    int cubenum, face, h, n, goal, goal2;
-    Cube *cube;
-    Quadrilateral t, tt;
-    int (*neighbors)[6];
-    struct hash *hash;
-    int nsurface = 0, ninner = 0;
-
-    /* get cube connections */
-    a = DXGetConnections(f, "cubes");
-    if (!a)
-	return NULL;
-    if (DXQueryGridConnections(a, NULL, NULL))
-	return NULL;
-    if (!DXTypeCheck(a, TYPE_INT, CATEGORY_REAL, 1, 8))
-	DXErrorReturn(ERROR_BAD_TYPE, "cubes have bad type");
-    DXGetArrayInfo(a, &ncubes, NULL, NULL, NULL, NULL);
-    cube = (Cube *) DXGetArrayData(a);
-
-    /* "neighbors" component */
-    a = DXNewArray(TYPE_INT, CATEGORY_REAL, 1, 6);
-    if (!a)
-	return NULL;
-    if (!DXAddArrayData(a, 0, ncubes, NULL))
-	return NULL;
-    neighbors = (int (*)[6]) DXGetArrayData(a);
-    memset((int *)neighbors, -1, ncubes*sizeof(*neighbors));
-
-    /* put it in the field */
-    DXSetComponentValue(f, NEIGHBORS, (Object)a);
-    DXSetAttribute((Object)a, REF, O_CONNECTIONS);
-    DXSetAttribute((Object)a, DEP, O_CONNECTIONS);
-    DXSetAttribute((Object)a, DER, O_CONNECTIONS);
-
-    /*
-     * goal = 6*ncubes edges is conservative upper bound
-     * goal2 is estimate of number hash entries plus 10%
-     * NB - nhash should be power of 2
-     */
-    goal = 6*ncubes;
-    goal2 = (3*ncubes + 3*pow((float)ncubes, 2.0/3.0)) * 1.1;
-    for (nhash=1; nhash<goal; nhash*=2)
-	continue;
-    DXDebug("N", "ncubes %d goal %d goal2 %d nhash %d",
-	  ncubes, goal, goal2, nhash);
-    hash = (struct hash *) DXAllocateLocalZero(nhash * sizeof(struct hash));
-    if (!hash) {
-	DXResetError();
-	hash = (struct hash *) DXAllocateZero(nhash * sizeof(struct hash));
-    }
-    if (!hash) {
-	goal = goal2;
-	for (nhash=1; nhash<goal; nhash*=2)
-	    continue;
-	DXDebug("N", "new goal %d nhash %d", goal, nhash);
-	DXResetError();
-	hash = (struct hash *) DXAllocateLocalZero(nhash * sizeof(struct hash));
-	if (!hash) {
-	    DXResetError();
-	    hash = (struct hash *) DXAllocateZero(nhash * sizeof(struct hash));
-	}
-	if (!hash)
-	    return NULL;
-    }
-
-
-    /* put quad faces into hash table */
-    for (cubenum=0, n=0; cubenum<ncubes; cubenum++) {
-
-	/* six faces per cube */
-	for (face=0; face<6; face++) {
-
-	    t = cubeface(cube[cubenum], face);
-
-	    /* find hash table entry */
-	    h = (t.p + 17*t.q + 513*t.r + 2377*t.s) & (nhash-1);
-	    while (hash[h].count) {
-		tt = cubeface(cube[hash[h].element], hash[h].face);
-		if (t.p==tt.p && t.q==tt.q && t.r == tt.r && t.s == tt.s)
-		    break;
-		h = (h+1) & (nhash-1);
-	    }
-
-	    /* increment the count */
-	    hash[h].count += 1;
-
-	    /* do neighbors, count inner/surface */
-	    if (hash[h].count==1) {		/* new face: */
-		if (++n>nhash)
-		    DXErrorGoto(ERROR_NO_MEMORY, "neighbors hash table is full");
-		nsurface += 1;			/*     assume surface */
-		hash[h].element = cubenum;	/*     put entry in table */
-		hash[h].face = face;
-	    } else if (hash[h].count&1) {	/* count now odd, was even: */
-		nsurface += 1;			/*     now surface */
-		ninner -= 1;			/*     was inner */
-	    } else {				/* count now even, was odd: */
-		nsurface -= 1;			/*     was surface */
-		ninner += 1;			/*     now inner */
-		if (hash[h].count==2) {
-		    neighbors[cubenum][face] = hash[h].element;
-		    neighbors[hash[h].element][hash[h].face] = cubenum;
+	char * hint;
+	int useDegenCode = 0;
+	if(DXGetStringAttribute((Object) f, "neighbors hint", &hint) && 
+		strcmp(hint, "degenerate cubes") == 0)
+		useDegenCode = 1;
+	
+	if(!useDegenCode) {
+		Array a;
+		int ncubes, nhash;
+		int cubenum, face, h, n, goal, goal2;
+		Cube *cube;
+		Quadrilateral t, tt;
+		int (*neighbors)[6];
+		struct hash *hash;
+		int nsurface = 0, ninner = 0;
+		
+		/* get cube connections */
+		a = DXGetConnections(f, "cubes");
+		if (!a)
+			return NULL;
+		if (DXQueryGridConnections(a, NULL, NULL))
+			return NULL;
+		if (!DXTypeCheck(a, TYPE_INT, CATEGORY_REAL, 1, 8))
+			DXErrorReturn(ERROR_BAD_TYPE, "cubes have bad type");
+		DXGetArrayInfo(a, &ncubes, NULL, NULL, NULL, NULL);
+		cube = (Cube *) DXGetArrayData(a);
+	
+		/* "neighbors" component */
+		a = DXNewArray(TYPE_INT, CATEGORY_REAL, 1, 6);
+		if (!a)
+			return NULL;
+		if (!DXAddArrayData(a, 0, ncubes, NULL))
+			return NULL;
+		neighbors = (int (*)[6]) DXGetArrayData(a);
+		memset((int *)neighbors, -1, ncubes*sizeof(*neighbors));
+	
+		/* put it in the field */
+		DXSetComponentValue(f, NEIGHBORS, (Object)a);
+		DXSetAttribute((Object)a, REF, O_CONNECTIONS);
+		DXSetAttribute((Object)a, DEP, O_CONNECTIONS);
+		DXSetAttribute((Object)a, DER, O_CONNECTIONS);
+	
+		/*
+		* goal = 6*ncubes edges is conservative upper bound
+		* goal2 is estimate of number hash entries plus 10%
+		* NB - nhash should be power of 2
+		*/
+		goal = 6*ncubes;
+		goal2 = (3*ncubes + 3*pow((float)ncubes, 2.0/3.0)) * 1.1;
+		for (nhash=1; nhash<goal; nhash*=2)
+			continue;
+		DXDebug("N", "ncubes %d goal %d goal2 %d nhash %d",
+			ncubes, goal, goal2, nhash);
+		hash = (struct hash *) DXAllocateLocalZero(nhash * sizeof(struct hash));
+		if (!hash) {
+			DXResetError();
+			hash = (struct hash *) DXAllocateZero(nhash * sizeof(struct hash));
 		}
-	    }
-	}
-    }
-
-    DXDebug("N", "%d faces (%d surface, %d inner), %d entries",
-	  nsurface+ninner, nsurface, ninner, n);
-
-    DXFree((Pointer)hash);
-    return a;
-
+		if (!hash) {
+			goal = goal2;
+			for (nhash=1; nhash<goal; nhash*=2)
+				continue;
+			DXDebug("N", "new goal %d nhash %d", goal, nhash);
+			DXResetError();
+			hash = (struct hash *) DXAllocateLocalZero(nhash * sizeof(struct hash));
+			if (!hash) {
+				DXResetError();
+				hash = (struct hash *) DXAllocateZero(nhash * sizeof(struct hash));
+			}
+			if (!hash)
+				return NULL;
+		}
+	
+		/* put quad faces into hash table */
+		for (cubenum=0, n=0; cubenum<ncubes; cubenum++) {
+	
+			/* six faces per cube */
+			for (face=0; face<6; face++) {
+	
+				t = cubeface(cube[cubenum], face);
+	
+				/* find hash table entry */
+				h = (t.p + 17*t.q + 513*t.r + 2377*t.s) & (nhash-1);
+				while (hash[h].count) {
+					tt = cubeface(cube[hash[h].element], hash[h].face);
+					if (t.p==tt.p && t.q==tt.q && t.r == tt.r && t.s == tt.s)
+						break;
+					h = (h+1) & (nhash-1);
+				}
+	
+				/* increment the count */
+				hash[h].count += 1;
+	
+				/* do neighbors, count inner/surface */
+				if (hash[h].count==1) {		/* new face: */
+					if (++n>nhash)
+						DXErrorGoto(ERROR_NO_MEMORY, "neighbors hash table is full");
+					nsurface += 1;			/*     assume surface */
+					hash[h].element = cubenum;	/*     put entry in table */
+					hash[h].face = face;
+				} else if (hash[h].count&1) {	/* count now odd, was even: */
+					nsurface += 1;			/*     now surface */
+					ninner -= 1;			/*     was inner */
+				} else {				/* count now even, was odd: */
+					nsurface -= 1;			/*     was surface */
+					ninner += 1;			/*     now inner */
+					if (hash[h].count==2) {
+						neighbors[cubenum][face] = hash[h].element;
+						neighbors[hash[h].element][hash[h].face] = cubenum;
+					}
+				}
+			}
+		}
+		
+		DXDebug("N", "%d faces (%d surface, %d inner), %d entries",
+			nsurface+ninner, nsurface, ninner, n);
+	
+		DXFree((Pointer)hash);
+		return a;
+		
 error:
-    DXFree((Pointer)hash);
-    return NULL;
+		DXFree((Pointer)hash);
+		return NULL;
+	}
+
+	else 
+	
+	{ /* useDegenCode */
+		Array a;
+		Object p;
+		int ncubes, npos, i;
+		int cubenum, face, n;
+		Cube *cube;
+		Quadrilateral t, tt;
+		int (*neighbors)[6];
+		struct hasharray *hash;
+		int nsurface = 0, ninner = 0;
+	
+		/* get positions to determine number */
+		p = DXGetComponentValue(f, "positions");
+		DXGetArrayInfo((Array)p, &npos, NULL, NULL, NULL, NULL);
+		
+		/* get cube connections */
+		a = DXGetConnections(f, "cubes");
+		if (!a)
+			return NULL;
+		if (DXQueryGridConnections(a, NULL, NULL))
+			return NULL;
+		if (!DXTypeCheck(a, TYPE_INT, CATEGORY_REAL, 1, 8))
+			DXErrorReturn(ERROR_BAD_TYPE, "cubes have bad type");
+		DXGetArrayInfo(a, &ncubes, NULL, NULL, NULL, NULL);
+		cube = (Cube *) DXGetArrayData(a);
+	
+		/* "neighbors" component */
+		a = DXNewArray(TYPE_INT, CATEGORY_REAL, 1, 6);
+		if (!a)
+			return NULL;
+		if (!DXAddArrayData(a, 0, ncubes, NULL))
+			return NULL;
+		neighbors = (int (*)[6]) DXGetArrayData(a);
+		memset((int *)neighbors, -1, ncubes*sizeof(*neighbors));
+	
+		/* put it in the field */
+		DXSetComponentValue(f, NEIGHBORS, (Object)a);
+		DXSetAttribute((Object)a, REF, O_CONNECTIONS);
+		DXSetAttribute((Object)a, DEP, O_CONNECTIONS);
+		DXSetAttribute((Object)a, DER, O_CONNECTIONS);
+	
+		hash = (struct hasharray *) DXAllocateLocalZero(npos * sizeof(struct hasharray));
+		if (!hash) {
+			DXResetError();
+			hash = (struct hasharray *) DXAllocateZero(npos * sizeof(struct hasharray));
+		}
+		if (!hash)
+			return NULL;
+	
+	
+		/* The current code above hashes against a quad not taking into account
+		 * that the quad could be degenerate. Instead I need to figure out a way
+		 * to make the algorithm set a neighbor of a degenerate quad to having
+		 * a neighbor if 3 points (a triangle) exist in any other tri or quad
+		 */
+		 for(cubenum=0, n=0; cubenum<ncubes; cubenum++) {
+		 
+			for(face=0; face<6; face++) {
+				int found = -1;
+				t = cubeface(cube[cubenum], face);
+							
+				// Make degenerates lines and points immediately neighbors
+				// so they are not shown.
+				if( (t.p == t.q && t.q == t.r) || (t.q == t.r && t.r == t.s) ||
+					(t.p == t.q && t.r == t.s) ) {
+					found = 1;
+					neighbors[cubenum][face] = 1;
+				}
+				else {
+				
+					/* 
+					 * Instead of using the hash algorithm like they did above, I
+					 * will use t.p as the starting point of searching for a 
+					 * neighbor. To search for neighbors, we have to compare at most
+					 * the total number of connections from a point.
+					 * 
+					 */
+					 
+					 
+					if (t.p == t.q || t.q == t.r || t.r == t.s) { /* t is a triangle */
+						for(i=0; i<hash[t.p].numels; i++) {
+							tt = cubeface(cube[hash[t.p].hashelements[i].element], hash[t.p].hashelements[i].face);
+							if((tt.p == tt.q && tt.q == tt.r) || (tt.q == tt.r && tt.r == tt.s)
+							   || (t.p == t.q && t.r == t.s)) {
+								/* line or point go on to next */
+							}
+							else if (t.p == t.q) { /* this is a tri */
+								if ( (t.p == tt.p && t.r == tt.q && t.s == tt.r) ||
+									 (t.p == tt.p && t.r == tt.q && t.s == tt.s) ||
+									 (t.p == tt.p && t.r == tt.r && t.s == tt.s) ||
+									 (t.p == tt.q && t.r == tt.r && t.s == tt.s) ) {
+									hash[t.p].hashelements[i].count += 1;
+									found = i;
+									neighbors[cubenum][face] = hash[t.p].hashelements[i].element;
+									neighbors[hash[t.p].hashelements[i].element][hash[t.p].hashelements[i].face] = cubenum;
+									break;
+								}
+							} else if (t.q == t.r || t.r == t.s) { /* this is a tri */
+								if ( (t.p == tt.p && t.q == tt.q && t.s == tt.r) ||
+									 (t.p == tt.p && t.q == tt.q && t.s == tt.s) ||
+									 (t.p == tt.p && t.q == tt.r && t.s == tt.s) ||
+									 (t.p == tt.q && t.q == tt.r && t.s == tt.s) ) {
+									hash[t.p].hashelements[i].count += 1;
+									found = i;
+									neighbors[cubenum][face] = hash[t.p].hashelements[i].element;
+									neighbors[hash[t.p].hashelements[i].element][hash[t.p].hashelements[i].face] = cubenum;
+									break;
+								}
+							}
+						}
+					}
+					else { /* t is a quad */
+						/*
+						 *  It is possible that a quad needs to cancel out 
+						 *  more than one quad or triangle. 
+						 */
+						
+						/* First find out if there are tris that start with p to cancel */
+						for(i=0; i<hash[t.p].numels; i++) {
+							tt = cubeface(cube[hash[t.p].hashelements[i].element], hash[t.p].hashelements[i].face);
+							if((tt.p == tt.q && tt.q == tt.r) || (tt.q == tt.r && tt.r == tt.s)
+							   || (tt.p == t.q && tt.r == tt.s)) {
+								/* tt is a line or point go on to next */
+							}
+							else if ( (tt.p == t.p && tt.q == t.q && tt.r == t.r && tt.s == t.s) ||
+								 (tt.p == t.p && tt.r == t.q && tt.s == t.r) ||
+								 (tt.p == t.p && tt.r == t.q && tt.s == t.s) ||
+								 (tt.p == t.p && tt.r == t.r && tt.s == t.s) ||
+								 (tt.p == t.q && tt.r == t.r && tt.s == t.s) ||
+								 (tt.p == t.p && tt.q == t.q && tt.s == t.r) ||
+								 (tt.p == t.p && tt.q == t.q && tt.s == t.s) ||
+								 (tt.p == t.p && tt.q == t.r && tt.s == t.s) ||
+								 (tt.p == t.q && tt.q == t.r && tt.s == t.s) ) {
+								hash[t.p].hashelements[i].count += 1;
+								found = i;
+								neighbors[cubenum][face] = hash[t.p].hashelements[i].element;
+								neighbors[hash[t.p].hashelements[i].element][hash[t.p].hashelements[i].face] = cubenum;
+							}
+						}
+						
+						/* Now cancel/check on any tris that start with q to cancel */
+						for(i=0; i<hash[t.q].numels; i++) {
+							tt = cubeface(cube[hash[t.q].hashelements[i].element], hash[t.q].hashelements[i].face);
+							if((tt.p == tt.q && tt.q == tt.r) || (tt.q == tt.r && tt.r == tt.s)
+							   || (tt.p == tt.q && tt.r == tt.s)) {
+								/* tt is a line or point go on to next */
+							}
+							else if ( (tt.p == tt.q || tt.q == tt.r || tt.r == tt.s) &&
+								 ( (tt.p == t.q && tt.r == t.r && tt.s == t.s) ||
+								   (tt.p == t.q && tt.q == t.r && tt.s == t.s) ) ) {
+								hash[t.q].hashelements[i].count += 1;
+								found = i;
+								neighbors[cubenum][face] = hash[t.q].hashelements[i].element;
+								neighbors[hash[t.q].hashelements[i].element][hash[t.q].hashelements[i].face] = cubenum;
+							}
+							
+						}
+							
+							
+					}
+				}
+	
+				/* no found surface so add it to table */
+				if (found == -1) {		/* new face: */
+					nsurface += 1;			/*     assume surface */
+					hash[t.p].numels++;
+					if(hash[t.p].numels > hash[t.p].existing) {
+						hash[t.p].existing += 6;
+						hash[t.p].hashelements = (struct hash*) DXReAllocate(
+							hash[t.p].hashelements, hash[t.p].existing * sizeof(struct hash));
+						if(!hash[t.p].hashelements)
+							goto degenerror;
+	
+					}
+						
+					hash[t.p].hashelements[hash[t.p].numels-1].element = cubenum;	/*     put entry in table */
+					hash[t.p].hashelements[hash[t.p].numels-1].face = face;
+					hash[t.p].hashelements[hash[t.p].numels-1].count = 1;
+					
+					/* If a quad, need to add the quad to search on qrs  */
+					if(t.p != t.q && t.q != t.r && t.r != t.s) {
+						hash[t.q].numels++;
+						if(hash[t.q].numels > hash[t.q].existing) {
+							hash[t.q].existing += 6;
+							hash[t.q].hashelements = (struct hash*) DXReAllocate(
+								hash[t.q].hashelements, hash[t.q].existing * sizeof(struct hash));
+							if(!hash[t.q].hashelements)
+								goto degenerror;
+						}
+							
+						hash[t.q].hashelements[hash[t.q].numels-1].element = cubenum;	/*     put entry in table */
+						hash[t.q].hashelements[hash[t.q].numels-1].face = face;
+						hash[t.q].hashelements[hash[t.q].numels-1].count = 1;					
+					}
+				}
+			}
+		 }
+		 
+		DXDebug("N", "%d faces (%d surface, %d inner), %d entries",
+			nsurface+ninner, nsurface, ninner, n);
+			
+		 for(i=0; i<npos; i++)
+			if(hash[i].hashelements)
+				DXFree((Pointer)hash[i].hashelements);
+	
+		DXFree((Pointer)hash);
+		return a;
+
+degenerror:
+		for(i=0; i<npos; i++)
+			if(hash[i].hashelements)
+				DXFree((Pointer)hash[i].hashelements);
+	
+		DXFree((Pointer)hash);
+		return NULL;
+	}
 
 }
