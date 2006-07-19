@@ -37,9 +37,9 @@ static struct ap_info {
 	/* shorts */
 	{ "%6d",                 8 },
 	/* unsigned ints */
-	{ "%9u",                 6 },
+	{ "%9u",                 8 },
 	/* ints */
-	{ "%9d",                 6 },
+	{ "%9d",                 8 },
 	/* floats */
 	{ "%12.7g",              6 },
 	/* doubles */
