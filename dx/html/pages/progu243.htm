@@ -44,7 +44,9 @@ returns the "neighbors" component of Field
 not exist, it is computed and added to the Field before
 returning.  Neighbors are not computed for connections with element type
 "lines."
-<P>
+
+		<p>For connections with element type &quot;cubes&quot;, neighbors may be generated differently if the field has the attribute &quot;neighbors hint&quot; set to &quot;degenerate cubes&quot;. This will cause the neighbors to be generated such that more internal cancelation of faces take place if cubes have been decomposed into other shapes such as pyramids and tetrahedra. It may cause triangles to be a neighbor to a quad.</p>
+		<P>
 For a Field with regular connections, returns
 <TT><STRONG>
 NULL
