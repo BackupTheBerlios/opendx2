@@ -8,7 +8,7 @@
 
 
 /*
- * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.10 2006/05/25 17:12:21 davidt Exp $
+ * $Header: /home/xubuntu/berlios_backup/github/tmp-cvs/opendx2/Repository/dx/src/uipp/java/server/DXLink.c,v 1.11 2006/07/21 17:56:29 davidt Exp $
  */
 #if defined(hp700) 
 #define _UINT64_T
@@ -103,14 +103,17 @@ JNIEXPORT jlong JNICALL Java_server_DXServer_DXLStartDX
 char cmdstr[256];
 DXLConnection* dxl;
 	jclass newExcCls;
+        const char *host;
+        const char *cmd;
+        const char *dxargs;
 	
 	(*env)->ExceptionDescribe(env);
 	(*env)->ExceptionClear(env);
 	newExcCls = (*env)->FindClass(env, "java/lang/IllegalArgumentException");
 
-    const char *host = (*env)->GetStringUTFChars(env, jhost,0);
-    const char *cmd = (*env)->GetStringUTFChars(env, jcmdstr,0);
-    const char* dxargs = (const char*)getenv("DXARGS");
+    host = (*env)->GetStringUTFChars(env, jhost,0);
+    cmd = (*env)->GetStringUTFChars(env, jcmdstr,0);
+    dxargs = (const char*)getenv("DXARGS");
 
     if ((dxargs) && (dxargs[0]))
 	sprintf (cmdstr, "dx %s", dxargs);
