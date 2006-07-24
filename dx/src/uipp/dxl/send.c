@@ -776,17 +776,32 @@ _dxl_ReadFromSocket(DXLConnection *conn)
     int    id, typei;
     char   type[8];
     int    nbytes;
-    char   buffer[4096];
+    
     char   *start;
     int    nRemaining;
 
+    char   *buffer;
+    char   *msgbuf;
+    int    bufSize = 4096;
+    int    mbufSize = 4096;
+
     if (conn->fd < 0)
 	return 0;
+
+    buffer = (char*) malloc(bufSize);
+    msgbuf = (char*) malloc(mbufSize);
 
     while (_dxl_IsReadable(conn)) {
 	int nread;
 
 	nRemaining = conn->nLeftOver;
+
+	while( nRemaining+1025 > bufSize ){
+	   char* tmp = buffer;
+	   bufSize *= 2;
+	   buffer = (char*) malloc( bufSize );
+	   free(tmp);
+	}
 
         if (nRemaining) {
 	    memcpy (buffer, conn->leftOver, nRemaining);
@@ -807,7 +822,7 @@ _dxl_ReadFromSocket(DXLConnection *conn)
         while (1) {
             int len, items;
 	    DXLEvent *event;
-	    char msgbuf[4096];
+	    
 	    int msgbytes_in_buffer;
 	    int bytes_used;
 	    short message_completed;
@@ -861,6 +876,13 @@ _dxl_ReadFromSocket(DXLConnection *conn)
 
 	    bytes_used = (len + nbytes + 2);   /* 2 = "|\n" */
 
+	    while( nbytes+2 > mbufSize ){
+	       char* tmp = msgbuf;
+	       mbufSize *= 2;
+	       msgbuf = (char*) malloc( mbufSize );
+	       free(tmp);
+	    }
+
 	    strncpy(msgbuf, start+len, nbytes + 2);
 	    if (bytes_used > nRemaining)
 		goto error;
@@ -886,10 +908,15 @@ _dxl_ReadFromSocket(DXLConnection *conn)
         }
     }
 
+    free(buffer);
+    free(msgbuf);
 
     return 1;
 
 error:
+
+    free(buffer);
+    free(msgbuf);
 
    _dxl_InvalidateSocket(conn);
     return 0;

@@ -366,8 +366,8 @@ ListIterator it;
 	if(dxlis && dxlis->getSize() > 1) {
 		fprintf(this->html_f, 
 			"\t<!-- DXLInputs are passed to the network via the DXLInput parameter.\n"
-			"\t     Any number of DXLInputs can be passed in by separating them and\n"
-			"\t     and their values with semi-colons.\n"
+			"\t     Any number of DXLInputs can be passed in using a one-line scripting\n"
+			"\t     language command using compound assignments.\n"
 			"\t-->\n");
 	
 		ListIterator iit(*dxlis);
