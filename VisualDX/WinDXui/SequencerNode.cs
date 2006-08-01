@@ -124,16 +124,16 @@ namespace WinDX.UI
         //
         // Protected member data:
         //
-        protected virtual String netNodeString(String prefix)
+        protected override String netNodeString(String prefix)
         { throw new Exception("not implemented yet"); }
-        protected virtual String valuesString(String prefix)
+        protected override String valuesString(String prefix)
         { throw new Exception("not implemented yet"); }
         protected virtual bool cfgPrintNode(String f, PrintType dest)
         { throw new Exception("not implemented yet"); }
 
         protected virtual bool netPrintAuxComment(String f)
         { throw new Exception("not implemented yet"); }
-        protected virtual bool netParseAuxComment(String comment,
+        protected override bool netParseAuxComment(String comment,
                                                     String file, int lineno)
         { throw new Exception("not implemented yet"); }
 
@@ -149,7 +149,7 @@ namespace WinDX.UI
         //
         // Returns the number of attributes parsed.
         //
-        protected virtual int handleNodeMsgInfo(String line)
+        protected override int handleNodeMsgInfo(String line)
         { throw new Exception("not implemented yet"); }
 
         //
@@ -157,7 +157,7 @@ namespace WinDX.UI
         // node.   Among other times, this is called after receiving a message
         // from the executive.
         //
-        protected virtual void reflectStateChange(bool unmanage)
+        protected override void reflectStateChange(bool unmanage)
         { throw new Exception("not implemented yet"); }
 
         //
@@ -195,7 +195,7 @@ namespace WinDX.UI
         // to install the 'Sequencer_%d:' handler.
         //
         protected virtual bool hasModuleMessagingProtocol() { return true; }
-        protected virtual void updateModuleMessageProtocol(DXPacketIF pif)
+        protected override void updateModuleMessageProtocol(DXPacketIF pif)
         { throw new Exception("not implemented yet"); }
 
         //
@@ -203,7 +203,7 @@ namespace WinDX.UI
         // (integer list of min and max) and then call the super class method
         // if the input is not the attribute parameter.
         //
-        protected virtual void ioParameterStatusChanged(bool input, int index,
+        protected override void ioParameterStatusChanged(bool input, int index,
                                     Node.NodeParameterStatusChange status)
         { throw new Exception("not implemented yet"); }
 
@@ -226,9 +226,9 @@ namespace WinDX.UI
         { throw new Exception("not implemented yet"); }
 
 
-        public virtual bool initialize()
+        public override bool initialize()
         { throw new Exception("not implemented yet"); }
-        public void openDefaultWindow(Form f)
+        public override void openDefaultWindow(Form f)
         { throw new Exception("not implemented yet"); }
         public bool isStartup()
         { throw new Exception("not implemented yet"); }
@@ -241,13 +241,13 @@ namespace WinDX.UI
         // A name describing the type of window can be written into window_name in order
         // to enable nicer warning messages.
         //
-        public virtual bool defaultWindowIsCDB(ref String window_name)
+        public override bool defaultWindowIsCDB(ref String window_name)
         {
             window_name = "Sequencer";
             return false;
         }
 
-        public virtual bool cfgParseComment(String comment,
+        public override bool cfgParseComment(String comment,
                                             String file,
                                             int lineno)
         { throw new Exception("not implemented yet"); }
@@ -290,19 +290,19 @@ namespace WinDX.UI
         //
         // Determine if this node is a node of the given class
         //
-        public virtual bool isA(Symbol classname)
+        public override bool isA(Symbol classname)
         { throw new Exception("not implemented yet"); }
 
-        public virtual bool canSwitchNetwork(Network from, Network to)
+        public override bool canSwitchNetwork(Network from, Network to)
         { throw new Exception("not implemented yet"); }
 
-        public virtual Form getDXWindow()
+        public override DXWindow getDXWindow()
         { return this.seq_window; }
 
         //
         // Return TRUE if this node has state that will be saved in a .cfg file.
         //
-        public virtual bool hasCfgState()
+        public override bool hasCfgState()
         { throw new Exception("not implemented yet"); }
 
         //
@@ -311,14 +311,14 @@ namespace WinDX.UI
         // When you do that, you must also change the id parameter and for that you
         // need its number.
         //
-        public virtual int getMessageIdParamNumber()
+        public override int getMessageIdParamNumber()
         { throw new Exception("not implemented yet"); }
 
-        public virtual String getJavaNodeName()
+        public override String getJavaNodeName()
         { return "SequencerNode"; }
-        public virtual bool printInputAsJava(int input)
+        public override bool printInputAsJava(int input)
         { throw new Exception("not implemented yet"); }
-        public virtual String getJavaInputValueString(int index)
+        public override String getJavaInputValueString(int index)
         { throw new Exception("not implemented yet"); }
 
         #endregion

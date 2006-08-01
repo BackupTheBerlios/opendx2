@@ -5,14 +5,14 @@ using System.Diagnostics;
 
 namespace WinDX.UI
 {
-    public delegate void DeferrableActionFunction(Network staticData, Node requestData);
+    public delegate void DeferrableActionFunction(Object staticData, Node requestData);
 
     public class DeferrableAction
     {
         private bool required;
         private int deferrals;
         private DeferrableActionFunction actionFunction;
-        private Network staticData;
+        private Object staticData;
 
         protected void setActionRequired() { required = true; }
 
@@ -23,7 +23,7 @@ namespace WinDX.UI
             actionFunction = daf;
             staticData = null;
         }
-        public DeferrableAction(DeferrableActionFunction daf, Network data)
+        public DeferrableAction(DeferrableActionFunction daf, Object data)
         {
             required = false;
             deferrals = 0;

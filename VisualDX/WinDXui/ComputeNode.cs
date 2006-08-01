@@ -12,7 +12,65 @@ namespace WinDX.UI
         protected String expression;
         protected List<String> nameList = new List<string>();
 
-        protected String resolveExpression() { throw new Exception("Not Yet Implemented"); }
+        protected String resolveExpression()
+        {
+            if (expression == null)
+                return "";
+
+            int namesize = nameList.Count;
+            bool substituted = false;
+
+            String output = "\"";
+            String token = "";
+            int i = 0;
+            int expLength = expression.Length;
+
+            for (; ; )
+            {
+                while (i < expLength &&
+                    !Char.IsLetter(expression[i]) &&
+                    expression[i] != '_')
+                {
+                    output += expression[i++].ToString();
+                }
+                // Get out of loop since reached end of string.
+                if (i >= expLength)
+                    break;
+
+                token = "";
+                while (i < expLength &&
+                    Char.IsLetterOrDigit(expression[i]) ||
+                    expression[i] == '_')
+                {
+                    token += expression[i++].ToString();
+                }
+
+                // Is the identifier a component name (".x", ".y", etc.)?
+                substituted = false;
+                if (output.Length == 0 || (output[output.Length - 1] != '.'))
+                {
+                    // The name token is not a component name (".x", ".y", etc.).
+                    // Compare it against the name list and substitute if found.
+                    for (int k = 0; k < namesize; k++)
+                    {
+                        if (token == nameList[k])
+                        {
+                            substituted = true;
+                            output += "$" + (k-1).ToString();
+                            break;
+                        }
+                    }
+                }
+                // Yes, it is a component name.
+                // Don't substitute ".x", ".y", ".z" stuff.
+                if (!substituted)
+                {
+                    output += token;
+                }
+            }
+            output += "\"";
+            return output;
+        }
 
         protected override bool netPrintAuxComment(StreamWriter s)
         {
@@ -75,7 +133,7 @@ namespace WinDX.UI
 
         public void setName(String name, int i, bool send)
         {
-            if (i - 1 > nameList.Count)
+            if (i > nameList.Count)
                 nameList.Add(name);
             else
                 nameList[i - 1] = name;

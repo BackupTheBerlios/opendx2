@@ -578,11 +578,16 @@ namespace WinDX.UI
         }
         public static bool Equals(DXType type1, DXType type2)
         {
+            if (Object.Equals(type1, null) && Object.Equals(type2, null))
+                return true;
+            else if (Object.Equals(type1, null) || Object.Equals(type2, null))
+                return false;
+
             return type1.type == type2.type;
         }
         public static bool operator ==(DXType type1, DXType type2)
         {
-            return type1.type == type2.type;
+            return Equals(type1, type2);
         }
 
         public static bool operator !=(DXType type1, DXType type2)

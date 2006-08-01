@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace WinDX.UI
 {
-    class InteractorStyle
+    public class InteractorStyle
     {
         public enum Style
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Diagnostics;
 
 namespace WinDX.UI
@@ -37,7 +38,41 @@ namespace WinDX.UI
         /// <param name="line"></param>
         protected override void execModuleMessageHandler(int id, string line)
         {
-            throw new Exception("The method or operation is not implemented.");
+            bool do_notify = true;
+            deferVisualNotification();
+            Regex regex = new Regex(@".*:.*:(.*)");
+            Match m = regex.Match(line);
+            String substr = "";
+
+            if (m.Success)
+                substr = m.Groups[1].Value;
+
+            if (!handlingLongMessage && substr.StartsWith("  begin"))
+            {
+                // Begin handling a long message.
+                handlingLongMessage = true;
+                //Don't notify visuals during a long message.
+                do_notify = false;
+            }
+            else if (substr.StartsWith("  end"))
+            {
+                // End of long message encountered.
+                handlingLongMessage = false;
+                // Always notify visuals after a long message.
+                do_notify = true;
+            }
+            else
+            {
+                // Handle both long and short messages.
+                // Only do notification on short messages.
+                int values = handleNodeMsgInfo(line);
+                do_notify = (!handlingLongMessage && values > 0);
+            }
+
+            if (do_notify)
+                notifyVisualsOfStateChange();
+
+            undeferVisualNotification(true);
         }
 
         /// <summary>
@@ -67,7 +102,7 @@ namespace WinDX.UI
         /// <returns></returns>
         protected override bool expectingModuleMessage()
         {
-            throw new Exception("Not Yet Implemented");
+            return IsDataDriven;
         }
 
 
@@ -118,7 +153,7 @@ namespace WinDX.UI
         {
             if (input && (long)(status & NodeParameterStatusChange.ParameterArkChanged) > 0)
             {
-                bool driven = IsDataDriven();
+                bool driven = IsDataDriven;
                 if (driven)
                 {
                     for (int i = 1; i <= OutputCount; i++)
@@ -153,7 +188,22 @@ namespace WinDX.UI
         { return setInputAttributeFromServer(index, val, DXTypeVals.UndefinedType); }
         protected DXTypeVals setInputAttributeFromServer(int index, String val, DXTypeVals t)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p = getInputParameter(index);
+            Debug.Assert(p is AttributeParameter);
+
+            bool was_dirty = p.IsDirty;
+
+            bool r = setInputAttributeParameter(index, val);
+
+            if (!was_dirty)
+                clearInputDirty(index);
+            Debug.Assert(r);
+            if (t == DXTypeVals.UndefinedType)
+            {
+                AttributeParameter ap = (AttributeParameter)p;
+                t = ap.getAttributeValueType();
+            }
+            return t;
         }
 
         /// <summary>
@@ -169,16 +219,19 @@ namespace WinDX.UI
         { return setInputAttributeParameter(index, val, false); }
         protected bool setInputAttributeParameter(int index, String val, bool forceSync)
         {
-            throw new Exception("Not Yet Implemented");
+            AttributeParameter p = (AttributeParameter)getInputParameter(index);
+            return p.setAttributeValue(val, forceSync);
         }
 
         protected bool initInputAttributeParameter(int index, String val)
         {
-            throw new Exception("Not Yet Implemented");
+            AttributeParameter p = (AttributeParameter)getInputParameter(index);
+            return p.initAttributeValue(val);
         }
         protected String getInputAttributeParameterValue(int index)
         {
-            throw new Exception("Not Yet Implemented");
+            AttributeParameter p = (AttributeParameter)getInputParameter(index);
+            return p.getAttributeValueString();
         }
 
         /// <summary>
@@ -218,15 +271,18 @@ namespace WinDX.UI
         /// otherwise FALSE.
         /// </summary>
         /// <returns></returns>
-        public virtual bool IsDataDriven()
+        public virtual bool IsDataDriven
         {
-            bool driven = false;
-            for (int i = 1; !driven && i <= InputCount; i++)
+            get
             {
-                if (isInputViewable(i))
-                    driven = !isInputDefaulting(i);
+                bool driven = false;
+                for (int i = 1; !driven && i <= InputCount; i++)
+                {
+                    if (isInputViewable(i))
+                        driven = !isInputDefaulting(i);
+                }
+                return driven;
             }
-            return driven;
         }
 
 

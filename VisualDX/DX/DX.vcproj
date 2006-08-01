@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="ws2_32.lib opengl32.lib glu32.lib BINMODE.OBJ"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="true"

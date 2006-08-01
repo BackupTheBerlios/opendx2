@@ -6,7 +6,7 @@ namespace WinDX.UI
 {
     public delegate Decorator DecoratorAllocator(bool developerStyle);
 
-    class DecoratorStyle
+    public class DecoratorStyle
     {
         private static Dictionary<String, Dictionary<String, DecoratorStyle>> theDecoratorStyleDictionary = null;
 
@@ -65,7 +65,7 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
-        public static Dictionary<String, Dictionary<String, DecoratorStyle>> GetDecoratorStyleDictionary(String decorator)
+        public static Dictionary<String, DecoratorStyle> GetDecoratorStyleDictionary(String decorator)
         {
             throw new Exception("Not Yet Implemented");
         }

@@ -104,7 +104,8 @@ namespace WinDX.UI
         /// <param name="line"></param>
         private static void ExecModuleMessageHandler(Object clientData, int id, String line)
         {
-            throw new Exception("Not Yet Implemented");
+            Node node = (Node)clientData;
+            node.execModuleMessageHandler(id, line);
         }
 
         /// <summary>
@@ -295,7 +296,13 @@ namespace WinDX.UI
         /// <returns></returns>
         private String getIOSetValueString(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Parameter p;
+            Debug.Assert(index >= 1);
+
+            p = io[index-1];
+            Debug.Assert(p != null);
+
+            return p.getSetValueString();
         }
 
         /// <summary>
@@ -426,7 +433,10 @@ namespace WinDX.UI
         /// <returns>A list of types for the given parameter.</returns>
         List<DXType> getIOTypes(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(index >= 1);
+            Parameter p = io[index - 1];
+            Debug.Assert(p != null);
+            return p.Definition.getTypes();
         }
 
         /// <summary>
@@ -437,7 +447,11 @@ namespace WinDX.UI
         /// <returns></returns>
         private bool isIOVisible(List<Parameter> io, int index)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(index >= 1);
+            Parameter p = io[index-1];
+            Debug.Assert(p != null);
+
+            return p.IsVisible;
         }
 
         /// <summary>
@@ -682,11 +696,11 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
-        protected Parameter getInputParameter(int i)
+        public Parameter getInputParameter(int i)
         {
             return inputParameters[i-1];
         }
-        protected Parameter getOutputParameter(int i)
+        public Parameter getOutputParameter(int i)
         {
             return outputParameters[i-1];
         }
@@ -889,10 +903,10 @@ namespace WinDX.UI
                         }
                         else if (defaulting > 0)
                         {
-                            r = setInputValue(ionum, value, type, false);
+                            r = setInputSetValue(ionum, value, type, false);
                             if (r == DXTypeVals.UndefinedType &&
                                 type != DXTypeVals.UndefinedType)
-                                r = setInputValue(ionum, value, DXTypeVals.UndefinedType, false);
+                                r = setInputSetValue(ionum, value, DXTypeVals.UndefinedType, false);
                         }
                         else
                         {
@@ -1435,7 +1449,7 @@ namespace WinDX.UI
                 if (getNodeCacheability() == p.getCacheability())
                     buf = newprefix + i.ToString() + (i == num_params ? "" : ",\n");
                 else
-                    buf = newprefix + i.ToString() + "[cache: " + ((int)p.getCacheability()).ToString() +
+                    buf = newprefix + i.ToString() + "[cache: " + ((int)p.getCacheability()).ToString() + "]" +
                         (i == num_params ? "" : ",\n");
 
                 retstr += buf;
@@ -1492,7 +1506,21 @@ namespace WinDX.UI
         /// <param name="pif"></param>
         protected virtual void updateModuleMessageProtocol(DXPacketIF pif)
         {
-            throw new Exception("Not Yet Implemented");
+            String id = getModuleMessageIdString();
+
+            if (expectingModuleMessage())
+            {
+                // Install a callback to handle messages from the module 
+                pif.setHandler(PacketIF.PacketType.INFORMATION,
+                    Node.ExecModuleMessageHandler,
+                    this, id);
+            }
+            else
+            {
+                // Remove the handler in case it was previously installed.
+                pif.setHandler(PacketIF.PacketType.INFORMATION,
+                    null, this, id);
+            }
         }
 
         /// <summary>
@@ -1572,7 +1600,21 @@ namespace WinDX.UI
         /// <returns></returns>
         protected bool verifyRestrictedLabel(String label)
         {
-            throw new Exception("Not Yet Implemented");
+            int junk = 0;
+            if (!Utils.IsIdentifier(label))
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("{0} name \"{1}\" must consist of letters, numbers, or the " +
+                    "character '_', and begin with a letter", NameString, label);
+                return false;
+            }
+            if (Utils.IsReservedScriptingWord(label))
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("{0} name \"{1}\" is a reserved word", NameString, label);
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -1653,9 +1695,154 @@ namespace WinDX.UI
             if (instanceNumber < 1)
                 instanceNumber = nd.newInstanceNumber();
         }
+
+        private struct ArkInfo
+        {
+            public int srcIndex;
+            public int dstIndex;
+            public Node src;
+            public Node dst;
+        }
+
         public virtual void updateDefinition()
         {
-            throw new Exception("Not Yet Implemented");
+            int numInputs = InputCount;
+
+            bool[] defaulting = new bool[numInputs];
+            bool[] visibilities = new bool[numInputs];
+            String[] values = new String[numInputs];
+            List<ArkInfo>[] inputArks = new List<ArkInfo>[numInputs];
+
+            for (int i = 1; i <= numInputs; i++)
+            {
+                inputArks[i - 1] = null;
+                values[i - 1] = null;
+                defaulting[i - 1] = false;
+                visibilities[i - 1] = isInputVisible(i);
+                if (isInputConnected(i))
+                {
+                    List<Ark> arcs = getInputArks(i);
+                    inputArks[i - 1] = new List<ArkInfo>();
+                    foreach (Ark a in arcs)
+                    {
+                        ArkInfo ai = new ArkInfo();
+                        ai.src = a.getSourceNode(out ai.srcIndex);
+                        ai.dst = a.getDestinationNode(out ai.dstIndex);
+                        inputArks[i - 1].Add(ai);
+                    }
+                }
+                else if (!(defaulting[i - 1] = isInputDefaulting(i)))
+                    values[i - 1] = getInputValueString(i);
+            }
+            inputParameters.Clear();
+
+            int numOutputs = OutputCount;
+            List<ArkInfo>[] outputArks = new List<ArkInfo>[numOutputs];
+            for (int i = 1; i <= numOutputs; i++)
+            {
+                outputArks[i - 1] = null;
+                if (isOutputConnected(i))
+                {
+                    List<Ark> arcs = getOutputArks(i);
+                    outputArks[i - 1] = new List<ArkInfo>();
+                    foreach (Ark a in arcs)
+                    {
+                        ArkInfo ai = new ArkInfo();
+                        ai.src = a.getSourceNode(out ai.srcIndex);
+                        ai.dst = a.getDestinationNode(out ai.dstIndex);
+                        outputArks[i - 1].Add(ai);
+                    }
+                }
+            }
+            outputParameters.Clear();
+            buildParameterLists();
+
+            for (int i = 1; i <= numInputs && i <= InputCount; i++)
+            {
+                setInputVisibility(i, visibilities[i - 1]);
+                if (inputArks[i - 1] != null)
+                {
+                    foreach (ArkInfo ai in inputArks[i - 1])
+                    {
+                        if (ai.src.typeMatchOutputToInput(ai.srcIndex, ai.dst, ai.dstIndex))
+                        {
+                            Ark newArk = new Ark(ai.src, ai.srcIndex, ai.dst, ai.dstIndex);
+                            if (ai.src.getNetwork().getEditor() != null &&
+                                ai.src.getStandIn() != null)
+                                ai.src.getStandIn().addArk(ai.src.getNetwork().getEditor(),
+                                    newArk);
+                        }
+                    }
+                    inputArks[i - 1] = null;
+                }
+                else if (defaulting[i - 1])
+                    useDefaultInputValue(i);
+                else
+                    setInputValue(i, values[i - 1]);
+            }
+
+            // must increase j by the number of repeats added in buildParameterLists()
+            int repeats = InputCount - definition.InputCount;
+            int mini = Math.Min(numInputs, InputCount);
+            int j = numInputs + repeats;
+            for (; j >= mini; j--)
+            {
+                if (cdb != null)
+                    cdb.deleteInput(j);
+                if (standin != null)
+                    standin.removeLastInput();
+            }
+            for (; mini <= InputCount; mini++)
+            {
+                if (cdb != null)
+                    cdb.newInput(mini);
+                if (standin != null)
+                    standin.addInput(mini);
+            }
+
+            for (int i = 1; i <= numOutputs && i <= OutputCount; i++)
+            {
+                if (outputArks[i - 1] != null)
+                {
+                    foreach (ArkInfo ai in outputArks[i - 1])
+                    {
+                        if (ai.src.typeMatchOutputToInput(ai.srcIndex,
+                            ai.dst, ai.dstIndex))
+                        {
+                            Ark newArk = new Ark(ai.src, ai.srcIndex,
+                                ai.dst, ai.dstIndex);
+                            if (ai.src.getNetwork().getEditor() != null &&
+                                ai.src.getStandIn() != null)
+                            {
+                                ai.src.getStandIn().addArk(ai.src.getNetwork().getEditor(),
+                                    newArk);
+                            }
+                        }
+                        outputArks[i - 1] = null;
+                    }
+                }
+                notifyIoParameterStatusChanged(false, i, NodeParameterStatusChange.ParameterValueChanged);
+            }
+            j = numOutputs;
+            mini = Math.Min(numOutputs, OutputCount);
+
+            for (; j >= mini; j--)
+            {
+                if (cdb != null)
+                    cdb.deleteOutput(j);
+                if (standin != null)
+                    standin.removeLastOutput();
+            }
+            for (; mini <= OutputCount; mini++)
+            {
+                if (cdb != null)
+                    cdb.newOutput(mini);
+                if (standin != null)
+                    standin.addOutput(mini);
+            }
+
+            EditorWindow e = getNetwork().getEditor();
+            if (e != null) e.notifyDefinitionChange(this);
         }
 
         /// <summary>
@@ -1761,7 +1948,10 @@ namespace WinDX.UI
         {
             get
             {
-                throw new Exception("Not Yet Implemented");
+                if (labelSymbol == Symbol.zero)
+                    return NameString;
+                else
+                    return SymbolManager.theSymbolManager.getSymbolString(labelSymbol);
             }
         }
 
@@ -2038,9 +2228,15 @@ namespace WinDX.UI
 
         // Match output_index of this node tho input_index of n. Returns true
         // if they can connect.
-        public virtual bool typeMatchOutputToInput(int output_index, Node n, int input_index)
+        public virtual bool typeMatchOutputToInput(int output_index, Node dest, int input_index)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(output_index >= 1);
+            Debug.Assert(input_index >= 1);
+
+            Parameter pout = outputParameters[output_index-1];
+            Parameter pin = dest.inputParameters[input_index-1];
+            Debug.Assert(pin != null && pout != null);
+            return pin.typeMatch(pout);
         }
 
         // Set the stored value.
@@ -2252,7 +2448,8 @@ namespace WinDX.UI
             else
             {
                 Debug.Assert(destination == PrintType.PrintExec);
-                pif.sendBytes(s);
+                if (s.Length > 0)
+                    pif.sendBytes(s);
             }
 
             return r;

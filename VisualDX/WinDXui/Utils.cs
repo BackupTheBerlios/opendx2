@@ -80,7 +80,7 @@ namespace WinDX.UI
             norm_xsize = float.Parse(sVal);
             sVal = match.Groups[4].Captures[0].Value;
             norm_ysize = float.Parse(sVal);
-            if (match.Groups.Count == 6)
+            if (match.Captures.Count == 6)
             {
                 sVal = match.Groups[5].Captures[0].Value;
                 screen = Int32.Parse(sVal);
@@ -510,6 +510,85 @@ namespace WinDX.UI
             }
 
             return Path.GetFullPath(oldpath);
+        }
+
+        /// <summary>
+        /// Determines if a string is a valid dx identifier
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static bool IsIdentifier(String id)
+        {
+            if (id == null || id.Length == 0)
+                return false;
+
+            id = id.Trim();
+
+            Regex regex = new Regex(@"[A-Za-z_@][A-Za-z0-9_@]*");
+            return regex.Match(id).Success;
+        }
+
+        /// <summary>
+        /// Determines if a string is a valid dx restricted identifier
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static bool IsRestrictedIdentifier(String id)
+        {
+            if (id == null || id.Length == 0)
+                return false;
+
+            id = id.Trim();
+
+            Regex regex = new Regex(@"[A-Za-z][A-Za-z0-9]*");
+            return regex.Match(id).Success;
+        }
+
+        /// <summary>
+        /// Determines if a string is a reserved scripting word
+        /// </summary>
+        /// <param name="word"></param>
+        /// <returns></returns>
+        public static bool IsReservedScriptingWord(String word)
+        {
+            String[] ReservedScriptingWords = {
+	// Reserved key words
+	    "begin",
+	    "cancel",
+	    "describe",
+	    "else",
+	    "end",
+	    "for",
+	    "if",
+	    "include",
+	    "list",
+	    "macro",
+	    "print",
+	    "quit",
+	    "repeat",
+	    "then",
+	    "until",
+	    "while",
+	// VCR interface
+	    "backward",
+	    "forward",
+	    "loop",
+	    "off",
+	    "on",
+	    "palindrome",
+	    "pause",
+	    "play",
+	    "sequence",
+	    "step",
+	    "stop"
+                };
+            foreach (String rw in ReservedScriptingWords)
+            {
+                if (rw == word)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

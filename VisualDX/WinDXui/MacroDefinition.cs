@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace WinDX.UI
 {
@@ -16,7 +17,7 @@ namespace WinDX.UI
         protected String fileName;
         protected Network body;
         
-        protected List<Node> referencingNodes;
+        protected List<Node> referencingNodes = new List<Node>();
 
         protected bool initialRead;
         protected bool updatingServer; // Are we calling DXExecCtl.updateMacros()
@@ -29,6 +30,8 @@ namespace WinDX.UI
         {
             get { return fileName; }
         }
+
+        public static readonly String OLD_DUMMY_DESCRIPTION_STRING = "Generated dummy input";
 
         #endregion
 
@@ -55,7 +58,41 @@ namespace WinDX.UI
         public static bool LoadMacro(String fileName, ref String errmsg,
             bool asSystemMacro)
         {
-            throw new Exception("Not yet implemented.");
+            String netFile = Network.FilenameToNetname(fileName);
+            bool return_code = true;
+            bool wasEncoded;
+
+            if (errmsg != null)
+                errmsg = null;
+
+            FileStream fs = Network.OpenNetworkFile(netFile, out wasEncoded, ref errmsg);
+
+            if (fs == null)
+            {
+                return_code = false;
+            }
+            else
+            {
+                bool wasMacro;
+                StreamReader sr = new StreamReader(fs);
+                MacroDefinition.LoadMacroFile(sr, netFile, true, out wasMacro, asSystemMacro);
+                Network.CloseNetworkFile(fs, wasEncoded);
+                if (!wasMacro)
+                {
+                    String errtxt = "File {0} doesn't contain a macro and was not loaded";
+                    if (errmsg != null)
+                    {
+                        errmsg = String.Format(errtxt, netFile);
+                    }
+                    else
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post(errtxt, netFile);
+                    }
+                    return_code = false;
+                }
+            }
+            return return_code;
         }
 
         /// <summary>
@@ -72,8 +109,11 @@ namespace WinDX.UI
         /// <returns></returns>
         public static bool LoadMacroDirectories(String path)
         {
+            TimedDialog.NotifyUser("Loading Macro Directories");
             String errmsg = null;
             return LoadMacroDirectories(path, false, ref errmsg, false);
+            TimedDialog.NotifyUser("");
+
         }
         public static bool LoadMacroDirectories(String path,
             bool replace)
@@ -160,7 +200,7 @@ namespace WinDX.UI
         {
             if (body != null)
             {
-                body.setDefinition(null);
+                body.Definition = null;
                 DXApplication.theDXApplication.macroList.Remove(body);
                 if (!body.IsDeleted)
                     body = null;
@@ -304,13 +344,13 @@ namespace WinDX.UI
             if (body == null)
             {
                 body = DXApplication.theDXApplication.newNetwork();
-                body.setDefinition(this);
+                body.Definition = this;
                 initialRead = true;
                 bool r = body.readNetwork(fileName);
                 initialRead = false;
                 if (!r)
                 {
-                    body.setDefinition(null);
+                    body.Definition = null;
                     body = null;
                     return false;
                 }
@@ -346,32 +386,372 @@ namespace WinDX.UI
         protected static bool LoadMacroFile(StreamReader file, String filename, 
             bool replace, out bool wasMacro, bool asSystemMacro)
         {
+            bool inMDF = false;
+            int lineNo = 0;
+            NodeDefinition nd = null;
+            MacroDefinition oldMd = null, md = null;
+            ParameterDefinition most_recent_param = null;
+
+            wasMacro = false;
+
             if (DXApplication.theDXApplication.InDebugMode)
                 Console.WriteLine("read macro from {0}\n", filename);
 
             SymbolManager symbolManager = SymbolManager.theSymbolManager;
 
-            throw new Exception("Not yet implemented.");
+            String line;
+            while ((line = file.ReadLine()) != null)
+            {
+                lineNo++;
 
+                if (line.StartsWith("// Begin MDF"))
+                {
+                    inMDF = true;
+                }
+                else if (inMDF && line.StartsWith("// End MDF"))
+                {
+                    inMDF = false;
+                    break;
+                }
+                else if (!inMDF && line.StartsWith("// MODULE"))
+                {
+                    if (DXApplication.theDXApplication.InDebugMode)
+                        Console.WriteLine("Macro rejected");
+                    wasMacro = false;
+                    goto error;
+                }
+                else if (inMDF && line.StartsWith("// MODULE"))
+                {
+                    wasMacro = true;
+                    Regex regex = new Regex(@"// MODULE (.+)");
+                    Match match = regex.Match(line);
+                    if (!match.Success)
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Invalid MODULE comment at line {0} of {1}.",
+                            lineNo, filename);
+                        goto error;
+                    }
+                    String name = match.Groups[1].Value.Trim();
+                    int index = 0;
+                    if (!Utils.IsRestrictedIdentifier(name))
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Invalid macro name: {0} must start with a letter " +
+                            "and contain only letters and numbers at line {0} of {1}.",
+                            name, lineNo, filename);
+                        goto error;
+                    }
+
+                    if (name == "main")
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("The macro name must not be \"main\" " +
+                            "at line {0} of {1}.", lineNo, filename);
+                        goto error;
+                    }
+
+                    Symbol s = SymbolManager.theSymbolManager.getSymbol(name);
+                    if (theNodeDefinitionDictionary.TryGetValue(s, out nd))
+                    {
+                        if (!nd.IsDerivedFromMacro())
+                        {
+                            ErrorDialog ed = new ErrorDialog();
+                            ed.post("Standard module \"{0}\" cannot be redefined. " +
+                                "Macro file \"{1}\" not loaded.", name, filename);
+                            goto error;
+                        }
+                        else if (!replace)
+                        {
+                            goto error;
+                        }
+                        oldMd = (MacroDefinition)nd;
+                    }
+                    md = new MacroDefinition(asSystemMacro);
+                    md.setName(name);
+                    md.setFileName(filename);
+                    if (nd != null)
+                        md.setNextInstance(nd.newInstanceNumber());
+                }
+                else if (inMDF && line.StartsWith("// CATEGORY"))
+                {
+                    Regex regex = new Regex(@"// CATEGORY (.*)");
+                    Match match = regex.Match(line);
+                    if (!match.Success)
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Invalid CATEGORY comment at line {0} of {1}.",
+                            lineNo, filename);
+                        goto error;
+                    }
+                    md.Category = symbolManager.registerSymbol(match.Groups[1].Value);
+                }
+                else if (inMDF && line.StartsWith("// DESCRIPTION"))
+                {
+                    Regex regex = new Regex(@"// DESCRIPTION (.*)");
+                    Match match = regex.Match(line);
+                    if (!match.Success)
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Invalid DESCRIPTION comment at line {0} of {1}.",
+                            lineNo, filename);
+                        goto error;
+                    }
+                    md.Description = match.Groups[1].Value;
+                }
+                else if (inMDF && line.StartsWith("// INPUT"))
+                {
+                    Regex regex = new Regex(@"// INPUT ([^;]+); ([^;]+); ([^;]+);(.*)");
+                    Match match = regex.Match(line);
+
+                    if (!match.Success)
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Invalid INPUT comment at line {0} of {1}.",
+                            lineNo, filename);
+                        goto error;
+                    }
+
+                    String name = match.Groups[1].Value.Trim();
+                    String types = match.Groups[2].Value.Trim();
+                    String deflt = match.Groups[3].Value.Trim();
+
+                    String attr = "";
+                    regex = new Regex(@"(.*)[(.*)]");
+                    match = regex.Match(name);
+                    if (match.Success)
+                    {
+                        name = match.Groups[1].Value;
+                        attr = match.Groups[2].Value;
+                    }
+
+                    if (!Utils.IsIdentifier(name))
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Invalid parameter name at line {0} of {1}.",
+                            lineNo, filename);
+                        goto error;
+                    }
+
+                    int visattr = 1;
+                    if (attr.Contains("visible:"))
+                    {
+                        regex = new Regex(@"visible:\s*(\d+)");
+                        match = regex.Match(attr);
+                        if (match.Success)
+                            visattr = Int32.Parse(match.Groups[1].Value);
+                    }
+
+                    ParameterDefinition pd = new ParameterDefinition(symbolManager.registerSymbol(name));
+                    String descr = "";
+                    if (match.Groups.Count == 5)
+                    {
+                        descr = match.Groups[4].Value.Trim();
+                    }
+                    if (descr.Contains(OLD_DUMMY_DESCRIPTION_STRING) ||
+                        descr.Contains(ParameterDefinition.DUMMY_DESCRIPTION_STRING))
+                        pd.setDummy(true);
+                    else
+                        pd.setDescription(descr);
+
+                    switch (visattr)
+                    {
+                        case 0: pd.setDefaultVisibility(false); break;
+                        case 1: pd.setDefaultVisibility(true); break;
+                        case 2: pd.setViewability(false); break;
+                    }
+                    pd.markAsInput();
+                    if (!ParseMDF.ParseMDFTypes(ref pd, types, lineNo))
+                    {
+                        goto error;
+                    }
+
+                    if (deflt[0] == '(')
+                    {
+                        pd.setDescriptiveValue(deflt);
+                        if (deflt == "(none)")
+                            pd.setRequired();
+                    }
+                    else if (!pd.setDefaultValue(deflt))
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Invalid default parameter value at line {0} of {1}.",
+                        lineNo, filename);
+                        pd = null;
+                        goto error;
+                    }
+                    md.addInput(pd);
+                    most_recent_param = pd;
+                }
+                else if (most_recent_param != null && line.Contains("// OPTIONS"))
+                {
+                    // must convert trailing \n to whitespace becuase 
+                    // ParseMDFOptions expects it that way.
+                    List<String> toks = Utils.StringTokenizer(line.Substring(11), ";", null);
+                    foreach (String tok in toks)
+                    {
+                        most_recent_param.addValueOption(tok.Trim());
+                    }
+                }
+                else if (inMDF && line.StartsWith("// OUTPUT"))
+                {
+                    String name = "", types = "", descr = "", attr = "";
+                    Regex regex = new Regex(@"// OUTPUT ([^;]+); ([^;]+);([^;]*)");
+                    Match match = regex.Match(line);
+                    if (match.Success)
+                    {
+                        name = match.Groups[1].Value;
+                        types = match.Groups[2].Value;
+                        if (match.Groups[3].Captures.Count > 0)
+                            descr = match.Groups[3].Value.Trim();
+                    }
+                    else
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Invalid OUTPUT comment at line {0} of {1}.",
+                        lineNo, filename);
+                        goto error;
+                    }
+                    regex = new Regex(@"(.+)[(.*)]");
+                    match = regex.Match(name);
+                    if (match.Success)
+                    {
+                        name = match.Groups[1].Value;
+                        attr = match.Groups[2].Value;
+                    }
+                    if (!Utils.IsIdentifier(name))
+                    {
+                        ErrorDialog ed = new ErrorDialog();
+                        ed.post("Invalid parameter name at line {0} of {1}.",
+                        lineNo, filename);
+                        goto error;
+                    }
+                    int visattr = 1;
+                    if (attr.Contains("visible:"))
+                    {
+                        regex = new Regex(@"visible:\s*(\d+)");
+                        match = regex.Match(attr);
+                        if (match.Success)
+                            visattr = Int32.Parse(match.Groups[1].Value);
+                    }
+
+                    ParameterDefinition pd = new ParameterDefinition(symbolManager.registerSymbol(name));
+                    if (descr.Contains(OLD_DUMMY_DESCRIPTION_STRING) ||
+                        descr.Contains(ParameterDefinition.DUMMY_DESCRIPTION_STRING))
+                        pd.setDummy(true);
+                    else
+                        pd.setDescription(descr);
+
+                    switch (visattr)
+                    {
+                        case 0: pd.setDefaultVisibility(false); break;
+                        case 1: pd.setDefaultVisibility(true); break;
+                        case 2: pd.setViewability(false); break;
+                    }
+                    pd.markAsOutput();
+                    if (!ParseMDF.ParseMDFTypes(ref pd, types, lineNo))
+                    {
+                        goto error;
+                    }
+                    md.addOutput(pd);
+                }
+                else if (inMDF)
+                {
+                    WarningDialog wd = new WarningDialog();
+                    wd.post("Encountered unrecognized MDF line at line {0} of '{1}', ignored.",
+                        lineNo, filename);
+                }
+                if (line.StartsWith("// INPUT"))
+                {
+                    most_recent_param = null;
+                }
+            }
+            if (md == null)
+                goto error;
+
+            md.completeDefinition();
+            if (!asSystemMacro)
+            {
+                if (oldMd != null)
+                {
+                    oldMd.setNodeDefinitions(md);
+                    ToolSelector.RemoveTool(oldMd.Category, oldMd.NameSymbol);
+
+                    // Check if the macro is changed.
+                    if (oldMd.body != null && oldMd.saveCmd != null &&
+                        oldMd.body.SaveToFileRequired)
+                    {
+                        oldMd.saveCmd.setNext(null);
+                        oldMd.saveCmd.execute();
+                    }
+                    else
+                        oldMd = null;
+                }
+            }
+            theNodeDefinitionDictionary[md.NameSymbol] = md;
+
+            if (!asSystemMacro)
+            {
+                ToolSelector.AddTool(md.Category, md.NameSymbol, md);
+                ToolSelector.UpdateCategoryList();
+            }
+
+            if (DXApplication.theDXApplication.InDebugMode)
+                Console.WriteLine("Macro {0} accepted", md.NameString);
+
+            return true;
+
+        error:
+            if (md != null)
+                md = null;
+            return false;
         }
 
         protected virtual bool removeIODef(List<ParameterDefinition> l, 
             ParameterDefinition pd)
         {
-            throw new Exception("Not yet implemented.");
+            l.Remove(pd);
+            if (!initialRead)
+                setNodeDefinitions(this);
+            return true;
         }
 
         protected override bool addIODef(List<ParameterDefinition> l,
             ParameterDefinition pd)
         {
-            throw new Exception("Not yet implemented.");
+            bool result = true;
+            if (!initialRead)
+            {
+                result = base.addIODef(l, pd) && setNodeDefinitions(this);
+            }
+            return result;
         }
 
         protected virtual bool replaceIODef(List<ParameterDefinition> l,
             ParameterDefinition newPd,
             ParameterDefinition pd)
         {
-            throw new Exception("Not yet implemented.");
+            int position = l.IndexOf(pd);
+            if (position < 0)
+                return false;
+            l.RemoveAt(position);
+            l.Insert(position, newPd);
+
+            for (int i = l.Count; i > 0; i--)
+            {
+                pd = l[i - 1];
+                if (pd.IsDummy)
+                {
+                    l.RemoveAt(i);
+                }
+                else
+                    break;
+            }
+
+            if (!initialRead)
+                setNodeDefinitions(this);
+
+            return true;
         }
 
         /// <summary>
@@ -391,10 +771,6 @@ namespace WinDX.UI
         /// </summary>
         /// <param name="net"></param>
         /// <returns></returns>
-        protected override Node newNode(Network net)
-        {
-            return newNode(net, -1);
-        }
         protected override Node newNode(Network net, int instance)
         {
             MacroNode d = new MacroNode(this, net, instance);

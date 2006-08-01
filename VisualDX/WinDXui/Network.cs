@@ -494,10 +494,153 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
-
+        /// <summary>
+        /// Parse the 'resource' comments in the .net file for DynamicResource
+        /// ControlPanel saves state in order to handle resource comments because
+        /// each DynamicResource must belong to a decorator or interactor and it will
+        /// always be the most recently parsed decorator or interactor.
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <param name="filename"></param>
+        /// <param name="lineno"></param>
+        /// <returns></returns>
         protected virtual bool parseDecoratorComment(String comment, String filename, int lineno)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(comment != null);
+            if (!comment.StartsWith(" decorator") ||
+                !comment.StartsWith(" resource") ||
+                !comment.StartsWith(" annotation") ||
+                !comment.Contains(" group:"))
+                return false;
+
+            // The following is a special case for stateful resource comments.
+            // Currently they are associated only with Decorators but that
+            // will change.
+            if (comment.StartsWith(" resource"))
+            {
+                if (lastObjectParsed == null)
+                    return false;
+                return lastObjectParsed.parseResourceComment(comment, filename, lineno);
+            }
+            else if (comment.StartsWith(" annotation"))
+            {
+                if (lastObjectParsed == null)
+                    return false;
+                return lastObjectParsed.parseComment(comment, filename, lineno);
+            }
+
+            if (comment.Contains(" group:"))
+            {
+                bool group_comment = false;
+                foreach(KeyValuePair<String, GroupManager>kvm in groupManagers)
+                {
+                    String mgr_name = String.Format(" {0} group:", kvm.Value.getManagerName());
+                    if (comment.StartsWith(mgr_name))
+                    {
+                        group_comment = true;
+                        break;
+                    }
+                }
+                if (group_comment)
+                    return lastObjectParsed.parseComment(comment, filename, lineno);
+            }
+
+            // Decorator comments in 3.2 and earlier included only a stylename and not
+            // the the pair: stylen name / type name.  You need both to handle a look up
+            // in a dictionary of dictionaries (which is what DecoratorStyle is).  Prior
+            // to 3.2 stylename was always equal to its dictionary key string and there
+            // was only 1 style for each type.
+            bool parsed = false;
+            int items_parsed = 2;
+            String stylename = "", decoType = "";
+            Regex regex = new Regex(@" decorator (.*)\tpos=\(\d+,\d+\) size=\d+x\d+ style\((.*)\)");
+            Match m = regex.Match(comment);
+            if (m.Success)
+            {
+                parsed = true;
+                stylename = m.Groups[1].Value;
+                decoType = m.Groups[2].Value;
+            }
+            else
+            {
+                regex = new Regex(@" decorator (.*)\tstyle\((.*)\)");
+                m = regex.Match(comment);
+                if (m.Success)
+                {
+                    parsed = true;
+                    stylename = m.Groups[1].Value;
+                    decoType = m.Groups[2].Value;
+                }
+                else
+                {
+                    regex = new Regex(@" decorator (.*)\t");
+                    m = regex.Match(comment);
+                    if (m.Success)
+                    {
+                        parsed = true;
+                        stylename = m.Groups[1].Value;
+                        items_parsed = 1;
+                    }
+                }
+            }
+
+            if (!parsed)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Unrecognized 'decorator' comment (file {0}, line {1})",
+                    filename, lineno);
+                return false;
+            }
+            DecoratorStyle ds = null;
+            bool decFound = false;
+            Dictionary<String, DecoratorStyle> dict = DecoratorStyle.GetDecoratorStyleDictionary(stylename);
+            Dictionary<String, DecoratorStyle>.KeyCollection.Enumerator dikeys = dict.Keys.GetEnumerator();
+
+            if (items_parsed == 1)
+            {
+                if (dict.Count == 0)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Unrecognized 'decorator' type (file {0}, line {1})",
+                        filename, lineno);
+                    return false;
+                }
+                ds = dict[dikeys.Current];
+            }
+            else
+            {
+                foreach (KeyValuePair<String, DecoratorStyle> kvm in dict)
+                {
+                    if (decoType == kvm.Key)
+                    {
+                        decFound = true;
+                        ds = kvm.Value;
+                        break;
+                    }
+                }
+                if (!decFound)
+                {
+                    ErrorDialog ed = new ErrorDialog();
+                    ed.post("Unrecognized 'decorator' type (file {0}, line {1})",
+                        filename, lineno);
+                    ds = dict[dikeys.Current];
+                }
+            }
+
+            Decorator d = ds.createDecorator(true);
+            d.Style = ds;
+            // FIXME: not adding the drag-n-drop stuff here. May have to revisit this.
+
+            if (!d.parseComment(comment, filename, lineno))
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Unrecognized 'decorator' comment (file {0}, line {1})",
+                    filename, lineno);
+            }
+            addDecoratorToList(d);
+            lastObjectParsed = d;
+
+            return true;
         }
 
         #endregion
@@ -571,7 +714,7 @@ namespace WinDX.UI
                 {
                     if (IsMacro)
                     {
-                        MacroDefinition md = getDefinition();
+                        MacroDefinition md = Definition;
                         buf = "The macro " + md.NameString;
                     }
                     else
@@ -720,7 +863,48 @@ namespace WinDX.UI
 
         private void netParseMacroComment(String comment)
         {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(comment != null);
+
+            // Comments are one of the following: 
+            //
+            //    // macro reference (direct) : MACRO_NAME MACRO_PATH
+            //    // macro reference (indirect) : MACRO_NAME MACRO_PATH
+            //    // macro definition : MACRO_NAME 
+            Regex regex = new Regex(@"macro (.*): ([^ ]*) (.*)");
+            Match match = regex.Match(comment);
+            if (!match.Success)
+            {
+                ErrorDialog ed = new ErrorDialog();
+                ed.post("Invalid macro comment at {0}:{1}(ignoring)",
+                    ParseState.parse_file, ParseState.lineno);
+                return;
+            }
+            else if (match.Groups[1].Value.Contains("reference"))
+            {
+                NodeDefinition nd;
+                Symbol s = SymbolManager.theSymbolManager.getSymbol(match.Groups[2].Value);
+                if (!NodeDefinition.theNodeDefinitionDictionary.TryGetValue(s, out nd))
+                {
+                    String errmsg = null;
+                    String buf = String.Format("Attempting to load undefined macro {0} from file {1}" +
+                        " while reading {1}", match.Groups[2].Value, match.Groups[3].Value, ParseState.parse_file);
+                    DXApplication.theDXApplication.MessageWindow.addInformation(buf);
+                    if (!MacroDefinition.LoadMacro(match.Groups[3].Value, ref errmsg))
+                    {
+                        ParseState.undefined_modules.Add(match.Groups[2].Value, null);
+                        buf = String.Format("Attempt to load {0} failed: {1}", match.Groups[2].Value,
+                            errmsg);
+                        DXApplication.theDXApplication.MessageWindow.addInformation(buf);
+                    }
+                    else
+                    {
+                        buf = String.Format("Attempt to load {0} was successful", match.Groups[2].Value);
+                        DXApplication.theDXApplication.MessageWindow.addInformation(buf);
+                    }
+                    DXApplication.theDXApplication.MessageWindow.Show();
+                }
+            }
+            return;
         }
         private void netParseMODULEComment(String comment)
         {
@@ -761,7 +945,7 @@ namespace WinDX.UI
         }
         private void netParseDESCRIPTIONComment(String comment)
         {
-            Regex regex = new Regex(@" DESCRIPTION (.*)");
+            Regex regex = new Regex(@" DESCRIPTION\s*(.*)");
             Match m = regex.Match(comment);
 
             if (!m.Success)
@@ -772,7 +956,7 @@ namespace WinDX.UI
                 ParseState.error_occured = true;
                 return;
             }
-            setDescription(m.Groups[1].ToString(), false);
+            setDescription(m.Groups[1].Value, false);
         }
         private void netParseCommentComment(String comment)
         {
@@ -806,15 +990,16 @@ namespace WinDX.UI
             }
 
             NodeDefinition nd = null;
-            Symbol s = SymbolManager.theSymbolManager.registerSymbol(m.Groups[1].ToString());
+            Symbol s = SymbolManager.theSymbolManager.registerSymbol(m.Groups[1].Value);
             if (!NodeDefinition.theNodeDefinitionDictionary.TryGetValue(s, out nd))
             {
-                ParseState.undefined_modules.Add(m.Groups[1].ToString(), null);
+                if(!ParseState.undefined_modules.ContainsKey(m.Groups[1].Value))
+                    ParseState.undefined_modules.Add(m.Groups[1].ToString(), null);
                 parseState.node_error_occured = true;
                 ParseState.error_occured = true;
                 return;
             }
-            parseState.node = nd.createNewNode(this, Int32.Parse(m.Groups[2].ToString()));
+            parseState.node = nd.createNewNode(this, Int32.Parse(m.Groups[2].Value));
             if (parseState.node == null)
             {
                 ParseState.error_occured = true;
@@ -967,21 +1152,24 @@ namespace WinDX.UI
 
         // Static methods used by the DeferrableAction
         // class member below.
-        private static void AddNodeWork(Network staticData, Node requestData)
+        private static void AddNodeWork(Object staticData, Node requestData)
         {
-            staticData.changeExistanceWork(requestData, true);
+            Network n = (Network)staticData;
+            n.changeExistanceWork(requestData, true);
         }
 
-        private static void RemoveNodeWork(Network staticData, Node requestData)
+        private static void RemoveNodeWork(Object staticData, Node requestData)
         {
-            staticData.changeExistanceWork(requestData, false);
+            Network n = (Network)staticData;
+            n.changeExistanceWork(requestData, false);
         }
 
         // Static method used by the sendNetwork DeferrableAction
         // class member below.
-        public static void SendNetwork(Network staticData, Node notUsed)
+        public static void SendNetwork(Object staticData, Node notUsed)
         {
-            staticData.sendNetwork();
+            Network n = (Network)staticData;
+            n.sendNetwork();
         }
 
         /// <summary>
@@ -1106,7 +1294,7 @@ namespace WinDX.UI
         }
 
         /// <summary>
-        /// Find a panel by index (was indexed from 1 in C++ vers.)
+        /// Find a panel by index (was indexed from 1 in C++ vers, now indexed from 0.)
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
@@ -1353,12 +1541,20 @@ namespace WinDX.UI
         public void setDescription(String description) { setDescription(description, true); }
         public void setDescription(String description, bool markDirty)
         {
-            throw new Exception("Not Yet Implemented");
+            this.description = description;
+            if (markDirty)
+                setFileDirty();
         }
         public Symbol setCategory(String cat) { return setCategory(cat, true); }
         public Symbol setCategory(String cat, bool markDirty)
         {
-            throw new Exception("Not Yet Implemented");
+            if (cat != null && cat.Length > 0)
+                category = SymbolManager.theSymbolManager.registerSymbol(cat);
+            else
+                category = Symbol.zero;
+            if (markDirty)
+                setFileDirty();
+            return category;
         }
         public Symbol setName(String n)
         {
@@ -1649,9 +1845,10 @@ namespace WinDX.UI
                 pif.sendBytes(s);
             }
 
+            String pref = getPrefix();
             foreach (Node n in nodeList)
             {
-                if (!n.netPrintBeginningOfMacroNode(sw, dest, prefix,
+                if (!n.netPrintBeginningOfMacroNode(sw, dest, pref,
                     echoCallback, echoClientData))
                     return false;
             }
@@ -2050,7 +2247,7 @@ namespace WinDX.UI
                     WarningDialog wd = new WarningDialog();
                     wd.post("{0}{1} was saved in a format defined by a release of {2} (version {3}.{4}.{5}). Contact your support center if you would like to obtain a version of {6} that can fully support this visual program.",
                         (IsMacro ? "The macro " : "The visual program "),
-                        (IsMacro ? getDefinition().NameString : ""),
+                        (IsMacro ? Definition.NameString : ""),
                         name, dx_major, dx_minor, dx_micro,
                         global::WinDX.UI.Resources.MAJOR_VERSION,
                         global::WinDX.UI.Resources.MINOR_VERSION,
@@ -2235,42 +2432,282 @@ namespace WinDX.UI
         {
             get
             {
-                throw new Exception("Not yet implemented");
+                foreach (Node n in nodeList)
+                {
+                    if (!n.IsAllowedInMacro())
+                        return false;
+                }
+                return true;
             }
         }
         public bool makeMacro(bool make)
         {
-            throw new Exception("Not yet implemented");
+            if (make && !CanBeMacro)
+                return false;
+            else if (make && IsMacro)
+                return true;
+
+            if (make)
+            {
+                MacroDefinition md = new MacroDefinition();
+                md.setName(NameString);
+                md.Category = getCategorySymbol();
+
+                definition = md;
+            }
+            else if (this == DXApplication.theDXApplication.network)
+            {
+                definition = null;
+            }
+            return true;
         }
 
         public ParameterDefinition getInputDefinition(int i)
         {
-            throw new Exception("Not Yet Implemented");
+            return this.Definition.getInputDefinition(i);
         }
         public ParameterDefinition getOutputDefinition(int i)
         {
-            throw new Exception("Not Yet Implemented");
+            return this.Definition.getOutputDefinition(i);
         }
         public int getInputCount()
         {
-            throw new Exception("Not Yet Implemented");
+            MacroDefinition md = Definition;
+            if (md != null)
+                return md.InputCount;
+
+            int count = 0;
+            foreach (Node node in nodeList)
+            {
+                if (node is MacroParameterNode)
+                {
+                    MacroParameterNode mpn = (MacroParameterNode)node;
+                    if (mpn.IsInput && mpn.getIndex() > count)
+                        count = mpn.getIndex();
+                }
+            }
+            return count;
         }
         public int getOutputCount()
         {
-            throw new Exception("Not Yet Implemented");
+            MacroDefinition md = Definition;
+            if (md != null)
+                return md.OutputCount;
+
+            int count = 0;
+            foreach (Node node in nodeList)
+            {
+                if (node is MacroParameterNode)
+                {
+                    MacroParameterNode mpn = (MacroParameterNode)node;
+                    if (!mpn.IsInput && mpn.getIndex() > count)
+                        count = mpn.getIndex();
+                }
+            }
+            return count;
         }
 
         public bool moveInputPosition(MacroParameterNode n, int index)
         {
-            throw new Exception("Not Yet Implemented");
-        }
-        public bool moveOutputPosition(MacroParameterNode n, int index)
-        {
-            throw new Exception("Not Yet Implemented");
+            Debug.Assert(IsMacro);
+            ParameterDefinition pd = n.getParameterDefinition();
+            int inputCount = definition.InputCount;
+            int oldPos = 0;
+            for (int i = 1; i <= inputCount; i++)
+            {
+                ParameterDefinition oldPd = definition.getInputDefinition(i);
+                if (pd == oldPd)
+                {
+                    oldPos = i;
+                    break;
+                }
+            }
+            Debug.Assert(oldPos != 0);
+
+            if (oldPos == index)
+                return true;
+
+            bool return_val = true;
+            deferrableSendNetwork.deferAction();
+
+            // At this point, oldPos is where the parameter was, and index is where
+            // we want it to be.  First, we put a dummy where the parameter was
+            // (unless it was at the end), then we put the parameter where it should
+            // be.
+
+            if (oldPos == inputCount)
+            {
+                definition.removeInput(pd);
+                inputCount--;
+            }
+            else
+            {
+                ParameterDefinition dummy = new ParameterDefinition(Symbol.zero);
+                dummy.setDummy(true);
+                dummy.setName("input");
+                dummy.markAsInput();
+                dummy.setDefaultVisibility();
+                dummy.addType(new DXType(DXTypeVals.ObjectType));
+                definition.replaceInput(dummy, pd);
+            }
+            if (index > inputCount)
+            {
+                for (int i = inputCount + 1; i < index; i++)
+                {
+                    ParameterDefinition dummy = new ParameterDefinition(Symbol.zero);
+                    dummy.setDummy(true);
+                    dummy.setName("input");
+                    dummy.markAsInput();
+                    dummy.setDefaultVisibility();
+                    dummy.addType(new DXType(DXTypeVals.ObjectType));
+                    dummy.setDescription("Dummy parameter");
+                    definition.addInput(dummy);
+                }
+                definition.addInput(pd);
+            }
+            else
+            {
+                ParameterDefinition targetPd =
+                    definition.getInputDefinition(index);
+                List<Node> l = makeNamedNodeList(n.NameString);
+                MacroParameterNode mpn = null;
+                if (l.Count > 0)
+                {
+                    foreach (MacroParameterNode mn in l)
+                    {
+                        if (mn.getIndex() == index)
+                        {
+                            mpn = mn;
+                            break;
+                        }
+                    }
+                }
+                if (mpn == null)
+                {
+                    definition.replaceInput(pd, targetPd);
+                }
+                else
+                {
+                    if (oldPos == inputCount + 1)
+                        definition.addInput(pd);
+                    else
+                    {
+                        ParameterDefinition dummyPd =
+                            definition.getInputDefinition(oldPos);
+                        definition.replaceInput(pd, dummyPd);
+                    }
+                    return_val = false;
+                }
+            }
+
+            if (return_val)
+                n.setIndex(index);
+
+            deferrableSendNetwork.undeferAction();
+
+            return return_val;
         }
 
-        public void setDefinition(MacroDefinition md) { throw new Exception("Not yet implemented"); }
-        public MacroDefinition getDefinition() { throw new Exception("Not yet implemented"); }
+        public bool moveOutputPosition(MacroParameterNode n, int index)
+        {
+            Debug.Assert(IsMacro);
+            ParameterDefinition pd = n.getParameterDefinition();
+            int outputCount = definition.OutputCount;
+            int oldPos = 0;
+
+            for (int i = 1; i <= outputCount; i++)
+            {
+                ParameterDefinition oldPd = definition.getOutputDefinition(i);
+                if (pd == oldPd)
+                {
+                    oldPos = i;
+                    break;
+                }
+            }
+            Debug.Assert(oldPos != 0);
+
+            if (oldPos == index)
+                return true;
+
+            deferrableSendNetwork.deferAction();
+            bool return_val = true;
+
+            if (oldPos == outputCount)
+            {
+                definition.removeOutput(pd);
+                outputCount--;
+            }
+            else
+            {
+                ParameterDefinition dummy = new ParameterDefinition(Symbol.zero);
+                dummy.setDummy(true);
+                dummy.setName("output");
+                dummy.markAsOutput();
+                dummy.setDefaultVisibility();
+                dummy.addType(new DXType(DXTypeVals.ObjectType));
+                dummy.setDescription("Dummy parameter");
+                definition.replaceOutput(dummy, pd);
+            }
+            if (index > outputCount)
+            {
+                for (int i = outputCount + 1; i < index; i++)
+                {
+                    ParameterDefinition dummy = new ParameterDefinition(Symbol.zero);
+                    dummy.setDummy(true);
+                    dummy.setName("output");
+                    dummy.markAsOutput();
+                    dummy.setDefaultVisibility();
+                    dummy.addType(new DXType(DXTypeVals.ObjectType));
+                    dummy.setDescription("Dummy parameter");
+                    definition.addOutput(dummy);
+                }
+                definition.addOutput(pd);
+            }
+            else
+            {
+                ParameterDefinition targetPd = definition.getOutputDefinition(index);
+                List<Node> l = makeNamedNodeList(NameString);
+                MacroParameterNode mpn = null;
+                if (l != null && l.Count > 0)
+                {
+                    foreach (MacroParameterNode mn in l)
+                    {
+                        if (mn.getIndex() == index)
+                        {
+                            mpn = mn;
+                            break;
+                        }
+                    }
+                }
+                if (mpn == null)
+                {
+                    definition.replaceOutput(pd, targetPd);
+                }
+                else
+                {
+                    if (oldPos == outputCount + 1)
+                        definition.addOutput(pd);
+                    else
+                    {
+                        ParameterDefinition dummyPd = definition.getOutputDefinition(oldPos);
+                        definition.replaceOutput(pd, dummyPd);
+                    }
+                    return_val = false;
+                }
+            }
+            if (return_val)
+                n.setIndex(index);
+
+            deferrableSendNetwork.undeferAction();
+
+            return return_val;
+        }
+
+        public MacroDefinition Definition
+        {
+            get { return definition; }
+            set { this.definition = value; }
+        }
 
         //
         // Colormap Management functions
@@ -2499,7 +2936,17 @@ namespace WinDX.UI
         /// <returns></returns>
         public List<Node> makeNamedNodeList(String nodename)
         {
-            throw new Exception("Not Yet Implemented");
+            List<Node> l = null;
+            foreach (Node node in nodeList)
+            {
+                if (node.NameString == nodename)
+                {
+                    if (l == null)
+                        l = new List<Node>();
+                    l.Add(node);
+                }
+            }
+            return l;
         }
 
 
@@ -2834,7 +3281,7 @@ namespace WinDX.UI
 
             List<String> toks = Utils.StringTokenizer(name, "_", new string[] { "" });
             if (toks.Count != 5)
-                parse_error = true;
+                return;
 
             macro = toks[0];
             str = toks[1];
@@ -2842,7 +3289,7 @@ namespace WinDX.UI
             type = toks[3];
             parameter = Int32.Parse(toks[4]);
 
-            if (parse_error || type == "out")
+            if (type != "out")
                 return;
 
             Node n;

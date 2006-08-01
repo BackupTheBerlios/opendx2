@@ -64,5 +64,17 @@ namespace WinDX.UI
         {
             Popdown(sender, e);
         }
+
+        private void notifyUser(String msg)
+        {
+            StatusLabel.Text = msg;
+            this.Refresh();
+        }
+
+        public static void NotifyUser(String msg)
+        {
+            if (dialog != null)
+                ((TimedDialog)dialog).notifyUser(msg);
+        }
     }
 }

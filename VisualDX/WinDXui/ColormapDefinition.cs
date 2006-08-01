@@ -16,7 +16,7 @@ namespace WinDX.UI
             : base()
         { }
 
-        public static NodeDefinition AllocateDefinition()
+        public new static NodeDefinition AllocateDefinition()
         {
             return new ColormapDefinition();
         }

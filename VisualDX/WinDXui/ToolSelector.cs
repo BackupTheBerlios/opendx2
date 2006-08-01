@@ -20,5 +20,20 @@ namespace WinDX.UI
         {
             throw new Exception("Not Yet Implemented");
         }
+
+        // Below are not implemented yet.
+        public static bool AddTool(Symbol cat, Symbol tool, Object ptr)
+        {
+            return true;
+        }
+        public static bool RemoveTool(Symbol cat, Symbol tool)
+        {
+            return true;
+        }
+
+        public static bool UpdateCategoryList()
+        {
+            return true;
+        }
     }
 }

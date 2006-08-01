@@ -138,7 +138,7 @@ namespace WinDX.UI
         {
             e.DrawBackground();
             e.DrawFocusRectangle();
-            if (errorBox.Items[e.Index] is MsgWinListItem)
+            if (e.Index > 0 && errorBox.Items[e.Index] is MsgWinListItem)
             {
                 MsgWinListItem mwli = (MsgWinListItem)errorBox.Items[e.Index];
                 Color forecolor = e.ForeColor;
@@ -149,7 +149,7 @@ namespace WinDX.UI
                                       new SolidBrush(forecolor),
                                       e.Bounds);
             }
-            else if (errorBox.Items[e.Index] is MsgWinListItems)
+            else if (e.Index > 0 && errorBox.Items[e.Index] is MsgWinListItems)
             {
                 MsgWinListItems mwlis = (MsgWinListItems)errorBox.Items[e.Index];
                 Rectangle r = e.Bounds;
@@ -426,7 +426,7 @@ namespace WinDX.UI
             clearCmd.deactivate();
         }
 
-        public void beginExecution()
+        protected override void beginExecution()
         {
             firstMsg = true;
             executing = true;
@@ -440,7 +440,7 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
-        public void endExecution()
+        protected override void endExecution()
         {
             base.endExecution();
 

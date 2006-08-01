@@ -58,7 +58,7 @@ namespace WinDX.UI
                 prefs.AppendChild(elem);
                 root = elem;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -175,7 +175,7 @@ namespace WinDX.UI
                 XmlNode n2 = n.SelectSingleNode("VALUE");
                 val = n2.InnerText;
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 Console.WriteLine("Corrupted prefs file--try deleting it");
             }
@@ -370,12 +370,12 @@ namespace WinDX.UI
                         elem.AppendChild(val);
                         root.AppendChild(elem);
                     }
-                    catch (XmlException e)
+                    catch (XmlException)
                     {
                         return false;
                     }
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 return false;
             }
@@ -450,12 +450,12 @@ namespace WinDX.UI
                         elem.AppendChild(tp);
                         root.AppendChild(elem);
                     }
-                    catch (XmlException e)
+                    catch (XmlException)
                     {
                         return false;
                     }
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 return false;
             }
@@ -552,12 +552,12 @@ namespace WinDX.UI
                     elem.AppendChild(tp);
                     root.AppendChild(elem);
                 }
-                catch (XmlException e)
+                catch (XmlException)
                 {
                     return false;
                 }
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 return false;
             }

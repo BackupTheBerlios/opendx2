@@ -13,7 +13,7 @@ namespace WinDX.UI
         /// <param name="n"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        protected virtual Parameter newParameter(ParameterDefinition pd,
+        public override Parameter newParameter(ParameterDefinition pd,
             Node n, int index)
         {
             if (pd.IsInput)
@@ -28,9 +28,14 @@ namespace WinDX.UI
         /// This helps to force an execution when inputs change that must have
         /// their values communicated back to the User Interface.
         /// </summary>
-        protected void finishDefinition()
+        public override void finishDefinition()
         {
-            throw new Exception("Not Yet Implemented");
+            base.finishDefinition();
+            foreach (ParameterDefinition pd in outputDefs)
+            {
+                pd.setWriteableCacheability(false);
+                pd.setDefaultCacheability(Cacheability.OutputCacheOnce);
+            }
         }
 
         public DrivenDefinition() { }

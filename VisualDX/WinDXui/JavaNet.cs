@@ -9,6 +9,16 @@ namespace WinDX.UI
     {
         public JavaNet()
         {
+            // In C#, constructors work a little different than C++ with 
+            // respect to virtual functions. C# will call a override function
+            // if it exists in a subclass even though the contructor of the 
+            // subclass may still not have been completed. C++ calls the base
+            // classes virtual function instead. We ran into this problem 
+            // here due to the fact that changeExistanceWork is called in
+            // the Network() constructor, but the following 3 commands have
+            // not been initialized yet. So we had to change the function a bit
+            // and add the deactivates here in the constructor.
+
             saveWebPageCmd = new NoUndoJavaNetCommand("saveWebPageCommand", commandScope,
                 false, this, NoUndoJavaNetCommand.JavaNetCommandType.SaveWebPage);
 
@@ -17,6 +27,9 @@ namespace WinDX.UI
 
             saveBeanCmd = new NoUndoJavaNetCommand("saveBeanCommand", commandScope,
                 true, this, NoUndoJavaNetCommand.JavaNetCommandType.SaveBean);
+
+            saveWebPageCmd.deactivate();
+            saveAppletCmd.deactivate();
         }
 
         ~JavaNet()
@@ -82,15 +95,15 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
-        public virtual Command getSaveWebPageCommand()
+        public override Command getSaveWebPageCommand()
         {
             return saveWebPageCmd;
         }
-        public virtual Command getSaveAppletCommand()
+        public override Command getSaveAppletCommand()
         {
             return saveAppletCmd;
         }
-        public virtual Command getSaveBeanCommand()
+        public override Command getSaveBeanCommand()
         {
             throw new Exception("Not Yet Implemented");
         }
@@ -100,17 +113,22 @@ namespace WinDX.UI
             get { throw new Exception("Not Yet Implemented"); }
         }
 
-        public virtual bool saveNetwork(String name)
+        public override bool saveNetwork(String name)
         {
             return saveNetwork(name, false);
         }
-        public virtual bool saveNetwork(String name, bool force)
+        public override bool saveNetwork(String name, bool force)
         {
             throw new Exception("Not Yet Implemented");
         }
-        public virtual void changeExistanceWork(Node n, bool adding)
+        public override void changeExistanceWork(Node n, bool adding)
         {
-            throw new Exception("Not Yet Implemented");
+            base.changeExistanceWork(n, adding);
+            if (saveWebPageCmd != null)
+            {
+                saveWebPageCmd.deactivate();
+                saveAppletCmd.deactivate();
+            }
         }
     }
 }

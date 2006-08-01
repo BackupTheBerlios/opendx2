@@ -74,6 +74,10 @@ namespace WinDX.UI
         protected void setButtonLabel() { throw new Exception("Not Yet Implemented"); }
         protected virtual String getButtonLabel() { throw new Exception("Not Yet Implemented"); }
         protected virtual void handleSelectionChange(bool select) { throw new Exception("Not Yet Implemented"); }
+        protected virtual String getButtonLabelFont()
+        {
+            return "canvas";
+        }
 
         // ... drag n drop stuff was here
 
@@ -179,7 +183,7 @@ namespace WinDX.UI
         {
             throw new Exception("Not Yet Implemented");
         }
-        public String getPostScriptLabelFont()
+        public virtual String getPostScriptLabelFont()
         {
             throw new Exception("Not Yet Implemented");
         }

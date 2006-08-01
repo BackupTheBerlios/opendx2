@@ -89,7 +89,10 @@ namespace WinDX.UI
             String newStr = rgx.Replace(str, @" [ ");
             s = @"\]";
             rgx = new Regex(s);
-            String fnlStr = rgx.Replace(newStr, @" ] ");
+            newStr = rgx.Replace(newStr, @" ] ");
+            s = @"\,";
+            rgx = new Regex(s);
+            String fnlStr = rgx.Replace(newStr, @" , ");
             fnlStr = fnlStr.Trim();
 
             // Use split to split over space and get array of strings
@@ -98,7 +101,8 @@ namespace WinDX.UI
             List<double> scalarList = new List<double>();
             foreach (String ind in vals)
             {
-                if (ind == "[")
+                if (ind == "") { /* do nothing */ }
+                else if (ind == "[")
                 {
                     if (scalarList.Count > 0)
                         return false;

@@ -80,7 +80,7 @@ namespace WinDX.UI
 
         protected virtual void handleImageMessage(int id, String line)
         {
-            Regex regex = new Regex(@"\d+:  IMAGE:  ##\d+: (\d+)x(\d+)");
+            Regex regex = new Regex(@"\d+:  IMAGE:  ##\d+ (\d+)x(\d+)");
             Match m = regex.Match(line);
             int x = Int32.Parse(m.Groups[1].Value);
             int y = Int32.Parse(m.Groups[2].Value);
@@ -443,7 +443,28 @@ namespace WinDX.UI
 
         public override void setGroupName(GroupRecord gr, Symbol groupID)
         {
-            throw new Exception("Not Yet Implemented");
+            bool update_where = (gr != null ? gr.changesWhere() : true);
+
+            // If we're just clearing old group information, then only update the
+            // WHERE param, if the old group says it needs to.
+            if (gr == null)
+            {
+                String current_group_name = getGroupName(groupID);
+                if (current_group_name != null)
+                {
+                    Network net = getNetwork();
+                    String symstr = SymbolManager.theSymbolManager.getSymbolString(groupID);
+                    GroupManager gmgr = net.getGroupManagers()[symstr];
+                    GroupRecord old_grec = gmgr.getGroup(current_group_name);
+                    if (old_grec == null)
+                        update_where = false;
+                    else if (old_grec.changesWhere() == false)
+                        update_where = false;
+                }
+            }
+            base.setGroupName(gr, groupID);
+            if (update_where && image != null)
+                notifyWhereChange(true);
         }
 
         public void setLastImage(bool last)

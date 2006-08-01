@@ -652,7 +652,8 @@ namespace WinDX.UI
 
         private static void DebugEchoCallback(Object clientData, String echoString)
         {
-            Console.WriteLine("DXLink::" + echoString);
+            Console.WriteLine(echoString.TrimEnd(new char[] { '\n' }));
+            //Console.WriteLine(echoString);
         }
 
         private static void QueuedPacketAccept(Object sender, System.EventArgs e)
@@ -715,6 +716,8 @@ namespace WinDX.UI
         /// </summary>
         protected virtual void loadMDF()
         {
+            TimedDialog.NotifyUser("Loading OpenDX Module Description File.");
+
             String str = "";
             char fc = resource.executiveModule.ToCharArray()[0];
             if (fc == '/' || fc == '.')
@@ -733,6 +736,8 @@ namespace WinDX.UI
                 NodeDefinition.theNodeDefinitionDictionary.Add(s, nd);
                 nd.setUserTool(false);
             }
+
+            TimedDialog.NotifyUser("");
         }
 
         /// <summary>
@@ -740,6 +745,8 @@ namespace WinDX.UI
         /// </summary>
         protected virtual void loadIDF()
         {
+            TimedDialog.NotifyUser("Loading Interactor Description File.");
+
             InteractorStyle.BuildtheInteractorStyleDictionary();
             String str = "";
             if (resource.uiModule.ToCharArray()[0] == '/' ||
@@ -762,6 +769,7 @@ namespace WinDX.UI
                 NodeDefinition.theNodeDefinitionDictionary.Add(s, nd);
                 nd.setUserTool(false);
             }
+            TimedDialog.NotifyUser("");
         }
 
         public virtual void clearErrorList()

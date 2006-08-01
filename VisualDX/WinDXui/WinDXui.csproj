@@ -135,7 +135,12 @@
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FileSelectorInteractor.cs" />
+    <Compile Include="FileSelectorDefinition.cs" />
+    <Compile Include="FileSelectorInstance.cs" />
+    <Compile Include="FileSelectorInteractor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FileSelectorNode.cs" />
     <Compile Include="GraphLayout.cs" />
     <Compile Include="GroupedObject.cs" />
     <Compile Include="GroupManager.cs" />
@@ -158,8 +163,16 @@
     <Compile Include="Interactor.Designer.cs">
       <DependentUpon>Interactor.cs</DependentUpon>
     </Compile>
+    <Compile Include="InteractorDefinition.cs" />
     <Compile Include="InteractorInstance.cs" />
+    <Compile Include="InteractorNode.cs" />
+    <Compile Include="InteractorStandIn.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="InteractorStyle.cs" />
+    <Compile Include="ItalicLabeledStandIn.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="JavaNet.cs" />
     <Compile Include="LabeledStandIn.cs">
       <SubType>Component</SubType>
@@ -167,6 +180,7 @@
     <Compile Include="LinkHandler.cs" />
     <Compile Include="MacroDefinition.cs" />
     <Compile Include="MacroNode.cs" />
+    <Compile Include="MacroParameterDefinition.cs" />
     <Compile Include="MacroParameterNode.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
@@ -180,21 +194,38 @@
     <Compile Include="NetLexer.cs" />
     <Compile Include="NetParser.cs" />
     <Compile Include="NewCommand.cs" />
+    <Compile Include="NondrivenInteractorNode.cs" />
     <Compile Include="NoUndoAnchorCommand.cs" />
     <Compile Include="NoUndoJavaNetCommand.cs" />
     <Compile Include="NoUndoMWCmd.cs" />
     <Compile Include="NoUndoNetworkCommand.cs" />
     <Compile Include="PageGroupManager.cs" />
+    <Compile Include="ParameterCDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PickDefinition.cs" />
     <Compile Include="PickNode.cs" />
     <Compile Include="PrintDefinition.cs" />
     <Compile Include="PrintNode.cs" />
     <Compile Include="ProbeDefinition.cs" />
     <Compile Include="ProbeNode.cs" />
+    <Compile Include="ReceiverDefinition.cs" />
     <Compile Include="ReceiverNode.cs" />
+    <Compile Include="ResetDefinition.cs" />
+    <Compile Include="ResetNode.cs" />
+    <Compile Include="ScalarDefinition.cs" />
+    <Compile Include="ScalarListDefinition.cs" />
+    <Compile Include="ScalarListNode.cs" />
+    <Compile Include="ScalarNode.cs" />
+    <Compile Include="SelectionDefinition.cs" />
+    <Compile Include="SelectionNode.cs" />
+    <Compile Include="SelectorDefinition.cs" />
+    <Compile Include="SelectorNode.cs" />
     <Compile Include="SequencerDefinition.cs" />
     <Compile Include="ShadowedOutputDefinition.cs" />
     <Compile Include="ShadowedOutputNode.cs" />
+    <Compile Include="StreaklineDefinition.cs" />
+    <Compile Include="StreaklineNode.cs" />
     <Compile Include="StringsTable.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -303,6 +334,8 @@
     <Compile Include="TimedDialog.Designer.cs">
       <DependentUpon>TimedDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ToggleDefinition.cs" />
+    <Compile Include="ToggleNode.cs" />
     <Compile Include="ToggleToggleInteractor.cs" />
     <Compile Include="ToolSelector.cs">
       <SubType>UserControl</SubType>
@@ -311,13 +344,24 @@
       <DependentUpon>ToolSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="TransferStyle.cs" />
+    <Compile Include="TransmitterDefinition.cs" />
     <Compile Include="TransmitterNode.cs" />
     <Compile Include="UIComponentHelpCommand.cs" />
     <Compile Include="UniqueNameNode.cs" />
     <Compile Include="Utils.cs">
     </Compile>
-    <Compile Include="ValueInteractor.cs" />
+    <Compile Include="ValueDefinition.cs" />
+    <Compile Include="ValueInstance.cs" />
+    <Compile Include="ValueInteractor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ValueListDefinition.cs" />
+    <Compile Include="ValueListInstance.cs" />
     <Compile Include="ValueListInteractor.cs" />
+    <Compile Include="ValueListNode.cs" />
+    <Compile Include="ValueNode.cs" />
+    <Compile Include="VectorDefinition.cs" />
+    <Compile Include="VectorListDefinition.cs" />
     <Compile Include="WarningDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -435,6 +479,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="Resources\question.png" />
   </ItemGroup>
   <ItemGroup>

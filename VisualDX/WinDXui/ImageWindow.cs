@@ -7,14 +7,16 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Drawing.Imaging;
 
 namespace WinDX.UI
 {
     public partial class ImageWindow : DXWindow
     {
         [StructLayout(LayoutKind.Sequential, Pack=1)]
-        protected struct WindowsPixels
+        protected class WindowsPixels
         {
+            public int numBytes;
             public int width;
             public int height;
             public IntPtr pixels;
@@ -54,28 +56,51 @@ namespace WinDX.UI
             if (m.Msg == DX_DISPLAYREADY)
             {
                 WindowsPixels wp = new WindowsPixels();
-                IntPtr pPointerTowp = Marshal.AllocHGlobal(Marshal.SizeOf(wp));
-                wp = (WindowsPixels)Marshal.PtrToStructure(m.WParam, typeof(WindowsPixels));
-                this.DrawPicture(wp, true);
+                Marshal.PtrToStructure(m.WParam, wp);
+                byte[] pixs = new byte[wp.width * wp.height * 3];
+                Marshal.Copy(wp.pixels, pixs, 0, wp.width * wp.height * 3);
+                this.DrawPicture(wp, ref pixs, true);
             }
             base.WndProc(ref m);
         }
 
-        protected void DrawPicture(WindowsPixels wp, bool force)
+        protected void DrawPicture(WindowsPixels wp, ref byte[] pixs, bool force)
         {
-            if (storedBmap != null && (force || storedBmap != wp.pixels || 
+
+            //if (storedBmap != null && (force || storedBmap != ip || 
+            //    pictureBox.Width != wp.width || pictureBox.Height != wp.height))
+            if ((force || 
                 pictureBox.Width != wp.width || pictureBox.Height != wp.height))
             {
-                storedBmap = wp.pixels;
+                //storedBmap = wp.pixels;
                 this.ClientSize = new Size(wp.width, wp.height);
                 //pictureBox.Width = wp.width;
                 //pictureBox.Height = wp.height;
-                Image img;
+                Bitmap bmp;
                 // bitmap is upside down--can it be fixed easily?
-                img = new Bitmap(pictureBox.Width, pictureBox.Height,
-                    pictureBox.Width * 3, System.Drawing.Imaging.PixelFormat.Format24bppRgb, storedBmap);
-                img.RotateFlip(RotateFlipType.Rotate180FlipX);
-                this.pictureBox.Image = img;
+                bmp = new Bitmap(wp.width, wp.height, PixelFormat.Format24bppRgb);
+                int i;
+
+                BitmapData data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),
+                    ImageLockMode.WriteOnly, bmp.PixelFormat);
+
+                if (data.Stride == wp.width * 3)
+                {
+                    Marshal.Copy(pixs, 0, data.Scan0, wp.width * wp.height * 3);
+                }
+                else
+                {
+                    for (i = 0; i < bmp.Height; i++)
+                    {
+                        IntPtr p = new IntPtr(data.Scan0.ToInt32() + data.Stride * i);
+                        Marshal.Copy(pixs, i * bmp.Width * 3, p, bmp.Width * 3);
+                    }
+                }
+                bmp.UnlockBits(data);
+                //img = new Bitmap(pictureBox.Width, pictureBox.Height,
+                //    pictureBox.Width * 3, System.Drawing.Imaging.PixelFormat.Format24bppRgb, ip);
+                bmp.RotateFlip(RotateFlipType.Rotate180FlipX);
+                this.pictureBox.Image = bmp;
                 pictureBox.Update();
                 Show();
                 BringToFront();
@@ -184,5 +209,7 @@ namespace WinDX.UI
         public bool IsCameraInitialized { get { return true; } }
 
         public virtual void clearFrameBufferOverlay() { }
+        public void setCurrentProbe(int probenum) { }
+        public void setCurrentPick(int picknum) { }
     }
 }

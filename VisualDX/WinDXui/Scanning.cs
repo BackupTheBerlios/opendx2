@@ -12,6 +12,11 @@ namespace WinDX
         /// </summary>
         public class Scanner
         {
+            public static readonly string DoubleOnlyPattern = @"^[-|+]?[0-9]*[.]?[0-9]+(?:[eE][-+]?[0-9]+)?$";
+            public static readonly string DoublePattern = @"[-|+]?[0-9]*[.]?[0-9]+(?:[eE][-+]?[0-9]+)?";
+            public static readonly string IntegerOnlyPattern = @"^-[0-9]+|[0-9]+$";
+            public static readonly string IntegerPattern = @"-[0-9]+|[0-9]+";
+
             protected readonly Hashtable typePatterns;
             public Scanner()
             {

@@ -4,12 +4,16 @@ using System.Text;
 
 namespace WinDX.UI
 {
-    class FileSelectorInteractor
+    class FileSelectorInteractor : ValueInteractor
     {
         public static Interactor AllocateInteractor(String name, InteractorInstance ii)
         {
-            throw new Exception("Not Yet Implemented");
+            FileSelectorInteractor i = new FileSelectorInteractor(name, ii);
+            return i;
         }
 
+        public FileSelectorInteractor(String name, InteractorInstance ii)
+            :
+            base(name, ii) { }
     }
 }

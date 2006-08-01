@@ -15,7 +15,10 @@ namespace WinDX.UI
             :
             base(pd)
         {
-            throw new Exception("Not Yet Implemented");
+            set2ndValue("NULL");
+            node = n;
+            this.index = index;
+            syncOnTypeMatch = true;
         }
 
         /// <summary>
@@ -36,7 +39,18 @@ namespace WinDX.UI
         public bool syncPrimaryValue() { return syncPrimaryValue(false); }
         public bool syncPrimaryValue(bool force)
         {
-            throw new Exception("Not Yet Implemented");
+            if (force || syncOnTypeMatch)
+            {
+                DXTypeVals t = get2ndValueType();
+                if (force || (HasValue && ValueType == t))
+                {
+                    Debug.Assert(IsInput);
+                    String v = get2ndValueString();
+                    return node.setInputSetValue(index, v, t, false) !=
+                        DXTypeVals.UndefinedType;
+                }
+            }
+            return true;
         }
 
         public void setSyncOnTypeMatch() { setSyncOnTypeMatch(true); }

@@ -12,14 +12,14 @@ namespace WinDX.UI
         /// UI.  
         /// </summary>
         /// <returns></returns>
-        protected virtual bool hasModuleMessageProtocol() { return true; }
+        protected override bool hasModuleMessageProtocol() { return true; }
 
         /// <summary>
         /// Return TRUE/FALSE, indicating whether or not we expect to receive
         /// a message from the UI when our module executes in the executive.
         /// </summary>
         /// <returns></returns>
-        protected virtual bool expectingModuleMessage() { return true; }
+        protected override bool expectingModuleMessage() { return true; }
 
         /// <summary>
         /// Called when a message is received from the executive after
@@ -29,13 +29,13 @@ namespace WinDX.UI
         /// </summary>
         /// <param name="id"></param>
         /// <param name="line"></param>
-        protected abstract void execModuleMessageHandler(int id, String line);
+        protected abstract override void execModuleMessageHandler(int id, String line);
 
         public ModuleMessagingNode(NodeDefinition nd, Network net, int instnc)
             :
             base(nd, net, instnc) { }
 
-        public virtual bool isA(Symbol classname)
+        public override bool isA(Symbol classname)
         {
             Symbol s = SymbolManager.theSymbolManager.registerSymbol("ModuleMessagingNode");
             if (s == classname)

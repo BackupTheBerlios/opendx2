@@ -23,7 +23,7 @@ namespace WinDX.UI
 
         public List<DXType> DXTypes { get { return types; } }
 
-        private readonly String DUMMY_DESCRIPTION_STRING =
+        public static readonly String DUMMY_DESCRIPTION_STRING =
             "<<< Dummy parameter (do not edit) >>>";
 
         //

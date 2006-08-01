@@ -29,7 +29,38 @@ namespace WinDX.UI
             this.Add("Probe", ProbeDefinition.AllocateDefinition);
             this.Add("ProbeList", ProbeDefinition.AllocateDefinition);
             this.Add("Pick", PickDefinition.AllocateDefinition);
+            this.Add("Streakline", StreaklineDefinition.AllocateDefinition);
 
+            // Special interactor definitions.
+            this.Add("Selector", SelectorDefinition.AllocateDefinition);
+            this.Add("Scalar", ScalarDefinition.AllocateDefinition);
+            this.Add("ScalarList", ScalarListDefinition.AllocateDefinition);
+            this.Add("Integer", ScalarDefinition.AllocateDefinition);
+            this.Add("IntegerList", ScalarListDefinition.AllocateDefinition);
+            this.Add("Vector", VectorDefinition.AllocateDefinition);
+            this.Add("VectorList", VectorListDefinition.AllocateDefinition);
+            this.Add("Value", ValueDefinition.AllocateDefinition);
+            this.Add("ValueList", ValueListDefinition.AllocateDefinition);
+            this.Add("String", ValueDefinition.AllocateDefinition);
+            this.Add("StringList", ValueListDefinition.AllocateDefinition);
+            this.Add("FileSelector", FileSelectorDefinition.AllocateDefinition);
+            this.Add("Toggle", ToggleDefinition.AllocateDefinition);
+            this.Add("Reset", ResetDefinition.AllocateDefinition);
+
+            // Misc. supporting nodes.
+            this.Add("Transmitter", TransmitterDefinition.AllocateDefinition);
+            this.Add("Receiver", ReceiverDefinition.AllocateDefinition);
+            this.Add("Input", MacroParameterDefinition.AllocateDefinition);
+            this.Add("Output", MacroParameterDefinition.AllocateDefinition);
+            //this.Add("DXLInput", DXLInputDefinition.AllocateDefinition);
+            // ...
+
+            // These were added to change Get into GetLocal and GetGlobal and
+            // Set into SetGlobal and SetLocal
+            //this.Add("Get", GlobalLocalDefinition.AllocateDefinition);
+            // ...
+            NDAllocatorDictionary.GetNodeNameSymbol = SymbolManager.theSymbolManager.registerSymbol("Get");
+            NDAllocatorDictionary.SetNodeNameSymbol = SymbolManager.theSymbolManager.registerSymbol("Set");
         }
 
         public bool setDefaultAllocator(NDAllocator nda)

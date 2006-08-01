@@ -9,105 +9,102 @@ namespace WinDX.UI
 {
     class ImageNode : DisplayNode
     {
-        private class ParamConst
+        protected class ParamClass
         {
-            public const int IMAGETAG = 1;
-            public const int OBJECT = 2;
-            public const int WHERE = 3;
-            public const int USEVECTOR = 4;
-            public const int TO = 5;
-            public const int FROM = 6;
-            public const int WIDTH = 7;
-            public const int RESOLUTION = 8;
-            public const int ASPECT = 9;
-            public const int UP = 10;
-            public const int VIEWANGLE = 11;
-            public const int PROJECTION = 12;
-            public const int OPTIONS = 13;
-            public const int BUTTON_STATE = 14;
-            public const int BUTTON_UP_APPROX = 15;
-            public const int BUTTON_DOWN_APPROX = 16;
-            public const int BUTTON_UP_DENSITY = 17;
-            public const int BUTTON_DOWN_DENSITY = 18;
-            public const int RENDER_MODE = 19;
-            public const int DEFAULT_CAMERA = 20;
-            public const int RESET_CAMERA = 21;
-            public const int BACKGROUND = 22;
-            public const int THROTTLE = 23;
-            public const int RECENABLE = 24;
-            public const int RECFILE = 25;
-            public const int RECFORMAT = 26;
-            public const int RECRESOLUTION = 27;
-            public const int RECASPECT = 28;
-            public const int AAENABLE = 29;
-            public const int AALABELS = 30;
-            public const int AATICKS = 31;
-            public const int AACORNERS = 32;
-            public const int AAFRAME = 33;
-            public const int AAADJUST = 34;
-            public const int AACURSOR = 35;
-            public const int AAGRID = 36;
-            public const int AACOLORS = 37;
-            public const int AAANNOTATION = 38;
-            public const int AALABELSCALE = 39;
-            public const int AAFONT = 40;
-            public const int INTERACTIONMODE = 41;
-            public const int IMAGENAME = 42;
+            public int paramIndex;
+            public int oldParamIndex;
+            public DXTypeVals paramType;
+            public ParamCats category;
 
-            //
-            // new AutoAxes parameters
-            //
-            public const int AA_XTICK_LOCS = 43;
-            public const int AA_YTICK_LOCS = 44;
-            public const int AA_ZTICK_LOCS = 45;
-            public const int AA_XTICK_LABELS = 46;
-            public const int AA_YTICK_LABELS = 47;
-            public const int AA_ZTICK_LABELS = 48;
-
-            //
-            // On behalf of Java Explorer
-            //
-            public const int JAVA_OPTIONS = 49;
-
-            public static int[] translateInputs = {
-                0,
-                USEVECTOR,
-                OBJECT,
-                WHERE,
-                TO,
-                FROM,
-                WIDTH,
-                RESOLUTION,
-                ASPECT,
-                UP,
-                OPTIONS,
-                AAENABLE,
-                AALABELS,
-                AATICKS,
-                AACORNERS,
-                AAFRAME,
-                AAADJUST,
-                AACURSOR,
-                RECENABLE,
-                RECFILE,
-                THROTTLE,
-                RECFORMAT,
-                PROJECTION,
-                VIEWANGLE,
-                BUTTON_STATE,
-                BUTTON_UP_APPROX,
-                BUTTON_DOWN_APPROX,
-                BUTTON_UP_DENSITY,
-                BUTTON_DOWN_DENSITY,
-                RENDER_MODE,
-                BACKGROUND,
-                AAGRID,
-                AACOLORS,
-                AAANNOTATION,
-                AALABELSCALE,
-                AAFONT
-            };
+            public ParamClass(int pIndex, int opIndex, DXTypeVals pType)
+            {
+                paramIndex = pIndex;
+                oldParamIndex = opIndex;
+                paramType = pType;
+                category = ParamCats.unknown;
+            }
+            public ParamClass(int pIndex, int opIndex, DXTypeVals pType, ParamCats pcat)
+            {
+                paramIndex = pIndex;
+                oldParamIndex = opIndex;
+                paramType = pType;
+                category = pcat;
+            }
         }
+        protected enum ParamCats : int
+        {
+            bckgnd = 0,
+            throttle,
+            save,
+            autoaxes,
+            rdropt, 
+            ititle,
+            unknown
+        }
+        private enum Params
+        {
+            imageTag=1,
+            obj=2,
+            where=3,
+            usevector=4,
+            to=5,
+            from=6,
+            width=7,
+            resolution=8,
+            aspect=9,
+            up=10,
+            viewangle=11,
+            projection=12,
+            options=13,
+            button_state=14,
+            button_up_approx=15,
+            button_down_approx=16,
+            button_up_density=17,
+            button_down_density=18,
+            render_mode=19,
+            default_camera=20,
+            reset_camera=21,
+            backgroundColor=22,
+            throttle=23,
+            recenable=24,
+            recfile=25,
+            recformat=26,
+            recresolution=27,
+            recaspect=28,
+            aaenabled=29,
+            aalabel=30,
+            aatick=31,
+            aacorners=32,
+            aaframe=33,
+            aaadjust=34,
+            aacursor=35,
+            aagrid=36,
+            aacolor=37,
+            aaannotation=38,
+            aalabelscale=39,
+            aafont=40,
+            interactionmode=41,
+            imageName=42,
+            aaannotationlist,
+            aacolorlist,
+            aalabellist,
+            aaticklist,
+            aaxticklocs,
+            aayticklocs,
+            aazticklocs,
+            aaxticklabels,
+            aayticklabels,
+            aazticklabels,
+            javaOptions,
+            recmode,
+            buappx,
+            bdappx,
+            buden,
+            bdden,
+            title
+        }
+
+        Dictionary<Params, ParamClass> imageParams = new Dictionary<Params,ParamClass>();
 
         private bool printCommonComments(StreamWriter sw, String indent)
         {
@@ -2603,14 +2600,17 @@ namespace WinDX.UI
         {
             int parameter;
             if (newPersp)
-                parameter = ParamConst.WIDTH;
+                parameter = imageParams[Params.width].paramIndex;
             else
-                parameter = ParamConst.VIEWANGLE;
+                parameter = imageParams[Params.viewangle].paramIndex;
+
             useDefaultInputValue(parameter, false);
+            
             if (newPersp)
-                parameter = ParamConst.VIEWANGLE;
+                parameter = imageParams[Params.viewangle].paramIndex;
             else
-                parameter = ParamConst.WIDTH;
+                parameter = imageParams[Params.width].paramIndex;
+
             useAssignedInputValue(parameter, false);
         }
         protected virtual void notifyUseVectorChange(bool newUse)
@@ -2623,26 +2623,26 @@ namespace WinDX.UI
             {
                 if (newUse)
                 {
-                    useAssignedInputValue(ParamConst.TO, false);
-                    useAssignedInputValue(ParamConst.FROM, false);
-                    useAssignedInputValue(ParamConst.WIDTH, false);
-                    useAssignedInputValue(ParamConst.UP, false);
-                    useAssignedInputValue(ParamConst.VIEWANGLE, false);
-                    useAssignedInputValue(ParamConst.PROJECTION, false);
-                    setInputDirty(ParamConst.TO);
-                    setInputDirty(ParamConst.FROM);
-                    setInputDirty(ParamConst.WIDTH);
-                    setInputDirty(ParamConst.UP);
-                    setInputDirty(ParamConst.VIEWANGLE);
-                    setInputDirty(ParamConst.PROJECTION);
+                    useAssignedInputValue(imageParams[Params.to].paramIndex, false);
+                    useAssignedInputValue(imageParams[Params.from].paramIndex, false);
+                    useAssignedInputValue(imageParams[Params.width].paramIndex, false);
+                    useAssignedInputValue(imageParams[Params.up].paramIndex, false);
+                    useAssignedInputValue(imageParams[Params.viewangle].paramIndex, false);
+                    useAssignedInputValue(imageParams[Params.projection].paramIndex, false);
+                    setInputDirty(imageParams[Params.to].paramIndex);
+                    setInputDirty(imageParams[Params.from].paramIndex);
+                    setInputDirty(imageParams[Params.width].paramIndex);
+                    setInputDirty(imageParams[Params.up].paramIndex);
+                    setInputDirty(imageParams[Params.viewangle].paramIndex);
+                    setInputDirty(imageParams[Params.projection].paramIndex);
                 }
                 else
                 {
-                    useDefaultInputValue(ParamConst.TO, false);
-                    useDefaultInputValue(ParamConst.FROM, false);
-                    useDefaultInputValue(ParamConst.WIDTH, false);
-                    useDefaultInputValue(ParamConst.UP, false);
-                    useDefaultInputValue(ParamConst.VIEWANGLE, false);
+                    useDefaultInputValue(imageParams[Params.to].paramIndex, false);
+                    useDefaultInputValue(imageParams[Params.from].paramIndex, false);
+                    useDefaultInputValue(imageParams[Params.width].paramIndex, false);
+                    useDefaultInputValue(imageParams[Params.up].paramIndex, false);
+                    useDefaultInputValue(imageParams[Params.viewangle].paramIndex, false);
                 }
             }
         }
@@ -2653,11 +2653,11 @@ namespace WinDX.UI
             String gpn = getGroupName(SymbolManager.theSymbolManager.getSymbol(ProcessGroupManager.ProcessGroup));
             if (gpn != null)
                 buf = String.Format("CacheScene({0}Image_{1}_in_{2}, {3}Image_{4}_out_1, {5}Image_{6}_out_2)[group: \"{7}\"];\n",
-                    prefix, InstanceNumber, ParamConst.IMAGETAG,
+                    prefix, InstanceNumber, imageParams[Params.imageTag].paramIndex,
                     prefix, InstanceNumber, prefix, InstanceNumber, gpn);
             else
                 buf = String.Format("CacheScene({0}Image_{1}_in_{2}, {3}Image_{4}_out_1, {5}Image_{6}_out_2);\n",
-                    prefix, InstanceNumber, ParamConst.IMAGETAG,
+                    prefix, InstanceNumber, imageParams[Params.imageTag].paramIndex,
                     prefix, InstanceNumber, prefix, InstanceNumber);
 
             return buf;
@@ -2678,9 +2678,16 @@ namespace WinDX.UI
                     if (m.Success)
                     {
                         int input = Int32.Parse(m.Groups[2].Value);
-                        String newcom = m.Groups[1].Value + ParamConst.translateInputs[input].ToString() +
-                            m.Groups[3].Value;
-                        comment = newcom;
+                        foreach (KeyValuePair<Params, ParamClass> kvp in imageParams)
+                        {
+                            if (kvp.Value.oldParamIndex == input)
+                            {
+                                String newcom = m.Groups[1].Value + kvp.Value.paramIndex.ToString() +
+                                    m.Groups[3].Value;
+                                comment = newcom;
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -2707,8 +2714,48 @@ namespace WinDX.UI
 
         protected override int handleNodeMsgInfo(string line)
         {
-            throw new Exception("Not Yet Implemented");
-            return base.handleNodeMsgInfo(line);
+            bool[] classUpd = new bool[Enum.GetNames(typeof(ParamCats)).Length];
+            for (int i = 0; i < Enum.GetNames(typeof(ParamCats)).Length; i++)
+                classUpd[i] = false;
+
+            if (line == null)
+                return 0;
+
+            Regex regex = new Regex(@".*:.*:(.*)");
+            Match m = regex.Match(line);
+
+            String substr = m.Groups[1].Value;
+
+            List<String> toks = Utils.StringTokenizer(substr, ";", null);
+            foreach (String tok in toks)
+            {
+                List<String> toks2 = Utils.StringTokenizer(tok, "=", null);
+                Params paramType = (Params)Enum.Parse(typeof(Params), toks2[0]);
+                ParamClass paramInfo;
+                if (paramType != Params.interactionmode && imageParams.TryGetValue(paramType, out paramInfo))
+                {
+                    setInputValue(paramInfo.paramIndex, toks2[1], paramInfo.paramType, false);
+                    classUpd[(int)paramInfo.category] = true;
+                }
+                else if (paramType == Params.interactionmode)
+                {
+                    setInteractionMode(toks2[1]);
+                }
+            }
+
+            deferVisualNotification();
+            if (image != null)
+            {
+                if (classUpd[(int)ParamCats.autoaxes])
+                    image.updateAutoAxesDialog();
+
+                if (classUpd[(int)ParamCats.rdropt])
+                    image.updateRenderingOptionsDialog();
+            }
+
+            undeferVisualNotification();
+
+            return 0;
         }
         protected override void reflectStateChange(bool unmanage)
         { // Intentionally left blank
@@ -2717,13 +2764,13 @@ namespace WinDX.UI
         {
             switch (index)
             {
-                case ParamConst.THROTTLE:
+                case (int)Params.throttle:
                     if (image != null)
                     {
                         if (status == NodeParameterStatusChange.ParameterArkAdded ||
                             status == NodeParameterStatusChange.ParameterArkRemoved)
                         {
-                            bool st = isInputDefaulting(ParamConst.THROTTLE);
+                            bool st = isInputDefaulting(imageParams[Params.throttle].paramIndex);
                             image.sensitizeThrottleDialog(st);
                         }
                         else if (status == NodeParameterStatusChange.ParameterValueChanged ||
@@ -2737,11 +2784,11 @@ namespace WinDX.UI
                     }
                     break;
 
-                case ParamConst.RECENABLE:
-                case ParamConst.RECFILE:
-                case ParamConst.RECFORMAT:
-                case ParamConst.RECRESOLUTION:
-                case ParamConst.RECASPECT:
+                case (int)Params.recenable:
+                case (int)Params.recfile:
+                case (int)Params.recformat:
+                case (int)Params.recresolution:
+                case (int)Params.recaspect:
                     if (image != null)
                     {
                         // This used to say isRecFileInputSet() instead of TRUE
@@ -2753,7 +2800,7 @@ namespace WinDX.UI
                     }
                     break;
 
-                case ParamConst.BACKGROUND:
+                case (int)Params.backgroundColor:
                     if (image != null)
                     {
                         if ((long)(status & NodeParameterStatusChange.ParameterArkAdded) > 0 ||
@@ -2771,97 +2818,97 @@ namespace WinDX.UI
                     }
                     break;
 
-                case ParamConst.AAENABLE:
+                case (int)Params.aaenabled:
                     if (image != null)
                         image.setAutoAxesDialogEnable();
                     break;
 
-                case ParamConst.AALABELS:
+                case (int)Params.aalabel:
                     if (image != null)
                         image.setAutoAxesDialogLabels();
                     break;
 
-                case ParamConst.AATICKS:
+                case (int)Params.aatick:
                     if (image != null)
                         image.setAutoAxesDialogTicks();
                     break;
 
-                case ParamConst.AA_XTICK_LOCS:
+                case (int)Params.aaxticklocs:
                     if (image != null)
                         image.setAutoAxesDialogXTickLocs();
                     break;
 
-                case ParamConst.AA_YTICK_LOCS:
+                case (int)Params.aayticklocs:
                     if (image != null)
                         image.setAutoAxesDialogYTickLocs();
                     break;
 
-                case ParamConst.AA_ZTICK_LOCS:
+                case (int)Params.aazticklocs:
                     if (image != null)
                         image.setAutoAxesDialogZTickLocs();
                     break;
 
-                case ParamConst.AA_XTICK_LABELS:
+                case (int)Params.aaxticklabels:
                     if (image != null)
                         image.setAutoAxesDialogXTickLabels();
                     break;
 
-                case ParamConst.AA_YTICK_LABELS:
+                case (int)Params.aayticklabels:
                     if (image != null)
                         image.setAutoAxesDialogYTickLabels();
                     break;
 
-                case ParamConst.AA_ZTICK_LABELS:
+                case (int)Params.aazticklabels:
                     if (image != null)
                         image.setAutoAxesDialogZTickLabels();
                     break;
 
-                case ParamConst.AACORNERS:
+                case (int)Params.aacorners:
                     if (image != null)
                         image.setAutoAxesDialogCorners();
                     break;
 
-                case ParamConst.AAFRAME:
+                case (int)Params.aaframe:
                     if (image != null)
                         image.setAutoAxesDialogFrame();
                     break;
 
-                case ParamConst.AAADJUST:
+                case (int)Params.aaadjust:
                     if (image != null)
                         image.setAutoAxesDialogAdjust();
                     break;
 
-                case ParamConst.AACURSOR:
+                case (int)Params.aacursor:
                     if (image != null)
                         image.setAutoAxesDialogCursor();
                     break;
 
-                case ParamConst.AAGRID:
+                case (int)Params.aagrid:
                     if (image != null)
                         image.setAutoAxesDialogGrid();
                     break;
 
-                case ParamConst.AACOLORS:
+                case (int)Params.aacolor:
                     if (image != null)
                         image.setAutoAxesDialogAnnotationColors();
                     break;
 
-                case ParamConst.AAANNOTATION:
+                case (int)Params.aaannotation:
                     if (image != null)
                         image.setAutoAxesDialogAnnotationColors();
                     break;
 
-                case ParamConst.AALABELSCALE:
+                case (int)Params.aalabelscale:
                     if (image != null)
                         image.setAutoAxesDialogLabelScale();
                     break;
 
-                case ParamConst.AAFONT:
+                case (int)Params.aafont:
                     if(image != null)
                         image.setAutoAxesDialogFont();
                     break;
 
-                case ParamConst.INTERACTIONMODE:
+                case (int)Params.interactionmode:
                     if (image != null)
                     {
                         bool stat = IsInteractionModeConnected;
@@ -2869,19 +2916,19 @@ namespace WinDX.UI
                     }
                     break;
 
-                case ParamConst.IMAGENAME:
+                case (int)Params.imageName:
                     if (image != null)
                     {
-                        bool stat = isInputConnected(ParamConst.IMAGENAME);
-                        if ((!stat) && (isInputDefaulting(ParamConst.IMAGENAME)))
+                        bool stat = isInputConnected(imageParams[Params.imageName].paramIndex);
+                        if ((!stat) && (isInputDefaulting(imageParams[Params.imageName].paramIndex)))
                             setTitle(null);
                         else
-                            setTitle(getInputValueString(ParamConst.IMAGENAME));
+                            setTitle(getInputValueString(imageParams[Params.imageName].paramIndex));
                         image.sensitizeChangeImageName(!stat);
                     }
                     break;
 
-                case ParamConst.RENDER_MODE:
+                case (int)Params.render_mode:
                     if (image != null)
                     {
                         if (status == NodeParameterStatusChange.ParameterArkAdded)
@@ -2894,7 +2941,7 @@ namespace WinDX.UI
                     }
                     break;
 
-                case ParamConst.BUTTON_UP_APPROX:
+                case (int)Params.button_up_approx:
                     if (image != null)
                     {
                         if (status == NodeParameterStatusChange.ParameterArkAdded)
@@ -2907,7 +2954,7 @@ namespace WinDX.UI
                     }
                     break;
 
-                case ParamConst.BUTTON_DOWN_APPROX:
+                case (int)Params.button_down_approx:
                     if (image != null)
                     {
                         if (status == NodeParameterStatusChange.ParameterArkAdded)
@@ -2920,7 +2967,7 @@ namespace WinDX.UI
                     }
                     break;
 
-                case ParamConst.BUTTON_UP_DENSITY:
+                case (int)Params.button_up_density:
                     if (image != null)
                     {
                         if (status == NodeParameterStatusChange.ParameterArkAdded)
@@ -2933,7 +2980,7 @@ namespace WinDX.UI
                     }
                     break;
 
-                case ParamConst.BUTTON_DOWN_DENSITY:
+                case (int)Params.button_down_density:
                     if (image != null)
                     {
                         if (status == NodeParameterStatusChange.ParameterArkAdded)
@@ -2957,9 +3004,73 @@ namespace WinDX.UI
             throw new Exception("Not Yet Implemented");
         }
 
+        protected void initializeParams()
+        {
+            imageParams.Add(Params.imageTag, new ParamClass(1, -1, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.obj, new ParamClass(2, 2, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.where, new ParamClass(3, 3, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.usevector, new ParamClass(4, 1, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.to, new ParamClass(5, 4, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.from, new ParamClass(6, 5, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.width, new ParamClass(7, 6, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.resolution, new ParamClass(8, 7, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.aspect, new ParamClass(9, 8, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.up, new ParamClass(10, 9, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.viewangle, new ParamClass(11, 23, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.projection, new ParamClass(12, 22, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.options, new ParamClass(13, 10, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.button_state, new ParamClass(14, 24, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.button_up_approx, new ParamClass(15, 25, DXTypeVals.StringType, ParamCats.rdropt));
+            imageParams.Add(Params.button_down_approx, new ParamClass(16, 26, DXTypeVals.StringType, ParamCats.rdropt));
+            imageParams.Add(Params.button_up_density, new ParamClass(17, 27, DXTypeVals.IntegerType, ParamCats.rdropt));
+            imageParams.Add(Params.button_down_density, new ParamClass(18, 28, DXTypeVals.IntegerType, ParamCats.rdropt));
+            imageParams.Add(Params.render_mode, new ParamClass(19, 29, DXTypeVals.IntegerType));
+            imageParams.Add(Params.default_camera, new ParamClass(20, 36, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.reset_camera, new ParamClass(21, 37, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.backgroundColor, new ParamClass(22, 30, DXTypeVals.UndefinedType, ParamCats.bckgnd));
+            imageParams.Add(Params.throttle, new ParamClass(23, 20, DXTypeVals.ScalarType, ParamCats.throttle));
+            imageParams.Add(Params.recenable, new ParamClass(24, 18, DXTypeVals.FlagType, ParamCats.save));
+            imageParams.Add(Params.recfile, new ParamClass(25, 19, DXTypeVals.StringType, ParamCats.save));
+            imageParams.Add(Params.recformat, new ParamClass(26, 21, DXTypeVals.StringType, ParamCats.save));
+            imageParams.Add(Params.recresolution, new ParamClass(27, -1, DXTypeVals.IntegerType, ParamCats.save));
+            imageParams.Add(Params.recaspect, new ParamClass(28, -1, DXTypeVals.ScalarType, ParamCats.save));
+            imageParams.Add(Params.aaenabled, new ParamClass(29, 11, DXTypeVals.FlagType, ParamCats.autoaxes));
+            imageParams.Add(Params.aalabel, new ParamClass(30, 12, DXTypeVals.StringType, ParamCats.autoaxes));
+            imageParams.Add(Params.aalabellist, new ParamClass(30, 12, DXTypeVals.StringListType, ParamCats.autoaxes));
+            imageParams.Add(Params.aaticklist, new ParamClass(31, 13, DXTypeVals.IntegerListType, ParamCats.autoaxes));
+            imageParams.Add(Params.aatick, new ParamClass(31, 13, DXTypeVals.IntegerType, ParamCats.autoaxes));
+            imageParams.Add(Params.aacorners, new ParamClass(32, 14, DXTypeVals.VectorListType, ParamCats.autoaxes));
+            imageParams.Add(Params.aaframe, new ParamClass(33, 15, DXTypeVals.FlagType, ParamCats.autoaxes));
+            imageParams.Add(Params.aaadjust, new ParamClass(34, 16, DXTypeVals.FlagType, ParamCats.autoaxes));
+            imageParams.Add(Params.aacursor, new ParamClass(35, 17, DXTypeVals.VectorType, ParamCats.autoaxes));
+            imageParams.Add(Params.aagrid, new ParamClass(36, 31, DXTypeVals.FlagType, ParamCats.autoaxes));
+            imageParams.Add(Params.aacolor, new ParamClass(37, 32, DXTypeVals.StringType, ParamCats.autoaxes));
+            imageParams.Add(Params.aacolorlist, new ParamClass(37, 32, DXTypeVals.StringListType, ParamCats.autoaxes));
+            imageParams.Add(Params.aaannotation, new ParamClass(38, 33, DXTypeVals.StringType, ParamCats.autoaxes));
+            imageParams.Add(Params.aaannotationlist, new ParamClass(38, 33, DXTypeVals.StringListType, ParamCats.autoaxes));
+            imageParams.Add(Params.aalabelscale, new ParamClass(39, 34, DXTypeVals.ScalarType, ParamCats.autoaxes));
+            imageParams.Add(Params.aafont, new ParamClass(40, 35, DXTypeVals.StringType, ParamCats.autoaxes));
+            imageParams.Add(Params.interactionmode, new ParamClass(41, -1, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.imageName, new ParamClass(42, -1, DXTypeVals.StringType, ParamCats.ititle));
+            imageParams.Add(Params.aaxticklocs, new ParamClass(43, -1, DXTypeVals.ScalarListType, ParamCats.autoaxes));
+            imageParams.Add(Params.aayticklocs, new ParamClass(44, -1, DXTypeVals.ScalarListType, ParamCats.autoaxes));
+            imageParams.Add(Params.aazticklocs, new ParamClass(45, -1, DXTypeVals.ScalarListType, ParamCats.autoaxes));
+            imageParams.Add(Params.aaxticklabels, new ParamClass(46, -1, DXTypeVals.StringListType, ParamCats.autoaxes));
+            imageParams.Add(Params.aayticklabels, new ParamClass(47, -1, DXTypeVals.StringListType, ParamCats.autoaxes));
+            imageParams.Add(Params.aazticklabels, new ParamClass(48, -1, DXTypeVals.StringListType, ParamCats.autoaxes));
+            imageParams.Add(Params.javaOptions, new ParamClass(49, -1, DXTypeVals.UndefinedType));
+            imageParams.Add(Params.recmode, new ParamClass(19, 29, DXTypeVals.IntegerType, ParamCats.rdropt));
+            imageParams.Add(Params.buappx, new ParamClass(15, 25, DXTypeVals.StringType, ParamCats.rdropt));
+            imageParams.Add(Params.bdappx, new ParamClass(16, 26, DXTypeVals.StringType, ParamCats.rdropt));
+            imageParams.Add(Params.buden, new ParamClass(17, 27, DXTypeVals.IntegerType, ParamCats.rdropt));
+            imageParams.Add(Params.bdden, new ParamClass(18, 28, DXTypeVals.IntegerType, ParamCats.rdropt));
+            imageParams.Add(Params.title, new ParamClass(42, -1, DXTypeVals.StringType, ParamCats.ititle));
+        }
+
         public ImageNode(NodeDefinition nd, Network net, int instnc)
             : base(nd, net, instnc)
         {
+            initializeParams();
             ImageDefinition imnd = (ImageDefinition)nd;
             macroDirty = true;
             translating = false;
@@ -2976,7 +3087,7 @@ namespace WinDX.UI
         {
             DXApplication.theDXApplication.setBusyCursor(true);
             base.initialize();
-            if (!setMessageIdParameter(ParamConst.IMAGETAG))
+            if (!setMessageIdParameter(imageParams[Params.imageTag].paramIndex))
                 return false;
 
             enableVector(false, false);
@@ -2995,19 +3106,19 @@ namespace WinDX.UI
 
         public override void setTitle(string title, bool fromServer)
         {
-            if (!isInputConnected(ParamConst.IMAGENAME))
+            if (!isInputConnected(imageParams[Params.imageName].paramIndex))
             {
                 if (title == null || title.Length == 0)
-                    useDefaultInputValue(ParamConst.IMAGENAME, false);
+                    useDefaultInputValue(imageParams[Params.imageName].paramIndex, false);
                 else
                 {
-                    if (fromServer && isInputDefaulting(ParamConst.IMAGENAME))
-                        setInputAttributeFromServer(ParamConst.IMAGENAME, title, DXTypeVals.StringType);
+                    if (fromServer && isInputDefaulting(imageParams[Params.imageName].paramIndex))
+                        setInputAttributeFromServer(imageParams[Params.imageName].paramIndex, title, DXTypeVals.StringType);
                     else
                     {
-                        String v = getInputValueString(ParamConst.IMAGENAME);
+                        String v = getInputValueString(imageParams[Params.imageName].paramIndex);
                         if (v != title)
-                            setInputValue(ParamConst.IMAGENAME, title, DXTypeVals.StringType, false);
+                            setInputValue(imageParams[Params.imageName].paramIndex, title, DXTypeVals.StringType, false);
                     }
                 }
             }
@@ -3034,14 +3145,14 @@ namespace WinDX.UI
         {
             // Using the node's value if the input is defaulting would prevent us
             // from using "nodename: filename".
-            if (isInputDefaulting(ParamConst.IMAGENAME))
+            if (isInputDefaulting(imageParams[Params.imageName].paramIndex))
                 return base.getTitle();
 
             // Make sure the value is a valid string and strip off the quotes
             // and use it, if it is.
-            if (getInputSetValueType(ParamConst.IMAGENAME) == DXTypeVals.StringType)
+            if (getInputSetValueType(imageParams[Params.imageName].paramIndex) == DXTypeVals.StringType)
             {
-                String v = getInputValueString(ParamConst.IMAGENAME);
+                String v = getInputValueString(imageParams[Params.imageName].paramIndex);
                 if (v != null || v.Length != 0 || v == "NULL")
                     return base.getTitle();
 
@@ -3070,7 +3181,7 @@ namespace WinDX.UI
 
             switch (index)
             {
-                case ParamConst.USEVECTOR:
+                case (int)Params.usevector:
                     if (trans)
                     {
                         if (value.StartsWith("1"))
@@ -3083,7 +3194,7 @@ namespace WinDX.UI
                     notifyUseVectorChange(!value.StartsWith("0"));
                     break;
 
-                case ParamConst.AAENABLE:
+                case (int)Params.aaenabled:
                     if (trans)
                     {
                         if (value.StartsWith("1"))
@@ -3093,7 +3204,7 @@ namespace WinDX.UI
                     }
                     break;
 
-                case ParamConst.RECENABLE:
+                case (int)Params.recenable:
                     if (trans)
                     {
                         if (value.StartsWith("1"))
@@ -3103,11 +3214,11 @@ namespace WinDX.UI
                     }
                     break;
 
-                case ParamConst.PROJECTION:
+                case (int)Params.projection:
                     notifyProjectionChange(!value.StartsWith("0"));
                     break;
 
-                case ParamConst.RENDER_MODE:
+                case (int)Params.render_mode:
                     if (value == "\"hardware\"" ||
                     value == "hardware")
                         value = "1";
@@ -3124,8 +3235,8 @@ namespace WinDX.UI
                     if (type == DXTypeVals.StringType)
                         type = DXTypeVals.FlagType;
                     break;
-                case ParamConst.BUTTON_UP_APPROX:
-                case ParamConst.BUTTON_DOWN_APPROX:
+                case (int)Params.button_up_approx:
+                case (int)Params.button_down_approx:
                     if (value == "\"flat\"")
                         value = "\"none\"";
                     break;
@@ -3189,7 +3300,7 @@ namespace WinDX.UI
         {
             get
             {
-                Parameter p = getInputParameter(ParamConst.USEVECTOR);
+                Parameter p = getInputParameter(imageParams[Params.usevector].paramIndex);
                 String s = p.getValueOrDefaultString();
                 return s != "0";
             }
@@ -3199,23 +3310,23 @@ namespace WinDX.UI
             if (use == UseVector)
                 return;
 
-            setInputValue(ParamConst.USEVECTOR, use ? "1" : "0", DXTypeVals.IntegerType, send);
-            Parameter p = getInputParameter(ParamConst.USEVECTOR);
+            setInputValue(imageParams[Params.usevector].paramIndex, use ? "1" : "0", DXTypeVals.IntegerType, send);
+            Parameter p = getInputParameter(imageParams[Params.usevector].paramIndex);
             p.setDirty();
         }
         public void setTo(double[] to, bool send)
         {
             String s = String.Format("[{0} {1} {2}]", to[0], to[1], to[2]);
-            setInputValue(ParamConst.TO, s, DXTypeVals.VectorType, send);
+            setInputValue(imageParams[Params.to].paramIndex, s, DXTypeVals.VectorType, send);
         }
         public void setFrom(double[] from, bool send)
         {
             String s = String.Format("[{0} {1} {2}]", from[0], from[1], from[2]);
-            setInputValue(ParamConst.FROM, s, DXTypeVals.VectorType, send);
+            setInputValue(imageParams[Params.from].paramIndex, s, DXTypeVals.VectorType, send);
         }
         public void setResolution(int x, int y, bool send)
         {
-            setInputValue(ParamConst.RESOLUTION, x.ToString(), DXTypeVals.IntegerType, send);
+            setInputValue(imageParams[Params.resolution].paramIndex, x.ToString(), DXTypeVals.IntegerType, send);
             height = y;
         }
         public void setWidth(double w, bool send)
@@ -3224,19 +3335,19 @@ namespace WinDX.UI
             getProjection(out persp);
 
             if (persp)
-                setInputSetValue(ParamConst.WIDTH, w.ToString(), DXTypeVals.ScalarType, send);
+                setInputSetValue(imageParams[Params.width].paramIndex, w.ToString(), DXTypeVals.ScalarType, send);
             else
-                setInputValue(ParamConst.WIDTH, w.ToString(), DXTypeVals.ScalarType, send);
+                setInputValue(imageParams[Params.width].paramIndex, w.ToString(), DXTypeVals.ScalarType, send);
         }
         public void setAspect(double a, bool send)
         {
-            setInputValue(ParamConst.ASPECT, a.ToString(), DXTypeVals.ScalarType, send);
+            setInputValue(imageParams[Params.aspect].paramIndex, a.ToString(), DXTypeVals.ScalarType, send);
         }
         public void setThrottle(double a, bool send) { throw new Exception("Not Yet Implemented"); }
         public void setUp(double[] up, bool send)
         {
             String s = String.Format("[{0} {1} {2}]", up[0], up[1], up[2]);
-            setInputValue(ParamConst.UP, s, DXTypeVals.VectorType, send);
+            setInputValue(imageParams[Params.up].paramIndex, s, DXTypeVals.VectorType, send);
         }
         public void setBox(double[,] box, bool send)
         {
@@ -3245,7 +3356,7 @@ namespace WinDX.UI
         public void setProjection(bool persp, bool send)
         {
             int i = (persp?1:0);
-            setInputValue(ParamConst.PROJECTION, i.ToString(), DXTypeVals.IntegerType, send);
+            setInputValue(imageParams[Params.projection].paramIndex, i.ToString(), DXTypeVals.IntegerType, send);
         }
         public void setViewAngle(double angle, bool send)
         {
@@ -3253,14 +3364,14 @@ namespace WinDX.UI
             getProjection(out persp);
 
             if (persp)
-                setInputValue(ParamConst.VIEWANGLE, angle.ToString(), DXTypeVals.ScalarType, send);
+                setInputValue(imageParams[Params.viewangle].paramIndex, angle.ToString(), DXTypeVals.ScalarType, send);
             else
-                setInputSetValue(ParamConst.VIEWANGLE, angle.ToString(), DXTypeVals.ScalarType, send);
+                setInputSetValue(imageParams[Params.viewangle].paramIndex, angle.ToString(), DXTypeVals.ScalarType, send);
         }
         
         public void setButtonUp(bool up, bool send) {
             String s = (up ? "1" : "2");
-            setInputValue(ParamConst.BUTTON_STATE, s, DXTypeVals.IntegerType, send);
+            setInputValue(imageParams[Params.button_state].paramIndex, s, DXTypeVals.IntegerType, send);
         }
 
         public void setApprox(bool up, String approx, bool send) { throw new Exception("Not Yet Implemented"); }
@@ -3279,10 +3390,10 @@ namespace WinDX.UI
         {
             String s;
             int ii;
-            if (isInputDefaulting(ParamConst.PROJECTION))
-                s = getInputDefaultValueString(ParamConst.PROJECTION);
+            if (isInputDefaulting(imageParams[Params.projection].paramIndex))
+                s = getInputDefaultValueString(imageParams[Params.projection].paramIndex);
             else
-                s = getInputValueString(ParamConst.PROJECTION);
+                s = getInputValueString(imageParams[Params.projection].paramIndex);
 
             if (s == null || s == "NULL")
                 persp = false;
@@ -3317,21 +3428,21 @@ namespace WinDX.UI
 
             if (use)
             {
-                if (!isInputDefaulting(ParamConst.BUTTON_UP_DENSITY))
-                    useDefaultInputValue(ParamConst.BUTTON_UP_DENSITY, false);
-                if (!isInputDefaulting(ParamConst.BUTTON_DOWN_DENSITY))
-                    useDefaultInputValue(ParamConst.BUTTON_DOWN_DENSITY, false);
+                if (!isInputDefaulting(imageParams[Params.button_up_density].paramIndex))
+                    useDefaultInputValue(imageParams[Params.button_up_density].paramIndex, false);
+                if (!isInputDefaulting(imageParams[Params.button_down_density].paramIndex))
+                    useDefaultInputValue(imageParams[Params.button_down_density].paramIndex, false);
             }
             else
             {
-                if (isInputSet(ParamConst.BUTTON_UP_DENSITY) &&
-                    isInputDefaulting(ParamConst.BUTTON_UP_DENSITY))
-                    useAssignedInputValue(ParamConst.BUTTON_UP_DENSITY, false);
-                if (isInputSet(ParamConst.BUTTON_DOWN_DENSITY) &&
-                    isInputDefaulting(ParamConst.BUTTON_DOWN_DENSITY))
-                    useAssignedInputValue(ParamConst.BUTTON_DOWN_DENSITY, false);
+                if (isInputSet(imageParams[Params.button_up_density].paramIndex) &&
+                    isInputDefaulting(imageParams[Params.button_down_density].paramIndex))
+                    useAssignedInputValue(imageParams[Params.button_up_density].paramIndex, false);
+                if (isInputSet(imageParams[Params.button_down_density].paramIndex) &&
+                    isInputDefaulting(imageParams[Params.button_down_density].paramIndex))
+                    useAssignedInputValue(imageParams[Params.button_down_density].paramIndex, false);
             }
-            setInputValue(ParamConst.RENDER_MODE, s, DXTypeVals.StringType, send);
+            setInputValue(imageParams[Params.render_mode].paramIndex, s, DXTypeVals.StringType, send);
         }
 
         //
@@ -3529,9 +3640,97 @@ namespace WinDX.UI
         public bool IsButtonUpDensityConnected { get { throw new Exception("Not Yet Implemented"); } }
         public bool IsButtonDownDensityConnected { get { throw new Exception("Not Yet Implemented"); } }
 
-        public bool IsDataDriven { get { throw new Exception("Not Yet Implemented"); } }
+        public override bool IsDataDriven
+        {
+            get
+            {
+                bool driven = false;
+                for (int i = 2; !driven && i <= InputCount; i++)
+                {
+                    driven = !isInputDefaulting(i);
+                }
+                return driven;
+            }
+        }
 
-        public bool setInteractionMode(String mode) { throw new Exception("Not Yet Implemented"); }
+        public bool setInteractionMode(String mode)
+        {
+            int i, n;
+            Regex regex = new Regex(@"(\S+)(?:\s+(\S+))?");
+            Match m = regex.Match(mode);
+
+            String imode = m.Groups[1].Value;
+
+            DirectInteractionMode interactionMode;
+
+            if (imode.ToLower().StartsWith("camera"))
+                interactionMode = DirectInteractionMode.CAMERA;
+            else if (imode.ToLower().StartsWith("cursors"))
+                interactionMode = DirectInteractionMode.CURSORS;
+            else if (imode.ToLower().StartsWith("pick"))
+                interactionMode = DirectInteractionMode.PICK;
+            else if (imode.ToLower().StartsWith("navigate"))
+                interactionMode = DirectInteractionMode.NAVIGATE;
+            else if (imode.ToLower().StartsWith("panzoom"))
+                interactionMode = DirectInteractionMode.PANZOOM;
+            else if (imode.ToLower().StartsWith("roam"))
+                interactionMode = DirectInteractionMode.ROAM;
+            else if (imode.ToLower().StartsWith("rotate"))
+                interactionMode = DirectInteractionMode.ROTATE;
+            else if (imode.ToLower().StartsWith("zoom"))
+                interactionMode = DirectInteractionMode.ZOOM;
+            else
+                interactionMode = DirectInteractionMode.NONE;
+
+            ImageWindow img = this.image;
+            if (img != null)
+            {
+                if (m.Groups[2].Captures.Count > 0)
+                {
+                    Type clss;
+                    if (interactionMode == DirectInteractionMode.CURSORS)
+                        clss = typeof(ProbeNode);
+                    else if (interactionMode == DirectInteractionMode.PICK)
+                        clss = typeof(PickNode);
+                    else goto no_arg;
+
+                    List<Node> pl = DXApplication.theDXApplication.network.makeClassifiedNodeList(clss);
+
+                    if (pl != null && pl.Count > 0)
+                    {
+                        String arg = m.Groups[2].Value;
+                        if (arg.StartsWith("label="))
+                            arg = arg.Substring(6);
+
+                        int inum = -1;
+                        foreach (Node nd in pl)
+                        {
+                            if (arg == nd.LabelString)
+                            {
+                                inum = nd.InstanceNumber;
+                                break;
+                            }
+                        }
+
+                        if (inum > 0)
+                        {
+                            if (interactionMode == DirectInteractionMode.CURSORS)
+                                img.setCurrentProbe(inum);
+                            else
+                                img.setCurrentPick(inum);
+                        }
+                    }
+                }
+                img.allowDirectInteraction(true);
+                img.setInteractionMode(interactionMode);
+            }
+            else
+                saveInteractionMode = interactionMode;
+
+        no_arg:
+            return true;
+        }
+
         public void setInteractionModeParameter(DirectInteractionMode mode) { throw new Exception("Not Yet Implemented"); }
         public override void openImageWindow(bool manage)
         {
@@ -3544,7 +3743,7 @@ namespace WinDX.UI
         // need its number.
         public override int getMessageIdParamNumber()
         {
-            return ParamConst.IMAGETAG;
+            return imageParams[Params.imageTag].paramIndex;
         }
 
         // On behalf of ImageFormatDialog (Save/Print Image dialogs) which needs to
@@ -3564,8 +3763,8 @@ namespace WinDX.UI
         public virtual bool isJavified(Node webOptions) { throw new Exception("Not Yet Implemented"); }
         public virtual void javifyNode(Node webOptions, Node w2) { throw new Exception("Not Yet Implemented"); }
         public virtual void unjavifyNode() { throw new Exception("Not Yet Implemented"); }
-        public virtual String getJavaNodeName() { return "ImageNode"; }
-        public virtual bool printInputAsJava(int input) { throw new Exception("Not Yet Implemented"); }
+        public override String getJavaNodeName() { return "ImageNode"; }
+        public override bool printInputAsJava(int input) { throw new Exception("Not Yet Implemented"); }
         public String getWebOptionsFormat() { throw new Exception("Not Yet Implemented"); }
         public bool isWebOptionsOrbit() { throw new Exception("Not Yet Implemented"); }
         public override bool printAsJava(StreamWriter sw)

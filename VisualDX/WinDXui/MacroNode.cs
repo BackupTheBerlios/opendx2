@@ -9,30 +9,37 @@ namespace WinDX.UI
         public MacroNode(NodeDefinition nd, Network net, int instnc)
             : base(nd, net, instnc)
         {
-            throw new Exception("Not yet implemented.");
         }
-
-        public override void updateDefinition()
+        ~MacroNode()
         {
-            throw new Exception("Not yet implemented.");
+            MacroDefinition d = (MacroDefinition)Definition;
+            d.dereference(this);
         }
 
         public override bool initialize()
         {
-            throw new Exception("Not yet implemented.");
+            MacroDefinition d = (MacroDefinition)Definition;
+            d.reference(this);
+
+            base.initialize();
+            return true;
         }
-        public virtual bool sendValues()
+
+        public override bool sendValues()
         {
             return sendValues(true);
         }
-        public virtual bool sendValues(bool ignoreDirty)
+        public override bool sendValues(bool ignoreDirty)
         {
-            throw new Exception("Not yet implemented.");
+            MacroDefinition md = (MacroDefinition)Definition;
+            md.updateServer();
+            return base.sendValues(ignoreDirty);
         }
 
         public virtual void openMacro()
         {
-            throw new Exception("Not yet implemented.");
+            MacroDefinition md = (MacroDefinition)Definition;
+            md.openMacro();
         }
 
         /// <summary>
@@ -42,10 +49,14 @@ namespace WinDX.UI
         /// <returns></returns>
         public virtual bool IsA(Symbol classname)
         {
-            throw new Exception("Not yet implemented.");
+            Symbol s = SymbolManager.theSymbolManager.registerSymbol("MacroNode");
+            if (s == classname)
+                return true;
+            else
+                return base.isA(classname);
         }
 
-        public virtual bool needsFastSort() { return true; }
+        public override bool needsFastSort() { return true; }
 
         /// <summary>
         /// WebOptions is a macro.  I would like to represent it with its own
@@ -56,14 +67,14 @@ namespace WinDX.UI
         /// macro is WebOptions
         /// </summary>
         /// <returns></returns>
-        public virtual bool hasJavaRepresentation()
+        public override bool hasJavaRepresentation()
         {
             throw new Exception("Not yet implemented.");
         }
 
-        public virtual String getJavaNodeName() { return "WebOptionsNode"; }
+        public override String getJavaNodeName() { return "WebOptionsNode"; }
 
-        public virtual bool printInputAsJava(int input)
+        public override bool printInputAsJava(int input)
         {
             throw new Exception("Not yet implemented.");
         }

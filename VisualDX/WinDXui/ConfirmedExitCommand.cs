@@ -39,7 +39,7 @@ namespace WinDX.UI
             {
                 if (net.IsMacro && net.SaveToFileRequired)
                 {
-                    cmd = (SaveMacroCommand) net.getDefinition().getSaveCmd();
+                    cmd = (SaveMacroCommand) net.Definition.getSaveCmd();
                     if (first == null)
                         first = cmd;
                     if (last != null)

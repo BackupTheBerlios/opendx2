@@ -8,7 +8,7 @@ namespace WinDX.UI
 {
     public class Decorator : Control
     {
-        public enum DecoratorStyle
+        public enum DecoratorType
         {
             Unknown,
             Default,
@@ -56,22 +56,18 @@ namespace WinDX.UI
 
         public virtual bool printComment(StreamWriter sw)
         {
-            String s = "    //\n    // decorator " + name +
+            String s = "    //\n    // decorator " + style.KeyString +
                 String.Format("\tpos=({0},{1}) size={2}x{3} style({4})", this.Location.X, this.Location.Y,
-                this.Size.Width, this.Size.Height);
-
-            if (style == DecoratorStyle.Label || style == DecoratorStyle.Marker)
-            {
-                // Need to add the code from LabelDecorator
-                throw new Exception("Not Yet Implemented");
-            }
-            else
-                // Need to add the code from SeparatorDecorator
-                throw new Exception("Not Yet Implemented");
+                this.Size.Width, this.Size.Height, style.NameString );
 
             return true;
         }
         public virtual bool parseComment(String comment, String filename, int lineno)
+        {
+            throw new Exception("Not Yet Implemented");
+        }
+
+        public virtual bool parseResourceComment(String comment, String filename, int lineno)
         {
             throw new Exception("Not Yet Implemented");
         }

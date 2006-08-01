@@ -237,13 +237,14 @@ namespace WinDX.UI
             if (linkHandler != null)
                 linkHandler = null;
 
-            if (handlers != null)
-                foreach (PacketHandler h in handlers)
-                    handlers.Remove(h);
+            // I believe the garbage collector will take care of these.
+            //if (handlers != null)
+            //    foreach (PacketHandler h in handlers)
+            //        handlers.Remove(h);
 
-            if(output_queue != null)
-                foreach (QueuedPacket qp in output_queue)
-                    output_queue.Remove(qp);
+            //if(output_queue != null)
+            //    foreach (QueuedPacket qp in output_queue)
+            //        output_queue.Remove(qp);
 
         }
 
@@ -935,7 +936,10 @@ namespace WinDX.UI
                     line = "";
                 }
                 else
+                {
                     line += curline;
+                    curline = "";
+                }
             }
 
             //

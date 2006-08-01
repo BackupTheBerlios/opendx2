@@ -162,8 +162,7 @@ namespace WinDX.UI
                 return base.isA(classname);
         }
 
-        public void switchNetwork(Network from, Network to) { switchNetwork(from, to, false); }
-        public void switchNetwork(Network from, Network to, bool silently)
+        public override void switchNetwork(Network from, Network to, bool silently)
         {
             String conflict = to.nameConflictExists(this, LabelString);
             String new_name = "";

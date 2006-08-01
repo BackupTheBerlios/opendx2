@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Diagnostics;
 
 namespace WinDX.UI
 {
@@ -108,7 +109,28 @@ namespace WinDX.UI
         /// <returns></returns>
         public bool createGroup(String name, Network net)
         {
-            throw new Exception("Not yet implemented.");
+            Debug.Assert(net == network);
+
+            name = name.Trim();
+            if (name == "")
+                return false;
+
+            GroupRecord gr;
+            if (groups.TryGetValue(name, out gr))
+                return false; // Named group already exists
+
+            gr = recordAllocator(net, name);
+
+            groups.Add(name, gr);
+
+            EditorWindow editor = net.getEditor();
+            if (editor != null)
+            {
+                editor.setGroup(gr, this.groupID);
+                net.setFileDirty();
+                net.changeExistanceWork(null, true);
+            }
+            return true;
         }
 
         /// <summary>

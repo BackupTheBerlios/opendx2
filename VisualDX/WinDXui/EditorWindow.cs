@@ -110,6 +110,8 @@ namespace WinDX.UI
         public void newNode(Node node, EditorWorkSpace where) { }
         public void highlightNodes(DXApplication.HighlightType type) { }
         public void highlightNode(String name, int instance, DXApplication.HighlightType type) { }
-
+        public void setGroup(GroupRecord gr, Symbol sym) { }
+        public TransmitterNode getMostRecentTransmitterNode() { return null; }
+        public void notifyDefinitionChange(Node n) { }
     }
 }

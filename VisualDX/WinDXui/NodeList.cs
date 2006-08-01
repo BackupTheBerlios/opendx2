@@ -52,7 +52,7 @@ namespace WinDX.UI
             return l;
         }
 
-        public void Add(Node node)
+        public new void Add(Node node)
         {
             base.Add(node);
 
@@ -84,13 +84,13 @@ namespace WinDX.UI
             }
         }
 
-        public void Clear()
+        public new void Clear()
         {
             base.Clear();
             nodeDict.Clear();
         }
 
-        public void RemoveAt(int index)
+        public new void RemoveAt(int index)
         {
             Node oldNode = this[index];
             this.RemoveAt(index);
@@ -103,14 +103,14 @@ namespace WinDX.UI
             }
         }
 
-        public void Insert(int index, Node node)
+        public new void Insert(int index, Node node)
         {
             base.Insert(index, node);
 
             if (node.needsFastSort())
             {
                 List<Node> nl = getSubList(node);
-                Debug.Assert(nl.Contains(node));
+                Debug.Assert(!nl.Contains(node));
                 nl.Add(node);
             }
         }

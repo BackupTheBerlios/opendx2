@@ -338,7 +338,25 @@ namespace WinDX.UI
         /// <returns></returns>
         public int getComponentCount()
         {
-            throw new Exception("Not Yet Implemented");
+            int ret = 0;
+            switch (ValueType)
+            {
+                case DXTypeVals.IntegerListType:
+                case DXTypeVals.ScalarListType:
+                case DXTypeVals.IntegerType:
+                case DXTypeVals.ScalarType:
+                case DXTypeVals.FlagType:
+                    ret = 1;
+                    break;
+                case DXTypeVals.VectorType:
+                case DXTypeVals.VectorListType:
+                    ret = value.getVectorComponentCount();
+                    break;
+                default:
+                    Debug.Assert(false);
+                    break;
+            }
+            return ret;
         }
         public double getComponentValue(int component)
         {

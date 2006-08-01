@@ -240,7 +240,8 @@ namespace WinDX.UI
             if (pmgr != null && pmgr.IsDirty)
                 pmgr.sendAssignment(ProcessGroupManager.Function.ATTACH);
 
-            foreach (Network n in DXApplication.theDXApplication.macroList)
+            List<Network> macros = DXApplication.theDXApplication.macroList;
+            foreach (Network n in macros.ToArray())
             {
                 bool dirty = n.IsDirty;
                 if (forcenet || dirty)

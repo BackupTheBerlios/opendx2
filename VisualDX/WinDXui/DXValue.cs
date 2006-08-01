@@ -48,12 +48,12 @@ namespace WinDX.UI
             }
             else if (type == DXTypeVals.IntegerType)
             {
-                Regex r = new Regex(@"^(\+|-)?\d+$");
+                Regex r = new Regex(Scanning.Scanner.IntegerOnlyPattern);
                 result = r.IsMatch(str);
             }
             else if (type == DXTypeVals.ScalarType)
             {
-                Regex r = new Regex(@"^(\+|-)?(\d+\.\d*|\.\d+)([eE](\+|)?[0-9]+)?$");
+                Regex r = new Regex(Scanning.Scanner.DoubleOnlyPattern);
                 result = r.IsMatch(str);
             }
             else if (type == DXTypeVals.VectorType)
@@ -78,13 +78,13 @@ namespace WinDX.UI
             {
                 result = IsObject(str);
             }
-            else if (type == DXTypeVals.ListType)
+            else if ((type & DXTypeVals.ListType) > 0)
             {
                 DXTypeVals list_type = type & DXTypeVals.ListTypeMask;
 
                 result = IsList(str, list_type);
             }
-            else if (type == DXTypeVals.WhereType)
+            else if ((type & DXTypeVals.WhereType) > 0)
             {
                 Regex r = new Regex(@"^""[^""]*""$");
                 result = r.IsMatch(str);
@@ -448,7 +448,7 @@ namespace WinDX.UI
                                         buf = "{ ";
                                         foreach (String tok in toks)
                                         {
-                                            buf += double.Parse(tok).ToString() + " ";
+                                            buf += double.Parse(tok).ToString("0.0") + " ";
                                         }
                                         buf += "}";
                                         this.str = buf;
@@ -595,7 +595,7 @@ namespace WinDX.UI
             if (str == null)
                 return false;
 
-            Regex r = new Regex(@"^(\+|-)?(\d+\.\d*|\.\d+)([eE](\+|)?[0-9]+)?$");
+            Regex r = new Regex(Scanning.Scanner.DoubleOnlyPattern);
             switch (type)
             {
                 case DXTypeVals.ScalarType:
@@ -634,12 +634,12 @@ namespace WinDX.UI
                 return false;
 
             // Match integer
-            Regex r = new Regex(@"^(\+|-)?\d+$");
+            Regex r = new Regex(Scanning.Scanner.IntegerOnlyPattern);
             if (r.IsMatch(str))
                 return true;
 
             // Match Scalar
-            r = new Regex(@"^(\+|-)?(\d+\.\d*|\.\d+)([eE](\+|)?[0-9]+)?$");
+            r = new Regex(Scanning.Scanner.DoubleOnlyPattern);
             if(r.IsMatch(str))
                  return true;
             
@@ -708,11 +708,11 @@ namespace WinDX.UI
                         lexed = r.IsMatch(tok);
                         break;
                     case DXTypeVals.IntegerType:
-                        r = new Regex(@"^(\+|-)?\d+$");
+                        r = new Regex(Scanning.Scanner.IntegerOnlyPattern);
                         lexed = r.IsMatch(tok);
                         break;
                     case DXTypeVals.ScalarType:
-                        r = new Regex(@"^(\+|-)?(\d+\.\d*|\.\d+)([eE](\+|)?[0-9]+)?$");
+                        r = new Regex(Scanning.Scanner.DoubleOnlyPattern);
                         lexed = r.IsMatch(tok);
                         break;
                     case DXTypeVals.VectorType:
@@ -775,7 +775,7 @@ namespace WinDX.UI
 
             List<String> toks = Utils.StringTokenizer(str, " \t", new String[] { "\"", "[]" });
 
-            Regex r = new Regex(@"^(\+|-)?(\d+\.\d*|\.\d+)([eE](\+|)?[0-9]+)?$");
+            Regex r = new Regex(Scanning.Scanner.DoubleOnlyPattern);
 
             if(toks.Count != 3 || toks.Count != 5)
                 return false;
