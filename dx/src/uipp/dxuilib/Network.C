@@ -4640,199 +4640,199 @@ int Network::findFreeNodeIndex(const char *nodename)
 
 boolean Network::moveInputPosition(MacroParameterNode *n, int index)
 {
-    ASSERT(this->isMacro());
-    ParameterDefinition *pd = n->getParameterDefinition();
-    int inputCount = this->definition->getInputCount();
-    int oldPos = 0;
-    for (int i = 1; i <= inputCount; ++i)
-    {
-	ParameterDefinition *oldPd = this->definition->getInputDefinition(i);
-	if (pd == oldPd)
+	ASSERT(this->isMacro());
+	ParameterDefinition *pd = n->getParameterDefinition();
+	int inputCount = this->definition->getInputCount();
+	int oldPos = 0;
+	for (int i = 1; i <= inputCount; ++i)
 	{
-	    oldPos = i;
-	    break;
+		ParameterDefinition *oldPd = this->definition->getInputDefinition(i);
+		if (pd == oldPd)
+		{
+			oldPos = i;
+			break;
+		}
 	}
-    }
-    ASSERT(oldPos != 0);
+	ASSERT(oldPos != 0);
 
-    if (oldPos == index)
-	return TRUE;
+	if (oldPos == index)
+		return TRUE;
 
-    boolean return_val = TRUE;
-    this->deferrableSendNetwork->deferAction();
-    //
-    // At this point, oldPos is where the parameter was, and index is where
-    // we want it to be.  First, we put a dummy where the parameter was
-    // (unless it was at the end), then we put the parameter where it should
-    // be.
-    if (oldPos == inputCount)
-    {
-	this->definition->removeInput(pd);
-	inputCount--;
-    }
-    else
-    {
-	ParameterDefinition *dummy = new ParameterDefinition(-1);
-        dummy->setDummy(TRUE);
-	dummy->setName("input");
-	dummy->markAsInput();
-	dummy->setDefaultVisibility();
-	dummy->addType(new DXType(DXType::ObjectType));
-	this->definition->replaceInput(dummy, pd);
-    }
-    if (index > inputCount)
-    {
-	for (int i = inputCount + 1; i < index; ++i)
+	boolean return_val = TRUE;
+	this->deferrableSendNetwork->deferAction();
+	//
+	// At this point, oldPos is where the parameter was, and index is where
+	// we want it to be.  First, we put a dummy where the parameter was
+	// (unless it was at the end), then we put the parameter where it should
+	// be.
+	if (oldPos == inputCount)
 	{
-	    ParameterDefinition *dummy = new ParameterDefinition(-1);
-            dummy->setDummy(TRUE);
-	    dummy->setName("input");
-	    dummy->markAsInput();
-	    dummy->setDefaultVisibility();
-	    dummy->addType(new DXType(DXType::ObjectType));
-	    dummy->setDescription("Dummy parameter");
-	    this->definition->addInput(dummy);
-	}
-	this->definition->addInput(pd);
-    }
-    else
-    {
-	ParameterDefinition *targetPd =
-	    this->definition->getInputDefinition(index);
-	List *l = this->makeNamedNodeList(n->getNameString());
-	MacroParameterNode *mpn = NULL;
-	if (l)
-	{
-	    ListIterator li(*l);
-	    while( (mpn = (MacroParameterNode*)li.getNext()) )
-	    {
-		if (mpn->getIndex() == index)
-		    break;
-	    }
-	    delete l;
-	}
-	if (mpn == NULL)
-	{
-	    this->definition->replaceInput(pd, targetPd);
-	    delete targetPd;
+		this->definition->removeInput(pd);
+		inputCount--;
 	}
 	else
 	{
-	    if (oldPos == inputCount+1)
-		this->definition->addInput(pd);
-	    else
-	    {
-		ParameterDefinition *dummyPd =
-		    this->definition->getInputDefinition(oldPos);
-		this->definition->replaceInput(pd, dummyPd);
-		delete dummyPd;
-	    }
-	    return_val =  FALSE;
+		ParameterDefinition *dummy = new ParameterDefinition(-1);
+		dummy->setDummy(TRUE);
+		dummy->setName("input");
+		dummy->markAsInput();
+		dummy->setDefaultVisibility();
+		dummy->addType(new DXType(DXType::ObjectType));
+		this->definition->replaceInput(dummy, pd);
 	}
-    }
+	if (index > inputCount)
+	{
+		for (int i = inputCount + 1; i < index; ++i)
+		{
+			ParameterDefinition *dummy = new ParameterDefinition(-1);
+			dummy->setDummy(TRUE);
+			dummy->setName("input");
+			dummy->markAsInput();
+			dummy->setDefaultVisibility();
+			dummy->addType(new DXType(DXType::ObjectType));
+			dummy->setDescription("Dummy parameter");
+			this->definition->addInput(dummy);
+		}
+		this->definition->addInput(pd);
+	}
+	else
+	{
+		ParameterDefinition *targetPd =
+			this->definition->getInputDefinition(index);
+		List *l = this->makeNamedNodeList(n->getNameString());
+		MacroParameterNode *mpn = NULL;
+		if (l)
+		{
+			ListIterator li(*l);
+			while( (mpn = (MacroParameterNode*)li.getNext()) )
+			{
+				if (mpn->getIndex() == index)
+					break;
+			}
+			delete l;
+		}
+		if (mpn == NULL)
+		{
+			this->definition->replaceInput(pd, targetPd);
+			delete targetPd;
+		}
+		else
+		{
+			if (oldPos == inputCount+1)
+				this->definition->addInput(pd);
+			else
+			{
+				ParameterDefinition *dummyPd =
+					this->definition->getInputDefinition(oldPos);
+				this->definition->replaceInput(pd, dummyPd);
+				delete dummyPd;
+			}
+			return_val =  FALSE;
+		}
+	}
 
-    if (return_val)
-	n->setIndex(index);
+	if (return_val)
+		n->setIndex(index);
 
-    this->deferrableSendNetwork->undeferAction();
+	this->deferrableSendNetwork->undeferAction();
 
-    return return_val;
+	return return_val;
 }
 boolean Network::moveOutputPosition(MacroParameterNode *n, int index)
 {
-    ASSERT(this->isMacro());
-    ParameterDefinition *pd = n->getParameterDefinition();
-    int outputCount = this->definition->getOutputCount();
-    int oldPos = 0;
-    for (int i = 1; i <= outputCount; ++i)
-    {
-	ParameterDefinition *oldPd = this->definition->getOutputDefinition(i);
-	if (pd == oldPd)
+	ASSERT(this->isMacro());
+	ParameterDefinition *pd = n->getParameterDefinition();
+	int outputCount = this->definition->getOutputCount();
+	int oldPos = 0;
+	for (int i = 1; i <= outputCount; ++i)
 	{
-	    oldPos = i;
-	    break;
+		ParameterDefinition *oldPd = this->definition->getOutputDefinition(i);
+		if (pd == oldPd)
+		{
+			oldPos = i;
+			break;
+		}
 	}
-    }
-    ASSERT(oldPos != 0);
+	ASSERT(oldPos != 0);
 
-    if (oldPos == index)
-	return TRUE;
+	if (oldPos == index)
+		return TRUE;
 
-    this->deferrableSendNetwork->deferAction();
-    boolean return_val = TRUE;
+	this->deferrableSendNetwork->deferAction();
+	boolean return_val = TRUE;
 
-    if (oldPos == outputCount)
-    {
-	this->definition->removeOutput(pd);
-	outputCount--;
-    }
-    else
-    {
-	ParameterDefinition *dummy = new ParameterDefinition(-1);
-        dummy->setDummy(TRUE);
-	dummy->setName("output");
-	dummy->markAsOutput();
-	dummy->setDefaultVisibility();
-	dummy->addType(new DXType(DXType::ObjectType));
-	dummy->setDescription("Dummy parameter");
-	this->definition->replaceOutput(dummy, pd);
-    }
-    if (index > outputCount)
-    {
-	for (int i = outputCount + 1; i < index; ++i)
+	if (oldPos == outputCount)
 	{
-	    ParameterDefinition *dummy = new ParameterDefinition(-1);
-            dummy->setDummy(TRUE);
-	    dummy->setName("output");
-	    dummy->markAsOutput();
-	    dummy->setDefaultVisibility();
-	    dummy->addType(new DXType(DXType::ObjectType));
-	    dummy->setDescription("Dummy parameter");
-	    this->definition->addOutput(dummy);
-	}
-	this->definition->addOutput(pd);
-    }
-    else
-    {
-	ParameterDefinition *targetPd =
-	    this->definition->getOutputDefinition(index);
-	List *l = this->makeNamedNodeList(n->getNameString());
-	MacroParameterNode *mpn = NULL;
-	if (l)
-	{
-	    ListIterator li(*l);
-	    while( (mpn = (MacroParameterNode*)li.getNext()) )
-	    {
-		if (mpn->getIndex() == index)
-		    break;
-	    }
-	    delete l;
-	}
-	if (mpn == NULL)
-	{
-	    this->definition->replaceOutput(pd, targetPd);
-	    delete targetPd;
+		this->definition->removeOutput(pd);
+		outputCount--;
 	}
 	else
 	{
-	    if (oldPos == outputCount+1)
-		this->definition->addOutput(pd);
-	    else
-	    {
-		ParameterDefinition *dummyPd =
-		    this->definition->getOutputDefinition(oldPos);
-		this->definition->replaceOutput(pd, dummyPd);
-		delete dummyPd;
-	    }
-	    return_val = FALSE;
+		ParameterDefinition *dummy = new ParameterDefinition(-1);
+		dummy->setDummy(TRUE);
+		dummy->setName("output");
+		dummy->markAsOutput();
+		dummy->setDefaultVisibility();
+		dummy->addType(new DXType(DXType::ObjectType));
+		dummy->setDescription("Dummy parameter");
+		this->definition->replaceOutput(dummy, pd);
 	}
-    }
-    if (return_val)
-	n->setIndex(index);
+	if (index > outputCount)
+	{
+		for (int i = outputCount + 1; i < index; ++i)
+		{
+			ParameterDefinition *dummy = new ParameterDefinition(-1);
+			dummy->setDummy(TRUE);
+			dummy->setName("output");
+			dummy->markAsOutput();
+			dummy->setDefaultVisibility();
+			dummy->addType(new DXType(DXType::ObjectType));
+			dummy->setDescription("Dummy parameter");
+			this->definition->addOutput(dummy);
+		}
+		this->definition->addOutput(pd);
+	}
+	else
+	{
+		ParameterDefinition *targetPd =
+			this->definition->getOutputDefinition(index);
+		List *l = this->makeNamedNodeList(n->getNameString());
+		MacroParameterNode *mpn = NULL;
+		if (l)
+		{
+			ListIterator li(*l);
+			while( (mpn = (MacroParameterNode*)li.getNext()) )
+			{
+				if (mpn->getIndex() == index)
+					break;
+			}
+			delete l;
+		}
+		if (mpn == NULL)
+		{
+			this->definition->replaceOutput(pd, targetPd);
+			delete targetPd;
+		}
+		else
+		{
+			if (oldPos == outputCount+1)
+				this->definition->addOutput(pd);
+			else
+			{
+				ParameterDefinition *dummyPd =
+					this->definition->getOutputDefinition(oldPos);
+				this->definition->replaceOutput(pd, dummyPd);
+				delete dummyPd;
+			}
+			return_val = FALSE;
+		}
+	}
+	if (return_val)
+		n->setIndex(index);
 
-    this->deferrableSendNetwork->undeferAction();
+	this->deferrableSendNetwork->undeferAction();
 
-    return return_val;
+	return return_val;
 }
 
 void Network::setDefinition(MacroDefinition *md)

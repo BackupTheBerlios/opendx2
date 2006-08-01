@@ -128,146 +128,146 @@ ComputeNode::netParseAuxComment(const char *comment,
 char *
 ComputeNode::resolveExpression()
 {
-    if (this->expression == NULL)
-	return DuplicateString("");
+	if (this->expression == NULL)
+		return DuplicateString("");
 
-    int j;
-    int nameSize = this->nameList.getSize();
-    int len = 0;
-    for (j = 1; j <= nameSize; ++j)
-    {
-	len += STRLEN((char *)this->nameList.getElement(j)) + 1;
-    }
-
-    int  outLen = 3 + STRLEN(this->expression) + 2 * len;
-    char *output = (char*)MALLOC(outLen);
-    char token[512];
-    boolean substituted = FALSE;
-    int i = 0;
-    j = 0;
-    int k;
-
-    output[j++] = '\"';
-
-    for (;;)
-    {
-	/*
-	 * Copy over non-identifier sections of the expression.
-	 */
-	while (this->expression[i] &&
-	       !isalpha(this->expression[i]) &&
-	       this->expression[i] != '_')
+	int j;
+	int nameSize = this->nameList.getSize();
+	int len = 0;
+	for (j = 1; j <= nameSize; ++j)
 	{
-	    if (j >= outLen)
-	    {
-		outLen *= 2;
-		output = (char*)REALLOC(output, outLen);
-	    }
-	    output[j++] = this->expression[i++];
+		len += STRLEN((char *)this->nameList.getElement(j)) + 1;
 	}
 
-	/*
-	 * Get out of here if end of expression string.
-	 */
-	if (!this->expression[i])
-	    break;
+	int  outLen = 3 + STRLEN(this->expression) + 2 * len;
+	char *output = (char*)MALLOC(outLen);
+	char token[512];
+	boolean substituted = FALSE;
+	int i = 0;
+	j = 0;
+	int k;
 
-	/*
-	 * Extract the identifier token.
-	 */
-	k = 0;
-	while (isalpha(this->expression[i]) ||
-	       isdigit(this->expression[i]) ||
-	       this->expression[i] == '_')
-	{
-	    token[k++] = this->expression[i++];
-	}
-	token[k] = '\0';
+	output[j++] = '\"';
 
-	/*
-	 * Is the identifier a component name (".x", ".y", etc.)?
-	 */
-	substituted = FALSE;
-	if (j == 0 || (j > 0 && output[j - 1] != '.'))
+	for (;;)
 	{
-	    /*
-	     * The name token is not a component name (".x", ".y", etc.).
-	     * Compare it against the name list and substitute if found.
-	     */
-	    for (k = 1; k <= nameSize; k++)
-	    {
-		if (EqualString(token, (char *)this->nameList.getElement(k)))
+		/*
+		* Copy over non-identifier sections of the expression.
+		*/
+		while (this->expression[i] &&
+			!isalpha(this->expression[i]) &&
+			this->expression[i] != '_')
 		{
-		    substituted = TRUE;
-
-		    if (j >= outLen)
-		    {
-			outLen *= 2;
-			output = (char*)REALLOC(output, outLen);
-		    }
-		    output[j++] = '$';
-
-		    k--;
-		    if (k < 10)
-		    {
 			if (j >= outLen)
 			{
-			    outLen *= 2;
-			    output = (char*)REALLOC(output, outLen);
+				outLen *= 2;
+				output = (char*)REALLOC(output, outLen);
 			}
-			output[j++] = '0' + k;
-		    }
-		    else if (k >= 10 && k < 100)
-		    {
-			if (j >= outLen-1)
-			{
-			    outLen *= 2;
-			    output = (char*)REALLOC(output, outLen);
-			}
-			output[j++] = '0' + (k / 10);
-			output[j++] = '0' + (k % 10);
-		    }
-		    else
-		    {
-			/*
-			 * If the number of Compute parameters ever go
-			 *  beyond 99, we'll worry about it then...
-			 */
-			ASSERT(FALSE);
-		    }
-		    break;
+			output[j++] = this->expression[i++];
 		}
-	    }
+
+		/*
+		* Get out of here if end of expression string.
+		*/
+		if (!this->expression[i])
+			break;
+
+		/*
+		* Extract the identifier token.
+		*/
+		k = 0;
+		while (isalpha(this->expression[i]) ||
+			isdigit(this->expression[i]) ||
+			this->expression[i] == '_')
+		{
+			token[k++] = this->expression[i++];
+		}
+		token[k] = '\0';
+
+		/*
+		* Is the identifier a component name (".x", ".y", etc.)?
+		*/
+		substituted = FALSE;
+		if (j == 0 || (j > 0 && output[j - 1] != '.'))
+		{
+			/*
+			* The name token is not a component name (".x", ".y", etc.).
+			* Compare it against the name list and substitute if found.
+			*/
+			for (k = 1; k <= nameSize; k++)
+			{
+				if (EqualString(token, (char *)this->nameList.getElement(k)))
+				{
+					substituted = TRUE;
+
+					if (j >= outLen)
+					{
+						outLen *= 2;
+						output = (char*)REALLOC(output, outLen);
+					}
+					output[j++] = '$';
+
+					k--;
+					if (k < 10)
+					{
+						if (j >= outLen)
+						{
+							outLen *= 2;
+							output = (char*)REALLOC(output, outLen);
+						}
+						output[j++] = '0' + k;
+					}
+					else if (k >= 10 && k < 100)
+					{
+						if (j >= outLen-1)
+						{
+							outLen *= 2;
+							output = (char*)REALLOC(output, outLen);
+						}
+						output[j++] = '0' + (k / 10);
+						output[j++] = '0' + (k % 10);
+					}
+					else
+					{
+						/*
+						* If the number of Compute parameters ever go
+						*  beyond 99, we'll worry about it then...
+						*/
+						ASSERT(FALSE);
+					}
+					break;
+				}
+			}
+		}
+
+		/*
+		* Yes, it is a component name.
+		* Don't substitute ".x", ".y", ".z" stuff.
+		*/
+		if (!substituted)
+		{
+			if (j+STRLEN(token) >= outLen)
+			{
+				outLen *= 2;
+				output = (char*)REALLOC(output, outLen);
+			}
+			for (k = 0; token[k]; j++, k++)
+			{
+				output[j] = token[k];
+			}
+		}
 	}
 
-	/*
-	 * Yes, it is a component name.
-	 * Don't substitute ".x", ".y", ".z" stuff.
-	 */
-	if (!substituted)
+	if (j >= outLen-1)
 	{
-	    if (j+STRLEN(token) >= outLen)
-	    {
 		outLen *= 2;
 		output = (char*)REALLOC(output, outLen);
-	    }
-	    for (k = 0; token[k]; j++, k++)
-	    {
-		output[j] = token[k];
-	    }
 	}
-    }
-
-    if (j >= outLen-1)
-    {
-	outLen *= 2;
-	output = (char*)REALLOC(output, outLen);
-    }
-    output[j++] = '\"';
-    output[j] = '\0';
-    char *realOutput = DuplicateString(output);
-    FREE(output);
-    return realOutput;
+	output[j++] = '\"';
+	output[j] = '\0';
+	char *realOutput = DuplicateString(output);
+	FREE(output);
+	return realOutput;
 }
 
 boolean ComputeNode::netPrintAuxComment(FILE *f)

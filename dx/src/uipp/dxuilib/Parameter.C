@@ -71,14 +71,14 @@ void Parameter::disconnectArks()
 //
 boolean Parameter::isNeededValue(boolean ignoreDirty)
 {
-    if (this->definition->isInput()) {		// An input
-	if (!this->isConnected())
-	    return ignoreDirty || this->isDirty();
-    } else if (this->isConnected()) {		// An output
-	return ignoreDirty || this->isDirty();
-    }
+	if (this->definition->isInput()) {		// An input
+		if (!this->isConnected())
+			return ignoreDirty || this->isDirty();
+	} else if (this->isConnected()) {		// An output
+		return ignoreDirty || this->isDirty();
+	}
 
-    return FALSE;
+	return FALSE;
 }
 
 //

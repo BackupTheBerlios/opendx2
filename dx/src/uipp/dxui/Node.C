@@ -1129,39 +1129,39 @@ boolean Node::sendValues(boolean ignoreDirty)
     // 
     if (!this->network->isMacro())  {
 #endif
-    for (i=1 ; i<=cnt && NULL != (p = (Parameter *)li.getNext()); i++)
-    {
-	if (p->isNeededValue(ignoreDirty))
-	{
-	    //
-	    // Do any work that is necessary before sending the value .
-	    //
-	    this->prepareToSendValue(i, p);
-	    if (nameLen == 0)
-	    {
-		names = (char *)MALLOC(100);
-		*names = '\0';
-		nameLen = this->strcatParameterNameLvalue(names, p, prefix, i);
+		for (i=1 ; i<=cnt && NULL != (p = (Parameter *)li.getNext()); i++)
+		{
+			if (p->isNeededValue(ignoreDirty))
+			{
+				//
+				// Do any work that is necessary before sending the value .
+				//
+				this->prepareToSendValue(i, p);
+				if (nameLen == 0)
+				{
+					names = (char *)MALLOC(100);
+					*names = '\0';
+					nameLen = this->strcatParameterNameLvalue(names, p, prefix, i);
 
-		int l = this->strcatParameterValueString(NULL, p, i);
-		values = (char *)MALLOC(l+10);
-		*values = '\0';
-		valueLen = this->strcatParameterValueString(values, p, i);
-	    }
-	    else
-	    {
-		names = (char *)REALLOC((void*)names, nameLen + 100 + 2);
-		strcat(names, ", ");
-		nameLen += 2 + this->strcatParameterNameLvalue(names, p, prefix, i);
+					int l = this->strcatParameterValueString(NULL, p, i);
+					values = (char *)MALLOC(l+10);
+					*values = '\0';
+					valueLen = this->strcatParameterValueString(values, p, i);
+				}
+				else
+				{
+					names = (char *)REALLOC((void*)names, nameLen + 100 + 2);
+					strcat(names, ", ");
+					nameLen += 2 + this->strcatParameterNameLvalue(names, p, prefix, i);
 
-		int l = this->strcatParameterValueString(NULL, p, i);
-		values = (char *)REALLOC((void*)values, valueLen + l+10);
-		strcat(values, ", ");
-		valueLen += 2 + this->strcatParameterValueString(values, p, i);
-	    }
-	    p->clearDirty();
-	}
-    }
+					int l = this->strcatParameterValueString(NULL, p, i);
+					values = (char *)REALLOC((void*)values, valueLen + l+10);
+					strcat(values, ", ");
+					valueLen += 2 + this->strcatParameterValueString(values, p, i);
+				}
+				p->clearDirty();
+			}
+		}
 #if defined(STATIC_MACROS)
     }
 #endif
@@ -2735,220 +2735,220 @@ boolean Node::removeIOArk(List *io, int index, Ark *a)
 void
 Node::updateDefinition()
 {
-    struct ArkInfo {
-	int   srcIndex;
-	int   dstIndex;
-	Node *src;
-	Node *dst;
-    };
+	struct ArkInfo {
+		int   srcIndex;
+		int   dstIndex;
+		Node *src;
+		Node *dst;
+	};
 
-    //
-    // Types may have changed so delete the cdb.
-    //
-    if (this->cdb) {
-	delete this->cdb;
-	this->cdb = NULL;
-    }
+	//
+	// Types may have changed so delete the cdb.
+	//
+	if (this->cdb) {
+		delete this->cdb;
+		this->cdb = NULL;
+	}
 
 #if 11 	// This is the beginning of an attemp to fix bug DAWOOD91 
 #else
-    boolean hadStandIn = FALSE;
+	boolean hadStandIn = FALSE;
 
-    //
-    // Recreate the standin if need be
-    //
-    if (this->standin) {
-	delete this->standin;
-	this->standin = NULL;
-	hadStandIn = TRUE;
-    }
+	//
+	// Recreate the standin if need be
+	//
+	if (this->standin) {
+		delete this->standin;
+		this->standin = NULL;
+		hadStandIn = TRUE;
+	}
 #endif
 
-    // For each of the input ParameterDefinitions in the new definition, 
-    // make sure that the types of the parameter are correct, and 
-    // disconnect arcs or reset the values to NULL.
+	// For each of the input ParameterDefinitions in the new definition, 
+	// make sure that the types of the parameter are correct, and 
+	// disconnect arcs or reset the values to NULL.
 
-    int numInputs = this->getInputCount();
-    boolean *defaulting = NULL;
-    boolean *visibilities = NULL;
-    char **values = NULL;
-    List **inputArks = NULL;
-    if (numInputs != 0)
-    {
-	defaulting = new boolean[numInputs];
-	values = new char *[numInputs];
-	inputArks = new List *[numInputs];
-	visibilities = new boolean[numInputs];
-    }
-    int i;
-    for (i = 1; i <= numInputs; ++i)
-    {
-	inputArks[i-1] = NULL;
-	values[i-1] = NULL;
-	defaulting[i-1] = FALSE;
-	visibilities[i-1] = this->isInputVisible(i);
-	if (this->isInputConnected(i))
+	int numInputs = this->getInputCount();
+	boolean *defaulting = NULL;
+	boolean *visibilities = NULL;
+	char **values = NULL;
+	List **inputArks = NULL;
+	if (numInputs != 0)
 	{
-	    const List *arcs = this->getInputArks(i);
-	    inputArks[i-1] = new List;
-	    ListIterator li(*(List*)arcs);
-	    Ark *a;
-	    while( (a = (Ark*)li.getNext()) )
-	    {
-		ArkInfo *ai = new ArkInfo;
-		ai->src = a->getSourceNode(ai->srcIndex);
-		ai->dst = a->getDestinationNode(ai->dstIndex);
-		inputArks[i-1]->appendElement(ai);
-	    }
+		defaulting = new boolean[numInputs];
+		values = new char *[numInputs];
+		inputArks = new List *[numInputs];
+		visibilities = new boolean[numInputs];
 	}
-	else if (!(defaulting[i-1] = this->isInputDefaulting(i)))
-	    values[i-1] = DuplicateString(this->getInputValueString(i));
-	delete this->getInputParameter(i);
-    }
-    this->inputParameters.clear();
-
-    int numOutputs = this->getOutputCount();
-    List  **outputArks = NULL;
-    if (numOutputs != 0)
-	outputArks = new List *[numOutputs];
-    for (i = 1; i <= numOutputs; ++i)
-    {
-	outputArks[i-1] = NULL;
-	if (this->isOutputConnected(i))
+	int i;
+	for (i = 1; i <= numInputs; ++i)
 	{
-	    const List *arcs = this->getOutputArks(i);
-	    outputArks[i-1] = new List;
-	    ListIterator li(*(List*)arcs);
-	    Ark *a;
-	    while( (a = (Ark*)li.getNext()) )
-	    {
-		ArkInfo *ai = new ArkInfo;
-		ai->src = a->getSourceNode(ai->srcIndex);
-		ai->dst = a->getDestinationNode(ai->dstIndex);
-		outputArks[i-1]->appendElement(ai);
-	    }
-	}
-	delete this->getOutputParameter(i);
-    }
-    this->outputParameters.clear();
-
-    this->buildParameterLists();
-
-    for (i = 1; i <= numInputs && i <= this->getInputCount(); ++i)
-    {
-	this->setInputVisibility(i, visibilities[i-1]);
-	if (inputArks[i-1])
-	{
-	    ListIterator li(*inputArks[i-1]);
-	    ArkInfo *ai;
-	    while( (ai = (ArkInfo*)li.getNext()) )
-	    {
-		if (ai->src->typeMatchOutputToInput(ai->srcIndex,
-						    ai->dst, ai->dstIndex))
+		inputArks[i-1] = NULL;
+		values[i-1] = NULL;
+		defaulting[i-1] = FALSE;
+		visibilities[i-1] = this->isInputVisible(i);
+		if (this->isInputConnected(i))
 		{
-		    Ark *newArk = new Ark(ai->src, ai->srcIndex, 
-					  ai->dst, ai->dstIndex);
-		    if (ai->src->getNetwork()->getEditor() && 
-			    ai->src->getStandIn())
-			ai->src->getStandIn()->addArk(
-			    ai->src->getNetwork()->getEditor(),
-			    newArk);
+			const List *arcs = this->getInputArks(i);
+			inputArks[i-1] = new List;
+			ListIterator li(*(List*)arcs);
+			Ark *a;
+			while( (a = (Ark*)li.getNext()) )
+			{
+				ArkInfo *ai = new ArkInfo;
+				ai->src = a->getSourceNode(ai->srcIndex);
+				ai->dst = a->getDestinationNode(ai->dstIndex);
+				inputArks[i-1]->appendElement(ai);
+			}
 		}
-		delete ai;
-	    }
-	    delete inputArks[i-1];
+		else if (!(defaulting[i-1] = this->isInputDefaulting(i)))
+			values[i-1] = DuplicateString(this->getInputValueString(i));
+		delete this->getInputParameter(i);
 	}
-	else if (defaulting[i-1])
-	    this->useDefaultInputValue(i);
-	else
-	    this->setInputValue(i, values[i-1]);
-    }
-#if 11 
-    // must increase j by the number of repeats added in buildParameterLists()
-    int repeats = this->getInputCount() - this->definition->getInputCount();
-    int j = numInputs + repeats; 
-    for (; j >= i; --j)
-    {
-	if (this->cdb)
-	    this->cdb->deleteInput(j);
-	if (this->standin)
-	    this->standin->removeLastInput();
-    }
-    for (; i <= this->getInputCount(); ++i)
-    {
-	if (this->cdb)
-	    this->cdb->newInput(i);
-	if (this->standin)
-	    this->standin->addInput(i);
-    }
-#endif
-    if (numInputs != 0)
-    {
-	delete[] defaulting;
-	delete[] visibilities;
-	delete[] values;
-	delete[] inputArks;
-    }
+	this->inputParameters.clear();
 
-    for (i = 1; i <= numOutputs && i <= this->getOutputCount(); ++i)
-    {
-	if (outputArks[i-1])
+	int numOutputs = this->getOutputCount();
+	List  **outputArks = NULL;
+	if (numOutputs != 0)
+		outputArks = new List *[numOutputs];
+	for (i = 1; i <= numOutputs; ++i)
 	{
-	    ListIterator li(*outputArks[i-1]);
-	    ArkInfo *ai;
-	    while( (ai = (ArkInfo*)li.getNext()) )
-	    {
-		if (ai->src->typeMatchOutputToInput(ai->srcIndex,
-						    ai->dst, ai->dstIndex))
+		outputArks[i-1] = NULL;
+		if (this->isOutputConnected(i))
 		{
-		    Ark *newArk = new Ark(ai->src, ai->srcIndex, 
-					  ai->dst, ai->dstIndex);
-		    if (ai->src->getNetwork()->getEditor() && 
-			    ai->src->getStandIn())
-			ai->src->getStandIn()->addArk(
-			    ai->src->getNetwork()->getEditor(),
-			    newArk);
+			const List *arcs = this->getOutputArks(i);
+			outputArks[i-1] = new List;
+			ListIterator li(*(List*)arcs);
+			Ark *a;
+			while( (a = (Ark*)li.getNext()) )
+			{
+				ArkInfo *ai = new ArkInfo;
+				ai->src = a->getSourceNode(ai->srcIndex);
+				ai->dst = a->getDestinationNode(ai->dstIndex);
+				outputArks[i-1]->appendElement(ai);
+			}
 		}
-		delete ai;
-	    }
-	    delete outputArks[i-1];
+		delete this->getOutputParameter(i);
 	}
-        this->notifyIoParameterStatusChanged(FALSE, i, Node::ParameterValueChanged);
-    }
+	this->outputParameters.clear();
+
+	this->buildParameterLists();
+
+	for (i = 1; i <= numInputs && i <= this->getInputCount(); ++i)
+	{
+		this->setInputVisibility(i, visibilities[i-1]);
+		if (inputArks[i-1])
+		{
+			ListIterator li(*inputArks[i-1]);
+			ArkInfo *ai;
+			while( (ai = (ArkInfo*)li.getNext()) )
+			{
+				if (ai->src->typeMatchOutputToInput(ai->srcIndex,
+					ai->dst, ai->dstIndex))
+				{
+					Ark *newArk = new Ark(ai->src, ai->srcIndex, 
+						ai->dst, ai->dstIndex);
+					if (ai->src->getNetwork()->getEditor() && 
+						ai->src->getStandIn())
+						ai->src->getStandIn()->addArk(
+						ai->src->getNetwork()->getEditor(),
+						newArk);
+				}
+				delete ai;
+			}
+			delete inputArks[i-1];
+		}
+		else if (defaulting[i-1])
+			this->useDefaultInputValue(i);
+		else
+			this->setInputValue(i, values[i-1]);
+	}
 #if 11 
-    j = numOutputs;
-    for (; j >= i; --j)
-    {
-	if (this->cdb)
-	    this->cdb->deleteOutput(j);
-	if (this->standin)
-	    this->standin->removeLastOutput();
-    }
-    for (; i <= this->getOutputCount(); ++i)
-    {
-	if (this->cdb)
-	    this->cdb->newOutput(i);
-	if (this->standin)
-	    this->standin->addOutput(i);
-    }
+	// must increase j by the number of repeats added in buildParameterLists()
+	int repeats = this->getInputCount() - this->definition->getInputCount();
+	int j = numInputs + repeats; 
+	for (; j >= i; --j)
+	{
+		if (this->cdb)
+			this->cdb->deleteInput(j);
+		if (this->standin)
+			this->standin->removeLastInput();
+	}
+	for (; i <= this->getInputCount(); ++i)
+	{
+		if (this->cdb)
+			this->cdb->newInput(i);
+		if (this->standin)
+			this->standin->addInput(i);
+	}
 #endif
-    if (numOutputs != 0)
-	delete[] outputArks;
+	if (numInputs != 0)
+	{
+		delete[] defaulting;
+		delete[] visibilities;
+		delete[] values;
+		delete[] inputArks;
+	}
+
+	for (i = 1; i <= numOutputs && i <= this->getOutputCount(); ++i)
+	{
+		if (outputArks[i-1])
+		{
+			ListIterator li(*outputArks[i-1]);
+			ArkInfo *ai;
+			while( (ai = (ArkInfo*)li.getNext()) )
+			{
+				if (ai->src->typeMatchOutputToInput(ai->srcIndex,
+					ai->dst, ai->dstIndex))
+				{
+					Ark *newArk = new Ark(ai->src, ai->srcIndex, 
+						ai->dst, ai->dstIndex);
+					if (ai->src->getNetwork()->getEditor() && 
+						ai->src->getStandIn())
+						ai->src->getStandIn()->addArk(
+						ai->src->getNetwork()->getEditor(),
+						newArk);
+				}
+				delete ai;
+			}
+			delete outputArks[i-1];
+		}
+		this->notifyIoParameterStatusChanged(FALSE, i, Node::ParameterValueChanged);
+	}
+#if 11 
+	j = numOutputs;
+	for (; j >= i; --j)
+	{
+		if (this->cdb)
+			this->cdb->deleteOutput(j);
+		if (this->standin)
+			this->standin->removeLastOutput();
+	}
+	for (; i <= this->getOutputCount(); ++i)
+	{
+		if (this->cdb)
+			this->cdb->newOutput(i);
+		if (this->standin)
+			this->standin->addOutput(i);
+	}
+#endif
+	if (numOutputs != 0)
+		delete[] outputArks;
 
 #if 11 
 #else
-    if (hadStandIn) {
-	EditorWindow *e = this->getNetwork()->getEditor();
-	this->standin = this->newStandIn(e->getWorkSpace());
-    }
+	if (hadStandIn) {
+		EditorWindow *e = this->getNetwork()->getEditor();
+		this->standin = this->newStandIn(e->getWorkSpace());
+	}
 #endif
 
-    //
-    // Because of undo in Editor, provide notification that a defintion
-    // has changed.  The undo list will probably have to be tossed out
-    //
-    EditorWindow *e = this->getNetwork()->getEditor();
-    if (e) e->notifyDefinitionChange(this);
+	//
+	// Because of undo in Editor, provide notification that a defintion
+	// has changed.  The undo list will probably have to be tossed out
+	//
+	EditorWindow *e = this->getNetwork()->getEditor();
+	if (e) e->notifyDefinitionChange(this);
 }
 
 //

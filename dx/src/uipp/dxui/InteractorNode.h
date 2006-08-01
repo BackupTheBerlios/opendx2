@@ -236,7 +236,6 @@ class InteractorNode : public ShadowedOutputNode
     //
     // Set all shadowing inputs to use the default value.
     // This is most likely used during initialization after setting the outputs
-
     // (which sets the shadowing inputs).
     //
     void setShadowingInputsDefaulting(boolean send = FALSE);

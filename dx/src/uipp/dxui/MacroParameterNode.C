@@ -35,70 +35,70 @@ MacroParameterNode::MacroParameterNode(NodeDefinition *nd,
     this->index = -1;
 }
 
-MacroParameterNode::~MacroParameterNode()
-{
-    Network *net = this->getNetwork();
-    MacroDefinition *md = net->getDefinition();
-    Parameter *p;
-    ParameterDefinition *pd = this->getParameterDefinition();
-    
-    if (this->isInput())
-    {
-
-	if (pd && !net->isDeleted() || net == theDXApplication->network)
+	MacroParameterNode::~MacroParameterNode()
 	{
-	    if(!net->isDeleted())
-	    {
-		if (this->index != net->getInputCount())
+		Network *net = this->getNetwork();
+		MacroDefinition *md = net->getDefinition();
+		Parameter *p;
+		ParameterDefinition *pd = this->getParameterDefinition();
+
+		if (this->isInput())
 		{
-		    int newIndex = net->getInputCount()+1;
-		    this->moveIndex(newIndex, FALSE);
+
+			if (pd && !net->isDeleted() || net == theDXApplication->network)
+			{
+				if(!net->isDeleted())
+				{
+					if (this->index != net->getInputCount())
+					{
+						int newIndex = net->getInputCount()+1;
+						this->moveIndex(newIndex, FALSE);
+					}
+					else
+					{
+						for (int i = this->index; i > 1; --i)
+							if (!this->moveIndex(i - 1, FALSE))
+								break;
+						// this->index = i;
+					}
+				}
+				if (md) md->removeInput(pd);
+				if (pd) delete pd; 
+			}
+			p = this->getOutputParameter(1);
 		}
 		else
 		{
-		    for (int i = this->index; i > 1; --i)
-			if (!this->moveIndex(i - 1, FALSE))
-			    break;
-		    // this->index = i;
+			if (pd && !net->isDeleted() || net == theDXApplication->network)
+			{
+				if(!net->isDeleted())
+				{
+					if (this->index != net->getOutputCount())
+					{
+						int newIndex = net->getOutputCount()+1;
+						this->moveIndex(newIndex, FALSE);
+					}
+					else
+					{
+						for (int i = this->index; i > 1; --i)
+							if (!this->moveIndex(i - 1, FALSE))
+								break;
+					}
+				}
+				if (md) md->removeOutput(pd);
+				if (pd) delete pd; 
+			}
+			p = this->getInputParameter(1);
 		}
-	    }
-	    if (md) md->removeInput(pd);
-	    if (pd) delete pd; 
-	}
-	p = this->getOutputParameter(1);
-    }
-    else
-    {
-	if (pd && !net->isDeleted() || net == theDXApplication->network)
-	{
-	    if(!net->isDeleted())
-	    {
-		if (this->index != net->getOutputCount())
-		{
-		    int newIndex = net->getOutputCount()+1;
-		    this->moveIndex(newIndex, FALSE);
-		}
-		else
-		{
-		    for (int i = this->index; i > 1; --i)
-			if (!this->moveIndex(i - 1, FALSE))
-			    break;
-		}
-	    }
-	    if (md) md->removeOutput(pd);
-	    if (pd) delete pd; 
-	}
-	p = this->getInputParameter(1);
-    }
 
-    if(p) delete p->getDefinition();
+		if(p) delete p->getDefinition();
 
-    if (net == theDXApplication->network)
-    {
-	if (md && md->getInputCount() == 0 && md->getOutputCount() == 0)
-	    net->makeMacro(FALSE);
-    }
-}
+		if (net == theDXApplication->network)
+		{
+			if (md && md->getInputCount() == 0 && md->getOutputCount() == 0)
+				net->makeMacro(FALSE);
+		}
+	}
 
 boolean
 MacroParameterNode::initialize()
@@ -302,68 +302,68 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 {
 #define PARAM_COMMENT " parameter: position = "
 #define PARAM_FMT " parameter: position = %d, name = '%[^']', value = '%[^']'"\
-		  ", descriptive = %d, description = '%[^']', required = %d, visible = %d"
+	", descriptive = %d, description = '%[^']', required = %d, visible = %d"
 #define PARAM_FMT1 " parameter: position = %d, name = '%[^']', value = '%[^']'"\
-		  ", descriptive = %d, description = '%[^']', required = %d"
+	", descriptive = %d, description = '%[^']', required = %d"
 
-    if (EqualSubstring(PARAM_COMMENT, comment, STRLEN(PARAM_COMMENT)))
-    {
-	int pos;
-	char name[1000];
-	char value[1000];
-	int descriptive;
-	char description[1000];
-	int required, visible;
-	int itemsParsed = sscanf(comment, PARAM_FMT, 
-				 &pos,
-				 name,
-				 value,
-				 &descriptive,
-				 description,
-				 &required,
-				 &visible);
-	if (itemsParsed != 7) {
-	    itemsParsed = sscanf(comment, PARAM_FMT1, 
-				 &pos,
-				 name,
-				 value,
-				 &descriptive,
-				 description,
-				 &required);
-	    if (itemsParsed != 6)
-	        return this->UniqueNameNode::netParseAuxComment(comment,file,lineno);
-	    visible = TRUE;
-	}
-	if (!this->getNetwork()->isMacro())
-	    this->getNetwork()->makeMacro(TRUE);
-	if (this->isInput())
+	if (EqualSubstring(PARAM_COMMENT, comment, STRLEN(PARAM_COMMENT)))
 	{
-	    this->moveIndex(pos);
-	    ParameterDefinition *pd = this->getParameterDefinition();
-	    pd->setName(name);
-	    pd->setDescription(description);
-	    if (required)
-		pd->setRequired();
-	    else if (descriptive)
-		pd->setDescriptiveValue(value);
-	    else if (IsBlankString(value))
-		pd->setDefaultValue("(no default)");
-	    else
-		pd->setDefaultValue(value);
-	    pd->setDefaultVisibility((boolean)visible);
+		int pos;
+		char name[1000];
+		char value[1000];
+		int descriptive;
+		char description[1000];
+		int required, visible;
+		int itemsParsed = sscanf(comment, PARAM_FMT, 
+			&pos,
+			name,
+			value,
+			&descriptive,
+			description,
+			&required,
+			&visible);
+		if (itemsParsed != 7) {
+			itemsParsed = sscanf(comment, PARAM_FMT1, 
+				&pos,
+				name,
+				value,
+				&descriptive,
+				description,
+				&required);
+			if (itemsParsed != 6)
+				return this->UniqueNameNode::netParseAuxComment(comment,file,lineno);
+			visible = TRUE;
+		}
+		if (!this->getNetwork()->isMacro())
+			this->getNetwork()->makeMacro(TRUE);
+		if (this->isInput())
+		{
+			this->moveIndex(pos);
+			ParameterDefinition *pd = this->getParameterDefinition();
+			pd->setName(name);
+			pd->setDescription(description);
+			if (required)
+				pd->setRequired();
+			else if (descriptive)
+				pd->setDescriptiveValue(value);
+			else if (IsBlankString(value))
+				pd->setDefaultValue("(no default)");
+			else
+				pd->setDefaultValue(value);
+			pd->setDefaultVisibility((boolean)visible);
+		}
+		else
+		{
+			this->moveIndex(pos);
+			ParameterDefinition *pd = this->getParameterDefinition();
+			pd->setName(name);
+			pd->setDescription(description);
+			pd->setDefaultVisibility((boolean)visible);
+		}
+		return TRUE;
 	}
 	else
-	{
-	    this->moveIndex(pos);
-	    ParameterDefinition *pd = this->getParameterDefinition();
-	    pd->setName(name);
-	    pd->setDescription(description);
-	    pd->setDefaultVisibility((boolean)visible);
-	}
-	return TRUE;
-    }
-    else
-	return this->UniqueNameNode::netParseAuxComment(comment,file,lineno);
+		return this->UniqueNameNode::netParseAuxComment(comment,file,lineno);
 }
 
 	
@@ -382,225 +382,225 @@ boolean  MacroParameterNode::netParseAuxComment(const char* comment,
 //
 void MacroParameterNode::setTypeSafeOptions (Ark* preferred)
 {
-    // This method is nonsense in the case of an Output tool.
-    ASSERT (this->isInput());
+	// This method is nonsense in the case of an Output tool.
+	ASSERT (this->isInput());
 
-    //
-    // If we have OPTIONS && any item in OPTION is illegal input given
-    // our new type, then remove all the OPTIONS.
-    //
-    ParameterDefinition *macroPd = this->getParameterDefinition();
-    const char *const *options = macroPd->getValueOptions();
-    List *types = macroPd->getTypes();
-    if (options && options[0]) {
-	boolean can_coerce = TRUE;
-	for (int i=0; options[i] && can_coerce; i++) {
-	    const char* option = options[i];
-	    can_coerce&= this->canCoerceValue (option, types);
-	}
-	if (!can_coerce) {
-	    macroPd->removeValueOptions();
-	    options = NULL;
-	}
-    }
-
-    // If our current OPTIONS are safe to keep using...
-    if (options && options[0]) return;
-    
-    //
-    // If the parameter has no option values, then check each downstream
-    // input tab.  If any has option values, then try to use those but
-    // only if each of the option values is legal given our new type.
-    //
-    Node* destination;
-    NodeDefinition* destinationDef;
-    ParameterDefinition* destinationParamDef;
-    int paramIndex;
-    
-    // First check the new ark to see if it gave give us
-    // option values.  option strings are stored as a null-terminated
-    // array of char*.
-    const char *const *dest_option_values = NULL;
-    boolean can_coerce = TRUE;
-    if (preferred) {
-	destination = preferred->getDestinationNode(paramIndex);
-	destinationDef = destination->getDefinition();
-	destinationParamDef = destinationDef->getInputDefinition(paramIndex);
-	dest_option_values = destinationParamDef->getValueOptions();
-
-	if (dest_option_values && dest_option_values[0]) {
-	    for (int i=0; dest_option_values[i]&&can_coerce; i++) {
-		can_coerce&= this->canCoerceValue (dest_option_values[i], types);
-	    }
-	}
-    }
-
-    if ((can_coerce) && (dest_option_values) && (dest_option_values[0])) {
-	for (int i=0; dest_option_values[i];  i++) {
-	    if (!macroPd->addValueOption (dest_option_values[i])) {
-		ErrorMessage(
-		    "Cannot add %s to Options values ", 
-		    dest_option_values[i]);
-		break;
-	    }
-	}
-    } else {
-	// get all the destination nodes  When we're called as via ::addIOArk(),
-	// the new connection has not yet been added to our list
-	// of downstream nodes.
-	List *arks = (List*)this->getOutputArks(1);
-	ListIterator iter(*arks);
-	//iter.setList(*arks);
-
-	// the new ark didn't supply options values so check
-	// all the other arks.  These loops say:
-	// For each arc
-	//     For each type
-	Ark* ark;
-	while ((ark = (Ark*)iter.getNext()) != NULL) {
-	    destination = ark->getDestinationNode(paramIndex);
-	    destinationDef = destination->getDefinition();
-	    destinationParamDef = destinationDef->getInputDefinition(paramIndex);
-	
-	    // for each option value see, see if it can be coerced.
-	    dest_option_values = destinationParamDef->getValueOptions();
-	    if ((!dest_option_values) || (!dest_option_values[0])) continue;
-
-	    can_coerce = TRUE;
-	    for (int i=0; dest_option_values[i]&&can_coerce; i++) {
-		can_coerce&= this->canCoerceValue (dest_option_values[i], types);
-	    }
-	    if (can_coerce) {
-		for (int i=0; dest_option_values[i];  i++) {
-		    if (!macroPd->addValueOption (dest_option_values[i])) {
-			ErrorMessage(
-			    "Cannot add %s to Options values ", 
-			    dest_option_values[i]);
-			// This is a tough spot.  We've checked the values
-			// already and determined that all are safe, however
-			// we failed in putting one of them into the node.
-			// So we bail on all the others and we bail on
-			// checking for other nodes.  This probably never
-			// happens unless the user enters more than 64
-			// options, which is something the node will refuse
-			// to handle.
-			break;
-		    }
+	//
+	// If we have OPTIONS && any item in OPTION is illegal input given
+	// our new type, then remove all the OPTIONS.
+	//
+	ParameterDefinition *macroPd = this->getParameterDefinition();
+	const char *const *options = macroPd->getValueOptions();
+	List *types = macroPd->getTypes();
+	if (options && options[0]) {
+		boolean can_coerce = TRUE;
+		for (int i=0; options[i] && can_coerce; i++) {
+			const char* option = options[i];
+			can_coerce&= this->canCoerceValue (option, types);
 		}
-		break;
-	    }
+		if (!can_coerce) {
+			macroPd->removeValueOptions();
+			options = NULL;
+		}
 	}
-    }
+
+	// If our current OPTIONS are safe to keep using...
+	if (options && options[0]) return;
+
+	//
+	// If the parameter has no option values, then check each downstream
+	// input tab.  If any has option values, then try to use those but
+	// only if each of the option values is legal given our new type.
+	//
+	Node* destination;
+	NodeDefinition* destinationDef;
+	ParameterDefinition* destinationParamDef;
+	int paramIndex;
+
+	// First check the new ark to see if it gave give us
+	// option values.  option strings are stored as a null-terminated
+	// array of char*.
+	const char *const *dest_option_values = NULL;
+	boolean can_coerce = TRUE;
+	if (preferred) {
+		destination = preferred->getDestinationNode(paramIndex);
+		destinationDef = destination->getDefinition();
+		destinationParamDef = destinationDef->getInputDefinition(paramIndex);
+		dest_option_values = destinationParamDef->getValueOptions();
+
+		if (dest_option_values && dest_option_values[0]) {
+			for (int i=0; dest_option_values[i]&&can_coerce; i++) {
+				can_coerce&= this->canCoerceValue (dest_option_values[i], types);
+			}
+		}
+	}
+
+	if ((can_coerce) && (dest_option_values) && (dest_option_values[0])) {
+		for (int i=0; dest_option_values[i];  i++) {
+			if (!macroPd->addValueOption (dest_option_values[i])) {
+				ErrorMessage(
+					"Cannot add %s to Options values ", 
+					dest_option_values[i]);
+				break;
+			}
+		}
+	} else {
+		// get all the destination nodes  When we're called as via ::addIOArk(),
+		// the new connection has not yet been added to our list
+		// of downstream nodes.
+		List *arks = (List*)this->getOutputArks(1);
+		ListIterator iter(*arks);
+		//iter.setList(*arks);
+
+		// the new ark didn't supply options values so check
+		// all the other arks.  These loops say:
+		// For each arc
+		//     For each type
+		Ark* ark;
+		while ((ark = (Ark*)iter.getNext()) != NULL) {
+			destination = ark->getDestinationNode(paramIndex);
+			destinationDef = destination->getDefinition();
+			destinationParamDef = destinationDef->getInputDefinition(paramIndex);
+
+			// for each option value see, see if it can be coerced.
+			dest_option_values = destinationParamDef->getValueOptions();
+			if ((!dest_option_values) || (!dest_option_values[0])) continue;
+
+			can_coerce = TRUE;
+			for (int i=0; dest_option_values[i]&&can_coerce; i++) {
+				can_coerce&= this->canCoerceValue (dest_option_values[i], types);
+			}
+			if (can_coerce) {
+				for (int i=0; dest_option_values[i];  i++) {
+					if (!macroPd->addValueOption (dest_option_values[i])) {
+						ErrorMessage(
+							"Cannot add %s to Options values ", 
+							dest_option_values[i]);
+						// This is a tough spot.  We've checked the values
+						// already and determined that all are safe, however
+						// we failed in putting one of them into the node.
+						// So we bail on all the others and we bail on
+						// checking for other nodes.  This probably never
+						// happens unless the user enters more than 64
+						// options, which is something the node will refuse
+						// to handle.
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
 }
 
 boolean
 MacroParameterNode::canCoerceValue (const char* option, List* types)
 {
-    ListIterator iter;
-    boolean coerced = FALSE;
-    DXType* dxtype;
-    for (iter.setList(*types) ; (dxtype = (DXType*)iter.getNext()) ; ) {
-	char* s = DXValue::CoerceValue (option, dxtype->getType());
-	if (s) {
-	    coerced = TRUE;
-	    delete s;
-	    break;
+	ListIterator iter;
+	boolean coerced = FALSE;
+	DXType* dxtype;
+	for (iter.setList(*types) ; (dxtype = (DXType*)iter.getNext()) ; ) {
+		char* s = DXValue::CoerceValue (option, dxtype->getType());
+		if (s) {
+			coerced = TRUE;
+			delete s;
+			break;
+		}
 	}
-    }
-    return coerced;
+	return coerced;
 }
 	
 boolean MacroParameterNode::addIOArk(List *io, int index, Ark *a)
 {
-    List *newTypesList = NULL;
-    if (this->isInput())
-    {
-	int i;
-	Node *dest = a->getDestinationNode(i);
-	Parameter *pin = ((MacroParameterNode*)dest)->getInputParameter(i);
-	ParameterDefinition *pind = pin->getDefinition();
-
-	ParameterDefinition *macroPd = this->getParameterDefinition();
-	List *outTypes = macroPd->getTypes();
-	newTypesList = DXType::IntersectTypeLists(
-	    *outTypes,
-	    *pind->getTypes());
-
-	ListIterator li(*outTypes);
-	DXType *t;
-	while( (t = (DXType*)li.getNext()) )
+	List *newTypesList = NULL;
+	if (this->isInput())
 	{
-	    macroPd->removeType(t);
+		int i;
+		Node *dest = a->getDestinationNode(i);
+		Parameter *pin = ((MacroParameterNode*)dest)->getInputParameter(i);
+		ParameterDefinition *pind = pin->getDefinition();
+
+		ParameterDefinition *macroPd = this->getParameterDefinition();
+		List *outTypes = macroPd->getTypes();
+		newTypesList = DXType::IntersectTypeLists(
+			*outTypes,
+			*pind->getTypes());
+
+		ListIterator li(*outTypes);
+		DXType *t;
+		while( (t = (DXType*)li.getNext()) )
+		{
+			macroPd->removeType(t);
+		}
+
+		Parameter *pout = this->getOutputParameter(1);
+		ParameterDefinition *nodePd = pout->getDefinition();
+		outTypes = nodePd->getTypes();
+
+		li.setList(*outTypes);
+		while( (t = (DXType*)li.getNext()) )
+		{
+			nodePd->removeType(t);
+		}
+
+		li.setList(*newTypesList);
+		while( (t = (DXType*)li.getNext()) )
+		{
+			DXType *newt = t->duplicate(); 
+			nodePd->addType(newt);
+			macroPd->addType(t);
+		}
+		delete newTypesList;
+
+		this->setTypeSafeOptions(a);
+	}
+	else
+	{
+		int i;
+		Node *dest = a->getSourceNode(i);
+		Parameter *pin = ((MacroParameterNode*)dest)->getOutputParameter(i);
+		ParameterDefinition *pind = pin->getDefinition();
+
+		ParameterDefinition *macroPd = this->getParameterDefinition();
+		List *outTypes = macroPd->getTypes();
+		newTypesList = DXType::IntersectTypeLists(
+			*outTypes,
+			*pind->getTypes());
+
+		ListIterator li(*outTypes);
+		DXType *t;
+		while( (t = (DXType*)li.getNext()) )
+		{
+			macroPd->removeType(t);
+		}
+
+		Parameter *pout = this->getInputParameter(1);
+		ParameterDefinition *nodePd = pout->getDefinition();
+		outTypes = nodePd->getTypes();
+
+		li.setList(*outTypes);
+		while( (t = (DXType*)li.getNext()) )
+		{
+			nodePd->removeType(t);
+		}
+
+		li.setList(*newTypesList);
+		while( (t = (DXType*)li.getNext()) )
+		{
+			DXType *newt = t->duplicate(); 
+			nodePd->addType(newt);
+			macroPd->addType(t);
+		}
+		delete newTypesList;
 	}
 
-        Parameter *pout = this->getOutputParameter(1);
-        ParameterDefinition *nodePd = pout->getDefinition();
-	outTypes = nodePd->getTypes();
-
-        li.setList(*outTypes);
-        while( (t = (DXType*)li.getNext()) )
-        {
-            nodePd->removeType(t);
-        }
-
-	li.setList(*newTypesList);
-	while( (t = (DXType*)li.getNext()) )
+	if (this->getConfigurationDialog())
 	{
-	    DXType *newt = t->duplicate(); 
-	    nodePd->addType(newt);
-	    macroPd->addType(t);
-	}
-	delete newTypesList;
-
-	this->setTypeSafeOptions(a);
-    }
-    else
-    {
-	int i;
-	Node *dest = a->getSourceNode(i);
-	Parameter *pin = ((MacroParameterNode*)dest)->getOutputParameter(i);
-	ParameterDefinition *pind = pin->getDefinition();
-
-	ParameterDefinition *macroPd = this->getParameterDefinition();
-	List *outTypes = macroPd->getTypes();
-	newTypesList = DXType::IntersectTypeLists(
-	    *outTypes,
-	    *pind->getTypes());
-
-	ListIterator li(*outTypes);
-	DXType *t;
-	while( (t = (DXType*)li.getNext()) )
-	{
-	    macroPd->removeType(t);
+		this->getConfigurationDialog()->changeInput(1);
+		this->getConfigurationDialog()->changeOutput(1);
 	}
 
-        Parameter *pout = this->getInputParameter(1);
-        ParameterDefinition *nodePd = pout->getDefinition();
-	outTypes = nodePd->getTypes();
-
-        li.setList(*outTypes);
-        while( (t = (DXType*)li.getNext()) )
-        {
-            nodePd->removeType(t);
-        }
-
-	li.setList(*newTypesList);
-	while( (t = (DXType*)li.getNext()) )
-	{
-	    DXType *newt = t->duplicate(); 
-	    nodePd->addType(newt);
-	    macroPd->addType(t);
-	}
-	delete newTypesList;
-    }
-
-    if (this->getConfigurationDialog())
-    {
-	this->getConfigurationDialog()->changeInput(1);
-	this->getConfigurationDialog()->changeOutput(1);
-    }
-	
-    return this->UniqueNameNode::addIOArk(io, index, a);
+	return this->UniqueNameNode::addIOArk(io, index, a);
 }
 boolean MacroParameterNode::removeIOArk(List *io, int index, Ark *a)
 {

@@ -1229,99 +1229,99 @@ boolean ImageNode::printCommonComments(FILE *f, const char *indent)
 
 boolean ImageNode::setInteractionMode(const char *mode)
 {
-    int i, n;
-    char imode[32], arg[256];
+	int i, n;
+	char imode[32], arg[256];
 
-    n = sscanf(mode, "%s %s", imode, arg);
+	n = sscanf(mode, "%s %s", imode, arg);
 
-    for (i = 0; i < 31 && mode[i]; i++)
-    {
-        char c = imode[i];
-
-        if (isalpha(c) && isupper(c))
-            imode[i] = tolower(c);
-        else
-            imode[i] = c;
-    }
-
-    imode[i] = '\0';
-
-    enum DirectInteractionMode interactionMode;
-
-    if (EqualString(imode,"camera"))
-        interactionMode = CAMERA;
-    else if (EqualString(imode,"cursors"))
-        interactionMode = CURSORS;
-    else if (EqualString(imode,"pick"))
-        interactionMode = PICK;
-    else if (EqualString(imode,"navigate"))
-        interactionMode = NAVIGATE;
-    else if (EqualString(imode,"panzoom"))
-        interactionMode = PANZOOM;
-    else if (EqualString(imode,"roam"))
-        interactionMode = ROAM;
-    else if (EqualString(imode,"rotate"))
-        interactionMode = ROTATE;
-    else if (EqualString(imode,"zoom"))
-        interactionMode = ZOOM;
-    else
-        interactionMode = NONE;
-
-    ImageWindow *img = this->image;
-    if (img)
-    {
-	if (n > 1)
+	for (i = 0; i < 31 && mode[i]; i++)
 	{
-	    char *clss;
+		char c = imode[i];
 
-	    if (interactionMode == CURSORS)
-		clss = ClassProbeNode;
-	    else if (interactionMode == PICK)
-		clss = ClassPickNode;
-	    else
-		goto no_arg;
-	    
-	    List *pl = 
-	      theDXApplication->network->makeClassifiedNodeList(clss, TRUE);
-	    
-	    if (pl)
-	    {
-		char *arg0;
-
-		if (EqualSubstring(arg, "label=", 6))
-		    arg0 = arg + 6;
-		else 
-		    arg0 = arg;
-
-		ListIterator li(*pl);
-		Node *nd;
-		int inum = -1;
-		
-		while (NULL != (nd = (Node *)li.getNext()))
-		    if (EqualString(arg0, nd->getLabelString()))
-		    {
-			inum = nd->getInstanceNumber();
-			break;
-		    }
-
-		if (inum > 0)
-		{
-		    if (interactionMode == CURSORS)
-			img->setCurrentProbe(inum);
-		    else
-			img->setCurrentPick(inum);
-		}
-
-		delete pl;
-	    }
+		if (isalpha(c) && isupper(c))
+			imode[i] = tolower(c);
+		else
+			imode[i] = c;
 	}
-        img->allowDirectInteraction(TRUE);
-        img->setInteractionMode(interactionMode);
-    } else
-	this->savedInteractionMode = interactionMode;
+
+	imode[i] = '\0';
+
+	enum DirectInteractionMode interactionMode;
+
+	if (EqualString(imode,"camera"))
+		interactionMode = CAMERA;
+	else if (EqualString(imode,"cursors"))
+		interactionMode = CURSORS;
+	else if (EqualString(imode,"pick"))
+		interactionMode = PICK;
+	else if (EqualString(imode,"navigate"))
+		interactionMode = NAVIGATE;
+	else if (EqualString(imode,"panzoom"))
+		interactionMode = PANZOOM;
+	else if (EqualString(imode,"roam"))
+		interactionMode = ROAM;
+	else if (EqualString(imode,"rotate"))
+		interactionMode = ROTATE;
+	else if (EqualString(imode,"zoom"))
+		interactionMode = ZOOM;
+	else
+		interactionMode = NONE;
+
+	ImageWindow *img = this->image;
+	if (img)
+	{
+		if (n > 1)
+		{
+			char *clss;
+
+			if (interactionMode == CURSORS)
+				clss = ClassProbeNode;
+			else if (interactionMode == PICK)
+				clss = ClassPickNode;
+			else
+				goto no_arg;
+
+			List *pl = 
+				theDXApplication->network->makeClassifiedNodeList(clss, TRUE);
+
+			if (pl)
+			{
+				char *arg0;
+
+				if (EqualSubstring(arg, "label=", 6))
+					arg0 = arg + 6;
+				else 
+					arg0 = arg;
+
+				ListIterator li(*pl);
+				Node *nd;
+				int inum = -1;
+
+				while (NULL != (nd = (Node *)li.getNext()))
+					if (EqualString(arg0, nd->getLabelString()))
+					{
+						inum = nd->getInstanceNumber();
+						break;
+					}
+
+					if (inum > 0)
+					{
+						if (interactionMode == CURSORS)
+							img->setCurrentProbe(inum);
+						else
+							img->setCurrentPick(inum);
+					}
+
+					delete pl;
+			}
+		}
+		img->allowDirectInteraction(TRUE);
+		img->setInteractionMode(interactionMode);
+	} else
+		this->savedInteractionMode = interactionMode;
 
 no_arg:
-    return TRUE;
+	return TRUE;
 }
 
 void ImageNode::setInteractionModeParameter (DirectInteractionMode mode)

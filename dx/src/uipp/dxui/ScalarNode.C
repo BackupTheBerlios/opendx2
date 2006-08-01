@@ -358,15 +358,15 @@ int ScalarNode::handleInteractorMsgInfo(const char *line)
     // Handle the 'method="%s"' part of the message.
     // We only need to look for the message if we don't already have it.
     //
-    if (this->isInputConnected(INCRMETHOD_PARAM_NUM)) {
-	char *p, buf[128];
-	if ((p = strstr((char*)line,"method="))	&& 
-				FindDelimitedString(p,'"','"', buf)) {
-	    values++;
-	    this->setInputAttributeFromServer(INCRMETHOD_PARAM_NUM,buf, 
-				DXType::StringType);
+	if (this->isInputConnected(INCRMETHOD_PARAM_NUM)) {
+		char *p, buf[128];
+		if ((p = strstr((char*)line,"method="))	&& 
+			FindDelimitedString(p,'"','"', buf)) {
+				values++;
+				this->setInputAttributeFromServer(INCRMETHOD_PARAM_NUM,buf, 
+					DXType::StringType);
+		}
 	}
-    }
 
 
     //
@@ -375,40 +375,40 @@ int ScalarNode::handleInteractorMsgInfo(const char *line)
     // only one of min and max set then it is possible that the value sent
     // back by the module conflicts with the other value stored in the ui. 
     //
-    if (!this->isInputDefaulting(DATA_PARAM_NUM))  {
-	boolean min_dflting = this->isInputDefaulting(MIN_PARAM_NUM);
-	boolean max_dflting = this->isInputDefaulting(MAX_PARAM_NUM);
-	if ((min_dflting && !max_dflting) || (!min_dflting &&  max_dflting)) {
-	    int i, comps = this->getComponentCount();
-	    boolean issue_warning = FALSE;	
-	    for (i=1 ; i<=comps  ; i++) {
-		double minval = this->getComponentMinimum(i);
-		double maxval = this->getComponentMaximum(i);
-		if (minval > maxval) {
-	    	    issue_warning = TRUE;	
-		    if (min_dflting)
-		        this->setComponentMinimum(i,maxval);
-		    else
-		        this->setComponentMaximum(i,minval);
+	if (!this->isInputDefaulting(DATA_PARAM_NUM))  {
+		boolean min_dflting = this->isInputDefaulting(MIN_PARAM_NUM);
+		boolean max_dflting = this->isInputDefaulting(MAX_PARAM_NUM);
+		if ((min_dflting && !max_dflting) || (!min_dflting &&  max_dflting)) {
+			int i, comps = this->getComponentCount();
+			boolean issue_warning = FALSE;	
+			for (i=1 ; i<=comps  ; i++) {
+				double minval = this->getComponentMinimum(i);
+				double maxval = this->getComponentMaximum(i);
+				if (minval > maxval) {
+					issue_warning = TRUE;	
+					if (min_dflting)
+						this->setComponentMinimum(i,maxval);
+					else
+						this->setComponentMaximum(i,minval);
+				}
+			}
+			if (issue_warning) {
+				char *setattr, *set;
+				if (min_dflting) {
+					set     = "maximum";
+					setattr = "minimum";
+				} else  {
+					set     = "minimum";
+					setattr = "maximum";
+				}
+				WarningMessage("%s value provided to %s conflicts "
+					"with %s value set with 'Set Attributes' dialog"
+					"...adjusting %s.", 
+					set, this->getNameString(),
+					setattr,setattr);
+			}
 		}
-	    }
-	    if (issue_warning) {
-		char *setattr, *set;
-		if (min_dflting) {
-		    set     = "maximum";
-		    setattr = "minimum";
-		} else  {
-		    set     = "minimum";
-		    setattr = "maximum";
-		}
-		WarningMessage("%s value provided to %s conflicts "
-				"with %s value set with 'Set Attributes' dialog"
-				"...adjusting %s.", 
-				set, this->getNameString(),
-				setattr,setattr);
-	    }
 	}
-    }
 
 
     return values;
@@ -427,93 +427,93 @@ int ScalarNode::handleInteractorMsgInfo(const char *line)
 //
 int ScalarNode::handleScalarMsgInfo(const char *line)
 {
-    int index, values = 0;
-    char *p, *buf = NULL;
-    
-    //
-    // Handle the 'min=%g' part of the message.
-    //
-    if ( (p = strstr((char*)line,"min=")) ) {
-	values++;
-	while (*p != '=') p++;
-	p++;
-	buf = DuplicateString(p);
-	index = 0;
-	if (IsScalar(buf, index)) {
-	    buf[index] = '\0'; 
-	    this->setInputAttributeFromServer(MIN_PARAM_NUM,buf,
-						DXType::UndefinedType);
+	int index, values = 0;
+	char *p, *buf = NULL;
+
+	//
+	// Handle the 'min=%g' part of the message.
+	//
+	if ( (p = strstr((char*)line,"min=")) ) {
+		values++;
+		while (*p != '=') p++;
+		p++;
+		buf = DuplicateString(p);
+		index = 0;
+		if (IsScalar(buf, index)) {
+			buf[index] = '\0'; 
+			this->setInputAttributeFromServer(MIN_PARAM_NUM,buf,
+				DXType::UndefinedType);
+		}
+		delete buf;
 	}
-	delete buf;
-    }
-    //
-    // Handle the 'max=%g' part of the message.
-    //
-    if ( (p = strstr((char*)line,"max=")) ) {
-	values++;
-	while (*p != '=') p++;
-	p++;
-	buf = DuplicateString(p);
-	index = 0;
-	if (IsScalar(buf, index)) {
-	    buf[index] = '\0'; 
-	    this->setInputAttributeFromServer(MAX_PARAM_NUM,buf,
-						DXType::UndefinedType);
+	//
+	// Handle the 'max=%g' part of the message.
+	//
+	if ( (p = strstr((char*)line,"max=")) ) {
+		values++;
+		while (*p != '=') p++;
+		p++;
+		buf = DuplicateString(p);
+		index = 0;
+		if (IsScalar(buf, index)) {
+			buf[index] = '\0'; 
+			this->setInputAttributeFromServer(MAX_PARAM_NUM,buf,
+				DXType::UndefinedType);
+		}
+		delete buf;
 	}
-	delete buf;
-    }
-    //
-    // Handle the 'delta=%g' part of the message.
-    // Since the attribute and parameter value have the same type, but
-    // different meanings we only set the attribute value as received from
-    // the exec.
-    //
-    if ( (p = strstr((char*)line,"delta=")) ) {
-	values++;
-	while (*p != '=') p++;
-	p++;
-	buf = DuplicateString(p);
-	index = 0;
-	if (IsScalar(buf, index)) {
-	    buf[index] = '\0'; 
-	    this->setInputAttributeFromServer(INCR_PARAM_NUM,buf,
-						DXType::UndefinedType);
+	//
+	// Handle the 'delta=%g' part of the message.
+	// Since the attribute and parameter value have the same type, but
+	// different meanings we only set the attribute value as received from
+	// the exec.
+	//
+	if ( (p = strstr((char*)line,"delta=")) ) {
+		values++;
+		while (*p != '=') p++;
+		p++;
+		buf = DuplicateString(p);
+		index = 0;
+		if (IsScalar(buf, index)) {
+			buf[index] = '\0'; 
+			this->setInputAttributeFromServer(INCR_PARAM_NUM,buf,
+				DXType::UndefinedType);
+		}
+		delete buf;
 	}
-	delete buf;
-    }
-    //
-    // Handle the 'decimals=%d' part of the message.
-    //
-    if ( (p = strstr((char*)line,"decimals=")) ) {
-	values++;
-	while (*p != '=') p++;
-	p++;
-	buf = DuplicateString(p);
-	index = 0;
-	if (IsScalar(buf, index)) {
-	    buf[index] = '\0'; 
-	    this->setInputAttributeFromServer(DECIMALS_PARAM_NUM,buf,
-						DXType::UndefinedType);
+	//
+	// Handle the 'decimals=%d' part of the message.
+	//
+	if ( (p = strstr((char*)line,"decimals=")) ) {
+		values++;
+		while (*p != '=') p++;
+		p++;
+		buf = DuplicateString(p);
+		index = 0;
+		if (IsScalar(buf, index)) {
+			buf[index] = '\0'; 
+			this->setInputAttributeFromServer(DECIMALS_PARAM_NUM,buf,
+				DXType::UndefinedType);
+		}
+		delete buf;
 	}
-	delete buf;
-    }
-    //
-    // Handle the 'value=%g' part of the message.
-    //
-    if ( (p = strstr((char*)line,"value=")) ) {
-	values++;
-	while (*p != '=') p++;
-	p++;
-	buf = DuplicateString(p);
-	index = 0;
-	if (IsScalar(buf, index)) {
-	    buf[index] = '\0'; 
-	    this->setShadowedOutputSentFromServer(1,buf,
-						DXType::UndefinedType);
+	//
+	// Handle the 'value=%g' part of the message.
+	//
+	if ( (p = strstr((char*)line,"value=")) ) {
+		values++;
+		while (*p != '=') p++;
+		p++;
+		buf = DuplicateString(p);
+		index = 0;
+		if (IsScalar(buf, index)) {
+			buf[index] = '\0'; 
+			this->setShadowedOutputSentFromServer(1,buf,
+				DXType::UndefinedType);
+		}
+		delete buf;
 	}
-	delete buf;
-    }
-    return values;
+	return values;
 
 }
 
@@ -1383,76 +1383,76 @@ boolean     ScalarNode::netParseComment(const char* comment,
 // affected.
 //
 boolean ScalarNode::parseIOComment(boolean input, const char* comment,
-	    const char* filename, int lineno, boolean valueOnly)
+								   const char* filename, int lineno, boolean valueOnly)
 {
-    int      defaulting = 0, items_parsed, ionum, tmp_type;
-    int	     visible = TRUE;
-    boolean  parse_error = FALSE; 
+	int      defaulting = 0, items_parsed, ionum, tmp_type;
+	int	     visible = TRUE;
+	boolean  parse_error = FALSE; 
 
-    if(this->Node::parseIOComment(input, comment, filename, lineno, valueOnly) == FALSE)
-	return FALSE;
+	if(this->Node::parseIOComment(input, comment, filename, lineno, valueOnly) == FALSE)
+		return FALSE;
 
-    //
-    //
-    // If the net version is less than 3.1.0 then set param 4 defaulting status
-    // to true.  The ui had mistakenly been setting it to false although the param
-    // was not in use by the module.  Now we want to use that param but existing
-    // nets don't work unless param 4 (REFRESH) starts out defaulting.
-    //
-    // This code turns into NoOp starting with net version == 3.1.0
-    //
-    Network *net = this->getNetwork();
-    if (net->getNetMajorVersion() >  3) return TRUE;
-    if (net->getNetMinorVersion() >= 1) return TRUE;
+	//
+	//
+	// If the net version is less than 3.1.0 then set param 4 defaulting status
+	// to true.  The ui had mistakenly been setting it to false although the param
+	// was not in use by the module.  Now we want to use that param but existing
+	// nets don't work unless param 4 (REFRESH) starts out defaulting.
+	//
+	// This code turns into NoOp starting with net version == 3.1.0
+	//
+	Network *net = this->getNetwork();
+	if (net->getNetMajorVersion() >  3) return TRUE;
+	if (net->getNetMinorVersion() >= 1) return TRUE;
 
-    ASSERT(comment);
+	ASSERT(comment);
 
-    if ((input) && (!parse_error)) {
+	if ((input) && (!parse_error)) {
 
-	if (valueOnly) {
-	    if (sscanf(comment, " input[%d]: defaulting = %d", 
+		if (valueOnly) {
+			if (sscanf(comment, " input[%d]: defaulting = %d", 
 				&ionum, &defaulting) != 2)
-		parse_error = TRUE;
-	    /*type = DXType::UndefinedType;*/
-	} else {
-	    items_parsed = sscanf(comment,
-		" input[%d]: defaulting = %d, visible = %d, type = %d", 
-					&ionum, &defaulting, &visible, &tmp_type);
-	    /*type = (Type) tmp_type;*/
-	    if (items_parsed != 4) {
-		// Invisibility added 3/30/93
-		items_parsed = sscanf(comment, " input[%d]: visible = %d", 
-						    &ionum, &visible);
-		if (items_parsed != 2) {
-		    // Backwards compatibility added 3/25/93
-		    items_parsed = sscanf(comment, " input[%d]: type = %d", 
-					    &ionum, &tmp_type);
-		    /*type = (Type) tmp_type;*/
-		    if (items_parsed != 2) {
+				parse_error = TRUE;
+			/*type = DXType::UndefinedType;*/
+		} else {
 			items_parsed = sscanf(comment,
-				    " input[%d]: defaulting = %d, type = %d", 
-					    &ionum, &defaulting, &tmp_type);
+				" input[%d]: defaulting = %d, visible = %d, type = %d", 
+				&ionum, &defaulting, &visible, &tmp_type);
 			/*type = (Type) tmp_type;*/
-			if (items_parsed != 3) 
-			    parse_error = TRUE;
-		    } 
+			if (items_parsed != 4) {
+				// Invisibility added 3/30/93
+				items_parsed = sscanf(comment, " input[%d]: visible = %d", 
+					&ionum, &visible);
+				if (items_parsed != 2) {
+					// Backwards compatibility added 3/25/93
+					items_parsed = sscanf(comment, " input[%d]: type = %d", 
+						&ionum, &tmp_type);
+					/*type = (Type) tmp_type;*/
+					if (items_parsed != 2) {
+						items_parsed = sscanf(comment,
+							" input[%d]: defaulting = %d, type = %d", 
+							&ionum, &defaulting, &tmp_type);
+						/*type = (Type) tmp_type;*/
+						if (items_parsed != 3) 
+							parse_error = TRUE;
+					} 
+				}
+				else 
+				{
+					defaulting = 1;
+				}
+			}
 		}
-		else 
-		{
-		    defaulting = 1;
-		}
-	    }
+	} 
+
+	if ((!parse_error) && (input) && 
+		(ionum == REFRESH_PARAM_NUM) && (defaulting == FALSE)) {
+			Parameter *par = this->getInputParameter(REFRESH_PARAM_NUM);
+			par->setUnconnectedDefaultingStatus(TRUE);
 	}
-    } 
 
-    if ((!parse_error) && (input) && 
-	(ionum == REFRESH_PARAM_NUM) && (defaulting == FALSE)) {
-	Parameter *par = this->getInputParameter(REFRESH_PARAM_NUM);
-	par->setUnconnectedDefaultingStatus(TRUE);
-    }
 
- 
-    return TRUE;
+	return TRUE;
 }
 
 

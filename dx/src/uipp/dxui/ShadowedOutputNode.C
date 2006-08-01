@@ -79,102 +79,102 @@ int ShadowedOutputNode::getShadowingInput(int output_index)
 //	DrivenNode and this class.
 //
 void ShadowedOutputNode::ioParameterStatusChanged(boolean input, int index,
-				NodeParameterStatusChange status)
+												  NodeParameterStatusChange status)
 {
 
-    if (input && this->isInputViewable(index)) {
-	int icnt = this->getInputCount();
-	int connections, settabs,i  ;
-	boolean became_non_dd = FALSE;
-	if ((status & Node::ParameterValueChanged) &&
-	    (status != Node::ParameterSetValueChanged)) {
-	    
-	    //
-	    // Count the number of connections and set tabs
-	    //
-	    for (connections=0, settabs=0, i=1 ; 
-		connections==0 && settabs<2 && i<=icnt ; 
-		i++) {
-		if (this->isInputViewable(i))  {
-		    if (this->isInputConnected(i)) 
-		       connections++; 
-		    else if (!this->isInputDefaulting(i))
-		       settabs++;
-		}
-	    }	
-	    if (!connections && (settabs < 2)) {
-		//
-		// Either a parameter was just given a set value or just 
-		// set to the default value.  If just set to the default value 
-		// and the number of set tabs is now 0 then the user just made 
-		// the last tab up so mark the network dirty.  If just given a 
-		// set value and it is the only (first) parameter with a set 
-		// value then mark the network dirty.
-		//
-		if ((settabs == 0) && 
-		    (status == Node::ParameterSetValueToDefaulting))  {
-		    // 
-		    // Tool went from data-driven to non-data-driven.
-		    // 
-		    became_non_dd = TRUE;
-		} else if ((settabs == 1) && !this->isInputDefaulting(index)) {
-		    // 
-		    // Tool went from non-data-driven to data-driven.
-		    // 
-		    this->getNetwork()->setDirty();
-		}
-	    }
-        } 
+	if (input && this->isInputViewable(index)) {
+		int icnt = this->getInputCount();
+		int connections, settabs,i  ;
+		boolean became_non_dd = FALSE;
+		if ((status & Node::ParameterValueChanged) &&
+			(status != Node::ParameterSetValueChanged)) {
+
+				//
+				// Count the number of connections and set tabs
+				//
+				for (connections=0, settabs=0, i=1 ; 
+					connections==0 && settabs<2 && i<=icnt ; 
+					i++) {
+						if (this->isInputViewable(i))  {
+							if (this->isInputConnected(i)) 
+								connections++; 
+							else if (!this->isInputDefaulting(i))
+								settabs++;
+						}
+				}	
+				if (!connections && (settabs < 2)) {
+					//
+					// Either a parameter was just given a set value or just 
+					// set to the default value.  If just set to the default value 
+					// and the number of set tabs is now 0 then the user just made 
+					// the last tab up so mark the network dirty.  If just given a 
+					// set value and it is the only (first) parameter with a set 
+					// value then mark the network dirty.
+					//
+					if ((settabs == 0) && 
+						(status == Node::ParameterSetValueToDefaulting))  {
+							// 
+							// Tool went from data-driven to non-data-driven.
+							// 
+							became_non_dd = TRUE;
+					} else if ((settabs == 1) && !this->isInputDefaulting(index)) {
+						// 
+						// Tool went from non-data-driven to data-driven.
+						// 
+						this->getNetwork()->setDirty();
+					}
+				}
+		} 
 
 #if USE_INSTANCE_CHANGE	
-	//
-	// Look for the last arc removed.  When the last arc is removed to
-	// make the node non-data-driven we must change the instance number 
-	// so the exec cache doesn't get confused (see below) if/when it 
-	// becomes data-driven again.
-	//
-	if ((status & Node::ParameterArkChanged) && 
-	    (status != Node::ParameterArkAdded)) {
-	    //
-	    // Count the number of connections and set tabs
-	    //
-	    for (connections=0, settabs=0, i=1 ; 
-		 connections==0 && settabs==0 && i<=icnt ; 
-		i++) {
-		if (this->isInputViewable(i))  {
-		    if (this->isInputConnected(i)) 
-		       connections++; 
-		    else if (!this->isInputDefaulting(i))
-		       settabs++;
+		//
+		// Look for the last arc removed.  When the last arc is removed to
+		// make the node non-data-driven we must change the instance number 
+		// so the exec cache doesn't get confused (see below) if/when it 
+		// becomes data-driven again.
+		//
+		if ((status & Node::ParameterArkChanged) && 
+			(status != Node::ParameterArkAdded)) {
+				//
+				// Count the number of connections and set tabs
+				//
+				for (connections=0, settabs=0, i=1 ; 
+					connections==0 && settabs==0 && i<=icnt ; 
+					i++) {
+						if (this->isInputViewable(i))  {
+							if (this->isInputConnected(i)) 
+								connections++; 
+							else if (!this->isInputDefaulting(i))
+								settabs++;
+						}
+				}	
+				if ((connections == 0) && (settabs == 0)) 
+					became_non_dd = TRUE;
 		}
-	    }	
-	    if ((connections == 0) && (settabs == 0)) 
-		became_non_dd = TRUE;
-	}
 #endif 
-	if (became_non_dd) {
+		if (became_non_dd) {
 #if USE_INSTANCE_CHANGE	
-	// This does not work yet as we also have to change the ID parameters
-	// and the module message id string. dawood, 5/28/94.
-	    // 
-	    // Tool went from non-data-driven to non-data-driven.
-	    // Change its instance number so the executive does not
-	    // have cache problems. For example, if a user does the 
-	    // following to a tool with the VPE
-	    //	 1) Make tool Data-driven (dd), execute
-	    //	 2) Make tool non-dd, execute
-	    //	 3) Make tool dd, execute
-	    // On the 3rd execution, the executive tries to use cache 
-	    // tags from the first execution.
-	    // 
-	    this->assignNewInstanceNumber();
+			// This does not work yet as we also have to change the ID parameters
+			// and the module message id string. dawood, 5/28/94.
+			// 
+			// Tool went from non-data-driven to non-data-driven.
+			// Change its instance number so the executive does not
+			// have cache problems. For example, if a user does the 
+			// following to a tool with the VPE
+			//	 1) Make tool Data-driven (dd), execute
+			//	 2) Make tool non-dd, execute
+			//	 3) Make tool dd, execute
+			// On the 3rd execution, the executive tries to use cache 
+			// tags from the first execution.
+			// 
+			this->assignNewInstanceNumber();
 #else
-	    this->getNetwork()->setDirty();
+			this->getNetwork()->setDirty();
 #endif
+		}
 	}
-    }
 
-    this->DrivenNode::ioParameterStatusChanged(input,index, status);
+	this->DrivenNode::ioParameterStatusChanged(input,index, status);
 }
 //
 // Set the output value of ShadowedOutputNode.  This is the same as for
