@@ -161,6 +161,10 @@ _dxfComputeCompareType(MetaType *left, MetaType *right)
 	left->category == right->category &&
 	left->rank == right->rank) {
 
+	/* 03 Aug 2006 (jer) string types are equiv, even if their lengths are diff. */
+	if(left->type == TYPE_STRING)
+		return (OK);
+
 	for (i = 0; i < left->rank; ++i) {
 	    if (left->shape[i] != right->shape[i]) {
 		return (ERROR);
@@ -1057,6 +1061,8 @@ ExecCond (
     PTreeNode *arg;
     int numBasic;
     int size;
+    int tsize; /* size of then-expr values */
+    int esize; /* size of else-expr values */
     int items;
     int allValid =
 	(invalids[0] == NULL || DXGetInvalidCount(invalids[0]) == 0);
@@ -1074,6 +1080,17 @@ ExecCond (
 	   DXCategorySize (arg->metaType.category) *
 	   numBasic;
 
+    /* 03 Aug 2006 (jer) Use separate bcopy sizes for then
+     * and else values. Only matters when type is string,
+     * and then/else sides have different shapes. In all other
+     * cases, tsize, esize, and size are all equal.
+     */
+    tsize = esize = size;
+    if(pt->metaType.type == TYPE_STRING){
+	tsize = pt->args->next->metaType.shape[0];
+	esize = pt->args->next->next->metaType.shape[0];
+    }
+
     items = pt->metaType.items;
     for (i = j = k = l = 0;
 	    i < items;
@@ -1081,12 +1098,12 @@ ExecCond (
 	if (allValid || _dxfComputeInvalidOne(outInvalid, i, invalids[0], j)) {
 	    if (cond[j]) {
 		if (_dxfComputeInvalidOne(outInvalid, i, invalids[1], k)) 
-		    bcopy ((Pointer)(((char *)inputs[1]) + k * size),
+		    bcopy ((Pointer)(((char *)inputs[1]) + k * tsize),
 			    (Pointer)(((char *)result) + i * size), size);
 	    }
 	    else {
 		if (_dxfComputeInvalidOne(outInvalid, i, invalids[2], l)) 
-		    bcopy ((Pointer)(((char *)inputs[2]) + l * size),
+		    bcopy ((Pointer)(((char *)inputs[2]) + l * esize),
 			    (Pointer)(((char *)result) + i * size), size);
 	    }
 	}
@@ -1218,6 +1235,13 @@ CheckCond (PTreeNode *pt, ObjStruct *os, OperBinding *binding)
 	pt->metaType.items = items;
     }
     pt->impl = binding->impl;
+
+    /* 03 Aug 2006 (jer) set the result shape */
+    if(pt->metaType.type == TYPE_STRING){
+        pt->metaType.shape[0] = 
+            (thenExpr->metaType.shape[0] > elseExpr->metaType.shape[0]) ?
+		thenExpr->metaType.shape[0] : elseExpr->metaType.shape[0];
+    }
 
     if (invalid) {
 	DXFreeInvalidComponentHandle(invalid);
@@ -4118,6 +4142,3 @@ _dxfComputeLookupFunction (char *name)
 
     return (NT_ERROR);
 }
-
-
-
