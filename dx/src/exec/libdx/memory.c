@@ -2383,6 +2383,7 @@ int _dxf_GetPhysicalProcs()
 
 #elif defined(intelnt) || defined(WIN32)
 #if 0
+/* Not ready to deal with multiple processor Windows boxes. */
     SYSTEM_INFO sysinfo;
 	GetSystemInfo(&sysinfo);
 	nphysprocs = sysinfo.dwNumberOfProcessors;

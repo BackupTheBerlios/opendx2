@@ -20,12 +20,12 @@ defs='/D "WIN32" /D "CONSOLE" /D "MOTIFAPP"'
 linkopts="/subsystem:console"
 
 # defs for optimized
-optdefs='/O2 /Gs /Zi /GF /D "NDEBUG"'
+optdefs='/Ox /Gs /D "NDEBUG"'
 #optdefs='/Gs /Zi /GF /D "NDEBUG"'
 optlinkopts="/incremental:yes"
 
 #defs for debugged
-debugdefs='/GX- /Gi /Od /Zi /D "_DEBUG"'
+debugdefs='/GX- /Gi /Ox /Zi /D "_DEBUG"'
 debuglinkopts="/DEBUG /incremental:yes"
 
 undefs=
@@ -201,7 +201,7 @@ if test $compile = 1 ; then
     fi
 
     if test $link = 1 ; then
-	cmd="cl -nologo $incpath $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $prelibs $libs $deflibs $dlllib $map $binmode $linkopts $linkmodule $deffile" 
+	cmd="cl -nologo $incpath $msincs $defs $undefs $args $cfiles $dllflag /link $libpath $prelibs $libs $deflibs $dlllib $map $binmode $linkopts $linkmodule $deffile /MAP /MAPINFO:LINES /MAPINFO:EXPORTS" 
     else
 	cmd="cl $dllflag -nologo $incpath $defs $undefs $args $cfiles"
     fi

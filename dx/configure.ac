@@ -656,7 +656,7 @@ then
     	failed=`expr $failed + 1`
     fi
 if test "$ARCH" = "intelnt" ; then
-    AC_CHECK_LIB(hd414m,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,[ hm414.lib ])
+    AC_CHECK_LIB(hd421m,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,[ hm421m.lib ])
     AC_MSG_CHECKING(if HDF package is complete)
     if test $passed -gt 0
     then
@@ -665,9 +665,9 @@ if test "$ARCH" = "intelnt" ; then
 	AC_MSG_RESULT(no -- some components failed test)
         have_hdf='no (failed tests)'
     else
-	LIB_HDF='-lhd414m'
+	LIB_HDF='-lhm421m'
 	LIBS="$LIB_HDF $LIBS"
-	FMT_LIBS="$FMT_LIBS hd414m.lib"
+	FMT_LIBS="$FMT_LIBS hm421m.lib"
 	AC_DEFINE(HAVE_LIBDF, 1, [Define to 1 if you have the HDF libraries])
 	AC_MSG_RESULT(yes)
 	have_hdf='yes'

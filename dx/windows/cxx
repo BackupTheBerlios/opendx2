@@ -22,7 +22,7 @@ defs='/D "WIN32" /D "CONSOLE" /D "MOTIFAPP"'
 linkopts="/subsystem:console"
 
 # defs for optimized 
-optdefs='/Ox /EHsc /Gs /Zi /GF /D "NDEBUG"'
+optdefs='/Ox /EHsc /Gs /D "NDEBUG"'
 optlinkopts="/incremental:no"
 
 #defs for debugged
