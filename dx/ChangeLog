@@ -1,29 +1,37 @@
-4.4.2
+4.4.4
 =================
+Fix a bug in Compute when comparing two strings of
+different length using == (Bug #205)
+
+Added a new algorithm for generating the neighbors
+component for irregular cubic connections.
+
+Update Refine for tetras to remove any degenerate
+results. Only valid tetras are returned.
+
 Fix a bug with hardware rendering where turning
 on the transparency for all surfaces caused problems
 with opaque surfaces within some GL codes.
 
-Fix a bug in the quad interpolator where some
-results could be returned as NAN.
+Fix a bug in the quad interpolator where some results 
+could be returned as NAN.
 
-Make it possible to change the way TMESH's are
-generated. See docs for environment variable:
+Make it possible to change the way TMESH's are generated. 
+See docs for environment variable: 
 DX_HW_TMESH_ORIENT_SENSITIVE.
 
-Correct a bug introduced with the Column Plot
-with respect to using fixedfontsizes in Plot
-and Colorbar (Bug #212)
+Correct a bug introduced with the Column Plot with 
+respect to using fixedfontsizes in Plot and Colorbar 
+(Bug #212)
 
-Add the ability to have the executive pass more
-than 1024 characters to the UI or other DXLink
-apps. Useful with JavaExplorer when passing
-something like a webpage back in response to a
-pick.
+Add the ability to have the executive pass more than 
+4095 characters to the UI or other DXLink apps. Useful 
+with JavaExplorer when passing something like a webpage 
+back in response to a pick.
 
-Add the ability to set the Integer, Scalar and
-Vector Interactor default caclulated output to the
-min, max as well as the default midpoint.
+Add the ability to set the Integer, Scalar and Vector 
+Interactor default caclulated output to the min, max 
+as well as the default midpoint.
 
 Add the capability to be able to pass much larger
 strings through the packet handlers. This will 
