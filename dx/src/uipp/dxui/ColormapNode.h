@@ -136,11 +136,6 @@ class ColormapNode : public DrivenNode
                                         const char *file,
                                         int lineno);
 
-    enum {
-	   OPENING,
-	   SAVING
-	 };
-
   protected:
     //
     // Protected member data:
