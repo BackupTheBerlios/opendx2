@@ -485,9 +485,6 @@ _dxfsetmem(ulong limit)
 		    alloc_segments[j] = tcount;
 		}
 
-
-    /* this is old - it's more complicated than this now */
-    DXDebug("M", "shared memory will start at 0x%08x", sh_base[0]);
     return OK;
 }
 
