@@ -17,6 +17,8 @@ LINKLIST = \
          UsingLights.net\
          LightingColorSelector.cfg\
          LightingColorSelector.net\
+         UsingScreenObject.cfg\
+         UsingScreenObject.net\
          UsingShade.cfg\
          UsingShade.net\
          VolumeRendering.cfg\

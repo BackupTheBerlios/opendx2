@@ -77,7 +77,8 @@ DATA2 = PickPlot.cfg PickPlot.net PickStreamline.cfg PickStreamline.net \
     UsingLights.net UsingMap.cfg UsingMap.net UsingMessage.cfg UsingMessage.net \
     UsingMorph.cfg UsingMorph.net UsingMultiGrids.cfg UsingMultiGrids.net \
     UsingOverlay.cfg UsingOverlay.net UsingParse.cfg UsingParse.net \
-    UsingProbes.cfg UsingProbes.net UsingShade.cfg UsingShade.net \
+    UsingProbes.cfg UsingProbes.net UsingScreenObject.cfg UsingScreenObject.net \
+    UsingShade.cfg UsingShade.net \
     UsingStreakline.cfg UsingStreakline.net UsingSwitchAndRoute.cfg \
     UsingSwitchAndRoute.net UsingTextAndTextGlyphs.cfg UsingTextAndTextGlyphs.net \
     Verify.cfg Verify.net VisualObject.cfg VisualObject.net VolumeClip.cfg \
