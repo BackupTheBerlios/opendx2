@@ -712,7 +712,7 @@ then
     passed=0;
     AC_CHECK_HEADER(cdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
 if test "$ARCH" = "intelnt" ; then
-    AC_CHECK_LIB(dllcdf,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(dllcdf,CDFlib,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if CDF package is complete)
     if test $passed -gt 0
     then
@@ -803,7 +803,7 @@ then
     passed=0;
     AC_CHECK_HEADER([magick/api.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
 if test "$ARCH" = "intelnt" ; then
-    AC_CHECK_LIB(CORE_RL_magick_,Hopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(CORE_RL_magick_,AcquireMagickMemory,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if ImageMagick package is complete)
     if test $passed -gt 0
     then
