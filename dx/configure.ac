@@ -1011,7 +1011,7 @@ DX_CHECK_HEADERS( \
   Xm/ScrolledWP.h Xm/SelectioB.h Xm/SeparatoG.h Xm/SeparatoGP.h Xm/Separator.h \
   Xm/Text.h Xm/TextF.h Xm/ToggleB.h Xm/ToggleBG.h Xm/Xm.h Xm/XmP.h Xm/XmStrDefs.h \
   gl.h gl/device.h gl/gl.h invent.h iop/afb.h iop/mov.h iop/pfs.h license.h \
-  linux/kernel.h linux/sys.h math.h mingw32/dir.h mon.h net/if_arp.h net/route.h \
+  linux/kernel.h math.h mingw32/dir.h mon.h net/if_arp.h net/route.h \
   os2.h setjmp.h starbase.c.h stddef.h stdio.h synch.h sys/access.h \
   sys/ipc.h sys/m88kbcs.h sys/mman.h sys/mode.h sys/pstat.h sys/resource.h \
   sys/svs.h sys/sysconfig.h sys/syslimits.h sys/sysmacros.h ulocks.h x11/xlibxtra.h \
