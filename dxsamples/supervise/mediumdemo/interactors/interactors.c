@@ -1,6 +1,7 @@
 #include <dx/dx.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 
 /* This is a simple user interactor which pays attention only
  * to left mouse button and keypress events. If the user clicks on a location
