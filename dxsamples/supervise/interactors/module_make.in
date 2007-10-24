@@ -10,8 +10,7 @@ CFLAGS = -g -D@DXARCH@ -I$(BASE)/include \
 
 CC = $(DXCC)
 	
-LIBS       = -L$(BASE)/lib_@DXARCH@ -lDX \
-			-lGL \
+LIBS       = -L$(BASE)/lib_@DXARCH@ -lm -lDX -lGL \
 	            $(DXEXECLINKLIBS)
 
 .c.o: ; $(CC) -c $*.c $(DXABI) $(DX_RTL_CFLAGS) $(CFLAGS)
@@ -20,11 +19,11 @@ LIBS       = -L$(BASE)/lib_@DXARCH@ -lDX \
 
 myinteractors: myinteractors.o
 	-rm myinteractors
-	$(MAKE) -f interactors_make loadable_interactors || $(MAKE) -f interactors_make loadable_aix_interactors || $(MAKE) -f unrtloadable_dxexec
+	$(MAKE) -f module_make loadable_interactors || $(MAKE) -f module_make loadable_aix_interactors || $(MAKE) -f module_make unrtloadable_dxexec
 	
 loadable_interactors:
-	$(CCLD) $(DXABI) $(DX_RTL_LDFLAGS) -e DXEntry \
-		-o myinteractors myinteractors.o -lm
+	$(CC) -o myinteractors $(DXABI) $(DX_RTL_LDFLAGS) \
+		$(DX_RTL_DXENTRY) myinteractors.o $(LIBS)
 
 loadable_aix_interactors:
 	$(CC) -o myinteractors myinteractors.o -e DXEntry -bI:$(EXP) -lm
@@ -32,3 +31,5 @@ loadable_aix_interactors:
 unrtloadable_dxexec: interactors.o
 		$(CCLD) $(DXABI) $(LDLIBFLAGS) myinteractors.o $(LIBS) -o dxexec
 
+clean:
+	rm -f myinteractors myinteractors.o

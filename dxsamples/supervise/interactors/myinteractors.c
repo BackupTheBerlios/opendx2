@@ -46,6 +46,7 @@ static void  ZoomEventHandler(void *, DXEvent *);
 
 static UserInteractor _userInteractionTable[N_USER_INTERACTORS];
 
+#if defined(UNRTLOADABLE)
 int
 DXDefaultUserInteractors(int *n, void *t)
 {
@@ -77,7 +78,40 @@ DXDefaultUserInteractors(int *n, void *t)
     *(long **)t = (long *)_userInteractionTable;
     return 1;
 }
-     
+#else
+int
+DXEntry(int *n, void *t)
+{
+    _userInteractionTable[0].InitMode      = RotateInitMode;
+    _userInteractionTable[0].EndMode       = RotateEndMode;
+    _userInteractionTable[0].SetCamera     = RotateSetCamera;
+    _userInteractionTable[0].GetCamera     = RotateGetCamera;
+    _userInteractionTable[0].SetRenderable = RotateSetRenderable;
+    _userInteractionTable[0].GetRenderable = RotateGetRenderable;
+    _userInteractionTable[0].EventHandler  = RotateEventHandler;
+
+    _userInteractionTable[1].InitMode      = PanInitMode;
+    _userInteractionTable[1].EndMode       = PanEndMode;
+    _userInteractionTable[1].SetCamera     = PanSetCamera;
+    _userInteractionTable[1].GetCamera     = PanGetCamera;
+    _userInteractionTable[1].SetRenderable = PanSetRenderable;
+    _userInteractionTable[1].GetRenderable = PanGetRenderable;
+    _userInteractionTable[1].EventHandler  = PanEventHandler;
+
+    _userInteractionTable[2].InitMode      = ZoomInitMode;
+    _userInteractionTable[2].EndMode       = ZoomEndMode;
+    _userInteractionTable[2].SetCamera     = ZoomSetCamera;
+    _userInteractionTable[2].GetCamera     = ZoomGetCamera;
+    _userInteractionTable[2].SetRenderable = ZoomSetRenderable;
+    _userInteractionTable[2].GetRenderable = ZoomGetRenderable;
+    _userInteractionTable[2].EventHandler  = ZoomEventHandler;
+
+    *n = N_USER_INTERACTORS;
+    *(long **)t = (long *)_userInteractionTable;
+    return 1;
+}
+#endif
+
 /***** Rotate *****/
 
 static void RotateStartStroke(void *, DXMouseEvent *);
